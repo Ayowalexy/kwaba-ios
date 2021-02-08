@@ -1,13 +1,15 @@
 import React from "react";
-import {View, Text} from 'react-native';
+import { View, Text, SafeAreaView } from 'react-native';
 import designs from './style';
-import {COLORS,icons}from '../../util/index';
+import { COLORS, icons, FONTS } from '../../util/index';
 
 const Welcome = () => {
     return (
-        <View>
-            <Text style={[designs.test_style, designs.test_style_2, COLORS.primary]} class>Welcome</Text>
-        </View>
+        <SafeAreaView>
+            <View>
+                <Text style={[designs.test_style, designs.test_style_2, COLORS.primary, FONTS.largeTitle]} class>Welcome</Text>
+            </View>
+        </SafeAreaView>
     )
 }
 
