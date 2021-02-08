@@ -1,5 +1,49 @@
-export const instagram = require("../assets/icons/instagram.png");
+export const instagram = require('../assets/icons/instagram.svg');
+export const accountCircle = require('../assets/icons/account-circle.svg');
+export const addButton = require('../assets/icons/add-button.svg');
+export const addIcon = require('../assets/icons/add-icon.svg');
+export const addUser = require('../assets/icons/add-user.svg');
+export const arrowForward = require('../assets/icons/arrow-forward.svg');
+export const bell = require('../assets/icons/bell.svg');
+export const bill = require('../assets/icons/bills.svg');
+export const calendarCheckYellow = require('../assets/icons/calendar-check-yellow.svg');
+export const creditCard = require('../assets/icons/credit-card.svg');
+export const messageIcon = require('../assets/icons/envelope.svg');
+export const hidePassword = require('../assets/icons/eye-slash.svg');
+export const facebook = require('../assets/icons/facebook.svg');
+export const fileIcon = require('../assets/icons/feather-file-text.svg');
+export const fileAlt = require('../assets/icons/file-alt.svg');
+export const fingerPrintColored = require('../assets/icons/fingerprint-cloured.svg');
+export const fingerPrint = require('../assets/icons/fingerprint.svg');
+export const folderOpen = require('../assets/icons/folder-open.svg');
+export const greyLock = require('../assets/icons/grey-lock.svg');
+export const home = require('../assets/icons/home.svg');
+export const house = require('../assets/icons/house.svg');
+export const info = require('../assets/icons/info.svg');
+export const instantLoan = require('../assets/icons/instant-loan.svg');
+export const invite = require('../assets/icons/invite.svg');
+export const linkedin = require('../assets/icons/linkedin-in.svg');
+export const lock = require('../assets/icons/lock.svg');
+export const metroIntro = require('../assets/icons/metro-info.svg');
+export const moneyBill = require('../assets/icons/money-bill-alt.svg');
+export const pigIconColored = require('../assets/icons/pig-icon-colored.svg');
+export const pigIcon = require('../assets/icons/pig-icon.svg');
+export const plus_1 = require('../assets/icons/plus_1.svg');
+export const profile = require('../assets/icons/profile.svg');
+export const progressCircle = require('../assets/icons/progress-circle.svg');
+export const rentBankGreyIcon = require('../assets/icons/rentbank-grey-icon.svg');
+export const rentBankLogoColoredBackground = require('../assets/icons/rentbank-logo-colored-bg.svg');
+export const shareAlt = require('../assets/icons/share-alt.svg');
+export const shareIcon = require('../assets/icons/share-icon.svg');
+export const signIn = require('../assets/icons/sign-in-alt.svg');
+export const star = require('../assets/icons/Star.svg');
+export const telegram = require('../assets/icons/telegram.svg');
+export const tick = require('../assets/icons/tick.svg');
+export const timesCircle = require('../assets/icons/times-circle.svg');
+export const topUp = require('../assets/icons/top-up.svg');
+export const trashAlt = require('../assets/icons/trash-alt.svg');
+export const whatsApp = require('../assets/icons/whatsapp.svg');
 
 export default {
-    instagram
+  instagram,
 };
