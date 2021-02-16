@@ -3,18 +3,19 @@ const accountCircle = require('../assets/icons/account-circle.svg');
 const addButton = require('../assets/icons/add-button.svg');
 const addIcon = require('../assets/icons/add-icon.svg');
 const addUser = require('../assets/icons/add-user.svg');
-const arrowForward = require('../assets/icons/arrow-forward.svg');
+const arrowForward = require('../assets/icons/arrow-forward.png');
 const bell = require('../assets/icons/bell.svg');
 const bill = require('../assets/icons/bills.svg');
 const calendarCheckYellow = require('../assets/icons/calendar-check-yellow.svg');
 const creditCard = require('../assets/icons/credit-card.svg');
+const dateTimePicker = require('../assets/icons/calendar-alt.png');
 const messageIcon = require('../assets/icons/envelope.svg');
 const hidePassword = require('../assets/icons/eye-slash.svg');
 const facebook = require('../assets/icons/facebook.svg');
 const fileIcon = require('../assets/icons/feather-file-text.svg');
 const fileAlt = require('../assets/icons/file-alt.svg');
 const fingerPrintColored = require('../assets/icons/fingerprint-cloured.svg');
-const fingerPrint = require('../assets/icons/fingerprint.svg');
+const fingerPrint = require('../assets/icons/fingerprint.png');
 const folderOpen = require('../assets/icons/folder-open.svg');
 const greyLock = require('../assets/icons/grey-lock.svg');
 const home = require('../assets/icons/home.svg');
@@ -29,7 +30,7 @@ const moneyBill = require('../assets/icons/money-bill-alt.svg');
 const pigIconColored = require('../assets/icons/pig-icon-colored.svg');
 const pigIcon = require('../assets/icons/pig-icon.svg');
 const plus_1 = require('../assets/icons/plus_1.svg');
-const profile = require('../assets/icons/profile.svg');
+const profile = require('../assets/icons/profile.png');
 const progressCircle = require('../assets/icons/progress-circle.svg');
 const rentBankGreyIcon = require('../assets/icons/rentbank-grey-icon.svg');
 const rentBankLogoColoredBackground = require('../assets/icons/rentbank-logo-colored-bg.svg');
@@ -43,6 +44,7 @@ const timesCircle = require('../assets/icons/times-circle.svg');
 const topUp = require('../assets/icons/top-up.svg');
 const trashAlt = require('../assets/icons/trash-alt.svg');
 const whatsApp = require('../assets/icons/whatsapp.svg');
+const naijaFlag = require('../assets/icons/nigeriaFlag.png');
 
 export {
   instagram,
@@ -55,6 +57,7 @@ export {
   bill,
   calendarCheckYellow,
   creditCard,
+  dateTimePicker,
   facebook,
   fileAlt,
   fileIcon,
@@ -90,4 +93,5 @@ export {
   topUp,
   trashAlt,
   whatsApp,
+  naijaFlag,
 };

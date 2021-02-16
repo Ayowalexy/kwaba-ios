@@ -1,34 +1,47 @@
-import {StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
+const {width} = Dimensions.get('window');
 
 const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8FD',
     justifyContent: 'center',
-    paddingTop: 200,
   },
   image: {
-    width: 94,
-    height: 113,
+    width: 129,
+    height: 30,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 30,
+  },
+  item: {
+    width: width,
+    justifyContent: 'center',
+    marginTop: 150,
+  },
+  onboardingImage: {
+    width: 160,
+    height: 200,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  title: {
+    color: '#2A286A',
     marginLeft: 'auto',
     marginRight: 'auto',
   },
   bgImage: {
-    height: 643,
+    height: 443,
     resizeMode: 'cover',
+    paddingLeft: 21,
+    paddingTop: 50,
   },
   bgImageContainer: {
-    height: 643,
-    marginTop: 38,
+    height: 434,
+    marginTop: 68,
   },
   innerView: {
-    display: 'flex',
-    flexDirection: 'row',
-    marginLeft: 31,
-    marginRight: 20,
-    marginTop: 128,
-    justifyContent: 'space-between',
-    // alignItems: 'center',
+    marginRight: 68,
   },
   button: {
     height: 61,
@@ -40,24 +53,34 @@ const designs = StyleSheet.create({
   arrowFwd: {
     width: 61,
     height: 61,
+    borderRadius: 50,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#FFFFFF77',
+    marginTop: 30,
   },
   bigText: {
-    // textAlign: 'left',
     color: '#ffff',
   },
   smallText: {
     color: '#ffff',
-    // textAlign: 'left',
+    marginTop: 30,
+    textAlign: 'left',
+  },
+  skip: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    top: 240,
+    left: 200,
   },
   getStartedBtn: {
-    width: 380,
+    width: 360,
     height: 70,
     borderRadius: 10,
     backgroundColor: '#ffff',
-    marginLeft: 16,
     marginRight: 16,
     display: 'flex',
     justifyContent: 'center',
@@ -68,7 +91,7 @@ const designs = StyleSheet.create({
     fontSize: 14,
   },
   linkContainer: {
-    marginTop: 20,
+    marginTop: 15,
     marginRight: 16,
     marginLeft: 16,
     display: 'flex',

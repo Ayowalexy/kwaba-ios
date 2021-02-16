@@ -24,37 +24,33 @@ export const FONTS = {
   largeTitle: {
     fontFamily: 'CircularStd-Bold',
     fontSize: SIZES.largeTitle,
-    lineHeight: 10,
+    lineHeight: 35,
+    fontWeight: 'bold',
   },
   h1: {
     fontFamily: 'CircularStd-Bold',
     fontSize: SIZES.largeTitle,
-    lineHeight: 10,
   },
   h2: {
     fontFamily: 'CircularStd-Bold',
     fontSize: SIZES.largeTitle,
-    lineHeight: 10,
   },
   h3: {
     fontFamily: 'CircularStd-Bold',
     fontSize: SIZES.largeTitle,
-    lineHeight: 10,
   },
   body1: {
     fontFamily: 'CircularStd-Book',
     fontSize: SIZES.body1,
-    lineHeight: 10,
+    lineHeight: 25,
   },
   body2: {
     fontFamily: 'CircularStd-Book',
     fontSize: SIZES.body2,
-    lineHeight: 10,
   },
   body3: {
     fontFamily: 'CircularStd-Book',
     fontSize: SIZES.body3,
-    lineHeight: 10,
   },
 };
 
