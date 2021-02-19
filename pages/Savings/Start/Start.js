@@ -165,6 +165,7 @@ export default function Start({navigation}) {
               Save towards your next rent with{'\n'}your flatmates or spouse
             </Text>
             <TouchableOpacity
+              onPress={() => navigation.navigate('BuddySaving1')}
               style={[
                 designs.cardFlex,
                 {

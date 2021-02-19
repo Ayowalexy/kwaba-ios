@@ -22,6 +22,9 @@ import {
   SoloSaving3,
   SoloSaving4,
   SoloSavingDashBoard,
+  BuddySaving1,
+  BuddySaving2,
+  BuddySaving3,
 } from './pages/Savings/index';
 
 const Stack = createStackNavigator();
@@ -66,6 +69,15 @@ const App = () => {
         <Stack.Screen
           name="SoloSavingDashBoard"
           component={SoloSavingDashBoard}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySaving1"
+          component={BuddySaving1}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySaving2"
+          component={BuddySaving2}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySaving3"
+          component={BuddySaving3}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );
