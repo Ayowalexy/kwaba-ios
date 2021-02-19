@@ -42,6 +42,9 @@ const designs = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    width: 370,
+    marginRight: 'auto',
+    marginLeft: 'auto',
   },
   image: {
     width: 129,
@@ -102,7 +105,7 @@ const designs = StyleSheet.create({
     alignItems: 'center',
   },
   fingerPrint: {
-    backgroundColor: '#9D98EC',
+    backgroundColor: 'white',
     width: 68,
     height: 70,
     borderRadius: 10,
@@ -110,6 +113,7 @@ const designs = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 15,
+    color: '#BFBFBF',
   },
 });
 export default designs;

@@ -14,6 +14,15 @@ import GetCode from './pages/Auth/GetCode';
 import VerifyNumber from './pages/Auth/VerifyNumber';
 import SignUp from './pages/Auth/SignUp';
 import Login from './pages/Auth/Login';
+import Home from './pages/Home/Home';
+import {
+  SavingsHome,
+  SoloSaving1,
+  SoloSaving2,
+  SoloSaving3,
+  SoloSaving4,
+  SoloSavingDashBoard,
+} from './pages/Savings/index';
 
 const Stack = createStackNavigator();
 
@@ -33,6 +42,7 @@ const App = () => {
           component={VerifyNumber}></Stack.Screen>
         <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
         <Stack.Screen name="Login" component={Login}></Stack.Screen>
+        <Stack.Screen name="Home" component={Home}></Stack.Screen>
         <Stack.Screen
           name="CompleteProfile1"
           component={CompleteProfile1}></Stack.Screen>
@@ -48,6 +58,14 @@ const App = () => {
         <Stack.Screen
           name="CompleteProfile5"
           component={CompleteProfile5}></Stack.Screen>
+        <Stack.Screen name="SavingsHome" component={SavingsHome}></Stack.Screen>
+        <Stack.Screen name="SoloSaving1" component={SoloSaving1}></Stack.Screen>
+        <Stack.Screen name="SoloSaving2" component={SoloSaving2}></Stack.Screen>
+        <Stack.Screen name="SoloSaving3" component={SoloSaving3}></Stack.Screen>
+        <Stack.Screen name="SoloSaving4" component={SoloSaving4}></Stack.Screen>
+        <Stack.Screen
+          name="SoloSavingDashBoard"
+          component={SoloSavingDashBoard}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

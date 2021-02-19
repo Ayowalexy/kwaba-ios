@@ -6,8 +6,11 @@ import designs from './style';
 export default function GetCode({navigation}) {
   return (
     <View style={designs.container}>
-      <Image style={designs.image} source={images.kwabaLogoWithName} />
-      <Text style={designs.heading}>Enter your number</Text>
+      <Image
+        style={[designs.image, {marginLeft: 10}]}
+        source={images.kwabaLogoWithName}
+      />
+      <Text style={[designs.heading, {marginLeft: 30}]}>Enter your number</Text>
       <Text style={designs.body}>
         We will send a code to verify your number
       </Text>

@@ -8,16 +8,19 @@ export default function VerifyNumber({navigation}) {
 
   return (
     <View style={designs.container}>
-      <Image style={designs.image} source={images.kwabaLogoWithName} />
+      <Image
+        style={[designs.image, {marginLeft: 20}]}
+        source={images.kwabaLogoWithName}
+      />
       <Text style={designs.heading}>Verify your phone number</Text>
       <Text style={designs.body}>
         Please enter verification code sent to your number
       </Text>
       <View style={designs.codeInputContainer}>
-        <TextInput style={designs.codeInput} />
-        <TextInput style={designs.codeInput} />
-        <TextInput style={designs.codeInput} />
-        <TextInput style={designs.codeInput} />
+        <TextInput keyboardType="number-pad" style={designs.codeInput} />
+        <TextInput keyboardType="number-pad" style={designs.codeInput} />
+        <TextInput keyboardType="number-pad" style={designs.codeInput} />
+        <TextInput keyboardType="number-pad" style={designs.codeInput} />
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate('SignUp')}

@@ -96,11 +96,13 @@ const Screen5 = ({navigation}) => {
               mode="date"
               is24Hour={true}
               display="default"
+              placeholderText="Date of birth"
             />
           )}
           <View style={designs.customInput}>
             <Picker
               mode="dropdown"
+              dropdownIconColor="white"
               accessibilityLabel="Who do you pay your rent to?"
               style={{flex: 1}}
               selectedValue={selectedValue}
@@ -131,6 +133,7 @@ const Screen5 = ({navigation}) => {
       <Modal
         onRequestClose={() => setModalVisible(!modalVisible)}
         visible={modalVisible}
+        onSave={() => navigation.navigate('Home')}
       />
     </View>
   );

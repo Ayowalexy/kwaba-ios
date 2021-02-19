@@ -23,8 +23,7 @@ const Welcome = ({navigation}) => {
                 Kwaba
               </Text>
               <Text style={[designs.smallText, FONTS.body1]}>
-                The new way to{'\n'}
-                save and pay your rent
+                The future of rent payment
               </Text>
             </View>
 
@@ -50,7 +49,12 @@ const Welcome = ({navigation}) => {
           </View>
           <View style={designs.linkContainer}>
             <Text style={{color: 'white'}}>
-              Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
+              Got an account?{' '}
+              <Text
+                onPress={() => navigation.navigate('Login')}
+                style={{color: '#00DC99'}}>
+                Log in
+              </Text>
             </Text>
           </View>
         </ImageBackground>

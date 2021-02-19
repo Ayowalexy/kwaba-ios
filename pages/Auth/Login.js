@@ -15,7 +15,7 @@ export default function Login({navigation}) {
         {paddingTop: 106, paddingLeft: 33, paddingRight: 33},
       ]}>
       <Image
-        style={[designs.image, {marginTop: 0, marginLeft: 0}]}
+        style={[designs.image, {marginTop: 0, marginLeft: -30}]}
         source={images.kwabaLogo}
       />
       <Text
@@ -28,19 +28,19 @@ export default function Login({navigation}) {
         }}>
         Login to your account
       </Text>
-      <View style={designs.customInput}>
-        <Icon name="mail-outline" size={20} color="#D6D6D6" />
+      <View style={[designs.customInput, {width: 360}]}>
+        <Icon name="mail-outline" size={30} color="#D6D6D6" />
         <TextInput
           style={{flex: 1}}
           placeholder="Email"
           placeholderTextColor="#BFBFBF"
         />
       </View>
-      <View style={designs.customInput}>
-        <Icon name="lock-closed-outline" size={20} color="#D6D6D6" />
+      <View style={[designs.customInput, {width: 360}]}>
+        <Icon name="lock-closed-outline" size={30} color="#D6D6D6" />
         <TextInput
           style={{flex: 1}}
-          placeholder="password"
+          placeholder="Password"
           placeholderTextColor="#BFBFBF"
         />
         <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
@@ -59,6 +59,12 @@ export default function Login({navigation}) {
             alignItems: 'center',
           }}>
           <CheckBox
+            style={{
+              height: 14,
+              width: 14,
+              marginRight: 8,
+              borderColor: '#D6D6D6',
+            }}
             disabled={false}
             value={toggleCheckBox}
             onValueChange={(newValue) => setToggleCheckBox(newValue)}
@@ -69,6 +75,7 @@ export default function Login({navigation}) {
               fontSize: 14,
               lineHeight: 30,
               fontWeight: '900',
+              marginLeft: 8,
             }}>
             Remember me
           </Text>
@@ -91,9 +98,10 @@ export default function Login({navigation}) {
           justifyContent: 'space-between',
         }}>
         <TouchableOpacity
+          onPress={() => navigation.navigate('Home')}
           style={[
             designs.btn,
-            {backgroundColor: '#2A286A', width: 246, borderRadius: 10},
+            {backgroundColor: '#00DC99', width: 246, borderRadius: 10},
           ]}>
           <Text
             style={{
@@ -106,7 +114,10 @@ export default function Login({navigation}) {
           </Text>
         </TouchableOpacity>
         <View style={designs.fingerPrint}>
-          <Image style={{width: 38, height: 38}} source={icons.fingerPrint} />
+          <Image
+            style={{width: 38, height: 38, tintColor: '#BFBFBF'}}
+            source={images.fingerPrint}
+          />
         </View>
       </View>
       <View

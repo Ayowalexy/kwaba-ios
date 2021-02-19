@@ -38,7 +38,7 @@ const Screen2 = ({navigation}) => {
         style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
         color="#2A286A"
       />
-      <ScrollView scrollEnabled={true}>
+      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
           style={{
             marginTop: 25,

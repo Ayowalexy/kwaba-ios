@@ -3,7 +3,7 @@ import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function CustomModal(props) {
-  const {onRequestClose, visible} = props;
+  const {onRequestClose, visible, onSave} = props;
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -42,7 +42,7 @@ export default function CustomModal(props) {
               You are about to save your profile details
             </Text>
             <TouchableOpacity
-              onPress={onRequestClose}
+              onPress={onSave}
               style={[styles.btn, {backgroundColor: '#00DC99'}]}>
               <Text style={{color: 'white'}}>YES, SAVE IT</Text>
             </TouchableOpacity>

@@ -19,7 +19,7 @@ export default function SignUp({navigation}) {
         designs.container,
         {paddingRight: 32, paddingLeft: 32, paddingTop: 59},
       ]}>
-      <ScrollView scrollEnabled={true}>
+      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
           style={{
             display: 'flex',
@@ -73,7 +73,7 @@ export default function SignUp({navigation}) {
             placeholder="Email"
             placeholderTextColor="#BFBFBF"
           />
-          <View style={designs.customInput}>
+          <View style={[designs.customInput, {width: 345}]}>
             <TextInput
               style={{flex: 1}}
               placeholder="Password"
@@ -82,7 +82,7 @@ export default function SignUp({navigation}) {
             <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
           </View>
 
-          <View style={designs.customInput}>
+          <View style={[designs.customInput, {width: 345}]}>
             <TextInput
               style={{flex: 1}}
               placeholder="Confirm Password"
@@ -96,8 +96,9 @@ export default function SignUp({navigation}) {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-around',
-              marginLeft: 16,
-              marginRight: 16,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              width: 345,
             }}>
             <TouchableOpacity
               onPress={() => setGender('Male')}
@@ -105,7 +106,7 @@ export default function SignUp({navigation}) {
                 designs.btn,
                 {
                   backgroundColor: gender == 'Male' ? '#9D98EC' : '#FFFFFF',
-                  width: 172,
+                  width: 162,
                 },
               ]}>
               <Text style={{color: gender == 'Male' ? 'white' : '#465969'}}>
@@ -118,7 +119,7 @@ export default function SignUp({navigation}) {
                 designs.btn,
                 {
                   backgroundColor: gender == 'Female' ? '#9D98EC' : '#FFFFFF',
-                  width: 182,
+                  width: 162,
                 },
               ]}>
               <Text style={{color: gender == 'Female' ? 'white' : '#465969'}}>
