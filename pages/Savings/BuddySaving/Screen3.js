@@ -162,6 +162,7 @@ export default function Screen3({navigation}) {
               height: 54,
               borderRadius: 5,
               backgroundColor: '#2A286A',
+              marginTop: 13,
             }}>
             <Image source={icons.calendarCheckYellow} />
             <Text
@@ -188,7 +189,7 @@ export default function Screen3({navigation}) {
         />
       )}
       <TouchableOpacity
-        onPress={() => navigation.navigate('SoloSaving3')}
+        onPress={() => navigation.navigate('BuddySaving4')}
         style={[designs.button, {marginTop: 100}]}>
         <Text
           style={{

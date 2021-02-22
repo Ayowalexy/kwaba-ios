@@ -32,23 +32,24 @@ export default function CustomModal(props) {
               }}>
               Confirm
             </Text>
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                color: '#465969',
-                fontWeight: '600',
-                marginTop: 10,
-              }}>
-              You are about to save your profile details
-            </Text>
-            <TouchableOpacity
-              onPress={onSave}
-              style={[styles.btn, {backgroundColor: '#00DC99'}]}>
-              <Text style={{color: 'white'}}>YES, SAVE IT</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={onRequestClose} style={[styles.btn]}>
-              <Text style={{color: '#BFBFBF'}}>NO, NOT NOW</Text>
-            </TouchableOpacity>
+            <View style={{marginTop: 10}}>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  color: '#465969',
+                  fontWeight: '600',
+                }}>
+                You are about to save your profile details
+              </Text>
+              <TouchableOpacity
+                onPress={onSave}
+                style={[styles.btn, {backgroundColor: '#00DC99'}]}>
+                <Text style={{color: 'white'}}>YES, SAVE IT</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onRequestClose} style={[styles.btn]}>
+                <Text style={{color: '#BFBFBF'}}>NO, NOT NOW</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>

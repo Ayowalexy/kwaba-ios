@@ -25,6 +25,10 @@ import {
   BuddySaving1,
   BuddySaving2,
   BuddySaving3,
+  BuddySaving4,
+  BuddySaving5,
+  BuddySaving6,
+  BuddySavingDashBoard,
 } from './pages/Savings/index';
 
 const Stack = createStackNavigator();
@@ -78,6 +82,18 @@ const App = () => {
         <Stack.Screen
           name="BuddySaving3"
           component={BuddySaving3}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySaving4"
+          component={BuddySaving4}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySaving5"
+          component={BuddySaving5}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySaving6"
+          component={BuddySaving6}></Stack.Screen>
+        <Stack.Screen
+          name="BuddySavingDashBoard"
+          component={BuddySavingDashBoard}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

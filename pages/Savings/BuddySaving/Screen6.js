@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images} from '../../../util/index';
 import AddCardModal from '../../../components/addCardModal';
 
-export default function Screen4({navigation}) {
+export default function Screen6({navigation}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
 
@@ -97,8 +97,12 @@ export default function Screen4({navigation}) {
         visible={modalVisible}
       />
       <Modal visible={successModal} animationType="fade" transparent={true}>
-        <View style={designs.modal}>
-          <View style={designs.successModal}>
+        <View
+          style={[
+            designs.modal,
+            {justifyContent: 'center', paddingLeft: 16, paddingRight: 16},
+          ]}>
+          <View style={[designs.successModal, {borderRadius: 30}]}>
             <Icon
               style={{alignSelf: 'flex-end'}}
               onPress={() => setSuccessModal(false)}
@@ -107,7 +111,7 @@ export default function Screen4({navigation}) {
               color="#465969"
             />
             <Image source={icons.tick} />
-            <Text style={[designs.boldText, {marginTop: 45, fontSize: 22}]}>
+            <Text style={[designs.boldText, {marginTop: 55, fontSize: 22}]}>
               Great work
             </Text>
             <Text
@@ -118,14 +122,14 @@ export default function Screen4({navigation}) {
                 fontWeight: 'bold',
                 marginTop: 15,
               }}>
-              Solos savings has been set up
+              Buddy savings has been set up
             </Text>
             <TouchableOpacity
               onPress={() => {
                 setSuccessModal(false);
-                navigation.navigate('SoloSavingDashBoard');
+                navigation.navigate('BuddySavingDashBoard');
               }}
-              style={[designs.button, {marginTop: 55, width: 340}]}>
+              style={[designs.button, {marginTop: 30, width: 340}]}>
               <Text
                 style={{
                   color: 'white',

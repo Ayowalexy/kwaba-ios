@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
 import {images} from '../../../util/index';
 
-export default function Screen3({navigation}) {
+const Screen5 = ({navigation}) => {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
 
@@ -34,7 +34,7 @@ export default function Screen3({navigation}) {
                 color: '#9D98EC',
                 fontFamily: 'Circular Std',
               }}>
-              SOLO SAVING
+              BUDDY SAVING
             </Text>
             <Text
               style={{
@@ -47,16 +47,16 @@ export default function Screen3({navigation}) {
               {new Date().getFullYear()} Rent
             </Text>
           </View>
-          <Image style={{width: 61, height: 66}} source={images.maskGroup15} />
+          <Image style={{width: 61, height: 66}} source={images.maskGroup14} />
         </View>
         <View style={designs.data}>
           <View>
-            <Text style={designs.key}>Amount to save</Text>
-            <Text style={designs.value}>₦150,000</Text>
+            <Text style={designs.key}>No. of Buddies</Text>
+            <Text style={designs.value}>4</Text>
           </View>
           <View style={{marginLeft: 135}}>
             <Text style={designs.key}>Target Amount</Text>
-            <Text style={designs.value}>₦1,800,000</Text>
+            <Text style={designs.value}>₦2,500,000</Text>
           </View>
         </View>
         <View style={designs.data}>
@@ -76,7 +76,7 @@ export default function Screen3({navigation}) {
           </View>
           <View style={{marginLeft: 125}}>
             <Text style={designs.key}>Interest Rate</Text>
-            <Text style={designs.value}>2% P.A</Text>
+            <Text style={designs.value}>2.5% P.A</Text>
           </View>
         </View>
         <View
@@ -156,7 +156,7 @@ export default function Screen3({navigation}) {
         </Text>
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate('SoloSaving4')}
+        onPress={() => navigation.navigate('BuddySaving6')}
         style={[designs.button, {marginTop: 15}]}>
         <Text
           style={{
@@ -170,4 +170,5 @@ export default function Screen3({navigation}) {
       </TouchableOpacity>
     </View>
   );
-}
+};
+export default Screen5;

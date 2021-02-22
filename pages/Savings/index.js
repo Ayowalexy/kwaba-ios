@@ -7,6 +7,10 @@ import SoloSavingDashBoard from './SoloSaving/SoloSavingDashBoard';
 import BuddySaving1 from './BuddySaving/Screen1';
 import BuddySaving2 from './BuddySaving/Screen2';
 import BuddySaving3 from './BuddySaving/Screen3';
+import BuddySaving4 from './BuddySaving/Screen4';
+import BuddySaving5 from './BuddySaving/Screen5';
+import BuddySaving6 from './BuddySaving/Screen6';
+import BuddySavingDashBoard from './BuddySaving/BuddySavingDashBoard';
 
 export {
   SavingsHome,
@@ -18,4 +22,8 @@ export {
   BuddySaving1,
   BuddySaving2,
   BuddySaving3,
+  BuddySaving4,
+  BuddySaving5,
+  BuddySaving6,
+  BuddySavingDashBoard,
 };
