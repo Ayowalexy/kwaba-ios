@@ -1,12 +1,25 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {icons, images} from '../../util/index';
+import {images} from '../../util/index';
 import designs from './style';
 import CheckBox from '@react-native-community/checkbox';
+import {useDispatch} from 'react-redux';
+import {login} from '../../redux/actions/userActions';
 
 export default function Login({navigation}) {
+  const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const isError = () => {
+    if (email.trim().length == 0 || password == '' || !toggleCheckBox) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   return (
     <View
@@ -34,6 +47,9 @@ export default function Login({navigation}) {
           style={{flex: 1}}
           placeholder="Email"
           placeholderTextColor="#BFBFBF"
+          keyboardType="email-address"
+          value={email}
+          onChangeText={(text) => setEmail(text)}
         />
       </View>
       <View style={[designs.customInput, {width: 360}]}>
@@ -42,6 +58,9 @@ export default function Login({navigation}) {
           style={{flex: 1}}
           placeholder="Password"
           placeholderTextColor="#BFBFBF"
+          secureTextEntry={true}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
         />
         <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
       </View>
@@ -98,14 +117,19 @@ export default function Login({navigation}) {
           justifyContent: 'space-between',
         }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => dispatch(login({email: email, password: password}))}
+          disabled={isError()}
           style={[
             designs.btn,
-            {backgroundColor: '#00DC99', width: 246, borderRadius: 10},
+            {
+              backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
+              width: 246,
+              borderRadius: 10,
+            },
           ]}>
           <Text
             style={{
-              color: 'white',
+              color: !isError() ? 'white' : '#D6D6D6',
               fontSize: 14,
               lineHeight: 30,
               fontWeight: '900',

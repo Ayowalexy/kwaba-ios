@@ -59,7 +59,7 @@ const designs = StyleSheet.create({
     elevation: 6,
   },
   summaryBox: {
-    height: 393,
+    height: 400,
     width: 380,
     borderRadius: 20,
     backgroundColor: '#2A286A',
@@ -81,7 +81,7 @@ const designs = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     // justifyContent: 'space-between',
-    marginTop: 30,
+    marginTop: 16,
     paddingLeft: 6,
     paddingRight: 6,
   },

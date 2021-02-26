@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -10,7 +10,17 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function AddCardModal(props) {
-  const {onRequestClose, visible, onConfirm} = props;
+  const {
+    onRequestClose,
+    visible,
+    onConfirm,
+    cardNumber,
+    setCardNumber,
+    expiryDate,
+    setExpiryDate,
+    cvv,
+    setCVV,
+  } = props;
   return (
     <View>
       <Modal
@@ -50,6 +60,8 @@ export default function AddCardModal(props) {
               placeholder="Card number"
               keyboardType="number-pad"
               placeholderTextColor="#ADADAD"
+              value={cardNumber}
+              onChangeText={(text) => setCardNumber(text)}
             />
             <View
               style={{
@@ -62,14 +74,18 @@ export default function AddCardModal(props) {
               <TextInput
                 style={[styles.textInput, {width: 180}]}
                 placeholder="Expiry Date MM/YY"
-                keyboardType="number-pad"
+                keyboardType="numeric"
                 placeholderTextColor="#ADADAD"
+                value={expiryDate}
+                onChangeText={(text) => setExpiryDate(text)}
               />
               <TextInput
                 style={[styles.textInput, {width: 180}]}
                 placeholder="CVV"
                 keyboardType="number-pad"
                 placeholderTextColor="#ADADAD"
+                value={cvv}
+                onChangeText={(text) => setCVV(text)}
               />
             </View>
             <TouchableOpacity

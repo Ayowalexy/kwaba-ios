@@ -8,10 +8,29 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
+import {useDispatch} from 'react-redux';
+import {soloSaving} from '../../../redux/actions/savingsActions';
 
 export default function Screen1({navigation}) {
+  const dispatch = useDispatch();
   const [activeOption, setActiveOption] = useState('');
   const [frequency, setFrequency] = useState('');
+  const [amount, setAmount] = useState(null);
+  const [title, setTitle] = useState('');
+
+  const handleNavigation = () => {
+    const data = {
+      savings_title: title,
+      savings_amount: amount,
+      savings_frequency: frequency,
+    };
+    try {
+      dispatch(soloSaving(data));
+
+      return navigation.navigate('SoloSaving2');
+    } catch (error) {}
+  };
+
   return (
     <View style={designs.container}>
       <Icon
@@ -53,6 +72,8 @@ export default function Screen1({navigation}) {
           placeholder="Savings Title"
           placeholderTextColor="#BFBFBF"
           style={designs.textInput}
+          value={title}
+          onChangeText={(text) => setTitle(text)}
         />
         <Text style={[designs.boldText, {marginTop: 33}]}>
           How do you want to save?
@@ -121,16 +142,6 @@ export default function Screen1({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
-        <TextInput
-          placeholder="Target Saving amount"
-          placeholderTextColor="#BFBFBF"
-          style={designs.textInput}
-        />
-        <TextInput
-          placeholder="Saving amount"
-          placeholderTextColor="#BFBFBF"
-          style={designs.textInput}
-        />
         <Text style={[designs.boldText, {marginTop: 18}]}>
           What is your saving frequency?
         </Text>
@@ -199,9 +210,16 @@ export default function Screen1({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SoloSaving2')}
-          style={designs.button}>
+        <TextInput
+          placeholder="Saving amount"
+          placeholderTextColor="#BFBFBF"
+          style={designs.textInput}
+          keyboardType="number-pad"
+          value={amount}
+          onChangeText={(text) => setAmount(text)}
+        />
+
+        <TouchableOpacity onPress={handleNavigation} style={designs.button}>
           <Text
             style={{
               color: 'white',

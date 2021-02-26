@@ -1,19 +1,44 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, TextInput} from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {useDispatch, useSelector} from 'react-redux';
+import {soloSaving} from '../../../redux/actions/savingsActions';
+import moment from 'moment';
 
 export default function Screen2({navigation}) {
+  const dispatch = useDispatch();
+  const savings = useSelector((state) => state.soloSavingReducer);
   const [duration, setDuration] = useState('');
   const [date, setDate] = useState(new Date(Date.now()));
   const [startOption, setStartOption] = useState('');
   const [showDate, setShowDate] = useState(false);
+  const [instantSaving, setInstantSaving] = useState(null);
 
   const handleDateSelect = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(Platform.OS === 'ios');
     setDate(currentDate);
+  };
+
+  const handleNavigation = () => {
+    try {
+      let chosenDuration =
+        duration == '3 Months' ? '3M' : duration == '6 Months' ? '6M' : '1y';
+      const data = {
+        savings_tenure: duration,
+        savings_start_date:
+          startOption == 'today' ? moment().format() : moment(date).format(),
+        savings_end_date: moment(date)
+          .add(Number(chosenDuration[0]), chosenDuration[1])
+          .format(),
+        instant_saved_amount: instantSaving,
+      };
+
+      dispatch(soloSaving(data));
+      navigation.navigate('SoloSaving3');
+    } catch (error) {}
   };
   return (
     <View style={designs.container}>
@@ -97,7 +122,10 @@ export default function Screen2({navigation}) {
       </Text>
       <View style={designs.options}>
         <TouchableOpacity
-          onPress={() => setStartOption('today')}
+          onPress={() => {
+            setStartOption('today');
+            setDate(moment().format());
+          }}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -156,9 +184,20 @@ export default function Screen2({navigation}) {
           display="default"
         />
       )}
+      <Text style={[designs.boldText, {marginTop: 26}]}>
+        How much do you want to save today?
+      </Text>
+      <TextInput
+        placeholder="Amount"
+        placeholderTextColor="#BFBFBF"
+        style={designs.textInput}
+        keyboardType="number-pad"
+        value={instantSaving}
+        onChangeText={(text) => setInstantSaving(text)}
+      />
       <TouchableOpacity
-        onPress={() => navigation.navigate('SoloSaving3')}
-        style={[designs.button, {marginTop: 200}]}>
+        onPress={handleNavigation}
+        style={[designs.button, {marginTop: 100}]}>
         <Text
           style={{
             color: 'white',

@@ -6,13 +6,90 @@ import {
   Image,
   TextInput,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
 import designs from './style';
+import {signUp} from '../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SignUp({navigation}) {
-  const [gender, setGender] = useState('Female');
+  const [spinner, setSpinner] = useState(false);
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [gender, setGender] = useState('female');
+
+  const handlePasswordCheck = (text) => {
+    // if (text !== password) {
+    //   return Alert.alert('Unmatched passwords', 'Your passwords do not match', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
+
+    setConfirmPassword(text);
+  };
+
+  const isError = () => {
+    if (
+      (firstname.trim().length == 0 ||
+        lastname.trim().length == 0 ||
+        email.trim().length == 0,
+      password == '' || gender.length == 0)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+  const handleSubmit = async () => {
+    const data = {
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
+      password: password,
+      gender: gender,
+    };
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
+
+    //start spinner
+    setSpinner(true);
+    const res = await signUp(data);
+    if (res.status == 201) {
+      //stop spinner
+      setSpinner(false);
+
+      //show success alert
+      Alert.alert(
+        'Registration Successful',
+        'You have successfully signed up. You can now proceed to verify your identity.',
+        [{text: 'Ok', onPress: () => navigation.navigate('GetCode')}],
+      );
+      await AsyncStorage.setItem('authData', res.data.authData);
+      //Clear the input fields
+      setFirstname('');
+      setLastname('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
+    } else {
+      setSpinner(false);
+      if (res == 'Request failed with status code 409') {
+        Alert.alert('Request Failed', 'Email is already taken', [{text: 'Ok'}]);
+      } else
+        Alert.alert('Request Failed', 'An error occurred, please retry', [
+          {text: 'Ok'},
+        ]);
+    }
+  };
   return (
     <View
       style={[
@@ -62,31 +139,55 @@ export default function SignUp({navigation}) {
             style={designs.textField}
             placeholder="First Name"
             placeholderTextColor="#BFBFBF"
+            value={firstname}
+            onChangeText={(text) => setFirstname(text)}
           />
           <TextInput
             style={designs.textField}
             placeholder="Last Name"
             placeholderTextColor="#BFBFBF"
+            value={lastname}
+            onChangeText={(text) => setLastname(text)}
           />
           <TextInput
             style={designs.textField}
             placeholder="Email"
             placeholderTextColor="#BFBFBF"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={(text) => setEmail(text)}
           />
           <View style={[designs.customInput, {width: 345}]}>
             <TextInput
               style={{flex: 1}}
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
+              secureTextEntry={true}
+              value={password}
+              onChangeText={(text) => setPassword(text)}
             />
             <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
           </View>
-
+          <Spinner
+            visible={spinner}
+            textContent={'Setting up...'}
+            animation="fade"
+            textStyle={{
+              color: '#2A286A',
+              fontSize: 20,
+              fontWeight: 'bold',
+              lineHeight: 30,
+            }}
+            size="large"
+          />
           <View style={[designs.customInput, {width: 345}]}>
             <TextInput
               style={{flex: 1}}
               placeholder="Confirm Password"
               placeholderTextColor="#BFBFBF"
+              secureTextEntry={true}
+              value={confirmPassword}
+              onChangeText={(text) => handlePasswordCheck(text)}
             />
             <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
           </View>
@@ -101,44 +202,50 @@ export default function SignUp({navigation}) {
               width: 345,
             }}>
             <TouchableOpacity
-              onPress={() => setGender('Male')}
+              onPress={() => setGender('male')}
               style={[
                 designs.btn,
                 {
-                  backgroundColor: gender == 'Male' ? '#9D98EC' : '#FFFFFF',
+                  backgroundColor: gender == 'male' ? '#9D98EC' : '#FFFFFF',
                   width: 162,
                 },
               ]}>
-              <Text style={{color: gender == 'Male' ? 'white' : '#465969'}}>
+              <Text style={{color: gender == 'male' ? 'white' : '#465969'}}>
                 Male
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setGender('Female')}
+              onPress={() => setGender('female')}
               style={[
                 designs.btn,
                 {
-                  backgroundColor: gender == 'Female' ? '#9D98EC' : '#FFFFFF',
+                  backgroundColor: gender == 'female' ? '#9D98EC' : '#FFFFFF',
                   width: 162,
                 },
               ]}>
-              <Text style={{color: gender == 'Female' ? 'white' : '#465969'}}>
+              <Text style={{color: gender == 'female' ? 'white' : '#465969'}}>
                 Female
               </Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
+            onPress={handleSubmit}
+            disabled={isError()}
             style={[
               designs.btn,
               {
-                backgroundColor: '#00DC99',
+                backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
                 marginRight: 8,
                 marginLeft: 8,
                 marginBottom: 20,
               },
             ]}>
-            <Text style={{color: 'white', fontSize: 14, lineHeight: 32}}>
+            <Text
+              style={{
+                color: !isError() ? 'white' : '#D6D6D6',
+                fontSize: 14,
+                lineHeight: 32,
+              }}>
               SIGN UP
             </Text>
           </TouchableOpacity>

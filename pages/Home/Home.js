@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,14 +13,24 @@ import designs from './style';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollIndicator from '../../components/scrollIicators';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home({navigation}) {
-  const [name, setName] = useState('Johnson');
+  const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [name, setName] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [index, setIndex] = useState(0);
   const [savings, setSavings] = useState(0);
   const [rentalFinance, setRentalFinance] = useState(0);
   const [instantLoan, setInstantLoan] = useState(0);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      setName(JSON.parse(userData).username);
+    };
+    getUserData();
+  }, []);
 
   const topCards = [
     {
@@ -104,34 +114,8 @@ export default function Home({navigation}) {
           style={{width: 21, height: 24}}
         />
       </View>
-      <View style={designs.secondBar}>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-          <Image
-            style={{width: 33, height: 25, marginRight: 11}}
-            source={icons.profile}
-          />
-          <Text
-            style={{
-              fontFamily: 'CircularStd',
-              fontSize: 10,
-              lineHeight: 12,
-              color: '#FB8B24',
-              fontWeight: 'bold',
-            }}>
-            Complete your profile{' '}
-            <Text style={{color: 'white'}}>
-              and get access to{'\n'}rental finance and instant loan
-            </Text>
-          </Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('CompleteProfile1')}>
+      {!isProfileComplete && (
+        <View style={designs.secondBar}>
           <View
             style={{
               display: 'flex',
@@ -139,20 +123,48 @@ export default function Home({navigation}) {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
+            <Image
+              style={{width: 33, height: 25, marginRight: 11}}
+              source={icons.profile}
+            />
             <Text
               style={{
                 fontFamily: 'CircularStd',
                 fontSize: 10,
+                lineHeight: 12,
+                color: '#FB8B24',
                 fontWeight: 'bold',
-                lineHeight: 13,
-                color: '#00DC99',
               }}>
-              Complete Profile
+              Complete your profile{' '}
+              <Text style={{color: 'white'}}>
+                and get access to{'\n'}rental finance and instant loan
+              </Text>
             </Text>
-            <Icon name="chevron-forward" color="#00DC99" size={15} />
           </View>
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CompleteProfile1')}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                  lineHeight: 13,
+                  color: '#00DC99',
+                }}>
+                Complete Profile
+              </Text>
+              <Icon name="chevron-forward" color="#00DC99" size={15} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
       <View>
         <SwiperFlatList
           index={index}
