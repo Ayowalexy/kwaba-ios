@@ -32,15 +32,11 @@ export default function Screen4({navigation}) {
   const [cardNumber, setCardNumber] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
-  const [paymentReference, setPaymentReference] = useState('');
 
   const addCard = () => {
     setModalVisible(false);
     setShowCard(true);
   };
-  useEffect(() => {
-    console.log('store', store);
-  });
 
   const handleTransactions = async () => {
     try {

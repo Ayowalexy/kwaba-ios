@@ -39,15 +39,19 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const [userToken, setUserToken] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const getuser = async () => {
       const userData = await AsyncStorage.getItem('userData');
       const token = userData != null ? JSON.parse(userData).token : null;
+      const loggedInStatus =
+        userData != null ? JSON.parse(userData).isLoggedIn : false;
+      setIsLoggedIn(loggedInStatus);
       setUserToken(token);
     };
     getuser();
-  });
+  }, [userToken]);
 
   return (
     <Provider store={store}>
@@ -57,7 +61,7 @@ const App = () => {
             headerShown: false,
           }}
           initialRouteName={'Welcome'}>
-          {userToken == null ? (
+          {!isLoggedIn && userToken == null ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen

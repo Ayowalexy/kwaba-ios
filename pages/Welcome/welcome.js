@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,8 +9,20 @@ import {
 import designs from './style';
 import {FONTS, icons, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Welcome = ({navigation}) => {
+  const [userToken, setUserToken] = useState(null);
+
+  useEffect(() => {
+    const getuser = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const token = userData != null ? JSON.parse(userData).token : null;
+      setUserToken(token);
+    };
+    getuser();
+  }, [userToken]);
+
   return (
     <View style={designs.container}>
       <Image style={designs.image} source={images.kwabaLogo} />
@@ -47,16 +59,16 @@ const Welcome = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View style={designs.linkContainer}>
-            <Text style={{color: 'white'}}>
-              Got an account?{' '}
-              <Text
-                onPress={() => navigation.navigate('Login')}
-                style={{color: '#00DC99'}}>
-                Log in
-              </Text>
-            </Text>
-          </View>
+
+          {userToken == null && (
+            <View style={designs.linkContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={{color: 'white'}}>
+                  Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </ImageBackground>
       </View>
     </View>

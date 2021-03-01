@@ -1,14 +1,25 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Image, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  Alert,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
 import designs from './style';
 import CheckBox from '@react-native-community/checkbox';
 import {useDispatch} from 'react-redux';
-import {login} from '../../redux/actions/userActions';
+import {setLoginState} from '../../redux/actions/userActions';
+import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {login} from '../../services/network';
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
+  const [spinner, setSpinner] = useState(false);
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,6 +29,42 @@ export default function Login({navigation}) {
       return true;
     } else {
       return false;
+    }
+  };
+
+  const saveLoginToStorage = async (data) => {
+    try {
+      await AsyncStorage.setItem('userData', JSON.stringify(data));
+    } catch (error) {}
+  };
+
+  const handleLogin = async () => {
+    setSpinner(true);
+    const data = {email: email, password: password};
+    try {
+      const response = await login(data);
+      if (response.status == 200) {
+        setSpinner(false);
+        saveLoginToStorage({
+          ...response.data.authData,
+          username: response.data.authData.user.firstname,
+          isLoggedIn: true,
+        });
+        dispatch(
+          setLoginState({
+            ...response.data.authData,
+            username: response.data.authData.user.firstname,
+            isLoggedIn: true,
+          }),
+        );
+      } else {
+        Alert.alert(
+          'INVALID CREDENTIALS',
+          'Please provide valid email and password',
+        );
+      }
+    } catch (error) {
+      Alert.alert('ERROR', 'An error occurred, please retry');
     }
   };
 
@@ -117,7 +164,7 @@ export default function Login({navigation}) {
           justifyContent: 'space-between',
         }}>
         <TouchableOpacity
-          onPress={() => dispatch(login({email: email, password: password}))}
+          onPress={handleLogin}
           disabled={isError()}
           style={[
             designs.btn,
@@ -129,7 +176,7 @@ export default function Login({navigation}) {
           ]}>
           <Text
             style={{
-              color: !isError() ? 'white' : '#D6D6D6',
+              color: !isError() ? 'white' : 'black',
               fontSize: 14,
               lineHeight: 30,
               fontWeight: '900',
@@ -167,6 +214,18 @@ export default function Login({navigation}) {
           </Text>
         </Text>
       </View>
+      <Spinner
+        visible={spinner}
+        textContent={'Authenticating...'}
+        animation="fade"
+        textStyle={{
+          color: '#2A286A',
+          fontSize: 20,
+          fontWeight: 'bold',
+          lineHeight: 30,
+        }}
+        size="large"
+      />
     </View>
   );
 }

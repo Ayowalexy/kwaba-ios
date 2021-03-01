@@ -25,6 +25,18 @@ const signUp = async (data) => {
   }
 };
 
+const login = async (data) => {
+  const url = apiUrl + '/api/v1/user/login';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
 const sendVerificationCode = async (data) => {
   const authData = await AsyncStorage.getItem('authData');
   const token = authData;
@@ -136,6 +148,7 @@ const verifyPayment = async (data) => {
 export {
   fetchBanks,
   signUp,
+  login,
   sendVerificationCode,
   verifyPhone,
   createSavingsPlan,

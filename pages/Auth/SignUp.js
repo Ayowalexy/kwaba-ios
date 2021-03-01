@@ -14,8 +14,10 @@ import designs from './style';
 import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SuccessModal from '../../components/SuccessModal';
 
 export default function SignUp({navigation}) {
+  const [successModal, setSuccessModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -68,11 +70,7 @@ export default function SignUp({navigation}) {
       setSpinner(false);
 
       //show success alert
-      Alert.alert(
-        'Registration Successful',
-        'You have successfully signed up. You can now proceed to verify your identity.',
-        [{text: 'Ok', onPress: () => navigation.navigate('GetCode')}],
-      );
+      setSuccessModal(true);
       await AsyncStorage.setItem('authData', res.data.authData);
       //Clear the input fields
       setFirstname('');
@@ -90,6 +88,12 @@ export default function SignUp({navigation}) {
         ]);
     }
   };
+
+  const handleNavigation = () => {
+    setSuccessModal(false);
+    navigation.navigate('GetCode');
+  };
+
   return (
     <View
       style={[
@@ -251,6 +255,13 @@ export default function SignUp({navigation}) {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="Registration Successful"
+        successText="You have successfully signed up. You can now proceed to verify your identity."
+      />
     </View>
   );
 }

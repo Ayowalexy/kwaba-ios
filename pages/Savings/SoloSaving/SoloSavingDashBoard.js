@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -11,12 +11,59 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images} from '../../../util/index';
+import {currencyFormat} from '../../../util/numberFormatter';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {useSelector, useDispatch} from 'react-redux';
+import {getCurrentUser} from '../../../redux/actions/userActions';
 import QuickSaveModal from '../../../components/QuickSaveModal';
+import moment from 'moment';
 
 export default function SoloSavingDashBoard({navigation}) {
+  const dispatch = useDispatch();
+  const soloSavings = useSelector((state) => state.getSoloSavingsReducer);
+  const currentUser = useSelector((state) => state.getUserReducer);
   const [activeTab, setActiveTab] = useState(1);
+  const [today, setToday] = useState('');
   const [openQuickSave, setOpenQuickSave] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
+  const [totalSaving, setTotalSaving] = useState(0);
+  const [totalInterest, setTotalInterest] = useState(0);
+  const [savingsTarget, setSavingsTarget] = useState(0);
+  const [percentAchieved, setPercentAchieved] = useState(0);
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, []);
+
+  useEffect(() => {
+    const totalSoloSavings = soloSavings.data.reduce(
+      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    );
+
+    const soloInterestTotal = soloSavings.data.reduce(
+      (saving, acc) => Number(saving.interest) + Number(acc.interest),
+    );
+    setTotalSaving(totalSoloSavings);
+    setTotalInterest(
+      soloInterestTotal / Number(currentUser.data.savings_tenure),
+    );
+    const date = `${moment().format('llll').split(',')[0]}, ${moment().format(
+      'Do MMM',
+    )}`;
+    setToday(date);
+    setSavingsTarget(
+      Number(currentUser.data.savings_amount) *
+        Number(currentUser.data.savings_tenure),
+    );
+    const _percentAchieved =
+      (
+        totalSoloSavings /
+        (Number(currentUser.data.savings_amount) *
+          Number(currentUser.data.savings_tenure))
+      ).toFixed(2) * 100;
+    setPercentAchieved(_percentAchieved);
+  }, []);
+
   return (
     <View style={[designs.container, {paddingLeft: 0, paddingRight: 0}]}>
       <Icon
@@ -39,7 +86,7 @@ export default function SoloSavingDashBoard({navigation}) {
               fontWeight: '700',
               color: '#ADADAD',
             }}>
-            2021 Rent
+            {new Date().getFullYear()} Rent
           </Text>
         </Text>
         <Text
@@ -50,7 +97,7 @@ export default function SoloSavingDashBoard({navigation}) {
             lineHeight: 15,
             marginLeft: 16,
           }}>
-          Weds, 15 Oct
+          {today}
         </Text>
         <ImageBackground
           style={designs.soloSavingCard}
@@ -91,7 +138,7 @@ export default function SoloSavingDashBoard({navigation}) {
                 fontWeight: 'bold',
                 marginRight: 5,
               }}>
-              ₦0.00
+              ₦{currencyFormat(totalSaving)}
             </Text>
             <Image style={{width: 13, height: 15}} source={icons.lock} />
           </View>
@@ -176,34 +223,53 @@ export default function SoloSavingDashBoard({navigation}) {
                   fontWeight: 'bold',
                   marginTop: 5,
                 }}>
-                ₦0.00
+                ₦{currencyFormat(totalInterest)}
               </Text>
             </View>
-            <ImageBackground
+            <AnimatedCircularProgress
+              size={100}
+              width={10}
+              rotation={0}
               style={designs.circularProgress}
-              source={images.darkPurpleCircle}>
-              <View>
-                <Text
+              fill={percentAchieved}
+              tintColor="#FFE700"
+              backgroundColor="#2A286A">
+              {(fill) => (
+                <View
                   style={{
-                    fontSize: 15,
-                    lineHeight: 15,
-                    color: 'white',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
+                    backgroundColor: '#2A286A',
+                    height: 100,
+                    width: 100,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  0%
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    lineHeight: 15,
-                    color: 'white',
-                    fontWeight: '600',
-                  }}>
-                  achieved
-                </Text>
-              </View>
-            </ImageBackground>
+                  <Text
+                    style={{
+                      fontFamily: 'CircularStd',
+                      fontSize: 18,
+                      fontWeight: 'bold',
+                      color: 'white',
+                      lineHeight: 27,
+                      textAlign: 'center',
+                    }}>
+                    {percentAchieved}%
+                  </Text>
+                  <Text
+                    style={{
+                      fontFamily: 'CircularStd',
+                      fontSize: 10,
+                      fontWeight: '600',
+                      color: 'white',
+                      lineHeight: 14,
+                      textAlign: 'center',
+                    }}>
+                    achieved
+                  </Text>
+                </View>
+              )}
+            </AnimatedCircularProgress>
+
             <View>
               <Text
                 style={{
@@ -222,7 +288,7 @@ export default function SoloSavingDashBoard({navigation}) {
                   fontWeight: 'bold',
                   marginTop: 5,
                 }}>
-                ₦1,800,000.00
+                ₦{currencyFormat(savingsTarget)}
               </Text>
             </View>
           </View>
@@ -361,6 +427,7 @@ export default function SoloSavingDashBoard({navigation}) {
               marginTop: 10,
             }}
           />
+
           <View
             style={{marginTop: 40, marginRight: 'auto', marginLeft: 'auto'}}>
             <Image

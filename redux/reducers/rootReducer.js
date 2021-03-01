@@ -1,8 +1,10 @@
 import {combineReducers} from 'redux';
-import {loginReducer} from './userReducers';
-import {soloSavingReducer} from './savingsReducer';
+import {loginReducer, getUserReducer} from './userReducers';
+import {soloSavingReducer, getSoloSavingsReducer} from './savingsReducer';
 
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
   soloSavingReducer: soloSavingReducer,
+  getSoloSavingsReducer: getSoloSavingsReducer,
+  getUserReducer: getUserReducer,
 });

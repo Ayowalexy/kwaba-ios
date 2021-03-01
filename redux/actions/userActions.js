@@ -1,8 +1,13 @@
 import * as types from './types';
 import apiUrl from '../../services/api';
 import axios from 'axios';
-import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
 
 export const setLoginState = (loginData) => {
   return {
@@ -11,47 +16,25 @@ export const setLoginState = (loginData) => {
   };
 };
 
-const saveLoginToStorage = async (data) => {
-  try {
-    await AsyncStorage.setItem('userData', JSON.stringify(data));
-  } catch (error) {}
+export const currentUser = (data) => {
+  return {
+    type: types.GET_CURRENT_USER,
+    payload: data,
+  };
 };
 
-export const login = (loginInput) => {
-  const {email, password} = loginInput;
-
+export const getCurrentUser = () => {
   return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + '/api/v1/me';
     try {
-      if (email.trim().length == 0 || password == '') {
-        return Alert.alert(
-          'Validation Error',
-          'Username and Password cannot be empty',
-        );
-      }
-
-      const response = await axios.post(
-        apiUrl + '/api/v1/user/login',
-        loginInput,
-        {headers: {'Content-Type': 'application/json'}},
-      );
-
-      if (response.status === 200) {
-        saveLoginToStorage({
-          ...response.data.authData,
-          username: response.data.authData.user.firstname,
-        });
-        dispatch(
-          setLoginState({
-            ...response.data.authData,
-            username: response.data.authData.user.firstname,
-          }),
-        );
-        Alert.alert('LOGIN SUCCESSFUL', 'You have logged in');
-      } else {
-        Alert.alert('Login Failed', 'Username or Password is incorrect');
-      }
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', token: token},
+      });
+      dispatch(currentUser(response.data.user));
+      return response.data.user;
     } catch (error) {
-      Alert.alert('Login Failed', 'Some error occurred, please retry');
+      return error.message;
     }
   };
 };

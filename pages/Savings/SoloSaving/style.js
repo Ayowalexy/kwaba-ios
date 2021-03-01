@@ -151,10 +151,7 @@ const designs = StyleSheet.create({
     height: 97,
     zIndex: 9,
     position: 'relative',
-    top: 30,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    top: 25,
     left: 20,
   },
   whiteCard: {

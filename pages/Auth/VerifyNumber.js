@@ -11,8 +11,10 @@ import {images} from '../../util/index';
 import designs from './style';
 import {verifyPhone} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
+import SuccessModal from '../../components/SuccessModal';
 
 export default function VerifyNumber({navigation}) {
+  const [successModal, setSuccessModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [time, setTime] = useState(45);
   const [code, setCode] = useState({num1: '', num2: '', num3: '', num4: ''});
@@ -24,15 +26,15 @@ export default function VerifyNumber({navigation}) {
     const res = await verifyPhone(data);
     if (res.status == 200) {
       setSpinner(false);
-      Alert.alert(
-        'SUCCESS',
-        'Your phone number has been verified. You can now login',
-        [{text: 'Ok', onPress: () => navigation.navigate('Login')}],
-      );
+      setSuccessModal(true);
       setCode({num1: '', num2: '', num3: '', num4: ''});
     } else {
       Alert.alert('VERIFICATION FAILED', res, [{text: 'Ok'}]);
     }
+  };
+  const handleNavigation = () => {
+    setSuccessModal(false);
+    navigation.navigate();
   };
   return (
     <View style={designs.container}>
@@ -92,6 +94,13 @@ export default function VerifyNumber({navigation}) {
       <View style={designs.counter}>
         <Text>{time}sec</Text>
       </View>
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="SUCCESS"
+        successText="Your phone number has been verified. You can now login"
+      />
     </View>
   );
 }

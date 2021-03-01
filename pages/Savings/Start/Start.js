@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,43 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../../util/index';
+import {currencyFormat} from '../../../util/numberFormatter';
 import designs from './style';
+import {useSelector, useDispatch} from 'react-redux';
+import {getCurrentUser} from '../../../redux/actions/userActions';
 
 export default function Start({navigation}) {
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.getSoloSavingsReducer);
+  const currentUser = useSelector((state) => state.getUserReducer);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalSaving, setTotalSaving] = useState(0);
+  const [totalInterest, setTotalInterest] = useState(0);
+  const [soloSaving, setSoloSaving] = useState(0);
+  const [buddySaving, setBuddySaving] = useState(0);
+  const [savingTenure, setSavingTenure] = useState(0);
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, []);
+
+  useEffect(() => {
+    const totalSoloSavings = store.data.reduce(
+      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    );
+    const soloInterestTotal = store.data.reduce(
+      (saving, acc) => Number(saving.interest) + Number(acc.interest),
+    );
+    const balance =
+      totalSoloSavings +
+      soloInterestTotal / Number(currentUser.data.savings_tenure);
+    setTotalBalance(balance);
+    setTotalSaving(totalSoloSavings);
+    setTotalInterest(
+      soloInterestTotal.toFixed(2) / Number(currentUser.data.savings_tenure),
+    );
+    setSoloSaving(totalSoloSavings);
+  }, []);
   return (
     <View style={designs.container}>
       <ImageBackground style={designs.backgroundImg} source={images.group4585}>
@@ -62,7 +96,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦0.00
+                ₦{currencyFormat(totalBalance)}
               </Text>
             </View>
             <View style={designs.smallBox}>
@@ -85,7 +119,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦0.00
+                ₦{currencyFormat(totalSaving)}
               </Text>
             </View>
             <View style={designs.smallBox}>
@@ -108,7 +142,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦0.00
+                ₦{totalInterest}
               </Text>
             </View>
           </ScrollView>
@@ -122,7 +156,11 @@ export default function Start({navigation}) {
               Save towards your next{'\n'}rent alone
             </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('SoloSaving1')}
+              onPress={() =>
+                navigation.navigate(
+                  soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
+                )
+              }
               style={[
                 designs.cardFlex,
                 {
@@ -135,19 +173,35 @@ export default function Start({navigation}) {
                   width: 131,
                 },
               ]}>
-              <Text
-                style={[
-                  designs.bodyText,
-                  {
-                    marginTop: 0,
-                    fontSize: 16,
-                    color: '#9D98EC',
-                    fontWeight: '600',
-                    marginRight: 8,
-                  },
-                ]}>
-                Start saving
-              </Text>
+              {soloSaving == 0 ? (
+                <Text
+                  style={[
+                    designs.bodyText,
+                    {
+                      marginTop: 0,
+                      fontSize: 16,
+                      color: '#9D98EC',
+                      fontWeight: '600',
+                      marginRight: 8,
+                    },
+                  ]}>
+                  Start saving
+                </Text>
+              ) : (
+                <Text
+                  style={[
+                    designs.bodyText,
+                    {
+                      marginTop: 0,
+                      fontSize: 16,
+                      color: '#9D98EC',
+                      fontWeight: '600',
+                      marginRight: 8,
+                    },
+                  ]}>
+                  ₦{currencyFormat(soloSaving)}
+                </Text>
+              )}
               <Icon name="arrow-forward" color="#9D98EC" size={15} />
             </TouchableOpacity>
           </View>
@@ -165,7 +219,11 @@ export default function Start({navigation}) {
               Save towards your next rent with{'\n'}your flatmates or spouse
             </Text>
             <TouchableOpacity
-              onPress={() => navigation.navigate('BuddySaving1')}
+              onPress={() =>
+                navigation.navigate(
+                  buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
+                )
+              }
               style={[
                 designs.cardFlex,
                 {
@@ -178,19 +236,35 @@ export default function Start({navigation}) {
                   width: 131,
                 },
               ]}>
-              <Text
-                style={[
-                  designs.bodyText,
-                  {
-                    marginTop: 0,
-                    fontSize: 16,
-                    color: '#9D98EC',
-                    fontWeight: '600',
-                    marginRight: 8,
-                  },
-                ]}>
-                Start saving
-              </Text>
+              {buddySaving == 0 ? (
+                <Text
+                  style={[
+                    designs.bodyText,
+                    {
+                      marginTop: 0,
+                      fontSize: 16,
+                      color: '#9D98EC',
+                      fontWeight: '600',
+                      marginRight: 8,
+                    },
+                  ]}>
+                  Start saving
+                </Text>
+              ) : (
+                <Text
+                  style={[
+                    designs.bodyText,
+                    {
+                      marginTop: 0,
+                      fontSize: 16,
+                      color: '#9D98EC',
+                      fontWeight: '600',
+                      marginRight: 8,
+                    },
+                  ]}>
+                  ₦{currencyFormat(buddySaving)}
+                </Text>
+              )}
               <Icon name="arrow-forward" color="#9D98EC" size={15} />
             </TouchableOpacity>
           </View>

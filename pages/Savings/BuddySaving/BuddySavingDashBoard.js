@@ -225,31 +225,6 @@ export default function BuddySavingDashBoard({navigation}) {
                 </View>
               )}
             </AnimatedCircularProgress>
-            {/* <ImageBackground
-              style={designs.circularProgress}
-              source={images.darkPurpleCircle}>
-              <View>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    lineHeight: 15,
-                    color: 'white',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                  }}>
-                  0%
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    lineHeight: 15,
-                    color: 'white',
-                    fontWeight: '600',
-                  }}>
-                  achieved
-                </Text>
-              </View>
-            </ImageBackground> */}
 
             <View>
               <Text

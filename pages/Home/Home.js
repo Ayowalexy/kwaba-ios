@@ -13,9 +13,14 @@ import designs from './style';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollIndicator from '../../components/scrollIicators';
+import {useDispatch, useSelector} from 'react-redux';
+import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {currencyFormat} from '../../util/numberFormatter';
 
 export default function Home({navigation}) {
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.getSoloSavingsReducer);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [name, setName] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,9 +32,22 @@ export default function Home({navigation}) {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
-      setName(JSON.parse(userData).username);
+      if (userData) {
+        setName(JSON.parse(userData).username);
+      }
     };
     getUserData();
+  }, []);
+
+  useEffect(() => {
+    dispatch(getTotalSoloSavings());
+  }, []);
+
+  useEffect(() => {
+    const totalSoloSavings = store.data.reduce(
+      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    );
+    setSavings(totalSoloSavings);
   }, []);
 
   const topCards = [
@@ -37,7 +55,7 @@ export default function Home({navigation}) {
       id: 1,
       title: '',
       subtitle: 'Total Saving',
-      amount: `₦${savings}`,
+      amount: `₦${currencyFormat(savings)}`,
       image: images.soloSavingsCard,
     },
     {

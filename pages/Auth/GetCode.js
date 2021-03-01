@@ -11,8 +11,11 @@ import {images, icons} from '../../util/index';
 import designs from './style';
 import {sendVerificationCode} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
+import SuccessModal from '../../components/SuccessModal';
 
 export default function GetCode({navigation}) {
+  const [successModal, setSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [telephone, setTelePhone] = useState('');
 
@@ -28,15 +31,20 @@ export default function GetCode({navigation}) {
     const response = await sendVerificationCode(data);
 
     if (response.status == 200) {
+      setSuccessMessage(response.data.statusMsg);
       setSpinner(false);
-      Alert.alert('Message sent!', response.data.statusMsg, [
-        {text: 'Ok', onPress: () => navigation.navigate('VerifyNumber')},
-      ]);
+      setSuccessModal(true);
     } else {
       setSpinner(false);
       Alert.alert('Request Failed', response, [{text: 'Ok'}]);
     }
   };
+
+  const handleNavigation = () => {
+    setSuccessModal(false);
+    navigation.navigate('VerifyNumber');
+  };
+
   return (
     <View style={designs.container}>
       <Image
@@ -100,6 +108,13 @@ export default function GetCode({navigation}) {
           GET CODE
         </Text>
       </TouchableOpacity>
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="Message sent!"
+        successText={successMessage}
+      />
     </View>
   );
 }
