@@ -1,3 +1,19 @@
+
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
+import designs from './style';
+import {FONTS, icons, images} from '../../util/index';
+import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const Welcome = ({navigation}) => {
+  const [userToken, setUserToken] = useState(null)
 import React, {useState, useEffect} from 'react';
 import {
   View,
