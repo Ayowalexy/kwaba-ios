@@ -13,18 +13,47 @@ import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import Modal from '../../components/modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logCurrentStorage } from '../../util/logCurrentStorage';
+import moment from 'moment';
+
+
 
 const Screen5 = ({navigation}) => {
+  const [lastRentAmount, setLastRentAmount]= useState("");
   const [date, setDate] = useState(new Date());
   const [selectedValue, setSelectedValue] = useState('Landlord');
   const [showDate, setShowDate] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const dateFormatted = moment(date).format(
+    'YYYY-MM-D',
+  );
+
+  console.log(dateFormatted);
 
   const handleDateSelect = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(Platform.OS === 'ios');
     setDate(currentDate);
   };
+
+  const handleNavigation = async () => {
+    const data = {
+    last_rent_amount: lastRentAmount,
+    next_rent_due: dateFormatted
+    };
+    const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    await AsyncStorage.setItem('rentalLoanForm', JSON.stringify({...JSON.parse(loanFormData), ...data}));
+    logCurrentStorage();
+    setModalVisible(true);
+    // try {
+    //   dispatch(soloSaving(data));
+
+    //   return navigation.navigate('SoloSaving2');
+    // } catch (error) {}
+  };
+
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -35,7 +64,7 @@ const Screen5 = ({navigation}) => {
         style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
         color="#2A286A"
       />
-      <ScrollView scrollEnabled={true}>
+      <ScrollView scrollEnabled={true} style={{height: '100%'}} >
         <View
           style={{
             marginTop: 25,
@@ -69,13 +98,28 @@ const Screen5 = ({navigation}) => {
           </Text>
           <TextInput
             style={designs.textField}
-            placeholder="Rent Amount"
+            placeholder="How much is your rent?"
             placeholderTextColor="#BFBFBF"
+            value={lastRentAmount}
+            onChangeText={(text) => setLastRentAmount(text)}
           />
+          <Text
+            style={[
+              designs.heading,
+              {
+                fontSize: 15,
+                color: '#2A286A',
+                textAlign: 'left',
+                lineHeight: 19,
+                marginTop: 29,
+              },
+            ]}>
+            When is your next rent due?
+          </Text>
           <View style={designs.customInput}>
             <TextInput
               style={{flex: 1}}
-              placeholder="Next rent due date"
+              placeholder="When is your next rent due?"
               placeholderTextColor="#BFBFBF"
               value={date.toLocaleDateString()}
             />
@@ -96,10 +140,10 @@ const Screen5 = ({navigation}) => {
               mode="date"
               is24Hour={true}
               display="default"
-              placeholderText="Date of birth"
+              placeholderText="When is your next rent due?"
             />
           )}
-          <View style={designs.customInput}>
+          {/* <View style={designs.customInput}>
             <Picker
               mode="dropdown"
               dropdownIconColor="white"
@@ -121,13 +165,14 @@ const Screen5 = ({navigation}) => {
             style={designs.textField}
             placeholder="How long have you lived at your address?"
             placeholderTextColor="#BFBFBF"
-          />
-
+          /> */}
+        <View style={{flex: 1, justifyContent: 'flex-end'}}> 
           <TouchableOpacity
-            onPress={() => setModalVisible(true)}
-            style={[designs.btn, {backgroundColor: '#00DC99', marginTop: 70}]}>
+            onPress={handleNavigation}
+            style={[designs.btn, {backgroundColor: '#00DC99'}]}>
             <Text style={{color: 'white'}}>COMPLETE</Text>
           </TouchableOpacity>
+          </View>
         </View>
       </ScrollView>
       <Modal

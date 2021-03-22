@@ -10,6 +10,10 @@ target 'rentbank_mobile_app' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'rentbank_mobile_appTests' do
     inherit! :complete
     # Pods for testing

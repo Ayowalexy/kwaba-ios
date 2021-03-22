@@ -44,10 +44,10 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings = store.data.reduce(
+    const totalSoloSavings = store.data?.reduce(
       (saving, acc) => Number(saving.amount) + Number(acc.amount),
     );
-    setSavings(totalSoloSavings);
+    setSavings(totalSoloSavings || 0);
   }, []);
 
   const topCards = [
@@ -108,7 +108,10 @@ export default function Home({navigation}) {
   const goToPage = (item) => {
     if (item.title == 'Rent savings') {
       navigation.navigate('SavingsHome');
-    } else {
+    } 
+    else if(item.title == 'Rent payment') {
+      navigation.navigate('Borrow');
+    }else {
       navigation.navigate('CompleteProfile1');
     }
   };

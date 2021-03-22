@@ -55,6 +55,22 @@ const topupCard = require('../assets/images/topup-card.svg');
 const visa = require('../assets/images/visa.svg');
 const kwabaLogo = require('../assets/images/kwabaLogo.png');
 const kwabaLogoWithName = require('../assets/images/kwabaLogoWithName.png');
+const borrowSectionBGI = require('../assets/images/borrowSectionBGI.png');
+const group3693 = require('../assets/images/group3693.png');
+const group3745 = require('../assets/images/group3745.png');
+const group3701 = require('../assets/images/group3701.png');
+const paymentMethodPNG = require('../assets/images/payment-method.png');
+const ellipse100 = require('../assets/images/ellipse100.png');
+const maskGroup55 = require('../assets/images/maskGroup55.png');
+const buycoinsReg = require('../assets/images/buyCoinsReg.png');
+const buycoinsShadow = require('../assets/images/buyCoinsShadow.png');
+const kwabaReg = require('../assets/images/kwabaReg.png');
+const kwabaShadow = require('../assets/images/kwabaShadow.png');
+const piggyvestReg = require('../assets/images/piggyvestReg.png');
+const piggyvestShadow = require('../assets/images/piggyvestShadow.png');
+const cowrywiseReg = require('../assets/images/cowrywiseReg.png');
+const cowrywiseShadow = require('../assets/images/cowrywiseShadow.png');
+const group4923 = require('../assets/images/group4923.png');
 
 export {
   logo,
@@ -114,4 +130,21 @@ export {
   kwabaLogo,
   kwabaLogoWithName,
   fingerPrint,
+  borrowSectionBGI,
+  group3693,
+  group3745,
+  group3701,
+  paymentMethodPNG,
+  ellipse100,
+  maskGroup55,
+  buycoinsReg,
+buycoinsShadow,
+kwabaReg,
+kwabaShadow,
+piggyvestReg,
+piggyvestShadow,
+cowrywiseReg,
+cowrywiseShadow,
+group4923
+
 };

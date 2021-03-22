@@ -45,6 +45,10 @@ const topUp = require('../assets/icons/top-up.png');
 const trashAlt = require('../assets/icons/trash-alt.svg');
 const whatsApp = require('../assets/icons/whatsapp.svg');
 const naijaFlag = require('../assets/icons/nigeriaFlag.png');
+const featherFileText = require('../assets/icons/feather-file-text.png');
+const group2116 = require('../assets/icons/group2116.png');
+const trashAlt2 = require('../assets/icons/trash-alt.png');
+const group3743 = require('../assets/icons/group3743.png');
 
 export {
   instagram,
@@ -94,4 +98,8 @@ export {
   trashAlt,
   whatsApp,
   naijaFlag,
+  featherFileText,
+  group2116,
+  trashAlt2,
+  group3743
 };

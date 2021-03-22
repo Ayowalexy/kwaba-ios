@@ -57,6 +57,7 @@ export default function Login({navigation}) {
             isLoggedIn: true,
           }),
         );
+        navigation.navigate('Welcome');
       } else {
         Alert.alert(
           'INVALID CREDENTIALS',

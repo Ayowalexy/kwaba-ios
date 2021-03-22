@@ -45,7 +45,7 @@ const sendVerificationCode = async (data) => {
     const response = await axios.post(url, data, {
       headers: {
         'Content-Type': 'application/json',
-        token: token,
+        Authorization: token,
       },
     });
     return response;
@@ -62,7 +62,7 @@ const verifyPhone = async (data) => {
     const response = await axios.post(url, data, {
       headers: {
         'Content-Type': 'application/json',
-        token: token,
+        Authorization: token,
       },
     });
     return response;
@@ -83,7 +83,7 @@ const createSavingsPlan = async (data) => {
 
   try {
     const response = await axios.post(url, JSON.stringify(data), {
-      headers: {'Content-Type': 'application/json', token: token},
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
@@ -101,7 +101,7 @@ const subscribeToSavingsPlan = async () => {
       {
         headers: {
           'Content-Type': 'application/json',
-          token: token,
+          Authorization: token,
         },
       },
     );
@@ -118,7 +118,7 @@ const oneOffPayment = async (data) => {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
-        token: token,
+        Authorization: token,
       },
     });
     console.log('response in network', response);
@@ -136,7 +136,7 @@ const verifyPayment = async (data) => {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
-        token: token,
+        Authorization: token,
       },
     });
     return response;

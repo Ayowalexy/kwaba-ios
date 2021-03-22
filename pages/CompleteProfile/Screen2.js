@@ -12,9 +12,13 @@ import {icons} from '../../util/index';
 import designs from './style';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import moment from 'moment';
+
 
 const Screen2 = ({navigation}) => {
   const [date, setDate] = useState(new Date(1598051730000));
+  const [bvn, setBVN] = useState('');
   const [country, setCountry] = useState(null);
   const [visible, setVisible] = useState(false);
   const [showDate, setShowDate] = useState(false);
@@ -23,6 +27,25 @@ const Screen2 = ({navigation}) => {
     const currentDate = selectedDate || date;
     setShowDate(Platform.OS === 'ios');
     setDate(currentDate);
+  };
+
+  const dateFormatted = moment(date).format(
+    'YYYY-MM-DD',
+  );
+
+  const handleNavigation = async () => {
+    const data = {
+    bvn,
+    dob: dateFormatted
+    };
+    await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
+    navigation.navigate('CompleteProfile5')
+
+    // try {
+    //   dispatch(soloSaving(data));
+
+    //   return navigation.navigate('SoloSaving2');
+    // } catch (error) {}
   };
 
   const onSelect = (country) => {
@@ -70,11 +93,39 @@ const Screen2 = ({navigation}) => {
             ]}>
             Provide your personal details
           </Text>
+          <Text
+            style={[
+              designs.heading,
+              {
+                fontSize: 15,
+                color: '#2A286A',
+                textAlign: 'left',
+                lineHeight: 19,
+                marginTop: 29,
+              },
+            ]}>
+            Bank Verification Number 
+          </Text>
           <TextInput
             style={designs.textField}
-            placeholder="Phone Number"
+            placeholder="BVN"
             placeholderTextColor="#BFBFBF"
+            value={bvn}
+            onChangeText={(text) => setBVN(text)}
           />
+          <Text
+            style={[
+              designs.heading,
+              {
+                fontSize: 15,
+                color: '#2A286A',
+                textAlign: 'left',
+                lineHeight: 19,
+                marginTop: 29,
+              },
+            ]}>
+            Date of Birth
+          </Text>
           <View style={designs.customInput}>
             <TextInput
               style={{flex: 1}}
@@ -101,7 +152,7 @@ const Screen2 = ({navigation}) => {
               display="default"
             />
           )}
-          <Text
+          {/* <Text
             style={[
               designs.heading,
               {
@@ -147,11 +198,11 @@ const Screen2 = ({navigation}) => {
             onOpen={() => setVisible(true)}
             onClose={() => setVisible(false)}
             visible={visible}
-          />
+          /> */}
           <TouchableOpacity
-            onPress={() => navigation.navigate('CompleteProfile3')}
+            onPress={handleNavigation}
             style={[designs.btn, {backgroundColor: '#00DC99'}]}>
-            <Text style={{color: 'white'}}>Next</Text>
+            <Text style={{color: 'white'}}>NEXT</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
