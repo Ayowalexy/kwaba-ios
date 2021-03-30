@@ -230,7 +230,7 @@ const deleteFile = async(item)=> {
           
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('FileViewAndDelete')} style={[designs.button, {backgroundColor: COLORS.secondary}]}><Text style={{color: COLORS.white, textAlign: 'center'}}>FINISH</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('PostPaymentForm1')} style={[designs.button, {backgroundColor: COLORS.secondary}]}><Text style={{color: COLORS.white, textAlign: 'center'}}>FINISH</Text></TouchableOpacity>
         
    </ScrollView>
   );

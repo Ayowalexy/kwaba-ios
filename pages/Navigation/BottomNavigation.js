@@ -62,7 +62,7 @@ const BottomNavigator = () => {
       />
       <Tab.Screen
         name="Bills"
-        component={EmergencyLoanRequestDashBoard}
+        component={Account}
         options={{
           tabBarIcon: ({color}) => (
             <Text style={{fontSize: 16, color: '#000000'}}>Bills</Text>

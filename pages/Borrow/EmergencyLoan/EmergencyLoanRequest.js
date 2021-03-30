@@ -109,22 +109,7 @@ const handleNavigation =()=> {
             ]}>
             Emergency Loan
           </Text>
-          {/* <Text
-            style={
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                fontSize: 18,
-                lineHeight: 23,
-                marginBottom: 14
-              }
-            }>
-            Here is your rent offer
-          </Text> */}
-
-
-
+          
           <Pressable onPress={() => {
           setPressed(!pressed);
           setPickerModalVisible(!pickerModalVisible)

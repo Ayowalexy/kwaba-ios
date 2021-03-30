@@ -21,10 +21,9 @@ const EmergencyLoanDashBoard = ({navigation}) => {
   const [salaryAmount, setSalaryAmount] = useState('');
   const [repaymentData] = useState([{name: '1st Repayment', amount: '₦110,000.00', paymentDueDate: '12 Feb, 2021', status: 'PAID', paymentID: 1}]);
 
-  const handleNavigation = () => {
+  const handlePayment = () => {
     const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
+    
     };
     // try {
     //   dispatch(soloSaving(data));
@@ -97,7 +96,7 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                   <Text style={[FONTS.body1FontStyling, {color: COLORS.white, fontSize: 12}]}>Due Date</Text>
                   <Text style={[FONTS.body1FontStyling, {color: COLORS.white, fontSize: 16, fontWeight: 'bold'}]}>17 Feb, 2021</Text>
                   </View>
-                  <TouchableOpacity style={{backgroundColor: COLORS.light, padding: 10, borderRadius: 20, justifyContent: 'center'}}>
+                  <TouchableOpacity style={{backgroundColor: COLORS.light, padding: 10, borderRadius: 20, justifyContent: 'center'}} onPress={handlePayment}>
                   <View style={designs.flexRow}>
                   <Text style={{color: COLORS.white, fontSize: 12, paddingHorizontal: 3}}>Pay now</Text>
                   <Icon name="chevron-forward-outline" size={12} style={{color: COLORS.white, marginLeft: 2, alignSelf: 'center'}}/>

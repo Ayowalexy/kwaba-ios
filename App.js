@@ -44,10 +44,6 @@ import AllDocuments from './pages/Borrow/AllDocuments';
 import LoanRequestApproval from './pages/Borrow/LoanRequestApproval';
 import RentalLoanOffer from './pages/Borrow/RentalLoanOffer';
 import SetUpPaymentPlan from './pages/Payment/SetUpPaymentPlan';
-import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
-import PostPaymentForm2 from './pages/Payment/PostPaymentForm2';
-import PostPaymentForm3 from './pages/Payment/PostPaymentForm3';
-import PostPaymentForm4 from './pages/Payment/PostPaymentForm4';
 import RentalLoanActiveDashBoard from './pages/Payment/RentalLoanActiveDashBoard';
 import RentalLoanThirdPartyConnection from './pages/Borrow/RentalLoanThirdPartyConnection';
 import LinkingAccount from './pages/Borrow/LinkingAccount';
@@ -65,6 +61,10 @@ import Account from './pages/UserAccount/Account';
 import { FileViewAndDelete } from './pages/Borrow/FileViewAndDelete';
 import AccountPage from './pages/UserAccount/AccountPage';
 import CardAndBankDetails from './pages/UserAccount/CardAndBank';
+import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
+import PostPaymentForm2 from './pages/Payment/PostPaymentForm2';
+import PostPaymentForm3 from './pages/Payment/PostPaymentForm3';
+import PostPaymentForm4 from './pages/Payment/PostPaymentForm4';
 
 const Stack = createStackNavigator();
 

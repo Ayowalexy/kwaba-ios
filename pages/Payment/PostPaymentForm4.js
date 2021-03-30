@@ -15,14 +15,16 @@ import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { fetchBanks } from '../../services/network';
 
 const PostPaymentForm4 = ({navigation}) => {
 
-  const [refereeFirstName, setRefereeFirstName] = useState('');
-  const [refereeLastName, setRefereeLastName] = useState('');
-  const [refereePhoneNumber, setRefereePhoneNumber] = useState('');
-  const [refereeEmail, setRefereeEmail] = useState('');
-  const [refereeStreet, setRefereeStreet] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [Email, setEmail] = useState('');
+  const [banks, setBanks] = useState([]);
+  const [accountNumber, setAccountNumber] = useState('');
   const [refereeCity, setRefereeCity] = useState('');
   const [refereeState, setRefereeState] = useState('');
   const [refereeCountry, setRefereeCountry] = useState('');
@@ -34,6 +36,18 @@ const PostPaymentForm4 = ({navigation}) => {
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
   const [progress, setProgress] = useState(25);
   let controller;
+
+  useEffect(()=> {
+    async function fetchBanksForDropdown(){
+      const banks = await fetchBanks();
+      console.log(banks);
+      if (banks.banks){
+        setBanks(banks.banks);
+      }
+    };
+    fetchBanksForDropdown()
+    
+  }, []);
  
 
   const handleNavigation = () => {
@@ -87,10 +101,10 @@ const PostPaymentForm4 = ({navigation}) => {
                 fontWeight: 'bold'
               },
             ]}>
-            Referee
+            Direct Debit Mandate
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>4 of 4</Text>
+            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
           <AnimatedCircularProgress
   size={25}
   width={5}
@@ -105,30 +119,23 @@ const PostPaymentForm4 = ({navigation}) => {
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
             placeholder="First Name"
             placeholderTextColor= {COLORS.grey}
-            value={refereeFirstName}
-          onChangeText={(text) => setRefereeFirstName(text)}
+            value={firstName}
+          onChangeText={(text) => setFirstName(text)}
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
             placeholder="Last Name"
             placeholderTextColor= {COLORS.grey}
-            value={refereeLastName}
-          onChangeText={(text) => setRefereeLastName(text)}
+            value={lastName}
+          onChangeText={(text) => setLastName(text)}
           />
           <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
           placeholder="Phone Number"
           placeholderTextColor= {COLORS.grey}
-          value={refereePhoneNumber}
-        onChangeText={(text) => setRefereePhoneNumber(text)}
+          value={phoneNumber}
+        onChangeText={(text) => setPhoneNumber(text)}
         />
-        <TextInput
-        style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-        placeholder="Email"
-        placeholderTextColor= {COLORS.grey}
-        value={refereeEmail}
-      onChangeText={(text) => setRefereeEmail(text)}
-      />
 
 <Text
             style={[
@@ -141,49 +148,28 @@ const PostPaymentForm4 = ({navigation}) => {
                 marginBottom: 15
               },
             ]}>
-            Office Address
+            Direct Debit Mandate
           </Text>
-
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Street"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeStreet}
-          onChangeText={(text) => setRefereeStreet(text)}
-          />
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="City"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeCity}
-          onChangeText={(text) => setRefereeCity(text)}
-          />
-          <TextInput
-          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="State"
-          placeholderTextColor= {COLORS.grey}
-          value={refereeState}
-        onChangeText={(text) => setRefereeState(text)}
-        />
         <TextInput
-          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="Country"
-          placeholderTextColor= {COLORS.grey}
-          value={refereeCountry}
-        onChangeText={(text) => setRefereeCountry(text)}
-        />
-        <View style={{minHeight: 0}}>
+        style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
+        placeholder="Account Number"
+        placeholderTextColor= {COLORS.grey}
+        value={accountNumber}
+      onChangeText={(text) => setAccountNumber(text)}
+      />
+  
+      <View style={{minHeight: 0}}>
         <DropDownPicker
-                    items={relationships}
+                    items={banks}
                     defaultNull
-                    placeholder="Relationship"
+                    placeholder="Bank"
                     placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
                     style={designs.dropDownPicker}
                     controller={instance => controller = instance}
                     dropDownStyle={{height: 0, borderWidth: 0}}
                     dropDownMaxHeight={0}
                     arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setRefereeRelationship(item)}
+                    onChangeItem={item => setBanks(item)}
                     onOpen={() => setPickerModalOpen(true)}
                 />
             </View>
@@ -216,13 +202,13 @@ const PostPaymentForm4 = ({navigation}) => {
                 <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
             <View>
                 
-            {relationships.map((relationship, index) => {
+            {banks.map((bank, index) => {
             return (
                 
-                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(relationship.value);
+                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(bank.name);
                     controller.close();
                     setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
-                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{relationship.label}</Text>
+                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{bank.name}</Text>
               </TouchableOpacity>
             )
               

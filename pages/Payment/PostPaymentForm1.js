@@ -18,20 +18,18 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 const PostPaymentForm1 = ({navigation}) => {
 
-  const [refereeFirstName, setRefereeFirstName] = useState('');
-  const [refereeLastName, setRefereeLastName] = useState('');
-  const [refereePhoneNumber, setRefereePhoneNumber] = useState('');
-  const [refereeEmail, setRefereeEmail] = useState('');
-  const [refereeStreet, setRefereeStreet] = useState('');
-  const [refereeCity, setRefereeCity] = useState('');
-  const [refereeState, setRefereeState] = useState('');
-  const [refereeCountry, setRefereeCountry] = useState('');
-  const [relationships] = useState([
-    {label: 'Cousin', value: 'Cousin'},
-    {label: 'Brother', value: 'brother'},
-])
-  const [refereeRelationship, setRefereeRelationship] = useState(null);
+  const [propertyStreet, setPropertyStreet] = useState('');
+  const [propertyCity, setPropertyCity] = useState('');
+  const [propertyState, setPropertyState] = useState('');
+  const [propertyCountry, setPropertyCountry] = useState('');
+const [typeOfProperty, setTypeOfProperty] = useState([
+  {label: 'Duplex', value: 'Duplex'},
+  {label: 'Semi-detached', value: 'Semi-detached'},
+]);
+const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2'},
+{label: '3', value: '3'}, {label: '4', value: '4'}])
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
+  const [picker2ModalOpen, setPicker2ModalOpen] = useState(false)
   const [progress, setProgress] = useState(25);
   let controller;
  
@@ -87,7 +85,7 @@ const PostPaymentForm1 = ({navigation}) => {
                 fontWeight: 'bold'
               },
             ]}>
-            Referee
+            Property details
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>1 of 4</Text>
@@ -101,34 +99,6 @@ const PostPaymentForm1 = ({navigation}) => {
   </View>
           
           </View>
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="First Name"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeFirstName}
-          onChangeText={(text) => setRefereeFirstName(text)}
-          />
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Last Name"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeLastName}
-          onChangeText={(text) => setRefereeLastName(text)}
-          />
-          <TextInput
-          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="Phone Number"
-          placeholderTextColor= {COLORS.grey}
-          value={refereePhoneNumber}
-        onChangeText={(text) => setRefereePhoneNumber(text)}
-        />
-        <TextInput
-        style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-        placeholder="Email"
-        placeholderTextColor= {COLORS.grey}
-        value={refereeEmail}
-      onChangeText={(text) => setRefereeEmail(text)}
-      />
 
 <Text
             style={[
@@ -138,53 +108,69 @@ const PostPaymentForm1 = ({navigation}) => {
                 textAlign: 'left',
                 fontWeight: 'bold',
                 marginTop: 20, 
+                marginLeft: 10,
                 marginBottom: 15
               },
             ]}>
-            Office Address
+            Address of property to be paid for
           </Text>
 
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
             placeholder="Street"
             placeholderTextColor= {COLORS.grey}
-            value={refereeStreet}
-          onChangeText={(text) => setRefereeStreet(text)}
+            value={propertyStreet}
+          onChangeText={(text) => setPropertyStreet(text)}
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
             placeholder="City"
             placeholderTextColor= {COLORS.grey}
-            value={refereeCity}
-          onChangeText={(text) => setRefereeCity(text)}
+            value={propertyCity}
+          onChangeText={(text) => setPropertyCity(text)}
           />
           <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
           placeholder="State"
           placeholderTextColor= {COLORS.grey}
-          value={refereeState}
-        onChangeText={(text) => setRefereeState(text)}
+          value={propertyState}
+        onChangeText={(text) => setPropertyState(text)}
         />
         <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
           placeholder="Country"
           placeholderTextColor= {COLORS.grey}
-          value={refereeCountry}
-        onChangeText={(text) => setRefereeCountry(text)}
+          value={propertyCountry}
+        onChangeText={(text) => setPropertyCountry(text)}
         />
-        <View style={{minHeight: 0}}>
+        <View style={{minHeight: 0, marginBottom: 14}}>
         <DropDownPicker
-                    items={relationships}
+                    items={typeOfProperty}
                     defaultNull
-                    placeholder="Relationship"
+                    placeholder="Type of property"
                     placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
                     style={designs.dropDownPicker}
                     controller={instance => controller = instance}
                     dropDownStyle={{height: 0, borderWidth: 0}}
                     dropDownMaxHeight={0}
                     arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setRefereeRelationship(item)}
+                    onChangeItem={item => setTypeOfProperty(item.value)}
                     onOpen={() => setPickerModalOpen(true)}
+                />
+            </View>
+            <View style={{minHeight: 0}}>
+        <DropDownPicker
+                    items={numberOfBedrooms}
+                    defaultNull
+                    placeholder="Number of Bedrooms"
+                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
+                    style={designs.dropDownPicker}
+                    controller={instance => controller = instance}
+                    dropDownStyle={{height: 0, borderWidth: 0}}
+                    dropDownMaxHeight={0}
+                    arrowStyle={{marginRight: 10, size: 15}}
+                    onChangeItem={item => setNumberOfBedrooms(item.value)}
+                    onOpen={() => setPicker2ModalOpen(true)}
                 />
             </View>
          
@@ -216,13 +202,50 @@ const PostPaymentForm1 = ({navigation}) => {
                 <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
             <View>
                 
-            {relationships.map((relationship, index) => {
+            {typeOfProperty.map((propertyType, index) => {
             return (
                 
-                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(relationship.value);
+                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(propertyType.value);
                     controller.close();
                     setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
-                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{relationship.label}</Text>
+                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{propertyType.label}</Text>
+              </TouchableOpacity>
+            )
+              
+        })}
+        </View>
+                </View>
+            </View>
+
+            </View>
+            
+        </Modal>
+        <Modal visible={picker2ModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
+            <View style={designs.modalWrapper}>
+            <View style={designs.modalView}> 
+            <View style={[designs.modalHeader, {marginBottom: 11}]}>
+            <Icon
+              onPress={() => {controller.close();
+                setPicker2ModalOpen(false)}}
+              style={{marginLeft: 'auto'}}
+              name="close-outline"
+              size={30}
+              color="#D6D6D6"
+            />
+            </View>
+            <View>
+                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
+                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
+            <View>
+                
+            {numberOfBedrooms.map((bedroomNumber, index) => {
+            return (
+                
+                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(bedroomNumber.value);
+                  console.log(bedroomNumber.value)
+                    controller.close();
+                    setPicker2ModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
+                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{bedroomNumber.label}</Text>
               </TouchableOpacity>
             )
               

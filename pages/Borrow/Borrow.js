@@ -93,7 +93,7 @@ const Borrow = ({navigation}) => {
             
          
             <TouchableOpacity
-              onPress={() => navigation.navigate('UploadBankStatement')}
+              onPress={() => navigation.navigate('EmergencyLoanRequestDashBoard')}
               style={designs.button}>
               <View style={designs.buttonInnerView}>
                   <Text style={designs.buttonText}> Emergency Funds </Text>
