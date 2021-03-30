@@ -57,6 +57,14 @@ import PayWithSavings from './pages/Payment/PayWithSavings';
 import { logCurrentStorage } from './util/logCurrentStorage';
 import FileUploadTest from './pages/Borrow/FileUploadTest';
 import RentalLoanOfferTest from './pages/Borrow/RentalLoanOfferTest';
+import BottomNavigator from './pages/Navigation/BottomNavigation';
+import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard'
+import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
+import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
+import Account from './pages/UserAccount/Account';
+import { FileViewAndDelete } from './pages/Borrow/FileViewAndDelete';
+import AccountPage from './pages/UserAccount/AccountPage';
+import CardAndBankDetails from './pages/UserAccount/CardAndBank';
 
 const Stack = createStackNavigator();
 
@@ -93,17 +101,17 @@ const App = () => {
               <Stack.Screen
                 name="Onboarding"
                 component={Onboarding}></Stack.Screen>
-              {/* <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> */}
-              {/* <Stack.Screen
+            <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
+              <Stack.Screen
                 name="VerifyNumber"
-                component={VerifyNumber}></Stack.Screen> */}
+                component={VerifyNumber}></Stack.Screen> 
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
               <Stack.Screen name="Login" component={Login}></Stack.Screen>
               <Stack.Screen name="Home" component={Home}></Stack.Screen>
             </>
           ) : (
             <>
-              <Stack.Screen name="Home" component={Home}></Stack.Screen>
+              <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen>
               <Stack.Screen
                 name="CompleteProfile1"
                 component={CompleteProfile1}></Stack.Screen>
@@ -182,6 +190,19 @@ const App = () => {
 <Stack.Screen name="RentalLoanActiveDashBoard" component={RentalLoanActiveDashBoard}></Stack.Screen>
 <Stack.Screen name="FileUploadTest" component={FileUploadTest}></Stack.Screen>
 <Stack.Screen name="RentalLoanOfferTest" component={RentalLoanOfferTest}></Stack.Screen>
+<Stack.Screen name="BottomNavigation" component={BottomNavigator}></Stack.Screen>
+<Stack.Screen name="EmergencyLoanRequestDashBoard" component={EmergencyLoanRequestDashBoard}></Stack.Screen>
+<Stack.Screen name="EmergencyLoanRequest" component={EmergencyLoanRequest}></Stack.Screen>
+<Stack.Screen name="EmergencyLoanDashBoard" component={EmergencyLoanDashBoard}></Stack.Screen>
+<Stack.Screen name="Account" component={Account}></Stack.Screen>
+<Stack.Screen name="FileViewAndDelete" component={FileViewAndDelete}></Stack.Screen> 
+<Stack.Screen name="AccountPage" component={AccountPage}></Stack.Screen>
+<Stack.Screen name="CardAndBankDetails" component={CardAndBankDetails}></Stack.Screen>
+
+
+
+
+
 
 
 </>

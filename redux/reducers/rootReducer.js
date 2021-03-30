@@ -1,12 +1,14 @@
 import {combineReducers} from 'redux';
 import {loginReducer, getUserReducer} from './userReducers';
 import {soloSavingReducer, getSoloSavingsReducer} from './savingsReducer';
-import fileProgressReducer from './documentUploadReducers';
+import fileUploadReducer from './documentUploadReducers';
+import { applyForEmergencyLoanReducer } from './emergencyLoanReducer';
 
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
   soloSavingReducer: soloSavingReducer,
   getSoloSavingsReducer: getSoloSavingsReducer,
   getUserReducer: getUserReducer,
-  fileProgressReducer: fileProgressReducer,
+  fileUploadReducer: fileUploadReducer,
+  applyForEmergencyLoanReducer: applyForEmergencyLoanReducer,
 });

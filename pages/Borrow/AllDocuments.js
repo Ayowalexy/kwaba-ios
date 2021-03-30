@@ -91,6 +91,8 @@ const AllDocuments = ({navigation, route}) => {
             All Documents
           </Text>
 
+         
+
             <View style={[designs.flexRow, {backgroundColor: COLORS.white, borderRadius: 10, paddingHorizontal: 18, paddingVertical: 20, elevation: 6, marginBottom: 25}]}> 
             <View style={{flex: 1}}>
             <View style={[designs.flexRow, {marginBottom: 16, alignItems: 'center'}]}> 

@@ -9,11 +9,11 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, FONTS, images} from '../../util/index';
+import {COLORS, FONTS, images} from '../../../util/index';
 import designs from './style';
 
 
-export default function RentalLoanRequestDashBoard({navigation}) {
+export default function EmergencyLoanHome({navigation}) {
   
 
   return (
@@ -42,7 +42,7 @@ export default function RentalLoanRequestDashBoard({navigation}) {
         scrollEnabled
         showsVerticalScrollIndicator={false}>
       <View style={{textAlign: 'left'}}>
-          <Text style={[FONTS.h1FontStyling, {color: COLORS.primary, fontWeight: 'bold'}]}>Emergency Loan</Text>
+          <Text style={[FONTS.h1FontStyling, {color: COLORS.primary, fontWeight: 'bold'}]}>Rental Loan</Text>
           <Text style={[FONTS.body1FontStyling, {color: '#ADADAD', marginTop: 6}]}>Based on your 3rd party accounts here is a breakdown of how much you can access</Text>
         </View>
         <View style={designs.rlDisplay}>

@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -26,6 +27,16 @@ const Screen5 = ({navigation}) => {
   const [showDate, setShowDate] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const isError = () => {
+    if (
+      (lastRentAmount.trim().length == 0 ||
+        selectedValue.trim().length == 0)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const dateFormatted = moment(date).format(
     'YYYY-MM-D',
   );
@@ -43,6 +54,11 @@ const Screen5 = ({navigation}) => {
     last_rent_amount: lastRentAmount,
     next_rent_due: dateFormatted
     };
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     await AsyncStorage.setItem('rentalLoanForm', JSON.stringify({...JSON.parse(loanFormData), ...data}));
     logCurrentStorage();
@@ -169,6 +185,7 @@ const Screen5 = ({navigation}) => {
         <View style={{flex: 1, justifyContent: 'flex-end'}}> 
           <TouchableOpacity
             onPress={handleNavigation}
+            disabled={isError()}
             style={[designs.btn, {backgroundColor: '#00DC99'}]}>
             <Text style={{color: 'white'}}>COMPLETE</Text>
           </TouchableOpacity>

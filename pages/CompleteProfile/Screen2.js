@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -29,6 +30,15 @@ const Screen2 = ({navigation}) => {
     setDate(currentDate);
   };
 
+  const isError = () => {
+    if (
+      bvn.trim().length == 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   const dateFormatted = moment(date).format(
     'YYYY-MM-DD',
   );
@@ -38,6 +48,11 @@ const Screen2 = ({navigation}) => {
     bvn,
     dob: dateFormatted
     };
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
     await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
     navigation.navigate('CompleteProfile5')
 
@@ -201,6 +216,7 @@ const Screen2 = ({navigation}) => {
           /> */}
           <TouchableOpacity
             onPress={handleNavigation}
+            disabled={isError()}
             style={[designs.btn, {backgroundColor: '#00DC99'}]}>
             <Text style={{color: 'white'}}>NEXT</Text>
           </TouchableOpacity>

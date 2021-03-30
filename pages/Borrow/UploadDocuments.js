@@ -77,8 +77,14 @@ const UploadDocuments = ({navigation, route}) => {
           <Text style={[FONTS.body2FontStyling, {color: '#ADADAD', textAlign: 'center', marginBottom: 26}]}>To fast track the decision making process, please upload other required documents.</Text>
          
           
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('AllDocuments', response)}
+            style={[designs.button, {backgroundColor: COLORS.secondary}]}>
+            <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>UPLOAD DOCUMENTS</Text>
+          </TouchableOpacity> */}
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('FileUploadTest', response)}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>UPLOAD DOCUMENTS</Text>
           </TouchableOpacity>

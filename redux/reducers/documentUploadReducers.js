@@ -3,12 +3,21 @@ import {uploadFileTypes} from '../actions/documentUploadActions';
 
 const INITIAL_STATE = {
   fileProgress: {
+    1:  {
+      id: 1,
+      title: 'Bank Statement',
+      isUploading: false,
+      progress: 0,
+      isUploaded: false,
+      documentID: ''
+    },
       2:  {
           id: 2,
           title: 'Government Issued ID Card',
           isUploading: false,
           progress: 0,
-          isUploaded: false
+          isUploaded: false,
+          documentID: ''
         },
     
       3:  {
@@ -16,21 +25,24 @@ const INITIAL_STATE = {
           title: 'Work Identity ',
           isUploading: false,
           progress: 0,
-          isUploaded: false
+          isUploaded: false,
+          documentID: ''
         },
        4: {
           id: 4,
           title: 'Passport Photo',
           isUploading: false,
           progress: 0,
-          isUploaded: false
+          isUploaded: false,
+          documentID: ''
         },
         5: {
           id: 5,
           title: 'Employment Letter',
           isUploading: false,
           progress: 0,
-          isUploaded: false
+          isUploaded: false,
+          documentID: ''
         }
     // format will be like below
     // 1: {
@@ -43,8 +55,9 @@ const INITIAL_STATE = {
   }
 }
 
-const fileProgressReducer = (state = INITIAL_STATE, action) => {
+const fileUploadReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    
      case uploadFileTypes.SET_UPLOAD_PROGRESS:
          console.log(action.payload)
       return {
@@ -66,7 +79,6 @@ const fileProgressReducer = (state = INITIAL_STATE, action) => {
           ...state.fileProgress,
           [action.payload]: {
             ...state.fileProgress[action.payload],
-            status: 1,
             isUploading: false,
             isUploaded: true
           },
@@ -80,10 +92,35 @@ const fileProgressReducer = (state = INITIAL_STATE, action) => {
           ...state.fileProgress,
           [action.payload]: {
             ...state.fileProgress[action.payload],
-            status: 0,
             progress: 0,
             isUploading: false,
             isUploaded: false
+          },
+        },
+      }
+      case uploadFileTypes.SHOW_UPLOADED_FILES:
+      return {
+        ...state,
+        fileProgress: {
+          ...state.fileProgress,
+          [action.payload.id]: {
+            ...state.fileProgress[action.payload.id],
+            documentID: action.payload.documentID,
+            isUploaded: true
+          },
+        },
+      }
+      case uploadFileTypes.DELETE_UPLOADED_FILE:
+      return {
+        ...state,
+        fileProgress: {
+          ...state.fileProgress,
+          [action.payload.id]: {
+            ...state.fileProgress[action.payload.id],
+            documentID: '',
+            isUploaded: false,
+            progress: 0
+
           },
         },
       }
@@ -93,4 +130,4 @@ const fileProgressReducer = (state = INITIAL_STATE, action) => {
   }
 }
 
-export default fileProgressReducer
+export default fileUploadReducer

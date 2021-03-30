@@ -27,11 +27,29 @@ const RentalLoanForm2 = ({navigation}) => {
   const [companyAddressCountry, setCompanyAddressCountry] = useState('');
   const [progress, setProgress] = useState(66);
 
+  const isError = () => {
+    if (
+      (employersName.trim().length == 0 ||
+      companyAddressNumberAndStreet.trim().length == 0 ||
+      companyAddressCity.trim().length == 0 ||
+      companyAddressState.trim().length == 0 ||
+      companyAddressCountry.trim().length == 0)) {
+        return true;
+    } else {
+      return false;
+    }
+  };
+
   const handleNavigation = async () => {
     const data = {
     employer_name: employersName,
     employer_address: `${companyAddressNumberAndStreet} ${companyAddressCity} ${companyAddressState} ${companyAddressCountry} `,
     };
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     await AsyncStorage.setItem('rentalLoanForm', JSON.stringify({...JSON.parse(loanFormData), ...data}));
 
@@ -141,6 +159,7 @@ const RentalLoanForm2 = ({navigation}) => {
           
           <TouchableOpacity
             onPress={handleNavigation}
+            disabled={isError()}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

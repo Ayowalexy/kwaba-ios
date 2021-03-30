@@ -90,7 +90,7 @@ const PostPaymentForm4 = ({navigation}) => {
             Referee
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>1 of 4</Text>
+            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>4 of 4</Text>
           <AnimatedCircularProgress
   size={25}
   width={5}

@@ -40,6 +40,11 @@ const RentalLoanForm1 = ({navigation}) => {
     accomodationstatus: accommodationStatus,
     salary_amount: salaryAmount,
     };
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
 
     // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
     // navigation.navigate('RentalLoanThirdPartyConnection')

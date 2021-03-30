@@ -9,11 +9,32 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, FONTS, images} from '../../util/index';
+import IconLock from 'react-native-vector-icons/FontAwesome';
+import {COLORS, FONTS, images} from '../../../util/index';
+import {useDispatch} from 'react-redux';
 import designs from './style';
+import Tooltip from 'rn-tooltip';
+import { emergencyLoan } from '../../../redux/actions/emergencyLoanActions';
 
 
-export default function RentalLoanRequestDashBoard({navigation}) {
+export default function EmergencyLoanRequestDashBoard({navigation}) {
+  const [loanAmount, setLoanAmount] = useState('');
+
+  const dispatch = useDispatch();
+
+  const handleNavigation = () => {
+    const data = {
+      loan_amount: loanAmount,
+    };
+    try {
+      console.log('here')
+      dispatch(emergencyLoan(data));
+      console.log('done')
+      return navigation.navigate('EmergencyLoanRequest');
+    } catch (error){
+      console.log(error)
+    }
+  };
   
 
   return (
@@ -43,10 +64,26 @@ export default function RentalLoanRequestDashBoard({navigation}) {
         showsVerticalScrollIndicator={false}>
       <View style={{textAlign: 'left'}}>
           <Text style={[FONTS.h1FontStyling, {color: COLORS.primary, fontWeight: 'bold'}]}>Emergency Loan</Text>
-          <Text style={[FONTS.body1FontStyling, {color: '#ADADAD', marginTop: 6}]}>Based on your 3rd party accounts here is a breakdown of how much you can access</Text>
+          <Text style={[FONTS.body1FontStyling, {color: '#ADADAD', marginTop: 6}]}>Based on your savings activities, here is a breakdown of how much you can access</Text>
         </View>
         <View style={designs.rlDisplay}>
+        <View style={[designs.displayCard, {backgroundColor: '#FB8B24', marginBottom: 15}]}>
+            
+            <View>
+                <View style={{display: 'flex', flexDirection: 'row'}}>
+                <Text style={{fontSize: 12, color: COLORS.white, lineHeight: 15}}>You have saved</Text>
+                {/* <Text style={{fontSize: 10, color: COLORS.light, lineHeight: 13, marginLeft: 8}}>As at 09:00am</Text> */}
+                </View>
+                <Text style={{fontSize: 23, color: COLORS.white, lineHeight: 29, fontWeight: 'bold'}}>₦1,205,000.00</Text>
+            </View>
+          <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10}}>
+              
+                <IconLock name="lock" color="#ffe700" size={15} />
+            
+            </View>
+          </View>
         <View style={designs.displayCard}>
+            
             <View>
                 <View style={{display: 'flex', flexDirection: 'row'}}>
                 <Text style={{fontSize: 12, color: COLORS.white, lineHeight: 15}}>BuyCoins</Text>
@@ -65,21 +102,30 @@ export default function RentalLoanRequestDashBoard({navigation}) {
           <Text style={{fontSize: 10, color: '#00DC99', textAlign: 'right', paddingHorizontal: 10, lineHeight: 13}}>+ Add another account</Text>
           </TouchableOpacity>
           <View style={{marginTop: 8, paddingBottom: 11, borderBottomWidth: 1, borderColor: '#EAEAEA'}}>
-              <Text style={{color: COLORS.primary, fontSize: 12, lineHeight: 15, marginBottom: 1}}>
-                Salary
+              <View style={designs.flexRow}>
+              <Text style={{color: COLORS.primary, fontSize: 12, lineHeight: 15, marginBottom: 1, marginRight: 5}}>
+                {/* Salary */} Maximum Loan Amount
             </Text>
+            <Tooltip height= 'auto' tooltipWidth={200} withOverlay={false} tooltipText="This is the most amount you can get against you savings" containerStyle={designs.tooltipContainer} popover={
+                <Text>
+                  This is the most amount you can get against you savings
+                </Text>
+              }>
+            <IconLock name="info-circle" color= {COLORS.secondary} size={15} />
+            </Tooltip>
+            </View>
             <Text style={{color: COLORS.primary, fontSize: 23, lineHeight: 29, fontWeight: 'bold'}}>
-            ₦400,000.00
+            ₦310,000.00
             </Text>
           </View>
-          <View style={{marginTop: 20, marginBottom: 11}}>
+          {/* <View style={{marginTop: 20, marginBottom: 11}}>
             <Text style={{color: COLORS.primary, fontSize: 12, lineHeight: 15, marginBottom: 3}}> Total available asset amount</Text>
             <Text style={{color: COLORS.primary, fontSize: 30, lineHeight: 38, fontWeight: 'bold'}}>₦3,205,500.00</Text>
           </View>
           <View style={designs.loanAmountBox}>
             <Text style={{color: COLORS.primary, fontSize: 12, lineHeight: 15, marginBottom: 1}}>Maximum Loan Amount</Text>
             <Text style={{color: COLORS.primary, fontSize: 30, lineHeight: 38, fontWeight: 'bold'}}>₦1,610,000.00</Text>
-          </View>
+          </View> */}
           <View>
           <Text
               style={{
@@ -102,10 +148,11 @@ export default function RentalLoanRequestDashBoard({navigation}) {
               placeholder='Amount'
               keyboardType="default"
               placeholderTextColor='#BFBFBF'
+              onChangeText={(text) => setLoanAmount(text)}
             />
           </View>
         </View>  
-        <View style={designs.repaymentTermsBox}>
+        <View style={[designs.repaymentTermsBox, {marginBottom: 27}]}>
           <Text style={{color: '#FB8B24', fontSize: 18, lineHeight: 23, marginBottom: 11, fontWeight: 'bold'}}>Repayment Terms</Text>
           <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
             <View style={designs.repaymentTermsContent}>
@@ -122,7 +169,7 @@ export default function RentalLoanRequestDashBoard({navigation}) {
               </View>
           </View>
         </View>
-        <TouchableOpacity style={[designs.buttonStyleB, {backgroundColor: '#00DC99', width: '100%'}]} onPress={() => navigation.navigate('PayWithSavings')}><Text style={{color: COLORS.white}}>REQUEST LOAN</Text></TouchableOpacity>
+        <TouchableOpacity style={[designs.buttonStyleB, {backgroundColor: '#00DC99', width: '100%'}]} onPress={handleNavigation}><Text style={{color: COLORS.white}}>ACCESS LOAN</Text></TouchableOpacity>
         </ScrollView>
         </View>
     </View>

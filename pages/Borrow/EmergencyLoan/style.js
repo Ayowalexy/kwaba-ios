@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {COLORS} from '../../util/index';
+import {COLORS} from '../../../util/index';
 
 
 const designs = StyleSheet.create({
@@ -223,7 +223,7 @@ loanAmountBox: {
     borderRadius: 10
 },
 repaymentTermsBox: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 12,
     paddingVertical: 15,
     backgroundColor: COLORS.white, 
     borderColor: '#FB8B24', 
@@ -232,9 +232,11 @@ repaymentTermsBox: {
     marginBottom: 14
 },
 repaymentTermsContent: {
-    width: '35%',
+    // width: '35%',
+    flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    // paddingHorizontal: 20
 },
 smallTextTitles: {
     fontSize: 10, 
@@ -248,6 +250,7 @@ repaymentTermsValues: {
     color: COLORS.primary,
     marginBottom: 2,
     fontWeight: 'bold',
+    
 },
 
 //rentalLoanActive
@@ -365,6 +368,13 @@ dropDownPicker: {
       borderTopStartRadius: 10,
       borderTopEndRadius: 10,
       borderColor: '#EFEFEF',
+      
+    },
+    tooltipContainer: {
+      borderTopEndRadius: 10,
+      borderBottomEndRadius: 10,
+      borderBottomStartRadius: 10,
+      backgroundColor: COLORS.secondary,
       
     }
 });

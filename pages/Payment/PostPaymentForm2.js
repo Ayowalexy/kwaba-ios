@@ -25,7 +25,13 @@ const PostPaymentForm2 = ({navigation}) => {
   const [relationships] = useState([
     {label: 'Cousin', value: 'Cousin'},
     {label: 'Brother', value: 'brother'},
-])
+]);
+const [typeOfProperty, setTypeOfProperty] = useState([
+  {label: 'Duplex', value: 'Duplex'},
+  {label: 'Semi-detached', value: 'Semi-detached'},
+]);
+const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2'},
+{label: '3', value: '3'}, {label: '4', value: '4'}])
   const [refereeRelationship, setRefereeRelationship] = useState(null);
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
   const [progress, setProgress] = useState(50);
@@ -141,11 +147,26 @@ const PostPaymentForm2 = ({navigation}) => {
           value={refereeCountry}
         onChangeText={(text) => setRefereeCountry(text)}
         />
-        <View style={{minHeight: 0}}>
+        <View style={{minHeight: 0, marginBottom: 14}}>
         <DropDownPicker
                     items={relationships}
                     defaultNull
-                    placeholder="Relationship"
+                    placeholder="Type of property"
+                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
+                    style={designs.dropDownPicker}
+                    controller={instance => controller = instance}
+                    dropDownStyle={{height: 0, borderWidth: 0}}
+                    dropDownMaxHeight={0}
+                    arrowStyle={{marginRight: 10, size: 15}}
+                    onChangeItem={item => setRefereeRelationship(item)}
+                    onOpen={() => setPickerModalOpen(true)}
+                />
+            </View>
+            <View style={{minHeight: 0}}>
+        <DropDownPicker
+                    items={relationships}
+                    defaultNull
+                    placeholder="Number of Bedrooms"
                     placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
                     style={designs.dropDownPicker}
                     controller={instance => controller = instance}
@@ -161,7 +182,7 @@ const PostPaymentForm2 = ({navigation}) => {
          
           
           <TouchableOpacity
-            onPress={() => navigation.navigate('PostPaymentForm3')}
+            onPress={() => navigation.navigate('RentalLoanOfferTest')}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

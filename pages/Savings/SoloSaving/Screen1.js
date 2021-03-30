@@ -26,9 +26,10 @@ export default function Screen1({navigation}) {
     };
     try {
       dispatch(soloSaving(data));
-
       return navigation.navigate('SoloSaving2');
-    } catch (error) {}
+    } catch (error){
+      
+    }
   };
 
   return (

@@ -7,16 +7,14 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
-import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
-import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import { MonoProvider, useMonoConnect } from '@mono.co/connect-react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import fileUploadReducer from '../../redux/reducers/documentUploadReducers';
+import {useDispatch, useSelector} from 'react-redux';
 
 
 const ConnectWithMono = () => {
@@ -32,7 +30,7 @@ const ConnectWithMono = () => {
 
 const UploadBankStatement = ({navigation}) => {
 
-  
+  const dispatch = useDispatch();
 
   const [accommodationStatus, setAccommodationStatus] = useState('');
   const [salaryAmount, setSalaryAmount] = useState('');
@@ -50,22 +48,41 @@ const UploadBankStatement = ({navigation}) => {
   const postData = async (code)=> {
     const token = await getToken();
     console.log(token);
-    try {
-      const data = {code: code};
-      console.log('from mono test', JSON.stringify(data))
-      const post = await axios.post(api, JSON.stringify(data), {headers: {
-        Authorization: token, 
-        'Content-Type': 'application/json'
-      }});
-      const response = await post;
-      console.log('postdata', response);
-      navigation.navigate('UploadDocuments', response);
+    
+//     try {
+//       const data = {code: code};
+//       console.log('from mono test', JSON.stringify(data))
+//       const post = await axios.post(api, JSON.stringify(data), {headers: {
+//         Authorization: token, 
+//         'Content-Type': 'application/json'
+//       }});
+//       const response = await post;
+//       console.log('postdata', response);
+//       navigation.navigate('UploadDocuments', response);
+
+try {
+  const data = {code: code};
+  console.log('from mono test', JSON.stringify(data))
+  console.log('start')
+  const post = await axios.post(api, JSON.stringify(data), {headers: {
+    Authorization: token, 
+    'Content-Type': 'application/json'
+  }});
+  console.log('end', post)
+  const response = await post;
+  console.log('postdata', response);
+  if (response.status == 201){
+    dispatch(successUploadFile(1));
+    navigation.navigate('UploadDocuments');
+  }
+
       
     } catch (error) {
-      console.log('catch error', error)
+      console.log('catch error', error.response.data)
     }   
 }
 
+ 
 
   const config = {
     publicKey: "live_pk_3MSVtE6Jtj2K6ZGMrkCT",

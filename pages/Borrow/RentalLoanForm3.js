@@ -6,7 +6,8 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Modal
+  Modal,
+  Platform
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -20,6 +21,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logCurrentStorage } from '../../util/logCurrentStorage';
 import axios from 'axios';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 
 
@@ -33,6 +35,33 @@ const RentalLoanForm3 = ({navigation}) => {
   const [modalVisible, setVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [progress, setProgress] = useState(100);
+  const [lengthOfResidenceOptions] = useState([
+    {label: 'Less than a year', value: 'Less than a year'},
+    {label: '1 Year', value: '1 Year'},
+    {label: '2 Years', value: '2 Years'},
+    {label: '3 Years', value: '3 Years'},
+    {label: '4 Years', value: '4 Years'},
+    {label: '5 Years', value: '5 Years'},
+    {label: 'More than five Years', value: 'More than five Years'},
+]);
+const [modeOfPaymentOptions] = useState([
+  {label: 'Bank Transfer', value: 'Bank Transfer'},
+  {label: 'Cheque', value: 'Cheque'},
+  {label: 'Deposit', value: 'Deposit'},
+])
+
+  const isError = () => {
+    if (
+      (homeAddress.trim().length == 0 ||
+      lengthOfResidence.trim().length == 0 ||
+      lastRentAmount.trim().length == 0 ||
+      lastPaymentRecipient.trim().length == 0 ||
+      modeOfPayment.trim().length == 0)) {
+        return true;
+    } else {
+      return false;
+    }
+  };
 
   
 
@@ -45,6 +74,11 @@ const RentalLoanForm3 = ({navigation}) => {
       last_rent_paid_to: lastPaymentRecipient,
       last_rent_payment_method: modeOfPayment,
     };
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     const url = 'http://67.207.86.39:8000/api/v1/application/new';
     const token = await getToken();
@@ -166,13 +200,30 @@ const RentalLoanForm3 = ({navigation}) => {
           />
 
 <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How long have you lived here? </Text>
-         <TextInput
+         {/* <TextInput
             style={[designs.textField, {marginBottom: 17, textAlign: 'left'}]}
             placeholder="1 year"
             placeholderTextColor= {COLORS.grey}
             value={lengthOfResidence}
           onChangeText={(text) => setLengthOfResidence(text)}
-          />
+          /> */}
+          <View style={{minHeight: 10}}>
+        <DropDownPicker
+                    items={lengthOfResidenceOptions}
+                    defaultNull
+                    placeholder="1 Year"
+                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
+                    style={designs.dropDownPicker}
+                    // controller={instance => controller = instance}
+                    dropDownStyle={{}}
+                    // dropDownMaxHeight={}
+                    arrowStyle={{marginRight: 4}}
+                    arrowSize={18}
+                    arrowColor={COLORS.grey}
+                    onChangeItem={item => setLengthOfResidence(item)}
+                    // onOpen={() => setPickerModalOpen(true)}
+                />
+            </View>
           <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How much was your last rent? </Text>
           <TextInput
             style={[designs.textField, {marginBottom: 27, textAlign: 'left'}]}
@@ -204,6 +255,23 @@ const RentalLoanForm3 = ({navigation}) => {
             value={modeOfPayment}
           onChangeText={(text) => setModeOfPayment(text)}
           />
+          <View style={{minHeight: 50, elevation: 10000, zIndex: 10000}}>
+        <DropDownPicker
+                    items={modeOfPaymentOptions}
+                    defaultNull
+                    placeholder="Select an option"
+                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
+                    style={[designs.dropDownPicker, {elevation: 5000, zIndex: 10000}]}
+                    // controller={instance => controller = instance}
+                    dropDownStyle={{elevation: 5000, zIndex: 10000}}
+                    dropDownMaxHeight={200}
+                    arrowStyle={{marginRight: 4}}
+                    arrowSize={18}
+                    arrowColor={COLORS.grey}
+                    onChangeItem={item => setLengthOfResidence(item)}
+                    // onOpen={() => setPickerModalOpen(true)}
+                />
+            </View>
          
           </View>
          
@@ -232,6 +300,7 @@ const RentalLoanForm3 = ({navigation}) => {
                 <Text style={designs.modalBodyText}>You are about to submit your finance request</Text>
                 <TouchableOpacity
             onPress={handleModalButtonPush}
+            disabled={isError()}
             style={[designs.button, {backgroundColor: COLORS.secondary, marginBottom: 37, width: '100%', alignSelf: 'center'}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>SUBMIT</Text>
           </TouchableOpacity>

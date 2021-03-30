@@ -87,10 +87,10 @@ const PostPaymentForm3 = ({navigation}) => {
                 fontWeight: 'bold'
               },
             ]}>
-            Referee
+            LandLord Details
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>1 of 4</Text>
+            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
           <AnimatedCircularProgress
   size={25}
   width={5}
@@ -103,26 +103,26 @@ const PostPaymentForm3 = ({navigation}) => {
           </View>
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="First Name"
+            placeholder="Full Name"
             placeholderTextColor= {COLORS.grey}
             value={refereeFirstName}
           onChangeText={(text) => setRefereeFirstName(text)}
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Last Name"
+            placeholder="Phone Number"
             placeholderTextColor= {COLORS.grey}
             value={refereeLastName}
           onChangeText={(text) => setRefereeLastName(text)}
           />
           <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="Phone Number"
+          placeholder="Account Number"
           placeholderTextColor= {COLORS.grey}
           value={refereePhoneNumber}
         onChangeText={(text) => setRefereePhoneNumber(text)}
         />
-        <TextInput
+        {/* <TextInput
         style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
         placeholder="Email"
         placeholderTextColor= {COLORS.grey}
@@ -171,12 +171,12 @@ const PostPaymentForm3 = ({navigation}) => {
           placeholderTextColor= {COLORS.grey}
           value={refereeCountry}
         onChangeText={(text) => setRefereeCountry(text)}
-        />
+        /> */}
         <View style={{minHeight: 0}}>
         <DropDownPicker
                     items={relationships}
                     defaultNull
-                    placeholder="Relationship"
+                    placeholder="Bank"
                     placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
                     style={designs.dropDownPicker}
                     controller={instance => controller = instance}

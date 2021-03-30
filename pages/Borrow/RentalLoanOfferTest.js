@@ -16,13 +16,46 @@ import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import SignatureScreen from 'react-native-signature-canvas';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-const Sign = ({text, onOK}) => {
+
+const RentalLoanOfferTest = ({navigation}) => {
+
+  const [modalVisible, setVisible] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [eSignatureModal, setESignatureModal] = useState(false);
+  const [acceptOfferResponse, setAcceptOfferResponse]=useState({});
+
   const ref = useRef();
 
-  const handleSignature = signature => {
+  const handleSignature = async(signature) => {
     console.log(signature);
-    onOK(signature);
+    const getToken = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const token = JSON.parse(userData).token;
+      return token;
+    };
+    const token = await getToken();
+        const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          });
+          console.log(applicationIDCallRes.data.data.id);
+          console.log(applicationIDCallRes.data.data);
+        const applicationId = applicationIDCallRes.data.data.id;
+
+        try {
+          const response = await axios.put('http://67.207.86.39:8000/api/v1/application/accept_offer', {applicationId, signature}, {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          });
+          console.log(response);
+          setAcceptOfferResponse(response);
+        } catch (error) {
+          console.log(error.response.data);
+          
+        };
+        setESignatureModal(false);
+        setSuccessModal(true);
   };
   const handleEmpty = () => {
     console.log('Empty');
@@ -31,80 +64,14 @@ const Sign = ({text, onOK}) => {
   const handleClear = () => {
     console.log('clear success!');
   }
-
-  const handleEnd = () => {
-      ref.current.readSignature();
-  }
-return (
-  <SignatureScreen
-      ref={ref}
-      onEnd={handleEnd}
-      onOK={handleSignature}
-      onEmpty={handleEmpty}
-      onClear={handleClear}
-      autoClear={true}
-      descriptionText={text}
-  />
-);
-};
-
-const RentalLoanOfferTest = ({navigation}) => {
-
-  const [accommodationStatus, setAccommodationStatus] = useState('');
-  const [salaryAmount, setSalaryAmount] = useState('');
-  const [modalVisible, setVisible] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
+  
 
 
   
 
-  const handleAcceptOfferClick = async (item) => {
+  const handleAcceptOfferClick = () => {
     setVisible(!modalVisible);
-    try {
-        // const res = await DocumentPicker.pick({
-        //   type: [DocumentPicker.types.images],
-        // });
-        // console.log('work', 
-        //   res.uri,
-        //   res.type, // mime type
-        //   res.name,
-        //   res.size
-        // );
-        const getToken = async () => {
-          const userData = await AsyncStorage.getItem('userData');
-          const token = JSON.parse(userData).token;
-          return token;
-        };
-        // const base64File = await RNFS.readFile(res.uri, 'base64');
-        // // console.log(base64File);
-        // const convertedFile = `data:${res.type},/${base64File}`
-    
-        const token = await getToken();
-        const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          });
-          console.log(applicationIDCallRes.data.data.id);
-        const applicationId = applicationIDCallRes.data.data.id;
-    
-          try {
-            // const response = await axios.post('http://67.207.86.39:8000/api/v1/application/documents/upload', {applicationId, file: convertedFile, document_type: item.id, file_name: item.title }, {
-            //   headers: {'Content-Type': 'application/json', Authorization: token},
-            // });
-            // console.log(response);
-          } catch (error) {
-            console.log(error.response.data);
-            
-          }
-        
-        // dispatch(setUploadProgress(e.target))
-      } catch (err) {
-        // if (DocumentPicker.isCancel(err)) {
-        //   // User cancelled the picker, exit any dialogs or menus and move on
-        // } else {
-        //   console.log(err);
-        // }
-      }
-      setSuccessModal(true);
+    setESignatureModal(true);
     };
 
 
@@ -209,13 +176,17 @@ const RentalLoanOfferTest = ({navigation}) => {
             </View>
             </View>
 
-
-           <Sign Text={"Open"} onOK={()=>{}}/>
-          
-
-
-
         </Modal>
+        <Modal visible={eSignatureModal} animationType="fade" transparent={true}>
+        <SignatureScreen
+          ref={ref}
+          onOK={handleSignature}
+          onEmpty={handleEmpty}
+          onClear={handleClear}
+          autoClear={true}
+          />
+        </Modal>
+        
         <Modal visible={successModal} animationType="fade" transparent={true}>
         <View
           style={designs.centeredModalWrapper}>
@@ -244,7 +215,7 @@ const RentalLoanOfferTest = ({navigation}) => {
             <TouchableOpacity
               onPress={() => {
                 setSuccessModal(false);
-                navigation.navigate('SetUpPaymentPlan');
+                navigation.navigate('SetUpPaymentPlan', acceptOfferResponse);
               }}
               style={[designs.button, {marginTop: 30, width: '100%', alignSelf: 'center', backgroundColor: COLORS.secondary}]}>
               <Text

@@ -9,8 +9,55 @@ import {
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+
 
 const Borrow = ({navigation}) => {
+  const [existingApplication, setExistingApplication] = useState('')
+
+  useEffect(() => {
+    const getApplicationData =async ()=> {
+      const getToken = async () => {
+        const userData = await AsyncStorage.getItem('userData');
+        const token = JSON.parse(userData).token;
+        return token;
+      };
+      const token = await getToken();
+      try{
+      
+          const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
+              headers: {'Content-Type': 'application/json', Authorization: token},
+            });
+            console.log(applicationIDCallRes.data.data.id);
+          const applicationId = applicationIDCallRes.data.data.id;
+        if (applicationId){
+          setExistingApplication(applicationId);
+          console.log('here', existingApplication);
+        }
+      }
+      catch(error) {
+        console.log(error.response.data)
+      }
+    };
+        // console.log(error.response.data)
+    getApplicationData()
+  }, []);
+
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const handleRentalLoanClick=()=> {
+    if (existingApplication !== ''){
+   navigation.navigate('UploadDocuments')}
+   else{
+    navigation.navigate('RentalLoanForm1')
+   } 
+  }
   
  return (
     <View style={designs.container}>
@@ -34,7 +81,7 @@ const Borrow = ({navigation}) => {
         
         <View>
             <TouchableOpacity
-              onPress={() => navigation.navigate('RentalLoanForm1')}
+              onPress={handleRentalLoanClick}
               activeOpacity={0.7}
               style={[designs.button, {marginBottom: 13}]}> 
               <View style={designs.buttonInnerView}>
@@ -46,7 +93,7 @@ const Borrow = ({navigation}) => {
             
          
             <TouchableOpacity
-              onPress={() => navigation.navigate('FileUploadTest')}
+              onPress={() => navigation.navigate('UploadBankStatement')}
               style={designs.button}>
               <View style={designs.buttonInnerView}>
                   <Text style={designs.buttonText}> Emergency Funds </Text>
