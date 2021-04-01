@@ -21,7 +21,7 @@ const Welcome = ({navigation}) => {
       setUserToken(token);
     };
     getuser();
-  }, [userToken]);
+  }, []);
 
   return (
     <View style={designs.container}>

@@ -1,7 +1,6 @@
 import * as types from './types';
 import apiUrl from '../../services/api';
 import axios from 'axios';
-import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const getToken = async () => {
@@ -37,7 +36,7 @@ export const getTotalSoloSavings = () => {
     const url = apiUrl + '/api/v1/savings';
     try {
       const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', token: token},
+        headers: {'Content-Type': 'application/json', Authorization: token},
       });
       dispatch(setTotalSoloSavings(response.data.data));
       return response.data.data;
