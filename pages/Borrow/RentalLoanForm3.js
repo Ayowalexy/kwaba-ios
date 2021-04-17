@@ -7,7 +7,9 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-  Platform
+  Platform,
+  Pressable,
+  Alert
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -15,6 +17,7 @@ import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useDispatch, useSelector} from 'react-redux';
@@ -31,18 +34,24 @@ const RentalLoanForm3 = ({navigation}) => {
   const [lengthOfResidence, setLengthOfResidence] = useState('');
   const [lastRentAmount, setLastRentAmount] = useState('');
   const [lastPaymentRecipient, setLastPaymentRecipient] = useState('');
-  const [modeOfPayment, setModeOfPayment] = useState()
+  const [modeOfPayment, setModeOfPayment] = useState('')
   const [modalVisible, setVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [progress, setProgress] = useState(100);
+  const [pickerModalOpen, setPickerModalOpen] = useState(false)
+  const [pickerModalVisible, setPickerModalVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  
   const [lengthOfResidenceOptions] = useState([
+
     {label: 'Less than a year', value: 'Less than a year'},
     {label: '1 Year', value: '1 Year'},
     {label: '2 Years', value: '2 Years'},
     {label: '3 Years', value: '3 Years'},
     {label: '4 Years', value: '4 Years'},
     {label: '5 Years', value: '5 Years'},
-    {label: 'More than five Years', value: 'More than five Years'},
+    {label: 'More than five Years', value: 'More than five Years'}
+
 ]);
 const [modeOfPaymentOptions] = useState([
   {label: 'Bank Transfer', value: 'Bank Transfer'},
@@ -51,22 +60,43 @@ const [modeOfPaymentOptions] = useState([
 ])
 
   const isError = () => {
+
+    // if(typeof lengthOfResidence !== "string"){ 
+    //   return true;
+    // }
+    // else 
+
+    let value=true;
+    let homeAddress1=homeAddress.trim().length;
+    console.log(homeAddress1)
+    let lengthOfResidence1=lengthOfResidence.trim().length;
+    let lastRentAmount1=lastRentAmount.trim().length;
+    let lastPaymentRecipient1=lastPaymentRecipient.trim().length;
+    let modeOfPayment1=modeOfPayment.trim().length;
     if (
-      (homeAddress.trim().length == 0 ||
-      lengthOfResidence.trim().length == 0 ||
-      lastRentAmount.trim().length == 0 ||
-      lastPaymentRecipient.trim().length == 0 ||
-      modeOfPayment.trim().length == 0)) {
+      (homeAddress1 == 0 ||
+        lengthOfResidence1 == 0 ||
+        lastRentAmount1 == 0 ||
+        lastPaymentRecipient1 == 0 ||
+        modeOfPayment1 == 0)) {
+         
         return true;
-    } else {
+    } 
+    else {
+      value=false;
+      console.log(value)
       return false;
     }
+
+    
   };
 
   
 
   const handleModalButtonPush = async () => {
+    
     setVisible(false);
+
     const data = {
       home_address: homeAddress,
       home_stay_duration: lengthOfResidence,
@@ -74,6 +104,9 @@ const [modeOfPaymentOptions] = useState([
       last_rent_paid_to: lastPaymentRecipient,
       last_rent_payment_method: modeOfPayment,
     };
+
+    console.log(lengthOfResidence);
+
     if (isError()) {
       return Alert.alert('Missing inputs', 'Please Fill out all fields', [
         {text: 'Close'},
@@ -84,7 +117,7 @@ const [modeOfPaymentOptions] = useState([
     const token = await getToken();
     console.log(dummyData);
     console.log(token);
-    console.log({...dummyData,...JSON.parse(loanFormData),...data})
+    console.log({...dummyData,...JSON.parse(loanFormData),...data});
     try {
       const response = await axios.post(url, {...dummyData,...JSON.parse(loanFormData),...data}, {
         headers: {'Content-Type': 'application/json', Authorization: token},
@@ -95,7 +128,9 @@ const [modeOfPaymentOptions] = useState([
     logCurrentStorage();
     } catch (error) {
       console.log(error.response.data);
-      
+      Alert.alert('Message', error.response.data.statusMsg, [
+        {text: 'Close'},
+      ]);
     }
     
   };
@@ -220,7 +255,7 @@ const [modeOfPaymentOptions] = useState([
                     arrowStyle={{marginRight: 4}}
                     arrowSize={18}
                     arrowColor={COLORS.grey}
-                    onChangeItem={item => setLengthOfResidence(item)}
+                    onChangeItem={item => setLengthOfResidence(item.value)}
                     // onOpen={() => setPickerModalOpen(true)}
                 />
             </View>
@@ -248,15 +283,16 @@ const [modeOfPaymentOptions] = useState([
            
             
               <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How did you pay? </Text>
-          <TextInput
+          {/* <TextInput
             style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
             placeholder="Select an option"
             placeholderTextColor= {COLORS.grey}
             value={modeOfPayment}
           onChangeText={(text) => setModeOfPayment(text)}
-          />
-          <View style={{minHeight: 50, elevation: 10000, zIndex: 10000}}>
-        <DropDownPicker
+          /> */}
+          {/* <View style={{minHeight: 50, elevation: 10000, zIndex: 10000}}>
+               <DropDownPicker
+        
                     items={modeOfPaymentOptions}
                     defaultNull
                     placeholder="Select an option"
@@ -268,10 +304,51 @@ const [modeOfPaymentOptions] = useState([
                     arrowStyle={{marginRight: 4}}
                     arrowSize={18}
                     arrowColor={COLORS.grey}
-                    onChangeItem={item => setLengthOfResidence(item)}
-                    // onOpen={() => setPickerModalOpen(true)}
+                    onChangeItem={item => setModeOfPayment(item)}
+                    onOpen={() => setPickerModalOpen(true)}
                 />
-            </View>
+            </View> */}
+
+          <Pressable onPress={() => {
+                setPressed(!pressed);
+                setPickerModalVisible(!pickerModalVisible)
+                console.log('switched', pressed)
+              }} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 22, paddingTop: modeOfPayment == ''? 25: 7, paddingBottom: 25, borderRadius: 10, borderColor: '#EFEFEF', backgroundColor: COLORS.white, marginBottom: 23}}> 
+              <View style={{ padding: 0, justifyContent: 'center' }}>
+                  <Text style={{color: COLORS.grey, fontSize: modeOfPayment == ''? 16: 10, lineHeight: modeOfPayment == ''? 30: 10, marginBottom: modeOfPayment == ''? 0: 3}}>How did you pay</Text>
+                  
+                  {modeOfPayment !== '' && <Text style={[FONTS.body1FontStyling, {marginBottom: 'auto'}]}>{modeOfPayment}</Text>}
+    
+              </View>
+              <View style={{height: '100%', paddingTop: modeOfPayment == ''? 0: 12 }}><IconFA name = {pressed? 'angle-up': 'angle-down'} size={30} color={COLORS.grey}/></View>
+           </Pressable>
+
+          <Modal visible={pickerModalVisible} animationType="fade" transparent={true} onRequestClose ={()=>{setPickerModalVisible(!pickerModalVisible);
+              setPressed(!pressed)}}>
+              <View style={designs.modalWrapper}>
+                    <View style={designs.modalView}>
+                        <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
+                              <Icon
+                              onPress={() => {setPickerModalVisible(!pickerModalVisible);
+                              setPressed(!pressed)}}
+                              style={{alignSelf: 'flex-end'}}
+                              name="close-outline"
+                              size={30}
+                              color="#465969"
+                            />
+                        </View>           
+                        <View>
+
+                            { modeOfPaymentOptions.map((value, index) => {
+                              return <TouchableOpacity key={index} onPress={() => {setModeOfPayment(value.value); setPickerModalVisible(false); setPressed(!pressed)}}>
+                                  <Text style={FONTS.body1FontStyling}>{ value.label }</Text>
+                                </TouchableOpacity>
+                            })}
+                            
+                        </View>
+                     </View>
+                </View>
+            </Modal>
          
           </View>
          
@@ -315,6 +392,7 @@ const [modeOfPaymentOptions] = useState([
             </View>
             
         </Modal>
+
         <Modal visible={successModal} animationType="fade" transparent={true}>
         <View
           style={designs.centeredModalWrapper}>

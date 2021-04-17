@@ -23,7 +23,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 
 
-const SetUpPaymentPlan = ({navigation}) => {
+const AddressVerificationPayment = ({navigation}) => {
 
   // const response = route.params; 
   
@@ -60,7 +60,7 @@ const SetUpPaymentPlan = ({navigation}) => {
             if (result.type == 'cancel') {
               let data = {reference: response.data.data.reference};
             console.log('data', data);
-              console.log('cancel')
+              console.log('cancel here')
             
               setVerificationSpinner(true);
               const verify = await axios.put('http://67.207.86.39:8000/api/v1/application/payment/verify', JSON.stringify(data) , {
@@ -69,12 +69,10 @@ const SetUpPaymentPlan = ({navigation}) => {
     
               if (verify.data.status == 'success') {
                 setVerificationSpinner(false);
-
                 // Alert.alert(
                 //   'Payment verified',
                 //   'Your payment was verified. Thank you.',
                 // );
-
                 navigation.navigate('PostPaymentForm4')
               } else {
                 setVerificationSpinner(false);
@@ -84,12 +82,22 @@ const SetUpPaymentPlan = ({navigation}) => {
                 );
               }
               }else{
-                console.log(result.type)
+                console.log("maybe here "+result.type)
+                setVerificationSpinner(false);
+                Alert.alert(
+                  'Payment Unverified',
+                  'Your payment was not verified. Please retry.',
+                );
               }
           }
 
         } catch (error) {
-          console.log(error.response.data);
+          console.log("maybe here canceled "+error.response.data);
+          setVerificationSpinner(false);
+          Alert.alert(
+            'Payment Unverified',
+            'Your payment was not verified. Please retry.',
+          );
           
         };
         
@@ -175,15 +183,15 @@ const SetUpPaymentPlan = ({navigation}) => {
                 marginBottom: 10
               },
             ]}>
-            Setup repayment method
+            Address verification 
           </Text>
-          <Text style={[FONTS.body2FontStyling, {color: '#ADADAD', textAlign: 'center', marginBottom: 26}]}>This will make repayment easy </Text>
+          <Text style={[FONTS.body2FontStyling, {color: '#ADADAD', textAlign: 'center', marginBottom: 26}]}>Make payment for Address verification</Text>
          
           
           <TouchableOpacity
             onPress={handleNavigation}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
-            <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>SET UP PAYMENT</Text>
+            <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>ADDRESS VERIFICATION</Text>
           </TouchableOpacity>
           <Spinner
         visible={spinner}
@@ -216,4 +224,4 @@ const SetUpPaymentPlan = ({navigation}) => {
   );
 };
 
-export default SetUpPaymentPlan;
+export default AddressVerificationPayment;

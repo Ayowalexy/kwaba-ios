@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -15,6 +15,7 @@ import {COLORS, FONTS, images} from '../../util/index';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RentalLoanOffer = ({navigation}) => {
 
@@ -34,6 +35,18 @@ const RentalLoanOffer = ({navigation}) => {
     //   return navigation.navigate('SoloSaving2');
     // } catch (error) {}
   };
+
+  useEffect(()=>{
+   
+
+    async function getData(){
+
+      const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+      console.log(postPaymentFormData);
+    }
+
+    getData();
+  })
 
 
   return (

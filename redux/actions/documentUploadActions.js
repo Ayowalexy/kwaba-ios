@@ -65,6 +65,15 @@ import axios from 'axios';
     type: uploadFileTypes.DELETE_UPLOADED_FILE,
     payload: id
   });
+
+  export const deleteFile = id => ({
+    type: uploadFileTypes.DELETE_UPLOADED_FILE,
+    payload: id
+  });
+
+
+
+
   
   
   

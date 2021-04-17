@@ -77,7 +77,7 @@ export default function Home({navigation}) {
   const bottomCards = [
     {
       id: 1,
-      title: 'Rent savings',
+      title: 'Save',
       body:
         'Save towards your next rent with your\nflatmates, friends or family and earn\ninterest on every deposit.',
       image: images.maskGroup30,
@@ -85,7 +85,7 @@ export default function Home({navigation}) {
 
     {
       id: 2,
-      title: 'Rent payment',
+      title: 'Borrow',
       body:
         'Get a rent top-up if you are running\nshort on your rent or obtain discounts\nif you have your complete rent when\nyou pay via Kwaba',
       image: images.maskGroup29,

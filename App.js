@@ -65,6 +65,12 @@ import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
 import PostPaymentForm2 from './pages/Payment/PostPaymentForm2';
 import PostPaymentForm3 from './pages/Payment/PostPaymentForm3';
 import PostPaymentForm4 from './pages/Payment/PostPaymentForm4';
+import OkraDebitMandate from './pages/Payment/OkraDebitMandate';
+import LoanOfferContent from './pages/Payment/LoanOfferContent';
+import AddressVerificationPayment from './pages/Payment/AddressVerificationPayment';
+import AwaitingDisbursement from './pages/Payment/AwaitingDisbursement';
+
+
 
 const Stack = createStackNavigator();
 
@@ -187,6 +193,10 @@ const App = () => {
 <Stack.Screen name="PostPaymentForm2" component={PostPaymentForm2}></Stack.Screen>
 <Stack.Screen name="PostPaymentForm3" component={PostPaymentForm3}></Stack.Screen>
 <Stack.Screen name="PostPaymentForm4" component={PostPaymentForm4}></Stack.Screen>
+<Stack.Screen name="OkraDebitMandate" component={OkraDebitMandate}></Stack.Screen>
+<Stack.Screen name="LoanOfferContent" component={LoanOfferContent}></Stack.Screen>
+<Stack.Screen name="AwaitingDisbursement" component={AwaitingDisbursement}></Stack.Screen>
+<Stack.Screen name="AddressVerificationPayment" component={AddressVerificationPayment}></Stack.Screen>
 <Stack.Screen name="RentalLoanActiveDashBoard" component={RentalLoanActiveDashBoard}></Stack.Screen>
 <Stack.Screen name="FileUploadTest" component={FileUploadTest}></Stack.Screen>
 <Stack.Screen name="RentalLoanOfferTest" component={RentalLoanOfferTest}></Stack.Screen>

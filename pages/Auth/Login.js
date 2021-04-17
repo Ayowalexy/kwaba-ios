@@ -33,6 +33,7 @@ export default function Login({navigation}) {
   };
 
   const saveLoginToStorage = async (data) => {
+    console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
     } catch (error) {}

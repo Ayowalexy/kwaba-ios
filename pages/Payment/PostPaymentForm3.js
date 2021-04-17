@@ -15,6 +15,7 @@ import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PostPaymentForm3 = ({navigation}) => {
 
@@ -32,15 +33,73 @@ const PostPaymentForm3 = ({navigation}) => {
 ])
   const [refereeRelationship, setRefereeRelationship] = useState(null);
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(75);
   let controller;
- 
 
-  const handleNavigation = () => {
+
+  const dummyData =
+  {
+    landlord_firstname: "Adams",
+    landlord_lastname: "Eve",
+    landlord_telephone: "07034969842",
+    landlord_address: "23B Njoku Ekpor Street, Ketu, Lagos",
+    landlord_accountnumber: "0045682546",
+    landlord_bankname: "Ecobank",
+    next_rent_address: "24 Daniel Makinde Street, Ketu, Lagos",
+    next_rent_property_type: "House",
+    next_rent_property_no_of_bedrooms: "3",
+    next_rent_paid_to: "LandLord"
+  };
+
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const handleNavigation = async() => {
+
     const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
+      refereeFirstName: refereeFirstName,
+      refereeLastName: refereeLastName,
+      refereePhoneNumber: refereePhoneNumber,
+      refereeEmail: refereeEmail,
+      refereeStreet: refereeStreet,
+      refereeCity: refereeCity,
+      refereeState: refereeState,
+      refereeCountry: refereeCountry,
     };
+
+
+    const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+    await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
+
+
+    // const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+    // const url = 'http://67.207.86.39:8000//api/v1/application/update/landlord_and_property';
+    // const token = await getToken();
+    // console.log(dummyData);
+    // console.log(token);
+    // console.log({...dummyData,...JSON.parse(postPaymentFormData),...data});
+    try {
+      // const response = await axios.put(url, {...dummyData,...JSON.parse(postPaymentFormData),...data}, {
+      //   headers: {'Content-Type': 'application/json', Authorization: token},
+      // });
+    
+      //console.log(response);
+
+       //navigation.navigate('PostPaymentForm4');
+
+       navigation.navigate('RentalLoanOfferTest');
+
+       //navigation.navigate('LoanOfferContent');
+
+      } catch (error) {
+        console.log(error.response.data);
+        Alert.alert('Message', error.response.data.statusMsg, [
+          {text: 'Close'},
+        ]);
+      }
     // try {
     //   dispatch(soloSaving(data));
 
@@ -50,15 +109,17 @@ const PostPaymentForm3 = ({navigation}) => {
 
 
   return (
+
     <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
         
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={20}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
-        color= {COLORS.primary}
-      />
+        <Icon
+          onPress={() => navigation.goBack()}
+          name="arrow-back-outline"
+          size={20}
+          style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+          color= {COLORS.primary}
+        />
+
         <View
           style={{
             marginVertical: 11,
@@ -92,13 +153,14 @@ const PostPaymentForm3 = ({navigation}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
           <AnimatedCircularProgress
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
+            size={25}
+            width={5}
+            fill={progress}
+            rotation={0}
+            tintColor= {COLORS.secondary}
+            backgroundColor="#D6D6D6" 
+          />
+       </View>
           
           </View>
           <TextInput
@@ -127,10 +189,10 @@ const PostPaymentForm3 = ({navigation}) => {
         placeholder="Email"
         placeholderTextColor= {COLORS.grey}
         value={refereeEmail}
-      onChangeText={(text) => setRefereeEmail(text)}
-      />
+        onChangeText={(text) => setRefereeEmail(text)}
+       />
 
-<Text
+      <Text
             style={[
               FONTS.h3FontStyling,
               {
@@ -183,7 +245,7 @@ const PostPaymentForm3 = ({navigation}) => {
                     dropDownStyle={{height: 0, borderWidth: 0}}
                     dropDownMaxHeight={0}
                     arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setRefereeRelationship(item)}
+                    onChangeItem={item => setRefereeRelationship(item.value)}
                     onOpen={() => setPickerModalOpen(true)}
                 />
             </View>
@@ -192,7 +254,7 @@ const PostPaymentForm3 = ({navigation}) => {
          
           
           <TouchableOpacity
-            onPress={() => navigation.navigate('PostPaymentForm4')}
+            onPress={handleNavigation}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

@@ -52,6 +52,7 @@ const AccountPage = ({navigation}) => {
 
 return (
     <View>
+      
       { accountTabsAndSettings.map((value, index) => {
               return <TouchableOpacity key={index} onPress={()=> {value.onClickFunction()}}>
                   <View>
@@ -69,3 +70,8 @@ return (
 
 
 export default AccountPage;
+
+
+
+
+const styles = StyleSheet.create({})

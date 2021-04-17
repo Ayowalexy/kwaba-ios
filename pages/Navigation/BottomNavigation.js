@@ -2,6 +2,9 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text} from 'react-native';
+import IconFA from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import { SavingsHome } from '../Savings';
 import Borrow from '../Borrow/Borrow';
 import screen1 from '../CompleteProfile/Screen1';
@@ -9,6 +12,7 @@ import {COLORS, FONTS, images} from '../../util/index';
 import Home from '../Home/Home';
 import EmergencyLoanRequestDashBoard from '../Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
 import Account from '../UserAccount/Account';
+import AccountPage from '../UserAccount/AccountPage';
 
 
 const Tab = createBottomTabNavigator();
@@ -71,7 +75,7 @@ const BottomNavigator = () => {
       />
       <Tab.Screen
         name="Account"
-        component={Account}
+        component={AccountPage}
         options={{
           tabBarIcon: ({color}) => (
             <Text style={{fontSize: 16, color: '#000000'}}>Account</Text>

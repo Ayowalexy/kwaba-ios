@@ -7,16 +7,23 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Modal
+  Modal,
+  Pressable,
+  Alert,
+  Dimensions
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
-import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import IconFA from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { fetchBanks } from '../../services/network';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OkraView from 'react-native-okra';
 
+let height= Dimensions.get('window').height;
 const PostPaymentForm4 = ({navigation}) => {
 
   const [firstName, setFirstName] = useState('');
@@ -24,6 +31,7 @@ const PostPaymentForm4 = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [Email, setEmail] = useState('');
   const [banks, setBanks] = useState([]);
+  const [landLordAccountBank, setLandLordAccountBank] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [refereeCity, setRefereeCity] = useState('');
   const [refereeState, setRefereeState] = useState('');
@@ -34,9 +42,15 @@ const PostPaymentForm4 = ({navigation}) => {
 ])
   const [refereeRelationship, setRefereeRelationship] = useState(null);
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(100);
+  const [pickerModalVisible, setPickerModalVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
+  // const [firstName, setFirstName] = useState('');
+  // const [lastName, setLastName] = useState('');
+  // const [phoneNumber, setLastName] = useState('');
+  
   let controller;
-
+  
   useEffect(()=> {
     async function fetchBanksForDropdown(){
       const banks = await fetchBanks();
@@ -45,8 +59,22 @@ const PostPaymentForm4 = ({navigation}) => {
         setBanks(banks.banks);
       }
     };
+    
     fetchBanksForDropdown()
     
+  }, []);
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      console.log(userData);
+      if (userData) {
+        setFirstName(JSON.parse(userData).user.firstname);
+        setLastName(JSON.parse(userData).user.lastname);
+        setPhoneNumber(JSON.parse(userData).user.telephone);
+      }
+    };
+    getUserData();
   }, []);
  
 
@@ -103,16 +131,17 @@ const PostPaymentForm4 = ({navigation}) => {
             ]}>
             Direct Debit Mandate
           </Text>
+
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
-          <AnimatedCircularProgress
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
+              <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>4 of 4</Text>
+              <AnimatedCircularProgress
+                size={25}
+                width={5}
+                fill={progress}
+                rotation={0}
+                tintColor= {COLORS.secondary}
+                backgroundColor="#D6D6D6" />
+          </View>
           
           </View>
           <TextInput
@@ -120,7 +149,7 @@ const PostPaymentForm4 = ({navigation}) => {
             placeholder="First Name"
             placeholderTextColor= {COLORS.grey}
             value={firstName}
-          onChangeText={(text) => setFirstName(text)}
+             onChangeText={(text) => setFirstName(text)}
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
@@ -137,7 +166,7 @@ const PostPaymentForm4 = ({navigation}) => {
         onChangeText={(text) => setPhoneNumber(text)}
         />
 
-<Text
+        {/* <Text
             style={[
               FONTS.h3FontStyling,
               {
@@ -156,9 +185,9 @@ const PostPaymentForm4 = ({navigation}) => {
         placeholderTextColor= {COLORS.grey}
         value={accountNumber}
       onChangeText={(text) => setAccountNumber(text)}
-      />
+      /> */}
   
-      <View style={{minHeight: 0}}>
+      {/* <View style={{minHeight: 0}}>
         <DropDownPicker
                     items={banks}
                     defaultNull
@@ -172,13 +201,60 @@ const PostPaymentForm4 = ({navigation}) => {
                     onChangeItem={item => setBanks(item)}
                     onOpen={() => setPickerModalOpen(true)}
                 />
-            </View>
+            </View> */}
+            {/* <View style={{minHeight: 0,maxHeight:500}}>
+                    
+                    <Pressable onPress={() => {
+                          setPressed(!pressed);
+                          setPickerModalVisible(!pickerModalVisible)
+                          console.log('switched', pressed)
+                        }} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 22, paddingTop: landLordAccountBank == ''? 25: 7, paddingBottom: 25, borderRadius: 10, backgroundColor: COLORS.white, marginBottom: 23,borderColor:COLORS.gray,borderWidth:0.2}}> 
+                        <View style={{ padding: 0, justifyContent: 'center' }}>
+                            <Text style={{color: COLORS.grey, fontSize: landLordAccountBank == ''? 16: 10, lineHeight: landLordAccountBank == ''? 30: 10, marginBottom: landLordAccountBank == ''? 0: 3}}>Bank</Text>
+                            
+                            {landLordAccountBank !== '' && <Text style={[FONTS.body1FontStyling, {marginBottom: 'auto'}]}>{landLordAccountBank}</Text>}
+              
+                        </View>
+                        <View style={{height: '100%', paddingTop: landLordAccountBank == ''? 0: 12 }}><IconFA name = {pressed? 'angle-up': 'angle-down'} size={30} color={COLORS.grey}/></View>
+                    </Pressable>
+      
+                      <View style={{maxHeight:height}}>
+                          <Modal visible={pickerModalVisible} animationType="slide"  transparent={true} onRequestClose ={()=>{setPickerModalVisible(!pickerModalVisible);
+                              setPressed(!pressed)}}>
+                              <View style={designs.modalWrapper}>
+                                    <View style={designs.modalView}>
+                                        <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
+                                              <Icon
+                                              onPress={() => {setPickerModalVisible(!pickerModalVisible);
+                                              setPressed(!pressed)}}
+                                              style={{alignSelf: 'flex-end'}}
+                                              name="close-outline"
+                                              size={30}
+                                              color="#465969"
+                                            />
+                                        </View>           
+                                        <View style={{height:height-300}}>
+                                          <ScrollView>
+                                            { banks.map((value, index) => {
+                                              return <TouchableOpacity key={index} onPress={() => {setLandLordAccountBank(value.name); setPickerModalVisible(false); setPressed(!pressed)}} style={{height:40}}> 
+                                                          <Text   style={FONTS.body1FontStyling}>{ value.name }</Text>
+                                                      </TouchableOpacity>    
+                                                      
+                                                  
+                                            })}
+                                          </ScrollView>
+                                        </View>
+                                    </View>
+                                </View>
+                            </Modal>
+                      </View>  
+                  </View> */}
          
           </View>
-         
-          
+
+      
           <TouchableOpacity
-            onPress={() => navigation.navigate('RentalLoanActiveDashBoard')}
+            onPress={() => navigation.navigate('OkraDebitMandate')}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

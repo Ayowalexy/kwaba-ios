@@ -25,14 +25,23 @@ const Borrow = ({navigation}) => {
         return token;
       };
       const token = await getToken();
+
+      
+    const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+    const steps = JSON.parse(borrwSteps);
+
+    console.log('steps here'+steps);
       try{
       
           const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
               headers: {'Content-Type': 'application/json', Authorization: token},
             });
             console.log(applicationIDCallRes.data.data.id);
+            console.log(applicationIDCallRes.data.data.status);
           const applicationId = applicationIDCallRes.data.data.id;
-        if (applicationId){
+          const status=applicationIDCallRes.data.data.status;
+          const statement=applicationIDCallRes.data.data.statement;
+        if (status!==4){
           setExistingApplication(applicationId);
           console.log('here', existingApplication);
         }
@@ -40,6 +49,8 @@ const Borrow = ({navigation}) => {
       catch(error) {
         console.log(error.response.data)
       }
+
+      
     };
         // console.log(error.response.data)
     getApplicationData()
@@ -48,12 +59,60 @@ const Borrow = ({navigation}) => {
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const token = JSON.parse(userData).token;
+
     return token;
   };
 
-  const handleRentalLoanClick=()=> {
+  const handleRentalLoanClick=async()=> {
     if (existingApplication !== ''){
-   navigation.navigate('UploadDocuments')}
+
+    const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+    const steps = JSON.parse(borrwSteps);
+
+    let stepsdata={
+      documentdone:'done',
+      propertydetail:'done',
+      landlorddetail:'done',
+      refree:'done',
+      offeraccepted:'done',
+      addressverification:'done',
+      debitmandate:'',
+      awaitingdisbursment:'',
+    };
+
+    await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+
+    console.log('steps here'+steps);
+
+    if(steps==null){
+      navigation.navigate('UploadDocuments')
+    }else if(steps.documentdone=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }else if(steps.propertydetail=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }else if(steps.landlorddetail=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }else if(steps.refree=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }else if(steps.offeraccepted=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }else if(steps.addressverification=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }else if(steps.debitmandate=='')
+    {
+      navigation.navigate('PostPaymentForm4')
+    }else if(steps.awaitingdisbursment=='')
+    {
+      navigation.navigate('UploadDocuments')
+    }
+   
+  }
    else{
     navigation.navigate('RentalLoanForm1')
    } 
@@ -85,7 +144,7 @@ const Borrow = ({navigation}) => {
               activeOpacity={0.7}
               style={[designs.button, {marginBottom: 13}]}> 
               <View style={designs.buttonInnerView}>
-                  <Text style={designs.buttonText}> Rental Loan</Text>
+                  <Text style={designs.buttonText}> Rent Top-up</Text>
                   <Icon name="arrow-forward-outline" size={16} color= {COLORS.secondary} style={{fontWeight: '900'}}/>
               </View>              
             </TouchableOpacity>
@@ -96,7 +155,7 @@ const Borrow = ({navigation}) => {
               onPress={() => navigation.navigate('EmergencyLoanRequestDashBoard')}
               style={designs.button}>
               <View style={designs.buttonInnerView}>
-                  <Text style={designs.buttonText}> Emergency Funds </Text>
+                  <Text style={designs.buttonText}> Instant Loan </Text>
                   <Icon name="arrow-forward-outline" size={16} color= {COLORS.secondary} style={{fontWeight: '900'}} />
               </View>  
             </TouchableOpacity>   

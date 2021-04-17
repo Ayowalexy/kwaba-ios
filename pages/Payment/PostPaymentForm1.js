@@ -7,14 +7,19 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Modal
+  Modal,
+  Pressable,
+  Alert
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { colors } from 'react-native-swiper-flatlist/src/themes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const PostPaymentForm1 = ({navigation}) => {
 
@@ -22,28 +27,65 @@ const PostPaymentForm1 = ({navigation}) => {
   const [propertyCity, setPropertyCity] = useState('');
   const [propertyState, setPropertyState] = useState('');
   const [propertyCountry, setPropertyCountry] = useState('');
-const [typeOfProperty, setTypeOfProperty] = useState([
+const [typeOfProperty, setTypeOfProperty] = useState('');
+const [typeOfPropertyOptions, setTypeOfPropertyOptions] = useState([
   {label: 'Duplex', value: 'Duplex'},
   {label: 'Semi-detached', value: 'Semi-detached'},
 ]);
-const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2'},
+const [numberOfBedrooms, setNumberOfBedrooms]=useState('');
+const [numberOfBedroomsOptions, setNumberOfBedroomsOptions] = useState([{label: '2', value: '2'},
 {label: '3', value: '3'}, {label: '4', value: '4'}])
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
   const [picker2ModalOpen, setPicker2ModalOpen] = useState(false)
+  const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [progress, setProgress] = useState(25);
+  const [pressed, setPressed] = useState(false);
+  
   let controller;
+
+  const isError = () => {
+    if (
+      (propertyStreet.trim().length == 0 ||
+      propertyCity.trim().length == 0||
+      propertyState.trim().length == 0||
+      propertyCountry.trim().length == 0||
+      typeOfProperty.trim().length == 0||
+      numberOfBedrooms.trim().length == 0)) {
+        return true;
+    } else {
+      return false;
+    }
+  };
+
  
 
-  const handleNavigation = () => {
+  const handleNavigation = async() => {
+
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
     const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
+      propertyStreet: propertyStreet,
+      propertyCity: propertyCity,
+      propertyState: propertyState,
+      propertyCountry: propertyCountry,
+      typeOfProperty: typeOfProperty,
+      numberOfBedrooms: numberOfBedrooms
     };
+
+      const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+      await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
+      navigation.navigate('PostPaymentForm2');
+    
     // try {
     //   dispatch(soloSaving(data));
 
     //   return navigation.navigate('SoloSaving2');
     // } catch (error) {}
+
+
   };
 
 
@@ -90,17 +132,17 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>1 of 4</Text>
           <AnimatedCircularProgress
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
+            size={25}
+            width={5}
+            fill={progress}
+            rotation={0}
+            tintColor= {COLORS.secondary}
+            backgroundColor="#D6D6D6" />
+        </View>
           
           </View>
 
-<Text
+         <Text
             style={[
               FONTS.h3FontStyling,
               {
@@ -144,23 +186,56 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
         onChangeText={(text) => setPropertyCountry(text)}
         />
         <View style={{minHeight: 0, marginBottom: 14}}>
-        <DropDownPicker
-                    items={typeOfProperty}
-                    defaultNull
-                    placeholder="Type of property"
-                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
-                    style={designs.dropDownPicker}
-                    controller={instance => controller = instance}
-                    dropDownStyle={{height: 0, borderWidth: 0}}
-                    dropDownMaxHeight={0}
-                    arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setTypeOfProperty(item.value)}
-                    onOpen={() => setPickerModalOpen(true)}
-                />
+
+
+
+              <Pressable onPress={() => {
+                    setPressed(!pressed);
+                    setPickerModalVisible(!pickerModalVisible)
+                    console.log('switched', pressed)
+                  }} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 22, paddingTop: typeOfProperty == ''? 25: 7, paddingBottom: 25, borderRadius: 10, backgroundColor: COLORS.white, marginBottom: 23,borderColor:COLORS.gray,borderWidth:0.2}}> 
+                  <View style={{ padding: 0, justifyContent: 'center' }}>
+                      <Text style={{color: COLORS.grey, fontSize: typeOfProperty == ''? 16: 10, lineHeight: typeOfProperty == ''? 30: 10, marginBottom: typeOfProperty == ''? 0: 3}}>Type of property</Text>
+                      
+                      {typeOfProperty !== '' && <Text style={[FONTS.body1FontStyling, {marginBottom: 'auto'}]}>{typeOfProperty}</Text>}
+        
+                  </View>
+                  <View style={{height: '100%', paddingTop: typeOfProperty == ''? 0: 12 }}><IconFA name = {pressed? 'angle-up': 'angle-down'} size={30} color={COLORS.grey}/></View>
+              </Pressable>
+
+
+                  <Modal visible={pickerModalVisible} animationType="fade" transparent={true} onRequestClose ={()=>{setPickerModalVisible(!pickerModalVisible);
+                      setPressed(!pressed)}}>
+                      <View style={designs.modalWrapper}>
+                            <View style={designs.modalView}>
+                                <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
+                                      <Icon
+                                      onPress={() => {setPickerModalVisible(!pickerModalVisible);
+                                      setPressed(!pressed)}}
+                                      style={{alignSelf: 'flex-end'}}
+                                      name="close-outline"
+                                      size={30}
+                                      color="#465969"
+                                    />
+                                </View>           
+                                <View>
+
+                                    { typeOfPropertyOptions.map((value, index) => {
+                                      return <TouchableOpacity key={index} onPress={() => {setTypeOfProperty(value.value); setPickerModalVisible(false); setPressed(!pressed)}}>
+                                          <Text style={FONTS.body1FontStyling}>{ value.label }</Text>
+                                        </TouchableOpacity>
+                                    })}
+                                    
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                
             </View>
+
             <View style={{minHeight: 0}}>
-        <DropDownPicker
-                    items={numberOfBedrooms}
+                <DropDownPicker
+                    items={numberOfBedroomsOptions}
                     defaultNull
                     placeholder="Number of Bedrooms"
                     placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
@@ -178,48 +253,13 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
          
           
           <TouchableOpacity
-            onPress={() => navigation.navigate('PostPaymentForm2')}
+            onPress={()=>{handleNavigation()}}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>
         </View>
 
-        <Modal visible={pickerModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
-            <View style={designs.modalWrapper}>
-            <View style={designs.modalView}> 
-            <View style={[designs.modalHeader, {marginBottom: 11}]}>
-            <Icon
-              onPress={() => {controller.close();
-                setPickerModalOpen(false)}}
-              style={{marginLeft: 'auto'}}
-              name="close-outline"
-              size={30}
-              color="#D6D6D6"
-            />
-            </View>
-            <View>
-                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
-                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
-            <View>
-                
-            {typeOfProperty.map((propertyType, index) => {
-            return (
-                
-                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(propertyType.value);
-                    controller.close();
-                    setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
-                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{propertyType.label}</Text>
-              </TouchableOpacity>
-            )
-              
-        })}
-        </View>
-                </View>
-            </View>
-
-            </View>
-            
-        </Modal>
+        
         <Modal visible={picker2ModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
             <View style={designs.modalWrapper}>
             <View style={designs.modalView}> 
@@ -234,11 +274,11 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
             />
             </View>
             <View>
-                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
-                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
+                <Text style={designs.modalTitleText}>Number of Bedrooms</Text>
+               
             <View>
                 
-            {numberOfBedrooms.map((bedroomNumber, index) => {
+            {numberOfBedroomsOptions.map((bedroomNumber, index) => {
             return (
                 
                 <TouchableOpacity key={index} onPress={()=> {controller.selectItem(bedroomNumber.value);

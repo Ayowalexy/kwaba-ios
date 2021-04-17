@@ -7,26 +7,36 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Modal
+  Modal,
+  Pressable,
+  Dimensions,
+  Alert
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { fetchBanks } from '../../services/network';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+let height= Dimensions.get('window').height;
 const PostPaymentForm2 = ({navigation}) => {
 
   const [landLordFirstName, setLandLordFirstName] = useState('');
   const [landLordLastName, setLandLordLastName] = useState('');
   const [landLordPhoneNumber, setLandLordPhoneNumber] = useState('');
-  const [banks, setBanks] = useState([]);
+  //{"code": "801", "id": 4267941563, "name": "Abbey Mortgage Bank"}, {"code": "044", "id": 4267941564, "name": "Access Bank"}, {"code": "063", "id": 4267941565, "name": "Access Bank (Diamond)"}, {"code": "035A", "id": 4267941566, "name": "ALAT by WEMA"}, {"code": "401", "id": 4267941567, "name": "ASO Savings and Loans"}, {"code": "50931", "id": 4267941568, "name": "Bowen Microfinance Bank"}, {"code": "50823", "id": 4267941569, "name": "CEMCS Microfinance Bank"}, {"code": "023", "id": 4267941570, "name": "Citibank Nigeria"}, {"code": "559", "id": 4267941571, "name": "Coronation Merchant Bank"}
+  const [banks, setBanks] = useState([{"code": "801", "id": 4267941563, "name": "Abbey Mortgage Bank"}]);
+  
   const [landLordAccountNumber, setLandLordAccountNumber] = useState('');
   const [landLordAccountBank, setLandLordAccountBank] = useState('');
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
-  const [progress, setProgress] = useState(25);
+  const [progress, setProgress] = useState(50);
+  const [pickerModalVisible, setPickerModalVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
   let controller;
 
   useEffect(()=> {
@@ -34,19 +44,54 @@ const PostPaymentForm2 = ({navigation}) => {
       const banks = await fetchBanks();
       console.log(banks);
       if (banks.banks){
-        setBanks(banks.banks);
+       setBanks(banks.banks);
       }
     };
     fetchBanksForDropdown()
     
   }, []);
+
+
+
+  const isError = () => {
+    if (
+      (landLordFirstName.trim().length == 0 ||
+      landLordLastName.trim().length == 0||
+      landLordPhoneNumber.trim().length == 0||
+      landLordAccountNumber.trim().length == 0||
+      landLordAccountBank.trim().length == 0)) {
+        return true;
+    } else {
+      return false;
+    }
+  };
  
 
-  const handleNavigation = () => {
+  const handleNavigation =async () => {
+
     const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
+      landLordFirstName: landLordFirstName,
+      landLordLastName: landLordLastName,
+      landLordPhoneNumber: landLordPhoneNumber,
+      landLordAccountNumber: landLordAccountNumber,
+      landLordAccountBank: landLordAccountBank,
     };
+
+
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
+
+    const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+    await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
+
+    console.log(postPaymentFormData);
+
+    
+
+    navigation.navigate('PostPaymentForm3');
     // try {
     //   dispatch(soloSaving(data));
 
@@ -96,14 +141,14 @@ const PostPaymentForm2 = ({navigation}) => {
             LandLord Details
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
+            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>2 of 4</Text>
           <AnimatedCircularProgress
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
+            size={25}
+            width={5}
+            fill={progress}
+            rotation={0}
+            tintColor= {COLORS.secondary}
+            backgroundColor="#D6D6D6" />
   </View>
           
           </View>
@@ -116,20 +161,20 @@ const PostPaymentForm2 = ({navigation}) => {
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Phone Number"
+            placeholder="Last Name"
             placeholderTextColor= {COLORS.grey}
             value={landLordLastName}
           onChangeText={(text) => setLandLordLastName(text)}
           />
           <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="Phone Number"
+          placeholder="Phone Number "
           placeholderTextColor= {COLORS.grey}
           value={landLordPhoneNumber}
         onChangeText={(text) => setLandLordPhoneNumber(text)}
         />
 
-<TextInput
+      <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
           placeholder="Account Number"
           placeholderTextColor= {COLORS.grey}
@@ -186,68 +231,64 @@ const PostPaymentForm2 = ({navigation}) => {
           value={refereeCountry}
         onChangeText={(text) => setRefereeCountry(text)}
         /> */}
-        <View style={{minHeight: 0}}>
-        <DropDownPicker
-                    items={banks}
-                    defaultNull
-                    placeholder="Bank"
-                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
-                    style={designs.dropDownPicker}
-                    controller={instance => controller = instance}
-                    dropDownStyle={{height: 0, borderWidth: 0}}
-                    dropDownMaxHeight={0}
-                    arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setBanks(item)}
-                    onOpen={() => setPickerModalOpen(true)}
-                />
+           <View style={{minHeight: 0,maxHeight:500}}>
+                    
+              <Pressable onPress={() => {
+                    setPressed(!pressed);
+                    setPickerModalVisible(!pickerModalVisible)
+                    console.log('switched', pressed)
+                  }} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 22, paddingTop: landLordAccountBank == ''? 25: 7, paddingBottom: 25, borderRadius: 10, backgroundColor: COLORS.white, marginBottom: 23,borderColor:COLORS.gray,borderWidth:0.2}}> 
+                  <View style={{ padding: 0, justifyContent: 'center' }}>
+                      <Text style={{color: COLORS.grey, fontSize: landLordAccountBank == ''? 16: 10, lineHeight: landLordAccountBank == ''? 30: 10, marginBottom: landLordAccountBank == ''? 0: 3}}>Bank</Text>
+                      
+                      {landLordAccountBank !== '' && <Text style={[FONTS.body1FontStyling, {marginBottom: 'auto'}]}>{landLordAccountBank}</Text>}
+        
+                  </View>
+                  <View style={{height: '100%', paddingTop: landLordAccountBank == ''? 0: 12 }}><IconFA name = {pressed? 'angle-up': 'angle-down'} size={30} color={COLORS.grey}/></View>
+              </Pressable>
+
+                <View style={{maxHeight:height}}>
+                    <Modal visible={pickerModalVisible} animationType="slide"  transparent={true} onRequestClose ={()=>{setPickerModalVisible(!pickerModalVisible);
+                        setPressed(!pressed)}}>
+                        <View style={designs.modalWrapper}>
+                              <View style={designs.modalView}>
+                                  <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
+                                        <Icon
+                                        onPress={() => {setPickerModalVisible(!pickerModalVisible);
+                                        setPressed(!pressed)}}
+                                        style={{alignSelf: 'flex-end'}}
+                                        name="close-outline"
+                                        size={30}
+                                        color="#465969"
+                                      />
+                                  </View>           
+                                  <View style={{height:height-300}}>
+                                    <ScrollView>
+                                      { banks.map((value, index) => {
+                                        return <TouchableOpacity key={index} onPress={() => {setLandLordAccountBank(value.name); setPickerModalVisible(false); setPressed(!pressed)}} style={{height:40}}> 
+                                                    <Text   style={FONTS.body1FontStyling}>{ value.name }</Text>
+                                                </TouchableOpacity>    
+                                                
+                                            
+                                      })}
+                                    </ScrollView>
+                                  </View>
+                              </View>
+                          </View>
+                      </Modal>
+                </View>  
             </View>
          
           </View>
          
           
           <TouchableOpacity
-            onPress={() => navigation.navigate('RentalLoanOfferTest')}
+            onPress={handleNavigation}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>
         </View>
 
-        <Modal visible={pickerModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
-            <View style={designs.modalWrapper}>
-            <View style={designs.modalView}> 
-            <View style={[designs.modalHeader, {marginBottom: 11}]}>
-            <Icon
-              onPress={() => {controller.close();
-                setPickerModalOpen(false)}}
-              style={{marginLeft: 'auto'}}
-              name="close-outline"
-              size={30}
-              color="#D6D6D6"
-            />
-            </View>
-            <View>
-                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
-                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
-            <ScrollView>
-                
-            {banks.map((bank, index) => {
-            return (
-                
-                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(bank.name);
-                    controller.close();
-                    setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
-                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{bank.name}</Text>
-              </TouchableOpacity>
-            )
-              
-        })}
-        </ScrollView>
-                </View>
-            </View>
-
-            </View>
-            
-        </Modal>
         
    </ScrollView>
   );
