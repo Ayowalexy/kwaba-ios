@@ -49,6 +49,11 @@ const featherFileText = require('../assets/icons/feather-file-text.png');
 const group2116 = require('../assets/icons/group2116.png');
 const trashAlt2 = require('../assets/icons/trash-alt.png');
 const group3743 = require('../assets/icons/group3743.png');
+const internetsub = require('../assets/icons/internetsub.png');
+const water = require('../assets/icons/water.png');
+const electricity = require('../assets/icons/electricity.png');
+const cabletv = require('../assets/icons/cabletv.png');
+const waste = require('../assets/icons/waste.png');
 
 export {
   instagram,
@@ -101,5 +106,11 @@ export {
   featherFileText,
   group2116,
   trashAlt2,
-  group3743
+  group3743,
+  internetsub,
+  waste,
+  water,
+  cabletv,
+  electricity
+
 };

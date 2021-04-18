@@ -72,6 +72,7 @@ const cowrywiseReg = require('../assets/images/cowrywiseReg.png');
 const cowrywiseShadow = require('../assets/images/cowrywiseShadow.png');
 const group4923 = require('../assets/images/group4923.png');
 const maskGroup31 = require('../assets/images/maskGroup31.png');
+const billheaderimage = require('../assets/images/billshomeheaderimage.png');
 
 export {
   logo,
@@ -147,6 +148,7 @@ piggyvestShadow,
 cowrywiseReg,
 cowrywiseShadow,
 group4923,
-maskGroup31
+maskGroup31,
+billheaderimage
 
 };

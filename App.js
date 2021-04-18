@@ -69,6 +69,7 @@ import OkraDebitMandate from './pages/Payment/OkraDebitMandate';
 import LoanOfferContent from './pages/Payment/LoanOfferContent';
 import AddressVerificationPayment from './pages/Payment/AddressVerificationPayment';
 import AwaitingDisbursement from './pages/Payment/AwaitingDisbursement';
+import BillsHome from './pages/Bills/BillsHome';
 
 
 
@@ -208,6 +209,7 @@ const App = () => {
 <Stack.Screen name="FileViewAndDelete" component={FileViewAndDelete}></Stack.Screen> 
 <Stack.Screen name="AccountPage" component={AccountPage}></Stack.Screen>
 <Stack.Screen name="CardAndBankDetails" component={CardAndBankDetails}></Stack.Screen>
+<Stack.Screen name="BillsHome" component={BillsHome}></Stack.Screen>
 
 
 

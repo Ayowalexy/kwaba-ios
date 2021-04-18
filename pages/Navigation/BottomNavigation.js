@@ -13,6 +13,7 @@ import Home from '../Home/Home';
 import EmergencyLoanRequestDashBoard from '../Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
 import Account from '../UserAccount/Account';
 import AccountPage from '../UserAccount/AccountPage';
+import BillsHome from '../Bills/BillsHome';
 
 
 const Tab = createBottomTabNavigator();
@@ -66,7 +67,7 @@ const BottomNavigator = () => {
       />
       <Tab.Screen
         name="Bills"
-        component={Account}
+        component={BillsHome}
         options={{
           tabBarIcon: ({color}) => (
             <Text style={{fontSize: 16, color: '#000000'}}>Bills</Text>

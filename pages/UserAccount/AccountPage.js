@@ -41,13 +41,13 @@ const AccountPage = ({navigation}) => {
 
 
  const accountTabsAndSettings = [
-     {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: 'Withdraw'},
+     {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'credit-card', tabTitle: 'Card And Bank', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
-     {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: 'Referral'},
-     {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: ''},
-     {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: ''},
-     {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: ''},
-     {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: ''},
+     {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
  ]
 
  

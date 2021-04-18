@@ -8,6 +8,7 @@ export const COLORS = {
   grey: '#BFBFBF',
   white: '#FFFFFF',
   dark: '#465969',
+  yellow:'#FFE700'
 };
 
 export const SIZES = {
@@ -58,6 +59,10 @@ export const FONTS = {
     fontFamily: 'CircularStd-Book',
     fontSize: SIZES.body3,
   },
+  body4FontStyling: {
+    fontFamily: 'CircularStd-Book',
+    fontSize: SIZES.body4,
+  },
 
   base: 8,
   padding: 12,
@@ -68,6 +73,7 @@ export const FONTS = {
   body1: 16,
   body2: 16,
   body3: 16,
+  body4: 12,
   width,
   height,
 };
