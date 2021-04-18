@@ -8,7 +8,8 @@ import {
     TouchableOpacity,
     ScrollView,
     Dimensions,
-    Image
+    Image,
+    TouchableHighlight
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome'
@@ -86,11 +87,23 @@ return (
                   </TouchableOpacity>
                 </View>
              </View>
-             <View style={{marginTop:22,borderBottomLeftRadius:10,borderBottomRightRadius:10,backgroundColor:'#2A286A',height:40,flexDirection:'row'}}>
+             <View style={{flexDirection:'row',alignItems:'center',marginTop:22,borderBottomLeftRadius:10,borderBottomRightRadius:10,backgroundColor:'#2A286A',height:40,flexDirection:'row'}}>
                 <Image
-                  style={{width: 30, height: 30, marginRight: 11,marginLeft:35,marginTop:5}}
+                  style={{width: 25, height: 25, marginRight: 5,marginLeft:12}}
                   source={icons.star}
                 />
+                <Text style={[FONTS.body1FontStyling,{color:COLORS.white}]}>credit score</Text>
+                <View>
+                  <TouchableOpacity style={{backgroundColor:COLORS.secondary,borderRadius:20,marginLeft:5,height:25,width:36}}>
+                    <Text  style={[FONTS.h3FontStyling,{color:COLORS.primary,fontWeight: 'bold',textAlign:'center'}]} >65</Text>
+                  </TouchableOpacity>
+                  
+                </View>
+                <Text style={[FONTS.body1FontStyling,{color:COLORS.white,textAlign:'center'}]}>/100</Text>
+
+                <View style={{  flexDirection: 'column',flex: 1}}>
+                  <Text style={[FONTS.body1FontStyling,{color:COLORS.light,textAlign:'center',fontSize:8,flexShrink:1,lineHeight:12}]}>You are doing great, don’t default on your payments to build a good credi score</Text>
+                </View>
              </View>
           </View>
       </View>
