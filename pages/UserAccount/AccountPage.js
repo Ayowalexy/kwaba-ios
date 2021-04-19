@@ -16,6 +16,8 @@ import IconFA from 'react-native-vector-icons/FontAwesome'
 import {COLORS, FONTS, images,icons} from '../../util/index';
 import { CustomTextInput, CustomPicker } from '../../components/CustomInput';
 import designs from './style';
+import axios from 'axios';
+
 
 
 const width=Dimensions.get('window').width;
@@ -39,6 +41,11 @@ const AccountPage = ({navigation}) => {
   
 // }
 
+
+ const logOut=()=>{
+   console.log("hello here");
+   
+ }
 
  const accountTabsAndSettings = [
      {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
@@ -126,6 +133,20 @@ return (
                         
                   
           })}
+        </View>
+        <View  style={{alignSelf:'center',width:width*0.9}}>
+          <TouchableOpacity style={{height:50}}  onPress={()=>{logOut()}}>
+              <View  style={{height:50,flexDirection:'row',justifyContent:'space-between'}}>
+
+                <View style={{}}>
+                  <IconFA name='sign-out' size={20} style={{color:COLORS.light,marginLeft:10,marginTop:10}} />
+                  <Text style={[FONTS.h3FontStyling,{marginLeft:40,marginTop:-23,color:COLORS.dark}]}>Logout</Text>
+                </View>
+                <View style={{}}> 
+                  <IconFA name='angle-right' size={20} color='#BFBFBF' style={{marginRight:20,marginTop:10}} />
+                </View>
+              </View>
+            </TouchableOpacity>
         </View>
         
     </View>

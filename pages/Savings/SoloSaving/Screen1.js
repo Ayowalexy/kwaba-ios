@@ -5,12 +5,14 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
 import {useDispatch} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 
+const width=Dimensions.get('window').width;
 export default function Screen1({navigation}) {
   const dispatch = useDispatch();
   const [activeOption, setActiveOption] = useState('');

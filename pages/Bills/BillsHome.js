@@ -58,7 +58,7 @@ const BillsHome = ({navigation}) => {
                              <Icon
                                 
                                 name="arrow-forward-outline"
-                                size={35}
+                                size={30}
                                 style={{fontWeight: '900', marginLeft: 16,marginTop:20,marginRight:10}}
                                 color={COLORS.primary}
                              />

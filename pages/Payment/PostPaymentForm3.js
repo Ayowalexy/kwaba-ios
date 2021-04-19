@@ -7,7 +7,8 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Modal
+  Modal,
+  Alert
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -16,6 +17,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { logCurrentStorage } from '../../util/logCurrentStorage';
+import axios from 'axios';
+
 
 const PostPaymentForm3 = ({navigation}) => {
 
@@ -57,55 +61,146 @@ const PostPaymentForm3 = ({navigation}) => {
     return token;
   };
 
+
+  const isError = () => {
+    if ( (refereeStreet.trim().length == 0 ||
+    refereeCity.trim().length == 0||
+    refereeState.trim().length == 0||
+    refereeCountry.trim().length == 0||
+    refereeEmail.trim().length == 0||
+    refereeRelationship.trim().length == 0||
+    refereeFirstName.trim().length == 0||
+    refereeLastName.trim().length == 0||
+    refereePhoneNumber.trim().length == 0)
+     ) {
+        return true;
+    } else {
+      return false;
+    }
+  };
+
   const handleNavigation = async() => {
 
-    const data = {
-      refereeFirstName: refereeFirstName,
-      refereeLastName: refereeLastName,
-      refereePhoneNumber: refereePhoneNumber,
-      refereeEmail: refereeEmail,
-      refereeStreet: refereeStreet,
-      refereeCity: refereeCity,
-      refereeState: refereeState,
-      refereeCountry: refereeCountry,
-    };
+    // const data = {
+    //   refereeFirstName: refereeFirstName,
+    //   refereeLastName: refereeLastName,
+    //   refereePhoneNumber: refereePhoneNumber,
+    //   refereeEmail: refereeEmail,
+    //   refereeStreet: refereeStreet,
+    //   refereeCity: refereeCity,
+    //   refereeState: refereeState,
+    //   refereeCountry: refereeCountry,
+    // };
 
+
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
 
     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
-    await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
+    const data=JSON.parse(postPaymentFormData);
+    const url = 'http://67.207.86.39:8000/api/v1/application/update/landlord_and_property';
+    const refreeUrl = 'http://67.207.86.39:8000/api/v1/application/update/referee';
 
-
-    // const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
-    // const url = 'http://67.207.86.39:8000//api/v1/application/update/landlord_and_property';
-    // const token = await getToken();
-    // console.log(dummyData);
-    // console.log(token);
+    const token = await getToken();
+    console.log(dummyData);
+    console.log(token);
     // console.log({...dummyData,...JSON.parse(postPaymentFormData),...data});
-    try {
-      // const response = await axios.put(url, {...dummyData,...JSON.parse(postPaymentFormData),...data}, {
-      //   headers: {'Content-Type': 'application/json', Authorization: token},
-      // });
     
+    const refreedata={
+      referee_address: refereeStreet+" "+refereeCity+" "+refereeState+" "+refereeCountry,
+      referee_email: refereeEmail,
+      referee_relationship: refereeRelationship,
+      referee_firstname: refereeFirstName,
+      referee_lastname: refereeLastName,
+      referee_telephone: refereePhoneNumber
+    };
+
+   
+
+    const landlordAndPropertyData={
+      landlord_firstname: data.landLordFirstName,
+      landlord_lastname: data.landLordLastName,
+      landlord_telephone: data.landLordPhoneNumber,
+      landlord_address:data.propertyState,
+      landlord_accountnumber: data.landLordAccountNumber,
+      landlord_bankname: data.landLordAccountBank,
+      next_rent_address: data.propertyStreet+" "+data.propertyState+" "+data.propertyCountry,
+      next_rent_property_type: data.typeOfProperty,
+      next_rent_property_no_of_bedrooms:data.numberOfBedrooms,
+      next_rent_paid_to: "LandLord"
+    };
+    
+
+  
+
+
+   
+    
+    
+    try {
+    
+
+      const response2 = await axios.put(refreeUrl,JSON.stringify(refreedata)  , {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      
+      console.log(refreedata);
+
+      const response = await axios.put(url, JSON.stringify(landlordAndPropertyData) , {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+
+
+      console.log(landlordAndPropertyData);
+
       //console.log(response);
 
        //navigation.navigate('PostPaymentForm4');
 
-       navigation.navigate('RentalLoanOfferTest');
+       let stepsdata={
+        documentdone:'done',
+        propertydetail:'done',
+        landlorddetail:'done',
+        refree:'done',
+        offeraccepted:'',
+        addressverification:'',
+        debitmandate:'',
+        awaitingdisbursment:'',
+      };
+    
+      await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+
+      // if( response2.status==200){
+          
+      // }   
+      navigation.navigate('RentalLoanOfferTest');
 
        //navigation.navigate('LoanOfferContent');
 
       } catch (error) {
-        console.log(error.response.data);
+        //console.log(error.response.data);
         Alert.alert('Message', error.response.data.statusMsg, [
           {text: 'Close'},
         ]);
       }
-    // try {
-    //   dispatch(soloSaving(data));
 
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
+   
+
   };
+
+
+  // useEffect(()=>{
+
+  //   const logData=async()=>{
+  //     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+  //     console.log(JSON.stringify(postPaymentFormData))
+  //   }
+  
+  //  logData();
+  // })
 
 
   return (
@@ -254,7 +349,7 @@ const PostPaymentForm3 = ({navigation}) => {
          
           
           <TouchableOpacity
-            onPress={handleNavigation}
+            onPress={()=>{handleNavigation()}}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

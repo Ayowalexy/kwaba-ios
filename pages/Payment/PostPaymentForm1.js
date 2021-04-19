@@ -61,11 +61,11 @@ const [numberOfBedroomsOptions, setNumberOfBedroomsOptions] = useState([{label: 
 
   const handleNavigation = async() => {
 
-    // if (isError()) {
-    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-    //     {text: 'Close'},
-    //   ]);
-    // }
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
     const data = {
       propertyStreet: propertyStreet,
       propertyCity: propertyCity,
@@ -74,16 +74,28 @@ const [numberOfBedroomsOptions, setNumberOfBedroomsOptions] = useState([{label: 
       typeOfProperty: typeOfProperty,
       numberOfBedrooms: numberOfBedrooms
     };
-
-      const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
-      await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
-      navigation.navigate('PostPaymentForm2');
     
-    // try {
-    //   dispatch(soloSaving(data));
-
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
+      if(isError()==false){
+        const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+        await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
+        let stepsdata={
+          documentdone:'done',
+          propertydetail:'done',
+          landlorddetail:'',
+          refree:'',
+          offeraccepted:'',
+          addressverification:'',
+          debitmandate:'',
+          awaitingdisbursment:'',
+        };
+      
+        await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+        navigation.navigate('PostPaymentForm2');
+      }else{
+        Alert.alert('Missing inputs', 'Please Fill out all fields', [
+          {text: 'Close'},
+        ]);
+      }
 
 
   };

@@ -78,25 +78,36 @@ const PostPaymentForm2 = ({navigation}) => {
     };
 
 
-    // if (isError()) {
-    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-    //     {text: 'Close'},
-    //   ]);
-    // }
+    if (isError()) {
+      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
 
-    const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
-    await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
 
-    console.log(postPaymentFormData);
-
+    if(isError()==false){
+      const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
+      await AsyncStorage.setItem('postPaymentForm', JSON.stringify({...JSON.parse(postPaymentFormData), ...data}));
+      let stepsdata={
+        documentdone:'done',
+        propertydetail:'done',
+        landlorddetail:'done',
+        refree:'',
+        offeraccepted:'',
+        addressverification:'',
+        debitmandate:'',
+        awaitingdisbursment:'',
+      };
     
+      await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+      navigation.navigate('PostPaymentForm3');
+    }else{
+      Alert.alert('Missing inputs', 'Please Fill out all fields', [
+        {text: 'Close'},
+      ]);
+    }
 
-    navigation.navigate('PostPaymentForm3');
-    // try {
-    //   dispatch(soloSaving(data));
 
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
   };
 
 

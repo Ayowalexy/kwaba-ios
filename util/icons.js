@@ -53,6 +53,16 @@ const internetsub = require('../assets/icons/internetsub.png');
 const water = require('../assets/icons/water.png');
 const electricity = require('../assets/icons/electricity.png');
 const cabletv = require('../assets/icons/cabletv.png');
+const savings = require('../assets/icons/savings.png');
+const savingslight = require('../assets/icons/savingslight.png');
+const billsicon = require('../assets/icons/billsicon.png');
+const billslight = require('../assets/icons/billslight.png');
+const homeicon = require('../assets/icons/homeicon.png');
+const account = require('../assets/icons/account.png');
+const accountlight = require('../assets/icons/accountlight.png');
+const myrent = require('../assets/icons/myrent.png');
+const homelight = require('../assets/icons/homelight.png');
+const myrentlight = require('../assets/icons/myrentlight.png');
 const waste = require('../assets/icons/waste.png');
 
 export {
@@ -111,6 +121,16 @@ export {
   waste,
   water,
   cabletv,
-  electricity
+  electricity,
+  billsicon,
+  billslight,
+  myrent,
+  myrentlight,
+  homeicon,
+  homelight,
+  account,
+  accountlight,
+  savings,
+  savingslight
 
 };

@@ -5,6 +5,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -59,9 +60,8 @@ const FileUploadTest = ({navigation}) => {
   useEffect(() => {
     
     const showUploadedDocuments = async()=>{
-      //console.log('derff',documents)
+      
     const documentsUploaded = await getDocuments();
-    //console.log(documentsUploaded)
     documentsUploaded.forEach(document => {
       const id = Number(document.document_type);
       console.log(document.filename);
@@ -73,6 +73,7 @@ const FileUploadTest = ({navigation}) => {
         console.log('error',error)
       }
     })
+
   }
     
     // console.log('df',documents)
@@ -189,6 +190,48 @@ const deleteFile = async(item)=> {
       console.log(error)
   }
 }
+
+const handleNavigation =async()=>{
+
+
+  const documentsUploaded = await getDocuments();
+    let numberOfFiles=0;
+    documentsUploaded.forEach(document => {
+      const id = Number(document.document_type);
+      console.log(document.filename);
+      numberOfFiles++;
+    })
+
+    console.log("number of files"+numberOfFiles);
+  const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+  const steps = JSON.parse(borrwSteps);
+
+  if(numberOfFiles>=5){
+
+      let stepsdata={
+        documentdone:'done',
+        propertydetail:'',
+        landlorddetail:'',
+        refree:'',
+        offeraccepted:'',
+        addressverification:'',
+        debitmandate:'',
+        awaitingdisbursment:'',
+      };
+    
+     await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+     console.log('steps here'+JSON.stringify(steps) );
+   navigation.navigate('PostPaymentForm1');
+   
+  }else{
+    Alert.alert('Missing files', 'Please upload all files', [
+      {text: 'Close'},
+    ]);
+  }
+
+
+ 
+}
   
 
 
@@ -251,7 +294,7 @@ const deleteFile = async(item)=> {
           
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('PostPaymentForm1')} style={[designs.button, {backgroundColor: COLORS.secondary}]}><Text style={{color: COLORS.white, textAlign: 'center'}}>FINISH</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => {handleNavigation()}} style={[designs.button, {backgroundColor: COLORS.secondary}]}><Text style={{color: COLORS.white, textAlign: 'center'}}>FINISH</Text></TouchableOpacity>
         
    </ScrollView>
   );

@@ -5,9 +5,11 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
+
 
 export default function Screen1({navigation}) {
   const [activeOption, setActiveOption] = useState('');

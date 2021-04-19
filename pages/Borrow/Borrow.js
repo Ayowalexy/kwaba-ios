@@ -5,6 +5,7 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  Dimensions
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
@@ -12,7 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-
+const width=Dimensions.get('window').width;
 
 const Borrow = ({navigation}) => {
   const [existingApplication, setExistingApplication] = useState('')
@@ -37,7 +38,7 @@ const Borrow = ({navigation}) => {
               headers: {'Content-Type': 'application/json', Authorization: token},
             });
             console.log(applicationIDCallRes.data.data.id);
-            console.log(applicationIDCallRes.data.data.status);
+            console.log(applicationIDCallRes.data.data);
           const applicationId = applicationIDCallRes.data.data.id;
           const status=applicationIDCallRes.data.data.status;
           const statement=applicationIDCallRes.data.data.statement;
@@ -69,20 +70,20 @@ const Borrow = ({navigation}) => {
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
-    let stepsdata={
-      documentdone:'done',
-      propertydetail:'done',
-      landlorddetail:'done',
-      refree:'done',
-      offeraccepted:'done',
-      addressverification:'done',
-      debitmandate:'',
-      awaitingdisbursment:'',
-    };
+    // let stepsdata={
+    //   documentdone:'done',
+    //   propertydetail:'done',
+    //   landlorddetail:'done',
+    //   refree:'',
+    //   offeraccepted:'',
+    //   addressverification:'',
+    //   debitmandate:'',
+    //   awaitingdisbursment:'',
+    // };
 
-    await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
-    console.log('steps here'+steps);
+    console.log('steps here', steps );
 
     if(steps==null){
       navigation.navigate('UploadDocuments')
@@ -91,25 +92,25 @@ const Borrow = ({navigation}) => {
       navigation.navigate('UploadDocuments')
     }else if(steps.propertydetail=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('PostPaymentForm1')
     }else if(steps.landlorddetail=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('PostPaymentForm2')
     }else if(steps.refree=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('PostPaymentForm3')
     }else if(steps.offeraccepted=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('RentalLoanOfferTest')
     }else if(steps.addressverification=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('AddressVerificationPayment')
     }else if(steps.debitmandate=='')
     {
       navigation.navigate('PostPaymentForm4')
     }else if(steps.awaitingdisbursment=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('AwaitingDisbursement')
     }
    
   }
@@ -138,14 +139,14 @@ const Borrow = ({navigation}) => {
           </View>
           </View>
         
-        <View>
+        <View   styles={{flex:1,flexDirection:'column',justifyContent:'center'}}>
             <TouchableOpacity
               onPress={handleRentalLoanClick}
               activeOpacity={0.7}
-              style={[designs.button, {marginBottom: 13}]}> 
+              style={[designs.button, {marginBottom: 20,width:width*0.9}]}> 
               <View style={designs.buttonInnerView}>
                   <Text style={designs.buttonText}> Rent Top-up</Text>
-                  <Icon name="arrow-forward-outline" size={16} color= {COLORS.secondary} style={{fontWeight: '900'}}/>
+                  <Icon name="arrow-forward-outline" size={30} color= {COLORS.secondary} style={{fontWeight: '900'}}/>
               </View>              
             </TouchableOpacity>
 
@@ -153,10 +154,10 @@ const Borrow = ({navigation}) => {
          
             <TouchableOpacity
               onPress={() => navigation.navigate('EmergencyLoanRequestDashBoard')}
-              style={designs.button}>
+              style={[designs.button, {width:width*0.9}]}>
               <View style={designs.buttonInnerView}>
                   <Text style={designs.buttonText}> Instant Loan </Text>
-                  <Icon name="arrow-forward-outline" size={16} color= {COLORS.secondary} style={{fontWeight: '900'}} />
+                  <Icon name="arrow-forward-outline" size={30} color= {COLORS.secondary} style={{fontWeight: '900'}} />
               </View>  
             </TouchableOpacity>   
             </View>   

@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
+  Dimensions
 } from 'react-native';
+
+const width=Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../../util/index';
 import {currencyFormat} from '../../../util/numberFormatter';
@@ -148,132 +151,147 @@ export default function Start({navigation}) {
           </ScrollView>
         </View>
       </ImageBackground>
-      <View style={designs.card}>
-        <View style={designs.cardFlex}>
-          <View>
-            <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
-            <Text style={designs.bodyText}>
-              Save towards your next{'\n'}rent alone
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
-                )
-              }
-              style={[
-                designs.cardFlex,
-                {
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                },
-              ]}>
-              {soloSaving == 0 ? (
-                <Text
+     
+
+    
+
+
+      <View style={{flexDirection:'column',justifyContent:'center'}}>
+
+          <View style={designs.card}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
+                <Text style={designs.bodyText}>
+                  Save towards your next{'\n'}rent alone
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(
+                      soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
+                    )
+                  }
                   style={[
-                    designs.bodyText,
+                    designs.cardFlex,
                     {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
+                      marginTop: 16,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 27,
+                      borderRadius: 21,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
                     },
                   ]}>
-                  Start saving
-                </Text>
-              ) : (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  ₦{currencyFormat(soloSaving)}
-                </Text>
-              )}
-              <Icon name="arrow-forward" color="#9D98EC" size={15} />
-            </TouchableOpacity>
+                  {soloSaving == 0 ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Start saving
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{currencyFormat(soloSaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+              </View>
+              <Image
+                style={{width: 146, height: 146}}
+                source={images.maskGroup15}
+              />
+            </View>
           </View>
-          <Image
-            style={{width: 146, height: 146}}
-            source={images.maskGroup15}
-          />
-        </View>
-      </View>
-      <View style={designs.card}>
-        <View style={designs.cardFlex}>
-          <View>
-            <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
-            <Text style={designs.bodyText}>
-              Save towards your next rent with{'\n'}your flatmates or spouse
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
-                )
-              }
-              style={[
-                designs.cardFlex,
-                {
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                },
-              ]}>
-              {buddySaving == 0 ? (
-                <Text
+
+          <View style={designs.card}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
+                <Text style={designs.bodyText}>
+                  Save towards your next rent with{'\n'}your flatmates or spouse
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(
+                      buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
+                    )
+                  }
                   style={[
-                    designs.bodyText,
+                    designs.cardFlex,
                     {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
+                      marginTop: 16,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 27,
+                      borderRadius: 21,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
                     },
                   ]}>
-                  Start saving
-                </Text>
-              ) : (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  ₦{currencyFormat(buddySaving)}
-                </Text>
-              )}
-              <Icon name="arrow-forward" color="#9D98EC" size={15} />
-            </TouchableOpacity>
+                  {buddySaving == 0 ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Start saving
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{currencyFormat(buddySaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+
+              </View>
+              <Image
+                style={{width: 146, height: 146}}
+                source={images.maskGroup14}
+              />
+            </View>
           </View>
-          <Image
-            style={{width: 146, height: 146}}
-            source={images.maskGroup14}
-          />
-        </View>
       </View>
+    
+
+
+
+
     </View>
   );
 }

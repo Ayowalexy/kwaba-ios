@@ -13,7 +13,7 @@ const designs = StyleSheet.create({
   header: {
     marginTop: 22,
     backgroundColor: '#2A286A',
-    width: 379,
+    width: width*0.9,
     height: 60,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 100,
@@ -44,7 +44,7 @@ const designs = StyleSheet.create({
     marginTop: 13,
   },
   button: {
-    width: 380,
+    width: width*0.9,
     height: 70,
     borderRadius: 10,
     display: 'flex',

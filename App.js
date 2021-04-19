@@ -102,7 +102,7 @@ const App = () => {
             headerShown: false,
           }}
           initialRouteName={'Welcome'}>
-          {/* {!isLoggedIn && userToken == null ? (
+           {!isLoggedIn && userToken == null ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
@@ -116,7 +116,7 @@ const App = () => {
               <Stack.Screen name="Login" component={Login}></Stack.Screen>
               <Stack.Screen name="Home" component={Home}></Stack.Screen>
             </>
-          ) : ( */}
+          ) : ( 
             <>
               <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen>
               <Stack.Screen
@@ -218,7 +218,7 @@ const App = () => {
 
 
 </>
-          {/* )} */}
+           )} 
 
               {/* <Stack.Screen
                 name="CompleteProfile1"
