@@ -70,18 +70,18 @@ const Borrow = ({navigation}) => {
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
-    // let stepsdata={
-    //   documentdone:'done',
-    //   propertydetail:'done',
-    //   landlorddetail:'done',
-    //   refree:'',
-    //   offeraccepted:'',
-    //   addressverification:'',
-    //   debitmandate:'',
-    //   awaitingdisbursment:'',
-    // };
+    let stepsdata={
+      documentdone:'done',
+      propertydetail:'done',
+      landlorddetail:'done',
+      refree:'done',
+      offeraccepted:'done',
+      addressverification:'done',
+      debitmandate:'',
+      awaitingdisbursment:'',
+    };
 
-    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
     console.log('steps here', steps );
 
@@ -101,7 +101,7 @@ const Borrow = ({navigation}) => {
       navigation.navigate('PostPaymentForm3')
     }else if(steps.offeraccepted=='')
     {
-      navigation.navigate('RentalLoanOfferTest')
+      navigation.navigate('RentalLoanOfferTest') //PrintOfferLetter  RentalLoanOfferTest
     }else if(steps.addressverification=='')
     {
       navigation.navigate('AddressVerificationPayment')
@@ -124,9 +124,9 @@ const Borrow = ({navigation}) => {
         
       
       {/* < */}
-        <ImageBackground source={images.borrowSectionBGI} style={designs.bgImage} imageStyle={{
-    resizeMode: "stretch", 
-  }}>
+      <ImageBackground source={images.borrowSectionBGI} style={designs.bgImage} imageStyle={{
+          resizeMode: "stretch", 
+        }}>
       <View style={designs.contentView}>
           
           <View style={designs.textView}>

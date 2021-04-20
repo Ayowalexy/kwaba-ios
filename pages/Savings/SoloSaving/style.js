@@ -29,7 +29,7 @@ const designs = StyleSheet.create({
     fontWeight: 'bold',
   },
   textInput: {
-    width: 380,
+    width: width*0.9,
     height: 70,
     padding: 20,
     marginTop: 13,
@@ -60,14 +60,14 @@ const designs = StyleSheet.create({
   },
   summaryBox: {
     height: 400,
-    width: 380,
+    width: width*0.9,
     borderRadius: 20,
     backgroundColor: '#2A286A',
     marginTop: 16,
     padding: 23,
   },
   whiteBox: {
-    width: 334,
+    width: width*0.8,
     height: 66,
     borderRadius: 10,
     backgroundColor: 'white',

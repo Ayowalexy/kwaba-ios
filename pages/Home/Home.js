@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images} from '../../util/index';
@@ -18,6 +19,7 @@ import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
 
+const width=Dimensions.get('window').get;
 export default function Home({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
@@ -279,6 +281,24 @@ export default function Home({navigation}) {
           currentIndex={currentIndex}
           setCurrentIndex={setCurrentIndex}
         />
+      </View>
+      <View style={{flexDirection:'row',justifyContent:'center',marginTop:20,marginBottom:-10}}>
+         <TouchableOpacity>
+             <Image resizeMode='contain' source={icons.quicksave} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Quick Save</Text>
+         </TouchableOpacity>
+         <TouchableOpacity> 
+             <Image resizeMode='contain' source={icons.payrent} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Pay Rent</Text>
+          </TouchableOpacity>
+         <TouchableOpacity>
+             <Image resizeMode='contain' source={icons.buyairtime} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Buy Airtime</Text>
+          </TouchableOpacity>
+         <TouchableOpacity>   
+             <Image resizeMode='contain' source={icons.paybills} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Pay Bills</Text>
+         </TouchableOpacity>
       </View>
       <View style={designs.bottom}>
         <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>

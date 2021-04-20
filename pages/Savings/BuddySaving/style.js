@@ -29,7 +29,7 @@ const designs = StyleSheet.create({
     fontWeight: 'bold',
   },
   textInput: {
-    width: 380,
+    width: width*0.9,
     height: 70,
     padding: 20,
     marginTop: 13,

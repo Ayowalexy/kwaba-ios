@@ -64,6 +64,10 @@ const myrent = require('../assets/icons/myrent.png');
 const homelight = require('../assets/icons/homelight.png');
 const myrentlight = require('../assets/icons/myrentlight.png');
 const waste = require('../assets/icons/waste.png');
+const paybills = require('../assets/icons/paybills.png');
+const payrent = require('../assets/icons/payrent.png');
+const quicksave = require('../assets/icons/quicksave.png');
+const buyairtime = require('../assets/icons/buyairtime.png');
 
 export {
   instagram,
@@ -131,6 +135,10 @@ export {
   account,
   accountlight,
   savings,
-  savingslight
+  savingslight,
+  paybills,
+  payrent ,
+  quicksave,
+  buyairtime,
 
 };

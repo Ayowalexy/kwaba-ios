@@ -88,7 +88,7 @@ const BottomNavigator = () => {
         options={{
           tabBarIcon: ({color}) => (
             <View style={{flex:1,justifyContent:'center'}}>
-              <Image source={icons.myrent} style={{width:25,height:25,alignSelf:'center'}}/>
+              <Image source={icons.account} style={{width:25,height:25,alignSelf:'center'}}/>
               <Text style={{fontSize: 16, color: '#BFBFBF'}}>Account</Text>
             </View>
           ),

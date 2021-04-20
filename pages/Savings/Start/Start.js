@@ -216,7 +216,7 @@ export default function Start({navigation}) {
                 </TouchableOpacity>
               </View>
               <Image
-                style={{width: 146, height: 146}}
+                style={{width: 146, height: 146,}}
                 source={images.maskGroup15}
               />
             </View>

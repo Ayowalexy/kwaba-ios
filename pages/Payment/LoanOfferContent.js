@@ -9,18 +9,22 @@ const LoanOfferContent = ({navigation}) => {
     // const signature=props.signature;
     // const name=props.name;
     return (
-        <View style={{flex:1}}>
+        <View style={{flex:1,flexDirection:'column'}}>
 
-                <Text>
+                <Text style={{alignSelf:'center'}}>RENT FINANCING OFFER LETTER</Text>
+
+                <Text style={{alignSelf:'flex-end'}}>
                     
-                    RENT FINANCING OFFER LETTER
+                    
                     13/05/2020
                     Johnson Adekoya Sunkanmi
                     Duport Marine Limited 
                     42 Alexander Avenue, Ikoyi
                     Lagos State.
                     Dear Sir, 
-                    RE: OFFER OF N120,000 RENTAL FINANCING FACILITY
+                </Text>  
+                <Text>RE: OFFER OF N120,000 RENTAL FINANCING FACILITY</Text>  
+                    <Text>
                     Further to your application dated 18/05/2020, we are pleased to grant you facility under the following terms and conditions; 
                     Lender: MKOBO (“the financier”) 				Borrower:Johnson Adekoya Sunkanmi
                     Purpose: Rental Loan					Tenor: 6 Months 
@@ -171,8 +175,8 @@ const LoanOfferContent = ({navigation}) => {
 
 
                 </Text>
-            
-        </View>
+            </View>
+       
     )
 }
 

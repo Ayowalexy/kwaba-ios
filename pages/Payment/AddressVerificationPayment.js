@@ -41,14 +41,14 @@ const AddressVerificationPayment = ({navigation}) => {
             headers: {'Content-Type': 'application/json', Authorization: token},
           });
           console.log(applicationIDCallRes.data.data.non_refundable_deposit);
-        const amount = applicationIDCallRes.data.data.non_refundable_deposit;
-        setSpinner(true);
+          const amount = applicationIDCallRes.data.data.non_refundable_deposit;
+        //setSpinner(true);
         try {
           const response = await axios.post('http://67.207.86.39:8000/api/v1/application/payment/pay', {amount}, {
             headers: {'Content-Type': 'application/json', Authorization: token},
           });
-          setSpinner(true);
-          console.log(response);
+         // setSpinner(true);
+          console.log("hello here how far",response);
           if (response.status === 200) {
             setSpinner(false);
             const result = await openInAppBrowser(
@@ -69,10 +69,10 @@ const AddressVerificationPayment = ({navigation}) => {
     
               if (verify.data.status == 'success') {
                 setVerificationSpinner(false);
-                // Alert.alert(
-                //   'Payment verified',
-                //   'Your payment was verified. Thank you.',
-                // );
+                Alert.alert(
+                  'Payment verified',
+                  'Your payment was verified. Thank you.',
+                );
                 navigation.navigate('PostPaymentForm4')
               } else {
                 setVerificationSpinner(false);
@@ -86,13 +86,13 @@ const AddressVerificationPayment = ({navigation}) => {
                 setVerificationSpinner(false);
                 Alert.alert(
                   'Payment Unverified',
-                  'Your payment was not verified. Please retry.',
+                  'Your payment was not verified. Please retry.here',
                 );
               }
           }
 
         } catch (error) {
-          console.log("maybe here canceled "+error.response.data);
+          console.log("maybe here canceled ",error.response.data);
           setVerificationSpinner(false);
           Alert.alert(
             'Payment Unverified',

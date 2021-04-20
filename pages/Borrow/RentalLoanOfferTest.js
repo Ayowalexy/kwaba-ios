@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
 import { color } from 'react-native-reanimated';
+import PrintOfferLetter from '../Payment/PrintOfferLetter';
 
 
 
@@ -110,6 +111,19 @@ const RentalLoanOfferTest = ({navigation}) => {
           const response = await axios.put('http://67.207.86.39:8000/api/v1/application/accept_offer', {applicationId, signature}, {
             headers: {'Content-Type': 'application/json', Authorization: token},
           });
+
+          // let stepsdata={
+          //   documentdone:'done',
+          //   propertydetail:'done',
+          //   landlorddetail:'done',
+          //   refree:'done',
+          //   offeraccepted:'done',
+          //   addressverification:'',
+          //   debitmandate:'',
+          //   awaitingdisbursment:'',
+          // };
+        
+          // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
           console.log(response);
           setAcceptOfferResponse(response);
         } catch (error) {
@@ -137,6 +151,9 @@ const RentalLoanOfferTest = ({navigation}) => {
     };
 
   const handleRejectOffer=()=>{
+     
+
+
     Alert.alert(
       'Offer Rejected',
       'Offer Rejected.',
@@ -198,6 +215,8 @@ const RentalLoanOfferTest = ({navigation}) => {
       />
 
       <ScrollView>
+
+        
 
         <View
           style={{
@@ -308,12 +327,13 @@ const RentalLoanOfferTest = ({navigation}) => {
             <View>
                 <Text style={{fontSize: 16, lineHeight: 20, fontWeight: 'bold', color: COLORS.primary, textAlign: 'center'}}>Offer Letter</Text>
 
-                <ScrollView>
+                {/* <ScrollView > */}
                    {/* <LoanOfferContent /> */}
-                </ScrollView>
-                <Text>
+                   <PrintOfferLetter />
+                {/* </ScrollView> */}
+                {/* <Text>
                     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidu s dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, sit.
-                </Text>
+                </Text> */}
                 <TouchableOpacity
                   onPress={handleAcceptOfferClick} style={[designs.button, {backgroundColor: COLORS.secondary, elevation: 6, width: '100%', marginTop: 12, alignSelf: 'center'}]}>
                   <Text style={[designs.buttonText, {fontSize: 14, color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>YES, ACCEPT</Text>
