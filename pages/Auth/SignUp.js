@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
@@ -15,6 +16,7 @@ import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuccessModal from '../../components/SuccessModal';
+const widthTouse=Dimensions.get('window').width;
 
 export default function SignUp({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
@@ -98,7 +100,7 @@ export default function SignUp({navigation}) {
     <View
       style={[
         designs.container,
-        {paddingRight: 32, paddingLeft: 32, paddingTop: 59},
+        { paddingTop: 59},
       ]}>
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
@@ -131,7 +133,7 @@ export default function SignUp({navigation}) {
             style={[
               designs.heading,
               {
-                marginLeft: 0,
+                marginLeft: 16,
                 fontSize: 30,
                 fontWeight: '700',
                 fontFamily: 'CircularStd',
@@ -161,9 +163,9 @@ export default function SignUp({navigation}) {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
-          <View style={[designs.customInput, {width: 345}]}>
+          <View style={[designs.customInput, {width: widthTouse*0.9}]}>
             <TextInput
-              style={{flex: 1}}
+              style={{flex: 1,alignSelf:'center'}}
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
               secureTextEntry={true}
@@ -184,7 +186,7 @@ export default function SignUp({navigation}) {
             }}
             size="large"
           />
-          <View style={[designs.customInput, {width: 345}]}>
+          <View style={[designs.customInput, {width: widthTouse*0.9}]}>
             <TextInput
               style={{flex: 1}}
               placeholder="Confirm Password"
@@ -232,6 +234,7 @@ export default function SignUp({navigation}) {
               </Text>
             </TouchableOpacity>
           </View>
+
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={isError()}
@@ -239,8 +242,8 @@ export default function SignUp({navigation}) {
               designs.btn,
               {
                 backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
-                marginRight: 8,
-                marginLeft: 8,
+                marginRight: 16,
+                marginLeft: 16,
                 marginBottom: 20,
               },
             ]}>
@@ -253,6 +256,7 @@ export default function SignUp({navigation}) {
               SIGN UP
             </Text>
           </TouchableOpacity>
+
         </View>
       </ScrollView>
       <SuccessModal

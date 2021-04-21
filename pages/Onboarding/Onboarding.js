@@ -78,18 +78,22 @@ const Onboarding = ({navigation}) => {
                   <View>
                     <View>
                       <TouchableOpacity
-                        onPress={() => navigation.navigate('GetCode')}
+                        onPress={() => navigation.navigate('SignUp')}
                         style={designs.getStartedBtn}>
                         <Text style={{fontWeight: '600', color: '#2A286A'}}>
                           GET STARTED
                         </Text>
                       </TouchableOpacity>
                     </View>
-                    <View style={designs.linkContainer}>
+                    <View style={[designs.linkContainer],{flexDirection:'row'}}  >
                       <Text style={{color: 'white'}}>
-                        Got an account?{' '}
-                        <Text style={{color: '#00DC99'}}>Log in</Text>
+                        Got an account ?{' '}
+                        
                       </Text>
+                      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+
+                        <Text style={{color: '#00DC99'}}>Log in</Text>
+                        </TouchableOpacity>
                     </View>
                   </View>
                 ) : (

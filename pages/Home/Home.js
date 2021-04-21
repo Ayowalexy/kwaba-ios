@@ -34,6 +34,8 @@ export default function Home({navigation}) {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
+
+      console.log("hello here is our data ",JSON.parse(userData));
       if (userData) {
         setName(JSON.parse(userData).username);
       }

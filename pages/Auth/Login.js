@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   Alert,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
@@ -16,6 +17,8 @@ import {setLoginState} from '../../redux/actions/userActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login} from '../../services/network';
+
+const widthTouse=Dimensions.get('window').width;
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
@@ -74,10 +77,10 @@ export default function Login({navigation}) {
     <View
       style={[
         designs.container,
-        {paddingTop: 106, paddingLeft: 33, paddingRight: 33},
+        {paddingTop: 106},
       ]}>
       <Image
-        style={[designs.image, {marginTop: 0, marginLeft: -30}]}
+        style={[designs.image, {marginTop: 0,marginLeft:16}]}
         source={images.kwabaLogo}
       />
       <Text
@@ -87,13 +90,14 @@ export default function Login({navigation}) {
           color: '#2A286A',
           lineHeight: 23,
           marginTop: 42,
+          marginLeft:16
         }}>
         Login to your account
       </Text>
-      <View style={[designs.customInput, {width: 360}]}>
+      <View style={[designs.customInput, {width: widthTouse*0.9}]}>
         <Icon name="mail-outline" size={30} color="#D6D6D6" />
         <TextInput
-          style={{flex: 1}}
+          style={{flex: 1,alignSelf:'center'}}
           placeholder="Email"
           placeholderTextColor="#BFBFBF"
           keyboardType="email-address"
@@ -101,10 +105,10 @@ export default function Login({navigation}) {
           onChangeText={(text) => setEmail(text)}
         />
       </View>
-      <View style={[designs.customInput, {width: 360}]}>
+      <View style={[designs.customInput, {width: widthTouse*0.9}]}>
         <Icon name="lock-closed-outline" size={30} color="#D6D6D6" />
         <TextInput
-          style={{flex: 1}}
+          style={{flex: 1,alignSelf:'center'}}
           placeholder="Password"
           placeholderTextColor="#BFBFBF"
           secureTextEntry={true}
@@ -120,11 +124,15 @@ export default function Login({navigation}) {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
+        
+        <View style={{flexDirection:'row',justifyContent:'space-between',alignItems: 'center',}}>
+
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginTop:10
           }}>
           <CheckBox
             style={{
@@ -132,6 +140,7 @@ export default function Login({navigation}) {
               width: 14,
               marginRight: 8,
               borderColor: '#D6D6D6',
+              marginLeft:16
             }}
             disabled={false}
             value={toggleCheckBox}
@@ -144,6 +153,7 @@ export default function Login({navigation}) {
               lineHeight: 30,
               fontWeight: '900',
               marginLeft: 8,
+              marginRight:widthTouse*0.3
             }}>
             Remember me
           </Text>
@@ -154,9 +164,14 @@ export default function Login({navigation}) {
             fontSize: 14,
             lineHeight: 30,
             fontWeight: '900',
+            alignSelf:'flex-end',
+            marginTop:10
           }}>
-          Forgot Password?
+          Forgot Password ?
         </Text>
+        </View>
+
+
       </View>
       <View
         style={{
@@ -172,7 +187,7 @@ export default function Login({navigation}) {
             designs.btn,
             {
               backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
-              width: 246,
+              width: widthTouse*0.9,
               borderRadius: 10,
             },
           ]}>
@@ -186,12 +201,12 @@ export default function Login({navigation}) {
             LOG IN
           </Text>
         </TouchableOpacity>
-        <View style={designs.fingerPrint}>
+        {/* <View style={designs.fingerPrint}>
           <Image
             style={{width: 38, height: 38, tintColor: '#BFBFBF'}}
             source={images.fingerPrint}
           />
-        </View>
+        </View> */}
       </View>
       <View
         style={{

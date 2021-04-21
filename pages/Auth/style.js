@@ -1,4 +1,6 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet,Dimensions} from 'react-native';
+
+const widthTouse=Dimensions.get('window').width;
 
 const designs = StyleSheet.create({
   container: {
@@ -28,6 +30,8 @@ const designs = StyleSheet.create({
     borderWidth: 1,
     marginTop: 14,
     paddingLeft: 22,
+    width:widthTouse*0.9,
+    alignSelf:'center'
   },
   customInput: {
     height: 70,
@@ -42,14 +46,15 @@ const designs = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: 370,
-    marginRight: 'auto',
-    marginLeft: 'auto',
+    width: widthTouse*0.9,
+    marginLeft:16
+    
+    
   },
   image: {
     width: 129,
     height: 30,
-    marginLeft: 32,
+    marginLeft: 16,
     marginTop: 59,
   },
   heading: {

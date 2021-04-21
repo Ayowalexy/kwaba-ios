@@ -9,12 +9,14 @@ import {
     ScrollView,
     Dimensions,
     Image,
-    TouchableHighlight
+    TouchableHighlight,
+    Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome'
 import {COLORS, FONTS, images,icons} from '../../util/index';
 import { CustomTextInput, CustomPicker } from '../../components/CustomInput';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import designs from './style';
 import axios from 'axios';
 
@@ -42,8 +44,23 @@ const AccountPage = ({navigation}) => {
 // }
 
 
- const logOut=()=>{
+ const LogOut=()=>{
    console.log("hello here");
+
+   AsyncStorage.removeItem('userData');
+
+   try{
+
+    AsyncStorage.removeItem('userData');
+
+    Alert.alert('Message','Logout Sucessfully', [
+      {text: 'Close'},
+    ]);
+
+
+   }catch(error){
+
+   }
    
  }
 
@@ -52,7 +69,7 @@ const AccountPage = ({navigation}) => {
      {iconName: 'credit-card', tabTitle: 'Card And Bank', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
-     {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('UploadDocumentsList')}},
      {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
  ]
@@ -135,7 +152,7 @@ return (
           })}
         </View>
         <View  style={{alignSelf:'center',width:width*0.9}}>
-          <TouchableOpacity style={{height:50}}  onPress={()=>{logOut()}}>
+          <TouchableOpacity style={{height:50}}  onPress={()=>{LogOut()}}>
               <View  style={{height:50,flexDirection:'row',justifyContent:'space-between'}}>
 
                 <View style={{}}>

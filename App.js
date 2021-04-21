@@ -71,6 +71,7 @@ import AddressVerificationPayment from './pages/Payment/AddressVerificationPayme
 import AwaitingDisbursement from './pages/Payment/AwaitingDisbursement';
 import BillsHome from './pages/Bills/BillsHome';
 import PrintOfferLetter from './pages/Payment/PrintOfferLetter';
+import UploadDocumentsList from './pages/UserAccount/UploadDocumentsList';
 
 
 
@@ -203,6 +204,7 @@ const App = () => {
 <Stack.Screen name="FileUploadTest" component={FileUploadTest}></Stack.Screen>
 <Stack.Screen name="RentalLoanOfferTest" component={RentalLoanOfferTest}></Stack.Screen> 
 <Stack.Screen name="PrintOfferLetter" component={PrintOfferLetter}></Stack.Screen>  
+<Stack.Screen name="UploadDocumentsList" component={UploadDocumentsList}></Stack.Screen>  
 <Stack.Screen name="BottomNavigation" component={BottomNavigator}></Stack.Screen>
 <Stack.Screen name="EmergencyLoanRequestDashBoard" component={EmergencyLoanRequestDashBoard}></Stack.Screen>
 <Stack.Screen name="EmergencyLoanRequest" component={EmergencyLoanRequest}></Stack.Screen>

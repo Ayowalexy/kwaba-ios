@@ -85,8 +85,6 @@ export default function OkraDebitMandate({navigation}) {
             });
             console.log(applicationIDCallRes.data.data.id);
 
-           // console.log("here is the response "+JSON.stringify(applicationIDCallRes.data.data));
- 
             const applicationId = applicationIDCallRes.data.data.id;
       
             setExistingApplication(applicationId);
@@ -100,7 +98,7 @@ export default function OkraDebitMandate({navigation}) {
       
     };
         
-    getApplicationData()
+    getApplicationData();
   }, []);
 
   const handleLinkingSucess = async(response) => {
