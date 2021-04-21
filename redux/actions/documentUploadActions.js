@@ -28,8 +28,9 @@ import axios from 'axios';
     payload: id,
   });
 
-  export const uploadFile = (token, item, data) => {
+  export const uploadFile = (token, item, data,blob) => {
     return async (dispatch) => {
+
       const config = {
     onUploadProgress: (progressEvent) => {
     const {loaded, total} = progressEvent;
@@ -41,13 +42,17 @@ import axios from 'axios';
       'Content-Type': 'application/json', Authorization: token
     }
     };
+
     try {
+  
       const response = await axios.post('http://67.207.86.39:8000/api/v1/application/documents/upload', data, config);
       console.log(response);
       if (response.status == 200){
         dispatch(successUploadFile(item.id))
       }
+      
     } catch (error) {
+      console.log("here is the error",error);
       console.log(error.response.data);
       dispatch(failureUploadFile(item.id))
     }

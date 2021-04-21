@@ -144,7 +144,15 @@ export default function UploadDocumentsList({navigation}) {
       const base64File = await RNFS.readFile(res.uri, 'base64');
       //console.log(base64File);
       const convertedFile = `data:${res.type},${base64File}`;
-      console.log(convertedFile);
+      //console.log(convertedFile);
+
+      const blob = {
+        uri:res.uri,
+        type:res.type,
+        name:res.name,
+      }
+
+      console.log("the file dey here",blob);
   
       const token = await getToken();
       const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
@@ -152,8 +160,20 @@ export default function UploadDocumentsList({navigation}) {
         });
         console.log(applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
+
+      const formdata = new FormData();
+      formdata.append("file", blob);
+      formdata.append("upload_preset", "rental_loan_documents");
+      formdata.append("cloud_name", "kwaba");
+
+      const response =await axios.post(
+        "https://api.cloudinary.com/v1_1/kwaba/auto/upload",
+        formdata
+      );
+
+      console.log("here is the console log  from cloudinary ",response.data.url);
   
-      const data = {applicationId, file: convertedFile, document_type: item.id, filename: item.title }
+      const data = {applicationId, file: response.data.url, document_type: item.id, filename: item.title }
   
       try{
       dispatch(uploadFile(token, item, data));

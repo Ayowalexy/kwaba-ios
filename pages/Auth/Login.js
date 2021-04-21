@@ -80,8 +80,8 @@ export default function Login({navigation}) {
         {paddingTop: 106},
       ]}>
       <Image
-        style={[designs.image, {marginTop: 0,marginLeft:16}]}
-        source={images.kwabaLogo}
+        style={[designs.image, {marginTop: 0,}]}
+        source={images.kwabaLogoWithName}
       />
       <Text
         style={{
