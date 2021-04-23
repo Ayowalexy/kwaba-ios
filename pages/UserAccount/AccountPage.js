@@ -19,6 +19,8 @@ import { CustomTextInput, CustomPicker } from '../../components/CustomInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import designs from './style';
 import axios from 'axios';
+import PasswordChangeModal from './PasswordChangeModal';
+import WithdrawModal from './WithdrawModal';
 
 
 
@@ -29,6 +31,15 @@ const AccountPage = ({navigation}) => {
     const [selectedOption, setSelectedOption] = useState('');
   const [secondPressed, setSecondPressed] = useState(false);
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+  const [showCard, setShowCard] = useState(false);
+  const [oldpassword, setoldpassword] = useState('');
+  const [newpassword, setnewpassword] = useState('');
+  const [confirmnewpassword, setconfirmnewpassword] = useState('');
+  const [WithrawmodalVisible, setWithrawModalVisible] = useState(false);
+
+
   const [loanPurpose] = useState([
     {label: 'Household', value: 'Household'},
     {label: 'Personal', value: 'Personal'},
@@ -69,11 +80,22 @@ const AccountPage = ({navigation}) => {
 
  }
 
+ const addCard = () => {
+  setModalVisible(false);
+  setShowCard(true);
+};
+
+const addWithdrawCard = () => {
+  setWithdrawModalVisible(false);
+  setWithdrawShowCard(true);
+};
+
+
  const accountTabsAndSettings = [
-     {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){setWithrawModalVisible(true);}},
      {iconName: 'credit-card', tabTitle: 'Card And Bank', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
-     {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){setModalVisible(true);}},
      {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('UploadDocumentsList')}},
      {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
@@ -170,6 +192,42 @@ return (
               </View>
             </TouchableOpacity>
         </View>
+
+        <View>
+        
+
+        <PasswordChangeModal
+                  onConfirm={addCard}
+                  onRequestClose={() => setModalVisible(!modalVisible)}
+                  visible={modalVisible}
+                  oldpassword={oldpassword}
+                  setoldpassword={setoldpassword}
+                  newpassword={newpassword}
+                  setnewpassword={setnewpassword}
+                  confirmnewpassword={confirmnewpassword}
+                  setconfirmnewpassword={setconfirmnewpassword}
+
+        />
+
+
+
+      </View>
+
+      <View>
+     
+
+      <WithdrawModal  
+                          onConfirm={addWithdrawCard}
+                          onRequestClose={() => setWithrawModalVisible(!WithrawmodalVisible)} 
+                          visible={WithrawmodalVisible}
+                          oldpassword={oldpassword}
+                          setoldpassword={setoldpassword}
+                          newpassword={newpassword}
+                          setnewpassword={setnewpassword}
+                          confirmnewpassword={confirmnewpassword}
+                          setconfirmnewpassword={setconfirmnewpassword}
+        />
+      </View>
         
     </View>
   );
