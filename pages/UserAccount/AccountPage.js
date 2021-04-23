@@ -13,7 +13,7 @@ import {
     Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import IconFA from 'react-native-vector-icons/FontAwesome'
+import IconFA from 'react-native-vector-icons/FontAwesome';
 import {COLORS, FONTS, images,icons} from '../../util/index';
 import { CustomTextInput, CustomPicker } from '../../components/CustomInput';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -64,6 +64,11 @@ const AccountPage = ({navigation}) => {
    
  }
 
+
+ const Referral=()=>{
+
+ }
+
  const accountTabsAndSettings = [
      {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
      {iconName: 'credit-card', tabTitle: 'Card And Bank', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
@@ -105,7 +110,7 @@ return (
                 <View style={{marginTop:60}} >
 
                   <Text style={[FONTS.h3FontStyling,{marginLeft:40,marginTop:-23,color:COLORS.primary,fontWeight: 'bold',}]} >Adebisi Joseph</Text>
-                  <TouchableOpacity style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'#9D98EC',width:100,height:30,borderRadius:15,marginLeft:40,marginTop:10}}>
+                  <TouchableOpacity onPress={()=>{ navigation.navigate('profile');  }} style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'#9D98EC',width:100,height:30,borderRadius:15,marginLeft:40,marginTop:10}}>
                     <Text  style={{width:78,height:30,borderRadius:15,color:COLORS.white,textAlign:'center',marginTop:5}}>Profile</Text>
                     <IconFA name='angle-right' size={20} color='#ffffff' style={{marginRight:20,marginTop:10,marginTop:5}} />
                   </TouchableOpacity>

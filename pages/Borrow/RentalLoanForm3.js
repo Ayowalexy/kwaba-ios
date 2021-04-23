@@ -217,13 +217,13 @@ const [modeOfPaymentOptions] = useState([
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 3</Text>
           <AnimatedCircularProgress
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
+          size={25}
+          width={5}
+          fill={progress}
+          rotation={0}
+          tintColor= {COLORS.secondary}
+          backgroundColor="#D6D6D6" />
+          </View>
           </View>
           <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>What is your current home address?</Text>
           <TextInput
@@ -234,7 +234,7 @@ const [modeOfPaymentOptions] = useState([
           onChangeText={(text) => setHomeAddress(text)}
           />
 
-<Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How long have you lived here? </Text>
+        <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How long have you lived here? </Text>
          {/* <TextInput
             style={[designs.textField, {marginBottom: 17, textAlign: 'left'}]}
             placeholder="1 year"

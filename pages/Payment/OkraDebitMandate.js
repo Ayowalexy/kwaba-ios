@@ -55,8 +55,9 @@ const okraOptions = {
   token: '5e5bb362bd83ab0826527d30',
   widget_failed: '',
   widget_success: 'Your account was successfully linked to Okra, Inc',
-  debitLater:true
-};
+  debitLater:true,
+//   products:['auth', 'transactions','payments']
+ };
 
 
 

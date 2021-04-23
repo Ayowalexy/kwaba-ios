@@ -72,6 +72,7 @@ import AwaitingDisbursement from './pages/Payment/AwaitingDisbursement';
 import BillsHome from './pages/Bills/BillsHome';
 import PrintOfferLetter from './pages/Payment/PrintOfferLetter';
 import UploadDocumentsList from './pages/UserAccount/UploadDocumentsList';
+import profile from './pages/CompleteProfile/profile';
 
 
 
@@ -214,7 +215,7 @@ const App = () => {
 <Stack.Screen name="AccountPage" component={AccountPage}></Stack.Screen>
 <Stack.Screen name="CardAndBankDetails" component={CardAndBankDetails}></Stack.Screen>
 <Stack.Screen name="BillsHome" component={BillsHome}></Stack.Screen>
-
+<Stack.Screen name="profile" component={profile}></Stack.Screen>
 
 
 
