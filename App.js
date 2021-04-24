@@ -73,6 +73,7 @@ import BillsHome from './pages/Bills/BillsHome';
 import PrintOfferLetter from './pages/Payment/PrintOfferLetter';
 import UploadDocumentsList from './pages/UserAccount/UploadDocumentsList';
 import profile from './pages/CompleteProfile/profile';
+import Referral from './pages/UserAccount/Referral';
 
 
 
@@ -216,6 +217,7 @@ const App = () => {
 <Stack.Screen name="CardAndBankDetails" component={CardAndBankDetails}></Stack.Screen>
 <Stack.Screen name="BillsHome" component={BillsHome}></Stack.Screen>
 <Stack.Screen name="profile" component={profile}></Stack.Screen>
+<Stack.Screen name="Referral" component={Referral}></Stack.Screen>
 
 
 

@@ -94,7 +94,7 @@ const addWithdrawCard = () => {
  const accountTabsAndSettings = [
      {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){setWithrawModalVisible(true);}},
      {iconName: 'credit-card', tabTitle: 'Card And Bank', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
-     {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: function openCardAndBank(){navigation.navigate('Referral')}},
      {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){setModalVisible(true);}},
      {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('UploadDocumentsList')}},
      {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
@@ -197,16 +197,15 @@ return (
         
 
         <PasswordChangeModal
-                  onConfirm={addCard}
-                  onRequestClose={() => setModalVisible(!modalVisible)}
-                  visible={modalVisible}
-                  oldpassword={oldpassword}
-                  setoldpassword={setoldpassword}
-                  newpassword={newpassword}
-                  setnewpassword={setnewpassword}
-                  confirmnewpassword={confirmnewpassword}
-                  setconfirmnewpassword={setconfirmnewpassword}
-
+          onConfirm={addCard}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+          visible={modalVisible}
+          oldpassword={oldpassword}
+          setoldpassword={setoldpassword}
+          newpassword={newpassword}
+          setnewpassword={setnewpassword}
+          confirmnewpassword={confirmnewpassword}
+          setconfirmnewpassword={setconfirmnewpassword}
         />
 
 
@@ -217,15 +216,15 @@ return (
      
 
       <WithdrawModal  
-                          onConfirm={addWithdrawCard}
-                          onRequestClose={() => setWithrawModalVisible(!WithrawmodalVisible)} 
-                          visible={WithrawmodalVisible}
-                          oldpassword={oldpassword}
-                          setoldpassword={setoldpassword}
-                          newpassword={newpassword}
-                          setnewpassword={setnewpassword}
-                          confirmnewpassword={confirmnewpassword}
-                          setconfirmnewpassword={setconfirmnewpassword}
+          onConfirm={addWithdrawCard}
+          onRequestClose={() => setWithrawModalVisible(!WithrawmodalVisible)} 
+          visible={WithrawmodalVisible}
+          oldpassword={oldpassword}
+          setoldpassword={setoldpassword}
+          newpassword={newpassword}
+          setnewpassword={setnewpassword}
+          confirmnewpassword={confirmnewpassword}
+          setconfirmnewpassword={setconfirmnewpassword}
         />
       </View>
         

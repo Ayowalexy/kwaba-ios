@@ -97,16 +97,16 @@ const FirstRoute = () => {
                 />
             </View>
             <TouchableOpacity
-          onPress={()=>{}}
-        
-          style={[
-            designs.btn,
-            {
-              backgroundColor: '#00DC99' ,
-              width: widthtouse*0.9,
-              borderRadius: 10,
-            },
-          ]}>
+            onPress={()=>{}}
+          
+            style={[
+              designs.btn,
+              {
+                backgroundColor: '#00DC99' ,
+                width: widthtouse*0.9,
+                borderRadius: 10,
+              },
+            ]}>
           <Text
             style={{
               color:  'white' ,
