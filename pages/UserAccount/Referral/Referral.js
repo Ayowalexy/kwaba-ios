@@ -1,12 +1,44 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import { Image, StyleSheet, Text, View,Dimensions, TextInput ,TouchableOpacity, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
-import {icons, images,COLORS, FONTS,designs} from '../../util/index';
+import Clipboard from '@react-native-clipboard/clipboard';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import {icons, images,COLORS, FONTS,designs} from '../../../util/index';
 
 const widthtouse=Dimensions.get('window').width;
 
+
+
 const Referral = () => {
+
+    const [referralCode, setReferralCode] = useState('');
+
+
+    const fetchReferralCode = async () => {
+        const text = await Clipboard.getString();
+        
+      };
+    
+
+      const copyToClipboard  = async () => {
+
+        const referral_code =await getReferralCode();
+        Clipboard.setString(referral_code);
+      };
+
+      const getReferralCode = async () => {
+        const userData = await AsyncStorage.getItem('userData');
+        const referral_code = JSON.parse(userData).user.referral_code;
+        console.log(referral_code);
+        setReferralCode(referral_code);
+        return referral_code;
+      };
+
+    useEffect(()=>{
+        getReferralCode();
+    },[])
     return (
         <View style={{flex:1,backgroundColor:'#F7F8FD'}}>
             <View style={{flex:1,flexDirection:'column',margin:20,backgroundColor:'#9D98EC',borderRadius:20,alignItems:'center'}}>
@@ -19,8 +51,14 @@ const Referral = () => {
                <Text style={[FONTS.h1FontStyling,{color:COLORS.primary,fontWeight:'bold',alignSelf:'flex-start',marginTop:20,marginLeft:10}]}>Referral code</Text>
               
                <View style={{flexDirection:'row',justifyContent:'center',height:90,alignSelf:'flex-start'}}>
-                  <TextInput editable={false} selectTextOnFocus={false} style={{backgroundColor:'#BAB5FF',height:70,width:widthtouse*0.6,borderRadius:10,marginLeft:10}} />
-                  <TouchableOpacity style={{height:70,backgroundColor:COLORS.white,borderRadius:10,width:70,marginLeft:widthtouse/20}}>
+                  <TextInput editable={false} selectTextOnFocus={false}
+                   style={{backgroundColor:'#BAB5FF',height:70,width:widthtouse*0.6,borderRadius:10,marginLeft:10,color:COLORS.white}}
+                   
+                   value={referralCode}
+                   />
+                  <TouchableOpacity style={{height:70,backgroundColor:COLORS.white,borderRadius:10,width:70,marginLeft:widthtouse/20}} 
+                    onPress={copyToClipboard}
+                  >
                      <IconFA name ='clone' size={30} color={COLORS.primary} style={{alignSelf:'center',marginTop:20}}/>
                   </TouchableOpacity>
                </View>

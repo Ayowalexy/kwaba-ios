@@ -61,7 +61,7 @@ export default function Login({navigation}) {
             isLoggedIn: true,
           }),
         );
-        navigation.navigate('Welcome');
+        navigation.navigate('Home');
       } else {
         Alert.alert(
           'INVALID CREDENTIALS',

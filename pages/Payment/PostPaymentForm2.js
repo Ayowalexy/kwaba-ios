@@ -175,14 +175,14 @@ const PostPaymentForm2 = ({navigation}) => {
             placeholder="Last Name"
             placeholderTextColor= {COLORS.grey}
             value={landLordLastName}
-          onChangeText={(text) => setLandLordLastName(text)}
+            onChangeText={(text) => setLandLordLastName(text)}
           />
           <TextInput
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
           placeholder="Phone Number "
           placeholderTextColor= {COLORS.grey}
           value={landLordPhoneNumber}
-        onChangeText={(text) => setLandLordPhoneNumber(text)}
+           onChangeText={(text) => setLandLordPhoneNumber(text)}
         />
 
       <TextInput
