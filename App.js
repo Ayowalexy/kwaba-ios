@@ -75,6 +75,7 @@ import UploadDocumentsList from './pages/UserAccount/UploadDocumentsList';
 import profile from './pages/CompleteProfile/profile';
 import Referral from './pages/UserAccount/Referral/Referral';
 import ReferralDetails from './pages/UserAccount/Referral/ReferralDetails';
+import Aboutus from './pages/UserAccount/Aboutus/Aboutus';
 
 
 
@@ -220,6 +221,7 @@ const App = () => {
 <Stack.Screen name="profile" component={profile}></Stack.Screen>
 <Stack.Screen name="Referral" component={Referral}></Stack.Screen>
 <Stack.Screen name="ReferralDetails" component={ReferralDetails}></Stack.Screen>
+<Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
 
 
 

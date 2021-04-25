@@ -98,7 +98,7 @@ const addWithdrawCard = () => {
      {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){setModalVisible(true);}},
      {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('UploadDocumentsList')}},
      {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
-     {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
  ]
 
  
