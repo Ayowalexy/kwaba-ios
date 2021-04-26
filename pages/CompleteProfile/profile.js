@@ -1,6 +1,12 @@
 import React,{useState} from 'react';
 import { StyleSheet, Text, View ,useWindowDimensions,Image,TouchableOpacity, ScrollView ,TextInput,Dimensions,Pressable,Modal } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
+import { 
+  TabView, 
+  SceneMap,
+  TabBar,
+  NavigationState,
+  SceneRendererProps, 
+} from 'react-native-tab-view';
 
 import {COLORS, FONTS, images,icons} from '../../util/index';
 import designs from './style';
@@ -44,7 +50,7 @@ const FirstRoute = () => {
                     style={{flex: 1,alignSelf:'center'}}
                    
                     placeholderTextColor="#BFBFBF"
-                    keyboardType="text"
+                    
                     value={firstname}
                     onChangeText={(text) => setFirstName(text)}
                 />
@@ -55,7 +61,7 @@ const FirstRoute = () => {
                     style={{alignSelf:'center'}}
                    
                     placeholderTextColor="#BFBFBF"
-                    keyboardType="text"
+                   
                     value={lastname}
                     onChangeText={(text) => setLastName(text)}
                 />
@@ -67,7 +73,7 @@ const FirstRoute = () => {
                     style={{flex: 1,alignSelf:'center'}}
                    
                     placeholderTextColor="#BFBFBF"
-                    keyboardType="text"
+                    
                     value={gender}
                     onChangeText={(text) => setGender(text)}
                 />
@@ -79,7 +85,7 @@ const FirstRoute = () => {
                     style={{flex: 1,alignSelf:'center'}}
                    
                     placeholderTextColor="#BFBFBF"
-                    keyboardType="text"
+                    
                     value={dateOfBirth}
                     onChangeText={(text) => setDateOfBirth(text)}
                 />
@@ -91,7 +97,7 @@ const FirstRoute = () => {
                     style={{flex: 1,alignSelf:'center'}}
                    
                     placeholderTextColor="#BFBFBF"
-                    keyboardType="text"
+                    
                     value={address}
                     onChangeText={(text) => setAddress(text)}
                 />
@@ -178,15 +184,29 @@ const FirstRoute = () => {
       </View>
     </View>
   )
-}
-  ;
+};
 
   const ThirdRoute = () => (
     <View style={{ flex: 1, backgroundColor: '#fff' }} >
 
     </View>
   );
-  
+
+
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: 'blue' }}
+      style={{ backgroundColor: 'white' }}
+      renderLabel={({ route, focused, color }) => (
+        <Text style={{ color:focused?'white':COLORS.grey, margin: 0,backgroundColor:focused?'#9D98EC':'white',height:32,textAlign:'center',width:100,paddingTop:6,borderRadius:5 }}>
+          {route.title}
+        </Text>   
+    )}
+    />
+  );
+
+
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
@@ -222,6 +242,7 @@ const profile = ({navigation}) => {
 
 
           <TabView
+            renderTabBar={renderTabBar}
             navigationState={{ index, routes }}
             renderScene={renderScene}
             onIndexChange={setIndex}
@@ -234,4 +255,41 @@ const profile = ({navigation}) => {
 
 export default profile;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  tabbar: {
+    backgroundColor: '#263238',
+    overflow: 'hidden',
+  },
+  icon: {
+    backgroundColor: 'transparent',
+    color: 'white',
+  },
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  indicator: {
+    backgroundColor: 'rgb(0, 132, 255)',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    margin: 6,
+  },
+  badge: {
+    marginTop: 4,
+    marginRight: 32,
+    backgroundColor: '#f44336',
+    height: 24,
+    width: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  count: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: -2,
+  },
+});
