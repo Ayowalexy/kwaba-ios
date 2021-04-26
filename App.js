@@ -76,6 +76,8 @@ import profile from './pages/CompleteProfile/profile';
 import Referral from './pages/UserAccount/Referral/Referral';
 import ReferralDetails from './pages/UserAccount/Referral/ReferralDetails';
 import Aboutus from './pages/UserAccount/Aboutus/Aboutus';
+import OkraDebitMandate2 from './pages/Payment/OkraDebitMandate2';
+//import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
 
 
 
@@ -222,6 +224,8 @@ const App = () => {
 <Stack.Screen name="Referral" component={Referral}></Stack.Screen>
 <Stack.Screen name="ReferralDetails" component={ReferralDetails}></Stack.Screen>
 <Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
+<Stack.Screen name="OkraDebitMandate2" component={OkraDebitMandate2}></Stack.Screen>
+{/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
 
 

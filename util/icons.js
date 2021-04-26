@@ -1,4 +1,3 @@
-const instagram = require('../assets/icons/instagram.svg');
 const accountCircle = require('../assets/icons/account-circle.png');
 const addButton = require('../assets/icons/add-button.svg');
 const addIcon = require('../assets/icons/add-icon.png');
@@ -11,7 +10,6 @@ const creditCard = require('../assets/icons/credit-card.svg');
 const dateTimePicker = require('../assets/icons/calendar-alt.png');
 const messageIcon = require('../assets/icons/envelope.svg');
 const hidePassword = require('../assets/icons/eye-slash.svg');
-const facebook = require('../assets/icons/facebook.svg');
 const fileIcon = require('../assets/icons/feather-file-text.png');
 const fileAlt = require('../assets/icons/file-alt.png');
 const fingerPrintColored = require('../assets/icons/fingerprint-cloured.svg');
@@ -23,7 +21,6 @@ const house = require('../assets/icons/house.svg');
 const info = require('../assets/icons/info.svg');
 const instantLoan = require('../assets/icons/instant-loan.png');
 const invite = require('../assets/icons/invite.png');
-const linkedin = require('../assets/icons/linkedin-in.svg');
 const lock = require('../assets/icons/lock.png');
 const metroIntro = require('../assets/icons/metro-info.svg');
 const moneyBill = require('../assets/icons/money-bill-alt.svg');
@@ -38,7 +35,6 @@ const shareAlt = require('../assets/icons/share-alt.svg');
 const shareIcon = require('../assets/icons/share-icon.svg');
 const signIn = require('../assets/icons/sign-in-alt.svg');
 const star = require('../assets/icons/Star.png');
-const telegram = require('../assets/icons/telegram.svg');
 const tick = require('../assets/icons/tick.png');
 const timesCircle = require('../assets/icons/times-circle.svg');
 const topUp = require('../assets/icons/top-up.png');
@@ -68,6 +64,11 @@ const paybills = require('../assets/icons/paybills.png');
 const payrent = require('../assets/icons/payrent.png');
 const quicksave = require('../assets/icons/quicksave.png');
 const buyairtime = require('../assets/icons/buyairtime.png');
+const facebook = require('../assets/icons/facebook.png');
+const telegram = require('../assets/icons/telegram.png');
+const instagram = require('../assets/icons/instagram.png');
+const whatsapp = require('../assets/icons/whatsapp.png');
+const linkedin = require('../assets/icons/linkedin-in.png');
 
 export {
   instagram,
@@ -140,5 +141,6 @@ export {
   payrent ,
   quicksave,
   buyairtime,
+  whatsapp,
 
 };

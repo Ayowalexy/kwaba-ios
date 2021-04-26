@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from 'react';
-import { Image, StyleSheet, Text, View,Dimensions, TextInput ,TouchableOpacity, Button } from 'react-native';
+import { Image, StyleSheet, Text, View,Dimensions, TextInput ,TouchableOpacity, Button,Share } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -38,7 +38,28 @@ const Referral = () => {
 
     useEffect(()=>{
         getReferralCode();
-    },[])
+    },[]);
+
+
+    const onShare = async () => {
+        try {
+          const result = await Share.share({
+            message:
+              `Kwaba |  The easy way to save and pay for your rent. Kwaba helps you save towards your rent, get rent top-ups and instant loans. Kwaba has your privacy at heart. Join using the referral code below| ${referralCode}`,
+          });
+          if (result.action === Share.sharedAction) {
+            if (result.activityType) {
+              // shared with activity type of result.activityType
+            } else {
+              // shared
+            }
+          } else if (result.action === Share.dismissedAction) {
+            // dismissed
+          }
+        } catch (error) {
+          alert(error.message);
+        }
+      }
     return (
         <View style={{flex:1,backgroundColor:'#F7F8FD'}}>
             <View style={{flex:1,flexDirection:'column',margin:20,backgroundColor:'#9D98EC',borderRadius:20,alignItems:'center'}}>
@@ -63,7 +84,7 @@ const Referral = () => {
                   </TouchableOpacity>
                </View>
                 <TouchableOpacity
-                    onPress={()=>{}}
+                    onPress={()=>{onShare()}}
                 
                     style={[
                     

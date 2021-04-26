@@ -65,7 +65,6 @@ export default function PasswordChangeModal(props) {
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
               placeholder="old password"
-              keyboardType="text"
               placeholderTextColor="#ADADAD"
               value={oldpassword}
               onChangeText={(text) => setoldpassword(text)}
@@ -74,7 +73,6 @@ export default function PasswordChangeModal(props) {
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
               placeholder="New password"
-              keyboardType="text"
               placeholderTextColor="#ADADAD"
               value={newpassword}
               onChangeText={(text) => setnewpassword(text)}
@@ -83,7 +81,6 @@ export default function PasswordChangeModal(props) {
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
               placeholder="Confirm new password"
-              keyboardType="text"
               placeholderTextColor="#ADADAD"
               value={confirmnewpassword}
               onChangeText={(text) => setconfirmnewpassword(text)}

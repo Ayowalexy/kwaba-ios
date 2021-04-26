@@ -7,7 +7,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import designs from './style';
+import designs from '../Borrow/style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { MonoProvider, useMonoConnect } from '@mono.co/connect-react-native';
@@ -28,7 +28,7 @@ const ConnectWithMono = () => {
 };
 
 
-const UploadBankStatement = ({navigation}) => {
+const UploadBankStatementForProfile = ({navigation}) => {
 
   const dispatch = useDispatch();
 
@@ -150,4 +150,4 @@ try {
   );
 };
 
-export default UploadBankStatement;
+export default UploadBankStatementForProfile;

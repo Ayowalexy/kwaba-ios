@@ -28,7 +28,7 @@ import axios from 'axios';
     payload: id,
   });
 
-  export const uploadFile = (token, item, data,blob) => {
+  export const uploadFile = (token, item, data) => {
     return async (dispatch) => {
 
       const config = {

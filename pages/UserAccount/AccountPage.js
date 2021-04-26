@@ -10,7 +10,8 @@ import {
     Dimensions,
     Image,
     TouchableHighlight,
-    Alert
+    Alert,
+    Share
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
@@ -90,6 +91,8 @@ const addWithdrawCard = () => {
   setWithdrawShowCard(true);
 };
 
+;
+
 
  const accountTabsAndSettings = [
      {iconName: 'money', tabTitle: 'Withdraw', onClickFunction: function openCardAndBank(){setWithrawModalVisible(true);}},
@@ -97,7 +100,7 @@ const addWithdrawCard = () => {
      {iconName: 'share-alt', tabTitle: 'Referral', onClickFunction: function openCardAndBank(){navigation.navigate('Referral')}},
      {iconName: 'unlock-alt', tabTitle: 'Change Password', onClickFunction: function openCardAndBank(){setModalVisible(true);}},
      {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('UploadDocumentsList')}},
-     {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
+     {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
      {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
  ]
 
@@ -105,6 +108,10 @@ const addWithdrawCard = () => {
  
 
 return (
+
+
+  <ScrollView>
+
     <View style={{backgroundColor:'#F7F8FD',flex:1}}>
 
       <View  style={{backgroundColor:'#F7F8FD',marginBottom:22}}>
@@ -229,6 +236,7 @@ return (
       </View>
         
     </View>
+  </ScrollView>
   );
 }
 

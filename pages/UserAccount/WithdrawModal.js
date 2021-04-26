@@ -86,7 +86,6 @@ export default function withdrawModal(props) {
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
               placeholder="full amount"
-              keyboardType="text"
               placeholderTextColor="#ADADAD"
               value={newpassword}
               onChangeText={(text) => setnewpassword(text)}
@@ -95,7 +94,6 @@ export default function withdrawModal(props) {
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
               placeholder="Specific amount"
-              keyboardType="text"
               placeholderTextColor="#ADADAD"
               value={confirmnewpassword}
               onChangeText={(text) => setconfirmnewpassword(text)}
@@ -104,7 +102,6 @@ export default function withdrawModal(props) {
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
               placeholder="Reason"
-              keyboardType="text"
               placeholderTextColor="#ADADAD"
               value={confirmnewpassword}
               onChangeText={(text) => setconfirmnewpassword(text)}

@@ -27,7 +27,8 @@ const BottomNavigator = () => {
           borderTopRightRadius: 20,
           borderTopLeftRadius: 20,
           shadowRadius: 5,
-          shadowOpacity: 10
+          shadowOpacity: 10,
+          height:70
         },
         showLabel: false,
         activeTintColor: COLORS.primary,
