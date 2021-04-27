@@ -12,6 +12,7 @@ import {COLORS, FONTS, images,icons} from '../../util/index';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 const widthtouse=Dimensions.get('window').width;
 
@@ -67,17 +68,24 @@ const FirstRoute = () => {
                 />
             </View>
 
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: gender == ''? 16: 10, lineHeight: gender == ''? 30: 10, marginBottom: gender == ''? 0: 23}}>Gender</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={gender}
-                    onChangeText={(text) => setGender(text)}
-                />
-            </View>
+            <DropDownPicker
+              items={[
+                  {label: 'Male', value: 'male', },
+                  {label: 'Female', value: 'female', }
+              ]}
+              placeholder="Select Gender"
+              defaultValue={gender}
+              containerStyle={{height: 70,marginTop:20}}
+              style={{backgroundColor: '#fff',height:0,width: widthtouse*0.9}}
+              itemStyle={{
+                  justifyContent: 'flex-start'
+              }}
+              dropDownStyle={{backgroundColor: '#fafafa'}}
+              onChangeItem={(item) =>{
+                setGender(item.value);
+                console.log(item.value);
+              }}
+          />
 
             <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
                 <Text style={{color: COLORS.grey, fontSize: dateOfBirth == ''? 16: 10, lineHeight: dateOfBirth == ''? 30: 10, marginBottom: dateOfBirth == ''? 0: 23}}>Date of Birth</Text>              
@@ -132,7 +140,9 @@ const FirstRoute = () => {
   const SecondRoute = () => {  
     const [pickerModalVisible, setPickerModalVisible] = useState(false);
     const [pressed, setPressed] = useState(false);
-    const [modeOfPayment, setModeOfPayment] = useState('')
+    const [employmentStatus, setEmploymentStatus] = useState('');
+    const [nameOfCompany, setNameOfCompany] = useState('');
+    const [companyLocation, setCompanyLocation] = useState('');
     const [modeOfPaymentOptions] = useState([
         {label: 'Bank Transfer', value: 'Bank Transfer'},
         {label: 'Cheque', value: 'Cheque'},
@@ -140,63 +150,160 @@ const FirstRoute = () => {
       ])
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }} >
-      <View>
-      <Pressable onPress={() => {
-                setPressed(!pressed);
-                setPickerModalVisible(!pickerModalVisible)
-                console.log('switched', pressed)
-              }} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 22, paddingTop: modeOfPayment == ''? 25: 7, paddingBottom: 25, borderRadius: 10, borderColor: '#EFEFEF', backgroundColor: COLORS.white, marginBottom: 23}}> 
-              <View style={{ padding: 0, justifyContent: 'center' }}>
-                  <Text style={{color: COLORS.grey, fontSize: modeOfPayment == ''? 16: 10, lineHeight: modeOfPayment == ''? 30: 10, marginBottom: modeOfPayment == ''? 0: 3}}>How did you pay</Text>
-                  
-                  {modeOfPayment !== '' && <Text style={[FONTS.body1FontStyling, {marginBottom: 'auto'}]}>{modeOfPayment}</Text>}
-    
-              </View>
-              <View style={{height: '100%', paddingTop: modeOfPayment == ''? 0: 12 }}><IconFA name = {pressed? 'angle-up': 'angle-down'} size={30} color={COLORS.grey}/></View>
-           </Pressable>
+      <View style={{flexDirection:'column',marginTop:30,alignItems:'center'}}>
+        
+        <DropDownPicker
+              items={[
+                  {label: 'Employment', value: 'Employment', },
+                  {label: 'Unemployed', value: 'unemployed', }
+              ]}
+              placeholder="Select Employment Status"
+              defaultValue={employmentStatus}
+              containerStyle={{height: 70}}
+              style={{backgroundColor: '#fafafa',height:0,width: widthtouse*0.9,}}
+              itemStyle={{
+                  justifyContent: 'flex-start'
+              }}
+              dropDownStyle={{backgroundColor: '#fafafa'}}
+              onChangeItem={(item) =>{
+                setEmploymentStatus(item.value);
+                console.log(item.value);
+              }}
+          />
 
-          <Modal visible={pickerModalVisible} animationType="fade" transparent={true} onRequestClose ={()=>{setPickerModalVisible(!pickerModalVisible);
-              setPressed(!pressed)}}>
-              <View style={designs.modalWrapper}>
-                    <View style={designs.modalView}>
-                        <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
-                              <Icon
-                              onPress={() => {setPickerModalVisible(!pickerModalVisible);
-                              setPressed(!pressed)}}
-                              style={{alignSelf: 'flex-end'}}
-                              name="close-outline"
-                              size={30}
-                              color="#465969"
-                            />
-                        </View>           
-                        <View>
+          <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
+                <Text style={{color: COLORS.grey, fontSize: nameOfCompany == ''? 16: 10, lineHeight: nameOfCompany == ''? 30: 10, marginBottom: nameOfCompany == ''? 0: 23}}>Name Of Company</Text>              
+                <TextInput
+                    style={{flex: 1,alignSelf:'center'}}
+                   
+                    placeholderTextColor="#BFBFBF"
+                    
+                    value={nameOfCompany}
+                    onChangeText={(text) => setNameOfCompany(text)}
+                />
+            </View>
 
-                            { modeOfPaymentOptions.map((value, index) => {
-                              return <TouchableOpacity key={index} onPress={() => {setModeOfPayment(value.value); setPickerModalVisible(false); setPressed(!pressed)}}>
-                                  <Text style={FONTS.body1FontStyling}>{ value.label }</Text>
-                                </TouchableOpacity>
-                            })}
-                            
-                        </View>
-                     </View>
-                </View>
-            </Modal>
+            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
+                <Text style={{color: COLORS.grey, fontSize: companyLocation == ''? 16: 10, lineHeight: companyLocation == ''? 30: 10, marginBottom: companyLocation == ''? 0: 23}}>Location</Text>              
+                <TextInput
+                    style={{flex: 1,alignSelf:'center'}}
+                   
+                    placeholderTextColor="#BFBFBF"
+                    
+                    value={companyLocation}
+                    onChangeText={(text) => setCompanyLocation(text)}
+                />
+            </View>
+            <TouchableOpacity
+            onPress={()=>{}}
+          
+            style={[
+              designs.btn,
+              {
+                backgroundColor: '#00DC99' ,
+                width: widthtouse*0.9,
+                borderRadius: 10,
+              },
+            ]}>
+          <Text
+            style={{
+              color:  'white' ,
+              fontSize: 14,
+              lineHeight: 30,
+              fontWeight: '900',
+            }}>
+            SAVE CHANGES
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
 };
 
-  const ThirdRoute = () => (
+  const ThirdRoute = () => {
+    const [pickerModalVisible, setPickerModalVisible] = useState(false);
+    const [pressed, setPressed] = useState(false);
+    const [email, setEmail] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [bvn, setBvn] = useState('');
+    const [modeOfPaymentOptions] = useState([
+        {label: 'Bank Transfer', value: 'Bank Transfer'},
+        {label: 'Cheque', value: 'Cheque'},
+        {label: 'Deposit', value: 'Deposit'},
+      ])
+  return (
     <View style={{ flex: 1, backgroundColor: '#fff' }} >
+      <View style={{flexDirection:'column',marginTop:30,alignItems:'center'}}>
 
+      <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
+                <Text style={{color: COLORS.grey, fontSize: email == ''? 16: 10, lineHeight: email == ''? 30: 10, marginBottom: email == ''? 0: 23}}>Email</Text>              
+                <TextInput
+                    style={{flex: 1,alignSelf:'center'}}
+                   
+                    placeholderTextColor="#BFBFBF"
+                    
+                    value={email}
+                    onChangeText={(text) => setEmail(text)}
+                />
+            </View>
+
+
+          <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
+                <Text style={{color: COLORS.grey, fontSize: phoneNumber == ''? 16: 10, lineHeight: phoneNumber == ''? 30: 10, marginBottom: phoneNumber == ''? 0: 23}}>Phone Number</Text>              
+                <TextInput
+                    style={{flex: 1,alignSelf:'center'}}
+                   
+                    placeholderTextColor="#BFBFBF"
+                    
+                    value={phoneNumber}
+                    onChangeText={(text) => setPhoneNumber(text)}
+                />
+            </View>
+
+            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
+                <Text style={{color: COLORS.grey, fontSize: bvn == ''? 16: 10, lineHeight: bvn == ''? 30: 10, marginBottom: bvn == ''? 0: 23}}>Bvn</Text>              
+                <TextInput
+                    style={{flex: 1,alignSelf:'center'}}
+                   
+                    placeholderTextColor="#BFBFBF"
+                    
+                    value={bvn}
+                    onChangeText={(text) => setBvn(text)}
+                />
+            </View>
+
+            <TouchableOpacity
+            onPress={()=>{}}
+          
+            style={[
+              designs.btn,
+              {
+                backgroundColor: '#00DC99' ,
+                width: widthtouse*0.9,
+                borderRadius: 10,
+              },
+            ]}>
+          <Text
+            style={{
+              color:  'white' ,
+              fontSize: 14,
+              lineHeight: 30,
+              fontWeight: '900',
+            }}>
+            SAVE CHANGES
+          </Text>
+        </TouchableOpacity>
+         
+      </View>
     </View>
-  );
+  )
+  };
 
 
   const renderTabBar = props => (
     <TabBar
       {...props}
-      indicatorStyle={{ backgroundColor: 'blue' }}
+      indicatorStyle={{ backgroundColor: 'white' }}
       style={{ backgroundColor: 'white' }}
       renderLabel={({ route, focused, color }) => (
         <Text style={{ color:focused?'white':COLORS.grey, margin: 0,backgroundColor:focused?'#9D98EC':'white',height:32,textAlign:'center',width:100,paddingTop:6,borderRadius:5 }}>

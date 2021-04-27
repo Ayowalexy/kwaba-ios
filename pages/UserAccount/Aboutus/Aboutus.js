@@ -33,8 +33,8 @@ const Aboutus = ({navigation}) => {
           </Text>
            <View  style={styles.aboutussection}>
               <Text style={styles.aboutusText}>
-                The easy way to save and pay for your rent. RentBank helps you save towards your rent, 
-                get rent top-ups and instant loans. RentBank has your privacy at heart. 
+                The easy way to save and pay for your rent. Kwaba helps you save towards your rent, 
+                get rent top-ups and instant loans. Kwaba has your privacy at heart. 
                 Our platform was built with Bank-grade security features.
                 We work with PCIDSS compliant payment processors for the security of your data. 
                 Your savings are overseen by our partners who are regulated at the highest standard of 

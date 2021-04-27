@@ -12,11 +12,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
 import designs from './style';
 import CheckBox from '@react-native-community/checkbox';
-import {useDispatch} from 'react-redux';
+import {useSelector,useDispatch} from 'react-redux';
 import {setLoginState} from '../../redux/actions/userActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login} from '../../services/network';
+
 
 const widthTouse=Dimensions.get('window').width;
 
@@ -26,6 +27,8 @@ export default function Login({navigation}) {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+ 
 
   const isError = () => {
     if (email.trim().length == 0 || password == '' || !toggleCheckBox) {
@@ -49,6 +52,7 @@ export default function Login({navigation}) {
       const response = await login(data);
       if (response.status == 200) {
         setSpinner(false);
+        console.log("here is auth data",response.data.authData);
         saveLoginToStorage({
           ...response.data.authData,
           username: response.data.authData.user.firstname,
@@ -63,12 +67,14 @@ export default function Login({navigation}) {
         );
         navigation.navigate('Home');
       } else {
+        setSpinner(false);
         Alert.alert(
           'INVALID CREDENTIALS',
           'Please provide valid email and password',
         );
       }
     } catch (error) {
+      setSpinner(false);
       Alert.alert('ERROR', 'An error occurred, please retry');
     }
   };

@@ -254,7 +254,7 @@ const PostPaymentForm4 = ({navigation}) => {
 
       
           <TouchableOpacity
-            onPress={() => navigation.navigate('OkraDebitMandate')}
+            onPress={() => navigation.navigate('OkraDebitMandate2')}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

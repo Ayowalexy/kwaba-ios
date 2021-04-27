@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 
 import {store} from './redux/store';
 import {Provider} from 'react-redux';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Welcome from './pages/Welcome/welcome';
@@ -77,20 +78,27 @@ import Referral from './pages/UserAccount/Referral/Referral';
 import ReferralDetails from './pages/UserAccount/Referral/ReferralDetails';
 import Aboutus from './pages/UserAccount/Aboutus/Aboutus';
 import OkraDebitMandate2 from './pages/Payment/OkraDebitMandate2';
+import {setLoginState} from './redux/actions/userActions';
 //import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
 
-
+import {useSelector,useDispatch} from 'react-redux';
 
 const Stack = createStackNavigator();
 
 const App = () => {
+  const dispatch = useDispatch();
   const [userToken, setUserToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const store2 = useSelector((state) => state.loginReducer);
 
   useEffect(() => {
     const getuser = async () => {
       const userData = await AsyncStorage.getItem('userData');
       const token = userData != null ? JSON.parse(userData).token : null;
+
+      dispatch(setLoginState(JSON.parse(userData)));
+      console.log("here is the store",store2.token );
       const loggedInStatus =
         userData != null ? JSON.parse(userData).isLoggedIn : false;
       setIsLoggedIn(loggedInStatus);
@@ -103,29 +111,36 @@ const App = () => {
 
 
   return (
-    <Provider store={store}>
+    
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
           initialRouteName={'Welcome'}>
-           {!isLoggedIn && userToken == null ? (
+
+          {/* {!store2.isLoggedIn && store2.userToken == '' ? (    */}
+
+           {!store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
                 name="Onboarding"
                 component={Onboarding}></Stack.Screen>
-            <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
+               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
               <Stack.Screen
                 name="VerifyNumber"
                 component={VerifyNumber}></Stack.Screen> 
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
               <Stack.Screen name="Login" component={Login}></Stack.Screen>
-              <Stack.Screen name="Home" component={Home}></Stack.Screen>
+              {/* <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen> */}
             </>
           ) : ( 
             <>
+
+            
+
+
               <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen>
               <Stack.Screen
                 name="CompleteProfile1"
@@ -227,7 +242,13 @@ const App = () => {
 <Stack.Screen name="OkraDebitMandate2" component={OkraDebitMandate2}></Stack.Screen>
 {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
-
+           
+               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
+              <Stack.Screen
+                name="VerifyNumber"
+                component={VerifyNumber}></Stack.Screen> 
+              <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login}></Stack.Screen>
 
 
 
@@ -292,7 +313,7 @@ const App = () => {
                 
         </Stack.Navigator>
       </NavigationContainer>
-    </Provider>
+   
   );
 };
 

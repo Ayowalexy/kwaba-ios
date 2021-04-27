@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { MonoProvider, useMonoConnect } from '@mono.co/connect-react-native';
 
 const config = {
-  publicKey: "YOUR_MONO_PUBLIC_KEY_HERE",
+  publicKey: "live_pk_3MSVtE6Jtj2K6ZGMrkCT",
   onClose: () => alert('Widget closed'),
   onSuccess: (data) => {
     const code = data.getAuthCode()
@@ -12,7 +12,7 @@ const config = {
 }
 
 function LinkAccount() {
-  const { init } = useMonoConnect()
+  const { init } = useMonoConnect();
 
   return (
     <View style={{marginBottom: 10}}>
@@ -47,7 +47,7 @@ function InitiateDirectDebit() {
   )
 }
 
-export default function OkraDebitMandate({navigation}) {
+export default function OkraDebitMandate2({navigation}) {
   const reauth_token = "code_xyz";
   const payConfig = {
     scope: "payments",
@@ -65,14 +65,25 @@ export default function OkraDebitMandate({navigation}) {
   return (
     <MonoProvider {...config}>
       <View style={styles.container}>
-        <LinkAccount />
+        {/* <LinkAccount /> */}
 
         <MonoProvider {...{...config, ...payConfig}}>
           <InitiateDirectDebit />
         </MonoProvider>
 
-        <ReauthoriseUserAccount reauth_token={reauth_token} />
+        {/* <ReauthoriseUserAccount reauth_token={reauth_token} /> */}
       </View>
     </MonoProvider>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20
+  },
+});

@@ -13,6 +13,7 @@ import {
     Alert,
     Share
 } from 'react-native';
+import {useSelector,useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import {COLORS, FONTS, images,icons} from '../../util/index';
@@ -22,12 +23,13 @@ import designs from './style';
 import axios from 'axios';
 import PasswordChangeModal from './PasswordChangeModal';
 import WithdrawModal from './WithdrawModal';
+import {setLoginState} from '../../redux/actions/userActions';
 
 
 
 const width=Dimensions.get('window').width;
 const AccountPage = ({navigation}) => {
-
+  const dispatch = useDispatch();
     const [pressed, setPressed] = useState(false)
     const [selectedOption, setSelectedOption] = useState('');
   const [secondPressed, setSecondPressed] = useState(false);
@@ -56,20 +58,31 @@ const AccountPage = ({navigation}) => {
 // }
 
 
- const LogOut=()=>{
+ const LogOut=async()=>{
    console.log("hello here");
 
-   AsyncStorage.removeItem('userData');
+    //await AsyncStorage.removeItem('userData');
+   
+
+   // navigation.navigate('Login');
 
    try{
 
-    AsyncStorage.removeItem('userData');
+    await AsyncStorage.removeItem('userData');
 
+    dispatch(setLoginState({
+      ...{},
+      username: '',
+      isLoggedIn: false,
+    }))
+
+    navigation.navigate('Login');
+    
     Alert.alert('Message','Logout Sucessfully', [
       {text: 'Close'},
     ]);
 
-
+    
    }catch(error){
 
    }

@@ -11,6 +11,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import { COLORS } from '../../util';
+import DropDownPicker from 'react-native-dropdown-picker';
+import RadioButtonRN from 'radio-buttons-react-native';
 
 const widthtouse=Dimensions.get('window').width;
 
@@ -18,6 +20,14 @@ export default function withdrawModal(props) {
 
   const [selectedSavingsValue, setSelectedSavingsValue] = useState("");
   const [selectedReasonValue, setSelectedReasonValue] = useState("");
+  const data = [
+    {
+      label: 'full amount'
+     },
+     {
+      label: 'specific amount'
+     }
+    ];
 
   const {
     onRequestClose,
@@ -68,28 +78,35 @@ export default function withdrawModal(props) {
               />
             </View>
 
+            <DropDownPicker
+              items={[
+                  {label: 'Solo Savings', value: 'Solo Savings', },
+                  {label: 'Buddy Savings', value: 'Buddy Savings', }
+              ]}
+              defaultValue={selectedSavingsValue}
+              containerStyle={{height: 70}}
+              style={{backgroundColor: '#fafafa',height:0,width: widthtouse*0.85,}}
+              itemStyle={{
+                  justifyContent: 'flex-start'
+              }}
+              dropDownStyle={{backgroundColor: '#fafafa'}}
+              onChangeItem={(item) =>{
+                setSelectedSavingsValue(item.value);
+                console.log(item.value);
+              }}
+          />
 
-
-           <Picker
-              mode="dropdown"
-              dropdownIconColor="white"
-              accessibilityLabel="Who do you pay your rent to?"
-              style={{borderColor:COLORS.grey,border:2,}}
-              selectedValue={selectedSavingsValue}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedSavingsValue(itemValue)
-              }>
-              <Picker.Item label="Solo Savings" value="Solo Savings" />
-              <Picker.Item label="Buddy Savings" value="Buddy Savings" />
-            </Picker>
-
-            <TextInput
-              style={[styles.textInput, {marginTop: 18}]}
-              placeholder="full amount"
-              placeholderTextColor="#ADADAD"
-              value={newpassword}
-              onChangeText={(text) => setnewpassword(text)}
+          <View >
+            <RadioButtonRN
+              data={data}
+              animationTypes={['pulse']}
+              activeColor='#9D98EC'
+              selectedBtn={(e) => console.log(e.label)}
             />
+            
+          </View>
+
+            
 
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
@@ -100,7 +117,9 @@ export default function withdrawModal(props) {
             />
 
             <TextInput
-              style={[styles.textInput, {marginTop: 18}]}
+              style={[styles.textInput, {marginTop: 18,height:100}]}
+              multiline={true}
+              numberOfLines={4}
               placeholder="Reason"
               placeholderTextColor="#ADADAD"
               value={confirmnewpassword}
