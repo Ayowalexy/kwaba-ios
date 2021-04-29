@@ -121,15 +121,8 @@ const oneOffPayment = async (data) => {
         Authorization: token,
       },
     });
-<<<<<<< HEAD
-    console.log('response in network', response);
     return response;
   } catch (error) {
-    console.log('one-off error', error);
-=======
-    return response;
-  } catch (error) {
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     return error.message;
   }
 };
@@ -150,8 +143,6 @@ const verifyPayment = async (data) => {
   }
 };
 
-<<<<<<< HEAD
-=======
 const applyForEmergencyLoan = async (data) => {
   const token = await getToken();
   const url = apiUrl + '/api/v1/emergency_loan/apply';
@@ -262,7 +253,6 @@ const resolveCardDetails = async (data) => {
   }
 };
 
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 export {
   fetchBanks,
   signUp,
@@ -273,8 +263,6 @@ export {
   subscribeToSavingsPlan,
   oneOffPayment,
   verifyPayment,
-<<<<<<< HEAD
-=======
   applyForEmergencyLoan,
   loanRepayment,
   loanPaymentVerification,
@@ -282,5 +270,4 @@ export {
   getSingleLoan,
   resolveBankAccount,
   resolveCardDetails,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 };

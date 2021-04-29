@@ -7,19 +7,14 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-<<<<<<< HEAD
   Modal,
   Pressable,
   Alert,
   Dimensions
-=======
-  Modal
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
-<<<<<<< HEAD
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -29,13 +24,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import OkraView from 'react-native-okra';
 
 let height= Dimensions.get('window').height;
-=======
-import Icon from 'react-native-vector-icons/Ionicons';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { fetchBanks } from '../../services/network';
-
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 const PostPaymentForm4 = ({navigation}) => {
 
   const [firstName, setFirstName] = useState('');
@@ -43,10 +31,7 @@ const PostPaymentForm4 = ({navigation}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [Email, setEmail] = useState('');
   const [banks, setBanks] = useState([]);
-<<<<<<< HEAD
   const [landLordAccountBank, setLandLordAccountBank] = useState('');
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   const [accountNumber, setAccountNumber] = useState('');
   const [refereeCity, setRefereeCity] = useState('');
   const [refereeState, setRefereeState] = useState('');
@@ -57,7 +42,6 @@ const PostPaymentForm4 = ({navigation}) => {
 ])
   const [refereeRelationship, setRefereeRelationship] = useState(null);
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
-<<<<<<< HEAD
   const [progress, setProgress] = useState(100);
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [pressed, setPressed] = useState(false);
@@ -67,11 +51,6 @@ const PostPaymentForm4 = ({navigation}) => {
   
   let controller;
   
-=======
-  const [progress, setProgress] = useState(25);
-  let controller;
-
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   useEffect(()=> {
     async function fetchBanksForDropdown(){
       const banks = await fetchBanks();
@@ -80,7 +59,6 @@ const PostPaymentForm4 = ({navigation}) => {
         setBanks(banks.banks);
       }
     };
-<<<<<<< HEAD
     
     fetchBanksForDropdown()
     
@@ -98,11 +76,6 @@ const PostPaymentForm4 = ({navigation}) => {
     };
     getUserData();
   }, []);
-=======
-    fetchBanksForDropdown()
-    
-  }, []);
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
  
 
   const handleNavigation = () => {
@@ -158,7 +131,6 @@ const PostPaymentForm4 = ({navigation}) => {
             ]}>
             Direct Debit Mandate
           </Text>
-<<<<<<< HEAD
 
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>4 of 4</Text>
@@ -170,18 +142,6 @@ const PostPaymentForm4 = ({navigation}) => {
                 tintColor= {COLORS.secondary}
                 backgroundColor="#D6D6D6" />
           </View>
-=======
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
-          <AnimatedCircularProgress
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           
           </View>
           <TextInput
@@ -189,11 +149,7 @@ const PostPaymentForm4 = ({navigation}) => {
             placeholder="First Name"
             placeholderTextColor= {COLORS.grey}
             value={firstName}
-<<<<<<< HEAD
              onChangeText={(text) => setFirstName(text)}
-=======
-          onChangeText={(text) => setFirstName(text)}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
@@ -210,11 +166,7 @@ const PostPaymentForm4 = ({navigation}) => {
         onChangeText={(text) => setPhoneNumber(text)}
         />
 
-<<<<<<< HEAD
         {/* <Text
-=======
-<Text
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[
               FONTS.h3FontStyling,
               {
@@ -233,15 +185,9 @@ const PostPaymentForm4 = ({navigation}) => {
         placeholderTextColor= {COLORS.grey}
         value={accountNumber}
       onChangeText={(text) => setAccountNumber(text)}
-<<<<<<< HEAD
       /> */}
   
       {/* <View style={{minHeight: 0}}>
-=======
-      />
-  
-      <View style={{minHeight: 0}}>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         <DropDownPicker
                     items={banks}
                     defaultNull
@@ -255,7 +201,6 @@ const PostPaymentForm4 = ({navigation}) => {
                     onChangeItem={item => setBanks(item)}
                     onOpen={() => setPickerModalOpen(true)}
                 />
-<<<<<<< HEAD
             </View> */}
             {/* <View style={{minHeight: 0,maxHeight:500}}>
                     
@@ -310,15 +255,6 @@ const PostPaymentForm4 = ({navigation}) => {
       
           <TouchableOpacity
             onPress={() => navigation.navigate('OkraDebitMandate2')}
-=======
-            </View>
-         
-          </View>
-         
-          
-          <TouchableOpacity
-            onPress={() => navigation.navigate('RentalLoanActiveDashBoard')}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

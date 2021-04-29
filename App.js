@@ -60,15 +60,6 @@ import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequ
 import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
 import Account from './pages/UserAccount/Account';
 import { FileViewAndDelete } from './pages/Borrow/FileViewAndDelete';
-import {logCurrentStorage} from './util/logCurrentStorage';
-import FileUploadTest from './pages/Borrow/FileUploadTest';
-import RentalLoanOfferTest from './pages/Borrow/RentalLoanOfferTest';
-import BottomNavigator from './pages/Navigation/BottomNavigation';
-import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
-import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
-import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
-import Account from './pages/UserAccount/Account';
-import {FileViewAndDelete} from './pages/Borrow/FileViewAndDelete';
 import AccountPage from './pages/UserAccount/AccountPage';
 import CardAndBankDetails from './pages/UserAccount/CardAndBank';
 import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';

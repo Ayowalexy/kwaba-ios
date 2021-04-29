@@ -121,15 +121,17 @@ const Borrow = ({navigation}) => {
     //navigation.navigate('EmergencyLoanRequestDashBoard');
 
     return token;
-  };
-
-  const handleRentalLoanClick=()=> {
-    if (existingApplication !== ''){
-   navigation.navigate('UploadDocuments')}
-   else{
-    navigation.navigate('RentalLoanForm1')
-   } 
   }
+  
+};
+
+  // const handleRentalLoanClick=()=> {
+  //   if (existingApplication !== ''){
+  //  navigation.navigate('UploadDocuments')}
+  //  else{
+  //   navigation.navigate('RentalLoanForm1')
+  //  } 
+  // }
   
  return (
     <View style={designs.container}>
@@ -162,11 +164,11 @@ const Borrow = ({navigation}) => {
             
          
             <TouchableOpacity
-              onPress={() => navigation.navigate('EmergencyLoanRequestDashBoard')}
+              onPress={() => navigation.navigate('EmergencyLoanHome')}
               style={designs.button}>
               <View style={designs.buttonInnerView}>
                   <Text style={designs.buttonText}> Emergency Funds </Text>
-                  <Icon name="arrow-forward-outline" size={16} color= {COLORS.secondary} style={{fontWeight: '900'}} />
+                  <Icon name="arrow-forward-outline" size={30} color= {COLORS.secondary} style={{fontWeight: '900'}} />
               </View>  
             </TouchableOpacity>   
             </View>   
@@ -175,7 +177,7 @@ const Borrow = ({navigation}) => {
       
     </View>
   );
-}
+
 
 };
 

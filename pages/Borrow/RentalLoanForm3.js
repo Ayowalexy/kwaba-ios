@@ -7,13 +7,9 @@ import {
   Image,
   TouchableOpacity,
   Modal,
-<<<<<<< HEAD
   Platform,
   Pressable,
   Alert
-=======
-  Platform
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -21,10 +17,7 @@ import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
-<<<<<<< HEAD
 import IconFA from 'react-native-vector-icons/FontAwesome';
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useDispatch, useSelector} from 'react-redux';
@@ -41,7 +34,6 @@ const RentalLoanForm3 = ({navigation}) => {
   const [lengthOfResidence, setLengthOfResidence] = useState('');
   const [lastRentAmount, setLastRentAmount] = useState('');
   const [lastPaymentRecipient, setLastPaymentRecipient] = useState('');
-<<<<<<< HEAD
   const [modeOfPayment, setModeOfPayment] = useState('')
   const [modalVisible, setVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
@@ -52,25 +44,14 @@ const RentalLoanForm3 = ({navigation}) => {
   
   const [lengthOfResidenceOptions] = useState([
 
-=======
-  const [modeOfPayment, setModeOfPayment] = useState()
-  const [modalVisible, setVisible] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
-  const [progress, setProgress] = useState(100);
-  const [lengthOfResidenceOptions] = useState([
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     {label: 'Less than a year', value: 'Less than a year'},
     {label: '1 Year', value: '1 Year'},
     {label: '2 Years', value: '2 Years'},
     {label: '3 Years', value: '3 Years'},
     {label: '4 Years', value: '4 Years'},
     {label: '5 Years', value: '5 Years'},
-<<<<<<< HEAD
     {label: 'More than five Years', value: 'More than five Years'}
 
-=======
-    {label: 'More than five Years', value: 'More than five Years'},
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 ]);
 const [modeOfPaymentOptions] = useState([
   {label: 'Bank Transfer', value: 'Bank Transfer'},
@@ -79,7 +60,6 @@ const [modeOfPaymentOptions] = useState([
 ])
 
   const isError = () => {
-<<<<<<< HEAD
 
     // if(typeof lengthOfResidence !== "string"){ 
     //   return true;
@@ -109,30 +89,14 @@ const [modeOfPaymentOptions] = useState([
     }
 
     
-=======
-    if (
-      (homeAddress.trim().length == 0 ||
-      lengthOfResidence.trim().length == 0 ||
-      lastRentAmount.trim().length == 0 ||
-      lastPaymentRecipient.trim().length == 0 ||
-      modeOfPayment.trim().length == 0)) {
-        return true;
-    } else {
-      return false;
-    }
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   };
 
   
 
   const handleModalButtonPush = async () => {
-<<<<<<< HEAD
     
     setVisible(false);
 
-=======
-    setVisible(false);
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     const data = {
       home_address: homeAddress,
       home_stay_duration: lengthOfResidence,
@@ -140,12 +104,9 @@ const [modeOfPaymentOptions] = useState([
       last_rent_paid_to: lastPaymentRecipient,
       last_rent_payment_method: modeOfPayment,
     };
-<<<<<<< HEAD
 
     console.log(lengthOfResidence);
 
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     if (isError()) {
       return Alert.alert('Missing inputs', 'Please Fill out all fields', [
         {text: 'Close'},
@@ -156,11 +117,7 @@ const [modeOfPaymentOptions] = useState([
     const token = await getToken();
     console.log(dummyData);
     console.log(token);
-<<<<<<< HEAD
     console.log({...dummyData,...JSON.parse(loanFormData),...data});
-=======
-    console.log({...dummyData,...JSON.parse(loanFormData),...data})
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     try {
       const response = await axios.post(url, {...dummyData,...JSON.parse(loanFormData),...data}, {
         headers: {'Content-Type': 'application/json', Authorization: token},
@@ -171,13 +128,9 @@ const [modeOfPaymentOptions] = useState([
     logCurrentStorage();
     } catch (error) {
       console.log(error.response.data);
-<<<<<<< HEAD
       Alert.alert('Message', error.response.data.statusMsg, [
         {text: 'Close'},
       ]);
-=======
-      
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     }
     
   };
@@ -264,7 +217,6 @@ const [modeOfPaymentOptions] = useState([
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 3</Text>
           <AnimatedCircularProgress
-<<<<<<< HEAD
           size={25}
           width={5}
           fill={progress}
@@ -272,15 +224,6 @@ const [modeOfPaymentOptions] = useState([
           tintColor= {COLORS.secondary}
           backgroundColor="#D6D6D6" />
           </View>
-=======
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           </View>
           <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>What is your current home address?</Text>
           <TextInput
@@ -291,11 +234,7 @@ const [modeOfPaymentOptions] = useState([
           onChangeText={(text) => setHomeAddress(text)}
           />
 
-<<<<<<< HEAD
         <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How long have you lived here? </Text>
-=======
-<Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How long have you lived here? </Text>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
          {/* <TextInput
             style={[designs.textField, {marginBottom: 17, textAlign: 'left'}]}
             placeholder="1 year"
@@ -316,11 +255,7 @@ const [modeOfPaymentOptions] = useState([
                     arrowStyle={{marginRight: 4}}
                     arrowSize={18}
                     arrowColor={COLORS.grey}
-<<<<<<< HEAD
                     onChangeItem={item => setLengthOfResidence(item.value)}
-=======
-                    onChangeItem={item => setLengthOfResidence(item)}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                     // onOpen={() => setPickerModalOpen(true)}
                 />
             </View>
@@ -348,26 +283,16 @@ const [modeOfPaymentOptions] = useState([
            
             
               <Text style={[FONTS.body1FontStyling, {color: COLORS.dark, marginBottom: 8}]}>How did you pay? </Text>
-<<<<<<< HEAD
           {/* <TextInput
-=======
-          <TextInput
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
             placeholder="Select an option"
             placeholderTextColor= {COLORS.grey}
             value={modeOfPayment}
           onChangeText={(text) => setModeOfPayment(text)}
-<<<<<<< HEAD
           /> */}
           {/* <View style={{minHeight: 50, elevation: 10000, zIndex: 10000}}>
                <DropDownPicker
         
-=======
-          />
-          <View style={{minHeight: 50, elevation: 10000, zIndex: 10000}}>
-        <DropDownPicker
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                     items={modeOfPaymentOptions}
                     defaultNull
                     placeholder="Select an option"
@@ -379,7 +304,6 @@ const [modeOfPaymentOptions] = useState([
                     arrowStyle={{marginRight: 4}}
                     arrowSize={18}
                     arrowColor={COLORS.grey}
-<<<<<<< HEAD
                     onChangeItem={item => setModeOfPayment(item)}
                     onOpen={() => setPickerModalOpen(true)}
                 />
@@ -425,12 +349,6 @@ const [modeOfPaymentOptions] = useState([
                      </View>
                 </View>
             </Modal>
-=======
-                    onChangeItem={item => setLengthOfResidence(item)}
-                    // onOpen={() => setPickerModalOpen(true)}
-                />
-            </View>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
          
           </View>
          
@@ -474,10 +392,6 @@ const [modeOfPaymentOptions] = useState([
             </View>
             
         </Modal>
-<<<<<<< HEAD
-
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         <Modal visible={successModal} animationType="fade" transparent={true}>
         <View
           style={designs.centeredModalWrapper}>

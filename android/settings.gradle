@@ -1,5 +1,4 @@
 rootProject.name = 'rentbank_mobile_app'
-<<<<<<< HEAD
 include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':react-native-webview'
@@ -12,8 +11,6 @@ include ':react-native-webview'
 project(':react-native-webview').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webview/android')
 include ':react-native-okra'
 project(':react-native-okra').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-okra/android')
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 include ':react-native-fs'
 project(':react-native-fs').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-fs/android')
 include ':react-native-vector-icons'

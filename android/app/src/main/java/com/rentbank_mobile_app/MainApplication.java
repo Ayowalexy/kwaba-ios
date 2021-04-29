@@ -4,15 +4,12 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-<<<<<<< HEAD
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.reactlibrary.OkraExpoPackage;
 import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.reactnativecommunity.webview.RNCWebViewPackage;
 import com.reactlibrary.OkraExpoPackage;
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 import com.rnfs.RNFSPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;

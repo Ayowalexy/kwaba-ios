@@ -7,27 +7,19 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
-<<<<<<< HEAD
   Modal,
   Pressable,
   Alert
-=======
-  Modal
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
-<<<<<<< HEAD
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { colors } from 'react-native-swiper-flatlist/src/themes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-=======
-import DropDownPicker from 'react-native-dropdown-picker';
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 const PostPaymentForm1 = ({navigation}) => {
 
@@ -35,7 +27,6 @@ const PostPaymentForm1 = ({navigation}) => {
   const [propertyCity, setPropertyCity] = useState('');
   const [propertyState, setPropertyState] = useState('');
   const [propertyCountry, setPropertyCountry] = useState('');
-<<<<<<< HEAD
 const [typeOfProperty, setTypeOfProperty] = useState('');
 const [typeOfPropertyOptions, setTypeOfPropertyOptions] = useState([
   {label: 'Duplex', value: 'Duplex'},
@@ -107,30 +98,6 @@ const [numberOfBedroomsOptions, setNumberOfBedroomsOptions] = useState([{label: 
       }
 
 
-=======
-const [typeOfProperty, setTypeOfProperty] = useState([
-  {label: 'Duplex', value: 'Duplex'},
-  {label: 'Semi-detached', value: 'Semi-detached'},
-]);
-const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2'},
-{label: '3', value: '3'}, {label: '4', value: '4'}])
-  const [pickerModalOpen, setPickerModalOpen] = useState(false)
-  const [picker2ModalOpen, setPicker2ModalOpen] = useState(false)
-  const [progress, setProgress] = useState(25);
-  let controller;
- 
-
-  const handleNavigation = () => {
-    const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
-    };
-    // try {
-    //   dispatch(soloSaving(data));
-
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   };
 
 
@@ -177,7 +144,6 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>1 of 4</Text>
           <AnimatedCircularProgress
-<<<<<<< HEAD
             size={25}
             width={5}
             fill={progress}
@@ -189,19 +155,6 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
           </View>
 
          <Text
-=======
-  size={25}
-  width={5}
-  fill={progress}
-  rotation={0}
-  tintColor= {COLORS.secondary}
-  backgroundColor="#D6D6D6" />
-  </View>
-          
-          </View>
-
-<Text
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[
               FONTS.h3FontStyling,
               {
@@ -245,7 +198,6 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
         onChangeText={(text) => setPropertyCountry(text)}
         />
         <View style={{minHeight: 0, marginBottom: 14}}>
-<<<<<<< HEAD
 
 
 
@@ -296,25 +248,6 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
             <View style={{minHeight: 0}}>
                 <DropDownPicker
                     items={numberOfBedroomsOptions}
-=======
-        <DropDownPicker
-                    items={typeOfProperty}
-                    defaultNull
-                    placeholder="Type of property"
-                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
-                    style={designs.dropDownPicker}
-                    controller={instance => controller = instance}
-                    dropDownStyle={{height: 0, borderWidth: 0}}
-                    dropDownMaxHeight={0}
-                    arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setTypeOfProperty(item.value)}
-                    onOpen={() => setPickerModalOpen(true)}
-                />
-            </View>
-            <View style={{minHeight: 0}}>
-        <DropDownPicker
-                    items={numberOfBedrooms}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                     defaultNull
                     placeholder="Number of Bedrooms"
                     placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
@@ -332,56 +265,13 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
          
           
           <TouchableOpacity
-<<<<<<< HEAD
             onPress={()=>{handleNavigation()}}
-=======
-            onPress={() => navigation.navigate('PostPaymentForm2')}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>
         </View>
 
-<<<<<<< HEAD
         
-=======
-        <Modal visible={pickerModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
-            <View style={designs.modalWrapper}>
-            <View style={designs.modalView}> 
-            <View style={[designs.modalHeader, {marginBottom: 11}]}>
-            <Icon
-              onPress={() => {controller.close();
-                setPickerModalOpen(false)}}
-              style={{marginLeft: 'auto'}}
-              name="close-outline"
-              size={30}
-              color="#D6D6D6"
-            />
-            </View>
-            <View>
-                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
-                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
-            <View>
-                
-            {typeOfProperty.map((propertyType, index) => {
-            return (
-                
-                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(propertyType.value);
-                    controller.close();
-                    setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
-                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{propertyType.label}</Text>
-              </TouchableOpacity>
-            )
-              
-        })}
-        </View>
-                </View>
-            </View>
-
-            </View>
-            
-        </Modal>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         <Modal visible={picker2ModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
             <View style={designs.modalWrapper}>
             <View style={designs.modalView}> 
@@ -396,19 +286,11 @@ const [numberOfBedrooms, setNumberOfBedrooms] = useState([{label: '2', value: '2
             />
             </View>
             <View>
-<<<<<<< HEAD
                 <Text style={designs.modalTitleText}>Number of Bedrooms</Text>
                
             <View>
                 
             {numberOfBedroomsOptions.map((bedroomNumber, index) => {
-=======
-                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
-                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
-            <View>
-                
-            {numberOfBedrooms.map((bedroomNumber, index) => {
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             return (
                 
                 <TouchableOpacity key={index} onPress={()=> {controller.selectItem(bedroomNumber.value);

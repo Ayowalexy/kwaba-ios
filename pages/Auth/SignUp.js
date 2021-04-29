@@ -7,10 +7,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
-<<<<<<< HEAD
   Dimensions
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
@@ -19,10 +16,7 @@ import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SuccessModal from '../../components/SuccessModal';
-<<<<<<< HEAD
 const widthTouse=Dimensions.get('window').width;
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 export default function SignUp({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
@@ -106,11 +100,7 @@ export default function SignUp({navigation}) {
     <View
       style={[
         designs.container,
-<<<<<<< HEAD
         { paddingTop: 59},
-=======
-        {paddingRight: 32, paddingLeft: 32, paddingTop: 59},
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
       ]}>
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
@@ -143,11 +133,7 @@ export default function SignUp({navigation}) {
             style={[
               designs.heading,
               {
-<<<<<<< HEAD
                 marginLeft: 16,
-=======
-                marginLeft: 0,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                 fontSize: 30,
                 fontWeight: '700',
                 fontFamily: 'CircularStd',
@@ -177,15 +163,9 @@ export default function SignUp({navigation}) {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
-<<<<<<< HEAD
           <View style={[designs.customInput, {width: widthTouse*0.9}]}>
             <TextInput
               style={{flex: 1,alignSelf:'center'}}
-=======
-          <View style={[designs.customInput, {width: 345}]}>
-            <TextInput
-              style={{flex: 1}}
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
               secureTextEntry={true}
@@ -206,11 +186,7 @@ export default function SignUp({navigation}) {
             }}
             size="large"
           />
-<<<<<<< HEAD
           <View style={[designs.customInput, {width: widthTouse*0.9}]}>
-=======
-          <View style={[designs.customInput, {width: 345}]}>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             <TextInput
               style={{flex: 1}}
               placeholder="Confirm Password"
@@ -258,10 +234,6 @@ export default function SignUp({navigation}) {
               </Text>
             </TouchableOpacity>
           </View>
-<<<<<<< HEAD
-
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           <TouchableOpacity
             onPress={handleSubmit}
             disabled={isError()}
@@ -269,13 +241,8 @@ export default function SignUp({navigation}) {
               designs.btn,
               {
                 backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
-<<<<<<< HEAD
                 marginRight: 16,
                 marginLeft: 16,
-=======
-                marginRight: 8,
-                marginLeft: 8,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                 marginBottom: 20,
               },
             ]}>
@@ -288,10 +255,6 @@ export default function SignUp({navigation}) {
               SIGN UP
             </Text>
           </TouchableOpacity>
-<<<<<<< HEAD
-
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         </View>
       </ScrollView>
       <SuccessModal

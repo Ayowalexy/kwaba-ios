@@ -70,18 +70,11 @@ try {
   }});
   console.log('end', post)
   const response = await post;
-<<<<<<< HEAD
   // console.log('postdata', response);
   // console.log('postdata status', response.status);
   if (response.status == 201){
    // dispatch(successUploadFile(1));
     navigation.navigate('FileUploadTest');
-=======
-  console.log('postdata', response);
-  if (response.status == 201){
-    dispatch(successUploadFile(1));
-    navigation.navigate('UploadDocuments');
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   }
 
       
@@ -95,17 +88,10 @@ try {
   const config = {
     publicKey: "live_pk_3MSVtE6Jtj2K6ZGMrkCT",
     onClose: () => alert('Widget closed'),
-<<<<<<< HEAD
     onSuccess: async(data) => {
       const code = data.getAuthCode();
       console.log("Access code", code);
       await postData(code)
-=======
-    onSuccess: (data) => {
-      const code = data.getAuthCode();
-      console.log("Access code", code);
-      postData(code)
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     }
   };
 

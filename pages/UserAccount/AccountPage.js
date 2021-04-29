@@ -6,7 +6,6 @@ import {
     StyleSheet,
     TextInput,
     TouchableOpacity,
-<<<<<<< HEAD
     ScrollView,
     Dimensions,
     Image,
@@ -31,25 +30,10 @@ import {setLoginState} from '../../redux/actions/userActions';
 const width=Dimensions.get('window').width;
 const AccountPage = ({navigation}) => {
   const dispatch = useDispatch();
-=======
-    ScrollView
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import IconFA from 'react-native-vector-icons/FontAwesome'
-import {COLORS, FONTS, images} from '../../util/index';
-import { CustomTextInput, CustomPicker } from '../../components/CustomInput';
-import designs from './style';
-
-
-
-const AccountPage = ({navigation}) => {
-
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     const [pressed, setPressed] = useState(false)
     const [selectedOption, setSelectedOption] = useState('');
   const [secondPressed, setSecondPressed] = useState(false);
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
-<<<<<<< HEAD
   const [modalVisible, setModalVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [showCard, setShowCard] = useState(false);
@@ -59,8 +43,6 @@ const AccountPage = ({navigation}) => {
   const [WithrawmodalVisible, setWithrawModalVisible] = useState(false);
 
 
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   const [loanPurpose] = useState([
     {label: 'Household', value: 'Household'},
     {label: 'Personal', value: 'Personal'},
@@ -76,7 +58,6 @@ const AccountPage = ({navigation}) => {
 // }
 
 
-<<<<<<< HEAD
  const LogOut=async()=>{
    console.log("hello here");
 
@@ -134,23 +115,12 @@ const addWithdrawCard = () => {
      {iconName: 'folder-open', tabTitle: 'Documents', onClickFunction: function openCardAndBank(){navigation.navigate('UploadDocumentsList')}},
      {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
      {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
-=======
- const accountTabsAndSettings = [
-     {iconName: 'add', tabTitle: 'Withdraw', onClickFunction: 'Withdraw'},
-     {iconName: 'add', tabTitle: 'Card And Bank', onClickFunction: function openCardAndBank(){navigation.navigate('CardAndBankDetails')}},
-     {iconName: 'add', tabTitle: 'Referral', onClickFunction: 'Referral'},
-     {iconName: 'add', tabTitle: 'Change Password', onClickFunction: ''},
-     {iconName: 'add', tabTitle: 'Documents', onClickFunction: ''},
-     {iconName: 'add', tabTitle: 'Legals And FAQs', onClickFunction: ''},
-     {iconName: 'add', tabTitle: 'About us', onClickFunction: ''},
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
  ]
 
  
  
 
 return (
-<<<<<<< HEAD
 
 
   <ScrollView>
@@ -280,31 +250,14 @@ return (
         
     </View>
   </ScrollView>
-=======
-    <View>
-      { accountTabsAndSettings.map((value, index) => {
-              return <TouchableOpacity key={index} onPress={()=> {value.onClickFunction()}}>
-                  <View>
-                      <Icon name={value.iconName}/>
-                  <Text style={FONTS.body1FontStyling}>{ value.tabTitle }</Text>
-                  <IconFA name='angle-right'/>
-                  </View>
-                </TouchableOpacity>
-            })}
-        
-    </View>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   );
 }
 
 
 
 export default AccountPage;
-<<<<<<< HEAD
 
 
 
 
 const styles = StyleSheet.create({})
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50

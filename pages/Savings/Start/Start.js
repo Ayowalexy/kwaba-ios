@@ -6,24 +6,17 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
-<<<<<<< HEAD
   Dimensions
 } from 'react-native';
 
 const width=Dimensions.get('window').width;
-=======
-} from 'react-native';
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../../util/index';
 import {currencyFormat} from '../../../util/numberFormatter';
 import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
-<<<<<<< HEAD
 import moment from 'moment';
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -41,29 +34,14 @@ export default function Start({navigation}) {
   }, []);
 
   useEffect(() => {
-<<<<<<< HEAD
     const totalSoloSavings =store.data?.reduce((saving, acc) => Number(saving.amount) + Number(acc.amount),0);
      const soloInterestTotal =store.data?.reduce((saving, acc) => Number(saving.interest) + Number(acc.interest),0);
-=======
-    const totalSoloSavings = store.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    );
-    const soloInterestTotal = store.data?.reduce(
-      (saving, acc) => Number(saving.interest) + Number(acc.interest),
-    );
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     const balance =
       totalSoloSavings +
       soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
     setTotalBalance(balance || 0);
     setTotalSaving(totalSoloSavings || 0);
-<<<<<<< HEAD
     setTotalInterest(soloInterestTotal?.toFixed(2) / Number(currentUser.data?.savings_tenure) || 0);
-=======
-    setTotalInterest(
-      soloInterestTotal?.toFixed(2) / Number(currentUser.data?.savings_tenure) || 0
-    );
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     setSoloSaving(totalSoloSavings || 0);
   }, []);
   return (
@@ -168,7 +146,6 @@ export default function Start({navigation}) {
           </ScrollView>
         </View>
       </ImageBackground>
-<<<<<<< HEAD
      
 
     
@@ -310,134 +287,6 @@ export default function Start({navigation}) {
 
 
 
-=======
-      <View style={designs.card}>
-        <View style={designs.cardFlex}>
-          <View>
-            <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
-            <Text style={designs.bodyText}>
-              Save towards your next{'\n'}rent alone
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
-                )
-              }
-              style={[
-                designs.cardFlex,
-                {
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                },
-              ]}>
-              {soloSaving == 0 ? (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  Start saving
-                </Text>
-              ) : (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  ₦{currencyFormat(soloSaving)}
-                </Text>
-              )}
-              <Icon name="arrow-forward" color="#9D98EC" size={15} />
-            </TouchableOpacity>
-          </View>
-          <Image
-            style={{width: 146, height: 146}}
-            source={images.maskGroup15}
-          />
-        </View>
-      </View>
-      <View style={designs.card}>
-        <View style={designs.cardFlex}>
-          <View>
-            <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
-            <Text style={designs.bodyText}>
-              Save towards your next rent with{'\n'}your flatmates or spouse
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
-                )
-              }
-              style={[
-                designs.cardFlex,
-                {
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                },
-              ]}>
-              {buddySaving == 0 ? (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  Start saving
-                </Text>
-              ) : (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  ₦{currencyFormat(buddySaving)}
-                </Text>
-              )}
-              <Icon name="arrow-forward" color="#9D98EC" size={15} />
-            </TouchableOpacity>
-          </View>
-          <Image
-            style={{width: 146, height: 146}}
-            source={images.maskGroup14}
-          />
-        </View>
-      </View>
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     </View>
   );
 }

@@ -1,10 +1,6 @@
-<<<<<<< HEAD
 import {StyleSheet,Dimensions} from 'react-native';
 
 const widthTouse=Dimensions.get('window').width;
-=======
-import {StyleSheet} from 'react-native';
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 const designs = StyleSheet.create({
   container: {
@@ -34,11 +30,8 @@ const designs = StyleSheet.create({
     borderWidth: 1,
     marginTop: 14,
     paddingLeft: 22,
-<<<<<<< HEAD
     width:widthTouse*0.9,
     alignSelf:'center'
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   },
   customInput: {
     height: 70,
@@ -53,25 +46,15 @@ const designs = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-<<<<<<< HEAD
     width: widthTouse*0.9,
     marginLeft:16
     
     
-=======
-    width: 370,
-    marginRight: 'auto',
-    marginLeft: 'auto',
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   },
   image: {
     width: 129,
     height: 30,
-<<<<<<< HEAD
     marginLeft: 16,
-=======
-    marginLeft: 32,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     marginTop: 59,
   },
   heading: {

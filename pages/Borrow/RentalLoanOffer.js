@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, {useState,useEffect} from 'react';
-=======
-import React, {useState} from 'react';
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 import {
   View,
   ScrollView,
@@ -19,10 +15,7 @@ import {COLORS, FONTS, images} from '../../util/index';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
-<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage';
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 const RentalLoanOffer = ({navigation}) => {
 
@@ -43,7 +36,6 @@ const RentalLoanOffer = ({navigation}) => {
     // } catch (error) {}
   };
 
-<<<<<<< HEAD
   useEffect(()=>{
    
 
@@ -56,8 +48,6 @@ const RentalLoanOffer = ({navigation}) => {
     getData();
   })
 
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>

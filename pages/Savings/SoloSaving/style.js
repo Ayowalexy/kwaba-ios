@@ -13,11 +13,7 @@ const designs = StyleSheet.create({
   header: {
     marginTop: 22,
     backgroundColor: '#2A286A',
-<<<<<<< HEAD
     width: width*0.9,
-=======
-    width: 379,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     height: 60,
     borderTopLeftRadius: 50,
     borderTopRightRadius: 100,
@@ -33,11 +29,7 @@ const designs = StyleSheet.create({
     fontWeight: 'bold',
   },
   textInput: {
-<<<<<<< HEAD
     width: width*0.9,
-=======
-    width: 380,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     height: 70,
     padding: 20,
     marginTop: 13,
@@ -52,11 +44,7 @@ const designs = StyleSheet.create({
     marginTop: 13,
   },
   button: {
-<<<<<<< HEAD
     width: width*0.9,
-=======
-    width: 380,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     height: 70,
     borderRadius: 10,
     display: 'flex',
@@ -72,22 +60,14 @@ const designs = StyleSheet.create({
   },
   summaryBox: {
     height: 400,
-<<<<<<< HEAD
     width: width*0.9,
-=======
-    width: 380,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     borderRadius: 20,
     backgroundColor: '#2A286A',
     marginTop: 16,
     padding: 23,
   },
   whiteBox: {
-<<<<<<< HEAD
     width: width*0.8,
-=======
-    width: 334,
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     height: 66,
     borderRadius: 10,
     backgroundColor: 'white',
