@@ -61,7 +61,8 @@ const AwaitingDisbursement = ({navigation, route}) => {
             ]}>
             Rental Loan
           </Text>
-          <Image source={images.group3693} style={designs.uploadDocumentImage}/>
+          {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
+          <Image source={images.group3693} style={{height:190,width:190,alignSelf:'center'}}/> 
           <Text
             style={[
               FONTS.h1FontStyling,
@@ -83,11 +84,11 @@ const AwaitingDisbursement = ({navigation, route}) => {
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>UPLOAD DOCUMENTS</Text>
           </TouchableOpacity> */}
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {navigation.navigate('Borrow')}}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>Check Status</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         
    </View>

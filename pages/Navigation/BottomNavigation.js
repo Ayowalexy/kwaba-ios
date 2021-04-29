@@ -24,11 +24,11 @@ const BottomNavigator = () => {
       tabBarOptions={{
         style: {
           elevation: 6,
-          borderTopRightRadius: 20,
-          borderTopLeftRadius: 20,
+          borderTopRightRadius: 30,
+          borderTopLeftRadius: 30,
           shadowRadius: 5,
           shadowOpacity: 10,
-          height:70
+          height:60
         },
         showLabel: false,
         activeTintColor: COLORS.primary,
@@ -65,7 +65,7 @@ const BottomNavigator = () => {
         options={{
           tabBarIcon: ({color}) => (
             <View style={{flex:1,justifyContent:'center'}}>
-                <Image source={icons.homeicon} style={{width:40,height:40,alignSelf:'center'}}/>
+                <Image source={icons.kwabalogocol} style={{width:60,height:60,alignSelf:'center'}}/>
               {/* <Text style={{fontSize: 16, color: '#000000'}}>RentBank</Text> */}
             </View>
           ),

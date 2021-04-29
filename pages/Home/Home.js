@@ -49,7 +49,7 @@ export default function Home({navigation}) {
 
   useEffect(() => {
     const totalSoloSavings = store.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+      (saving, acc) => Number(saving.amount) + Number(acc.amount),0
     );
     setSavings(totalSoloSavings || 0);
   }, []);

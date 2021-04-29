@@ -16,6 +16,7 @@ import {currencyFormat} from '../../../util/numberFormatter';
 import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
+import moment from 'moment';
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -33,20 +34,14 @@ export default function Start({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings = store.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    );
-    const soloInterestTotal = store.data?.reduce(
-      (saving, acc) => Number(saving.interest) + Number(acc.interest),
-    );
+    const totalSoloSavings =store.data?.reduce((saving, acc) => Number(saving.amount) + Number(acc.amount),0);
+     const soloInterestTotal =store.data?.reduce((saving, acc) => Number(saving.interest) + Number(acc.interest),0);
     const balance =
       totalSoloSavings +
       soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
     setTotalBalance(balance || 0);
     setTotalSaving(totalSoloSavings || 0);
-    setTotalInterest(
-      soloInterestTotal?.toFixed(2) / Number(currentUser.data?.savings_tenure) || 0
-    );
+    setTotalInterest(soloInterestTotal?.toFixed(2) / Number(currentUser.data?.savings_tenure) || 0);
     setSoloSaving(totalSoloSavings || 0);
   }, []);
   return (

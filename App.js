@@ -82,6 +82,7 @@ import {setLoginState} from './redux/actions/userActions';
 //import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
 
 import {useSelector,useDispatch} from 'react-redux';
+import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 
 const Stack = createStackNavigator();
 
@@ -240,6 +241,7 @@ const App = () => {
 <Stack.Screen name="ReferralDetails" component={ReferralDetails}></Stack.Screen>
 <Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
 <Stack.Screen name="OkraDebitMandate2" component={OkraDebitMandate2}></Stack.Screen>
+<Stack.Screen name="MonoDebitMandate" component={MonoDebitMandate}></Stack.Screen>
 {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
            

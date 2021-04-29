@@ -69,6 +69,9 @@ const telegram = require('../assets/icons/telegram.png');
 const instagram = require('../assets/icons/instagram.png');
 const whatsapp = require('../assets/icons/whatsapp.png');
 const linkedin = require('../assets/icons/linkedin-in.png');
+const cancelIcon = require('../assets/icons/cancel.png');
+const kwabalogocol = require('../assets/icons/kwabalogocol.png');
+const kwabalogonocol = require('../assets/icons/kwabalogonocol.png');
 
 export {
   instagram,
@@ -142,5 +145,8 @@ export {
   quicksave,
   buyairtime,
   whatsapp,
+  cancelIcon,
+  kwabalogocol,
+  kwabalogonocol
 
 };

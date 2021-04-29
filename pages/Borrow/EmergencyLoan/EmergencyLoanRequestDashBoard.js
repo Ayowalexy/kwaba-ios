@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -10,27 +10,67 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconLock from 'react-native-vector-icons/FontAwesome';
-import {COLORS, FONTS, images} from '../../../util/index';
-import {useDispatch} from 'react-redux';
+import {COLORS, FONTS, images} from '../../../util/index';;
 import designs from './style';
 import Tooltip from 'rn-tooltip';
 import { emergencyLoan } from '../../../redux/actions/emergencyLoanActions';
+import {useSelector, useDispatch} from 'react-redux';
+import {getCurrentUser} from '../../../redux/actions/userActions';
+
 
 
 export default function EmergencyLoanRequestDashBoard({navigation}) {
   const [loanAmount, setLoanAmount] = useState('');
 
+  const [today, setToday] = useState('');
+  const [openQuickSave, setOpenQuickSave] = useState(false);
+  const [successModal, setSuccessModal] = useState(false);
+ 
+  const [totalInterest, setTotalInterest] = useState(0);
+  const [savingsTarget, setSavingsTarget] = useState(0);
+  const [percentAchieved, setPercentAchieved] = useState(0);
+
+  const store = useSelector((state) => state.getSoloSavingsReducer);
+ 
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalSaving, setTotalSaving] = useState(0);
+  const [soloSaving, setSoloSaving] = useState(0);
+  const [buddySaving, setBuddySaving] = useState(0);
+  const [savingTenure, setSavingTenure] = useState(0);
+
   const dispatch = useDispatch();
+  const soloSavings = useSelector((state) => state.getSoloSavingsReducer);
+  const currentUser = useSelector((state) => state.getUserReducer);
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, []);
+
+  useEffect(() => {
+    const totalSoloSavings =store.data?.reduce((saving, acc) => Number(saving.amount) + Number(acc.amount),0);
+     const soloInterestTotal =store.data?.reduce((saving, acc) => Number(saving.interest) + Number(acc.interest),0);
+    const balance =
+      totalSoloSavings +
+      soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
+    setTotalBalance(balance || 0);
+    setTotalSaving(totalSoloSavings || 0);
+    setTotalInterest(soloInterestTotal?.toFixed(2) / Number(currentUser.data?.savings_tenure) || 0);
+    setSoloSaving(totalSoloSavings || 0);
+  }, []);
 
   const handleNavigation = () => {
     const data = {
       loan_amount: loanAmount,
+     
     };
     try {
       console.log('here')
       dispatch(emergencyLoan(data));
       console.log('done')
-      return navigation.navigate('EmergencyLoanRequest');
+      return navigation.navigate('EmergencyLoanRequest',{
+        loan_amount: loanAmount,
+        repayment_amount:0
+      });
     } catch (error){
       console.log(error)
     }
@@ -74,7 +114,7 @@ export default function EmergencyLoanRequestDashBoard({navigation}) {
                 <Text style={{fontSize: 12, color: COLORS.white, lineHeight: 15}}>You have saved</Text>
                 {/* <Text style={{fontSize: 10, color: COLORS.light, lineHeight: 13, marginLeft: 8}}>As at 09:00am</Text> */}
                 </View>
-                <Text style={{fontSize: 23, color: COLORS.white, lineHeight: 29, fontWeight: 'bold'}}>₦1,205,000.00</Text>
+                <Text style={{fontSize: 23, color: COLORS.white, lineHeight: 29, fontWeight: 'bold'}}>₦{totalSaving}</Text>
             </View>
           <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: 10}}>
               
@@ -82,7 +122,8 @@ export default function EmergencyLoanRequestDashBoard({navigation}) {
             
             </View>
           </View>
-        <View style={designs.displayCard}>
+          
+        {/* <View style={designs.displayCard}>
             
             <View>
                 <View style={{display: 'flex', flexDirection: 'row'}}>
@@ -97,7 +138,8 @@ export default function EmergencyLoanRequestDashBoard({navigation}) {
             </TouchableOpacity>
             <Text style={{fontSize: 10, color: '#465969', marginLeft: 2}}>Remove</Text>
             </View>
-          </View>
+        </View> */}
+
           <TouchableOpacity>
           <Text style={{fontSize: 10, color: '#00DC99', textAlign: 'right', paddingHorizontal: 10, lineHeight: 13}}>+ Add another account</Text>
           </TouchableOpacity>

@@ -6,23 +6,18 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const widthtouse=Dimensions.get('window').width;
-
-export default function AddCardModal(props) {
+export default function AddBankAccountModal(props) {
   const {
     onRequestClose,
     visible,
     onConfirm,
-    cardNumber,
-    setCardNumber,
-    expiryDate,
-    setExpiryDate,
-    cvv,
-    setCVV,
+    accountNumber,
+    setAccountNumber,
+    bankCode,
+    setBankCode,
   } = props;
   return (
     <View>
@@ -30,10 +25,7 @@ export default function AddCardModal(props) {
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={onRequestClose}
-        style={{borderTopLeftRadius: 30,
-        borderTopRightRadius: 30,}}
-        >
+        onRequestClose={onRequestClose}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View
@@ -51,7 +43,7 @@ export default function AddCardModal(props) {
                   fontSize: 18,
                   lineHeight: 19,
                 }}>
-                Add Card
+                Add Account
               </Text>
               <Icon
                 onPress={onRequestClose}
@@ -63,11 +55,11 @@ export default function AddCardModal(props) {
 
             <TextInput
               style={[styles.textInput, {marginTop: 18}]}
-              placeholder="Card number"
+              placeholder="Account number"
               keyboardType="number-pad"
               placeholderTextColor="#ADADAD"
-              value={cardNumber}
-              onChangeText={(text) => setCardNumber(text)}
+              value={accountNumber}
+              onChangeText={setAccountNumber}
             />
             <View
               style={{
@@ -78,20 +70,12 @@ export default function AddCardModal(props) {
                 marginTop: 18,
               }}>
               <TextInput
-                style={[styles.textInput, {width: 180}]}
-                placeholder="Expiry Date MM/YY"
-                keyboardType="numeric"
-                placeholderTextColor="#ADADAD"
-                value={expiryDate}
-                onChangeText={(text) => setExpiryDate(text)}
-              />
-              <TextInput
-                style={[styles.textInput, {width: 180}]}
-                placeholder="CVV"
+                style={[styles.textInput]}
+                placeholder="Bank code"
                 keyboardType="number-pad"
                 placeholderTextColor="#ADADAD"
-                value={cvv}
-                onChangeText={(text) => setCVV(text)}
+                value={bankCode}
+                onChangeText={setBankCode}
               />
             </View>
             <TouchableOpacity

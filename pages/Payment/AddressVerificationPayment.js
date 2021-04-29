@@ -69,11 +69,23 @@ const AddressVerificationPayment = ({navigation}) => {
     
               if (verify.data.status == 'success') {
                 setVerificationSpinner(false);
+                let stepsdata={
+                  documentdone:'done',
+                  propertydetail:'done',
+                  landlorddetail:'done',
+                  refree:'done',
+                  offeraccepted:'done',
+                  addressverification:'done',
+                  debitmandate:'',
+                  awaitingdisbursment:'',
+                };
+            
+                await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
                 Alert.alert(
                   'Payment verified',
                   'Your payment was verified. Thank you.',
                 );
-                navigation.navigate('PostPaymentForm4')
+                navigation.navigate('MonoDebitMandate')
               } else {
                 setVerificationSpinner(false);
                 Alert.alert(

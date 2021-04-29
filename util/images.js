@@ -74,6 +74,10 @@ const group4923 = require('../assets/images/group4923.png');
 const maskGroup31 = require('../assets/images/maskGroup31.png');
 const billheaderimage = require('../assets/images/billshomeheaderimage.png');
 const referhomeimage = require('../assets/images/referhomeimage.png');
+const mastercard = require('../assets/images/mastercard.png');
+const visacard = require('../assets/images/visa.png');
+const mastercarddesign = require('../assets/images/mastercarddesign.png');
+const visacarddesign = require('../assets/images/visacarddesign.png');
 
 export {
   logo,
@@ -151,6 +155,10 @@ export {
   group4923,
   maskGroup31,
   billheaderimage,
-  referhomeimage
+  referhomeimage,
+  mastercard,
+  visacard,
+  mastercarddesign,
+  visacarddesign
 
 };

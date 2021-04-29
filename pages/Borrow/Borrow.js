@@ -77,7 +77,7 @@ const Borrow = ({navigation}) => {
       refree:'done',
       offeraccepted:'done',
       addressverification:'done',
-      debitmandate:'',
+      debitmandate:'done',
       awaitingdisbursment:'',
     };
 
@@ -89,33 +89,37 @@ const Borrow = ({navigation}) => {
       navigation.navigate('UploadDocuments')
     }else if(steps.documentdone=='')
     {
-      navigation.navigate('UploadDocuments')
+      navigation.navigate('UploadDocuments');
     }else if(steps.propertydetail=='')
     {
-      navigation.navigate('PostPaymentForm1')
+      navigation.navigate('PostPaymentForm1');
     }else if(steps.landlorddetail=='')
     {
-      navigation.navigate('PostPaymentForm2')
+      navigation.navigate('PostPaymentForm2');
     }else if(steps.refree=='')
     {
-      navigation.navigate('PostPaymentForm3')
+      navigation.navigate('PostPaymentForm3');
     }else if(steps.offeraccepted=='')
     {
-      navigation.navigate('RentalLoanOfferTest') //PrintOfferLetter  RentalLoanOfferTest
+      navigation.navigate('RentalLoanOfferTest'); //PrintOfferLetter  RentalLoanOfferTest
     }else if(steps.addressverification=='')
     {
-      navigation.navigate('AddressVerificationPayment')
+      navigation.navigate('AddressVerificationPayment');
     }else if(steps.debitmandate=='')
     {
-      navigation.navigate('PostPaymentForm4')
+      navigation.navigate('MonoDebitMandate');
     }else if(steps.awaitingdisbursment=='')
     {
-      navigation.navigate('AwaitingDisbursement')
+      navigation.navigate('AwaitingDisbursement');
     }
    
   }
    else{
-    navigation.navigate('RentalLoanForm1')
+
+    navigation.navigate('RentalLoanForm1');
+
+    //navigation.navigate('EmergencyLoanRequestDashBoard');
+
    } 
   }
   
@@ -153,10 +157,10 @@ const Borrow = ({navigation}) => {
             
          
             <TouchableOpacity
-              onPress={() => navigation.navigate('EmergencyLoanRequestDashBoard')}
+              onPress={() => navigation.navigate('EmergencyLoanHome')}
               style={[designs.button, {width:width*0.9}]}>
               <View style={designs.buttonInnerView}>
-                  <Text style={designs.buttonText}> Instant Loan </Text>
+                  <Text style={designs.buttonText}> Emergency Funds </Text>
                   <Icon name="arrow-forward-outline" size={30} color= {COLORS.secondary} style={{fontWeight: '900'}} />
               </View>  
             </TouchableOpacity>   

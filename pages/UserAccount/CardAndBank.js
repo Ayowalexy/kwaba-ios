@@ -9,7 +9,8 @@ import {
   TouchableHighlight,
   Modal,
   Pressable,
-  FlatList
+  FlatList,
+  Animated
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -45,6 +46,39 @@ const CardAndBankDetails = ({navigation}) => {
     {label: 'Household', value: 'Household'},
     {label: 'Personal', value: 'Personal'},
 ])
+
+const [scrollViewWidth, setScrollViewWidth] = React.useState(0);
+const boxWidth = scrollViewWidth * 0.7;
+const boxDistance = scrollViewWidth - boxWidth;
+const halfBoxDistance = boxDistance / 2;
+const pan = React.useRef(new Animated.ValueXY()).current;
+
+const DATA = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    cardnumber: '1234 3245 1234 5678',
+    default: 'true',
+    expires: '12/2022',
+    type: 'mastercard',
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    cardnumber: '1234 3245 1234 5678',
+    default: '',
+    expires: '12/2022',
+    type: 'visa',
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    cardnumber: '1234 3245 1234 5678',
+    default: '',
+    expires: '12/2022',
+    type: 'visa',
+  },
+  
+  
+  
+];
 
 useEffect(()=> {
   async function fetchBanksForDropdown(){
@@ -113,16 +147,61 @@ const saveAccountsToStorage = async (data) => {
   } catch (error) {}
 };
 
+const renderItem = ({ item, index }) => (
+  <Animated.View
+    style={{
+      transform: [
+        {
+          scale: pan.x.interpolate({
+            inputRange: [
+              (index - 1) * boxWidth - halfBoxDistance,
+              index * boxWidth - halfBoxDistance,
+              (index + 1) * boxWidth - halfBoxDistance, // adjust positioning
+            ],
+            outputRange: [0.8, 1, 0.8], // scale down when out of scope
+            extrapolate: 'clamp',
+          }),
+        },
+      ],
+    }}>
+    <View
+      style={
+        {
+          flex:1,
+          flexDirection:'column',
+          height: '100%',
+          width: boxWidth,
+          borderRadius: 24,
+          backgroundColor: '#fff',
+          marginLeft:10
+        }
+      }>
+      <Text style={{marginLeft:10,marginTop:20}}>{item.cardnumber}</Text>
+      {/* {item.default=='true'?
+        <>
+         <Text style={{backgroundColor:COLORS.light,width:90,textAlign:'center', marginLeft:10,color:COLORS.primary,borderRadius:20}}>DEFAULT</Text>
+        </>
+      :
+      ''
+      } */}
+      <Text style={{backgroundColor:COLORS.light,width:90,textAlign:'center', marginLeft:10,color:COLORS.primary,borderRadius:20}}>{item.default?'DEFAULT':''}</Text>
+      <Image source={item.type=='mastercard'?images.mastercarddesign:images.visacarddesign} resizeMode='contain' style={{height:200,width:150,alignSelf:'flex-end', marginTop:-40}} />
+
+    </View>
+  </Animated.View>
+);
+
 
   return (
     <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={20}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
-        color= {COLORS.primary}
-      />
+        <Icon
+            onPress={() => navigation.goBack()}
+            name="arrow-back-outline"
+            size={35}
+            style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
+            color="#2A286A"
+          />
+
         <View
           style={{
             marginVertical: 11,
@@ -135,94 +214,66 @@ const saveAccountsToStorage = async (data) => {
                 color: '#2A286A',
                 textAlign: 'left',
                 fontWeight: 'bold',
-                marginBottom: 24
+                marginBottom: 10
               },
             ]}>
             Card and Bank
           </Text>
         </View>
+
+
         <View>
-            <View>
-                <Text>Payment card</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                  <Icon name='add' style={{alignSelf: 'center'}} onPress = {()=> setAddCardModal(true)} size={20} />
-                  <ScrollView scrollEnabled horizontal>
-                    {
-                      cards?.map((value, index) => {
-                        return <View key={index}><Text style={{fontSize: 16, color: 'black', marginRight: 5}}>{value.cardNumber}</Text></View>
-                            
-                  
-                      })
-                    }
-
-                  </ScrollView>
-
-                </View>
+            <View style={{flexDirection:'column',marginLeft:16}}>
                 <View>
-                <Text>Bank</Text>
-                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                  <Icon name='add' style={{alignSelf: 'center'}}/>
-                  <ScrollView scrollEnabled horizontal>
-                    {
-                      bankDetails?.map((value, index) => {
-                        return <View key={index}><Text style={{fontSize: 16, color: 'black', marginRight: 5}}>{value.accountNumber}</Text></View>
-                            
-                  
-                      })
-                    }
-                    
+                  <Text style={[FONTS.h2FontStyling,{color: COLORS.primary,fontWeight: 'bold',marginBottom: 24,marginLeft:54}]}>Payment Card</Text>
+                 </View> 
+                 <View style={{flexDirection:'row',alignItems:'center'}}>
+                   <TouchableOpacity onPress = {()=> setAddCardModal(true)}   style={{height:45,width:45,borderRadius:25,backgroundColor:COLORS.secondary,marginLeft:54}}>
+                       <Icon name='add'  size={35} color={COLORS.white}  style={{alignSelf: 'center',marginTop:2}}/>
+                   </TouchableOpacity>
+                   <FlatList
+                    data={DATA}
+                    renderItem={renderItem}
+                    keyExtractor={item => item.id}
+                    horizontal
+                    //data={loremWords}
+                    style={{  height: 250,marginLeft:44 }}
+                    contentContainerStyle={{ paddingVertical: 16 }}
+                    contentInsetAdjustmentBehavior="never"
+                    snapToAlignment="center"
+                    decelerationRate="fast"
+                    automaticallyAdjustContentInsets={false}
+                    showsHorizontalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
+                    scrollEventThrottle={1}
+                    snapToInterval={boxWidth}
+                    contentInset={{
+                      left: halfBoxDistance,
+                      right: halfBoxDistance,
+                    }}
+                    contentOffset={{ x: halfBoxDistance * -1, y: 0 }}
+                    onLayout={(e) => {
+                      setScrollViewWidth(e.nativeEvent.layout.width);
+                    }}
+                    onScroll={Animated.event(
+                      [{ nativeEvent: { contentOffset: { x: pan.x } } }],
+                      {
+                        useNativeDriver: false,
+                      },
+                    )}
+                    keyExtractor={(item, index) => `${index}-${item}`}
+                    renderItem={renderItem}
+                  />
 
-                  </ScrollView>
-
-                </View>
-                <View>
-          <Text style={{fontSize: 18, lineHeight: 23, marginTop: 27, color: COLORS.primary, marginBottom: 16, fontWeight: 'bold'}}>Account details</Text>
-          <TextInput
-              style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
-              placeholder="Account Number"
-              placeholderTextColor= {COLORS.grey}
-              value={accountNumber}
-            onChangeText={(text) => setAccountNumber(text)}/>
-          </View>
-          <View style={{marginTop: 16}}>
-          <View style={designs.customInput}>
-            <Picker
-              mode="dropdown"
-              dropdownIconColor="white"
-              accessibilityLabel="Bank"
-              style={{flex: 1, color: bank == 0? COLORS.grey: COLORS.dark}}
-              selectedValue={bank}
-              onValueChange={(itemValue, itemIndex) =>
-                setBank(itemValue)
-              }>
-                {banks.map((value, index) => (
-              <Picker.Item label={value.name} value={value.name} key={index} />
-            ))}
-                  {/* {banks
-            .filter((value, index) => selectedBank === 0 ? value : index === 0 ? false : value)
-            .map((value, index) => (
-              <Picker.Item label={value} value={value} key={index} />
-            ))} */}
-            </Picker>
-            <TouchableOpacity style={designs.iconBtn}>
-              <Icon name="chevron-down-outline" size={20} color="#BFBFBF" />
-            </TouchableOpacity>
-          </View>
-          </View>
-          <TouchableOpacity style={designs.iconBtn}>
-              <Icon name="add" size={20} color="#BFBFBF" onPress={addAccount}/>
-            </TouchableOpacity>
-          
-                
+                </View>        
             </View>
-
-        </View>
+      
         </View>
         <AddCardModal
-                    onConfirm={addCard}
-        onRequestClose={() => setAddCardModal(!addCardModal)}
-        visible={addCardModal} 
-        cardNumber={cardNumber}
+         onConfirm={addCard}
+          onRequestClose={() => setAddCardModal(!addCardModal)}
+          visible={addCardModal} 
+          cardNumber={cardNumber}
           setCardNumber={setCardNumber}
           expiryDate={expiryDate}
           setExpiryDate={setExpiryDate}
