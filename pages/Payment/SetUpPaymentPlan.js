@@ -27,6 +27,10 @@ const SetUpPaymentPlan = ({navigation}) => {
 
   // const response = route.params; 
   
+<<<<<<< HEAD
+=======
+
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   const [spinner, setSpinner] = useState(false);
   const [verificationSpinner, setVerificationSpinner] = useState(false);
 
@@ -69,13 +73,20 @@ const SetUpPaymentPlan = ({navigation}) => {
     
               if (verify.data.status == 'success') {
                 setVerificationSpinner(false);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                 // Alert.alert(
                 //   'Payment verified',
                 //   'Your payment was verified. Thank you.',
                 // );
+<<<<<<< HEAD
 
                 navigation.navigate('PostPaymentForm4')
+=======
+                navigation.navigate('PostPaymentForm3')
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
               } else {
                 setVerificationSpinner(false);
                 Alert.alert(

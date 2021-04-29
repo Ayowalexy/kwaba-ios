@@ -9,8 +9,12 @@ import {
   TouchableHighlight,
   Modal,
   Pressable,
+<<<<<<< HEAD
   FlatList,
   Animated
+=======
+  FlatList
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -47,6 +51,7 @@ const CardAndBankDetails = ({navigation}) => {
     {label: 'Personal', value: 'Personal'},
 ])
 
+<<<<<<< HEAD
 const [scrollViewWidth, setScrollViewWidth] = React.useState(0);
 const boxWidth = scrollViewWidth * 0.7;
 const boxDistance = scrollViewWidth - boxWidth;
@@ -80,6 +85,8 @@ const DATA = [
   
 ];
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 useEffect(()=> {
   async function fetchBanksForDropdown(){
     const banks = await fetchBanks();
@@ -147,6 +154,7 @@ const saveAccountsToStorage = async (data) => {
   } catch (error) {}
 };
 
+<<<<<<< HEAD
 const renderItem = ({ item, index }) => (
   <Animated.View
     style={{
@@ -202,6 +210,18 @@ const renderItem = ({ item, index }) => (
             color="#2A286A"
           />
 
+=======
+
+  return (
+    <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={20}
+        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+        color= {COLORS.primary}
+      />
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         <View
           style={{
             marginVertical: 11,
@@ -214,12 +234,17 @@ const renderItem = ({ item, index }) => (
                 color: '#2A286A',
                 textAlign: 'left',
                 fontWeight: 'bold',
+<<<<<<< HEAD
                 marginBottom: 10
+=======
+                marginBottom: 24
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
               },
             ]}>
             Card and Bank
           </Text>
         </View>
+<<<<<<< HEAD
 
 
         <View>
@@ -274,6 +299,90 @@ const renderItem = ({ item, index }) => (
           onRequestClose={() => setAddCardModal(!addCardModal)}
           visible={addCardModal} 
           cardNumber={cardNumber}
+=======
+        <View>
+            <View>
+                <Text>Payment card</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  <Icon name='add' style={{alignSelf: 'center'}} onPress = {()=> setAddCardModal(true)} size={20} />
+                  <ScrollView scrollEnabled horizontal>
+                    {
+                      cards?.map((value, index) => {
+                        return <View key={index}><Text style={{fontSize: 16, color: 'black', marginRight: 5}}>{value.cardNumber}</Text></View>
+                            
+                  
+                      })
+                    }
+
+                  </ScrollView>
+
+                </View>
+                <View>
+                <Text>Bank</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                  <Icon name='add' style={{alignSelf: 'center'}}/>
+                  <ScrollView scrollEnabled horizontal>
+                    {
+                      bankDetails?.map((value, index) => {
+                        return <View key={index}><Text style={{fontSize: 16, color: 'black', marginRight: 5}}>{value.accountNumber}</Text></View>
+                            
+                  
+                      })
+                    }
+                    
+
+                  </ScrollView>
+
+                </View>
+                <View>
+          <Text style={{fontSize: 18, lineHeight: 23, marginTop: 27, color: COLORS.primary, marginBottom: 16, fontWeight: 'bold'}}>Account details</Text>
+          <TextInput
+              style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
+              placeholder="Account Number"
+              placeholderTextColor= {COLORS.grey}
+              value={accountNumber}
+            onChangeText={(text) => setAccountNumber(text)}/>
+          </View>
+          <View style={{marginTop: 16}}>
+          <View style={designs.customInput}>
+            <Picker
+              mode="dropdown"
+              dropdownIconColor="white"
+              accessibilityLabel="Bank"
+              style={{flex: 1, color: bank == 0? COLORS.grey: COLORS.dark}}
+              selectedValue={bank}
+              onValueChange={(itemValue, itemIndex) =>
+                setBank(itemValue)
+              }>
+                {banks.map((value, index) => (
+              <Picker.Item label={value.name} value={value.name} key={index} />
+            ))}
+                  {/* {banks
+            .filter((value, index) => selectedBank === 0 ? value : index === 0 ? false : value)
+            .map((value, index) => (
+              <Picker.Item label={value} value={value} key={index} />
+            ))} */}
+            </Picker>
+            <TouchableOpacity style={designs.iconBtn}>
+              <Icon name="chevron-down-outline" size={20} color="#BFBFBF" />
+            </TouchableOpacity>
+          </View>
+          </View>
+          <TouchableOpacity style={designs.iconBtn}>
+              <Icon name="add" size={20} color="#BFBFBF" onPress={addAccount}/>
+            </TouchableOpacity>
+          
+                
+            </View>
+
+        </View>
+        </View>
+        <AddCardModal
+                    onConfirm={addCard}
+        onRequestClose={() => setAddCardModal(!addCardModal)}
+        visible={addCardModal} 
+        cardNumber={cardNumber}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           setCardNumber={setCardNumber}
           expiryDate={expiryDate}
           setExpiryDate={setExpiryDate}

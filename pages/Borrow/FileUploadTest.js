@@ -5,7 +5,10 @@ import {
   Text,
   Image,
   TouchableOpacity,
+<<<<<<< HEAD
   Alert
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -22,7 +25,10 @@ import ProgressBar from 'react-native-progress/Bar';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
+<<<<<<< HEAD
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   const token = JSON.parse(userData).token;
   return token;
 };
@@ -34,7 +40,11 @@ const getDocuments= async ()=>{
     const uploadedDocumentsRes = await axios.get('http://67.207.86.39:8000/api/v1/application/documents', {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
+<<<<<<< HEAD
    // console.log(uploadedDocumentsRes)
+=======
+    console.log(uploadedDocumentsRes)
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     return uploadedDocumentsRes.data.data;
   }catch(error) {
     console.log(error);
@@ -45,6 +55,7 @@ const getDocuments= async ()=>{
 const FileUploadTest = ({navigation}) => {
 
   const [documents, setDocuments] = useState([])
+<<<<<<< HEAD
   const [name,setName]=useState('');
 
   useEffect(() => {
@@ -56,10 +67,15 @@ const FileUploadTest = ({navigation}) => {
     };
     getUserData();
   }, []);
+=======
+
+
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
   useEffect(() => {
     
     const showUploadedDocuments = async()=>{
+<<<<<<< HEAD
       
     const documentsUploaded = await getDocuments();
     documentsUploaded.forEach(document => {
@@ -68,12 +84,25 @@ const FileUploadTest = ({navigation}) => {
       try{
         dispatch(showUploadedFiles(Number(document.document_type), document.id ))
         //console.log('here', fileProgress)
+=======
+      console.log('derff',documents)
+    const documentsUploaded = await getDocuments();
+    console.log(documentsUploaded)
+    documentsUploaded.forEach(document => {
+      const id = Number(document.document_type);
+      try{
+        dispatch(showUploadedFiles(Number(document.document_type), document.id ))
+        console.log('here', fileProgress)
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         }
       catch(error) {
         console.log('error',error)
       }
     })
+<<<<<<< HEAD
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   }
     
     // console.log('df',documents)
@@ -98,19 +127,31 @@ const FileUploadTest = ({navigation}) => {
 
 const dispatch = useDispatch();
 const fileProgress = useSelector((state) => state.fileUploadReducer.fileProgress);
+<<<<<<< HEAD
 //console.log(fileProgress)
+=======
+console.log(fileProgress)
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 
   const store = useSelector((state) => state);
 
   const appendID =async (item)=> {
     const documentsUploaded = await getDocuments();
+<<<<<<< HEAD
     //console.log('blue', documentsUploaded)
+=======
+    console.log('blue', documentsUploaded)
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     const index = await documentsUploaded.findIndex(document => Number(document.document_type)== item.id);
       const id = Number(documentUploaded[index].document_type);
       try{
         dispatch(showUploadedFiles(id, documentUploaded[index].id))
+<<<<<<< HEAD
        // console.log('here', fileProgress)
+=======
+        console.log('here', fileProgress)
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         }
       catch(error) {
         console.log('error',error)
@@ -128,11 +169,16 @@ const fileProgress = useSelector((state) => state.fileUploadReducer.fileProgress
 
 const selectOneFile = async (item) => {
   
+<<<<<<< HEAD
     //console.log('1', item);  
+=======
+    console.log('1', item);  
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
  try {
     const res = await DocumentPicker.pick({
       type: [DocumentPicker.types.allFiles],
     });
+<<<<<<< HEAD
     // console.log('work', 
     //   res.uri,
     //   res.type, // mime type
@@ -141,6 +187,16 @@ const selectOneFile = async (item) => {
     // );
     const base64File = await RNFS.readFile(res.uri, 'base64');
     //console.log(base64File);
+=======
+    console.log('work', 
+      res.uri,
+      res.type, // mime type
+      res.name,
+      res.size
+    );
+    const base64File = await RNFS.readFile(res.uri, 'base64');
+    console.log(base64File);
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     const convertedFile = `data:${res.type},${base64File}`;
     console.log(convertedFile);
 
@@ -190,6 +246,7 @@ const deleteFile = async(item)=> {
       console.log(error)
   }
 }
+<<<<<<< HEAD
 
 const handleNavigation =async()=>{
 
@@ -232,6 +289,8 @@ const handleNavigation =async()=>{
 
  
 }
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   
 
 
@@ -271,6 +330,7 @@ const handleNavigation =async()=>{
              </View>
              <View style={designs.flexRow}> 
                  {!item.isUploading && <Image source={item.isUploaded == true? icons.group2116 : icons.group3743}  style={{width: 16, height: 16, marginRight: 12}}/> }
+<<<<<<< HEAD
                  {item.isUploaded && <Text style={{color: COLORS.secondary, borderBottomWidth: 1, borderBottomColor: COLORS.secondary}}>{name}{item.title}</Text>}
                  {item.isUploaded && <TouchableOpacity style={{marginLeft: 4, alignSelf: 'center'}} onPress={()=> deleteFile(item)}><Icon name= 'trash-outline' size={14} style={{color: COLORS.grey, width: 14, height: 14}}/></TouchableOpacity>}
                  {!item.isUploaded && !item.isUploading && <Text style={{color: '#ADADAD'}}>No file uploaded</Text>}
@@ -287,6 +347,14 @@ const handleNavigation =async()=>{
                   
 
                   } }><Image source={images.group3745} style={{width: 39, height: 39, alignSelf: 'flex-end', marginTop: 'auto', marginBottom: 'auto'}}/></TouchableOpacity>
+=======
+                 {item.isUploaded && <Text style={{color: COLORS.secondary, borderBottomWidth: 1, borderBottomColor: COLORS.secondary}}>Johnson_Bank-ST.pdf.PDF</Text>}
+                 {item.isUploaded && <TouchableOpacity style={{marginLeft: 4, alignSelf: 'center'}} onPress={()=> deleteFile(item)}><Icon name= 'trash-outline' size={14} style={{color: COLORS.grey, width: 14, height: 14}}/></TouchableOpacity>}
+                 {!item.isUploaded && !item.isUploading && <Text style={{color: '#ADADAD'}}>No file uploaded</Text>}
+                 {item.isUploading && <View style={{flex: 1, marginRight: 20}}><View style={[designs.flexRow, {justifyContent: 'space-between', paddingHorizontal: 3}]}><Text style={{color: COLORS.grey}}>Johnson_Bank Id</Text><Text style={{fontWeight: 'bold'}}>{`${item.progress}%`}</Text></View><ProgressBar style={{borderColor: 'transparent', height: 5}} progress={item.progress} color= {COLORS.secondary} unfilledColor={COLORS.grey} width={null}/></View>}
+              </View></View>
+               <TouchableOpacity onPress={()=> selectOneFile(item)}><Image source={images.group3745} style={{width: 39, height: 39, alignSelf: 'flex-end', marginTop: 'auto', marginBottom: 'auto'}}/></TouchableOpacity>
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
               </View>
             ))}
 
@@ -294,7 +362,11 @@ const handleNavigation =async()=>{
           
         </View>
 
+<<<<<<< HEAD
         <TouchableOpacity onPress={() => {handleNavigation()}} style={[designs.button, {backgroundColor: COLORS.secondary}]}><Text style={{color: COLORS.white, textAlign: 'center'}}>FINISH</Text></TouchableOpacity>
+=======
+        <TouchableOpacity onPress={() => navigation.navigate('PostPaymentForm1')} style={[designs.button, {backgroundColor: COLORS.secondary}]}><Text style={{color: COLORS.white, textAlign: 'center'}}>FINISH</Text></TouchableOpacity>
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         
    </ScrollView>
   );

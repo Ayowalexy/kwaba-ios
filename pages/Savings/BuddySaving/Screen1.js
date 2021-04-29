@@ -5,12 +5,18 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+<<<<<<< HEAD
   Dimensions
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 export default function Screen1({navigation}) {
   const [activeOption, setActiveOption] = useState('');
   const [frequency, setFrequency] = useState('');

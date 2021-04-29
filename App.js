@@ -60,6 +60,15 @@ import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequ
 import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
 import Account from './pages/UserAccount/Account';
 import { FileViewAndDelete } from './pages/Borrow/FileViewAndDelete';
+import {logCurrentStorage} from './util/logCurrentStorage';
+import FileUploadTest from './pages/Borrow/FileUploadTest';
+import RentalLoanOfferTest from './pages/Borrow/RentalLoanOfferTest';
+import BottomNavigator from './pages/Navigation/BottomNavigation';
+import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
+import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
+import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
+import Account from './pages/UserAccount/Account';
+import {FileViewAndDelete} from './pages/Borrow/FileViewAndDelete';
 import AccountPage from './pages/UserAccount/AccountPage';
 import CardAndBankDetails from './pages/UserAccount/CardAndBank';
 import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
@@ -83,6 +92,7 @@ import {setLoginState} from './redux/actions/userActions';
 
 import {useSelector,useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
+import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
 
 const Stack = createStackNavigator();
 
@@ -123,6 +133,7 @@ const App = () => {
           {/* {!store2.isLoggedIn && store2.userToken == '' ? (    */}
 
            {!store2.isLoggedIn && store2.token == '' ? (
+          
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
@@ -228,6 +239,7 @@ const App = () => {
 <Stack.Screen name="PrintOfferLetter" component={PrintOfferLetter}></Stack.Screen>  
 <Stack.Screen name="UploadDocumentsList" component={UploadDocumentsList}></Stack.Screen>  
 <Stack.Screen name="BottomNavigation" component={BottomNavigator}></Stack.Screen>
+<Stack.Screen name="EmergencyLoanHome" component={EmergencyLoanHome}></Stack.Screen>
 <Stack.Screen name="EmergencyLoanRequestDashBoard" component={EmergencyLoanRequestDashBoard}></Stack.Screen>
 <Stack.Screen name="EmergencyLoanRequest" component={EmergencyLoanRequest}></Stack.Screen>
 <Stack.Screen name="EmergencyLoanDashBoard" component={EmergencyLoanDashBoard}></Stack.Screen>
@@ -259,6 +271,100 @@ const App = () => {
            )} 
 
               {/* <Stack.Screen
+
+              <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm1"
+                component={RentalLoanForm1}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanThirdPartyConnection"
+                component={RentalLoanThirdPartyConnection}></Stack.Screen>
+              <Stack.Screen
+                name="LinkingAccount"
+                component={LinkingAccount}></Stack.Screen>
+              <Stack.Screen
+                name="ThirdPartyLink"
+                component={ThirdPartyLink}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanRequestDashBoard"
+                component={RentalLoanRequestDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="PayWithSavings"
+                component={PayWithSavings}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm2"
+                component={RentalLoanForm2}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm3"
+                component={RentalLoanForm3}></Stack.Screen>
+              <Stack.Screen
+                name="UploadBankStatement"
+                component={UploadBankStatement}></Stack.Screen>
+              <Stack.Screen
+                name="UploadDocuments"
+                component={UploadDocuments}></Stack.Screen>
+              <Stack.Screen
+                name="AllDocuments"
+                component={AllDocuments}></Stack.Screen>
+              <Stack.Screen
+                name="LoanRequestApproval"
+                component={LoanRequestApproval}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanOffer"
+                component={RentalLoanOffer}></Stack.Screen>
+              <Stack.Screen
+                name="SetUpPaymentPlan"
+                component={SetUpPaymentPlan}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm1"
+                component={PostPaymentForm1}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm2"
+                component={PostPaymentForm2}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm3"
+                component={PostPaymentForm3}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm4"
+                component={PostPaymentForm4}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanActiveDashBoard"
+                component={RentalLoanActiveDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="FileUploadTest"
+                component={FileUploadTest}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanOfferTest"
+                component={RentalLoanOfferTest}></Stack.Screen>
+              <Stack.Screen
+                name="BottomNavigation"
+                component={BottomNavigator}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanHome"
+                component={EmergencyLoanHome}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanRequestDashBoard"
+                component={EmergencyLoanRequestDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanRequest"
+                component={EmergencyLoanRequest}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanDashBoard"
+                component={EmergencyLoanDashBoard}></Stack.Screen>
+              <Stack.Screen name="Account" component={Account}></Stack.Screen>
+              <Stack.Screen
+                name="FileViewAndDelete"
+                component={FileViewAndDelete}></Stack.Screen>
+              <Stack.Screen
+                name="AccountPage"
+                component={AccountPage}></Stack.Screen>
+              <Stack.Screen
+                name="CardAndBankDetails"
+                component={CardAndBankDetails}></Stack.Screen>
+            </>
+          )}
+
+          {/* <Stack.Screen
                 name="CompleteProfile1"
                 component={CompleteProfile1}></Stack.Screen>
               <Stack.Screen

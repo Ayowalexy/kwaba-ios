@@ -78,13 +78,18 @@ const Onboarding = ({navigation}) => {
                   <View>
                     <View>
                       <TouchableOpacity
+<<<<<<< HEAD
                         onPress={() => navigation.navigate('SignUp')}
+=======
+                        onPress={() => navigation.navigate('GetCode')}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                         style={designs.getStartedBtn}>
                         <Text style={{fontWeight: '600', color: '#2A286A'}}>
                           GET STARTED
                         </Text>
                       </TouchableOpacity>
                     </View>
+<<<<<<< HEAD
                     <View style={[designs.linkContainer],{flexDirection:'row'}}  >
                       <Text style={{color: 'white'}}>
                         Got an account ?{' '}
@@ -94,6 +99,13 @@ const Onboarding = ({navigation}) => {
 
                         <Text style={{color: '#00DC99'}}>Log in</Text>
                         </TouchableOpacity>
+=======
+                    <View style={designs.linkContainer}>
+                      <Text style={{color: 'white'}}>
+                        Got an account?{' '}
+                        <Text style={{color: '#00DC99'}}>Log in</Text>
+                      </Text>
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                     </View>
                   </View>
                 ) : (

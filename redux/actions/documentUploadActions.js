@@ -30,7 +30,10 @@ import axios from 'axios';
 
   export const uploadFile = (token, item, data) => {
     return async (dispatch) => {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
       const config = {
     onUploadProgress: (progressEvent) => {
     const {loaded, total} = progressEvent;
@@ -42,17 +45,25 @@ import axios from 'axios';
       'Content-Type': 'application/json', Authorization: token
     }
     };
+<<<<<<< HEAD
 
     try {
   
+=======
+    try {
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
       const response = await axios.post('http://67.207.86.39:8000/api/v1/application/documents/upload', data, config);
       console.log(response);
       if (response.status == 200){
         dispatch(successUploadFile(item.id))
       }
+<<<<<<< HEAD
       
     } catch (error) {
       console.log("here is the error",error);
+=======
+    } catch (error) {
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
       console.log(error.response.data);
       dispatch(failureUploadFile(item.id))
     }
@@ -70,6 +81,7 @@ import axios from 'axios';
     type: uploadFileTypes.DELETE_UPLOADED_FILE,
     payload: id
   });
+<<<<<<< HEAD
 
   export const deleteFile = id => ({
     type: uploadFileTypes.DELETE_UPLOADED_FILE,
@@ -79,6 +91,8 @@ import axios from 'axios';
 
 
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   
   
   

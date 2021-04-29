@@ -72,12 +72,15 @@ const cowrywiseReg = require('../assets/images/cowrywiseReg.png');
 const cowrywiseShadow = require('../assets/images/cowrywiseShadow.png');
 const group4923 = require('../assets/images/group4923.png');
 const maskGroup31 = require('../assets/images/maskGroup31.png');
+<<<<<<< HEAD
 const billheaderimage = require('../assets/images/billshomeheaderimage.png');
 const referhomeimage = require('../assets/images/referhomeimage.png');
 const mastercard = require('../assets/images/mastercard.png');
 const visacard = require('../assets/images/visa.png');
 const mastercarddesign = require('../assets/images/mastercarddesign.png');
 const visacarddesign = require('../assets/images/visacarddesign.png');
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 export {
   logo,
@@ -145,6 +148,7 @@ export {
   ellipse100,
   maskGroup55,
   buycoinsReg,
+<<<<<<< HEAD
   buycoinsShadow,
   kwabaReg,
   kwabaShadow,
@@ -160,5 +164,16 @@ export {
   visacard,
   mastercarddesign,
   visacarddesign
+=======
+buycoinsShadow,
+kwabaReg,
+kwabaShadow,
+piggyvestReg,
+piggyvestShadow,
+cowrywiseReg,
+cowrywiseShadow,
+group4923,
+maskGroup31
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 };

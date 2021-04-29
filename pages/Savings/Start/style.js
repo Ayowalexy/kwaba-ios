@@ -5,7 +5,11 @@ const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#2A286A',
+<<<<<<< HEAD
     
+=======
+    paddingLeft: 16,
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   },
   backgroundImg: {
     width: width,
@@ -31,13 +35,20 @@ const designs = StyleSheet.create({
     paddingRight: 20,
   },
   card: {
+<<<<<<< HEAD
     width: width*0.9,
+=======
+    width: 380,
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     height: 170,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 15,
     marginTop: 15,
+<<<<<<< HEAD
     alignSelf:'center'
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   },
   cardHeader: {
     color: '#2A286A',
@@ -47,10 +58,16 @@ const designs = StyleSheet.create({
     lineHeight: 35,
   },
   cardFlex: {
+<<<<<<< HEAD
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     
+=======
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   },
   bodyText: {
     marginTop: 6,

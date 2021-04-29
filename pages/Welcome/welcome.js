@@ -21,7 +21,11 @@ const Welcome = ({navigation}) => {
       setUserToken(token);
     };
     getuser();
+<<<<<<< HEAD
   }, [userToken]);
+=======
+  }, []);
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
   return (
     <View style={designs.container}>
@@ -53,7 +57,11 @@ const Welcome = ({navigation}) => {
           <View style={{marginTop: 100}}>
             <TouchableOpacity
               // onPress={() => navigation.navigate('GetCode')}
+<<<<<<< HEAD
               onPress={() => navigation.navigate('SignUp')}
+=======
+              onPress={() => navigation.navigate('Home')}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
               style={designs.getStartedBtn}>
               <Text style={{fontWeight: '600', color: '#2A286A'}}>
                 GET STARTED

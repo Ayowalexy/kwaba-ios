@@ -7,15 +7,20 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
+<<<<<<< HEAD
   Modal,
   Pressable,
   Dimensions,
   Alert
+=======
+  Modal
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+<<<<<<< HEAD
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -23,11 +28,18 @@ import { fetchBanks } from '../../services/network';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 let height= Dimensions.get('window').height;
+=======
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import DropDownPicker from 'react-native-dropdown-picker';
+import { fetchBanks } from '../../services/network';
+
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 const PostPaymentForm2 = ({navigation}) => {
 
   const [landLordFirstName, setLandLordFirstName] = useState('');
   const [landLordLastName, setLandLordLastName] = useState('');
   const [landLordPhoneNumber, setLandLordPhoneNumber] = useState('');
+<<<<<<< HEAD
   //{"code": "801", "id": 4267941563, "name": "Abbey Mortgage Bank"}, {"code": "044", "id": 4267941564, "name": "Access Bank"}, {"code": "063", "id": 4267941565, "name": "Access Bank (Diamond)"}, {"code": "035A", "id": 4267941566, "name": "ALAT by WEMA"}, {"code": "401", "id": 4267941567, "name": "ASO Savings and Loans"}, {"code": "50931", "id": 4267941568, "name": "Bowen Microfinance Bank"}, {"code": "50823", "id": 4267941569, "name": "CEMCS Microfinance Bank"}, {"code": "023", "id": 4267941570, "name": "Citibank Nigeria"}, {"code": "559", "id": 4267941571, "name": "Coronation Merchant Bank"}
   const [banks, setBanks] = useState([{"code": "801", "id": 4267941563, "name": "Abbey Mortgage Bank"}]);
   
@@ -37,6 +49,13 @@ const PostPaymentForm2 = ({navigation}) => {
   const [progress, setProgress] = useState(50);
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [pressed, setPressed] = useState(false);
+=======
+  const [banks, setBanks] = useState([]);
+  const [landLordAccountNumber, setLandLordAccountNumber] = useState('');
+  const [landLordAccountBank, setLandLordAccountBank] = useState('');
+  const [pickerModalOpen, setPickerModalOpen] = useState(false)
+  const [progress, setProgress] = useState(25);
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   let controller;
 
   useEffect(()=> {
@@ -44,12 +63,17 @@ const PostPaymentForm2 = ({navigation}) => {
       const banks = await fetchBanks();
       console.log(banks);
       if (banks.banks){
+<<<<<<< HEAD
        setBanks(banks.banks);
+=======
+        setBanks(banks.banks);
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
       }
     };
     fetchBanksForDropdown()
     
   }, []);
+<<<<<<< HEAD
 
 
 
@@ -108,6 +132,20 @@ const PostPaymentForm2 = ({navigation}) => {
     }
 
 
+=======
+ 
+
+  const handleNavigation = () => {
+    const data = {
+    accommodationStatus: accommodationStatus,
+    salaryAmount: salaryAmount,
+    };
+    // try {
+    //   dispatch(soloSaving(data));
+
+    //   return navigation.navigate('SoloSaving2');
+    // } catch (error) {}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   };
 
 
@@ -152,6 +190,7 @@ const PostPaymentForm2 = ({navigation}) => {
             LandLord Details
           </Text>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
+<<<<<<< HEAD
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>2 of 4</Text>
           <AnimatedCircularProgress
             size={25}
@@ -160,6 +199,16 @@ const PostPaymentForm2 = ({navigation}) => {
             rotation={0}
             tintColor= {COLORS.secondary}
             backgroundColor="#D6D6D6" />
+=======
+            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
+          <AnimatedCircularProgress
+  size={25}
+  width={5}
+  fill={progress}
+  rotation={0}
+  tintColor= {COLORS.secondary}
+  backgroundColor="#D6D6D6" />
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
   </View>
           
           </View>
@@ -172,6 +221,7 @@ const PostPaymentForm2 = ({navigation}) => {
           />
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
+<<<<<<< HEAD
             placeholder="Last Name"
             placeholderTextColor= {COLORS.grey}
             value={landLordLastName}
@@ -186,6 +236,22 @@ const PostPaymentForm2 = ({navigation}) => {
         />
 
       <TextInput
+=======
+            placeholder="Phone Number"
+            placeholderTextColor= {COLORS.grey}
+            value={landLordLastName}
+          onChangeText={(text) => setLandLordLastName(text)}
+          />
+          <TextInput
+          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
+          placeholder="Phone Number"
+          placeholderTextColor= {COLORS.grey}
+          value={landLordPhoneNumber}
+        onChangeText={(text) => setLandLordPhoneNumber(text)}
+        />
+
+<TextInput
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
           placeholder="Account Number"
           placeholderTextColor= {COLORS.grey}
@@ -242,6 +308,7 @@ const PostPaymentForm2 = ({navigation}) => {
           value={refereeCountry}
         onChangeText={(text) => setRefereeCountry(text)}
         /> */}
+<<<<<<< HEAD
            <View style={{minHeight: 0,maxHeight:500}}>
                     
               <Pressable onPress={() => {
@@ -288,18 +355,77 @@ const PostPaymentForm2 = ({navigation}) => {
                           </View>
                       </Modal>
                 </View>  
+=======
+        <View style={{minHeight: 0}}>
+        <DropDownPicker
+                    items={banks}
+                    defaultNull
+                    placeholder="Bank"
+                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
+                    style={designs.dropDownPicker}
+                    controller={instance => controller = instance}
+                    dropDownStyle={{height: 0, borderWidth: 0}}
+                    dropDownMaxHeight={0}
+                    arrowStyle={{marginRight: 10, size: 15}}
+                    onChangeItem={item => setBanks(item)}
+                    onOpen={() => setPickerModalOpen(true)}
+                />
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             </View>
          
           </View>
          
           
           <TouchableOpacity
+<<<<<<< HEAD
             onPress={handleNavigation}
+=======
+            onPress={() => navigation.navigate('RentalLoanOfferTest')}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>
         </View>
 
+<<<<<<< HEAD
+=======
+        <Modal visible={pickerModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
+            <View style={designs.modalWrapper}>
+            <View style={designs.modalView}> 
+            <View style={[designs.modalHeader, {marginBottom: 11}]}>
+            <Icon
+              onPress={() => {controller.close();
+                setPickerModalOpen(false)}}
+              style={{marginLeft: 'auto'}}
+              name="close-outline"
+              size={30}
+              color="#D6D6D6"
+            />
+            </View>
+            <View>
+                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
+                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
+            <ScrollView>
+                
+            {banks.map((bank, index) => {
+            return (
+                
+                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(bank.name);
+                    controller.close();
+                    setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
+                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{bank.name}</Text>
+              </TouchableOpacity>
+            )
+              
+        })}
+        </ScrollView>
+                </View>
+            </View>
+
+            </View>
+            
+        </Modal>
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         
    </ScrollView>
   );

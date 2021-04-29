@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 import {StyleSheet,Dimensions} from 'react-native';
 
 const widthTouse=Dimensions.get('window').width;
+=======
+import {StyleSheet} from 'react-native';
+
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 const designs = StyleSheet.create({
   container: {
     flex: 1,
@@ -54,7 +59,11 @@ const designs = StyleSheet.create({
     // textAlign: 'left',
   },
   getStartedBtn: {
+<<<<<<< HEAD
     width: widthTouse*0.9,
+=======
+    width: 380,
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     height: 70,
     borderRadius: 10,
     backgroundColor: '#ffff',

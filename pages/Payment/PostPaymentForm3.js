@@ -7,8 +7,12 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
+<<<<<<< HEAD
   Modal,
   Alert
+=======
+  Modal
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -16,10 +20,13 @@ import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import DropDownPicker from 'react-native-dropdown-picker';
+<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { logCurrentStorage } from '../../util/logCurrentStorage';
 import axios from 'axios';
 
+=======
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
 const PostPaymentForm3 = ({navigation}) => {
 
@@ -37,6 +44,7 @@ const PostPaymentForm3 = ({navigation}) => {
 ])
   const [refereeRelationship, setRefereeRelationship] = useState(null);
   const [pickerModalOpen, setPickerModalOpen] = useState(false)
+<<<<<<< HEAD
   const [progress, setProgress] = useState(75);
   let controller;
 
@@ -215,6 +223,35 @@ const PostPaymentForm3 = ({navigation}) => {
           color= {COLORS.primary}
         />
 
+=======
+  const [progress, setProgress] = useState(25);
+  let controller;
+ 
+
+  const handleNavigation = () => {
+    const data = {
+    accommodationStatus: accommodationStatus,
+    salaryAmount: salaryAmount,
+    };
+    // try {
+    //   dispatch(soloSaving(data));
+
+    //   return navigation.navigate('SoloSaving2');
+    // } catch (error) {}
+  };
+
+
+  return (
+    <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+        
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={20}
+        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+        color= {COLORS.primary}
+      />
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
         <View
           style={{
             marginVertical: 11,
@@ -248,6 +285,7 @@ const PostPaymentForm3 = ({navigation}) => {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
           <AnimatedCircularProgress
+<<<<<<< HEAD
             size={25}
             width={5}
             fill={progress}
@@ -256,6 +294,15 @@ const PostPaymentForm3 = ({navigation}) => {
             backgroundColor="#D6D6D6" 
           />
        </View>
+=======
+  size={25}
+  width={5}
+  fill={progress}
+  rotation={0}
+  tintColor= {COLORS.secondary}
+  backgroundColor="#D6D6D6" />
+  </View>
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
           
           </View>
           <TextInput
@@ -284,10 +331,17 @@ const PostPaymentForm3 = ({navigation}) => {
         placeholder="Email"
         placeholderTextColor= {COLORS.grey}
         value={refereeEmail}
+<<<<<<< HEAD
         onChangeText={(text) => setRefereeEmail(text)}
        />
 
       <Text
+=======
+      onChangeText={(text) => setRefereeEmail(text)}
+      />
+
+<Text
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[
               FONTS.h3FontStyling,
               {
@@ -340,7 +394,11 @@ const PostPaymentForm3 = ({navigation}) => {
                     dropDownStyle={{height: 0, borderWidth: 0}}
                     dropDownMaxHeight={0}
                     arrowStyle={{marginRight: 10, size: 15}}
+<<<<<<< HEAD
                     onChangeItem={item => setRefereeRelationship(item.value)}
+=======
+                    onChangeItem={item => setRefereeRelationship(item)}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
                     onOpen={() => setPickerModalOpen(true)}
                 />
             </View>
@@ -349,7 +407,11 @@ const PostPaymentForm3 = ({navigation}) => {
          
           
           <TouchableOpacity
+<<<<<<< HEAD
             onPress={()=>{handleNavigation()}}
+=======
+            onPress={() => navigation.navigate('PostPaymentForm4')}
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

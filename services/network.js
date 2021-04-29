@@ -121,10 +121,15 @@ const oneOffPayment = async (data) => {
         Authorization: token,
       },
     });
+<<<<<<< HEAD
     console.log('response in network', response);
     return response;
   } catch (error) {
     console.log('one-off error', error);
+=======
+    return response;
+  } catch (error) {
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
     return error.message;
   }
 };
@@ -145,6 +150,119 @@ const verifyPayment = async (data) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+const applyForEmergencyLoan = async (data) => {
+  const token = await getToken();
+  const url = apiUrl + '/api/v1/emergency_loan/apply';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const loanRepayment = async (data) => {
+  const token = await getToken();
+  const url = apiUrl + '/api/v1/emergency_loan/repay';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const loanPaymentVerification = async (data) => {
+  const token = await getToken();
+  const url = apiUrl + '/api/v1/emergency_loan/payment/verify';
+  try {
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const getEmergencyLoans = async () => {
+  const token = await getToken();
+  const url = apiUrl + '/api/v1/emergency_loan/all';
+
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const getSingleLoan = async (data) => {
+  const token = await getToken();
+  const url = apiUrl + '/api/v1/emergency_loan/one';
+
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const resolveBankAccount = async (data) => {
+  const url = apiUrl + '/api/v1/user/bank_details';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const resolveCardDetails = async (data) => {
+  const url = apiUrl + '/api/v1/user/card_details';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 export {
   fetchBanks,
   signUp,
@@ -155,4 +273,14 @@ export {
   subscribeToSavingsPlan,
   oneOffPayment,
   verifyPayment,
+<<<<<<< HEAD
+=======
+  applyForEmergencyLoan,
+  loanRepayment,
+  loanPaymentVerification,
+  getEmergencyLoans,
+  getSingleLoan,
+  resolveBankAccount,
+  resolveCardDetails,
+>>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 };
