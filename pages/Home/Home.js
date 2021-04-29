@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
+import {getEmergencyLoans} from '../../services/network';
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -37,6 +38,13 @@ export default function Home({navigation}) {
       }
     };
     getUserData();
+    (async () => {
+      const loans = await getEmergencyLoans();
+      const activeLoan = loans.data.data.filter(
+        (c) => c.repayment_status == 0,
+      )[0];
+      setInstantLoan(activeLoan != undefined ? activeLoan.loan_amount : 0);
+    })();
   }, []);
 
   useEffect(() => {
@@ -44,10 +52,11 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings = store.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    );
-    setSavings(totalSoloSavings || 0);
+    const totalSoloSavings =
+      store.data != undefined && store.data.length > 0
+        ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
+        : 0;
+    setSavings(totalSoloSavings);
   }, []);
 
   const topCards = [
@@ -108,10 +117,15 @@ export default function Home({navigation}) {
   const goToPage = (item) => {
     if (item.title == 'Rent savings') {
       navigation.navigate('SavingsHome');
-    } 
-    else if(item.title == 'Rent payment') {
+    } else if (item.title == 'Rent payment') {
       navigation.navigate('Borrow');
-    }else {
+    } else if (item.title == 'Soft loans') {
+      if (instantLoan > 0) {
+        navigation.navigate('EmergencyLoanDashBoard');
+      } else {
+        navigation.navigate('EmergencyLoanHome');
+      }
+    } else {
       navigation.navigate('CompleteProfile1');
     }
   };
@@ -325,7 +339,6 @@ export default function Home({navigation}) {
           ))}
         </ScrollView>
       </View>
-      
     </View>
   );
 }
