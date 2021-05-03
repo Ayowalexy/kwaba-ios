@@ -51,7 +51,7 @@ export default function PayWithSavings({navigation}) {
             <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={20}
+        size={25}
         style={{marginLeft: 9, fontWeight: '900', marginBottom: 33}}
         color= {COLORS.primary}
       />
@@ -119,10 +119,10 @@ export default function PayWithSavings({navigation}) {
                 <View style={designs.modalWrapper}>
                     <View style={designs.modalView}>
                         <View style={designs.modalHeader}>
-                        <Icon
+      <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={20}
+        size={25}
         style={{marginLeft: 0, marginRight: 24, fontWeight: '900', marginBottom: 0}}
         color= {COLORS.primary}
       />

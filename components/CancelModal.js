@@ -10,6 +10,8 @@ import {
 import {icons} from '../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+//this is the error modal
+
 const CancelModal = (props) => {
   const {
     cancelModal,

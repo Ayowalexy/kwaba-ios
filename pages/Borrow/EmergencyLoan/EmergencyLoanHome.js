@@ -70,13 +70,7 @@ export default function EmergencyLoanHome({navigation}) {
           paddingBottom: 24,
         },
       ]}>
-      <View
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <View style={{width: '100%', marginLeft: 25, marginBottom: 20}}>
+
           <Icon
             onPress={() => navigation.goBack()}
             name="arrow-back-outline"
@@ -84,6 +78,9 @@ export default function EmergencyLoanHome({navigation}) {
             style={{fontWeight: '900'}}
             color={COLORS.primary}
           />
+   
+        <View style={{width: '100%', marginLeft: 25, marginBottom: 20}}>
+
         </View>
         <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
           <View style={{textAlign: 'left'}}>
@@ -256,7 +253,7 @@ export default function EmergencyLoanHome({navigation}) {
             <Text style={{color: COLORS.white}}>ACCESS LOAN</Text>
           </TouchableOpacity>
         </ScrollView>
-      </View>
+      
     </View>
   );
 }

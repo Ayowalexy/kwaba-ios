@@ -23,6 +23,7 @@ import axios from 'axios';
 import AddCardModal from '../../components/addCardModal';
 import { fetchBanks } from '../../services/network';
 import {Picker} from '@react-native-picker/picker';
+import AddBankAccountModal from '../../components/addBankAccountModal';
 
 
 const CardAndBankDetails = ({navigation}) => {
@@ -42,6 +43,16 @@ const CardAndBankDetails = ({navigation}) => {
   const [addAccountModal, setAddAccountModal] = useState(false);
   const [accountNumber, setAccountNumber] = useState('');
   const [bank, setBank] = useState('');
+
+
+
+  const [bankModalVisible, setBankModalVisible] = useState(false);
+  const [loanAmount, setLoanAmount] = useState(0);
+  const [repaymentAmount, setRepaymentAmount] = useState(0);
+  const [bankAccountName, setBankAccountName] = useState('Adebisi Joseph');
+  const [bankAccountNumber, setBankAccountNumber] = useState('1411314521');
+  const [bankName, setBankName] = useState('UBA');
+  const [bankCode, setBankCode] = useState('');
   const [loanPurposeOptions] = useState([
     {label: 'Household', value: 'Household'},
     {label: 'Personal', value: 'Personal'},
@@ -76,8 +87,32 @@ const DATA = [
     type: 'visa',
   },
   
-  
-  
+];
+
+
+const BankAccounts = [
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    bankAccountName: 'Adebisi Joseph',
+    bankAccountNumber: '1411314521',
+    bankName: 'Adebisi Joseph',
+    bankCode: '1234'
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    bankAccountName: 'Adebisi Joseph',
+    bankAccountNumber: '1411314521',
+    bankName: 'Adebisi Joseph',
+    bankCode: '1234'
+  },
+  {
+    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+    bankAccountName: 'Adebisi Joseph',
+    bankAccountNumber: '1411314521',
+    bankName: 'Adebisi Joseph',
+    bankCode: '1234'
+  },
+ 
 ];
 
 useEffect(()=> {
@@ -197,7 +232,7 @@ const renderItem = ({ item, index }) => (
         <Icon
             onPress={() => navigation.goBack()}
             name="arrow-back-outline"
-            size={35}
+            size={25}
             style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
             color="#2A286A"
           />
@@ -225,10 +260,10 @@ const renderItem = ({ item, index }) => (
         <View>
             <View style={{flexDirection:'column',marginLeft:16}}>
                 <View>
-                  <Text style={[FONTS.h2FontStyling,{color: COLORS.primary,fontWeight: 'bold',marginBottom: 24,marginLeft:54}]}>Payment Card</Text>
+                  <Text style={[FONTS.h2FontStyling,{color: COLORS.primary,fontWeight: 'bold',marginBottom: 24,marginLeft:20}]}>Payment Card</Text>
                  </View> 
                  <View style={{flexDirection:'row',alignItems:'center'}}>
-                   <TouchableOpacity onPress = {()=> setAddCardModal(true)}   style={{height:45,width:45,borderRadius:25,backgroundColor:COLORS.secondary,marginLeft:54}}>
+                   <TouchableOpacity onPress = {()=> setAddCardModal(true)}   style={{height:45,width:45,borderRadius:25,backgroundColor:COLORS.secondary,marginLeft:20}}>
                        <Icon name='add'  size={35} color={COLORS.white}  style={{alignSelf: 'center',marginTop:2}}/>
                    </TouchableOpacity>
                    <FlatList
@@ -237,7 +272,7 @@ const renderItem = ({ item, index }) => (
                     keyExtractor={item => item.id}
                     horizontal
                     //data={loremWords}
-                    style={{  height: 250,marginLeft:44 }}
+                    style={{  height: 250,marginLeft:40 }}
                     contentContainerStyle={{ paddingVertical: 16 }}
                     contentInsetAdjustmentBehavior="never"
                     snapToAlignment="center"
@@ -267,6 +302,94 @@ const renderItem = ({ item, index }) => (
 
                 </View>        
             </View>
+
+
+            <View  style={{flexDirection:'column',marginLeft:16}}>
+
+              <View>
+                    <Text style={[FONTS.h2FontStyling,{color: COLORS.primary,fontWeight: 'bold',marginBottom: 24,marginLeft:20}]}>Bank Account</Text>
+              </View>
+              <View style={{flexDirection:'row',alignItems:'center'}}>
+                   <TouchableOpacity onPress={() => setBankModalVisible(true)}  style={{height:45,width:45,borderRadius:25,backgroundColor:COLORS.secondary,marginLeft:20}}>
+                       <Icon name='add'  size={35} color={COLORS.white}  style={{alignSelf: 'center',marginTop:2, fontWeight:'bold'}}/>
+                   </TouchableOpacity>
+
+                 
+
+                   <ScrollView scrollEnabled horizontal>
+                   
+
+                 
+
+                    {BankAccounts.map(()=>(
+
+                    <View
+                       style={{
+                         borderRadius: 15,
+                         backgroundColor: COLORS.primary,
+                         paddingTop: 16,
+                         paddingBottom: 16,
+                         paddingLeft: 16,
+                         display: 'flex',
+                         flexDirection: 'row',
+                         justifyContent: 'space-between',
+                         width: '35%',
+                         height: 125,
+                         marginLeft:40
+                       }}>
+                      
+                        <View>
+                          <Text
+                            style={{
+                              color: COLORS.white,
+                              fontSize: 15,
+                              lineHeight: 23,
+                              fontFamily: 'CircularStd',
+                              marginBottom: 1,
+                            }}>
+                            {bankAccountName != '' ? bankAccountName : '-'}
+                          </Text>
+                          <Text
+                            style={{
+                              color: COLORS.light,
+                              fontSize: 10,
+                              lineHeight: 13,
+                              fontFamily: 'CircularStd',
+                              marginBottom: 23,
+                            }}>
+                            {bankName != '' ? bankName : '-'}
+                          </Text>
+                          <Text
+                            style={{
+                              color: COLORS.white,
+                              fontSize: 10,
+                              lineHeight: 13,
+                              fontFamily: 'CircularStd',
+                            }}>
+                            {bankAccountNumber != '' ? bankAccountNumber : '-'}
+                          </Text>
+                        </View>
+                        <View>
+                          <Image
+                            style={{width: 71, height: 110}}
+                            source={images.maskGroup24}
+                          />  
+                        </View>
+                      
+                    </View>
+                    ))}
+
+                   </ScrollView>
+
+
+
+                   
+                  
+
+
+              </View>
+            </View>
+
       
         </View>
         <AddCardModal
@@ -279,7 +402,17 @@ const renderItem = ({ item, index }) => (
           setExpiryDate={setExpiryDate}
           cvv={cvv}
           setCVV={setCvv}
-        />   
+        />  
+
+      <AddBankAccountModal
+        onConfirm={addCard}
+        onRequestClose={() => setBankModalVisible(!bankModalVisible)}
+        visible={bankModalVisible}
+        accountNumber={bankAccountNumber}
+        setAccountNumber={(text) => setBankAccountNumber(text)}
+        bankCode={bankCode}
+        setBankCode={(text) => setBankCode(text)}
+      /> 
         
 
 

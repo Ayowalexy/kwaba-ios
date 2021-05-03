@@ -77,7 +77,7 @@ const designs = StyleSheet.create({
     left: 200,
   },
   getStartedBtn: {
-    width: 360,
+    width: width*0.9,
     height: 70,
     borderRadius: 10,
     backgroundColor: '#ffff',

@@ -24,7 +24,7 @@ const Screen4 = ({navigation}) => {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={35}
+        size={25}
         style={{fontWeight: '900'}}
         color="#2A286A"
       />

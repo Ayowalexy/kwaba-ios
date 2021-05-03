@@ -33,7 +33,7 @@ export default function RentalLoanRequestDashBoard({navigation}) {
         <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={20}
+        size={25}
         style={{ fontWeight: '900'}}
         color= {COLORS.primary}
       />

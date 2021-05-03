@@ -23,7 +23,7 @@ const BillsHome = ({navigation}) => {
             <Icon
                 onPress={() => navigation.goBack()}
                 name="arrow-back-outline"
-                size={35}
+                size={25}
                 style={{fontWeight: '900', marginLeft: 16,marginTop:20}}
                 color={COLORS.light}
             />
@@ -58,7 +58,7 @@ const BillsHome = ({navigation}) => {
                              <Icon
                                 
                                 name="arrow-forward-outline"
-                                size={30}
+                                size={25}
                                 style={{fontWeight: '900', marginLeft: 16,marginTop:20,marginRight:10}}
                                 color={COLORS.primary}
                              />
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
           color:COLORS.yellow,
           fontFamily: 'CircularStd-bold',
           fontSize:25,
-          fontWeight:'700',
+          fontWeight:'500',
           marginTop:20
       },
       headertext:{

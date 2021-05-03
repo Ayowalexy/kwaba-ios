@@ -209,7 +209,7 @@ const RentalLoanOfferTest = ({navigation}) => {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={20}
+        size={25}
         style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
         color= {COLORS.primary}
       />

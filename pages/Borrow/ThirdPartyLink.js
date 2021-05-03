@@ -67,7 +67,7 @@ export default function ThirdPartyLink({navigation, route}) {
         <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={20}
+        size={25}
         style={{ fontWeight: '900'}}
         color= {COLORS.primary}
       />

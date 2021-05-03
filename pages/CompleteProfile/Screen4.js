@@ -9,7 +9,7 @@ export default function Screen4({navigation}) {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={35}
+        size={25}
         style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
         color="#2A286A"
       />

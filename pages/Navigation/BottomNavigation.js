@@ -38,11 +38,15 @@ const BottomNavigator = () => {
         name="Savings"
         component={SavingsHome}
         options={{
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({color,focused}) => (
 
             <View style={{flex:1,justifyContent:'center'}} >
-              <Image source={icons.savings} style={{width:25,height:25,alignSelf:'center'}}/>
-              <Text style={{fontSize: 16, color: '#BFBFBF'}}>Savings</Text>
+              <>
+              {focused?<Image source={icons.savingslight} style={{width:25,height:25,alignSelf:'center'}}/>
+              :<Image source={icons.savings} style={{width:25,height:25,alignSelf:'center'}}/>}
+              </>
+              {/* <Image source={icons.savings} style={{width:25,height:25,alignSelf:'center'}}/> */}
+              <Text style={{fontSize: 16, color:focused? '#9D98EC':'#BFBFBF'}}>Savings</Text>
             </View>
           ),
         }}
@@ -51,10 +55,15 @@ const BottomNavigator = () => {
         name="MyRent"
         component={Borrow}
         options={{
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({color,focused}) => (
             <View style={{flex:1,justifyContent:'center'}}>
-              <Image source={icons.myrent} style={{width:25,height:25,alignSelf:'center'}}/>
-              <Text style={{fontSize: 16, color: '#BFBFBF'}}>Borrow</Text>
+
+              <>
+              {focused?<Image source={icons.myrentlight} style={{width:25,height:25,alignSelf:'center'}}/>
+              :<Image source={icons.myrent} style={{width:25,height:25,alignSelf:'center'}}/>}
+              </>
+             
+              <Text style={{fontSize: 16, color: focused? '#9D98EC':'#BFBFBF'}}>Borrow</Text>
             </View>
           ),
         }}
@@ -63,9 +72,14 @@ const BottomNavigator = () => {
         name="Home"
         component={Home}
         options={{
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({color,focused}) => (
             <View style={{flex:1,justifyContent:'center'}}>
-                <Image source={icons.kwabalogocol} style={{width:60,height:60,alignSelf:'center'}}/>
+
+              <>
+              {focused?<Image source={icons.kwabalogocol} style={{width:60,height:60,alignSelf:'center'}}/>
+              :<Image source={icons.kwabalogonocol} style={{width:60,height:60,alignSelf:'center'}}/>}
+              </>
+               
               {/* <Text style={{fontSize: 16, color: '#000000'}}>RentBank</Text> */}
             </View>
           ),
@@ -75,10 +89,15 @@ const BottomNavigator = () => {
         name="Bills"
         component={BillsHome}
         options={{
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({color,focused}) => (
             <View style={{flex:1,justifyContent:'center'}}>
-              <Image source={icons.billsicon} style={{width:25,height:25,alignSelf:'center'}}/>
-              <Text style={{fontSize: 16, color: '#BFBFBF'}}>Bills</Text>
+
+              <>
+              {focused?<Image source={icons.billslight} style={{width:25,height:25,alignSelf:'center'}}/>
+              :<Image source={icons.billsicon} style={{width:25,height:25,alignSelf:'center'}}/>}
+              </>
+              
+              <Text style={{fontSize: 16, color: focused? '#9D98EC':'#BFBFBF'}}>Bills</Text>
             </View>
           ),
         }}
@@ -87,10 +106,15 @@ const BottomNavigator = () => {
         name="Account"
         component={AccountPage}
         options={{
-          tabBarIcon: ({color}) => (
+          tabBarIcon: ({color,focused}) => (
             <View style={{flex:1,justifyContent:'center'}}>
-              <Image source={icons.account} style={{width:25,height:25,alignSelf:'center'}}/>
-              <Text style={{fontSize: 16, color: '#BFBFBF'}}>Account</Text>
+
+              <>
+              {focused?<Image source={icons.accountlight} style={{width:25,height:25,alignSelf:'center'}}/>
+              :<Image source={icons.account} style={{width:25,height:25,alignSelf:'center'}}/>}
+              </>
+
+              <Text style={{fontSize: 16, color: focused? '#9D98EC':'#BFBFBF'}}>Account</Text>
             </View>
           ),
         }}

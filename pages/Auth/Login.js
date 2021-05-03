@@ -159,7 +159,7 @@ export default function Login({navigation}) {
               lineHeight: 30,
               fontWeight: '900',
               marginLeft: 8,
-              marginRight:widthTouse*0.3
+              marginRight:widthTouse*0.25
             }}>
             Remember me
           </Text>
