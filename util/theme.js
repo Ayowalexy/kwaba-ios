@@ -63,6 +63,11 @@ export const FONTS = {
     fontFamily: 'CircularStd-Book',
     fontSize: SIZES.body4,
   },
+  body5FontStyling: {
+    fontFamily: 'CircularStd-Book',
+    fontSize: 20,
+    lineHeight: 25,
+  },
 
   base: 8,
   padding: 12,

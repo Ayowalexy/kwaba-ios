@@ -12,30 +12,30 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 //this is the error modal
 
-const CancelModal = (props) => {
+const ErrorModal = (props) => {
   const {
-    cancelModal,
-    setCancelModal,
+    errorModal,
+    setErrorModal,
     handlePress,
-    successHeading,
-    successText,
+    errorHeading,
+    errorText,
   } = props;
 
   return (
     <View>
-      <Modal visible={cancelModal} animationType="fade" transparent={true}>
+      <Modal visible={errorModal} animationType="fade" transparent={true}>
         <View style={designs.modal}>
           <View style={designs.successModal}>
             <Icon
               style={{alignSelf: 'flex-end'}}
-              onPress={() => setCancelModal(false)}
+              onPress={() => setErrorModal(false)}
               name="close-outline"
               size={30}
               color="#465969"
             />
             <Image source={icons.cancelIcon} />
             <Text style={[designs.boldText, {marginTop: 45, fontSize: 22}]}>
-              {successHeading}
+              {errorHeading}
             </Text>
             <Text
               style={{
@@ -46,7 +46,7 @@ const CancelModal = (props) => {
                 marginTop: 15,
               }}>
               {/* Solos savings has been set up */}
-              {successText}
+              {errorText}
             </Text>
             <TouchableOpacity
               onPress={handlePress}
@@ -67,7 +67,7 @@ const CancelModal = (props) => {
     </View>
   );
 };
-export default CancelModal;
+export default ErrorModal;
 
 const designs = StyleSheet.create({
   modal: {

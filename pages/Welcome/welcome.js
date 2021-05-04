@@ -10,17 +10,20 @@ import designs from './style';
 import {FONTS, icons, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector,useDispatch} from 'react-redux';
 
 const Welcome = ({navigation}) => {
   const [userToken, setUserToken] = useState(null);
 
+  const store2 = useSelector((state) => state.loginReducer);
+
   useEffect(() => {
-    const getuser = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const token = userData != null ? JSON.parse(userData).token : null;
-      setUserToken(token);
-    };
-    getuser();
+    // const getuser = async () => {
+    //   const userData = await AsyncStorage.getItem('userData');
+    //   const token = userData != null ? JSON.parse(userData).token : null;
+    //   setUserToken(token);
+    // };
+    // getuser();
   }, [userToken]);
 
   return (
@@ -30,7 +33,7 @@ const Welcome = ({navigation}) => {
         <ImageBackground source={images.maskGroup6} style={designs.bgImage}>
           <View style={designs.innerView}>
             <View>
-              <Text style={[FONTS.largeTitle, designs.bigText]}>
+              <Text style={[designs.bigText,{fontWeight:'bold',color:'#fff',fontSize:FONTS.largeTitle,}]}>
                 Welcome to{'\n'}
                 Kwaba
               </Text>
@@ -52,8 +55,8 @@ const Welcome = ({navigation}) => {
           </View>
           <View style={{marginTop: 100}}>
             <TouchableOpacity
-              // onPress={() => navigation.navigate('GetCode')}
-              onPress={() => navigation.navigate('SignUp')}
+               onPress={() => navigation.navigate('GetCode')}
+              //onPress={() => navigation.navigate('SignUp')}
               style={designs.getStartedBtn}>
               <Text style={{fontWeight: '600', color: '#2A286A'}}>
                 GET STARTED
@@ -61,7 +64,7 @@ const Welcome = ({navigation}) => {
             </TouchableOpacity>
           </View>
 
-          {userToken == null && (
+          {store2.token == null && (
             <View style={designs.linkContainer}>
               <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <Text style={{color: 'white'}}>

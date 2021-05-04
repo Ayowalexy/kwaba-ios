@@ -98,7 +98,7 @@ const designs = StyleSheet.create({
     marginTop: 15,
   },
   counter: {
-    width: 59,
+    width: 80,
     height: 27,
     backgroundColor: '#9D98EC',
     borderRadius: 14,
@@ -106,6 +106,7 @@ const designs = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     display: 'flex',
+    flexDirection:'row',
     justifyContent: 'center',
     alignItems: 'center',
   },

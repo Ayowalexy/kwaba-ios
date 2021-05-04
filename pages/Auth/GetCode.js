@@ -10,6 +10,7 @@ import {
 import {images, icons} from '../../util/index';
 import designs from './style';
 import {sendVerificationCode} from '../../services/network';
+import Toast from 'react-native-toast-message';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SuccessModal from '../../components/SuccessModal';
 
@@ -29,11 +30,22 @@ export default function GetCode({navigation}) {
     const data = {telephone: '+234' + telephone};
     setSpinner(true);
     const response = await sendVerificationCode(data);
-
+   
     if (response.status == 200) {
       setSuccessMessage(response.data.statusMsg);
+      Toast.show({
+        text1: 'Code Sent',
+        text2: response.data.statusMsg+' 👋',
+        visibilityTime: 2000,
+        position: 'top',
+        topOffset: 30,
+      });
+      
       setSpinner(false);
-      setSuccessModal(true);
+      navigation.navigate('VerifyNumber',{
+        phone_number: '+234' + telephone,
+      });
+     //setSuccessModal(true);
     } else {
       setSpinner(false);
       Alert.alert('Request Failed', response, [{text: 'Ok'}]);

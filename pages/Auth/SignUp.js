@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -15,7 +15,10 @@ import designs from './style';
 import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 import SuccessModal from '../../components/SuccessModal';
+import ErrorModal from '../../components/ErrorlModal';
+
 const widthTouse=Dimensions.get('window').width;
 
 export default function SignUp({navigation}) {
@@ -27,6 +30,20 @@ export default function SignUp({navigation}) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState('female');
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
+
+  const toastConfig = {
+    success: ({ text1, props, ...rest }) => (
+      <View style={{ height: 60, width: '100%', backgroundColor: 'pink' }}>
+        <Text>{text1}</Text>
+        <Text>{props.guid}</Text>
+      </View>
+    ),
+    error: () => {},
+    info: () => {},
+    any_custom_type: () => {}
+  };
 
   const handlePasswordCheck = (text) => {
     // if (text !== password) {
@@ -37,6 +54,16 @@ export default function SignUp({navigation}) {
 
     setConfirmPassword(text);
   };
+
+  React.useEffect(() => {
+    // Toast.show({
+    //   text1: 'Hello',
+    //   text2: 'This is some something 👋',
+    //   visibilityTime: 2000,
+    //   position: 'top',
+    //   topOffset: 30,
+    // });
+  }, []);
 
   const isError = () => {
     if (
@@ -72,7 +99,14 @@ export default function SignUp({navigation}) {
       setSpinner(false);
 
       //show success alert
-      setSuccessModal(true);
+      //setSuccessModal(true);
+      Toast.show({
+        text1: 'Registration Successful',
+        text2: 'You have successfully signed up. You can now proceed to verify your identity. 👋',
+        visibilityTime: 2000,
+        position: 'top',
+        topOffset: 30,
+      });
       await AsyncStorage.setItem('authData', res.data.authData);
       //Clear the input fields
       setFirstname('');
@@ -80,6 +114,7 @@ export default function SignUp({navigation}) {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      navigation.navigate('GetCode');
     } else {
       setSpinner(false);
       if (res == 'Request failed with status code 409') {
@@ -94,6 +129,14 @@ export default function SignUp({navigation}) {
   const handleNavigation = () => {
     setSuccessModal(false);
     navigation.navigate('GetCode');
+  };
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const toggleSecureEntry2 = () => {
+    setSecureTextEntry2(!secureTextEntry2);
   };
 
   return (
@@ -168,11 +211,15 @@ export default function SignUp({navigation}) {
               style={{flex: 1,alignSelf:'center'}}
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
-              secureTextEntry={true}
+              secureTextEntry={secureTextEntry}
               value={password}
               onChangeText={(text) => setPassword(text)}
             />
-            <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
+            <Icon name={secureTextEntry?"eye-off-outline":"eye-outline"} 
+              color="#D6D6D6" 
+              size={20} 
+              onPress={toggleSecureEntry}
+            />
           </View>
           <Spinner
             visible={spinner}
@@ -191,11 +238,15 @@ export default function SignUp({navigation}) {
               style={{flex: 1}}
               placeholder="Confirm Password"
               placeholderTextColor="#BFBFBF"
-              secureTextEntry={true}
+              secureTextEntry={secureTextEntry2}
               value={confirmPassword}
               onChangeText={(text) => handlePasswordCheck(text)}
             />
-            <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
+            <Icon name={secureTextEntry2?"eye-off-outline":"eye-outline"} 
+              color="#D6D6D6" 
+              size={20} 
+              onPress={toggleSecureEntry2}
+            />
           </View>
           <View
             style={{

@@ -1,5 +1,6 @@
 import {Dimensions, StyleSheet} from 'react-native';
-const {width} = Dimensions.get('window');
+const {width,height} = Dimensions.get('window');
+
 
 const designs = StyleSheet.create({
   container: {
@@ -20,8 +21,8 @@ const designs = StyleSheet.create({
     marginTop: 150,
   },
   onboardingImage: {
-    width: 160,
-    height: 200,
+    width: 200,
+    height: 250,
     marginLeft: 'auto',
     marginRight: 'auto',
   },
@@ -31,10 +32,12 @@ const designs = StyleSheet.create({
     marginRight: 'auto',
   },
   bgImage: {
-    height: 443,
+    height:height*0.6,
+    width:width,
     resizeMode: 'cover',
     paddingLeft: 21,
     paddingTop: 50,
+   
   },
   bgImageContainer: {
     height: 434,

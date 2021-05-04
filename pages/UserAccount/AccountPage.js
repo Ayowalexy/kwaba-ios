@@ -27,6 +27,7 @@ import {setLoginState} from '../../redux/actions/userActions';
 
 
 
+
 const width=Dimensions.get('window').width;
 const AccountPage = ({navigation}) => {
   const dispatch = useDispatch();
@@ -41,7 +42,7 @@ const AccountPage = ({navigation}) => {
   const [newpassword, setnewpassword] = useState('');
   const [confirmnewpassword, setconfirmnewpassword] = useState('');
   const [WithrawmodalVisible, setWithrawModalVisible] = useState(false);
-
+  const store2 = useSelector((state) => state.loginReducer);
 
   const [loanPurpose] = useState([
     {label: 'Household', value: 'Household'},
@@ -71,14 +72,16 @@ const AccountPage = ({navigation}) => {
     await AsyncStorage.removeItem('userData');
 
     dispatch(setLoginState({
-      ...{},
+     
       username: '',
       isLoggedIn: false,
     }))
 
-    navigation.navigate('Login');
+    //navigation.navigate('Login');
+
+    console.log(store2);
     
-    Alert.alert('Message','Logout Sucessfully', [
+    Alert.alert('Message','Logout Sucessfully'+store2.isLoggedIn, [
       {text: 'Close'},
     ]);
 

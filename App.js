@@ -79,11 +79,14 @@ import ReferralDetails from './pages/UserAccount/Referral/ReferralDetails';
 import Aboutus from './pages/UserAccount/Aboutus/Aboutus';
 import OkraDebitMandate2 from './pages/Payment/OkraDebitMandate2';
 import {setLoginState} from './redux/actions/userActions';
+import Toast from 'react-native-toast-message';
 //import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
 
 import {useSelector,useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
+import { View,Text } from 'react-native';
+import {COLORS} from './util/index';
 
 const Stack = createStackNavigator();
 
@@ -107,14 +110,30 @@ const App = () => {
       setUserToken(token);
     };
     getuser();
-  }, [userToken]);
+  }, [store2.token]);
 
   logCurrentStorage();
 
 
+  const toastConfig = {
+    success: ({ text1,text2, props, ...rest }) => (
+      <View style={{ height: 60, width: '90%', backgroundColor: COLORS.primary,paddingLeft:7 }}>
+        <Text style={{color:COLORS.white, fontFamily: 'CircularStd',}}>{text1}</Text>
+        <Text style={{color:COLORS.white, fontFamily: 'CircularStd',}}>{text2}</Text>
+      </View>
+    ),
+    error: () => {},
+    info: () => {},
+    any_custom_type: () => {}
+  };
+
   return (
-    
+
+
+    <>
+     
       <NavigationContainer>
+     
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -247,13 +266,13 @@ const App = () => {
 <Stack.Screen name="MonoDebitMandate" component={MonoDebitMandate}></Stack.Screen>
 {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
-           
+{/*            
                <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
               <Stack.Screen
                 name="VerifyNumber"
                 component={VerifyNumber}></Stack.Screen> 
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
-              <Stack.Screen name="Login" component={Login}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login}></Stack.Screen> */}
 
 
 
@@ -411,7 +430,11 @@ const App = () => {
                 component={BuddySavingDashBoard}></Stack.Screen> */}
                 
         </Stack.Navigator>
+
+        <Toast  config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </NavigationContainer>
+    </>
+    
    
   );
 };

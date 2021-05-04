@@ -6,7 +6,8 @@ import {
   Image,
   TextInput,
   Alert,
-  Dimensions
+  Dimensions,
+  ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
@@ -27,6 +28,7 @@ export default function Login({navigation}) {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
  
 
@@ -79,12 +81,28 @@ export default function Login({navigation}) {
     }
   };
 
+ 
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon  name={secureTextEntry ? 'eye-slash' : 'eye'}/>
+    </TouchableWithoutFeedback>
+  );
+
+
   return (
     <View
       style={[
         designs.container,
         {paddingTop: 106},
       ]}>
+
+      <ScrollView>
+        
       <Image
         style={[designs.image, {marginTop: 0,}]}
         source={images.kwabaLogoWithName}
@@ -117,11 +135,15 @@ export default function Login({navigation}) {
           style={{flex: 1,alignSelf:'center'}}
           placeholder="Password"
           placeholderTextColor="#BFBFBF"
-          secureTextEntry={true}
+          secureTextEntry={secureTextEntry}
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
-        <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
+        <Icon name={secureTextEntry?"eye-off-outline":"eye-outline"} 
+        color="#D6D6D6" 
+        size={20} 
+        onPress={toggleSecureEntry}
+        />
       </View>
       <View
         style={{
@@ -227,7 +249,7 @@ export default function Login({navigation}) {
             color: '#465969',
             fontSize: 14,
             lineHeight: 30,
-            fontWeight: '900',
+            fontWeight: 'bold',
           }}>
           Don't have an account?{' '}
           <Text
@@ -249,6 +271,8 @@ export default function Login({navigation}) {
         }}
         size="large"
       />
+      </ScrollView>  
+      
     </View>
   );
 }

@@ -41,16 +41,20 @@ const Onboarding = ({navigation}) => {
     <View style={designs.container}>
       <Image style={designs.image} source={images.kwabaLogoWithName} />
       <SwiperFlatList
+        
         index={0}
         onChangeIndex={(e) => setCurrentIndex(e.index)}
         data={screens}
         renderItem={({item}) => (
           <View style={designs.item}>
-            <Image style={designs.onboardingImage} source={item.image} />
-            <Text style={[FONTS.largeTitle, designs.title]}>{item.title}</Text>
+            <View style={{marginTop:-70}}>
+              <Image style={designs.onboardingImage} source={item.image} />
+              <Text style={[ designs.title,{fontSize:FONTS.largeTitle,fontWeight:'bold'}]}>{item.title}</Text>
+            </View>
+
             <ImageBackground source={images.maskGroup2} style={designs.bgImage}>
               <View>
-                <Text style={[FONTS.body1, designs.smallText]}>
+                <Text style={[FONTS.body5FontStyling, designs.smallText]}>
                   {item.content}
                 </Text>
                 <Indicators currentIndex={currentIndex} />
@@ -67,7 +71,8 @@ const Onboarding = ({navigation}) => {
                 {item.id == 1 || item.id == 2 ? (
                   <View style={designs.skip}>
                     <Text
-                      style={{color: 'white', fontSize: 14, fontWeight: '600'}}>
+                      onPress={() => navigation.navigate('Login')}
+                      style={{color: 'white', fontSize: 14, fontWeight: '600',textAlign:'center',marginBottom:-80}}>
                       Skip
                     </Text>
                   </View>
