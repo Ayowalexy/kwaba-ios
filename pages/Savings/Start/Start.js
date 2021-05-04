@@ -6,8 +6,11 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
-  Dimensions
+  Dimensions,
+  StyleSheet,
 } from 'react-native';
+
+import { BlurView, VibrancyView } from "@react-native-community/blur";
 
 const width=Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -74,7 +77,12 @@ export default function Start({navigation}) {
         </View>
         <View style={designs.scrollContainer}>
           <ScrollView scrollEnabled horizontal>
+
+          
+
             <View style={designs.smallBox}>
+           
+          
               <Text
                 style={{
                   fontFamily: 'CircularStd',
@@ -96,8 +104,22 @@ export default function Start({navigation}) {
                 }}>
                 ₦{currencyFormat(totalBalance)}
               </Text>
+             
             </View>
+            
+
+
+        
+
             <View style={designs.smallBox}>
+            <BlurView
+           blurType={'light'}
+          blurAmount={20}
+         
+          style={[styles.blurView]}
+          >
+
+
               <Text
                 style={{
                   fontFamily: 'CircularStd',
@@ -119,7 +141,15 @@ export default function Start({navigation}) {
                 }}>
                 ₦{currencyFormat(totalSaving)}
               </Text>
+          </BlurView>
             </View>
+        
+
+
+         
+
+
+
             <View style={designs.smallBox}>
               <Text
                 style={{
@@ -143,6 +173,10 @@ export default function Start({navigation}) {
                 ₦{totalInterest}
               </Text>
             </View>
+          {/* </BlurView> */}
+          
+
+
           </ScrollView>
         </View>
       </ImageBackground>
@@ -290,3 +324,52 @@ export default function Start({navigation}) {
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  blurContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    paddingHorizontal: 20,
+  },
+  blurView: {
+    // position: 'absolute',
+    // left: 0,
+    // right: 0,
+    // top: 0,
+    // bottom: 0,
+    width: 160,
+    height: 64,
+    borderRadius: 10,
+
+  
+  },
+  img: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    height: null,
+    width: null,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 10,
+    color: 'white',
+  },
+  blurToggle: {
+    position: 'absolute',
+    top: 30,
+    right: 10,
+    alignItems: 'flex-end',
+  },
+});

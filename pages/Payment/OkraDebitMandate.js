@@ -30,37 +30,8 @@ import OkraView from 'react-native-okra';
 
 let height= Dimensions.get('window').height;
 
-
-const okraOptions = {
-  callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
-  clientName: 'Kwaba',
-  color: COLORS.secondary,
-  connectMessage: 'Which account do you want to connect with?',
-  currency: 'NGN',
-  env: 'production-sandbox', // for sandbox use production-sandbox
-  exp: '2020-08-06',
-  filter: {
-    banks: [],
-    industry_type: 'all',
-  },
-  options: {saverid: 'this is it'},
-  isCorporate: false,
-  key: '4afcc9bf-c937-573b-87a1-5234c2d68bdf',
-  limit: '24',
-  logo: 'https://kwaba.ng/assets/imgs/logo.png',
-  products: ['auth', 'balance', 'identity', 'transactions'],
-  redirect_url: 'redirect',
-  success_message: 'this is the success message',
-  success_title: 'it has entered success',
-  token: '5e5bb362bd83ab0826527d30',
-  widget_failed: '',
-  widget_success: 'Your account was successfully linked to Okra, Inc',
-  debitLater:true,
-//   products:['auth', 'transactions','payments']
- };
-
-
-
+const widthtouse=Dimensions.get('window').width;
+ 
 
 export default function OkraDebitMandate({navigation}) {
 
@@ -174,11 +145,11 @@ export default function OkraDebitMandate({navigation}) {
 
 
   }
+   
 
-
-  return (
-      <View style={{flex:1}}>
-
+  const StartOkra=()=>{
+    return (
+      <>
         <OkraView
             okraOptions={okraOptions}
             onClose={response => {
@@ -194,6 +165,66 @@ export default function OkraDebitMandate({navigation}) {
               console.log('on error');
             }}
         />
+      </>
+    )
+  }
+
+  return (
+      <View style={{flex:1}}>
+
+<View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+      <Icon
+            onPress={() => navigation.goBack()}
+            name="arrow-back-outline"
+            size={25}
+            style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
+            color="#2A286A"
+        />
+
+        <View
+          style={{
+            marginVertical: 11,
+            marginHorizontal: 16,
+          }}>
+          <Text
+            style={[
+              FONTS.h1FontStyling,
+              {
+                color: '#2A286A',
+                textAlign: 'left',
+                fontWeight: 'bold',
+                marginBottom: 130
+              },
+            ]}>
+            Rental Loan
+          </Text>
+          <Image source={images.paymentMethodPNG} style={designs.paymentMethodImage}/>
+          <Text
+            style={[
+              FONTS.h1FontStyling,
+              {
+                color: '#2A286A',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                marginBottom: 10
+              },
+            ]}>
+            Setup repayment method
+          </Text>
+          <Text style={[FONTS.body2FontStyling, {color: '#ADADAD', textAlign: 'center', marginBottom: 26}]}>This will make repayment easy</Text>
+         
+          <TouchableOpacity
+            onPress={() => navigation.navigate('OkraDebitMandate2')}
+            style={[designs.button, {backgroundColor: COLORS.secondary,width:widthtouse*0.85,height:70,marginTop:80}]}>
+            <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>SET UP REPAYMENT</Text>
+          </TouchableOpacity>
+      
+        </View>
+        
+   </View>
+  
+
+      
 
         <Modal visible={successModal} animationType="fade" transparent={true}>
         <View
