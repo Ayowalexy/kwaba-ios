@@ -6,10 +6,11 @@ import {
   StyleSheet,
   Text,
   Image,
+  Dimensions
 } from 'react-native';
 import {icons} from '../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+const {width} =Dimensions.get('window');
 //this is the error modal
 
 const ErrorModal = (props) => {
@@ -86,7 +87,7 @@ const designs = StyleSheet.create({
     padding: 23,
   },
   button: {
-    width: 380,
+    width: width*0.75,
     height: 70,
     borderRadius: 10,
     display: 'flex',
