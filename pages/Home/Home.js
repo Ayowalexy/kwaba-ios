@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   Image,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images} from '../../util/index';
@@ -18,6 +19,7 @@ import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
 
+const width=Dimensions.get('window').get;
 export default function Home({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
@@ -32,6 +34,8 @@ export default function Home({navigation}) {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
+
+      console.log("hello here is our data ",JSON.parse(userData));
       if (userData) {
         setName(JSON.parse(userData).username);
       }
@@ -44,10 +48,10 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings = store.data.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    const totalSoloSavings = store.data?.reduce(
+      (saving, acc) => Number(saving.amount) + Number(acc.amount),0
     );
-    setSavings(totalSoloSavings);
+    setSavings(totalSoloSavings || 0);
   }, []);
 
   const topCards = [
@@ -77,7 +81,7 @@ export default function Home({navigation}) {
   const bottomCards = [
     {
       id: 1,
-      title: 'Rent savings',
+      title: 'Save',
       body:
         'Save towards your next rent with your\nflatmates, friends or family and earn\ninterest on every deposit.',
       image: images.maskGroup30,
@@ -85,7 +89,7 @@ export default function Home({navigation}) {
 
     {
       id: 2,
-      title: 'Rent payment',
+      title: 'Borrow',
       body:
         'Get a rent top-up if you are running\nshort on your rent or obtain discounts\nif you have your complete rent when\nyou pay via Kwaba',
       image: images.maskGroup29,
@@ -108,7 +112,10 @@ export default function Home({navigation}) {
   const goToPage = (item) => {
     if (item.title == 'Rent savings') {
       navigation.navigate('SavingsHome');
-    } else {
+    } 
+    else if(item.title == 'Rent payment') {
+      navigation.navigate('Borrow');
+    }else {
       navigation.navigate('CompleteProfile1');
     }
   };
@@ -277,6 +284,24 @@ export default function Home({navigation}) {
           setCurrentIndex={setCurrentIndex}
         />
       </View>
+      <View style={{flexDirection:'row',justifyContent:'center',marginTop:20,marginBottom:-10}}>
+         <TouchableOpacity>
+             <Image resizeMode='contain' source={icons.quicksave} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Quick Save</Text>
+         </TouchableOpacity>
+         <TouchableOpacity> 
+             <Image resizeMode='contain' source={icons.payrent} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Pay Rent</Text>
+          </TouchableOpacity>
+         <TouchableOpacity>
+             <Image resizeMode='contain' source={icons.buyairtime} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Buy Airtime</Text>
+          </TouchableOpacity>
+         <TouchableOpacity>   
+             <Image resizeMode='contain' source={icons.paybills} style={{width:80,height:80}}/>
+             <Text style={{color:'#fff',fontSize:10,textAlign:'center',marginTop:-25}}>Pay Bills</Text>
+         </TouchableOpacity>
+      </View>
       <View style={designs.bottom}>
         <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
           {bottomCards.map((item, index) => (
@@ -322,6 +347,7 @@ export default function Home({navigation}) {
           ))}
         </ScrollView>
       </View>
+      
     </View>
   );
 }

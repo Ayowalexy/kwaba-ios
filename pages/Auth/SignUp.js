@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
@@ -14,7 +15,11 @@ import designs from './style';
 import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 import SuccessModal from '../../components/SuccessModal';
+import ErrorModal from '../../components/ErrorlModal';
+
+const widthTouse=Dimensions.get('window').width;
 
 export default function SignUp({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
@@ -25,6 +30,20 @@ export default function SignUp({navigation}) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [gender, setGender] = useState('female');
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
+
+  const toastConfig = {
+    success: ({ text1, props, ...rest }) => (
+      <View style={{ height: 60, width: '100%', backgroundColor: 'pink' }}>
+        <Text>{text1}</Text>
+        <Text>{props.guid}</Text>
+      </View>
+    ),
+    error: () => {},
+    info: () => {},
+    any_custom_type: () => {}
+  };
 
   const handlePasswordCheck = (text) => {
     // if (text !== password) {
@@ -35,6 +54,16 @@ export default function SignUp({navigation}) {
 
     setConfirmPassword(text);
   };
+
+  React.useEffect(() => {
+    // Toast.show({
+    //   text1: 'Hello',
+    //   text2: 'This is some something 👋',
+    //   visibilityTime: 2000,
+    //   position: 'top',
+    //   topOffset: 30,
+    // });
+  }, []);
 
   const isError = () => {
     if (
@@ -70,7 +99,14 @@ export default function SignUp({navigation}) {
       setSpinner(false);
 
       //show success alert
-      setSuccessModal(true);
+      //setSuccessModal(true);
+      Toast.show({
+        text1: 'Registration Successful',
+        text2: 'You have successfully signed up. You can now proceed to verify your identity. 👋',
+        visibilityTime: 2000,
+        position: 'top',
+        topOffset: 30,
+      });
       await AsyncStorage.setItem('authData', res.data.authData);
       //Clear the input fields
       setFirstname('');
@@ -78,6 +114,7 @@ export default function SignUp({navigation}) {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      navigation.navigate('GetCode');
     } else {
       setSpinner(false);
       if (res == 'Request failed with status code 409') {
@@ -94,11 +131,19 @@ export default function SignUp({navigation}) {
     navigation.navigate('GetCode');
   };
 
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const toggleSecureEntry2 = () => {
+    setSecureTextEntry2(!secureTextEntry2);
+  };
+
   return (
     <View
       style={[
         designs.container,
-        {paddingRight: 32, paddingLeft: 32, paddingTop: 59},
+        { paddingTop: 59},
       ]}>
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
@@ -131,7 +176,7 @@ export default function SignUp({navigation}) {
             style={[
               designs.heading,
               {
-                marginLeft: 0,
+                marginLeft: 16,
                 fontSize: 30,
                 fontWeight: '700',
                 fontFamily: 'CircularStd',
@@ -161,16 +206,20 @@ export default function SignUp({navigation}) {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
-          <View style={[designs.customInput, {width: 345}]}>
+          <View style={[designs.customInput, {width: widthTouse*0.9}]}>
             <TextInput
-              style={{flex: 1}}
+              style={{flex: 1,alignSelf:'center'}}
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
-              secureTextEntry={true}
+              secureTextEntry={secureTextEntry}
               value={password}
               onChangeText={(text) => setPassword(text)}
             />
-            <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
+            <Icon name={secureTextEntry?"eye-off-outline":"eye-outline"} 
+              color="#D6D6D6" 
+              size={20} 
+              onPress={toggleSecureEntry}
+            />
           </View>
           <Spinner
             visible={spinner}
@@ -184,16 +233,20 @@ export default function SignUp({navigation}) {
             }}
             size="large"
           />
-          <View style={[designs.customInput, {width: 345}]}>
+          <View style={[designs.customInput, {width: widthTouse*0.9}]}>
             <TextInput
               style={{flex: 1}}
               placeholder="Confirm Password"
               placeholderTextColor="#BFBFBF"
-              secureTextEntry={true}
+              secureTextEntry={secureTextEntry2}
               value={confirmPassword}
               onChangeText={(text) => handlePasswordCheck(text)}
             />
-            <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
+            <Icon name={secureTextEntry2?"eye-off-outline":"eye-outline"} 
+              color="#D6D6D6" 
+              size={20} 
+              onPress={toggleSecureEntry2}
+            />
           </View>
           <View
             style={{
@@ -239,8 +292,8 @@ export default function SignUp({navigation}) {
               designs.btn,
               {
                 backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
-                marginRight: 8,
-                marginLeft: 8,
+                marginRight: 16,
+                marginLeft: 16,
                 marginBottom: 20,
               },
             ]}>

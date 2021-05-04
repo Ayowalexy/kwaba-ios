@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
@@ -17,7 +18,7 @@ export default function Screen1({navigation}) {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={35}
+        size={25}
         style={{fontWeight: '900'}}
         color="#2A286A"
       />

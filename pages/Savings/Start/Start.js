@@ -6,13 +6,20 @@ import {
   TouchableOpacity,
   ScrollView,
   ImageBackground,
+  Dimensions,
+  StyleSheet,
 } from 'react-native';
+
+import { BlurView, VibrancyView } from "@react-native-community/blur";
+
+const width=Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../../util/index';
 import {currencyFormat} from '../../../util/numberFormatter';
 import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
+import moment from 'moment';
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -30,21 +37,15 @@ export default function Start({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings = store.data.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    );
-    const soloInterestTotal = store.data.reduce(
-      (saving, acc) => Number(saving.interest) + Number(acc.interest),
-    );
+    const totalSoloSavings =store.data?.reduce((saving, acc) => Number(saving.amount) + Number(acc.amount),0);
+     const soloInterestTotal =store.data?.reduce((saving, acc) => Number(saving.interest) + Number(acc.interest),0);
     const balance =
       totalSoloSavings +
-      soloInterestTotal / Number(currentUser.data.savings_tenure);
-    setTotalBalance(balance);
-    setTotalSaving(totalSoloSavings);
-    setTotalInterest(
-      soloInterestTotal.toFixed(2) / Number(currentUser.data.savings_tenure),
-    );
-    setSoloSaving(totalSoloSavings);
+      soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
+    setTotalBalance(balance || 0);
+    setTotalSaving(totalSoloSavings || 0);
+    setTotalInterest(soloInterestTotal?.toFixed(2) / Number(currentUser.data?.savings_tenure) || 0);
+    setSoloSaving(totalSoloSavings || 0);
   }, []);
   return (
     <View style={designs.container}>
@@ -76,7 +77,12 @@ export default function Start({navigation}) {
         </View>
         <View style={designs.scrollContainer}>
           <ScrollView scrollEnabled horizontal>
+
+          
+
             <View style={designs.smallBox}>
+           
+          
               <Text
                 style={{
                   fontFamily: 'CircularStd',
@@ -98,8 +104,22 @@ export default function Start({navigation}) {
                 }}>
                 ₦{currencyFormat(totalBalance)}
               </Text>
+             
             </View>
+            
+
+
+        
+
             <View style={designs.smallBox}>
+            {/* <BlurView
+           blurType={'light'}
+          blurAmount={20}
+         
+          style={[styles.blurView]}
+          > */}
+
+
               <Text
                 style={{
                   fontFamily: 'CircularStd',
@@ -121,7 +141,15 @@ export default function Start({navigation}) {
                 }}>
                 ₦{currencyFormat(totalSaving)}
               </Text>
+          {/* </BlurView> */}
             </View>
+        
+
+
+         
+
+
+
             <View style={designs.smallBox}>
               <Text
                 style={{
@@ -145,135 +173,203 @@ export default function Start({navigation}) {
                 ₦{totalInterest}
               </Text>
             </View>
+          {/* </BlurView> */}
+          
+
+
           </ScrollView>
         </View>
       </ImageBackground>
-      <View style={designs.card}>
-        <View style={designs.cardFlex}>
-          <View>
-            <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
-            <Text style={designs.bodyText}>
-              Save towards your next{'\n'}rent alone
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
-                )
-              }
-              style={[
-                designs.cardFlex,
-                {
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                },
-              ]}>
-              {soloSaving == 0 ? (
-                <Text
+     
+
+    
+
+
+      <View style={{flexDirection:'column',justifyContent:'center'}}>
+
+          <View style={designs.card}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
+                <Text style={designs.bodyText}>
+                  Save towards your next{'\n'}rent alone
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(
+                      soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
+                    )
+                  }
                   style={[
-                    designs.bodyText,
+                    designs.cardFlex,
                     {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
+                      marginTop: 16,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 27,
+                      borderRadius: 21,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
                     },
                   ]}>
-                  Start saving
-                </Text>
-              ) : (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  ₦{currencyFormat(soloSaving)}
-                </Text>
-              )}
-              <Icon name="arrow-forward" color="#9D98EC" size={15} />
-            </TouchableOpacity>
+                  {soloSaving == 0 ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Start saving
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{currencyFormat(soloSaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+              </View>
+              <Image
+                style={{width: 146, height: 146,}}
+                source={images.maskGroup15}
+              />
+            </View>
           </View>
-          <Image
-            style={{width: 146, height: 146}}
-            source={images.maskGroup15}
-          />
-        </View>
-      </View>
-      <View style={designs.card}>
-        <View style={designs.cardFlex}>
-          <View>
-            <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
-            <Text style={designs.bodyText}>
-              Save towards your next rent with{'\n'}your flatmates or spouse
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate(
-                  buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
-                )
-              }
-              style={[
-                designs.cardFlex,
-                {
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                },
-              ]}>
-              {buddySaving == 0 ? (
-                <Text
+
+          <View style={designs.card}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
+                <Text style={designs.bodyText}>
+                  Save towards your next rent with{'\n'}your flatmates or spouse
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(
+                      buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
+                    )
+                  }
                   style={[
-                    designs.bodyText,
+                    designs.cardFlex,
                     {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
+                      marginTop: 16,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      height: 27,
+                      borderRadius: 21,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
                     },
                   ]}>
-                  Start saving
-                </Text>
-              ) : (
-                <Text
-                  style={[
-                    designs.bodyText,
-                    {
-                      marginTop: 0,
-                      fontSize: 16,
-                      color: '#9D98EC',
-                      fontWeight: '600',
-                      marginRight: 8,
-                    },
-                  ]}>
-                  ₦{currencyFormat(buddySaving)}
-                </Text>
-              )}
-              <Icon name="arrow-forward" color="#9D98EC" size={15} />
-            </TouchableOpacity>
+                  {buddySaving == 0 ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Start saving
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{currencyFormat(buddySaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+
+              </View>
+              <Image
+                style={{width: 146, height: 146}}
+                source={images.maskGroup14}
+              />
+            </View>
           </View>
-          <Image
-            style={{width: 146, height: 146}}
-            source={images.maskGroup14}
-          />
-        </View>
       </View>
+    
+
+
+
+
     </View>
   );
 }
+
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'transparent',
+  },
+  blurContainer: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    paddingHorizontal: 20,
+  },
+  blurView: {
+    // position: 'absolute',
+    // left: 0,
+    // right: 0,
+    // top: 0,
+    // bottom: 0,
+    width: 160,
+    height: 64,
+    borderRadius: 10,
+
+  
+  },
+  img: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    height: null,
+    width: null,
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    margin: 10,
+    color: 'white',
+  },
+  blurToggle: {
+    position: 'absolute',
+    top: 30,
+    right: 10,
+    alignItems: 'flex-end',
+  },
+});

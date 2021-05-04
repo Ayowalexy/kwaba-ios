@@ -6,8 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
+const widthtouse=Dimensions.get('window').width;
 
 export default function AddCardModal(props) {
   const {
@@ -27,7 +30,10 @@ export default function AddCardModal(props) {
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={onRequestClose}>
+        onRequestClose={onRequestClose}
+        style={{borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,}}
+        >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View

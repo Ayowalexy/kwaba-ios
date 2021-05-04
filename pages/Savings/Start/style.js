@@ -5,7 +5,7 @@ const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#2A286A',
-    paddingLeft: 16,
+    
   },
   backgroundImg: {
     width: width,
@@ -31,12 +31,13 @@ const designs = StyleSheet.create({
     paddingRight: 20,
   },
   card: {
-    width: 380,
+    width: width*0.9,
     height: 170,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 15,
     marginTop: 15,
+    alignSelf:'center'
   },
   cardHeader: {
     color: '#2A286A',
@@ -46,9 +47,10 @@ const designs = StyleSheet.create({
     lineHeight: 35,
   },
   cardFlex: {
-    display: 'flex',
+    flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
+    
   },
   bodyText: {
     marginTop: 6,

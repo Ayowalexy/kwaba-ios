@@ -5,12 +5,14 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
 import {useDispatch} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 
+const width=Dimensions.get('window').width;
 export default function Screen1({navigation}) {
   const dispatch = useDispatch();
   const [activeOption, setActiveOption] = useState('');
@@ -26,9 +28,10 @@ export default function Screen1({navigation}) {
     };
     try {
       dispatch(soloSaving(data));
-
       return navigation.navigate('SoloSaving2');
-    } catch (error) {}
+    } catch (error){
+      
+    }
   };
 
   return (
@@ -36,7 +39,7 @@ export default function Screen1({navigation}) {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={35}
+        size={25}
         style={{fontWeight: '900'}}
         color="#2A286A"
       />

@@ -6,16 +6,21 @@ import {
   Image,
   TextInput,
   Alert,
+  Dimensions,
+  ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
 import designs from './style';
 import CheckBox from '@react-native-community/checkbox';
-import {useDispatch} from 'react-redux';
+import {useSelector,useDispatch} from 'react-redux';
 import {setLoginState} from '../../redux/actions/userActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login} from '../../services/network';
+
+
+const widthTouse=Dimensions.get('window').width;
 
 export default function Login({navigation}) {
   const dispatch = useDispatch();
@@ -23,6 +28,9 @@ export default function Login({navigation}) {
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+ 
 
   const isError = () => {
     if (email.trim().length == 0 || password == '' || !toggleCheckBox) {
@@ -33,6 +41,7 @@ export default function Login({navigation}) {
   };
 
   const saveLoginToStorage = async (data) => {
+    console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
     } catch (error) {}
@@ -45,6 +54,7 @@ export default function Login({navigation}) {
       const response = await login(data);
       if (response.status == 200) {
         setSpinner(false);
+        console.log("here is auth data",response.data.authData);
         saveLoginToStorage({
           ...response.data.authData,
           username: response.data.authData.user.firstname,
@@ -57,26 +67,45 @@ export default function Login({navigation}) {
             isLoggedIn: true,
           }),
         );
+        navigation.navigate('Home');
       } else {
+        setSpinner(false);
         Alert.alert(
           'INVALID CREDENTIALS',
           'Please provide valid email and password',
         );
       }
     } catch (error) {
+      setSpinner(false);
       Alert.alert('ERROR', 'An error occurred, please retry');
     }
   };
+
+ 
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  const renderIcon = (props) => (
+    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
+      <Icon  name={secureTextEntry ? 'eye-slash' : 'eye'}/>
+    </TouchableWithoutFeedback>
+  );
+
 
   return (
     <View
       style={[
         designs.container,
-        {paddingTop: 106, paddingLeft: 33, paddingRight: 33},
+        {paddingTop: 106},
       ]}>
+
+      <ScrollView>
+        
       <Image
-        style={[designs.image, {marginTop: 0, marginLeft: -30}]}
-        source={images.kwabaLogo}
+        style={[designs.image, {marginTop: 0,}]}
+        source={images.kwabaLogoWithName}
       />
       <Text
         style={{
@@ -85,13 +114,14 @@ export default function Login({navigation}) {
           color: '#2A286A',
           lineHeight: 23,
           marginTop: 42,
+          marginLeft:16
         }}>
         Login to your account
       </Text>
-      <View style={[designs.customInput, {width: 360}]}>
+      <View style={[designs.customInput, {width: widthTouse*0.9}]}>
         <Icon name="mail-outline" size={30} color="#D6D6D6" />
         <TextInput
-          style={{flex: 1}}
+          style={{flex: 1,alignSelf:'center'}}
           placeholder="Email"
           placeholderTextColor="#BFBFBF"
           keyboardType="email-address"
@@ -99,17 +129,21 @@ export default function Login({navigation}) {
           onChangeText={(text) => setEmail(text)}
         />
       </View>
-      <View style={[designs.customInput, {width: 360}]}>
+      <View style={[designs.customInput, {width: widthTouse*0.9}]}>
         <Icon name="lock-closed-outline" size={30} color="#D6D6D6" />
         <TextInput
-          style={{flex: 1}}
+          style={{flex: 1,alignSelf:'center'}}
           placeholder="Password"
           placeholderTextColor="#BFBFBF"
-          secureTextEntry={true}
+          secureTextEntry={secureTextEntry}
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
-        <Icon name="eye-off-outline" color="#D6D6D6" size={20} />
+        <Icon name={secureTextEntry?"eye-off-outline":"eye-outline"} 
+        color="#D6D6D6" 
+        size={20} 
+        onPress={toggleSecureEntry}
+        />
       </View>
       <View
         style={{
@@ -118,11 +152,15 @@ export default function Login({navigation}) {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
+        
+        <View style={{flexDirection:'row',justifyContent:'space-between',alignItems: 'center',}}>
+
         <View
           style={{
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginTop:10
           }}>
           <CheckBox
             style={{
@@ -130,6 +168,7 @@ export default function Login({navigation}) {
               width: 14,
               marginRight: 8,
               borderColor: '#D6D6D6',
+              marginLeft:16
             }}
             disabled={false}
             value={toggleCheckBox}
@@ -142,6 +181,7 @@ export default function Login({navigation}) {
               lineHeight: 30,
               fontWeight: '900',
               marginLeft: 8,
+              marginRight:widthTouse*0.25
             }}>
             Remember me
           </Text>
@@ -152,9 +192,14 @@ export default function Login({navigation}) {
             fontSize: 14,
             lineHeight: 30,
             fontWeight: '900',
+            alignSelf:'flex-end',
+            marginTop:10
           }}>
-          Forgot Password?
+          Forgot Password ?
         </Text>
+        </View>
+
+
       </View>
       <View
         style={{
@@ -170,7 +215,7 @@ export default function Login({navigation}) {
             designs.btn,
             {
               backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
-              width: 246,
+              width: widthTouse*0.9,
               borderRadius: 10,
             },
           ]}>
@@ -184,12 +229,12 @@ export default function Login({navigation}) {
             LOG IN
           </Text>
         </TouchableOpacity>
-        <View style={designs.fingerPrint}>
+        {/* <View style={designs.fingerPrint}>
           <Image
             style={{width: 38, height: 38, tintColor: '#BFBFBF'}}
             source={images.fingerPrint}
           />
-        </View>
+        </View> */}
       </View>
       <View
         style={{
@@ -204,7 +249,7 @@ export default function Login({navigation}) {
             color: '#465969',
             fontSize: 14,
             lineHeight: 30,
-            fontWeight: '900',
+            fontWeight: 'bold',
           }}>
           Don't have an account?{' '}
           <Text
@@ -226,6 +271,8 @@ export default function Login({navigation}) {
         }}
         size="large"
       />
+      </ScrollView>  
+      
     </View>
   );
 }
