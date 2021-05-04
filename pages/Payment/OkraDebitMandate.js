@@ -155,7 +155,7 @@ export default function OkraDebitMandate({navigation}) {
             onClose={response => {
               console.log('on close');
               //navigation.navigate('PostPaymentForm4')
-              navigation.navigate('AwaitingDisbursement');
+              navigation.navigate('OkraDebitmandate');
             }}
             onSuccess={response => {
               console.log('on success we go '+ JSON.stringify(response));

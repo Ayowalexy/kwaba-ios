@@ -70,18 +70,18 @@ const Borrow = ({navigation}) => {
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
-    let stepsdata={
-      documentdone:'done',
-      propertydetail:'done',
-      landlorddetail:'done',
-      refree:'done',
-      offeraccepted:'done',
-      addressverification:'done',
-      debitmandate:'',
-      awaitingdisbursment:'',
-    };
+    // let stepsdata={
+    //   documentdone:'done',
+    //   propertydetail:'done',
+    //   landlorddetail:'done',
+    //   refree:'done',
+    //   offeraccepted:'done',
+    //   addressverification:'done',
+    //   debitmandate:'',
+    //   awaitingdisbursment:'',
+    // };
 
-    await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
     console.log('steps here', steps );
 

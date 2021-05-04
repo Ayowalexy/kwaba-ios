@@ -112,12 +112,12 @@ export default function Start({navigation}) {
         
 
             <View style={designs.smallBox}>
-            <BlurView
+            {/* <BlurView
            blurType={'light'}
           blurAmount={20}
          
           style={[styles.blurView]}
-          >
+          > */}
 
 
               <Text
@@ -141,7 +141,7 @@ export default function Start({navigation}) {
                 }}>
                 ₦{currencyFormat(totalSaving)}
               </Text>
-          </BlurView>
+          {/* </BlurView> */}
             </View>
         
 

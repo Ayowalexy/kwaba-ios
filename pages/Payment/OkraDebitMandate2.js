@@ -48,6 +48,50 @@ const okraOptions = {
 
  export default function OkraDebitMandate2({navigation}) {
 
+  const handleLinkingSucess = async(response) => {
+    const getToken = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const token = JSON.parse(userData).token;
+      return token;
+    }; 
+    const token = await getToken();
+    console.log(token);
+
+    let linkdata={
+      bank_id: response.bank_id,
+      customer_id:response.customer_id,
+      record_id:response.record_id,
+      account_id: response.accounts[0].id
+    };
+
+    console.log(linkdata);
+
+    const linkUrl="http://67.207.86.39:8000/api/v1/application/link_account";
+    
+
+    try {
+
+      const response = await axios.put(linkUrl, linkdata, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      console.log("here is the linkurl resposonse ",response);
+
+      if(response.status==200){
+       navigation.navigate('AwaitingDisbursement');
+      }
+      
+      
+    
+    } catch (error) {
+
+      Alert.alert('Message', error.response.data.statusMsg, [
+        {text: 'Close'},
+      ]);
+
+    }
+
+  }
+
   return (
     <>
     <OkraView
@@ -55,7 +99,7 @@ const okraOptions = {
         onClose={response => {
           console.log('on close');
           //navigation.navigate('PostPaymentForm4')
-          navigation.navigate('AwaitingDisbursement');
+          navigation.navigate('Borrow');
         }}
         onSuccess={response => {
           console.log('on success we go '+ JSON.stringify(response));
