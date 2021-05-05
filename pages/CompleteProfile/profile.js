@@ -1,11 +1,12 @@
 import React,{useState} from 'react';
-import { StyleSheet, Text, View ,useWindowDimensions,Image,TouchableOpacity, ScrollView ,TextInput,Dimensions,Pressable,Modal } from 'react-native';
+import { StyleSheet, Text, View ,useWindowDimensions,Image,TouchableOpacity, ScrollView ,TextInput,Dimensions,Pressable,Modal,Alert } from 'react-native';
 import { 
   TabView, 
   SceneMap,
   TabBar,
   NavigationState,
   SceneRendererProps, 
+  
 } from 'react-native-tab-view';
 
 import {COLORS, FONTS, images,icons} from '../../util/index';
@@ -13,8 +14,26 @@ import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import DropDownPicker from 'react-native-dropdown-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+import SuccessModal from '../../components/SuccessModal';
+import ErrorModal from '../../components/ErrorModal';
 
 const widthtouse=Dimensions.get('window').width;
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
+
+const getUserData = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const data = JSON.parse(userData);
+  return data;
+};
+
 
 const FirstRoute = () => {
 
@@ -23,6 +42,65 @@ const FirstRoute = () => {
     const [gender, setGender] = useState('');
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [address, setAddress] = useState('');
+    const [homeaddress, setHomeAddress] = useState('');
+    const [successModal, setSuccessModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
+    const [modalErrorMessage,setModalErrorMessage]=useState('');
+
+    const UpdateProfile=async()=>{
+
+      const token = await getToken();
+
+      const userData={
+        firstname: firstname,
+        lastname: lastname,
+        gender: gender,
+        dob:dateOfBirth,
+        address: address,
+        homeaddress: address
+      };
+
+      console.log(userData);
+           
+      try {
+      
+        const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
+  
+        const response = await axios.put(url, JSON.stringify(userData) , {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        });
+  
+  
+        console.log(response.status);
+        if(response.status==200){
+          setSuccessModal(true);
+        }
+          
+       // navigation.navigate('RentalLoanOfferTest');
+  
+  
+        } catch (error) {
+
+
+          setModalErrorMessage(error.response.data.statusMsg);
+
+          setErrorModal(true);
+          
+          
+
+          // Alert.alert('Message', error.response.data.statusMsg, [
+          //   {text: 'Close'},
+          // ]);
+
+        }
+  
+    };
+
+    const handleNavigation = () => {
+      setSuccessModal(false);
+     // navigation.navigate('GetCode');
+    };
+  
     return (
 
    // const [date, setDate] = useState(new Date(1598051730000));
@@ -59,7 +137,7 @@ const FirstRoute = () => {
             <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
                 <Text style={{color: COLORS.grey, fontSize: lastname == ''? 16: 10, lineHeight: lastname == ''? 30: 10, marginBottom: lastname == ''? 0: 23}}>Last name</Text>              
                 <TextInput
-                    style={{alignSelf:'center'}}
+                    style={{flex: 1,alignSelf:'center'}}
                    
                     placeholderTextColor="#BFBFBF"
                    
@@ -111,7 +189,7 @@ const FirstRoute = () => {
                 />
             </View>
             <TouchableOpacity
-            onPress={()=>{}}
+            onPress={()=>{UpdateProfile()}}
           
             style={[
               designs.btn,
@@ -133,6 +211,21 @@ const FirstRoute = () => {
         </TouchableOpacity>
         </View>
       </ScrollView>  
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="Update Successful"
+        successText="You have successfully updated your profile"
+       />
+      
+      <ErrorModal
+        errorModal={errorModal}
+        setErrorModal={setErrorModal}
+        handlePress={handleNavigation}
+        errorHeading="Error ... "
+        errorText={modalErrorMessage}
+       />
     </View>
     )
 };
@@ -143,11 +236,54 @@ const FirstRoute = () => {
     const [employmentStatus, setEmploymentStatus] = useState('');
     const [nameOfCompany, setNameOfCompany] = useState('');
     const [companyLocation, setCompanyLocation] = useState('');
-    const [modeOfPaymentOptions] = useState([
-        {label: 'Bank Transfer', value: 'Bank Transfer'},
-        {label: 'Cheque', value: 'Cheque'},
-        {label: 'Deposit', value: 'Deposit'},
-      ])
+    const [successModal, setSuccessModal] = useState(false);
+
+    const [errorModal, setErrorModal] = useState(false);
+    const [modalErrorMessage,setModalErrorMessage]=useState('');
+
+
+      const UpdateProfile=async()=>{
+        const token = await getToken();
+  
+        const userData={
+          employment_status: employmentStatus,
+          work_place: nameOfCompany,
+          work_lat: companyLocation,
+        };
+  
+        console.log(userData);
+             
+        try {
+        
+          const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
+    
+          const response = await axios.put(url, JSON.stringify(userData) , {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          });
+    
+    
+          console.log(response.status);
+          if(response.status==200){
+            setSuccessModal(true);
+          }
+         // navigation.navigate('RentalLoanOfferTest');
+    
+    
+          } catch (error) {
+           
+            setModalErrorMessage(error.response.data.statusMsg);
+
+            setErrorModal(true);
+          }
+    
+      };
+    
+      const handleNavigation = () => {
+        setSuccessModal(false);
+       // navigation.navigate('GetCode');
+      };
+
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }} >
       <View style={{flexDirection:'column',marginTop:30,alignItems:'center'}}>
@@ -195,7 +331,7 @@ const FirstRoute = () => {
                 />
             </View>
             <TouchableOpacity
-            onPress={()=>{}}
+            onPress={()=>{UpdateProfile()}}
           
             style={[
               designs.btn,
@@ -216,6 +352,21 @@ const FirstRoute = () => {
           </Text>
         </TouchableOpacity>
       </View>
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="Registration Successful"
+        successText="You have successfully signed up. You can now proceed to verify your identity."
+       />
+
+      <ErrorModal
+        errorModal={errorModal}
+        setErrorModal={setErrorModal}
+        handlePress={handleNavigation}
+        errorHeading="Error ... "
+        errorText={modalErrorMessage}
+       />
     </View>
   )
 };
@@ -231,6 +382,56 @@ const FirstRoute = () => {
         {label: 'Cheque', value: 'Cheque'},
         {label: 'Deposit', value: 'Deposit'},
       ])
+    const [successModal, setSuccessModal] = useState(false);
+    const [errorModal, setErrorModal] = useState(false);
+    const [modalErrorMessage,setModalErrorMessage]=useState('');
+
+      const UpdateProfile=async()=>{
+        const token = await getToken();
+  
+        const userData={
+          email: email,
+          telephone: phoneNumber,
+          savings_bvn: bvn
+        };
+  
+        console.log(userData);
+             
+        try {
+        
+          const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
+    
+          const response = await axios.put(url, JSON.stringify(userData) , {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          });
+    
+    
+          console.log(response.status);
+
+          if(response.status==200){
+            setSuccessModal(true);
+          }
+            
+         // navigation.navigate('RentalLoanOfferTest');
+    
+    
+          } catch (error) {
+           
+            setModalErrorMessage(error.response.data.statusMsg);
+
+            setErrorModal(true);
+          }
+    
+      };
+    
+
+      const handleNavigation = () => {
+        setSuccessModal(false);
+       // navigation.navigate('GetCode');
+      };
+
+
+
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }} >
       <View style={{flexDirection:'column',marginTop:30,alignItems:'center'}}>
@@ -244,6 +445,7 @@ const FirstRoute = () => {
                     
                     value={email}
                     onChangeText={(text) => setEmail(text)}
+                    editable={false}
                 />
             </View>
 
@@ -273,7 +475,7 @@ const FirstRoute = () => {
             </View>
 
             <TouchableOpacity
-            onPress={()=>{}}
+            onPress={()=>{UpdateProfile()}}
           
             style={[
               designs.btn,
@@ -295,6 +497,20 @@ const FirstRoute = () => {
         </TouchableOpacity>
          
       </View>
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="Registration Successful"
+        successText="You have successfully signed up. You can now proceed to verify your identity."
+       />
+      <ErrorModal
+        errorModal={errorModal}
+        setErrorModal={setErrorModal}
+        handlePress={handleNavigation}
+        errorHeading="Error ... "
+        errorText={modalErrorMessage}
+       />
     </View>
   )
   };
@@ -332,6 +548,13 @@ const profile = ({navigation}) => {
       { key: 'second', title: 'Employment' },
       { key: 'third', title: 'Security' },
     ]);
+
+    
+
+    const handleNavigation = () => {
+      setSuccessModal(false);
+     // navigation.navigate('GetCode');
+    };
   
     return (
 
@@ -356,6 +579,8 @@ const profile = ({navigation}) => {
             initialLayout={{ width: layout.width }}
             style={{borderTopLeftRadius:20,borderTopRightRadius:20}}
           />
+
+      
       </View>  
     );
 }

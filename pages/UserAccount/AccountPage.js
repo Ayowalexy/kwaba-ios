@@ -24,6 +24,8 @@ import axios from 'axios';
 import PasswordChangeModal from './PasswordChangeModal';
 import WithdrawModal from './WithdrawModal';
 import {setLoginState} from '../../redux/actions/userActions';
+import SuccessModal from '../../components/SuccessModal';
+import ErrorModal from '../../components/ErrorModal';
 
 
 
@@ -36,12 +38,16 @@ const AccountPage = ({navigation}) => {
   const [secondPressed, setSecondPressed] = useState(false);
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
   const [showCard, setShowCard] = useState(false);
   const [oldpassword, setoldpassword] = useState('');
   const [newpassword, setnewpassword] = useState('');
   const [confirmnewpassword, setconfirmnewpassword] = useState('');
   const [WithrawmodalVisible, setWithrawModalVisible] = useState(false);
+  const [errorModal, setErrorModal] = useState(false);
+  const [modalErrorMessage,setModalErrorMessage]=useState('');
+
+  const [successModal, setSuccessModal] = useState(false);
+  const [successModalMessage, setSuccessModalMessage] = useState('');
   const store2 = useSelector((state) => state.loginReducer);
 
   const [loanPurpose] = useState([
@@ -107,7 +113,6 @@ const addWithdrawCard = () => {
   setWithdrawShowCard(true);
 };
 
-;
 
 
  const accountTabsAndSettings = [
@@ -119,6 +124,78 @@ const addWithdrawCard = () => {
      {iconName: 'file', tabTitle: 'Legals And FAQs', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
      {iconName: 'info-circle', tabTitle: 'About us', onClickFunction: function openCardAndBank(){navigation.navigate('Aboutus')}},
  ]
+ const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
+
+ const changePassword = async()=>{
+  // onConfirm={addCard}
+  // onRequestClose={() => setModalVisible(!modalVisible)}
+  // visible={modalVisible}
+  // oldpassword={oldpassword}
+  // setoldpassword={setoldpassword}
+  // newpassword={newpassword}
+  // setnewpassword={setnewpassword}
+  // confirmnewpassword={confirmnewpassword}
+  // setconfirmnewpassword={setconfirmnewpassword}
+     
+
+     if(newpassword!=confirmnewpassword){
+       setErrorModal(true);
+       setModalErrorMessage('password and confirm password must be the same.');
+       return ;
+     }
+
+
+     const token = await getToken();
+
+     const userPasswordData={
+       oldPassword: oldpassword,
+       newPassword: newpassword,
+     };
+
+
+     //console.log(userData);
+          
+     try {
+     
+       const url = 'http://67.207.86.39:8000/api/v1/user/change_password';
+ 
+       const response = await axios.put(url, JSON.stringify(userPasswordData) , {
+         headers: {'Content-Type': 'application/json', Authorization: token},
+       });
+ 
+ 
+       console.log(response.status);
+       if(response.status==200){
+         setSuccessModalMessage('password Change successfull')
+         setSuccessModal(true);
+       }
+         
+      // navigation.navigate('RentalLoanOfferTest');
+ 
+ 
+       } catch (error) {
+
+
+         setModalErrorMessage(error.response.data.statusMsg);
+
+         setErrorModal(true);
+
+       }
+ }
+
+ const handleNavigation = () => {
+  setSuccessModal(false);
+ // navigation.navigate('GetCode');
+};
+
+const handleNavigation2 = () => {
+  setErrorModal(false);
+ // navigation.navigate('GetCode');
+};
 
  
  
@@ -220,7 +297,7 @@ return (
         
 
         <PasswordChangeModal
-          onConfirm={addCard}
+          onConfirm={changePassword}
           onRequestClose={() => setModalVisible(!modalVisible)}
           visible={modalVisible}
           oldpassword={oldpassword}
@@ -250,6 +327,22 @@ return (
           setconfirmnewpassword={setconfirmnewpassword}
         />
       </View>
+
+      <ErrorModal
+        errorModal={errorModal}
+        setErrorModal={setErrorModal}
+        handlePress={handleNavigation2}
+        errorHeading="Error ... "
+        errorText={modalErrorMessage}
+       />
+
+      <SuccessModal
+        successModal={successModal}
+        setSuccessModal={setSuccessModal}
+        handlePress={handleNavigation}
+        successHeading="Update Successful"
+        successText={successModalMessage}
+       />
         
     </View>
   </ScrollView>

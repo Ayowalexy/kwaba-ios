@@ -51,7 +51,7 @@ const SuccessModal = (props) => {
             </Text>
             <TouchableOpacity
               onPress={handlePress}
-              style={[designs.button, {marginTop: 55, width: 340}]}>
+              style={[designs.button, {marginTop: 55,   width: width*0.8}]}>
               <Text
                 style={{
                   color: 'white',
