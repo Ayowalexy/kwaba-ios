@@ -55,8 +55,8 @@ const Welcome = ({navigation}) => {
           </View>
           <View style={{marginTop: 100}}>
             <TouchableOpacity
-               onPress={() => navigation.navigate('GetCode')}
-              //onPress={() => navigation.navigate('SignUp')}
+              // onPress={() => navigation.navigate('GetCode')}
+              onPress={() => navigation.navigate('SignUp')}
               style={designs.getStartedBtn}>
               <Text style={{fontWeight: '600', color: '#2A286A'}}>
                 GET STARTED

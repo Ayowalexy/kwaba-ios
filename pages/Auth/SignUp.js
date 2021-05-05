@@ -17,7 +17,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import SuccessModal from '../../components/SuccessModal';
-import ErrorModal from '../../components/ErrorlModal';
+import ErrorModal from '../../components/ErrorModal';
 
 const widthTouse=Dimensions.get('window').width;
 

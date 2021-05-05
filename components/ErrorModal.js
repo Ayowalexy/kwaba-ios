@@ -34,7 +34,7 @@ const ErrorModal = (props) => {
               size={30}
               color="#465969"
             />
-            <Image source={icons.cancelIcon} />
+            <Image source={icons.cancelIcon} style={{height:60,width:60}} />
             <Text style={[designs.boldText, {marginTop: 45, fontSize: 22}]}>
               {errorHeading}
             </Text>
@@ -51,7 +51,7 @@ const ErrorModal = (props) => {
             </Text>
             <TouchableOpacity
               onPress={handlePress}
-              style={[designs.button, {marginTop: 55, width: 340}]}>
+              style={[designs.button, {marginTop: 55, width: width*0.8}]}>
               <Text
                 style={{
                   color: 'white',
@@ -59,7 +59,7 @@ const ErrorModal = (props) => {
                   fontSize: 14,
                   lineHeight: 30,
                 }}>
-                NICE
+                Close
               </Text>
             </TouchableOpacity>
           </View>
