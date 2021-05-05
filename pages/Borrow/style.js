@@ -287,10 +287,10 @@ paymentOptionDetails: {
 },
 
 modalWrapper: {
-    flex: 1,
+        flex: 1,
         justifyContent: 'flex-end',
         fontFamily: 'Circular Std',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',      
       
   },
   centeredModalWrapper: {
@@ -305,6 +305,8 @@ modalWrapper: {
         borderTopRightRadius: 30,
         borderTopLeftRadius: 30,
         padding: 23,
+        width : '100%',
+        height : '90%',
   },
   successModal: {
     backgroundColor: 'white',

@@ -311,20 +311,19 @@ const RentalLoanOfferTest = ({navigation}) => {
             
         </View>  
       </ScrollView>
-        <Modal visible={modalVisible} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
-                <View style={designs.modalWrapper}>
-                    <View style={designs.modalView}>
-                        <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
-                        <Icon
-              onPress={() => setVisible(!modalVisible)}
-              style={{alignSelf: 'flex-end'}}
-              name="close-outline"
-              size={30}
-              color="#465969"
-            />
-            </View>
-            
-            <View>
+        <Modal visible={modalVisible} animationType="fade" transparent={true} onRequestClose ={()=>{}} style={{flex:1,maxHeight:600}}>
+          <View style={designs.modalWrapper}>
+             <View style={designs.modalView}>
+                  <View style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
+                    <Icon
+                      onPress={() => setVisible(!modalVisible)}
+                      style={{alignSelf: 'flex-end'}}
+                      name="close-outline"
+                      size={30}
+                      color="#465969"
+                    />
+                  </View>
+           
                 <Text style={{fontSize: 16, lineHeight: 20, fontWeight: 'bold', color: COLORS.primary, textAlign: 'center'}}>Offer Letter</Text>
 
                 {/* <ScrollView > */}
@@ -338,12 +337,8 @@ const RentalLoanOfferTest = ({navigation}) => {
                   onPress={handleAcceptOfferClick} style={[designs.button, {backgroundColor: COLORS.secondary, elevation: 6, width: '100%', marginTop: 12, alignSelf: 'center'}]}>
                   <Text style={[designs.buttonText, {fontSize: 14, color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>YES, ACCEPT</Text>
                 </TouchableOpacity>
-
-                
             </View>
-            </View>
-            </View>
-
+          </View>
         </Modal>
 
        {/* here stays the modal */}
