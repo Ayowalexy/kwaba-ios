@@ -18,17 +18,19 @@ export default function Screen3({navigation}) {
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
+        style={{fontWeight: '900'}}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
-          style={{
-            marginTop: 25,
-            marginBottom: 49,
-            marginLeft: 16,
-            marginRight: 16,
-          }}>
+          style={
+            {
+              // marginTop: 25,
+              // marginBottom: 49,
+              // marginLeft: 16,
+              // marginRight: 16,
+            }
+          }>
           <Text
             style={[
               designs.heading,

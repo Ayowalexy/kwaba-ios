@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,7 @@ import {
   TextInput,
   ScrollView,
   Alert,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../../util/index';
@@ -19,7 +19,7 @@ import Toast from 'react-native-toast-message';
 import SuccessModal from '../../components/SuccessModal';
 import ErrorModal from '../../components/ErrorModal';
 
-const widthTouse=Dimensions.get('window').width;
+const widthTouse = Dimensions.get('window').width;
 
 export default function SignUp({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
@@ -34,15 +34,15 @@ export default function SignUp({navigation}) {
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
 
   const toastConfig = {
-    success: ({ text1, props, ...rest }) => (
-      <View style={{ height: 60, width: '100%', backgroundColor: 'pink' }}>
+    success: ({text1, props, ...rest}) => (
+      <View style={{height: 60, width: '100%', backgroundColor: 'pink'}}>
         <Text>{text1}</Text>
         <Text>{props.guid}</Text>
       </View>
     ),
     error: () => {},
     info: () => {},
-    any_custom_type: () => {}
+    any_custom_type: () => {},
   };
 
   const handlePasswordCheck = (text) => {
@@ -102,7 +102,8 @@ export default function SignUp({navigation}) {
       //setSuccessModal(true);
       Toast.show({
         text1: 'Registration Successful',
-        text2: 'You have successfully signed up. You can now proceed to verify your identity. 👋',
+        text2:
+          'You have successfully signed up. You can now proceed to verify your identity. 👋',
         visibilityTime: 2000,
         position: 'top',
         topOffset: 30,
@@ -143,7 +144,7 @@ export default function SignUp({navigation}) {
     <View
       style={[
         designs.container,
-        { paddingTop: 59},
+        // { paddingTop: 59},
       ]}>
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
@@ -152,6 +153,7 @@ export default function SignUp({navigation}) {
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
+            paddingTop: 50,
           }}>
           <Image
             style={[designs.image, {marginTop: 0, marginLeft: 0}]}
@@ -177,7 +179,7 @@ export default function SignUp({navigation}) {
               designs.heading,
               {
                 marginLeft: 16,
-                fontSize: 30,
+                fontSize: 25,
                 fontWeight: '700',
                 fontFamily: 'CircularStd',
               },
@@ -206,19 +208,31 @@ export default function SignUp({navigation}) {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
-          <View style={[designs.customInput, {width: widthTouse*0.9}]}>
+          <View style={[designs.customInput]}>
             <TextInput
-              style={{flex: 1,alignSelf:'center'}}
+              style={{
+                width: '100%',
+                paddingLeft: 20,
+                paddingRight: 50,
+                paddingTop: 12,
+                paddingBottom: 12,
+              }}
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
               secureTextEntry={secureTextEntry}
               value={password}
               onChangeText={(text) => setPassword(text)}
             />
-            <Icon name={secureTextEntry?"eye-off-outline":"eye-outline"} 
-              color="#D6D6D6" 
-              size={20} 
+            <Icon
+              name={secureTextEntry ? 'eye-off-outline' : 'eye-outline'}
+              color="#D6D6D6"
+              size={20}
               onPress={toggleSecureEntry}
+              style={{
+                position: 'absolute',
+                top: 15,
+                right: 10,
+              }}
             />
           </View>
           <Spinner
@@ -233,19 +247,31 @@ export default function SignUp({navigation}) {
             }}
             size="large"
           />
-          <View style={[designs.customInput, {width: widthTouse*0.9}]}>
+          <View style={[designs.customInput]}>
             <TextInput
-              style={{flex: 1}}
+              style={{
+                width: '100%',
+                paddingLeft: 20,
+                paddingRight: 50,
+                paddingTop: 12,
+                paddingBottom: 12,
+              }}
               placeholder="Confirm Password"
               placeholderTextColor="#BFBFBF"
               secureTextEntry={secureTextEntry2}
               value={confirmPassword}
               onChangeText={(text) => handlePasswordCheck(text)}
             />
-            <Icon name={secureTextEntry2?"eye-off-outline":"eye-outline"} 
-              color="#D6D6D6" 
-              size={20} 
+            <Icon
+              name={secureTextEntry2 ? 'eye-off-outline' : 'eye-outline'}
+              color="#D6D6D6"
+              size={20}
               onPress={toggleSecureEntry2}
+              style={{
+                position: 'absolute',
+                top: 15,
+                right: 10,
+              }}
             />
           </View>
           <View
@@ -253,18 +279,31 @@ export default function SignUp({navigation}) {
               display: 'flex',
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-around',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              width: 345,
+              justifyContent: 'space-between',
+              // marginLeft: 'auto',
+              // marginRight: 'auto',
+              width: '100%',
+              // borderWidth: 1,
+              marginTop: 20,
             }}>
             <TouchableOpacity
               onPress={() => setGender('male')}
               style={[
-                designs.btn,
+                // designs.btn,
+
                 {
                   backgroundColor: gender == 'male' ? '#9D98EC' : '#FFFFFF',
-                  width: 162,
+                  width: '45%',
+                  padding: 15,
+                  borderRadius: 5,
+                  fontSize: 14,
+                  fontFamily: 'CircularStd-Medium',
+                  fontWeight: '600',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderColor: '#EFEFEF',
+                  borderWidth: 1,
                 },
               ]}>
               <Text style={{color: gender == 'male' ? 'white' : '#465969'}}>
@@ -274,10 +313,20 @@ export default function SignUp({navigation}) {
             <TouchableOpacity
               onPress={() => setGender('female')}
               style={[
-                designs.btn,
+                // designs.btn,
                 {
                   backgroundColor: gender == 'female' ? '#9D98EC' : '#FFFFFF',
-                  width: 162,
+                  width: '45%',
+                  padding: 15,
+                  borderRadius: 5,
+                  fontSize: 14,
+                  fontFamily: 'CircularStd-Medium',
+                  fontWeight: '600',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderColor: '#EFEFEF',
+                  borderWidth: 1,
                 },
               ]}>
               <Text style={{color: gender == 'female' ? 'white' : '#465969'}}>
@@ -292,8 +341,8 @@ export default function SignUp({navigation}) {
               designs.btn,
               {
                 backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
-                marginRight: 16,
-                marginLeft: 16,
+                // marginRight: 16,
+                // marginLeft: 16,
                 marginBottom: 20,
               },
             ]}>
@@ -301,7 +350,10 @@ export default function SignUp({navigation}) {
               style={{
                 color: !isError() ? 'white' : '#D6D6D6',
                 fontSize: 14,
-                lineHeight: 32,
+                // lineHeight: 32,
+                fontSize: 14,
+                lineHeight: 30,
+                fontWeight: 'bold',
               }}>
               SIGN UP
             </Text>

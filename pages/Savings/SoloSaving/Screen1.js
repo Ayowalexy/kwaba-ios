@@ -12,7 +12,7 @@ import designs from './style';
 import {useDispatch} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 
-const width=Dimensions.get('window').width;
+const width = Dimensions.get('window').width;
 export default function Screen1({navigation}) {
   const dispatch = useDispatch();
   const [activeOption, setActiveOption] = useState('');
@@ -29,9 +29,7 @@ export default function Screen1({navigation}) {
     try {
       dispatch(soloSaving(data));
       return navigation.navigate('SoloSaving2');
-    } catch (error){
-      
-    }
+    } catch (error) {}
   };
 
   return (
@@ -89,8 +87,8 @@ export default function Screen1({navigation}) {
               justifyContent: 'center',
               padding: 13,
               borderRadius: 5,
-              width: 182,
-              height: 75,
+              width: '48%',
+              // height: 75,
               backgroundColor: activeOption == 'auto' ? '#9D98EC' : 'white',
             }}>
             <Text
@@ -108,9 +106,9 @@ export default function Screen1({navigation}) {
                 fontSize: 12,
                 fontWeight: '600',
                 lineHeight: 15,
-                marginTop: 1,
+                marginTop: 5,
               }}>
-              I would like to be{'\n'}debited automatically
+              I would like to be debited automatically
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -120,8 +118,8 @@ export default function Screen1({navigation}) {
               justifyContent: 'center',
               padding: 13,
               borderRadius: 5,
-              width: 182,
-              height: 75,
+              width: '48%',
+              // height: 75,
               backgroundColor: activeOption == 'manual' ? '#9D98EC' : 'white',
             }}>
             <Text
@@ -139,9 +137,9 @@ export default function Screen1({navigation}) {
                 fontSize: 12,
                 fontWeight: '600',
                 lineHeight: 15,
-                marginTop: 1,
+                marginTop: 5,
               }}>
-              I would like to save when{'\n'}ever I want
+              I would like to save when ever I want
             </Text>
           </TouchableOpacity>
         </View>
@@ -156,13 +154,13 @@ export default function Screen1({navigation}) {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 5,
-              width: 120,
-              height: 54,
+              width: '32%',
+              height: 50,
               backgroundColor: frequency == 'Daily' ? '#9D98EC' : 'white',
             }}>
             <Text
               style={{
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: '600',
                 color: frequency == 'Daily' ? 'white' : '#465969',
                 lineHeight: 19,
@@ -177,13 +175,13 @@ export default function Screen1({navigation}) {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 5,
-              width: 120,
-              height: 54,
+              width: '32%',
+              height: 50,
               backgroundColor: frequency == 'Weekly' ? '#9D98EC' : 'white',
             }}>
             <Text
               style={{
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: '600',
                 color: frequency == 'Weekly' ? 'white' : '#465969',
                 lineHeight: 19,
@@ -198,13 +196,13 @@ export default function Screen1({navigation}) {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: 5,
-              width: 120,
-              height: 54,
+              width: '32%',
+              height: 50,
               backgroundColor: frequency == 'Monthly' ? '#9D98EC' : 'white',
             }}>
             <Text
               style={{
-                fontSize: 15,
+                fontSize: 13,
                 fontWeight: '600',
                 color: frequency == 'Monthly' ? 'white' : '#465969',
                 lineHeight: 19,

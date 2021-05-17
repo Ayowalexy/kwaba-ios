@@ -73,6 +73,9 @@ const cancelIcon = require('../assets/icons/cancel.png');
 const kwabalogocol = require('../assets/icons/kwabalogocol.png');
 const kwabalogonocol = require('../assets/icons/kwabalogonocol.png');
 
+// bottom navigation icons
+const borrowIcon = require('../assets/icons/bottom-navigation-icons/borrow.svg');
+
 export {
   instagram,
   accountCircle,
@@ -141,12 +144,13 @@ export {
   savings,
   savingslight,
   paybills,
-  payrent ,
+  payrent,
   quicksave,
   buyairtime,
   whatsapp,
   cancelIcon,
   kwabalogocol,
-  kwabalogonocol
-
+  kwabalogonocol,
+  // bottom  navigation icons
+  borrowIcon,
 };

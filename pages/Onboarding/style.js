@@ -1,6 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-const {width,height} = Dimensions.get('window');
-
+const {width, height} = Dimensions.get('window');
 
 const designs = StyleSheet.create({
   container: {
@@ -14,17 +13,21 @@ const designs = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     marginTop: 30,
+    marginBottom: 20,
   },
   item: {
     width: width,
-    justifyContent: 'center',
-    marginTop: 150,
+    // justifyContent: 'center',
+    // marginTop: 150,
+    // borderWidth: 1,
+    // borderColor: 'red',
   },
   onboardingImage: {
     width: 200,
-    height: 250,
+    height: 200,
     marginLeft: 'auto',
     marginRight: 'auto',
+    // marginTop: 30,
   },
   title: {
     color: '#2A286A',
@@ -32,12 +35,14 @@ const designs = StyleSheet.create({
     marginRight: 'auto',
   },
   bgImage: {
-    height:height*0.6,
-    width:width,
+    height: 400,
+    width: width,
     resizeMode: 'cover',
     paddingLeft: 21,
     paddingTop: 50,
-   
+    position: 'absolute',
+    bottom: 0,
+    // borderWidth: 1,
   },
   bgImageContainer: {
     height: 434,
@@ -67,22 +72,30 @@ const designs = StyleSheet.create({
     color: '#ffff',
   },
   smallText: {
+    width: '80%',
     color: '#ffff',
-    marginTop: 30,
+    // marginTop: 30,
     textAlign: 'left',
+    fontSize: 15,
+    lineHeight: 25,
   },
   skip: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: 240,
-    left: 200,
+    // position: 'absolute',
+    // top: 240,
+    // left: 200,
+    // backgroundColor: '#f00',
+    // bottom: 0,
+    marginTop: 50,
+    // marginBottom: 50,
   },
   getStartedBtn: {
-    width: width*0.9,
-    height: 70,
-    borderRadius: 10,
+    width: width * 0.9,
+    // height: 70,
+    padding: 20,
+    borderRadius: 5,
     backgroundColor: '#ffff',
     marginRight: 16,
     display: 'flex',
@@ -90,19 +103,19 @@ const designs = StyleSheet.create({
     alignItems: 'center',
     color: '#2A286A',
     fontFamily: 'CircularStd-Medium',
-    fontWeight: '600',
+    fontWeight: 'bold',
     fontSize: 14,
   },
   linkContainer: {
+    width: '100%',
     marginTop: 15,
-    marginRight: 16,
-    marginLeft: 16,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'CircularStd-Medium',
     fontSize: 14,
     fontWeight: '600',
+    // borderWidth: 1,
   },
 });
 
