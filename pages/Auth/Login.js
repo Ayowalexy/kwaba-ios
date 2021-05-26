@@ -8,9 +8,10 @@ import {
   Alert,
   Dimensions,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {images} from '../../util/index';
+import {images, icons} from '../../util/index';
 import designs from './style';
 import CheckBox from '@react-native-community/checkbox';
 import {useSelector, useDispatch} from 'react-redux';
@@ -45,36 +46,45 @@ export default function Login({navigation}) {
   };
 
   const handleLogin = async () => {
-    setSpinner(true);
-    const data = {email: email, password: password};
-    try {
-      const response = await login(data);
-      if (response.status == 200) {
-        setSpinner(false);
-        console.log('here is auth data', response.data.authData);
-        saveLoginToStorage({
-          ...response.data.authData,
-          username: response.data.authData.user.firstname,
-          isLoggedIn: true,
-        });
-        dispatch(
-          setLoginState({
+    if (isError()) {
+      // Alert.alert('Required', 'All fields are required.');
+      ToastAndroid.show(
+        'All fields are required',
+        ToastAndroid.LONG,
+        ToastAndroid.TOP,
+      );
+    } else {
+      setSpinner(true);
+      const data = {email: email, password: password};
+      try {
+        const response = await login(data);
+        if (response.status == 200) {
+          setSpinner(false);
+          console.log('here is auth data', response.data.authData);
+          saveLoginToStorage({
             ...response.data.authData,
             username: response.data.authData.user.firstname,
             isLoggedIn: true,
-          }),
-        );
-        navigation.navigate('Home');
-      } else {
+          });
+          dispatch(
+            setLoginState({
+              ...response.data.authData,
+              username: response.data.authData.user.firstname,
+              isLoggedIn: true,
+            }),
+          );
+          navigation.navigate('Home');
+        } else {
+          setSpinner(false);
+          Alert.alert(
+            'INVALID CREDENTIALS',
+            'Please provide valid email and password',
+          );
+        }
+      } catch (error) {
         setSpinner(false);
-        Alert.alert(
-          'INVALID CREDENTIALS',
-          'Please provide valid email and password',
-        );
+        Alert.alert('ERROR', 'An error occurred, please retry');
       }
-    } catch (error) {
-      setSpinner(false);
-      Alert.alert('ERROR', 'An error occurred, please retry');
     }
   };
 
@@ -90,18 +100,62 @@ export default function Login({navigation}) {
 
   return (
     <View style={[designs.container]}>
-      <ScrollView>
-        <Image
-          style={[designs.image, {marginTop: 0}]}
-          source={images.kwabaLogoWithName}
-        />
+      <Image
+        style={{
+          width: 200,
+          height: 200,
+          zIndex: 0,
+          position: 'absolute',
+          top: -20,
+          right: -50,
+          opacity: 0.8,
+        }}
+        resizeMode="stretch"
+        source={require('../../assets/shapes/shape1.png')}
+      />
+
+      <Image
+        style={{
+          width: 100,
+          height: 100,
+          zIndex: 0,
+          position: 'absolute',
+          top: '80%',
+          left: -50,
+          opacity: 0.8,
+        }}
+        resizeMode="stretch"
+        source={require('../../assets/shapes/shape1.png')}
+      />
+
+      <Image
+        style={{
+          width: 60,
+          height: 60,
+          zIndex: 0,
+          position: 'absolute',
+          top: '80%',
+          right: 0,
+        }}
+        // resizeMode="stretch"
+        source={require('../../assets/shapes/shape2.png')}
+      />
+      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
+        <View style={{alignItems: 'center', marginBottom: 20}}>
+          <Image
+            style={[designs.image, {marginTop: 0}]}
+            source={icons.kwabalogocol}
+            resizeMode="contain"
+          />
+        </View>
         <Text
           style={{
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: 'bold',
-            color: '#2A286A',
+            color: '#465969',
             lineHeight: 23,
-            marginTop: 42,
+            marginTop: 10,
+            textAlign: 'center',
             // marginLeft: 16,
           }}>
           Login to your account
@@ -113,7 +167,7 @@ export default function Login({navigation}) {
             color="#D6D6D6"
             style={{
               position: 'absolute',
-              top: 15,
+              top: 18,
               left: 10,
               // transform: [{translateY: 50}],
             }}
@@ -121,10 +175,12 @@ export default function Login({navigation}) {
           <TextInput
             style={{
               width: '100%',
-              paddingLeft: 50,
-              paddingRight: 50,
-              paddingTop: 12,
-              paddingBottom: 12,
+              // paddingLeft: 50,
+              // paddingRight: 50,
+              // paddingTop: 12,
+              // paddingBottom: 12,
+              paddingVertical: 15,
+              paddingHorizontal: 50,
             }}
             placeholder="Email"
             placeholderTextColor="#BFBFBF"
@@ -140,7 +196,7 @@ export default function Login({navigation}) {
             color="#D6D6D6"
             style={{
               position: 'absolute',
-              top: 15,
+              top: 18,
               left: 10,
               // transform: [{translateY: 50}],
             }}
@@ -148,10 +204,12 @@ export default function Login({navigation}) {
           <TextInput
             style={{
               width: '100%',
-              paddingLeft: 50,
-              paddingRight: 50,
-              paddingTop: 12,
-              paddingBottom: 12,
+              // paddingLeft: 50,
+              // paddingRight: 50,
+              // paddingTop: 12,
+              // paddingBottom: 12,
+              paddingVertical: 15,
+              paddingHorizontal: 50,
             }}
             placeholder="Password"
             placeholderTextColor="#BFBFBF"
@@ -168,6 +226,8 @@ export default function Login({navigation}) {
               position: 'absolute',
               top: 15,
               right: 10,
+              // borderWidth: 1,
+              padding: 5,
               // transform: [{translateY: 50}],
             }}
           />
@@ -187,23 +247,20 @@ export default function Login({navigation}) {
               alignItems: 'center',
               // borderWidth: 1,
               marginTop: 20,
+              paddingHorizontal: 20,
             }}>
             <View
               style={{
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
+                justifyContent: 'flex-start',
+
                 // marginTop: 10,
+                // borderWidth: 1,
               }}>
               <CheckBox
-                style={{
-                  height: 15,
-                  width: 15,
-                  marginRight: 15,
-                  borderColor: '#f00',
-                  // borderWidth: 1,
-                  // marginLeft: 16,
-                }}
+                style={{padding: 0, marginLeft: -8}}
                 disabled={false}
                 value={toggleCheckBox}
                 onValueChange={(newValue) => setToggleCheckBox(newValue)}
@@ -220,17 +277,22 @@ export default function Login({navigation}) {
                 Remember me
               </Text>
             </View>
-            <Text
-              style={{
-                color: '#00DC99',
-                fontSize: 12,
-                lineHeight: 30,
-                fontWeight: '900',
-                alignSelf: 'flex-end',
-                // marginTop: 10,
-              }}>
-              Forgot Password ?
-            </Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ForgotPassword')}>
+              <Text
+                style={{
+                  color: '#00DC99',
+                  fontSize: 12,
+                  // lineHeight: 30,
+                  fontWeight: '900',
+                  alignSelf: 'flex-end',
+                  // marginTop: 10,
+                  // borderWidth: 1,
+                  paddingVertical: 5,
+                }}>
+                Forgot Password ?
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
         <View
@@ -242,19 +304,20 @@ export default function Login({navigation}) {
           }}>
           <TouchableOpacity
             onPress={handleLogin}
-            disabled={isError()}
+            // disabled={!isError()}
             style={[
               designs.btn,
               {
-                backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
+                backgroundColor: '#00DC99',
                 width: '100%',
                 borderRadius: 10,
+                // opacity: isError() ? 0 : 1,
               },
             ]}>
             <Text
               style={{
-                color: !isError() ? 'white' : 'black',
-                fontSize: 14,
+                color: 'white',
+                fontSize: 12,
                 lineHeight: 30,
                 fontWeight: 'bold',
               }}>
@@ -268,13 +331,14 @@ export default function Login({navigation}) {
           />
         </View> */}
         </View>
-        <View
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SignUp')}
           style={{
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 23,
+            marginTop: 20,
           }}>
           <Text
             style={{
@@ -284,13 +348,9 @@ export default function Login({navigation}) {
               fontWeight: 'bold',
             }}>
             Don't have an account?{' '}
-            <Text
-              onPress={() => navigation.navigate('SignUp')}
-              style={{color: '#00DC99'}}>
-              Sign up
-            </Text>
+            <Text style={{color: '#00DC99'}}>Sign up</Text>
           </Text>
-        </View>
+        </TouchableOpacity>
         <Spinner
           visible={spinner}
           textContent={'Authenticating...'}

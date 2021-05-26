@@ -82,7 +82,7 @@ export default function Home({navigation}) {
   const bottomCards = [
     {
       id: 1,
-      title: 'Save',
+      title: 'Rent Savings',
       body:
         'Save towards your next rent with your flatmates, friends or family and earn interest on every deposit.',
       image: images.maskGroup30,
@@ -90,20 +90,20 @@ export default function Home({navigation}) {
 
     {
       id: 2,
-      title: 'Borrow',
+      title: 'Rent Top-up',
       body:
         'Get a rent top-up if you are running short on your rent or obtain discounts if you have your complete rent when you pay via Kwaba',
       image: images.maskGroup29,
     },
     {
       id: 3,
-      title: 'Soft loans',
+      title: 'Emergency Funds',
       body: 'Access quick loans to sort out life emergencies',
       image: images.maskGroup44,
     },
     {
       id: 4,
-      title: 'Invite friends',
+      title: 'Invite Friends',
       body:
         'Refer and invite your friends and family to stand a chance to get rent discount and earn money',
       image: images.giftPackage,
@@ -111,10 +111,12 @@ export default function Home({navigation}) {
   ];
 
   const goToPage = (item) => {
-    if (item.title == 'Rent savings') {
+    if (item.title == 'Rent Savings') {
       navigation.navigate('SavingsHome');
-    } else if (item.title == 'Rent payment') {
-      navigation.navigate('Borrow');
+    } else if (item.title == 'Rent Top-up') {
+      navigation.navigate('EmploymentStatus');
+    } else if (item.title == 'Emergency Funds') {
+      navigation.navigate('EmergencyLoanHome');
     } else {
       navigation.navigate('CompleteProfile1');
     }
@@ -319,11 +321,13 @@ export default function Home({navigation}) {
         <View
           style={{
             flexDirection: 'row',
-            justifyContent: 'space-evenly',
+            // justifyContent: 'space-evenly',
+            justifyContent: 'center',
             alignItems: 'center',
             // marginTop: 20,
             // marginBottom: -10,
-            padding: 20,
+            // padding: 10,
+            paddingVertical: 20,
             // paddingLeft: 20,
             // paddingRight: 20,
           }}>
@@ -343,7 +347,7 @@ export default function Home({navigation}) {
               Quick Save
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          {/* <TouchableOpacity>
             <Image
               resizeMode="contain"
               source={icons.payrent}
@@ -358,8 +362,8 @@ export default function Home({navigation}) {
               }}>
               Pay Rent
             </Text>
-          </TouchableOpacity>
-          <TouchableOpacity>
+          </TouchableOpacity> */}
+          <TouchableOpacity onPress={() => navigation.navigate('AirtimeHome')}>
             <Image
               resizeMode="contain"
               source={icons.buyairtime}
@@ -375,7 +379,7 @@ export default function Home({navigation}) {
               Buy Airtime
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('BillsHome')}>
             <Image
               resizeMode="contain"
               source={icons.paybills}

@@ -14,15 +14,20 @@ import {
 
 const Aboutus = ({navigation}) => {
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
-          color="#2A286A"
-        />
+    <View style={styles.container}>
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={25}
+        style={{
+          // marginTop: 28,
+          marginLeft: 16,
+          fontWeight: '900',
+          paddingVertical: 20,
+        }}
+        color="#2A286A"
+      />
+      <ScrollView>
         <Text
           style={[
             FONTS.h1FontStyling,
@@ -63,13 +68,14 @@ const Aboutus = ({navigation}) => {
             style={[
               {
                 marginTop: 0,
-                width: 129,
-                height: 30,
+                width: 130,
+                height: 50,
                 // marginLeft: 16,
                 marginTop: 89,
+                resizeMode: 'contain',
               },
             ]}
-            source={images.kwabaLogoWithName}
+            source={images.companyLogo}
           />
           <Text
             style={[
@@ -79,8 +85,8 @@ const Aboutus = ({navigation}) => {
             Copyright 2021. All Rights Reserved {'\n'}App Version 0.1
           </Text>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
@@ -93,9 +99,9 @@ const styles = StyleSheet.create({
   },
   aboutussection: {
     flex: 1,
-    borderRadius: 20,
+    borderRadius: 10,
     backgroundColor: COLORS.white,
-    margin: 20,
+    margin: 10,
     flexDirection: 'column',
     padding: 20,
   },

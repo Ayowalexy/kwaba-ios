@@ -256,9 +256,9 @@ export default function Start({navigation}) {
         <View style={designs.card}>
           <View style={designs.cardFlex}>
             <View>
-              <Text style={designs.cardHeader}>Solo Saving</Text>
+              <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
               <Text style={designs.bodyText}>
-                Save towards your next rent alone
+                Save towards your{'\n'}next rent alone
               </Text>
               <TouchableOpacity
                 onPress={() =>
@@ -272,10 +272,11 @@ export default function Start({navigation}) {
                     marginTop: 16,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: 27,
+                    // height: 27,
                     borderRadius: 21,
                     backgroundColor: '#F7F8FD',
                     width: 131,
+                    padding: 5,
                   },
                 ]}>
                 {soloSaving == 0 ? (
@@ -311,7 +312,14 @@ export default function Start({navigation}) {
               </TouchableOpacity>
             </View>
             <Image
-              style={{width: 146, height: 146}}
+              style={{
+                width: 130,
+                height: 130,
+                resizeMode: 'contain',
+                position: 'absolute',
+                right: -20,
+                bottom: -25,
+              }}
               source={images.maskGroup15}
             />
           </View>
@@ -322,12 +330,12 @@ export default function Start({navigation}) {
             <View>
               <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
               <Text style={designs.bodyText}>
-                Save towards your next rent with{'\n'}your flatmates or spouse
+                Save towards your rent with{'\n'}your flatmates or spouse
               </Text>
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate(
-                    buddySaving == 0 ? 'BuddySaving1' : 'BuddySavingDashBoard',
+                    soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
                   )
                 }
                 style={[
@@ -336,13 +344,14 @@ export default function Start({navigation}) {
                     marginTop: 16,
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: 27,
+                    // height: 27,
                     borderRadius: 21,
                     backgroundColor: '#F7F8FD',
                     width: 131,
+                    padding: 5,
                   },
                 ]}>
-                {buddySaving == 0 ? (
+                {soloSaving == 0 ? (
                   <Text
                     style={[
                       designs.bodyText,
@@ -368,14 +377,21 @@ export default function Start({navigation}) {
                         marginRight: 8,
                       },
                     ]}>
-                    ₦{currencyFormat(buddySaving)}
+                    ₦{currencyFormat(soloSaving)}
                   </Text>
                 )}
                 <Icon name="arrow-forward" color="#9D98EC" size={15} />
               </TouchableOpacity>
             </View>
             <Image
-              style={{width: 146, height: 146}}
+              style={{
+                width: 130,
+                height: 130,
+                resizeMode: 'contain',
+                position: 'absolute',
+                right: -20,
+                bottom: -25,
+              }}
               source={images.maskGroup14}
             />
           </View>

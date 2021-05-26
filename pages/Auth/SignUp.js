@@ -8,9 +8,10 @@ import {
   ScrollView,
   Alert,
   Dimensions,
+  ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {images} from '../../util/index';
+import {images, icons} from '../../util/index';
 import designs from './style';
 import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -86,44 +87,40 @@ export default function SignUp({navigation}) {
       gender: gender,
     };
     if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
-
-    //start spinner
-    setSpinner(true);
-    const res = await signUp(data);
-    if (res.status == 201) {
-      //stop spinner
-      setSpinner(false);
-
-      //show success alert
-      //setSuccessModal(true);
-      Toast.show({
-        text1: 'Registration Successful',
-        text2:
-          'You have successfully signed up. You can now proceed to verify your identity. 👋',
-        visibilityTime: 2000,
-        position: 'top',
-        topOffset: 30,
-      });
-      await AsyncStorage.setItem('authData', res.data.authData);
-      //Clear the input fields
-      setFirstname('');
-      setLastname('');
-      setEmail('');
-      setPassword('');
-      setConfirmPassword('');
-      navigation.navigate('GetCode');
+      ToastAndroid.showWithGravity(
+        'Missing inputs, please fill out all fields',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+        // 100,
+        // 100,
+      );
     } else {
-      setSpinner(false);
-      if (res == 'Request failed with status code 409') {
-        Alert.alert('Request Failed', 'Email is already taken', [{text: 'Ok'}]);
-      } else
-        Alert.alert('Request Failed', 'An error occurred, please retry', [
-          {text: 'Ok'},
-        ]);
+      //start spinner
+      setSpinner(true);
+      const res = await signUp(data);
+      if (res.status == 201) {
+        //stop spinner
+        setSpinner(false);
+
+        await AsyncStorage.setItem('authData', res.data.authData);
+        //Clear the input fields
+        setFirstname('');
+        setLastname('');
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
+        navigation.navigate('GetCode');
+      } else {
+        setSpinner(false);
+        if (res == 'Request failed with status code 409') {
+          Alert.alert('Request Failed', 'Email is already taken', [
+            {text: 'Ok'},
+          ]);
+        } else
+          Alert.alert('Request Failed', 'An error occurred, please retry', [
+            {text: 'Ok'},
+          ]);
+      }
     }
   };
 
@@ -141,13 +138,56 @@ export default function SignUp({navigation}) {
   };
 
   return (
-    <View
-      style={[
-        designs.container,
-        // { paddingTop: 59},
-      ]}>
+    <View style={[designs.container]}>
+      <Image
+        style={{
+          width: 200,
+          height: 200,
+          zIndex: 0,
+          position: 'absolute',
+          top: -20,
+          right: -50,
+          opacity: 0.8,
+        }}
+        resizeMode="stretch"
+        source={require('../../assets/shapes/shape1.png')}
+      />
+
+      <Image
+        style={{
+          width: 100,
+          height: 100,
+          zIndex: 0,
+          position: 'absolute',
+          top: '80%',
+          left: -50,
+          opacity: 0.8,
+        }}
+        resizeMode="stretch"
+        source={require('../../assets/shapes/shape1.png')}
+      />
+
+      <Image
+        style={{
+          width: 60,
+          height: 60,
+          zIndex: 0,
+          position: 'absolute',
+          top: '80%',
+          right: 0,
+        }}
+        // resizeMode="stretch"
+        source={require('../../assets/shapes/shape2.png')}
+      />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
-        <View
+        <View style={{alignItems: 'center', marginBottom: 0, marginTop: 20}}>
+          <Image
+            style={[designs.image, {marginTop: 0}]}
+            source={icons.kwabalogocol}
+            resizeMode="contain"
+          />
+        </View>
+        {/* <View
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -156,8 +196,9 @@ export default function SignUp({navigation}) {
             paddingTop: 50,
           }}>
           <Image
-            style={[designs.image, {marginTop: 0, marginLeft: 0}]}
-            source={images.kwabaLogoWithName}
+            style={[designs.image, {marginTop: 0}]}
+            source={icons.kwabalogocol}
+            resizeMode="contain"
           />
           <Text
             onPress={() => navigation.navigate('Login')}
@@ -171,20 +212,22 @@ export default function SignUp({navigation}) {
             }}>
             Log in
           </Text>
-        </View>
+        </View> */}
 
         <View>
           <Text
             style={[
               designs.heading,
               {
-                marginLeft: 16,
-                fontSize: 25,
-                fontWeight: '700',
+                // marginLeft: 16,
+                fontSize: 16,
+                fontWeight: 'bold',
                 fontFamily: 'CircularStd',
+                textAlign: 'center',
+                color: '#465969',
               },
             ]}>
-            Let's set you up
+            Hi, let's set you up
           </Text>
           <TextInput
             style={designs.textField}
@@ -212,10 +255,9 @@ export default function SignUp({navigation}) {
             <TextInput
               style={{
                 width: '100%',
-                paddingLeft: 20,
+                paddingVertical: 15,
                 paddingRight: 50,
-                paddingTop: 12,
-                paddingBottom: 12,
+                paddingLeft: 20,
               }}
               placeholder="Password"
               placeholderTextColor="#BFBFBF"
@@ -232,29 +274,30 @@ export default function SignUp({navigation}) {
                 position: 'absolute',
                 top: 15,
                 right: 10,
+                // borderWidth: 1,
+                padding: 5,
               }}
             />
           </View>
           <Spinner
             visible={spinner}
-            textContent={'Setting up...'}
+            // textContent={'Setting up'}
             animation="fade"
-            textStyle={{
-              color: '#2A286A',
-              fontSize: 20,
-              fontWeight: 'bold',
-              lineHeight: 30,
-            }}
+            // textStyle={{
+            //   color: '#2A286A',
+            //   fontSize: 20,
+            //   fontWeight: 'bold',
+            //   lineHeight: 30,
+            // }}
             size="large"
           />
           <View style={[designs.customInput]}>
             <TextInput
               style={{
                 width: '100%',
-                paddingLeft: 20,
+                paddingVertical: 15,
                 paddingRight: 50,
-                paddingTop: 12,
-                paddingBottom: 12,
+                paddingLeft: 20,
               }}
               placeholder="Confirm Password"
               placeholderTextColor="#BFBFBF"
@@ -271,6 +314,8 @@ export default function SignUp({navigation}) {
                 position: 'absolute',
                 top: 15,
                 right: 10,
+                // borderWidth: 1,
+                padding: 5,
               }}
             />
           </View>
@@ -293,8 +338,8 @@ export default function SignUp({navigation}) {
 
                 {
                   backgroundColor: gender == 'male' ? '#9D98EC' : '#FFFFFF',
-                  width: '45%',
-                  padding: 15,
+                  width: '48%',
+                  padding: 18,
                   borderRadius: 5,
                   fontSize: 14,
                   fontFamily: 'CircularStd-Medium',
@@ -316,8 +361,8 @@ export default function SignUp({navigation}) {
                 // designs.btn,
                 {
                   backgroundColor: gender == 'female' ? '#9D98EC' : '#FFFFFF',
-                  width: '45%',
-                  padding: 15,
+                  width: '48%',
+                  padding: 18,
                   borderRadius: 5,
                   fontSize: 14,
                   fontFamily: 'CircularStd-Medium',
@@ -336,26 +381,48 @@ export default function SignUp({navigation}) {
           </View>
           <TouchableOpacity
             onPress={handleSubmit}
-            disabled={isError()}
+            // disabled={isError()}
             style={[
               designs.btn,
               {
-                backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
+                // backgroundColor: !isError() ? '#00DC99' : '#EAEAEA',
+                backgroundColor: '#00DC99',
                 // marginRight: 16,
                 // marginLeft: 16,
-                marginBottom: 20,
+                // marginBottom: 20,
               },
             ]}>
             <Text
               style={{
-                color: !isError() ? 'white' : '#D6D6D6',
-                fontSize: 14,
+                // color: !isError() ? 'white' : '#D6D6D6',
+                color: '#FFFFFF',
+                // fontSize: 14,
                 // lineHeight: 32,
-                fontSize: 14,
+                fontSize: 12,
                 lineHeight: 30,
                 fontWeight: 'bold',
               }}>
               SIGN UP
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Login')}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginVertical: 20,
+            }}>
+            <Text
+              style={{
+                color: '#465969',
+                fontSize: 14,
+                lineHeight: 30,
+                fontWeight: 'bold',
+              }}>
+              Already have an account?{' '}
+              <Text style={{color: '#00DC99'}}>Log In</Text>
             </Text>
           </TouchableOpacity>
         </View>

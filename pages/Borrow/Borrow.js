@@ -64,51 +64,53 @@ const Borrow = ({navigation}) => {
   };
 
   const handleRentalLoanClick = async () => {
-    if (existingApplication !== '') {
-      const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-      const steps = JSON.parse(borrwSteps);
+    // if (existingApplication !== '') {
+    //   const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+    //   const steps = JSON.parse(borrwSteps);
 
-      // let stepsdata={
-      //   documentdone:'done',
-      //   propertydetail:'done',
-      //   landlorddetail:'done',
-      //   refree:'done',
-      //   offeraccepted:'done',
-      //   addressverification:'done',
-      //   debitmandate:'',
-      //   awaitingdisbursment:'',
-      // };
+    // let stepsdata={
+    //   documentdone:'done',
+    //   propertydetail:'done',
+    //   landlorddetail:'done',
+    //   refree:'done',
+    //   offeraccepted:'done',
+    //   addressverification:'done',
+    //   debitmandate:'',
+    //   awaitingdisbursment:'',
+    // };
 
-      // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
-      console.log('steps here', steps);
+    // console.log('steps here', steps);
 
-      if (steps == null) {
-        navigation.navigate('UploadDocuments');
-      } else if (steps.documentdone == '') {
-        navigation.navigate('UploadDocuments');
-      } else if (steps.propertydetail == '') {
-        navigation.navigate('PostPaymentForm1');
-      } else if (steps.landlorddetail == '') {
-        navigation.navigate('PostPaymentForm2');
-      } else if (steps.refree == '') {
-        navigation.navigate('PostPaymentForm3');
-      } else if (steps.offeraccepted == '') {
-        navigation.navigate('RentalLoanOfferTest'); //PrintOfferLetter  RentalLoanOfferTest
-      } else if (steps.addressverification == '') {
-        navigation.navigate('AddressVerificationPayment');
-      } else if (steps.debitmandate == '') {
-        navigation.navigate('OkraDebitMandate');
-      } else if (steps.awaitingdisbursment == '') {
-        navigation.navigate('AwaitingDisbursement');
-      }
-    } else {
-      navigation.navigate('RentalLoanForm1');
+    //   if (steps == null) {
+    //     navigation.navigate('UploadDocuments');
+    //   } else if (steps.documentdone == '') {
+    //     navigation.navigate('UploadDocuments');
+    //   } else if (steps.propertydetail == '') {
+    //     navigation.navigate('PostPaymentForm1');
+    //   } else if (steps.landlorddetail == '') {
+    //     navigation.navigate('PostPaymentForm2');
+    //   } else if (steps.refree == '') {
+    //     navigation.navigate('PostPaymentForm3');
+    //   } else if (steps.offeraccepted == '') {
+    //     navigation.navigate('RentalLoanOfferTest'); //PrintOfferLetter  RentalLoanOfferTest
+    //   } else if (steps.addressverification == '') {
+    //     navigation.navigate('AddressVerificationPayment');
+    //   } else if (steps.debitmandate == '') {
+    //     navigation.navigate('OkraDebitMandate');
+    //   } else if (steps.awaitingdisbursment == '') {
+    //     navigation.navigate('AwaitingDisbursement');
+    //   }
+    // } else {
+    //   navigation.navigate('RentalLoanForm1');
 
-      //navigation.navigate('EmergencyLoanRequestDashBoard');
+    //   //navigation.navigate('EmergencyLoanRequestDashBoard');
 
-      return token;
-    }
+    //   return token;
+    // }
+
+    navigation.navigate('EmploymentStatus');
   };
 
   // const handleRentalLoanClick=()=> {
@@ -120,14 +122,17 @@ const Borrow = ({navigation}) => {
   // }
 
   return (
-    <ScrollView
-      style={designs.container}
-      scrollEnabled
-      showsVerticalScrollIndicator={false}>
-      <ImageBackground
+    <View style={designs.container}>
+      <Image
         source={images.borrowSectionBGI}
-        style={designs.bgImage}
-        imageStyle={{resizeMode: 'cover'}}>
+        style={{
+          width: '100%',
+          height: '100%',
+          position: 'absolute',
+        }}
+        imageStyle={{resizeMode: 'cover'}}
+      />
+      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
         <View style={designs.contentView}>
           <View style={designs.textView}>
             <Text style={[FONTS.largeTitleFontStyling, designs.bigText]}>
@@ -141,13 +146,20 @@ const Borrow = ({navigation}) => {
         </View>
 
         <View
-          styles={{flex: 1, flexDirection: 'column', justifyContent: 'center'}}>
+          style={{
+            width: '100%',
+            // height: 54,
+            flex: 1,
+            // flexDirection: 'column',
+            // justifyContent: 'center',
+            padding: 20,
+          }}>
           <TouchableOpacity
             onPress={handleRentalLoanClick}
             activeOpacity={0.7}
-            style={[designs.button, {marginBottom: 20, width: width * 0.9}]}>
+            style={[designs.button]}>
             <View style={designs.buttonInnerView}>
-              <Text style={designs.buttonText}> Rent Top-up</Text>
+              <Text style={designs.buttonText}>Rent Top-up</Text>
               <Icon
                 name="arrow-forward-outline"
                 size={20}
@@ -161,7 +173,7 @@ const Borrow = ({navigation}) => {
             onPress={() => navigation.navigate('EmergencyLoanHome')}
             style={designs.button}>
             <View style={designs.buttonInnerView}>
-              <Text style={designs.buttonText}> Emergency Funds </Text>
+              <Text style={designs.buttonText}>Emergency Funds</Text>
               <Icon
                 name="arrow-forward-outline"
                 size={20}
@@ -171,8 +183,9 @@ const Borrow = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
-      </ImageBackground>
-    </ScrollView>
+        {/* </ImageBackground> */}
+      </ScrollView>
+    </View>
   );
 };
 

@@ -78,6 +78,14 @@ const mastercard = require('../assets/images/mastercard.png');
 const visacard = require('../assets/images/visa.png');
 const mastercarddesign = require('../assets/images/mastercarddesign.png');
 const visacarddesign = require('../assets/images/visacarddesign.png');
+const companyLogo = require('../assets/images/companyLogo.png');
+const ellipsis = require('../assets/images/circle-bg.png');
+
+const buyAirtime = require('../assets/images/buy-airtime.png');
+const airtime1 = require('../assets/images/airtime-mtn.png');
+const airtime2 = require('../assets/images/airtime-airtel.png');
+const airtime3 = require('../assets/images/airtime-glo.png');
+const airtime4 = require('../assets/images/airtime-9mobile.png');
 
 export {
   logo,
@@ -159,6 +167,12 @@ export {
   mastercard,
   visacard,
   mastercarddesign,
-  visacarddesign
-
+  visacarddesign,
+  companyLogo,
+  ellipsis,
+  buyAirtime,
+  airtime1,
+  airtime2,
+  airtime3,
+  airtime4,
 };

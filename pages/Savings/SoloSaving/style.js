@@ -28,7 +28,7 @@ const designs = StyleSheet.create({
     color: '#2A286A',
     fontFamily: 'CircularStd',
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   textInput: {
     width: '100%',
@@ -107,7 +107,7 @@ const designs = StyleSheet.create({
     // marginLeft: 5,
   },
   creditCard: {
-    width: 365,
+    width: '100%',
     height: 51,
     borderRadius: 10,
     backgroundColor: 'white',

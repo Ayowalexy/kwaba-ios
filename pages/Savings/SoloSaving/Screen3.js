@@ -6,14 +6,19 @@ import {
   Image,
   Switch,
   ScrollView,
+  Modal,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
-import {images} from '../../../util/index';
+import {images, icons} from '../../../util/index';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
 export default function Screen3({navigation}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -29,6 +34,14 @@ export default function Screen3({navigation}) {
   const toggleSwitch = () => {
     setLocked((previousState) => !previousState);
     dispatch(soloSaving({locked: locked}));
+  };
+
+  const [modal, setModal] = useState(false);
+
+  const addCardAndBankModal = () => {
+    console.log('Adding card and bank...');
+    setModal(true);
+    console.log(modal);
   };
 
   return (
@@ -114,10 +127,11 @@ export default function Screen3({navigation}) {
               display: 'flex',
               flexDirection: 'row',
               flexWrap: 'wrap',
-              justifyContent: 'space-evenly',
+              justifyContent: 'space-between',
               marginTop: 20,
               alignItems: 'center',
-              paddingLeft: 20,
+              paddingHorizontal: 20,
+              // paddingLeft: 20,
               // borderWidth: 1,
             }}>
             <View style={designs.dataInfo}>
@@ -128,7 +142,7 @@ export default function Screen3({navigation}) {
                 ₦{store.savings_amount || ' 0.00'}
               </Text>
             </View>
-            <View style={designs.dataInfo}>
+            <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>₦{savings_target || ' 0.00'}</Text>
             </View>
@@ -136,7 +150,7 @@ export default function Screen3({navigation}) {
               <Text style={designs.key}>Frequency</Text>
               <Text style={designs.value}>{store.savings_frequency}</Text>
             </View>
-            <View style={designs.dataInfo}>
+            <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Start Date</Text>
               <Text style={designs.value}>{savings_start_date}</Text>
             </View>
@@ -144,7 +158,7 @@ export default function Screen3({navigation}) {
               <Text style={designs.key}>End Date</Text>
               <Text style={designs.value}>{savings_end_date}</Text>
             </View>
-            <View style={designs.dataInfo}>
+            <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Interest Rate</Text>
               <Text style={designs.value}>{locked ? '8%' : '7%'}</Text>
             </View>
@@ -233,7 +247,8 @@ export default function Screen3({navigation}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
-          onPress={() => navigation.navigate('SoloSaving4')}
+          // onPress={() => navigation.navigate('SoloSaving4')}
+          onPress={addCardAndBankModal}
           style={[
             designs.button,
             {
@@ -247,13 +262,158 @@ export default function Screen3({navigation}) {
               // color: toggleCheckBox ? 'white' : '#000',
               color: toggleCheckBox ? '#fff' : '#ffffff50',
               fontWeight: 'bold',
-              fontSize: 14,
+              fontSize: 12,
               lineHeight: 30,
             }}>
             NEXT
           </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modal}
+        // onRequestClose={onRequestClose}
+        style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            fontFamily: 'CircularStd',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            // borderColor: '#f00',
+            // borderWidth: 1,
+          }}>
+          <View
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              width: '100%',
+              minHeight: 200,
+              backgroundColor: '#fff',
+              borderTopLeftRadius: 10,
+              borderTopRightRadius: 10,
+              padding: 25,
+            }}>
+            <View
+              style={{
+                // width: '100%',
+                // flexDirection: 'row',
+                // justifyContent: 'space-between',
+                // borderWidth: 1,
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              {store.instant_saved_amount &&
+                store.instant_saved_amount.length > 0 && (
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      width: 260,
+                      color: '#465969',
+                      lineHeight: 25,
+                    }}>
+                    You are about to deposit{' '}
+                    <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
+                      ₦{numberWithCommas(store.instant_saved_amount)}
+                    </Text>{' '}
+                    into your savings plan.
+                  </Text>
+                )}
+              <Icon
+                // onPress={onRequestClose}
+                name="close-outline"
+                size={25}
+                color="#465969"
+              />
+            </View>
+
+            <View>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: '#2A2B6A',
+                  fontWeight: 'bold',
+                  marginVertical: 20,
+                }}>
+                Pay using
+              </Text>
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                  // justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    width: 50,
+                    height: 50,
+                    backgroundColor: '#E0FFF6',
+                    borderRadius: 50,
+                    marginRight: 20,
+
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={icons.card}
+                    style={{
+                      width: 15,
+                      height: 15,
+                      // backgroundColor: 'red',
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+                <View>
+                  <Text style={{fontWeight: 'bold', color: '#465969'}}>
+                    Add Card
+                  </Text>
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 10,
+                  // justifyContent: 'space-between',
+                }}>
+                <View
+                  style={{
+                    width: 50,
+                    height: 50,
+                    backgroundColor: '#E0FFF6',
+                    borderRadius: 50,
+                    marginRight: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    source={icons.bank}
+                    style={{
+                      width: 15,
+                      height: 15,
+                      // backgroundColor: 'red',
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </View>
+                <View>
+                  <Text style={{fontWeight: 'bold', color: '#465969'}}>
+                    Add Bank Account
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }

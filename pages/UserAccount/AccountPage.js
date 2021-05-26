@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   Text,
@@ -45,6 +45,7 @@ const AccountPage = ({navigation}) => {
 
   const [successModal, setSuccessModal] = useState(false);
   const [successModalMessage, setSuccessModalMessage] = useState('');
+  const [fullName, setFullName] = useState('');
   const store2 = useSelector((state) => state.loginReducer);
 
   const [loanPurpose] = useState([
@@ -78,9 +79,12 @@ const AccountPage = ({navigation}) => {
         }),
       );
 
-      //navigation.navigate('Login');
+      setTimeout(function () {
+        navigation.navigate('Login');
+      }, 2000);
+      // navigation.navigate('Login');
 
-      console.log(store2);
+      // console.log('navigation:', navigation.navigate);
 
       Alert.alert('Message', 'Logout Sucessfully' + store2.isLoggedIn, [
         {text: 'Close'},
@@ -214,6 +218,19 @@ const AccountPage = ({navigation}) => {
     // navigation.navigate('GetCode');
   };
 
+  useEffect(() => {
+    const getUserData = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+
+      if (userData) {
+        let {firstname, lastname} = JSON.parse(userData).user;
+        let userName = firstname + ' ' + lastname;
+        setFullName(userName);
+      }
+    };
+    getUserData();
+  }, []);
+
   return (
     <ScrollView>
       <View style={{backgroundColor: '#F7F8FD', flex: 1}}>
@@ -276,7 +293,8 @@ const AccountPage = ({navigation}) => {
                       fontWeight: 'bold',
                     },
                   ]}>
-                  Joshua Nwosu
+                  {/* Joshua Nwosu */}
+                  {fullName}
                 </Text>
                 <TouchableOpacity
                   onPress={() => {

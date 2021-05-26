@@ -71,6 +71,17 @@ const verifyPhone = async (data) => {
   }
 };
 
+const forgotPassword = async (data) => {
+  const authData = await AsyncStorage.getItem('authData');
+  const token = authData;
+  try {
+    const url = apiUrl + '/api/v1/forgot_password';
+    // const response = await axios.put(url, )
+  } catch (error) {
+    return error.message;
+  }
+};
+
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
   const token = JSON.parse(userData).token;

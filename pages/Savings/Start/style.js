@@ -61,10 +61,10 @@ const designs = StyleSheet.create({
   bodyText: {
     marginTop: 6,
     color: '#465969',
-    fontSize: 13,
+    fontSize: 16,
     fontFamily: 'Poppins',
     fontWeight: '600',
-    lineHeight: 20,
+    // lineHeight: 20,
   },
 });
 

@@ -24,27 +24,13 @@ const BottomNavigator = () => {
         style: {
           elevation: 50,
           borderWidth: 0,
-          // position: 'absolute',
-          // borderTopRightRadius: 30,
-          // borderTopLeftRadius: 30,
           bottom: 0,
           borderTopWidth: 0,
           borderLeftWidth: 0,
           borderWidth: 0,
-          // shadowColor: '#000000',
-          // shadowOffset: {
-          //   width: 0,
-          //   height: 1,
-          // },
-          // shadowOpacity: 0.58,
-          // shadowRadius: 5,
-          // shadowOpacity: 10,
-          // minHeight: 70,
           height: 70,
-          paddingLeft: 10,
-          paddingRight: 10,
-          // paddingTop: 15,
-          // paddingBottom: 15,
+          paddingLeft: 20,
+          paddingRight: 20,
         },
         showLabel: false,
         activeTintColor: COLORS.primary,
@@ -128,24 +114,32 @@ const BottomNavigator = () => {
         component={Home}
         options={{
           tabBarIcon: ({color, focused}) => (
-            <View style={{flex: 1, justifyContent: 'center'}}>
+            <View
+              style={{
+                // flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#EAEAEA80',
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+              }}>
               <>
                 {focused ? (
                   <Image
                     source={icons.kwabalogocol}
-                    style={{width: 60, height: 60, alignSelf: 'center'}}
+                    // source={'assets/images/Vector.png'}
+                    style={{width: 30, height: 30, alignSelf: 'center'}}
                     resizeMode="contain"
                   />
                 ) : (
                   <Image
-                    source={icons.kwabalogocol}
-                    style={{width: 60, height: 60, alignSelf: 'center'}}
+                    source={icons.kwabalogonocol}
+                    style={{width: 30, height: 30, alignSelf: 'center'}}
                     resizeMode="contain"
                   />
                 )}
               </>
-
-              {/* <Text style={{fontSize: 16, color: '#000000'}}>RentBank</Text> */}
             </View>
           ),
         }}

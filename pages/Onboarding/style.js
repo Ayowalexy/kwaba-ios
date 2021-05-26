@@ -4,7 +4,7 @@ const {width, height} = Dimensions.get('window');
 const designs = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F8FD',
+    backgroundColor: '#FFF',
     justifyContent: 'center',
   },
   image: {

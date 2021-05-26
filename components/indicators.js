@@ -1,31 +1,41 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 export default function Indicators(props) {
   const {currentIndex} = props;
+
   return (
-    <View style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
+    <View style={{display: 'flex', flexDirection: 'row', marginVertical: 15}}>
       <Text
-        style={{
-          backgroundColor: currentIndex == 0 ? 'white' : '#FFFFFF77',
-          width: 19,
-          height: 4,
-          marginRight: 4,
-        }}></Text>
+        style={[
+          styles.indicator,
+          {
+            backgroundColor: currentIndex == 0 ? '#00DC99' : '#99DC9950',
+          },
+        ]}></Text>
       <Text
-        style={{
-          backgroundColor: currentIndex == 1 ? 'white' : '#FFFFFF77',
-          width: 19,
-          height: 4,
-          marginRight: 4,
-        }}></Text>
+        style={[
+          styles.indicator,
+          {
+            backgroundColor: currentIndex == 1 ? '#00DC99' : '#99DC9950',
+          },
+        ]}></Text>
       <Text
-        style={{
-          backgroundColor: currentIndex == 2 ? 'white' : '#FFFFFF77',
-          width: 19,
-          height: 4,
-          marginRight: 4,
-        }}></Text>
+        style={[
+          styles.indicator,
+          {
+            backgroundColor: currentIndex == 2 ? '#00DC99' : '#99DC9950',
+          },
+        ]}></Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  indicator: {
+    width: 20,
+    height: 5,
+    marginRight: 4,
+    borderRadius: 10,
+  },
+});

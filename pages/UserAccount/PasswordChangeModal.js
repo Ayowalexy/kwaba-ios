@@ -6,11 +6,11 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Dimensions
+  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-const widthtouse=Dimensions.get('window').width;
+const widthtouse = Dimensions.get('window').width;
 
 export default function PasswordChangeModal(props) {
   const {
@@ -19,11 +19,10 @@ export default function PasswordChangeModal(props) {
     onConfirm,
     oldpassword,
     setoldpassword,
-    newpassword, 
+    newpassword,
     setnewpassword,
     confirmnewpassword,
-    setconfirmnewpassword
-    
+    setconfirmnewpassword,
   } = props;
   return (
     <View>
@@ -32,9 +31,7 @@ export default function PasswordChangeModal(props) {
         transparent={true}
         visible={visible}
         onRequestClose={onRequestClose}
-         style={{borderTopLeftRadius: 30,
-            borderTopRightRadius: 30,}}
-        >
+        style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <View
@@ -43,53 +40,56 @@ export default function PasswordChangeModal(props) {
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                marginBottom: 10,
               }}>
               <Text
                 style={{
                   color: '#2A286A',
                   fontFamily: 'CircularStd',
                   fontWeight: 'bold',
-                  fontSize: 18,
-                  lineHeight: 19,
+                  fontSize: 16,
+                  // lineHeight: 19,
                 }}>
-                Change Password.
+                Change Password
               </Text>
               <Icon
                 onPress={onRequestClose}
                 name="close-outline"
-                size={30}
+                size={25}
                 color="#465969"
               />
             </View>
 
             <TextInput
-              style={[styles.textInput, {marginTop: 18}]}
-              placeholder="old password"
+              style={[styles.textInput]}
+              placeholder="Old Password"
               placeholderTextColor="#ADADAD"
               value={oldpassword}
               onChangeText={(text) => setoldpassword(text)}
             />
 
             <TextInput
-              style={[styles.textInput, {marginTop: 18}]}
-              placeholder="New password"
+              style={[styles.textInput]}
+              placeholder="New Password"
               placeholderTextColor="#ADADAD"
               value={newpassword}
               onChangeText={(text) => setnewpassword(text)}
             />
 
             <TextInput
-              style={[styles.textInput, {marginTop: 18}]}
-              placeholder="Confirm new password"
+              style={[styles.textInput]}
+              placeholder="Retype New Password"
               placeholderTextColor="#ADADAD"
               value={confirmnewpassword}
               onChangeText={(text) => setconfirmnewpassword(text)}
             />
-            
+
             <TouchableOpacity
               onPress={onConfirm}
               style={[styles.btn, {backgroundColor: '#2A286A'}]}>
-              <Text style={{color: 'white'}}>UPDATE PASSWORD</Text>
+              <Text style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
+                UPDATE PASSWORD
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -105,49 +105,43 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    
   },
   modalView: {
-    top: 50,
-    height: 500,
+    width: '100%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     overflow: 'hidden',
-    padding: 35,
-    paddingTop: 15,
-    shadowColor: '#BFBFBF',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 6,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    position: 'absolute',
+    bottom: 0,
   },
   btn: {
-    width: widthtouse*0.85,
-    height: 70,
+    width: '100%',
+    padding: 20,
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
     fontFamily: 'CircularStd-Medium',
-    fontWeight: '600',
+    fontWeight: 'bold',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 10,
   },
   textInput: {
-    width: widthtouse*0.85,
-    height: 70,
-    borderRadius: 10,
-    padding: 16,
+    width: '100%',
+    borderRadius: 5,
+    paddingVertical: 15,
+    paddingHorizontal: 20,
     fontSize: 14,
     fontFamily: 'CircularStd-Medium',
     fontWeight: '600',
-    borderColor: '#ADADAD',
+    borderColor: '#EAEAEA',
     borderWidth: 1,
+    marginTop: 10,
+    // elevation: 1
   },
   textStyle: {
     color: 'white',

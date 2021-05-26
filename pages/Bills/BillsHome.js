@@ -21,31 +21,33 @@ const BillsHome = ({navigation}) => {
       image: icons.electricity,
       cardTitle: 'Electricity',
       cardSubTitle: 'Pay for your electricity easily',
-      onClickFunction: function openCardAndBank() {},
+      // onClickFunction: function openCardAndBank() {},
     },
     {
       image: icons.cabletv,
       cardTitle: 'Cable TV',
       cardSubTitle: 'Keep the show on, pay easily',
-      onClickFunction: function openCardAndBank() {},
+      // onClickFunction: function openCardAndBank() {
+      //   navigation.navigate('CableTv');
+      // },
     },
     {
       image: icons.internetsub,
       cardTitle: 'Internet subscription',
       cardSubTitle: 'Pay your internet subscription',
-      onClickFunction: function openCardAndBank() {},
+      // onClickFunction: function openCardAndBank() {},
     },
     {
       image: icons.waste,
       cardTitle: 'Waste',
       cardSubTitle: 'Sort out your waste bill',
-      onClickFunction: function openCardAndBank() {},
+      // onClickFunction: function openCardAndBank() {},
     },
     {
       image: icons.water,
       cardTitle: 'Water',
       cardSubTitle: 'Keep water flowing, pay easily',
-      onClickFunction: function openCardAndBank() {},
+      // onClickFunction: function openCardAndBank() {},
     },
   ];
   return (
@@ -93,14 +95,15 @@ const BillsHome = ({navigation}) => {
                 marginBottom: 10,
                 borderRadius: 10,
                 justifyContent: 'space-between',
-                padding: 10,
-                paddingLeft: 20,
-                paddingRight: 20,
+                paddingVertical: 15,
+                paddingHorizontal: 10,
                 alignItems: 'center',
+                borderWidth: 1,
+                borderColor: '#EAEAEA',
               }}
               key={index}
               onPress={() => {
-                value.onClickFunction();
+                navigation.navigate('CableTv', {name: value.cardTitle});
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
@@ -172,9 +175,10 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     // maxHeight: 178,
     backgroundColor: '#2A286A',
-    borderBottomLeftRadius: 27,
-    borderBottomRightRadius: 27,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
     padding: 20,
+    paddingBottom: 40,
     overflow: 'hidden',
     // paddingLeft: 20,
     // paddingTop: 20,
@@ -182,10 +186,10 @@ const styles = StyleSheet.create({
   headerMainText: {
     // marginLeft: 16,
     color: COLORS.yellow,
-    fontFamily: 'CircularStd-bold',
+    fontFamily: 'CircularStd',
     fontSize: 25,
     fontWeight: 'bold',
-    marginTop: 20,
+    marginTop: 10,
   },
   headertext: {
     width: '70%',
@@ -198,7 +202,7 @@ const styles = StyleSheet.create({
   headerImage: {
     position: 'absolute',
     right: -30,
-    bottom: -20,
+    bottom: -40,
     flex: 1,
     height: 150,
     width: 200,

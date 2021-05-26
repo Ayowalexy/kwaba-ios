@@ -28,6 +28,8 @@ export default function Screen2({navigation}) {
     setDate(currentDate);
   };
 
+  console.log('Moment:', new Date().toISOString());
+
   const handleNavigation = () => {
     try {
       let chosenDuration =
@@ -187,7 +189,7 @@ export default function Screen2({navigation}) {
             paddingRight: 10,
             color: '#465969',
           }}>
-          {new Date(date.toISOString()).toDateString().slice(4)}
+          {startOption && new Date(date.toISOString()).toDateString().slice(4)}
         </Text>
         {showDate && (
           <DateTimePicker
