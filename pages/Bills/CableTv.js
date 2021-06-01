@@ -21,8 +21,10 @@ const CableTv = ({navigation, route}) => {
         color={COLORS.primary}
       />
 
-      <View style={{paddingHorizontal: 20, color: COLORS.primary}}>
-        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{name}</Text>
+      <View style={{paddingHorizontal: 20}}>
+        <Text style={{fontSize: 18, fontWeight: 'bold', color: COLORS.primary}}>
+          {name}
+        </Text>
 
         <TouchableOpacity
           style={styles.customInput}

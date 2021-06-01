@@ -33,18 +33,19 @@ export default function SignUp({navigation}) {
   const [gender, setGender] = useState('female');
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
+  const [valid, setValid] = useState([false, '']);
 
-  const toastConfig = {
-    success: ({text1, props, ...rest}) => (
-      <View style={{height: 60, width: '100%', backgroundColor: 'pink'}}>
-        <Text>{text1}</Text>
-        <Text>{props.guid}</Text>
-      </View>
-    ),
-    error: () => {},
-    info: () => {},
-    any_custom_type: () => {},
-  };
+  // const toastConfig = {
+  //   success: ({text1, props, ...rest}) => (
+  //     <View style={{height: 60, width: '100%', backgroundColor: 'pink'}}>
+  //       <Text>{text1}</Text>
+  //       <Text>{props.guid}</Text>
+  //     </View>
+  //   ),
+  //   error: () => {},
+  //   info: () => {},
+  //   any_custom_type: () => {},
+  // };
 
   const handlePasswordCheck = (text) => {
     // if (text !== password) {
@@ -78,6 +79,9 @@ export default function SignUp({navigation}) {
       return false;
     }
   };
+
+  let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+
   const handleSubmit = async () => {
     const data = {
       firstname: firstname,
@@ -91,15 +95,18 @@ export default function SignUp({navigation}) {
         'Missing inputs, please fill out all fields',
         ToastAndroid.LONG,
         ToastAndroid.CENTER,
-        // 100,
-        // 100,
       );
+      setValid([false, 'All fields are required']);
+      console.log(valid[0]);
     } else {
       //start spinner
+      setValid(true, '');
+      console.log(valid);
       setSpinner(true);
       const res = await signUp(data);
       if (res.status == 201) {
         //stop spinner
+        setValid(true, '');
         setSpinner(false);
 
         await AsyncStorage.setItem('authData', res.data.authData);
@@ -113,13 +120,15 @@ export default function SignUp({navigation}) {
       } else {
         setSpinner(false);
         if (res == 'Request failed with status code 409') {
-          Alert.alert('Request Failed', 'Email is already taken', [
-            {text: 'Ok'},
-          ]);
-        } else
-          Alert.alert('Request Failed', 'An error occurred, please retry', [
-            {text: 'Ok'},
-          ]);
+          setValid([false, 'Email is already taken']);
+        } else if (password !== confirmPassword)
+          setValid([false, 'Password do not match']);
+        else if (reg.test(email) === false) {
+          // console.log('Email is Not Correct');
+          // this.setState({email: text});
+          // return false;
+          setValid([false, 'Email is invalid']);
+        } else setValid([false, 'Invalid input value']);
       }
     }
   };
@@ -229,6 +238,15 @@ export default function SignUp({navigation}) {
             ]}>
             Hi, let's set you up
           </Text>
+          {!valid[0] && (
+            <View
+              style={{
+                paddingHorizontal: 20,
+                marginTop: 5,
+              }}>
+              <Text style={{color: 'pink'}}>{valid[1]}</Text>
+            </View>
+          )}
           <TextInput
             style={designs.textField}
             placeholder="First Name"

@@ -95,6 +95,7 @@ import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
 import {View, Text} from 'react-native';
 import {COLORS} from './util/index';
+import {signIn} from './util/icons';
 
 const Stack = createStackNavigator();
 
@@ -144,6 +145,10 @@ const App = () => {
     any_custom_type: () => {},
   };
 
+  // if (!store2.token) {
+  //   return <Login />;
+  // }
+
   return (
     <>
       <NavigationContainer>
@@ -151,10 +156,8 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'ApplicationProgress'}>
-          initialRouteName={'Welcome'}>
-          {/* {!store2.isLoggedIn && store2.userToken == '' ? (    */}
-
+          // initialRouteName={'SignUp'}
+        >
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
@@ -170,17 +173,9 @@ const App = () => {
                 component={VerifyNumber}></Stack.Screen>
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
               <Stack.Screen name="Login" component={Login}></Stack.Screen>
-              {/* <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen> */}
             </>
           ) : (
             <>
-              {/* <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
-              <Stack.Screen
-                name="VerifyNumber"
-                component={VerifyNumber}></Stack.Screen>
-              <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
-              <Stack.Screen name="Login" component={Login}></Stack.Screen> */}
-
               <Stack.Screen
                 name="Home"
                 component={BottomNavigator}></Stack.Screen>

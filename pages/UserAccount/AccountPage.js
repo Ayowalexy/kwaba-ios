@@ -106,49 +106,49 @@ const AccountPage = ({navigation}) => {
 
   const accountTabsAndSettings = [
     {
-      iconName: 'money',
+      iconName: 'cash-outline',
       tabTitle: 'Withdraw',
       onClickFunction: function openCardAndBank() {
         setWithrawModalVisible(true);
       },
     },
     {
-      iconName: 'credit-card',
+      iconName: 'card-outline',
       tabTitle: 'Card and Bank',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('CardAndBankDetails');
       },
     },
     {
-      iconName: 'share-alt',
+      iconName: 'share-social-outline',
       tabTitle: 'Referral',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('Referral');
       },
     },
     {
-      iconName: 'unlock-alt',
+      iconName: 'lock-open-outline',
       tabTitle: 'Change Password',
       onClickFunction: function openCardAndBank() {
         setModalVisible(true);
       },
     },
     {
-      iconName: 'folder-open',
+      iconName: 'folder-open-outline',
       tabTitle: 'Documents',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('UploadDocumentsList');
       },
     },
     {
-      iconName: 'file',
+      iconName: 'document-outline',
       tabTitle: 'Legals and FAQs',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('Aboutus');
       },
     },
     {
-      iconName: 'info-circle',
+      iconName: 'information',
       tabTitle: 'About us',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('Aboutus');
@@ -281,6 +281,7 @@ const AccountPage = ({navigation}) => {
                 }}
                 source={images.ellipse96}
               />
+              {/* <Text>JD</Text> */}
               <View style={{marginTop: 0, width: 120}}>
                 <Text
                   numberOfLines={1}
@@ -447,19 +448,21 @@ const AccountPage = ({navigation}) => {
                     paddingBottom: 20,
                   }}>
                   <View
-                    style={{justifyContent: 'center', flexDirection: 'row'}}>
-                    <IconFA
+                    style={{
+                      justifyContent: 'center',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
                       name={value.iconName}
-                      size={18}
+                      size={23}
                       style={{
                         color: COLORS.light,
                         width: 40,
-
-                        // marginLeft: 10,
-                        // marginTop: 10,
-                        // borderWidth: 1,
+                        // borderBottomWidth: 1,
                       }}
                     />
+
                     <Text
                       style={[
                         FONTS.h3FontStyling,

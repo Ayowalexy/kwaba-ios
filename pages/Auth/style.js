@@ -88,6 +88,9 @@ const designs = StyleSheet.create({
     fontWeight: '900',
     // elevation: 1,
     color: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
   },
   codeInputContainer: {
     display: 'flex',
