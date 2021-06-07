@@ -6,26 +6,33 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import ComingSoon from '../../components/ComingSoon';
+
 const status = [
   {
     title: 'Salary Earner',
-    body: 'Access instant loans to top up your rent if you are falling short',
-    img: '',
+    body:
+      'Select if you are employed by a private company, government agency or NGO',
+    img: require('../../assets/images/rent_now_pay_later_img_2.png'),
   },
   {
     title: 'Business Owner',
-    body: 'Access instant loans to top up your rent if you are falling short',
-    img: '',
+    body:
+      'Select if your are an entrepreneur running a business offline or online',
+    img: require('../../assets/images/rent_now_pay_later_img_1.png'),
   },
 ];
 
 const EmploymentStatus = ({navigation}) => {
+  const [showModal, setShowModal] = useState(false);
   return (
     <View style={styles.container}>
+      {/* <StatusBar backgroundColor="#f2f2f2" /> */}
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
@@ -41,9 +48,13 @@ const EmploymentStatus = ({navigation}) => {
         <View>
           {status.map(({title, body, img}, index) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('RentalLoanForm1')}
+              onPress={() =>
+                index == 0
+                  ? navigation.navigate('RentalLoanForm1')
+                  : setShowModal(!showModal)
+              }
               key={index}
-              disabled={index == 1 ? true : false}
+              // disabled={index == 1 ? true : false}
               style={styles.card}>
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{title}</Text>
@@ -51,11 +62,24 @@ const EmploymentStatus = ({navigation}) => {
               </View>
               <View style={styles.cardImageContainer}>
                 {/* img goes here */}
+                <Image
+                  source={img}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                  }}
+                />
               </View>
             </TouchableOpacity>
           ))}
         </View>
       </ScrollView>
+
+      <ComingSoon
+        onRequestClose={() => setShowModal(!showModal)}
+        visible={showModal}
+        name="business"
+      />
     </View>
   );
 };
@@ -66,6 +90,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 15,
     paddingVertical: 20,
+    backgroundColor: '#fff',
   },
   heading: {
     fontSize: 23,
@@ -78,7 +103,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     marginVertical: 10,
     borderRadius: 10,
-    elevation: 1,
+    elevation: 0.5,
+    borderColor: '#EFEFEF',
+    borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -100,10 +127,10 @@ const styles = StyleSheet.create({
     color: '#ADADAD',
   },
   cardImageContainer: {
-    width: 60,
-    height: 60,
+    width: 70,
+    height: 70,
     backgroundColor: '#46596920',
-    borderRadius: 30,
+    borderRadius: 100,
   },
 });
 

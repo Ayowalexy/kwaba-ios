@@ -110,7 +110,8 @@ const Borrow = ({navigation}) => {
     //   return token;
     // }
 
-    navigation.navigate('EmploymentStatus');
+    // navigation.navigate('EmploymentStatus');
+    navigation.navigate('RentNowPayLaterOnboarding');
   };
 
   // const handleRentalLoanClick=()=> {
@@ -122,17 +123,42 @@ const Borrow = ({navigation}) => {
   // }
 
   return (
-    <View style={designs.container}>
+    <View style={[designs.container]}>
       <Image
         source={images.borrowSectionBGI}
         style={{
           width: '100%',
           height: '100%',
+          right: 0,
           position: 'absolute',
+          resizeMode: 'cover',
         }}
-        imageStyle={{resizeMode: 'cover'}}
       />
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          padding: 20,
+        }}
+        onPress={() => navigation.goBack()}>
+        <Icon
+          name="arrow-back-outline"
+          size={25}
+          style={{
+            fontWeight: '900',
+          }}
+          color={COLORS.light}
+        />
+      </TouchableOpacity>
+      <ScrollView
+        scrollEnabled
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          flex: 1,
+          justifyContent: 'center',
+        }}>
         <View style={designs.contentView}>
           <View style={designs.textView}>
             <Text style={[FONTS.largeTitleFontStyling, designs.bigText]}>
@@ -149,7 +175,7 @@ const Borrow = ({navigation}) => {
           style={{
             width: '100%',
             // height: 54,
-            flex: 1,
+            // flex: 1,
             // flexDirection: 'column',
             // justifyContent: 'center',
             padding: 20,
@@ -159,7 +185,7 @@ const Borrow = ({navigation}) => {
             activeOpacity={0.7}
             style={[designs.button]}>
             <View style={designs.buttonInnerView}>
-              <Text style={designs.buttonText}>Rent Top-up</Text>
+              <Text style={designs.buttonText}>Rent Now Pay Later</Text>
               <Icon
                 name="arrow-forward-outline"
                 size={20}
@@ -170,7 +196,7 @@ const Borrow = ({navigation}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('EmergencyLoanHome')}
+            onPress={() => navigation.navigate('EmergencyFundOnboarding')}
             style={designs.button}>
             <View style={designs.buttonInnerView}>
               <Text style={designs.buttonText}>Emergency Funds</Text>

@@ -6,6 +6,8 @@ import {NavigationContainer} from '@react-navigation/native';
 import {store} from './redux/store';
 import {Provider} from 'react-redux';
 
+import SplashScreen from 'react-native-splash-screen';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Welcome from './pages/Welcome/welcome';
@@ -37,8 +39,10 @@ import {
   BuddySavingDashBoard,
 } from './pages/Savings/index';
 import Borrow from './pages/Borrow/Borrow';
+import RentNowPayLaterOnboarding from './pages/Borrow/RentNowPayLaterOnboarding';
 import EmploymentStatus from './pages/Borrow/EmploymentStatus';
 import RentalLoanForm1 from './pages/Borrow/RentalLoanForm1';
+import RentalLoanFormDoc from './pages/Borrow/RentalLoanFormDoc';
 import RentalLoanForm2 from './pages/Borrow/RentalLoanForm2';
 import RentalLoanForm3 from './pages/Borrow/RentalLoanForm3';
 import UploadBankStatement from './pages/Borrow/UploadBankStatement';
@@ -58,6 +62,7 @@ import FileUploadTest from './pages/Borrow/FileUploadTest';
 import RentalLoanOfferTest from './pages/Borrow/RentalLoanOfferTest';
 import BottomNavigator from './pages/Navigation/BottomNavigation';
 import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
+import EmergencyFundOnboarding from './pages/Borrow/EmergencyLoan/EmergencyFundOnboarding';
 import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
 import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
 import Account from './pages/UserAccount/Account';
@@ -97,12 +102,17 @@ import {View, Text} from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
 
+import NetInfo from '@react-native-community/netinfo';
+
+import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 const Stack = createStackNavigator();
 
 const App = () => {
   const dispatch = useDispatch();
   const [userToken, setUserToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isOffline, setOfflineStatus] = useState(false);
 
   const store2 = useSelector((state) => state.loginReducer);
 
@@ -112,14 +122,30 @@ const App = () => {
       const token = userData != null ? JSON.parse(userData).token : null;
 
       dispatch(setLoginState(JSON.parse(userData)));
-      console.log('here is the store', store2.token);
+      // console.log('here is the store', store2.token);
       const loggedInStatus =
         userData != null ? JSON.parse(userData).isLoggedIn : false;
       setIsLoggedIn(loggedInStatus);
       setUserToken(token);
+
+      // console.log('USERDATA: ', userData);
+      // if (userData) SplashScreen.hide();
     };
     getuser();
   }, [store2.token]);
+
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+
+  useEffect(() => {
+    const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+      const offline = !(state.isConnected && state.isInternetReachable);
+      setOfflineStatus(offline);
+    });
+
+    return () => removeNetInfoSubscription();
+  }, []);
 
   logCurrentStorage();
 
@@ -151,28 +177,50 @@ const App = () => {
 
   return (
     <>
+      {isOffline && (
+        <View
+          style={{
+            padding: 5,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: COLORS.primary,
+            flexDirection: 'row',
+          }}>
+          <MCIcon
+            name="signal-off"
+            style={{color: COLORS.white, marginRight: 5, fontSize: 20}}
+          />
+          <Text style={{color: COLORS.white, fontWeight: '900', fontSize: 12}}>
+            No Internet Connection
+          </Text>
+        </View>
+      )}
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'SignUp'}
+          // initialRouteName={
+          //   !store2.isLoggedIn && store2.token == '' ? 'Login' : 'Home'
+          // }
+          // initialRouteName={'SoloSaving3'}
         >
+          {/* {!isLoggedIn ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
                 name="Onboarding"
                 component={Onboarding}></Stack.Screen>
-              <Stack.Screen
-                name="ForgotPassword"
-                component={ForgotPassword}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen
                 name="VerifyNumber"
                 component={VerifyNumber}></Stack.Screen>
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
-              <Stack.Screen name="Login" component={Login}></Stack.Screen>
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPassword}></Stack.Screen>
             </>
           ) : (
             <>
@@ -236,11 +284,17 @@ const App = () => {
 
               <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
               <Stack.Screen
+                name="RentNowPayLaterOnboarding"
+                component={RentNowPayLaterOnboarding}></Stack.Screen>
+              <Stack.Screen
                 name="EmploymentStatus"
                 component={EmploymentStatus}></Stack.Screen>
               <Stack.Screen
                 name="RentalLoanForm1"
                 component={RentalLoanForm1}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanFormDoc"
+                component={RentalLoanFormDoc}></Stack.Screen>
               <Stack.Screen
                 name="RentalLoanThirdPartyConnection"
                 component={RentalLoanThirdPartyConnection}></Stack.Screen>
@@ -325,6 +379,9 @@ const App = () => {
               <Stack.Screen
                 name="EmergencyLoanHome"
                 component={EmergencyLoanHome}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyFundOnboarding"
+                component={EmergencyFundOnboarding}></Stack.Screen>
               <Stack.Screen
                 name="EmergencyLoanRequestDashBoard"
                 component={EmergencyLoanRequestDashBoard}></Stack.Screen>

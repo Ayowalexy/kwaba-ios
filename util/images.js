@@ -87,6 +87,8 @@ const airtime2 = require('../assets/images/airtime-airtel.png');
 const airtime3 = require('../assets/images/airtime-glo.png');
 const airtime4 = require('../assets/images/airtime-9mobile.png');
 
+const rentNowPayLaterOnboarding = require('../assets/images/rentNowPayLaterOnboarding.png');
+
 export {
   logo,
   applicationReview,
@@ -175,4 +177,5 @@ export {
   airtime2,
   airtime3,
   airtime4,
+  rentNowPayLaterOnboarding,
 };

@@ -133,7 +133,7 @@ export default function Screen2({navigation}) {
           <TouchableOpacity
             onPress={() => {
               setStartOption('today');
-              setDate(moment().format());
+              setDate(moment().toDate());
             }}
             style={{
               display: 'flex',
@@ -199,19 +199,24 @@ export default function Screen2({navigation}) {
             mode="date"
             is24Hour={true}
             display="default"
+            minimumDate={moment().toDate()}
           />
         )}
-        <Text style={[designs.boldText, {marginTop: 26}]}>
-          How much do you want to save today?
-        </Text>
-        <TextInput
-          placeholder="Amount"
-          placeholderTextColor="#BFBFBF"
-          style={designs.textInput}
-          keyboardType="number-pad"
-          value={instantSaving}
-          onChangeText={(text) => setInstantSaving(text)}
-        />
+        {startOption == 'today' && (
+          <>
+            <Text style={[designs.boldText, {marginTop: 26}]}>
+              How much do you want to save today?
+            </Text>
+            <TextInput
+              placeholder="Amount"
+              placeholderTextColor="#BFBFBF"
+              style={designs.textInput}
+              keyboardType="number-pad"
+              value={instantSaving}
+              onChangeText={(text) => setInstantSaving(text)}
+            />
+          </>
+        )}
         <TouchableOpacity onPress={handleNavigation} style={[designs.button]}>
           <Text
             style={{

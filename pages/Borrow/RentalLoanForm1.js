@@ -15,9 +15,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import NumberFormat from '../../components/NumberFormat';
+
 const RentalLoanForm1 = ({navigation}) => {
   const [accommodationStatus, setAccommodationStatus] = useState('');
   const [salaryAmount, setSalaryAmount] = useState('');
+  const [requestAmount, setRequestAmount] = useState('');
   const [progress, setProgress] = useState(33);
 
   const isError = () => {
@@ -36,11 +39,11 @@ const RentalLoanForm1 = ({navigation}) => {
       accomodationstatus: accommodationStatus,
       salary_amount: salaryAmount,
     };
-    if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
 
     // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
     // navigation.navigate('RentalLoanThirdPartyConnection')
@@ -52,7 +55,8 @@ const RentalLoanForm1 = ({navigation}) => {
     );
     // navigation.navigate('RentalLoanThirdPartyConnection');
 
-    navigation.navigate('RentalLoanForm2');
+    navigation.navigate('RentalLoanFormDoc');
+    // navigation.navigate('RentalLoanForm2');
 
     // try {
     //   dispatch(soloSaving(data));
@@ -88,7 +92,7 @@ const RentalLoanForm1 = ({navigation}) => {
                 fontSize: 20,
               },
             ]}>
-            Rent Top-up
+            Rent Now, Pay Later
           </Text>
           <View style={designs.contentWrapper}>
             <View style={designs.formHeader}>
@@ -238,20 +242,33 @@ const RentalLoanForm1 = ({navigation}) => {
                 FONTS.body1FontStyling,
                 {
                   color: COLORS.dark,
-                  marginBottom: 8,
-                  // fontWeight: 'bold',
+                  marginTop: 8,
+                  fontSize: 14,
+                },
+              ]}>
+              How much is your rent request amount?{' '}
+            </Text>
+
+            <NumberFormat
+              value={salaryAmount}
+              onChangeText={(text) => setSalaryAmount(text)}
+            />
+
+            <Text
+              style={[
+                FONTS.body1FontStyling,
+                {
+                  color: COLORS.dark,
+                  marginTop: 8,
                   fontSize: 14,
                 },
               ]}>
               How much do you earn monthly?{' '}
             </Text>
-            <TextInput
-              style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
-              placeholder="Amount"
-              keyboardType="number-pad"
-              placeholderTextColor={COLORS.grey}
-              value={salaryAmount}
-              onChangeText={(text) => setSalaryAmount(text)}
+
+            <NumberFormat
+              value={requestAmount}
+              onChangeText={(text) => setRequestAmount(text)}
             />
           </View>
 

@@ -161,7 +161,7 @@ export default function VerifyNumber({navigation, route}) {
         padding: 15,
         // justifyContent: 'center',
       }}>
-      <View style={{alignItems: 'center', marginBottom: 20, marginTop: 50}}>
+      <View style={{alignItems: 'center', marginBottom: 0, marginTop: 50}}>
         <Image
           style={[designs.image, {marginTop: 0}]}
           source={icons.kwabalogocol}
@@ -172,7 +172,7 @@ export default function VerifyNumber({navigation, route}) {
         Verify your phone number
       </Text>
       <Text style={[designs.body, {textAlign: 'center', marginTop: 10}]}>
-        Please enter verification code sent {'\n'} to your number
+        Please enter verification code sent to {'\n'} your number
       </Text>
       <CodeField
         ref={ref}
@@ -194,7 +194,7 @@ export default function VerifyNumber({navigation, route}) {
           </View>
         )}
       />
-      {value.length != 4 && (
+      {/* {value.length != 4 && (
         <View
           style={{
             paddingHorizontal: 20,
@@ -202,7 +202,7 @@ export default function VerifyNumber({navigation, route}) {
           }}>
           <Text style={{color: 'pink'}}>All fields are required</Text>
         </View>
-      )}
+      )} */}
 
       {error && (
         <View

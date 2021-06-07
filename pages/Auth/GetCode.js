@@ -61,7 +61,7 @@ export default function GetCode({navigation}) {
         padding: 15,
         justifyContent: 'center',
       }}>
-      <View style={{alignItems: 'center', marginBottom: 10, marginTop: 0}}>
+      <View style={{alignItems: 'center', marginBottom: 0, marginTop: 0}}>
         <Image
           style={[designs.image, {marginTop: 0}]}
           source={icons.kwabalogocol}
@@ -69,10 +69,10 @@ export default function GetCode({navigation}) {
         />
       </View>
       <Text style={[designs.heading, {textAlign: 'center', color: '#465969'}]}>
-        Enter your number
+        Enter your phone number
       </Text>
       <Text style={[designs.body, {textAlign: 'center', marginTop: 10}]}>
-        We will send a code to verify {'\n'} your number
+        We will send a code to verify your number
       </Text>
 
       <PhoneInput
@@ -86,7 +86,7 @@ export default function GetCode({navigation}) {
           setFormattedValue(text);
         }}
         renderDropdownImage={<Icon name="chevron-down" />}
-        autoFocus
+        // autoFocus
         containerStyle={{
           width: '100%',
           height: 60,
@@ -112,7 +112,7 @@ export default function GetCode({navigation}) {
           margin: 0,
         }}
       />
-      {!valid && (
+      {/* {!valid && (
         <View
           style={{
             paddingHorizontal: 20,
@@ -120,7 +120,7 @@ export default function GetCode({navigation}) {
           }}>
           <Text style={{color: 'pink'}}>Invalid phone number</Text>
         </View>
-      )}
+      )} */}
       <Spinner visible={spinner} animation="fade" size="large" />
       <TouchableOpacity
         onPress={handleSubmit}

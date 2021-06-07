@@ -112,7 +112,7 @@ export default function ConfirmModal(props) {
                 CONFIRM
               </Text>
             </TouchableOpacity>
-            <PayWithFlutterwave />
+            {/* <PayWithFlutterwave /> */}
           </View>
         </View>
       </Modal>

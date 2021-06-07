@@ -41,17 +41,19 @@ const Screen2 = ({navigation}) => {
   const dateFormatted = moment(date).format('YYYY-MM-DD');
 
   const handleNavigation = async () => {
-    const data = {
-      bvn,
-      dob: dateFormatted,
-    };
-    if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
-    await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
-    navigation.navigate('CompleteProfile5');
+    // const data = {
+    //   bvn,
+    //   dob: dateFormatted,
+    // };
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
+    // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
+    // navigation.navigate('CompleteProfile5');
+
+    console.log(dateFormatted, bvn);
 
     // try {
     //   dispatch(soloSaving(data));

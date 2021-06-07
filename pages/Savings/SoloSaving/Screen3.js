@@ -16,9 +16,8 @@ import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+import CardAndBankModal from './CardAndBankModal';
+import AddCardModal from '../../../components/addCardModal';
 
 export default function Screen3({navigation}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -37,11 +36,14 @@ export default function Screen3({navigation}) {
   };
 
   const [modal, setModal] = useState(false);
+  const [addCardModal, setAddCardModal] = useState(false);
 
   const addCardAndBankModal = () => {
-    console.log('Adding card and bank...');
+    // console.log('Adding card and bank...');
     setModal(true);
-    console.log(modal);
+    // navigation.navigate('SoloSaving4');
+    // setAddCardModal(true);
+    // console.log(modal);
   };
 
   return (
@@ -78,7 +80,8 @@ export default function Screen3({navigation}) {
                   lineHeight: 23,
                   fontFamily: 'Circular Std',
                 }}>
-                {new Date().getFullYear()} Rent
+                {/* {new Date().getFullYear()} Rent */}
+                {store.savings_title}
               </Text>
             </View>
             <Image
@@ -86,42 +89,6 @@ export default function Screen3({navigation}) {
               source={images.maskGroup15}
             />
           </View>
-          {/* <View style={designs.data}>
-            <View style={{borderWidth: 1, justifyContent: 'space-between'}}>
-              <Text style={designs.key}>
-                Amount to save {store.savings_frequency}
-              </Text>
-              <Text style={designs.value}>₦{store.savings_amount}</Text>
-            </View>
-            <View style={{marginLeft: 0}}>
-              <Text style={designs.key}>Target Amount</Text>
-              <Text style={designs.value}>₦{savings_target}</Text>
-            </View>
-          </View>
-          <View style={{marginTop: 16, paddingLeft: 8}}>
-            <Text style={designs.key}>Amount to save today</Text>
-            <Text style={designs.value}>₦{store.instant_saved_amount}</Text>
-          </View>
-          <View style={designs.data}>
-            <View>
-              <Text style={designs.key}>Frequency</Text>
-              <Text style={designs.value}>{store.savings_frequency}</Text>
-            </View>
-            <View style={{marginLeft: 165}}>
-              <Text style={designs.key}>Start Date</Text>
-              <Text style={designs.value}>{savings_start_date}</Text>
-            </View>
-          </View>
-          <View style={designs.data}>
-            <View>
-              <Text style={designs.key}>End Date</Text>
-              <Text style={designs.value}>{savings_end_date}</Text>
-            </View>
-            <View style={{marginLeft: 125}}>
-              <Text style={designs.key}>Interest Rate</Text>
-              <Text style={designs.value}>{locked ? '8%' : '7%'}</Text>
-            </View>
-          </View> */}
           <View
             style={{
               display: 'flex',
@@ -130,13 +97,13 @@ export default function Screen3({navigation}) {
               justifyContent: 'space-between',
               marginTop: 20,
               alignItems: 'center',
-              paddingHorizontal: 20,
+              paddingHorizontal: 10,
               // paddingLeft: 20,
               // borderWidth: 1,
             }}>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>
-                Amount to save {store.savings_frequency}
+                Amount To Save {store.savings_frequency}
               </Text>
               <Text style={designs.value}>
                 ₦{store.savings_amount || ' 0.00'}
@@ -144,7 +111,9 @@ export default function Screen3({navigation}) {
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Target Amount</Text>
-              <Text style={designs.value}>₦{savings_target || ' 0.00'}</Text>
+              <Text style={designs.value}>
+                ₦{store.savings_target_amount || ' 0.00'}
+              </Text>
             </View>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>Frequency</Text>
@@ -160,7 +129,7 @@ export default function Screen3({navigation}) {
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Interest Rate</Text>
-              <Text style={designs.value}>{locked ? '8%' : '7%'}</Text>
+              <Text style={designs.value}>{locked ? '8%' : '7%'} P.A</Text>
             </View>
           </View>
           <View
@@ -265,155 +234,28 @@ export default function Screen3({navigation}) {
               fontSize: 12,
               lineHeight: 30,
             }}>
-            NEXT
+            CONTINUE
           </Text>
         </TouchableOpacity>
       </ScrollView>
 
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <CardAndBankModal
+        onRequestClose={() => setModal(!modal)}
         visible={modal}
-        // onRequestClose={onRequestClose}
-        style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
-        <View
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            fontFamily: 'CircularStd',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            // borderColor: '#f00',
-            // borderWidth: 1,
-          }}>
-          <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              width: '100%',
-              minHeight: 200,
-              backgroundColor: '#fff',
-              borderTopLeftRadius: 10,
-              borderTopRightRadius: 10,
-              padding: 25,
-            }}>
-            <View
-              style={{
-                // width: '100%',
-                // flexDirection: 'row',
-                // justifyContent: 'space-between',
-                // borderWidth: 1,
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-              }}>
-              {store.instant_saved_amount &&
-                store.instant_saved_amount.length > 0 && (
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      width: 260,
-                      color: '#465969',
-                      lineHeight: 25,
-                    }}>
-                    You are about to deposit{' '}
-                    <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
-                      ₦{numberWithCommas(store.instant_saved_amount)}
-                    </Text>{' '}
-                    into your savings plan.
-                  </Text>
-                )}
-              <Icon
-                // onPress={onRequestClose}
-                name="close-outline"
-                size={25}
-                color="#465969"
-              />
-            </View>
+        store={store}
+      />
 
-            <View>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#2A2B6A',
-                  fontWeight: 'bold',
-                  marginVertical: 20,
-                }}>
-                Pay using
-              </Text>
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: 10,
-                  // justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    width: 50,
-                    height: 50,
-                    backgroundColor: '#E0FFF6',
-                    borderRadius: 50,
-                    marginRight: 20,
-
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    source={icons.card}
-                    style={{
-                      width: 15,
-                      height: 15,
-                      // backgroundColor: 'red',
-                      resizeMode: 'contain',
-                    }}
-                  />
-                </View>
-                <View>
-                  <Text style={{fontWeight: 'bold', color: '#465969'}}>
-                    Add Card
-                  </Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginVertical: 10,
-                  // justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    width: 50,
-                    height: 50,
-                    backgroundColor: '#E0FFF6',
-                    borderRadius: 50,
-                    marginRight: 20,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Image
-                    source={icons.bank}
-                    style={{
-                      width: 15,
-                      height: 15,
-                      // backgroundColor: 'red',
-                      resizeMode: 'contain',
-                    }}
-                  />
-                </View>
-                <View>
-                  <Text style={{fontWeight: 'bold', color: '#465969'}}>
-                    Add Bank Account
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <AddCardModal
+        //  onConfirm={addCard}
+        onRequestClose={() => setAddCardModal(!addCardModal)}
+        visible={addCardModal}
+        // cardNumber={cardNumber}
+        // setCardNumber={setCardNumber}
+        // expiryDate={expiryDate}
+        // setExpiryDate={setExpiryDate}
+        // cvv={cvv}
+        // setCVV={setCvv}
+      />
     </View>
   );
 }

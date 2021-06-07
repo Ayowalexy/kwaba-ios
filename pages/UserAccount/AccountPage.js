@@ -12,6 +12,7 @@ import {
   TouchableHighlight,
   Alert,
   Share,
+  StatusBar,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -46,49 +47,31 @@ const AccountPage = ({navigation}) => {
   const [successModal, setSuccessModal] = useState(false);
   const [successModalMessage, setSuccessModalMessage] = useState('');
   const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const store2 = useSelector((state) => state.loginReducer);
 
   const [loanPurpose] = useState([
     {label: 'Household', value: 'Household'},
     {label: 'Personal', value: 'Personal'},
   ]);
-  // const openCardAndBank=()=> {
-  //   try{
-  //    console.log('start')
-  //    navigation.navigate('CardAndBankDetails')
-  //   }catch(error){
-  //     console.log(error)
-  //   }
 
-  // }
+  const [userToken, setUserToken] = useState(null);
 
   const LogOut = async () => {
-    console.log('hello here');
-
-    //await AsyncStorage.removeItem('userData');
-
-    // navigation.navigate('Login');
-
     try {
+      // dispatch(
+      //   setLoginState({
+      //     username: '',
+      //     isLoggedIn: false,
+      //   }),
+      // );
+
       await AsyncStorage.removeItem('userData');
 
-      dispatch(
-        setLoginState({
-          username: '',
-          isLoggedIn: false,
-        }),
-      );
+      console.log('DATA: ', data);
 
-      setTimeout(function () {
-        navigation.navigate('Login');
-      }, 2000);
-      // navigation.navigate('Login');
-
-      // console.log('navigation:', navigation.navigate);
-
-      Alert.alert('Message', 'Logout Sucessfully' + store2.isLoggedIn, [
-        {text: 'Close'},
-      ]);
+      navigation.navigate('Login');
     } catch (error) {}
   };
 
@@ -226,6 +209,8 @@ const AccountPage = ({navigation}) => {
         let {firstname, lastname} = JSON.parse(userData).user;
         let userName = firstname + ' ' + lastname;
         setFullName(userName);
+        setFirstName(firstname);
+        setLastName(lastname);
       }
     };
     getUserData();
@@ -233,6 +218,7 @@ const AccountPage = ({navigation}) => {
 
   return (
     <ScrollView>
+      {/* <StatusBar backgroundColor="#F7F8FD" /> */}
       <View style={{backgroundColor: '#F7F8FD', flex: 1}}>
         <View style={{backgroundColor: '#F7F8FD', marginBottom: 22}}>
           <Text
@@ -269,7 +255,7 @@ const AccountPage = ({navigation}) => {
 
                 padding: 25,
               }}>
-              <Image
+              {/* <Image
                 style={{
                   width: 101,
                   height: 101,
@@ -280,7 +266,22 @@ const AccountPage = ({navigation}) => {
                   // marginBottom: -20,
                 }}
                 source={images.ellipse96}
-              />
+              /> */}
+              <View
+                style={{
+                  width: 90,
+                  height: 90,
+                  borderRadius: 100,
+                  backgroundColor: COLORS.light,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginRight: 20,
+                }}>
+                <Text style={{fontWeight: 'bold', fontSize: 30, color: '#fff'}}>
+                  {firstName.charAt(0)}
+                  {lastName.charAt(0)}
+                </Text>
+              </View>
               {/* <Text>JD</Text> */}
               <View style={{marginTop: 0, width: 120}}>
                 <Text
@@ -360,7 +361,7 @@ const AccountPage = ({navigation}) => {
                 ]}>
                 credit score
               </Text>
-              <View>
+              {/* <View>
                 <TouchableOpacity
                   style={{
                     backgroundColor: COLORS.secondary,
@@ -381,13 +382,26 @@ const AccountPage = ({navigation}) => {
                     65
                   </Text>
                 </TouchableOpacity>
-              </View>
-              <Text
+              </View> */}
+              {/* <Text
                 style={[
                   FONTS.body1FontStyling,
                   {color: COLORS.white, textAlign: 'center', fontSize: 14},
                 ]}>
                 /100
+              </Text> */}
+              <Text
+                style={[
+                  FONTS.body1FontStyling,
+                  {
+                    color: COLORS.white,
+                    textAlign: 'center',
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                    marginHorizontal: 10,
+                  },
+                ]}>
+                N/A
               </Text>
 
               <View style={{flexDirection: 'column', flex: 1}}>
@@ -397,13 +411,13 @@ const AccountPage = ({navigation}) => {
                     {
                       color: COLORS.light,
                       textAlign: 'right',
-                      fontSize: 8,
+                      fontSize: 9,
                       flexShrink: 1,
                       lineHeight: 12,
                     },
                   ]}>
-                  You are doing great, don’t default on your payments to build a
-                  good credi score
+                  You can build your credit score by saving and paying your rent
+                  with Kwaba - coming soon
                 </Text>
               </View>
             </View>
@@ -493,8 +507,8 @@ const AccountPage = ({navigation}) => {
         <View style={{alignSelf: 'center', width: width * 0.9}}>
           <TouchableOpacity
             style={{
-              paddingTop: 10,
-              paddingBottom: 10,
+              paddingTop: 20,
+              paddingBottom: 20,
               paddingLeft: 10,
               paddingRight: 10,
             }}

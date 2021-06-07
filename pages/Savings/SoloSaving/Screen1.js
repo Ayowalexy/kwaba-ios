@@ -18,12 +18,14 @@ export default function Screen1({navigation}) {
   const [activeOption, setActiveOption] = useState('');
   const [frequency, setFrequency] = useState('');
   const [amount, setAmount] = useState(null);
+  const [targetAmount, setTargetAmount] = useState(null);
   const [title, setTitle] = useState('');
 
   const handleNavigation = () => {
     const data = {
       savings_title: title,
       savings_amount: amount,
+      savings_target_amount: targetAmount,
       savings_frequency: frequency,
     };
     try {
@@ -211,6 +213,22 @@ export default function Screen1({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* <Text style={[designs.boldText, {marginTop: 18}]}>
+          How much is your target?
+        </Text>
+        <TextInput
+          placeholder="Target saving amount"
+          placeholderTextColor="#BFBFBF"
+          style={designs.textInput}
+          keyboardType="number-pad"
+          value={targetAmount}
+          onChangeText={(text) => setTargetAmount(text)}
+        /> */}
+
+        <Text style={[designs.boldText, {marginTop: 18}]}>
+          How much is your target?
+        </Text>
         <TextInput
           placeholder="Saving amount"
           placeholderTextColor="#BFBFBF"

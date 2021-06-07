@@ -55,7 +55,7 @@ const designs = StyleSheet.create({
     height: 50,
     // marginLeft: 16,
     // marginTop: 59,
-    marginBottom: 10,
+    // marginBottom: 10,
     // backgroundColor: '#f00',
   },
   heading: {
@@ -125,6 +125,14 @@ const designs = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 15,
     color: '#BFBFBF',
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
   },
 });
 export default designs;
