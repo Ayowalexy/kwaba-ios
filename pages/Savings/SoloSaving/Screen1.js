@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -17,14 +17,19 @@ export default function Screen1({navigation}) {
   const dispatch = useDispatch();
   const [activeOption, setActiveOption] = useState('');
   const [frequency, setFrequency] = useState('');
-  const [amount, setAmount] = useState(null);
+  // const [amount, setAmount] = useState(null);
   const [targetAmount, setTargetAmount] = useState(null);
   const [title, setTitle] = useState('');
+
+  const numberWithCommas = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  };
 
   const handleNavigation = () => {
     const data = {
       savings_title: title,
-      savings_amount: amount,
+      savings_activeOption: activeOption,
+      // savings_amount: amount,
       savings_target_amount: targetAmount,
       savings_frequency: frequency,
     };
@@ -230,12 +235,13 @@ export default function Screen1({navigation}) {
           How much is your target?
         </Text>
         <TextInput
-          placeholder="Saving amount"
+          placeholder="Target amount"
           placeholderTextColor="#BFBFBF"
           style={designs.textInput}
           keyboardType="number-pad"
-          value={amount}
-          onChangeText={(text) => setAmount(text)}
+          value={targetAmount}
+          onChangeText={(text) => setTargetAmount(text)}
+          onBlur={(text) => console.log(text.value)}
         />
 
         <TouchableOpacity onPress={handleNavigation} style={designs.button}>

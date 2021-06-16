@@ -10,6 +10,7 @@ import {
   Button,
   Share,
   ScrollView,
+  ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
@@ -30,6 +31,7 @@ const Referral = () => {
   const copyToClipboard = async () => {
     const referral_code = await getReferralCode();
     Clipboard.setString(referral_code);
+    ToastAndroid.show('Referral code copied', ToastAndroid.SHORT);
   };
 
   const getReferralCode = async () => {
@@ -64,25 +66,28 @@ const Referral = () => {
   };
   return (
     <ScrollView
-      style={[styles.container, {flex: 1, backgroundColor: '#F7F8FD'}]}>
+      style={[
+        styles.container,
+        {flex: 1, backgroundColor: '#F7F8FD', backgroundColor: '#9D98EC'},
+      ]}>
       <View
         style={{
           flex: 1,
           flexDirection: 'column',
           // margin: 0,
-          backgroundColor: '#9D98EC',
-          borderRadius: 20,
+          // backgroundColor: '#9D98EC',
+          // borderRadius: 20,
           alignItems: 'center',
           padding: 20,
           paddingTop: 20,
           paddingBottom: 20,
-          transform: [{scaleX: 0.95}, {scaleY: 0.98}],
+          // transform: [{scaleX: 0.95}, {scaleY: 0.98}],
         }}>
         <Image
           source={images.referhomeimage}
           style={{
-            width: 320,
-            height: 260,
+            width: '100%',
+            height: 300,
             marginTop: 45,
             resizeMode: 'contain',
             alignSelf: 'center',
@@ -104,7 +109,7 @@ const Referral = () => {
               textAlign: 'center',
               // marginLeft: 40,
               // marginRight: 40,
-              fontSize: 14,
+              fontSize: 12,
               lineHeight: 20,
               paddingHorizontal: 40,
             },
@@ -144,7 +149,7 @@ const Referral = () => {
               alignSelf: 'flex-start',
               marginTop: 20,
               fontSize: 16,
-              // marginLeft: 10,
+              marginLeft: 10,
             },
           ]}>
           Referral code
@@ -175,6 +180,7 @@ const Referral = () => {
               color: COLORS.white,
               paddingHorizontal: 20,
               marginRight: 20,
+              fontSize: 13,
             }}
             value={referralCode}
           />
@@ -189,9 +195,15 @@ const Referral = () => {
               // marginLeft: widthtouse / 20,
             }}
             onPress={copyToClipboard}>
-            <IconFA
+            {/* <IconFA
               name="clone"
               size={20}
+              color={COLORS.primary}
+              style={{alignSelf: 'center'}}
+            /> */}
+            <Icon
+              name="clipboard-outline"
+              size={30}
               color={COLORS.primary}
               style={{alignSelf: 'center'}}
             />

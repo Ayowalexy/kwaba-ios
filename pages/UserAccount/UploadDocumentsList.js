@@ -260,25 +260,24 @@ export default function UploadDocumentsList({navigation}) {
   };
 
   return (
-    <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <ScrollView style={[styles.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+        style={{paddingHorizontal: 16, paddingVertical: 20, fontWeight: '900'}}
         color={COLORS.primary}
       />
       <View
         style={{
-          marginVertical: 11,
-          marginHorizontal: 16,
+          paddingHorizontal: 16,
         }}>
         <Text
           style={[
-            FONTS.h1FontStyling,
             {
               color: '#2A286A',
               textAlign: 'left',
+              fontSize: 20,
               fontWeight: 'bold',
               marginBottom: 15,
             },
@@ -296,8 +295,10 @@ export default function UploadDocumentsList({navigation}) {
                 borderRadius: 10,
                 paddingHorizontal: 18,
                 paddingVertical: 20,
-                elevation: 6,
-                marginBottom: 25,
+                elevation: 0.5,
+                marginBottom: 10,
+                // borderWidth: 1,
+                // borderColor: '#EEEEEE',
               },
             ]}>
             <View style={{flex: 1}}>
@@ -378,8 +379,9 @@ export default function UploadDocumentsList({navigation}) {
             <TouchableOpacity
               onPress={() => {
                 if (item.title == 'Bank Statement') {
-                  console.log('redirect to upload bank statment page');
-                  navigation.navigate('UploadBankStatement');
+                  // console.log('redirect to upload bank statment page');
+                  // navigation.navigate('UploadBankStatement');
+                  navigation.navigate('RentalLoanFormBankStatementUpload');
                 } else {
                   selectOneFile(item);
                 }
@@ -387,8 +389,8 @@ export default function UploadDocumentsList({navigation}) {
               <Image
                 source={images.group3745}
                 style={{
-                  width: 39,
-                  height: 39,
+                  width: 30,
+                  height: 30,
                   alignSelf: 'flex-end',
                   marginTop: 'auto',
                   marginBottom: 'auto',
@@ -404,4 +406,9 @@ export default function UploadDocumentsList({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F7F8FD',
+  },
+});

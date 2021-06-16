@@ -127,7 +127,7 @@ const AccountPage = ({navigation}) => {
       iconName: 'document-outline',
       tabTitle: 'Legals and FAQs',
       onClickFunction: function openCardAndBank() {
-        navigation.navigate('Aboutus');
+        navigation.navigate('LegalandFaq');
       },
     },
     {

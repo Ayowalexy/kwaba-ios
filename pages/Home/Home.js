@@ -117,12 +117,12 @@ export default function Home({navigation}) {
   const goToPage = (item) => {
     if (item.title == 'Rent Savings') {
       navigation.navigate('SavingsHome');
-    } else if (item.title == 'Rent Top-up') {
-      navigation.navigate('EmploymentStatus');
-    } else if (item.title == 'Emergency Funds') {
-      navigation.navigate('EmergencyLoanHome');
+    } else if (item.title == 'Rent Now, Pay Later') {
+      navigation.navigate('RentNowPayLaterOnboarding');
+    } else if (item.title == 'Emergency Fund') {
+      navigation.navigate('EmergencyFundOnboarding');
     } else {
-      navigation.navigate('CompleteProfile1');
+      navigation.navigate('Referral');
     }
   };
 
@@ -163,7 +163,7 @@ export default function Home({navigation}) {
           />
         </TouchableOpacity>
       </View>
-      {!isProfileComplete && (
+      {isProfileComplete && (
         <View style={designs.secondBar}>
           <View
             style={{

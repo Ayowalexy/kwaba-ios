@@ -30,7 +30,7 @@ export default function EmergencyLoanHome({navigation}) {
 
   useEffect(() => {
     const totalSoloSavings =
-      store.data.length > 0
+      store?.data?.length > 0
         ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
         : 0;
     setSavings(totalSoloSavings);

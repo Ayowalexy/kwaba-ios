@@ -30,53 +30,54 @@ const rentalLoanFormSchema = yup.object().shape({
 
 const RentalLoanForm1 = ({navigation}) => {
   const [accommodationStatus, setAccommodationStatus] = useState('');
+  // const [salaryAmount, setSalaryAmount] = useState('');
+  // const [requestAmount, setRequestAmount] = useState('');
   const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [progress, setProgress] = useState(33);
 
-  const accomdation_list = [
-    'Looking to renew my rent',
-    'Want to pay for a new place',
-    'I’m still searching',
-  ];
+  const isError = () => {
+    if (
+      accommodationStatus.trim().length == 0 ||
+      salaryAmount.trim().length == 0 ||
+      requestAmount.trim().length == 0 ||
+      selectedMonth == ''
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
-  // const handleNavigation = async () => {
-  //   const data = {
-  //     accomodationstatus: accommodationStatus,
-  //     salary_amount: salaryAmount,
-  //     request_amount: requestAmount,
-  //     selected_month: selectedMonth,
-  //   };
-
-  //   const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-
-  //   // console.log(loanFormData);
-  //   await AsyncStorage.setItem(
-  //     'rentalLoanForm',
-  //     JSON.stringify({...JSON.parse(loanFormData), ...data}),
-  //   );
-
-  //   navigation.navigate('RentalLoanFormDoc');
-  // };
-
-  const handleSubmit = async (values) => {
+  const handleNavigation = async () => {
     const data = {
       accomodationstatus: accommodationStatus,
-      salary_amount: Number(values.salaryAmount),
-      request_amount: Number(values.requestAmount),
-      selected_month: Number(selectedMonth),
+      salary_amount: salaryAmount,
+      request_amount: requestAmount,
+      selected_month: selectedMonth,
     };
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
 
-    // console.log('VALUES:', data);
+    // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
+    // navigation.navigate('RentalLoanThirdPartyConnection')
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    console.log(loanFormData);
 
+    // console.log(loanFormData);
     await AsyncStorage.setItem(
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
+
     navigation.navigate('RentalLoanFormDoc');
+  };
+
+  const handleSubmit = async (values) => {
+    console.log('VALUES:', values);
   };
 
   const NumberInput = (props) => {
@@ -85,6 +86,8 @@ const RentalLoanForm1 = ({navigation}) => {
       form: {errors, touched, setFieldTouched},
       ...inputProps
     } = props;
+
+    console.log('VALUE:', value);
 
     const hasError = errors[name] && touched[name];
 
@@ -128,39 +131,7 @@ const RentalLoanForm1 = ({navigation}) => {
     );
   };
 
-  const AccomodationOptions = (props) => {
-    return (
-      <>
-        {accomdation_list.map((value, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              designs.buttonStyleA,
-              {
-                borderColor:
-                  accommodationStatus == value ? COLORS.light : '#ADADAD50',
-              },
-            ]}
-            onPress={() => setAccommodationStatus(value)}>
-            <View>
-              <Text
-                style={[
-                  designs.btnText,
-                  {
-                    color:
-                      accommodationStatus == value ? COLORS.light : COLORS.grey,
-                    fontWeight:
-                      accommodationStatus == value ? 'bold' : 'normal',
-                  },
-                ]}>
-                {value}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </>
-    );
-  };
+  const AccomodationOptions = (props) => {};
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -240,8 +211,108 @@ const RentalLoanForm1 = ({navigation}) => {
                     <Text style={styles.label}>
                       What’s your accommodation status?{' '}
                     </Text>
+                    <TouchableOpacity
+                      style={[
+                        designs.buttonStyleA,
+                        {
+                          borderColor:
+                            accommodationStatus == 'Looking to renew my rent'
+                              ? COLORS.light
+                              : '#ADADAD50',
+                        },
+                      ]}
+                      onPress={() =>
+                        setAccommodationStatus('Looking to renew my rent')
+                      }>
+                      <View>
+                        <Text
+                          style={[
+                            designs.btnText,
+                            {
+                              color:
+                                accommodationStatus ==
+                                'Looking to renew my rent'
+                                  ? COLORS.light
+                                  : COLORS.grey,
+                              fontWeight:
+                                accommodationStatus ==
+                                'Looking to renew my rent'
+                                  ? 'bold'
+                                  : 'normal',
+                            },
+                          ]}>
+                          Looking to renew my rent
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
 
-                    <AccomodationOptions />
+                    <TouchableOpacity
+                      style={[
+                        designs.buttonStyleA,
+                        {
+                          borderColor:
+                            accommodationStatus == 'Want to pay for a new place'
+                              ? COLORS.light
+                              : '#ADADAD50',
+                        },
+                      ]}
+                      onPress={() =>
+                        setAccommodationStatus('Want to pay for a new place')
+                      }>
+                      <View>
+                        <Text
+                          style={[
+                            designs.btnText,
+                            {
+                              color:
+                                accommodationStatus ==
+                                'Want to pay for a new place'
+                                  ? COLORS.light
+                                  : COLORS.grey,
+                              fontWeight:
+                                accommodationStatus ==
+                                'Want to pay for a new place'
+                                  ? 'bold'
+                                  : 'normal',
+                            },
+                          ]}>
+                          Want to pay for a new place
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      style={[
+                        designs.buttonStyleA,
+                        {
+                          borderColor:
+                            accommodationStatus == 'I’m still searching'
+                              ? COLORS.light
+                              : '#ADADAD50',
+                        },
+                      ]}
+                      onPress={() =>
+                        setAccommodationStatus('I’m still searching')
+                      }>
+                      <View>
+                        <Text
+                          style={[
+                            designs.btnText,
+                            {
+                              color:
+                                accommodationStatus == 'I’m still searching'
+                                  ? COLORS.light
+                                  : COLORS.grey,
+                              fontWeight:
+                                accommodationStatus == 'I’m still searching'
+                                  ? 'bold'
+                                  : 'normal',
+                            },
+                          ]}>
+                          I’m still searching
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                   </>
 
                   <>
@@ -305,8 +376,8 @@ const RentalLoanForm1 = ({navigation}) => {
                 </View>
 
                 <TouchableOpacity
-                  onPress={handleSubmit}
-                  // disabled={isValid}
+                  onPress={handleNavigation}
+                  disabled={isError()}
                   style={[designs.button, {backgroundColor: COLORS.secondary}]}>
                   <Text
                     style={[

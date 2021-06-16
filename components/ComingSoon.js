@@ -6,6 +6,8 @@ import {COLORS} from '../util';
 export default function ComingSoon(props) {
   const {onRequestClose, visible, name} = props;
 
+  // console.log(name);
+
   return (
     <Modal
       animationType="slide"

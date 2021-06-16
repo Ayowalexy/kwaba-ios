@@ -7,6 +7,8 @@ import {
   Image,
   TouchableOpacity,
   Modal,
+  Platform,
+  Pressable,
   Alert,
   StyleSheet,
 } from 'react-native';
@@ -23,9 +25,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {logCurrentStorage} from '../../util/logCurrentStorage';
 import axios from 'axios';
+import DropDownPicker from 'react-native-dropdown-picker';
 import SelectYearModal from '../../components/SelectYearModal';
 import SelectPayMethodModal from '../../components/SelectPayMethodModal';
-import NumberFormat from '../../components/NumberFormat';
 
 const RentalLoanForm3 = ({navigation}) => {
   const [homeAddress, setHomeAddress] = useState('');
@@ -36,13 +38,30 @@ const RentalLoanForm3 = ({navigation}) => {
   const [modalVisible, setVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [progress, setProgress] = useState(100);
+  const [pickerModalOpen, setPickerModalOpen] = useState(false);
+  const [pickerModalVisible, setPickerModalVisible] = useState(false);
+  const [pressed, setPressed] = useState(false);
 
   const [showSelectYearModal, setShowSelectYearModal] = useState(false);
   const [showSelectPayMethodModal, setShowSelectPayMethodModal] = useState(
     false,
   );
-  const [selectedPayMethod, setSelectedPayMethod] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+
+  const [lengthOfResidenceOptions] = useState([
+    {label: 'Less than a year', value: 'Less than a year'},
+    {label: '1 Year', value: '1 Year'},
+    {label: '2 Years', value: '2 Years'},
+    {label: '3 Years', value: '3 Years'},
+    {label: '4 Years', value: '4 Years'},
+    {label: '5 Years', value: '5 Years'},
+    {label: 'More than five Years', value: 'More than five Years'},
+  ]);
+  const [modeOfPaymentOptions] = useState([
+    {label: 'Bank Transfer', value: 'Bank Transfer'},
+    {label: 'Cheque', value: 'Cheque'},
+    {label: 'Deposit', value: 'Deposit'},
+  ]);
 
   const isError = () => {
     // if(typeof lengthOfResidence !== "string"){
@@ -85,6 +104,11 @@ const RentalLoanForm3 = ({navigation}) => {
 
     console.log(lengthOfResidence);
 
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     const url = 'http://67.207.86.39:8000/api/v1/application/new';
     const token = await getToken();
@@ -144,12 +168,8 @@ const RentalLoanForm3 = ({navigation}) => {
   };
 
   const handleNavigation = () => {
-    // setSuccessModal(false);
-    // navigation.navigate('UploadBankStatement');
-
-    // added by Joshua Nwosu
-    setVisible(false);
-    navigation.navigate('RentalLoanFormCongratulation');
+    setSuccessModal(false);
+    navigation.navigate('UploadBankStatement');
   };
 
   return (
@@ -164,6 +184,8 @@ const RentalLoanForm3 = ({navigation}) => {
       <ScrollView>
         <View
           style={{
+            // marginVertical: 11,
+            // marginHorizontal: 16,
             paddingHorizontal: 10,
           }}>
           <Text
@@ -234,7 +256,36 @@ const RentalLoanForm3 = ({navigation}) => {
               ]}>
               How long have you lived here?{' '}
             </Text>
-
+            {/* <TextInput
+            style={[designs.textField, {marginBottom: 17, textAlign: 'left'}]}
+            placeholder="1 year"
+            placeholderTextColor= {COLORS.grey}
+            value={lengthOfResidence}
+          onChangeText={(text) => setLengthOfResidence(text)}
+          /> */}
+            {/* <View style={{minHeight: 10}}>
+              <DropDownPicker
+                items={lengthOfResidenceOptions}
+                defaultNull
+                placeholder="1 Year"
+                placeholderStyle={{
+                  color: COLORS.grey,
+                  fontSize: 14,
+                  // lineHeight: 30,
+                }}
+                style={designs.dropDownPicker}
+                // controller={instance => controller = instance}
+                dropDownStyle={{
+                  alignItems: 'flex-end',
+                }}
+                // dropDownMaxHeight={}
+                arrowStyle={{marginRight: 4}}
+                arrowSize={18}
+                arrowColor={COLORS.grey}
+                onChangeItem={(item) => setLengthOfResidence(item.value)}
+                // onOpen={() => setPickerModalOpen(true)}
+              />
+            </View> */}
             <TouchableOpacity
               style={styles.customInput}
               onPress={() => {
@@ -243,13 +294,15 @@ const RentalLoanForm3 = ({navigation}) => {
               {selectedYear != '' ? (
                 <Text
                   style={{
-                    color: COLORS.light,
+                    // fontWeight: 'bold',
+                    color: COLORS.primary,
                   }}>
                   {selectedYear} {selectedYear <= 1 ? 'year' : 'years'}
                 </Text>
               ) : (
                 <Text
                   style={{
+                    // fontWeight: 'bold',
                     color: '#BABABA',
                   }}>
                   Choose a year
@@ -270,10 +323,13 @@ const RentalLoanForm3 = ({navigation}) => {
               ]}>
               How much was your last rent?{' '}
             </Text>
-
-            <NumberFormat
+            <TextInput
+              style={[designs.textField, {marginBottom: 27, textAlign: 'left'}]}
+              placeholder="Amount"
+              placeholderTextColor={COLORS.grey}
               value={lastRentAmount}
               onChangeText={(text) => setLastRentAmount(text)}
+              keyboardType="number-pad"
             />
 
             <Text
@@ -369,22 +425,104 @@ const RentalLoanForm3 = ({navigation}) => {
               ]}>
               How did you pay?{' '}
             </Text>
+            {/* <TextInput
+            style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
+            placeholder="Select an option"
+            placeholderTextColor= {COLORS.grey}
+            value={modeOfPayment}
+          onChangeText={(text) => setModeOfPayment(text)}
+          /> */}
+            {/* <View style={{minHeight: 50, elevation: 10000, zIndex: 10000}}>
+               <DropDownPicker
+        
+                    items={modeOfPaymentOptions}
+                    defaultNull
+                    placeholder="Select an option"
+                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
+                    style={[designs.dropDownPicker, {elevation: 5000, zIndex: 10000}]}
+                    // controller={instance => controller = instance}
+                    dropDownStyle={{elevation: 5000, zIndex: 10000}}
+                    dropDownMaxHeight={200}
+                    arrowStyle={{marginRight: 4}}
+                    arrowSize={18}
+                    arrowColor={COLORS.grey}
+                    onChangeItem={item => setModeOfPayment(item)}
+                    onOpen={() => setPickerModalOpen(true)}
+                />
+            </View> */}
+
+            {/* <Pressable
+              onPress={() => {
+                setPressed(!pressed);
+                setPickerModalVisible(!pickerModalVisible);
+                console.log('switched', pressed);
+              }}
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                paddingHorizontal: 15,
+                paddingTop: modeOfPayment == '' ? 35 : 7,
+                paddingBottom: 25,
+                borderRadius: 10,
+                borderWidth: 1,
+                borderColor: '#EFEFEF',
+                // borderColor: '#f00',
+                backgroundColor: COLORS.white,
+                marginBottom: 23,
+              }}>
+              <View style={{padding: 0, justifyContent: 'center'}}>
+                <Text
+                  style={{
+                    color: COLORS.grey,
+                    fontSize: modeOfPayment == '' ? 16 : 10,
+                    lineHeight: modeOfPayment == '' ? 30 : 10,
+                    marginBottom: modeOfPayment == '' ? 0 : 3,
+
+                    // fontSize: 16,
+                    // lineHeight: 30,
+                    // marginBottom: 0,
+                  }}>
+                  How did you pay
+                </Text>
+
+                {modeOfPayment !== '' && (
+                  <Text
+                    style={[FONTS.body1FontStyling, {marginBottom: 'auto'}]}>
+                    {modeOfPayment}
+                  </Text>
+                )}
+              </View>
+              <View
+                style={{
+                  height: '100%',
+                  paddingTop: modeOfPayment == '' ? 0 : 12,
+                }}>
+                <IconFA
+                  name={pressed ? 'angle-up' : 'angle-down'}
+                  size={25}
+                  color={COLORS.grey}
+                />
+              </View>
+            </Pressable> */}
 
             <TouchableOpacity
               style={styles.customInput}
               onPress={() => {
                 setShowSelectPayMethodModal(!showSelectPayMethodModal);
               }}>
-              {selectedPayMethod != '' ? (
+              {selectedYear != '' ? (
                 <Text
                   style={{
-                    color: COLORS.light,
+                    // fontWeight: 'bold',
+                    color: COLORS.primary,
                   }}>
-                  {selectedPayMethod}
+                  {showSelectPayMethodModal}
                 </Text>
               ) : (
                 <Text
                   style={{
+                    // fontWeight: 'bold',
                     color: '#BABABA',
                   }}>
                   How did you pay
@@ -398,6 +536,50 @@ const RentalLoanForm3 = ({navigation}) => {
                 color="#BABABA"
               />
             </TouchableOpacity>
+
+            <Modal
+              visible={pickerModalVisible}
+              animationType="fade"
+              transparent={true}
+              onRequestClose={() => {
+                setPickerModalVisible(!pickerModalVisible);
+                setPressed(!pressed);
+              }}>
+              <View style={designs.modalWrapper}>
+                <View style={designs.modalView}>
+                  <View
+                    style={[designs.modalHeader, {justifyContent: 'flex-end'}]}>
+                    <Icon
+                      onPress={() => {
+                        setPickerModalVisible(!pickerModalVisible);
+                        setPressed(!pressed);
+                      }}
+                      style={{alignSelf: 'flex-end'}}
+                      name="close-outline"
+                      size={30}
+                      color="#465969"
+                    />
+                  </View>
+                  <View>
+                    {modeOfPaymentOptions.map((value, index) => {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() => {
+                            setModeOfPayment(value.value);
+                            setPickerModalVisible(false);
+                            setPressed(!pressed);
+                          }}>
+                          <Text style={FONTS.body1FontStyling}>
+                            {value.label}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                </View>
+              </View>
+            </Modal>
           </View>
 
           <TouchableOpacity
@@ -418,8 +600,6 @@ const RentalLoanForm3 = ({navigation}) => {
           </TouchableOpacity>
         </View>
 
-        {/* Confirm Modal */}
-
         <Modal
           visible={modalVisible}
           animationType="fade"
@@ -438,18 +618,17 @@ const RentalLoanForm3 = ({navigation}) => {
               </View>
               <View>
                 <Text style={designs.modalTitleText}>Confirm</Text>
-                <Text style={[designs.modalBodyText, {textAlign: 'center'}]}>
+                <Text style={designs.modalBodyText}>
                   You are about to submit your finance request
                 </Text>
                 <TouchableOpacity
-                  // onPress={handleModalButtonPush}
-                  onPress={handleNavigation}
+                  onPress={handleModalButtonPush}
                   // disabled={isError()}
                   style={[
                     designs.button,
                     {
                       backgroundColor: COLORS.secondary,
-                      // marginBottom: 37,
+                      marginBottom: 37,
                       width: '100%',
                       alignSelf: 'center',
                     },
@@ -460,8 +639,7 @@ const RentalLoanForm3 = ({navigation}) => {
                       {
                         color: COLORS.white,
                         textAlign: 'center',
-                        fontWeight: 'bold',
-                        fontSize: 12,
+                        fontWeight: 'normal',
                       },
                     ]}>
                     SUBMIT
@@ -475,7 +653,7 @@ const RentalLoanForm3 = ({navigation}) => {
                     {
                       backgroundColor: 'white',
                       elevation: 0,
-                      // marginBottom: 24,
+                      marginBottom: 24,
                       width: '100%',
                       alignSelf: 'center',
                     },
@@ -486,14 +664,65 @@ const RentalLoanForm3 = ({navigation}) => {
                       {
                         color: '#BFBFBF',
                         textAlign: 'center',
-                        fontWeight: 'bold',
-                        fontSize: 12,
+                        fontWeight: 'normal',
                       },
                     ]}>
                     NO, NOT NOW
                   </Text>
                 </TouchableOpacity>
               </View>
+            </View>
+          </View>
+        </Modal>
+        <Modal visible={successModal} animationType="fade" transparent={true}>
+          <View style={designs.centeredModalWrapper}>
+            <View style={[designs.successModal, {borderRadius: 30}]}>
+              <Icon
+                style={{alignSelf: 'flex-end'}}
+                onPress={() => setSuccessModal(false)}
+                name="close-outline"
+                size={30}
+                color="#D6D6D6"
+              />
+              <Image
+                source={icons.tick}
+                style={{width: 84, height: 84, marginTop: 25}}
+              />
+              <Text style={designs.successModalBodyText}>
+                Finance Request Submitted
+              </Text>
+              <Text
+                style={{
+                  color: '#ADADAD',
+                  fontSize: 12,
+                  lineHeight: 15,
+                  fontWeight: 'bold',
+                  marginTop: 6,
+                }}>
+                Congratulations! your request has been submitted.
+              </Text>
+              <TouchableOpacity
+                onPress={handleNavigation}
+                style={[
+                  designs.button,
+                  {
+                    marginTop: 30,
+                    width: '100%',
+                    alignSelf: 'center',
+                    backgroundColor: COLORS.secondary,
+                  },
+                ]}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontWeight: '700',
+                    fontSize: 14,
+                    lineHeight: 30,
+                    textAlign: 'center',
+                  }}>
+                  JUST A FEW THINGS LEFT
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </Modal>
@@ -510,7 +739,7 @@ const RentalLoanForm3 = ({navigation}) => {
           setShowSelectPayMethodModal(!showSelectPayMethodModal)
         }
         visible={showSelectPayMethodModal}
-        onClick={(value) => setSelectedPayMethod(value)}
+        onClick={(value) => setSelectedYear(value)}
       />
     </View>
   );

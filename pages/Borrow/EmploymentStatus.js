@@ -50,7 +50,7 @@ const EmploymentStatus = ({navigation}) => {
             <TouchableOpacity
               onPress={() =>
                 index == 0
-                  ? navigation.navigate('RentalLoanForm1')
+                  ? navigation.navigate('EligibilitySalaryEarner')
                   : setShowModal(!showModal)
               }
               key={index}

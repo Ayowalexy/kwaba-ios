@@ -28,12 +28,13 @@ export default function Screen2({navigation}) {
     setDate(currentDate);
   };
 
-  console.log('Moment:', new Date().toISOString());
+  // console.log('Moment:', new Date().toISOString());
 
   const handleNavigation = () => {
     try {
       let chosenDuration =
-        duration == '3 Months' ? '3M' : duration == '6 Months' ? '6M' : '1y';
+        // I replaced 1 year which is 1y to 12 months which is 12M
+        duration == '3 Months' ? '3M' : duration == '6 Months' ? '6M' : '12M';
       const data = {
         savings_tenure: duration,
         savings_start_date:
@@ -43,6 +44,8 @@ export default function Screen2({navigation}) {
           .format(),
         instant_saved_amount: instantSaving,
       };
+
+      // console.log('M: ', savings_tenure);
 
       dispatch(soloSaving(data));
       navigation.navigate('SoloSaving3');

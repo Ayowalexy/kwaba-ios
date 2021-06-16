@@ -19,9 +19,9 @@ import {soloSaving} from '../../../redux/actions/savingsActions';
 import CardAndBankModal from './CardAndBankModal';
 import AddCardModal from '../../../components/addCardModal';
 
-// function numberWithCommas(x) {
-//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-// }
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
 export default function Screen3({navigation}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -41,8 +41,6 @@ export default function Screen3({navigation}) {
     dispatch(soloSaving({locked: locked}));
   };
 
-  const [amountToSave, setAmountToSave] = useState(null);
-
   const [modal, setModal] = useState(false);
   const [addCardModal, setAddCardModal] = useState(false);
 
@@ -53,19 +51,142 @@ export default function Screen3({navigation}) {
     // setAddCardModal(true);
     // console.log(modal);
   };
+  const [interest_rate, setInterest_rate] = useState('');
 
   useEffect(() => {
-    const frequency = store.savings_frequency;
-    const locked_interest_rate = 0.08;
-    const unlock_interest_rate = 0.07;
+    // const reviewSavingsDetailCal = () => {
 
-    if (frequency == 'Daily') {
-    } else if (frequency == 'Weekly') {
-    } else {
-      // 150000 * (d)
-    }
+    const frequencyM = 'Monthly';
+    const frequencyW = 'Weekly';
+    const frequencyD = 'Daily';
 
-    console.log('Store:', store);
+    const target = 100000; // target amount
+
+    const savingForThreeMonths = 3;
+    const savingForSixMonths = 6;
+    const savingForTwelveMonths = 12;
+
+    // const calculationBasedOnPeriod = () => {
+    // if(frequency)
+    // }
+
+    const interest_rate_locked = 0.08; // percentage - per Annum
+    const interest_rate_unlocked = 0.07; // percentage - per Annum
+    const numberOfDaysInAMonth = 30;
+    const numberOfWeeksInAMonth = 4;
+    const numberOfMonthsInAYear = 12;
+
+    const daysInAYear = 365;
+    const monthsInAYear = 12;
+    const weeksInAYear = 52;
+
+    // for locked
+    const dailyInterestRate = interest_rate_locked / daysInAYear;
+    const weeklyInterestRate = interest_rate_locked / weeksInAYear;
+    const monthlyInterestRate = interest_rate_locked / monthsInAYear;
+
+    // const amountToSave = target / saveForThreeMonths;
+
+    const savingDaily = target / (numberOfDaysInAMonth * savingForThreeMonths); // saving for a month
+    const savingWeekly =
+      target / (numberOfWeeksInAMonth * savingForThreeMonths); // savings for x week
+    const savingMonthly = target / savingForThreeMonths; // savings for x month
+    // const savingYearly = target * numberOfMonthsInAYear; // savings for x year
+
+    const numberOfDays = 10;
+    const accruedInterest = dailyInterestRate * savingForThreeMonths;
+
+    // const
+
+    const amountToWithdraw =
+      accruedInterest + savingForThreeMonths * numberOfDaysInAMonth;
+    // const ineterstForTenDays = dailyInterestRate * amountSaved
+
+    const expectedTotalSavings =
+      target * monthlyInterestRate * savingForThreeMonths;
+    // const total = expectedTotalSavings + target;
+
+    const actualSavedAmount = 50000; //
+
+    const actualAccruedInterest =
+      actualSavedAmount *
+      (dailyInterestRate * (numberOfDaysInAMonth * savingForThreeMonths));
+
+    // to give to the customer
+    const actualTotalRent = actualSavedAmount + actualAccruedInterest;
+
+    console.log('');
+    console.log('');
+    console.log('');
+    console.log('');
+    console.log('');
+    console.log('');
+    console.log('**********************************************');
+
+    console.log(store);
+
+    let start = moment('2021-06-14', 'YYYY-MM-DD');
+    let end = moment('2021-09-14', 'YYYY-MM-DD');
+    // console.log('Start Date:', store.savings_start_date);
+    console.log('Total number of days:', Math.abs(start.diff(end, 'days')));
+
+    // console.log(moment().subtract(1, 'days').format('YYYY-MM-DD'));
+    // let prevMonth = moment().subtract(1, 'month').startOf('month');
+
+    // console.log(prevMonth.daysInMonth());
+
+    const for_three_month =
+      50000 * (dailyInterestRate * (numberOfDaysInAMonth * 3));
+
+    const for_two_month =
+      50000 * (dailyInterestRate * (numberOfDaysInAMonth * 2));
+
+    const for_one_month =
+      50000 * (dailyInterestRate * (numberOfDaysInAMonth * 1));
+
+    console.log(
+      'TOTAL ACCRUED INTEREST FOR 3 MONTHS:',
+      for_three_month + for_two_month + for_one_month,
+    );
+
+    console.log(
+      'TOTAL ACCRUED INTEREST FOR 3 MONTHS + ACTUAL SAVED AMOUNT:',
+      for_three_month + for_two_month + for_one_month + 150000,
+    );
+
+    console.log('ActualTotalRent: ', actualTotalRent);
+
+    console.log('ActualAccruedInterest: ', actualAccruedInterest);
+
+    console.log('Target: ', target);
+
+    console.log('Accrued Interest:', accruedInterest);
+
+    console.log('Amount to Withdraw:', amountToWithdraw);
+
+    console.log('ExpectedTotalAMount:', expectedTotalSavings);
+
+    console.log('DailyInterestRate:', dailyInterestRate);
+    console.log('WeeklyInterestRate:', weeklyInterestRate);
+    console.log('MonthlyInterestRate:', monthlyInterestRate);
+
+    // console.log('amountToSave:', amountToSave);
+
+    console.log('SavingDaily:', savingDaily);
+    console.log('SavingMonthly:', savingMonthly);
+    console.log('SavingWeekly:', savingWeekly);
+    // console.log('SavingYearly:', savingYearly);
+    // };
+
+    // reviewSavingsDetailCal();
+
+    // const locked = true;
+
+    // This checks if the interest rate is locked or unlocked
+    // @params(true/false)
+    // if (locked) setInterest_rate(interest_rate_locked);
+    // locked
+    // else setInterest_rate(interest_rate_unlocked); // unlocked
   }, []);
 
   return (
@@ -127,12 +248,14 @@ export default function Screen3({navigation}) {
               <Text style={designs.key}>
                 Amount To Save {store.savings_frequency}
               </Text>
-              <Text style={designs.value}>₦{amountToSave || ' 0.00'}</Text>
+              <Text style={designs.value}>
+                ₦{numberWithCommas(store.savings_amount / 3) || ' 0.00'}
+              </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>
-                ₦{store.savings_target_amount || ' 0.00'}
+                ₦{numberWithCommas(store.savings_amount) || ' 0.00'}
               </Text>
             </View>
             <View style={designs.dataInfo}>

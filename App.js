@@ -41,10 +41,16 @@ import {
 import Borrow from './pages/Borrow/Borrow';
 import RentNowPayLaterOnboarding from './pages/Borrow/RentNowPayLaterOnboarding';
 import EmploymentStatus from './pages/Borrow/EmploymentStatus';
+import EligibilitySalaryEarner from './pages/Borrow/EligibilitySalaryEarner';
 import RentalLoanForm1 from './pages/Borrow/RentalLoanForm1';
 import RentalLoanFormDoc from './pages/Borrow/RentalLoanFormDoc';
 import RentalLoanForm2 from './pages/Borrow/RentalLoanForm2';
 import RentalLoanForm3 from './pages/Borrow/RentalLoanForm3';
+import RentalLoanFormCongratulation from './pages/Borrow/RentalLoanFormCongratulation';
+import RentalLoanFormBankStatementUpload from './pages/Borrow/RentalLoanFormBankStatementUpload';
+import RentalLoanFormBankStatementUploadEmail from './pages/Borrow/RentalLoanFormBankStatementUploadEmail';
+import RentalLoanFormBankStatementUploadMono from './pages/Borrow/RentalLoanFormBankStatementUploadMono';
+
 import UploadBankStatement from './pages/Borrow/UploadBankStatement';
 import UploadDocuments from './pages/Borrow/UploadDocuments';
 import AllDocuments from './pages/Borrow/AllDocuments';
@@ -87,6 +93,7 @@ import profile from './pages/CompleteProfile/profile';
 import Referral from './pages/UserAccount/Referral/Referral';
 import ReferralDetails from './pages/UserAccount/Referral/ReferralDetails';
 import Aboutus from './pages/UserAccount/Aboutus/Aboutus';
+import LegalandFaq from './pages/UserAccount/Aboutus/LegalandFaq';
 import OkraDebitMandate2 from './pages/Payment/OkraDebitMandate2';
 import {setLoginState} from './redux/actions/userActions';
 import Toast from 'react-native-toast-message';
@@ -204,6 +211,7 @@ const App = () => {
           //   !store2.isLoggedIn && store2.token == '' ? 'Login' : 'Home'
           // }
           // initialRouteName={'SoloSaving3'}
+          // initialRouteName={'SoloSavingDashBoard'}
         >
           {/* {!isLoggedIn ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
@@ -290,6 +298,9 @@ const App = () => {
                 name="EmploymentStatus"
                 component={EmploymentStatus}></Stack.Screen>
               <Stack.Screen
+                name="EligibilitySalaryEarner"
+                component={EligibilitySalaryEarner}></Stack.Screen>
+              <Stack.Screen
                 name="RentalLoanForm1"
                 component={RentalLoanForm1}></Stack.Screen>
               <Stack.Screen
@@ -316,6 +327,22 @@ const App = () => {
               <Stack.Screen
                 name="RentalLoanForm3"
                 component={RentalLoanForm3}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanFormCongratulation"
+                component={RentalLoanFormCongratulation}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanFormBankStatementUpload"
+                component={RentalLoanFormBankStatementUpload}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanFormBankStatementUploadEmail"
+                component={
+                  RentalLoanFormBankStatementUploadEmail
+                }></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanFormBankStatementUploadMono"
+                component={
+                  RentalLoanFormBankStatementUploadMono
+                }></Stack.Screen>
               <Stack.Screen
                 name="UploadBankStatement"
                 component={UploadBankStatement}></Stack.Screen>
@@ -417,6 +444,9 @@ const App = () => {
                 name="ReferralDetails"
                 component={ReferralDetails}></Stack.Screen>
               <Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
+              <Stack.Screen
+                name="LegalandFaq"
+                component={LegalandFaq}></Stack.Screen>
               <Stack.Screen
                 name="OkraDebitMandate2"
                 component={OkraDebitMandate2}></Stack.Screen>

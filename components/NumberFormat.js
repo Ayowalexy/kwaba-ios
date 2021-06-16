@@ -4,12 +4,15 @@ import {icons, images, COLORS} from '../util/index';
 
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  //   return x.toString().replace(/\B(?<!.\d*)(?=(\d{3})+(?!\d))/g, ',');
 }
+
+// function formatNumberWidthComma() {
+
+// }
 
 export default function NumberFormat(props, {navigation}) {
   const {value, onChangeText} = props;
-  console.log(props);
+  // console.log(props);
 
   return (
     <View style={[styles.customInput, {padding: 0}]}>
@@ -34,7 +37,7 @@ export default function NumberFormat(props, {navigation}) {
         placeholderTextColor="#BFBFBF"
         keyboardType="number-pad"
         // keyboardType="decimal-pad"
-        value={numberWithCommas(value)}
+        value={value}
         onChangeText={onChangeText}
       />
     </View>
@@ -43,11 +46,11 @@ export default function NumberFormat(props, {navigation}) {
 
 const styles = StyleSheet.create({
   customInput: {
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: '#FFFFFF',
     borderColor: '#ADADAD50',
     borderWidth: 1,
-    marginTop: 10,
+    marginTop: 5,
     width: '100%',
     position: 'relative',
 
