@@ -26,7 +26,8 @@ const getToken = async () => {
 export default function ManualUploadModal(props) {
   const {onRequestClose, visible, onConfirm} = props;
 
-  const uploadBankStatementFile = async () => {
+  const uploadBankStatementFile = async (item) => {
+    // console.log('ITEM: ', item);
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -51,7 +52,32 @@ export default function ManualUploadModal(props) {
         },
       );
 
-      console.log(applicationIDCallRes.data.data.id);
+      const applicationId = applicationIDCallRes.data.data.id;
+
+      const formdata = new FormData();
+
+      formdata.append('file', blob);
+      formdata.append('upload_preset', 'rental_loan_documents');
+      formdata.append('cloud_name', 'kwaba');
+
+      const response = await axios.post(
+        'https://api.cloudinary.com/v1_1/kwaba/auto/upload',
+        formdata,
+      );
+
+      console.log(
+        'here is the console log  from cloudinary ',
+        response.data.url,
+      );
+
+      const data = {
+        applicationId,
+        file: response.data.url,
+        document_type: item.id,
+        filename: item.title,
+      };
+
+      console.log('here is the data:', data);
     } catch (err) {
       console.log(err);
     }
