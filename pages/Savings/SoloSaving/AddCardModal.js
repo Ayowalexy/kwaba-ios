@@ -42,33 +42,35 @@ export default function AddCardModal(props) {
     console.log(store);
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
-        setSpinner(true);
+        // setSpinner(true);
         const response = await makeOneOffPayment();
-        if (response.status === 200) {
-          setSpinner(false);
-          const result = await openInAppBrowser(
-            response.data.data.authorization_url,
-          );
-          if (result.type === 'cancel') {
-            let data = {reference: response.data.data.reference};
-            setVerificationSpinner(true);
-            const verify = await verifyPayment(data);
-            if (verify.data.status == 'success') {
-              setVerificationSpinner(false);
-              await createPlan();
-            } else {
-              setVerificationSpinner(false);
-              Alert.alert(
-                'Payment Unverified',
-                'Your payment was not verified. Please retry.',
-              );
-            }
-          }
-        }
+        console.log(response);
+        // if (response.status === 200) {
+        //   setSpinner(false);
+        //   const result = await openInAppBrowser(
+        //     response.data.data.authorization_url,
+        //   );
+        //   if (result.type === 'cancel') {
+        //     let data = {reference: response.data.data.reference};
+        //     setVerificationSpinner(true);
+        //     const verify = await verifyPayment(data);
+        //     if (verify.data.status == 'success') {
+        //       setVerificationSpinner(false);
+        //       await createPlan();
+        //     } else {
+        //       setVerificationSpinner(false);
+        //       Alert.alert(
+        //         'Payment Unverified',
+        //         'Your payment was not verified. Please retry.',
+        //       );
+        //     }
+        //   }
+        // }
       } else {
         return await createPlan();
       }
     } catch (error) {
+      // setSpinner(false);
       console.log('error', error);
     }
   };
@@ -76,7 +78,8 @@ export default function AddCardModal(props) {
   const createPlan = async () => {
     console.log('Creating...');
     const data = {
-      savings_amount: Number(store.savings_amount),
+      // savings_amount: Number(store.savings_amount),
+      savings_target_amount: Number(store.savings_target_amount),
       savings_frequency: store.savings_frequency.toLowerCase(),
       savings_account_number: '',
       savings_account_name: '',
@@ -139,8 +142,11 @@ export default function AddCardModal(props) {
       locked: store.locked,
     };
 
+    console.log('DATA:', data);
+
     try {
       const response = await oneOffPayment(data);
+      console.log('RESPONSE:', response);
       return response;
     } catch (error) {
       setSpinner(false);

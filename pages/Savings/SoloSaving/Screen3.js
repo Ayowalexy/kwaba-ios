@@ -33,7 +33,6 @@ export default function Screen3({navigation}) {
   // const savings_end_date = moment(store.savings_end_date, 'YYYY-MM-DD');
   const toggleSwitch = () => {
     setLocked((previousState) => !previousState);
-    dispatch(soloSaving({locked: locked}));
   };
 
 <<<<<<< HEAD
@@ -50,6 +49,11 @@ export default function Screen3({navigation}) {
     // setAddCardModal(true);
     // console.log(modal);
   };
+
+  useEffect(() => {
+    // console.log(locked);
+    dispatch(soloSaving({locked: locked}));
+  }, [locked]);
 
   useEffect(() => {
     const frequency = store.savings_frequency;
