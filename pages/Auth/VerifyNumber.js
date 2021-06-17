@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
 import Toast from 'react-native-toast-message';
@@ -17,14 +18,29 @@ import {sendVerificationCode} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import SuccessModal from '../../components/SuccessModal';
 
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from 'react-native-confirmation-code-field';
+
+const CELL_COUNT = 4;
+
 export default function VerifyNumber({navigation, route}) {
   const [successModal, setSuccessModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
-  const [time, setTime] = useState(45);
-  const [code, setCode] = useState({num1: '', num2: '', num3: '', num4: ''});
+  const [error, setError] = useState(false);
   // For keeping a track on the Timer
   const [timerEnd, setTimerEnd] = useState(false);
   const [timestamp, setTimestamp] = useState(45);
+
+  const [value, setValue] = useState('');
+  const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
+  const [props, getCellLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
 
   // Timer References
   const refTimer = useRef();
@@ -101,39 +117,33 @@ export default function VerifyNumber({navigation, route}) {
   };
 
   const verify = async () => {
-    const data = {code: `${code.num1}${code.num2}${code.num3}${code.num4}`};
-
     setSpinner(true);
-    const res = await verifyPhone(data);
+    const res = await verifyPhone(value);
     if (res.status == 200) {
       setSpinner(false);
       setSuccessModal(true);
-      setCode({num1: '', num2: '', num3: '', num4: ''});
+      setValue('');
+      setError(false);
     } else {
-      Alert.alert('VERIFICATION FAILED', res, [{text: 'Ok'}]);
+      setSpinner(false);
+      setError(true);
+      // Alert.alert('VERIFICATION FAILED', res, [{text: 'Ok'}]);
     }
+    console.log(value);
   };
 
   const resendOTP = async () => {
     const phoneNumber = route.params.phone_number;
     const data = {telephone: phoneNumber};
     const response = await sendVerificationCode(data);
-    console.log(data);
     if (response.status == 200) {
       setTimerEnd(false);
       setTimestamp(45);
-      Toast.show({
-        text1: 'Code Resent',
-        text2: response.data.statusMsg + ' 👋',
-        visibilityTime: 2000,
-        position: 'top',
-        topOffset: 30,
-      });
 
       setSpinner(false);
     } else {
       setSpinner(false);
-      Alert.alert('Request Failed', response, [{text: 'Ok'}]);
+      // Alert.alert('Request Failed', response, [{text: 'Ok'}]);
     }
   };
 
@@ -151,7 +161,7 @@ export default function VerifyNumber({navigation, route}) {
         padding: 15,
         // justifyContent: 'center',
       }}>
-      <View style={{alignItems: 'center', marginBottom: 20, marginTop: 50}}>
+      <View style={{alignItems: 'center', marginBottom: 0, marginTop: 50}}>
         <Image
           style={[designs.image, {marginTop: 0}]}
           source={icons.kwabalogocol}
@@ -162,48 +172,52 @@ export default function VerifyNumber({navigation, route}) {
         Verify your phone number
       </Text>
       <Text style={[designs.body, {textAlign: 'center', marginTop: 10}]}>
-        Please enter verification code sent {'\n'} to your number
+        Please enter verification code sent to {'\n'} your number
       </Text>
-      <View style={designs.codeInputContainer}>
-        <TextInput
-          keyboardType="number-pad"
-          value={code.num1}
-          onChangeText={(text) => setCode({...code, num1: text})}
-          style={designs.codeInput}
-        />
-        <TextInput
-          keyboardType="number-pad"
-          value={code.num2}
-          onChangeText={(text) => setCode({...code, num2: text})}
-          style={designs.codeInput}
-        />
-        <TextInput
-          keyboardType="number-pad"
-          value={code.num3}
-          onChangeText={(text) => setCode({...code, num3: text})}
-          style={designs.codeInput}
-        />
-        <TextInput
-          keyboardType="number-pad"
-          value={code.num4}
-          onChangeText={(text) => setCode({...code, num4: text})}
-          style={designs.codeInput}
-        />
-      </View>
-      <Spinner
-        visible={spinner}
-        // textContent={'Sending...'}
-        animation="fade"
-        // textStyle={{
-        //   color: '#2A286A',
-        //   fontSize: 20,
-        //   fontWeight: 'bold',
-        //   lineHeight: 30,
-        // }}
-        size="large"
+      <CodeField
+        ref={ref}
+        {...props}
+        value={value}
+        onChangeText={setValue}
+        cellCount={CELL_COUNT}
+        rootStyle={designs.codeInputContainer}
+        keyboardType="number-pad"
+        textContentType="oneTimeCode"
+        renderCell={({index, symbol, isFocused}) => (
+          <View
+            key={index}
+            style={[designs.codeInput, isFocused && styles.focusCell]}
+            onLayout={getCellLayoutHandler(index)}>
+            <Text style={styles.cellText}>
+              {symbol || (isFocused ? <Cursor /> : null)}
+            </Text>
+          </View>
+        )}
       />
+      {/* {value.length != 4 && (
+        <View
+          style={{
+            paddingHorizontal: 20,
+            marginTop: 5,
+          }}>
+          <Text style={{color: 'pink'}}>All fields are required</Text>
+        </View>
+      )} */}
+
+      {error && (
+        <View
+          style={{
+            paddingHorizontal: 20,
+            marginTop: 5,
+          }}>
+          <Text style={{color: 'pink'}}>Invalid verification code</Text>
+        </View>
+      )}
+
+      <Spinner visible={spinner} animation="fade" size="large" />
       <TouchableOpacity
         onPress={verify}
+        disabled={value.length != 4}
         style={[designs.btn, {backgroundColor: '#00DC99'}]}>
         <Text
           style={{
@@ -211,6 +225,7 @@ export default function VerifyNumber({navigation, route}) {
             fontSize: 14,
             lineHeight: 32,
             fontWeight: 'bold',
+            // fontSize: value.length == 4 ? 18 : 5,
           }}>
           VERIFY
         </Text>
@@ -227,3 +242,15 @@ export default function VerifyNumber({navigation, route}) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  cellText: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#465969',
+  },
+  focusCell: {
+    borderColor: '#00DC99',
+  },
+});

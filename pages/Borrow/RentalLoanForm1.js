@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
+  StyleSheet,
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -15,50 +16,150 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import NumberFormat from '../../components/NumberFormat';
+import SelectMonthModal from '../../components/SelectMonthModal';
+
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+
+const rentalLoanFormSchema = yup.object().shape({
+  // accommodationStatus: yup.string().required('Select accomodation status'),
+  requestAmount: yup.string().required('Provide an amount'),
+  salaryAmount: yup.string().required('Provide an amount'),
+});
+
 const RentalLoanForm1 = ({navigation}) => {
   const [accommodationStatus, setAccommodationStatus] = useState('');
-  const [salaryAmount, setSalaryAmount] = useState('');
+  const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState('');
   const [progress, setProgress] = useState(33);
 
-  const isError = () => {
-    if (
-      salaryAmount.trim().length == 0 ||
-      accommodationStatus.trim().length == 0
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
+  const accomdation_list = [
+    'Looking to renew my rent',
+    'Want to pay for a new place',
+    'I’m still searching',
+  ];
 
-  const handleNavigation = async () => {
+  // const handleNavigation = async () => {
+  //   const data = {
+  //     accomodationstatus: accommodationStatus,
+  //     salary_amount: salaryAmount,
+  //     request_amount: requestAmount,
+  //     selected_month: selectedMonth,
+  //   };
+
+  //   const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+
+  //   // console.log(loanFormData);
+  //   await AsyncStorage.setItem(
+  //     'rentalLoanForm',
+  //     JSON.stringify({...JSON.parse(loanFormData), ...data}),
+  //   );
+
+  //   navigation.navigate('RentalLoanFormDoc');
+  // };
+
+  const handleSubmit = async (values) => {
     const data = {
       accomodationstatus: accommodationStatus,
-      salary_amount: salaryAmount,
+      salary_amount: Number(values.salaryAmount),
+      request_amount: Number(values.requestAmount),
+      selected_month: Number(selectedMonth),
     };
-    if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
 
-    // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
-    // navigation.navigate('RentalLoanThirdPartyConnection')
+    // console.log('VALUES:', data);
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    console.log(loanFormData);
+
     await AsyncStorage.setItem(
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
-    // navigation.navigate('RentalLoanThirdPartyConnection');
+    navigation.navigate('RentalLoanFormDoc');
+  };
 
-    navigation.navigate('RentalLoanForm2');
+  const NumberInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
 
-    // try {
-    //   dispatch(soloSaving(data));
+    const hasError = errors[name] && touched[name];
 
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
+    return (
+      <>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingLeft: 50,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={value}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
+
+  const AccomodationOptions = (props) => {
+    return (
+      <>
+        {accomdation_list.map((value, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              designs.buttonStyleA,
+              {
+                borderColor:
+                  accommodationStatus == value ? COLORS.light : '#ADADAD50',
+              },
+            ]}
+            onPress={() => setAccommodationStatus(value)}>
+            <View>
+              <Text
+                style={[
+                  designs.btnText,
+                  {
+                    color:
+                      accommodationStatus == value ? COLORS.light : COLORS.grey,
+                    fontWeight:
+                      accommodationStatus == value ? 'bold' : 'normal',
+                  },
+                ]}>
+                {value}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </>
+    );
   };
 
   return (
@@ -78,204 +179,191 @@ const RentalLoanForm1 = ({navigation}) => {
             paddingHorizontal: 10,
             // justifyContent: 'flex-end',
           }}>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                fontSize: 20,
-              },
-            ]}>
-            Rent Top-up
-          </Text>
-          <View style={designs.contentWrapper}>
-            <View style={designs.formHeader}>
-              <Text
-                style={[
-                  FONTS.h3FontStyling,
-                  {
-                    color: COLORS.primary,
-                    textAlign: 'left',
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                  },
-                ]}>
-                Payment Option
-              </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    lineHeight: 15,
-                    color: '#ADADAD',
-                    marginRight: 15,
-                  }}>
-                  1 of 3
-                </Text>
-                <AnimatedCircularProgress
-                  size={25}
-                  width={5}
-                  fill={progress}
-                  rotation={0}
-                  tintColor={COLORS.secondary}
-                  backgroundColor="#D6D6D6"
-                />
-              </View>
-            </View>
-            <Text
-              style={[
-                FONTS.body1FontStyling,
-                {
-                  color: COLORS.dark,
-                  marginBottom: 8,
-                  // fontWeight: 'bold',
-                  fontSize: 14,
-                },
-              ]}>
-              What’s your accommodation status?{' '}
-            </Text>
-            <TouchableOpacity
-              style={[
-                designs.buttonStyleA,
-                {
-                  borderColor:
-                    accommodationStatus == 'Looking to renew my rent'
-                      ? COLORS.light
-                      : '#EFEFEF',
-                },
-              ]}
-              onPress={() =>
-                setAccommodationStatus('Looking to renew my rent')
-              }>
-              <View>
+          <Formik
+            validationSchema={rentalLoanFormSchema}
+            initialValues={{
+              requestAmount: '200000',
+              salaryAmount: '100000',
+            }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}>
+            {({handleSubmit, isValid, values, setValues}) => (
+              <>
                 <Text
                   style={[
-                    designs.btnText,
+                    FONTS.h1FontStyling,
                     {
-                      color:
-                        accommodationStatus == 'Looking to renew my rent'
-                          ? COLORS.light
-                          : COLORS.grey,
-                      fontWeight:
-                        accommodationStatus == 'Looking to renew my rent'
-                          ? 'bold'
-                          : 'normal',
+                      color: '#2A286A',
+                      textAlign: 'left',
+                      fontWeight: 'bold',
+                      fontSize: 20,
                     },
                   ]}>
-                  Looking to renew my rent
+                  Rent Now, Pay Later
                 </Text>
-              </View>
-            </TouchableOpacity>
+                <View style={designs.contentWrapper}>
+                  <View style={designs.formHeader}>
+                    <Text
+                      style={[
+                        FONTS.h3FontStyling,
+                        {
+                          color: COLORS.primary,
+                          textAlign: 'left',
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        },
+                      ]}>
+                      Payment Option
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 15,
+                          color: '#ADADAD',
+                          marginRight: 15,
+                        }}>
+                        1 of 3
+                      </Text>
+                      <AnimatedCircularProgress
+                        size={25}
+                        width={5}
+                        fill={progress}
+                        rotation={0}
+                        tintColor={COLORS.secondary}
+                        backgroundColor="#D6D6D6"
+                      />
+                    </View>
+                  </View>
+                  <>
+                    <Text style={styles.label}>
+                      What’s your accommodation status?{' '}
+                    </Text>
 
-            <TouchableOpacity
-              style={[
-                designs.buttonStyleA,
-                {
-                  borderColor:
-                    accommodationStatus == 'Want to pay for a new place'
-                      ? COLORS.light
-                      : '#EFEFEF',
-                },
-              ]}
-              onPress={() =>
-                setAccommodationStatus('Want to pay for a new place')
-              }>
-              <View>
-                <Text
-                  style={[
-                    designs.btnText,
-                    {
-                      color:
-                        accommodationStatus == 'Want to pay for a new place'
-                          ? COLORS.light
-                          : COLORS.grey,
-                      fontWeight:
-                        accommodationStatus == 'Want to pay for a new place'
-                          ? 'bold'
-                          : 'normal',
-                    },
-                  ]}>
-                  Want to pay for a new place
-                </Text>
-              </View>
-            </TouchableOpacity>
+                    <AccomodationOptions />
+                  </>
 
-            <TouchableOpacity
-              style={[
-                designs.buttonStyleA,
-                {
-                  borderColor:
-                    accommodationStatus == 'I’m still searching'
-                      ? COLORS.light
-                      : '#EFEFEF',
-                },
-              ]}
-              onPress={() => setAccommodationStatus('I’m still searching')}>
-              <View>
-                <Text
-                  style={[
-                    designs.btnText,
-                    {
-                      color:
-                        accommodationStatus == 'I’m still searching'
-                          ? COLORS.light
-                          : COLORS.grey,
-                      fontWeight:
-                        accommodationStatus == 'I’m still searching'
-                          ? 'bold'
-                          : 'normal',
-                    },
-                  ]}>
-                  I’m still searching
-                </Text>
-              </View>
-            </TouchableOpacity>
+                  <>
+                    <Text style={styles.label}>
+                      How much is your rent request amount?
+                    </Text>
+                    <Field
+                      component={NumberInput}
+                      name="requestAmount"
+                      placeholder="Request Amount"
+                    />
+                  </>
 
-            <Text
-              style={[
-                FONTS.body1FontStyling,
-                {
-                  color: COLORS.dark,
-                  marginBottom: 8,
-                  // fontWeight: 'bold',
-                  fontSize: 14,
-                },
-              ]}>
-              How much do you earn monthly?{' '}
-            </Text>
-            <TextInput
-              style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
-              placeholder="Amount"
-              keyboardType="number-pad"
-              placeholderTextColor={COLORS.grey}
-              value={salaryAmount}
-              onChangeText={(text) => setSalaryAmount(text)}
-            />
-          </View>
+                  <>
+                    <Text style={styles.label}>
+                      How much do you earn monthly?
+                    </Text>
+                    <Field
+                      component={NumberInput}
+                      name="salaryAmount"
+                      placeholder="Amount"
+                    />
+                  </>
 
-          <TouchableOpacity
-            onPress={handleNavigation}
-            disabled={isError()}
-            style={[designs.button, {backgroundColor: COLORS.secondary}]}>
-            <Text
-              style={[
-                designs.buttonText,
-                {
-                  color: COLORS.white,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 12,
-                },
-              ]}>
-              NEXT
-            </Text>
-          </TouchableOpacity>
+                  <>
+                    <Text style={styles.label}>
+                      Choose a monthly payment plan
+                    </Text>
+                    <TouchableOpacity
+                      style={[styles.customInput, {padding: 20}]}
+                      onPress={() => {
+                        setShowSelectMonthModal(!showSelectMonthModal);
+                      }}>
+                      {selectedMonth != '' ? (
+                        <Text
+                          style={{
+                            // fontWeight: 'bold',
+                            color: COLORS.primary,
+                          }}>
+                          {selectedMonth}{' '}
+                          {selectedMonth <= 1 ? 'month' : 'months'}
+                        </Text>
+                      ) : (
+                        <Text
+                          style={{
+                            // fontWeight: 'bold',
+                            color: '#BABABA',
+                          }}>
+                          Choose a month
+                        </Text>
+                      )}
+
+                      <Icon
+                        name="chevron-down-outline"
+                        size={20}
+                        style={{fontWeight: 'bold'}}
+                        color="#BABABA"
+                      />
+                    </TouchableOpacity>
+                  </>
+                </View>
+
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  // disabled={isValid}
+                  style={[designs.button, {backgroundColor: COLORS.secondary}]}>
+                  <Text
+                    style={[
+                      designs.buttonText,
+                      {
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
+                    ]}>
+                    NEXT
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
         </View>
       </ScrollView>
+
+      <SelectMonthModal
+        onRequestClose={() => setShowSelectMonthModal(!showSelectMonthModal)}
+        visible={showSelectMonthModal}
+        // selectedMonth={selectedMonth}
+        onClick={(value) => setSelectedMonth(value)}
+      />
     </View>
   );
 };
 
 export default RentalLoanForm1;
+
+const styles = StyleSheet.create({
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    color: COLORS.dark,
+    marginTop: 8,
+    fontSize: 14,
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
+});

@@ -128,7 +128,7 @@ export default function withdrawModal(props) {
                     color: COLORS.dark,
                   }}
                   placeholder="Enter Amount"
-                  value="₦ 20,200,000"
+                  value="₦0.00"
                   placeholderTextColor="#ADADAD"
                   keyboardType="number-pad"
                   editable={false}
@@ -196,6 +196,20 @@ export default function withdrawModal(props) {
                 setHeight(e.nativeEvent.contentSize.height)
               }
             />
+
+            <TouchableOpacity
+              // onPress={onConfirm}
+              style={[styles.btn, {backgroundColor: '#00DC99'}]}>
+              <Text
+                style={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: 12,
+                  textTransform: 'uppercase',
+                }}>
+                withdraw
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -237,8 +251,8 @@ const styles = StyleSheet.create({
     // elevation: 6,
   },
   btn: {
-    width: widthtouse * 0.85,
-    height: 70,
+    width: '100%',
+    // height: 70,
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
@@ -248,6 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 10,
+    paddingVertical: 20,
   },
   textInput: {
     width: widthtouse * 0.85,

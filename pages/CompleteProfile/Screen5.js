@@ -119,6 +119,11 @@ const Screen5 = ({navigation}) => {
             onChangeText={(text) => setLastRentAmount(text)}
             keyboardType="number-pad"
           />
+          {/* <NumberFormat
+              value={setLastRentAmount}
+              // placeholder="How much is your rent?"
+              onChangeText={(text) => setLastRentAmount(text)}
+            /> */}
           <Text
             style={[
               designs.heading,
@@ -159,6 +164,7 @@ const Screen5 = ({navigation}) => {
               is24Hour={true}
               display="default"
               placeholderText="When is your next rent due?"
+              minimumDate={moment().toDate()}
             />
           )}
           {/* <View style={designs.customInput}>

@@ -20,6 +20,7 @@ import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
 import moment from 'moment';
+import ComingSoon from '../../../components/ComingSoon';
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ export default function Start({navigation}) {
   const [soloSaving, setSoloSaving] = useState(0);
   const [buddySaving, setBuddySaving] = useState(0);
   const [savingTenure, setSavingTenure] = useState(0);
+
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     dispatch(getCurrentUser());
@@ -70,142 +73,147 @@ export default function Start({navigation}) {
     },
   ];
   return (
-    <ScrollView style={designs.container}>
-      {/* <ImageBackground style={designs.backgroundImg} source={images.group4585}> */}
-      {/* <Image
+    <View style={[designs.container]}>
+      <Image
         source={images.group4585}
         style={{
-          width: 400,
+          width: '100%',
           height: 300,
           position: 'absolute',
           top: 0,
           right: 0,
         }}
         resizeMode="cover"
-      /> */}
-      <View style={{padding: 10}}>
-        <Text
-          style={{
-            fontFamily: 'CircularStd',
-            fontSize: 25,
-            fontWeight: 'bold',
-            color: '#00DC99',
-            marginTop: 50,
-            lineHeight: 32,
-          }}>
-          Savings
-        </Text>
-        <Text
-          style={{
-            width: '60%',
-            fontFamily: 'CircularStd',
-            fontSize: 12,
-            fontWeight: '600',
-            color: 'white',
-            marginTop: 4,
-            lineHeight: 20,
-          }}>
-          Save towards your next rent with your flatmates, friends or family and
-          earn interest on every deposit.
-        </Text>
-      </View>
-      <View style={designs.scrollContainer}>
-        <ScrollView
-          scrollEnabled
-          horizontal
-          showsHorizontalScrollIndicator={false}>
-          <View style={designs.smallBox}>
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                fontSize: 9,
-                fontWeight: '600',
-                lineHeight: 11,
-                color: 'white',
-              }}>
-              Total Balance
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                fontSize: 17,
-                fontWeight: 'bold',
-                lineHeight: 22,
-                color: 'white',
-                marginTop: 4,
-              }}>
-              ₦{currencyFormat(totalBalance)}
-            </Text>
-          </View>
+      />
+      <ScrollView>
+        {/* <ImageBackground style={designs.backgroundImg} source={images.group4585}> */}
 
-          <View style={designs.smallBox}>
-            {/* <BlurView
+        <View style={{padding: 10}}>
+          <Text
+            style={{
+              fontFamily: 'CircularStd',
+              fontSize: 25,
+              fontWeight: 'bold',
+              color: '#00DC99',
+              marginTop: 50,
+              lineHeight: 32,
+            }}>
+            Savings
+          </Text>
+          <Text
+            style={{
+              width: '70%',
+              fontFamily: 'CircularStd',
+              fontSize: 13,
+              fontWeight: '600',
+              color: 'white',
+              marginTop: 4,
+              lineHeight: 20,
+            }}>
+            {/* Save towards your next rent with your flatmates, friends or family and
+          earn interest on every deposit. */}
+            Save effortlessly towards your rent by yourself or with friends and
+            family. Use Kwaba’s solo or buddy saving features to meet your rent
+            target with ease.
+          </Text>
+        </View>
+        <View style={designs.scrollContainer}>
+          <ScrollView
+            scrollEnabled
+            horizontal
+            showsHorizontalScrollIndicator={false}>
+            <View style={designs.smallBox}>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 9,
+                  fontWeight: '600',
+                  lineHeight: 11,
+                  color: 'white',
+                }}>
+                Total Balance
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  lineHeight: 22,
+                  color: 'white',
+                  marginTop: 4,
+                }}>
+                ₦{currencyFormat(totalBalance)}
+              </Text>
+            </View>
+
+            <View style={designs.smallBox}>
+              {/* <BlurView
            blurType={'light'}
           blurAmount={20}
          
           style={[styles.blurView]}
           > */}
 
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                fontSize: 9,
-                fontWeight: '600',
-                lineHeight: 11,
-                color: 'white',
-              }}>
-              Total Savings
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                fontSize: 17,
-                fontWeight: 'bold',
-                lineHeight: 22,
-                color: 'white',
-                marginTop: 4,
-              }}>
-              ₦{currencyFormat(totalSaving)}
-            </Text>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 9,
+                  fontWeight: '600',
+                  lineHeight: 11,
+                  color: 'white',
+                }}>
+                Total Savings
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  lineHeight: 22,
+                  color: 'white',
+                  marginTop: 4,
+                }}>
+                ₦{currencyFormat(totalSaving)}
+              </Text>
+              {/* </BlurView> */}
+            </View>
+
+            <View style={designs.smallBox}>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 9,
+                  fontWeight: '600',
+                  lineHeight: 11,
+                  color: 'white',
+                }}>
+                Total Interest Earned
+              </Text>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 17,
+                  fontWeight: 'bold',
+                  lineHeight: 22,
+                  color: 'white',
+                  marginTop: 4,
+                }}>
+                ₦{currencyFormat(totalInterest)}
+              </Text>
+            </View>
             {/* </BlurView> */}
-          </View>
+          </ScrollView>
+        </View>
+        {/* </ImageBackground> */}
 
-          <View style={designs.smallBox}>
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                fontSize: 9,
-                fontWeight: '600',
-                lineHeight: 11,
-                color: 'white',
-              }}>
-              Total Interest Earned
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'CircularStd',
-                fontSize: 17,
-                fontWeight: 'bold',
-                lineHeight: 22,
-                color: 'white',
-                marginTop: 4,
-              }}>
-              ₦{totalInterest}
-            </Text>
-          </View>
-          {/* </BlurView> */}
-        </ScrollView>
-      </View>
-      {/* </ImageBackground> */}
-
-      <View
-        style={{
-          flexDirection: 'column',
-          justifyContent: 'center',
-          // marginTop: 20,
-          padding: 10,
-        }}>
-        {/* {savingsCard.map(({title, content, image}, index) => (
+        <View
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+            // marginTop: 20,
+            padding: 10,
+          }}>
+          {/* {savingsCard.map(({title, content, image}, index) => (
           <View key={index} style={designs.card}>
             <View style={{width: '60%'}}>
               <Text style={designs.cardHeader}>{title}</Text>
@@ -253,151 +261,159 @@ export default function Start({navigation}) {
             />
           </View>
         ))} */}
-        <View style={designs.card}>
-          <View style={designs.cardFlex}>
-            <View>
-              <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
-              <Text style={designs.bodyText}>
-                Save towards your{'\n'}next rent alone
-              </Text>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(
-                    soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
-                  )
-                }
-                style={[
-                  designs.cardFlex,
-                  {
-                    marginTop: 16,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    // height: 27,
-                    borderRadius: 21,
-                    backgroundColor: '#F7F8FD',
-                    width: 131,
-                    padding: 5,
-                  },
-                ]}>
-                {soloSaving == 0 ? (
-                  <Text
-                    style={[
-                      designs.bodyText,
-                      {
-                        marginTop: 0,
-                        fontSize: 16,
-                        color: '#9D98EC',
-                        fontWeight: '600',
-                        marginRight: 8,
-                      },
-                    ]}>
-                    Start saving
-                  </Text>
-                ) : (
-                  <Text
-                    style={[
-                      designs.bodyText,
-                      {
-                        marginTop: 0,
-                        fontSize: 16,
-                        color: '#9D98EC',
-                        fontWeight: '600',
-                        marginRight: 8,
-                      },
-                    ]}>
-                    ₦{currencyFormat(soloSaving)}
-                  </Text>
-                )}
-                <Icon name="arrow-forward" color="#9D98EC" size={15} />
-              </TouchableOpacity>
+          <View style={designs.card}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
+                <Text style={designs.bodyText}>
+                  Save towards your{'\n'}next rent alone
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(
+                      soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
+                    )
+                  }
+                  style={[
+                    designs.cardFlex,
+                    {
+                      marginTop: 16,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      // height: 27,
+                      borderRadius: 21,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
+                      padding: 5,
+                    },
+                  ]}>
+                  {soloSaving == 0 ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Start saving
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{currencyFormat(soloSaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+              </View>
+              <Image
+                style={{
+                  width: 130,
+                  height: 130,
+                  resizeMode: 'contain',
+                  position: 'absolute',
+                  right: -20,
+                  bottom: -25,
+                }}
+                source={images.maskGroup15}
+              />
             </View>
-            <Image
-              style={{
-                width: 130,
-                height: 130,
-                resizeMode: 'contain',
-                position: 'absolute',
-                right: -20,
-                bottom: -25,
-              }}
-              source={images.maskGroup15}
-            />
           </View>
-        </View>
 
-        <View style={designs.card}>
-          <View style={designs.cardFlex}>
-            <View>
-              <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
-              <Text style={designs.bodyText}>
-                Save towards your rent with{'\n'}your flatmates or spouse
-              </Text>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate(
-                    soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
-                  )
-                }
-                style={[
-                  designs.cardFlex,
-                  {
-                    marginTop: 16,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    // height: 27,
-                    borderRadius: 21,
-                    backgroundColor: '#F7F8FD',
-                    width: 131,
-                    padding: 5,
-                  },
-                ]}>
-                {soloSaving == 0 ? (
-                  <Text
-                    style={[
-                      designs.bodyText,
-                      {
-                        marginTop: 0,
-                        fontSize: 16,
-                        color: '#9D98EC',
-                        fontWeight: '600',
-                        marginRight: 8,
-                      },
-                    ]}>
-                    Start saving
-                  </Text>
-                ) : (
-                  <Text
-                    style={[
-                      designs.bodyText,
-                      {
-                        marginTop: 0,
-                        fontSize: 16,
-                        color: '#9D98EC',
-                        fontWeight: '600',
-                        marginRight: 8,
-                      },
-                    ]}>
-                    ₦{currencyFormat(soloSaving)}
-                  </Text>
-                )}
-                <Icon name="arrow-forward" color="#9D98EC" size={15} />
-              </TouchableOpacity>
+          <View style={designs.card}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
+                <Text style={designs.bodyText}>
+                  Save towards your rent with{'\n'}your flatmates or spouse
+                </Text>
+                <TouchableOpacity
+                  onPress={() =>
+                    // navigation.navigate(
+                    //   soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
+                    // )
+                    setShowModal(!showModal)
+                  }
+                  style={[
+                    designs.cardFlex,
+                    {
+                      marginTop: 16,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      // height: 27,
+                      borderRadius: 21,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
+                      padding: 5,
+                    },
+                  ]}>
+                  {soloSaving == 0 ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Start saving
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 16,
+                          color: '#9D98EC',
+                          fontWeight: '600',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{currencyFormat(soloSaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+              </View>
+              <Image
+                style={{
+                  width: 130,
+                  height: 130,
+                  resizeMode: 'contain',
+                  position: 'absolute',
+                  right: -20,
+                  bottom: -25,
+                }}
+                source={images.maskGroup14}
+              />
             </View>
-            <Image
-              style={{
-                width: 130,
-                height: 130,
-                resizeMode: 'contain',
-                position: 'absolute',
-                right: -20,
-                bottom: -25,
-              }}
-              source={images.maskGroup14}
-            />
           </View>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+
+      <ComingSoon
+        onRequestClose={() => setShowModal(!showModal)}
+        visible={showModal}
+        name="buddySaving"
+      />
+    </View>
   );
 }
 

@@ -22,10 +22,16 @@ export default function Screen2({navigation}) {
     setDate(currentDate);
   };
 
+<<<<<<< HEAD
+=======
+  // console.log('Moment:', new Date().toISOString());
+
+>>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
   const handleNavigation = () => {
     try {
       let chosenDuration =
-        duration == '3 Months' ? '3M' : duration == '6 Months' ? '6M' : '1y';
+        // I replaced 1 year which is 1y to 12 months which is 12M
+        duration == '3 Months' ? '3M' : duration == '6 Months' ? '6M' : '12M';
       const data = {
         savings_tenure: duration,
         savings_start_date:
@@ -35,6 +41,8 @@ export default function Screen2({navigation}) {
           .format(),
         instant_saved_amount: instantSaving,
       };
+
+      // console.log('M: ', savings_tenure);
 
       dispatch(soloSaving(data));
       navigation.navigate('SoloSaving3');
@@ -113,6 +121,7 @@ export default function Screen2({navigation}) {
               color: duration == '1 Year' ? 'white' : '#465969',
               lineHeight: 15,
             }}>
+<<<<<<< HEAD
             1 Year
           </Text>
         </TouchableOpacity>
@@ -136,6 +145,28 @@ export default function Screen2({navigation}) {
             backgroundColor: startOption == 'today' ? '#9D98EC' : 'white',
           }}>
           <Text
+=======
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: '600',
+                color: duration == '1 Year' ? 'white' : '#465969',
+                lineHeight: 15,
+              }}>
+              1 Year
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={[designs.boldText, {marginTop: 26}]}>
+          When do you want to start saving?
+        </Text>
+        <View style={designs.options}>
+          <TouchableOpacity
+            onPress={() => {
+              setStartOption('today');
+              setDate(moment().toDate());
+            }}
+>>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
             style={{
               fontSize: 12,
               fontWeight: '600',
@@ -160,6 +191,38 @@ export default function Screen2({navigation}) {
             height: 54,
             backgroundColor: startOption == 'pick_date' ? '#9D98EC' : 'white',
           }}>
+<<<<<<< HEAD
+=======
+          {startOption && new Date(date.toISOString()).toDateString().slice(4)}
+        </Text>
+        {showDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            onChange={handleDateSelect}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            minimumDate={moment().toDate()}
+          />
+        )}
+        {startOption == 'today' && (
+          <>
+            <Text style={[designs.boldText, {marginTop: 26}]}>
+              How much do you want to save today?
+            </Text>
+            <TextInput
+              placeholder="Amount"
+              placeholderTextColor="#BFBFBF"
+              style={designs.textInput}
+              keyboardType="number-pad"
+              value={instantSaving}
+              onChangeText={(text) => setInstantSaving(text)}
+            />
+          </>
+        )}
+        <TouchableOpacity onPress={handleNavigation} style={[designs.button]}>
+>>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
           <Text
             style={{
               fontSize: 12,

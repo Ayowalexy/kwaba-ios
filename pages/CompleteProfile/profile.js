@@ -1,26 +1,25 @@
-import React,{useState} from 'react';
-import { StyleSheet, Text, View ,useWindowDimensions,Image,TouchableOpacity, ScrollView ,TextInput,Dimensions,Pressable,Modal,Alert } from 'react-native';
-import { 
-  TabView, 
-  SceneMap,
-  TabBar,
-  NavigationState,
-  SceneRendererProps, 
-  
-} from 'react-native-tab-view';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  useWindowDimensions,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
+import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 
-import {COLORS, FONTS, images,icons} from '../../util/index';
+import {COLORS, FONTS, images, icons} from '../../util/index';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import IconFA from 'react-native-vector-icons/FontAwesome';
+import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-import SuccessModal from '../../components/SuccessModal';
-import ErrorModal from '../../components/ErrorModal';
-
-const widthtouse=Dimensions.get('window').width;
+import SelectGenderModal from '../../components/SelectGenderModal';
+import AddressModal from '../../components/AddressModal';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -34,594 +33,574 @@ const getUserData = async () => {
   return data;
 };
 
+const CustomInput = (props) => {
+  const {placeholder, value} = props;
+
+  // console.log('Complete-profile:', placeholder, value);
+  return (
+    <>
+      <View
+        style={[
+          {
+            borderRadius: 5,
+            backgroundColor: '#FFFFFF',
+            borderColor: '#EFEFEF',
+            borderWidth: 1,
+            marginBottom: 10,
+            marginTop: 5,
+            width: '100%',
+            position: 'relative',
+            elevation: 0.5,
+          },
+        ]}>
+        {placeholder.toLowerCase() == 'gender' ||
+        placeholder.toLowerCase() == 'employment status' ? (
+          <>
+            <TextInput
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                paddingRight: 50,
+              }}
+              placeholder={placeholder}
+            />
+            <IconFA5
+              name="chevron-down"
+              size={20}
+              color="#D6D6D6"
+              style={{
+                position: 'absolute',
+                top: 18,
+                right: 20,
+              }}
+            />
+          </>
+        ) : placeholder.toLowerCase() == 'date of birth' ? (
+          <>
+            <TextInput
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                paddingRight: 50,
+              }}
+              placeholder={placeholder}
+              value={value}
+              {...props}
+            />
+            <IconFA5
+              name="calendar-alt"
+              size={20}
+              color="#D6D6D6"
+              style={{
+                position: 'absolute',
+                top: 18,
+                right: 20,
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <TextInput
+              style={{
+                width: '100%',
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+              }}
+              placeholder={placeholder}
+            />
+          </>
+        )}
+      </View>
+    </>
+  );
+};
+
+const Space = () => <View style={{marginTop: 20}} />;
+
+const SaveChangesBtn = () => {
+  return (
+    <TouchableOpacity
+      // onPress={handleSubmit}
+      style={[
+        {
+          padding: 15,
+          borderRadius: 10,
+          marginTop: 20,
+          marginBottom: 20,
+          fontSize: 14,
+          fontFamily: 'CircularStd-Medium',
+          fontWeight: '600',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          elevation: 1,
+
+          backgroundColor: '#00DC99',
+          width: '100%',
+          borderRadius: 10,
+        },
+      ]}>
+      <Text
+        style={{
+          color: 'white',
+          fontSize: 12,
+          lineHeight: 30,
+          fontWeight: 'bold',
+        }}>
+        SAVE CHANGES
+      </Text>
+    </TouchableOpacity>
+  );
+};
 
 const FirstRoute = () => {
+  // Fot tab one
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  // const [gender, setGender] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [address, setAddress] = useState('');
+  const [showSelectGenderModal, setShowSelectGenderModal] = useState(false);
+  const [selectedGender, setSelectedGender] = useState(false);
+  const [showAddressModal, setShowAddressModal] = useState(false);
 
-    const [firstname, setFirstName] = useState('');
-    const [lastname, setLastName] = useState('');
-    const [gender, setGender] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState('');
-    const [address, setAddress] = useState('');
-    const [homeaddress, setHomeAddress] = useState('');
-    const [successModal, setSuccessModal] = useState(false);
-    const [errorModal, setErrorModal] = useState(false);
-    const [modalErrorMessage,setModalErrorMessage]=useState('');
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [country, setCountry] = useState('');
 
-    const UpdateProfile=async()=>{
+  useEffect(() => {
+    (async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const data = JSON.parse(userData);
+      // console.log('USER DATA:', data.user.firstname);
 
-      const token = await getToken();
+      const {firstname, lastname, gender, homeaddress} = data.user;
 
-      const userData={
-        firstname: firstname,
-        lastname: lastname,
-        gender: gender,
-        dob:dateOfBirth,
-        address: address,
-        homeaddress: address
-      };
+      // console.log('FirstName:', data.user);
 
-      console.log(userData);
-           
-      try {
-      
-        const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
-  
-        const response = await axios.put(url, JSON.stringify(userData) , {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        });
-  
-  
-        console.log(response.status);
-        if(response.status==200){
-          setSuccessModal(true);
-        }
-          
-       // navigation.navigate('RentalLoanOfferTest');
-  
-  
-        } catch (error) {
+      // auto fill input fields
+      setFirstName(firstname);
+      setLastName(lastname);
+      setSelectedGender(gender);
 
+      // try {
+      //   const user = await axios.get(apiUrl + '/api/v1/me', {
+      //     headers: {'Content-Type': 'application/json'},
+      //   });
+      //   return banks.data;
+      // } catch (error) {
+      //   return error.message;
+      // }
 
-          setModalErrorMessage(error.response.data.statusMsg);
+      const user = await axios.get(apiUrl + '/api/v1/me', {
+        headers: {'Content-Type': 'application/json'},
+      });
+      console.log('ME:', user);
+    })();
+  }, []);
 
-          setErrorModal(true);
-          
-          
-
-          // Alert.alert('Message', error.response.data.statusMsg, [
-          //   {text: 'Close'},
-          // ]);
-
-        }
-  
-    };
-
-    const handleNavigation = () => {
-      setSuccessModal(false);
-     // navigation.navigate('GetCode');
-    };
-  
-    return (
-
-   // const [date, setDate] = useState(new Date(1598051730000));
-    <View style={{ flex: 1, backgroundColor: '#fff' }} >
-      <ScrollView>      
-        <View style={{flexDirection:'row',height:138}}>
-            <Image
-                style={{width: 101, height: 101, borderRadius: 50, marginRight: 11,marginLeft:35,marginTop:30,marginBottom:-20}}
-                source={images.ellipse96}
-            />
-            <View style={{marginTop:60}} >
-
-               
-                <TouchableOpacity onPress={()=>{ }} style={{flexDirection:'row',justifyContent:'space-between',height:30,borderRadius:15,marginLeft:40,marginTop:10}}>
-                  <Text  style={{height:30,borderRadius:15,color:COLORS.secondary,textAlign:'center',marginTop:5}}>Tap to change picture</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-        <View style={{flexDirection:'column',alignItems:'center'}}>
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>     
-                
-                <Text style={{color: COLORS.grey, fontSize: firstname == ''? 16: 10, lineHeight: firstname == ''? 30: 10, marginBottom: firstname == ''? 0: 23}}>First name</Text> 
-                
-
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={firstname}
-                    onChangeText={(text) => setFirstName(text)}
-                />
-            </View>
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: lastname == ''? 16: 10, lineHeight: lastname == ''? 30: 10, marginBottom: lastname == ''? 0: 23}}>Last name</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                   
-                    value={lastname}
-                    onChangeText={(text) => setLastName(text)}
-                />
-            </View>
-
-            <DropDownPicker
-              items={[
-                  {label: 'Male', value: 'male', },
-                  {label: 'Female', value: 'female', }
-              ]}
-              placeholder="Select Gender"
-              defaultValue={gender}
-              containerStyle={{height: 70,marginTop:20}}
-              style={{backgroundColor: '#fff',height:0,width: widthtouse*0.9}}
-              itemStyle={{
-                  justifyContent: 'flex-start'
-              }}
-              dropDownStyle={{backgroundColor: '#fafafa'}}
-              onChangeItem={(item) =>{
-                setGender(item.value);
-                console.log(item.value);
-              }}
-          />
-
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: dateOfBirth == ''? 16: 10, lineHeight: dateOfBirth == ''? 30: 10, marginBottom: dateOfBirth == ''? 0: 23}}>Date of Birth</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={dateOfBirth}
-                    onChangeText={(text) => setDateOfBirth(text)}
-                />
-            </View>
-
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: address == ''? 16: 10, lineHeight: address == ''? 30: 10, marginBottom: address == ''? 0: 23}}>Address</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={address}
-                    onChangeText={(text) => setAddress(text)}
-                />
-            </View>
-            <TouchableOpacity
-            onPress={()=>{UpdateProfile()}}
-          
-            style={[
-              designs.btn,
-              {
-                backgroundColor: '#00DC99' ,
-                width: widthtouse*0.9,
-                borderRadius: 10,
-              },
-            ]}>
-          <Text
-            style={{
-              color:  'white' ,
-              fontSize: 14,
-              lineHeight: 30,
-              fontWeight: '900',
-            }}>
-            SAVE CHANGES
-          </Text>
-        </TouchableOpacity>
-        </View>
-      </ScrollView>  
-      <SuccessModal
-        successModal={successModal}
-        setSuccessModal={setSuccessModal}
-        handlePress={handleNavigation}
-        successHeading="Update Successful"
-        successText="You have successfully updated your profile"
-       />
-      
-      <ErrorModal
-        errorModal={errorModal}
-        setErrorModal={setErrorModal}
-        handlePress={handleNavigation}
-        errorHeading="Error ... "
-        errorText={modalErrorMessage}
-       />
-    </View>
-    )
-};
-  
-  const SecondRoute = () => {  
-    const [pickerModalVisible, setPickerModalVisible] = useState(false);
-    const [pressed, setPressed] = useState(false);
-    const [employmentStatus, setEmploymentStatus] = useState('');
-    const [nameOfCompany, setNameOfCompany] = useState('');
-    const [companyLocation, setCompanyLocation] = useState('');
-    const [successModal, setSuccessModal] = useState(false);
-
-    const [errorModal, setErrorModal] = useState(false);
-    const [modalErrorMessage,setModalErrorMessage]=useState('');
-
-
-      const UpdateProfile=async()=>{
-        const token = await getToken();
-  
-        const userData={
-          employment_status: employmentStatus,
-          work_place: nameOfCompany,
-          work_lat: companyLocation,
-        };
-  
-        console.log(userData);
-             
-        try {
-        
-          const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
-    
-          const response = await axios.put(url, JSON.stringify(userData) , {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          });
-    
-    
-          console.log(response.status);
-          if(response.status==200){
-            setSuccessModal(true);
-          }
-         // navigation.navigate('RentalLoanOfferTest');
-    
-    
-          } catch (error) {
-           
-            setModalErrorMessage(error.response.data.statusMsg);
-
-            setErrorModal(true);
-          }
-    
-      };
-    
-      const handleNavigation = () => {
-        setSuccessModal(false);
-       // navigation.navigate('GetCode');
-      };
-
-
-  return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }} >
-      <View style={{flexDirection:'column',marginTop:30,alignItems:'center'}}>
-        
-        <DropDownPicker
-              items={[
-                  {label: 'Employment', value: 'Employment', },
-                  {label: 'Unemployed', value: 'unemployed', }
-              ]}
-              placeholder="Select Employment Status"
-              defaultValue={employmentStatus}
-              containerStyle={{height: 70}}
-              style={{backgroundColor: '#fafafa',height:0,width: widthtouse*0.9,}}
-              itemStyle={{
-                  justifyContent: 'flex-start'
-              }}
-              dropDownStyle={{backgroundColor: '#fafafa'}}
-              onChangeItem={(item) =>{
-                setEmploymentStatus(item.value);
-                console.log(item.value);
-              }}
-          />
-
-          <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: nameOfCompany == ''? 16: 10, lineHeight: nameOfCompany == ''? 30: 10, marginBottom: nameOfCompany == ''? 0: 23}}>Name Of Company</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={nameOfCompany}
-                    onChangeText={(text) => setNameOfCompany(text)}
-                />
-            </View>
-
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: companyLocation == ''? 16: 10, lineHeight: companyLocation == ''? 30: 10, marginBottom: companyLocation == ''? 0: 23}}>Location</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={companyLocation}
-                    onChangeText={(text) => setCompanyLocation(text)}
-                />
-            </View>
-            <TouchableOpacity
-            onPress={()=>{UpdateProfile()}}
-          
-            style={[
-              designs.btn,
-              {
-                backgroundColor: '#00DC99' ,
-                width: widthtouse*0.9,
-                borderRadius: 10,
-              },
-            ]}>
-          <Text
-            style={{
-              color:  'white' ,
-              fontSize: 14,
-              lineHeight: 30,
-              fontWeight: '900',
-            }}>
-            SAVE CHANGES
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <SuccessModal
-        successModal={successModal}
-        setSuccessModal={setSuccessModal}
-        handlePress={handleNavigation}
-        successHeading="Registration Successful"
-        successText="You have successfully signed up. You can now proceed to verify your identity."
-       />
-
-      <ErrorModal
-        errorModal={errorModal}
-        setErrorModal={setErrorModal}
-        handlePress={handleNavigation}
-        errorHeading="Error ... "
-        errorText={modalErrorMessage}
-       />
-    </View>
-  )
-};
-
-  const ThirdRoute = () => {
-    const [pickerModalVisible, setPickerModalVisible] = useState(false);
-    const [pressed, setPressed] = useState(false);
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [bvn, setBvn] = useState('');
-    const [modeOfPaymentOptions] = useState([
-        {label: 'Bank Transfer', value: 'Bank Transfer'},
-        {label: 'Cheque', value: 'Cheque'},
-        {label: 'Deposit', value: 'Deposit'},
-      ])
-    const [successModal, setSuccessModal] = useState(false);
-    const [errorModal, setErrorModal] = useState(false);
-    const [modalErrorMessage,setModalErrorMessage]=useState('');
-
-      const UpdateProfile=async()=>{
-        const token = await getToken();
-  
-        const userData={
-          email: email,
-          telephone: phoneNumber,
-          savings_bvn: bvn
-        };
-  
-        console.log(userData);
-             
-        try {
-        
-          const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
-    
-          const response = await axios.put(url, JSON.stringify(userData) , {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          });
-    
-    
-          console.log(response.status);
-
-          if(response.status==200){
-            setSuccessModal(true);
-          }
-            
-         // navigation.navigate('RentalLoanOfferTest');
-    
-    
-          } catch (error) {
-           
-            setModalErrorMessage(error.response.data.statusMsg);
-
-            setErrorModal(true);
-          }
-    
-      };
-    
-
-      const handleNavigation = () => {
-        setSuccessModal(false);
-       // navigation.navigate('GetCode');
-      };
-
-
-
-  return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }} >
-      <View style={{flexDirection:'column',marginTop:30,alignItems:'center'}}>
-
-      <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: email == ''? 16: 10, lineHeight: email == ''? 30: 10, marginBottom: email == ''? 0: 23}}>Email</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={email}
-                    onChangeText={(text) => setEmail(text)}
-                    editable={false}
-                />
-            </View>
-
-
-          <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: phoneNumber == ''? 16: 10, lineHeight: phoneNumber == ''? 30: 10, marginBottom: phoneNumber == ''? 0: 23}}>Phone Number</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={phoneNumber}
-                    onChangeText={(text) => setPhoneNumber(text)}
-                />
-            </View>
-
-            <View style={[designs.customInput, {width: widthtouse*0.9}]}>      
-                <Text style={{color: COLORS.grey, fontSize: bvn == ''? 16: 10, lineHeight: bvn == ''? 30: 10, marginBottom: bvn == ''? 0: 23}}>Bvn</Text>              
-                <TextInput
-                    style={{flex: 1,alignSelf:'center'}}
-                   
-                    placeholderTextColor="#BFBFBF"
-                    
-                    value={bvn}
-                    onChangeText={(text) => setBvn(text)}
-                />
-            </View>
-
-            <TouchableOpacity
-            onPress={()=>{UpdateProfile()}}
-          
-            style={[
-              designs.btn,
-              {
-                backgroundColor: '#00DC99' ,
-                width: widthtouse*0.9,
-                borderRadius: 10,
-              },
-            ]}>
-          <Text
-            style={{
-              color:  'white' ,
-              fontSize: 14,
-              lineHeight: 30,
-              fontWeight: '900',
-            }}>
-            SAVE CHANGES
-          </Text>
-        </TouchableOpacity>
-         
-      </View>
-      <SuccessModal
-        successModal={successModal}
-        setSuccessModal={setSuccessModal}
-        handlePress={handleNavigation}
-        successHeading="Registration Successful"
-        successText="You have successfully signed up. You can now proceed to verify your identity."
-       />
-      <ErrorModal
-        errorModal={errorModal}
-        setErrorModal={setErrorModal}
-        handlePress={handleNavigation}
-        errorHeading="Error ... "
-        errorText={modalErrorMessage}
-       />
-    </View>
-  )
+  const onConfirm = () => {
+    // close address modal
+    setShowAddressModal(false);
+    console.log('DATA:', {street, city, state, country});
   };
 
+  const updateProfile = async () => {
+    const token = await getToken();
 
-  const renderTabBar = props => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: 'white' }}
-      style={{ backgroundColor: 'white' }}
-      renderLabel={({ route, focused, color }) => (
-        <Text style={{ color:focused?'white':COLORS.grey, margin: 0,backgroundColor:focused?'#9D98EC':'white',height:32,textAlign:'center',width:100,paddingTop:6,borderRadius:5 }}>
-          {route.title}
-        </Text>   
-    )}
-    />
+    const userData = {
+      firstname: firstName,
+      lastname: lastName,
+      gender: selectedGender,
+      // dob: dateOfBirth,
+      // address: address,
+      homeaddress: address,
+    };
+
+    console.log(userData);
+
+    try {
+      const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
+      const response = await axios.put(url, JSON.stringify(userData), {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      // console.log(response.status);
+      if (response.status == 200) {
+        // await AsyncStorage.setItem('userData', JSON.stringify(data));
+
+        const userData = await AsyncStorage.getItem('userData');
+        const data = JSON.parse(userData);
+
+        console.log(data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <View
+        style={{
+          flexDirection: 'row',
+          paddingVertical: 20,
+          alignItems: 'center',
+          justifyContent: 'space-evenly',
+        }}>
+        <View
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            backgroundColor: '#F7F8FD',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Icon
+            name="camera"
+            size={40}
+            style={{
+              paddingVertical: 20,
+              paddingHorizontal: 10,
+              fontWeight: '900',
+            }}
+            color={COLORS.grey}
+          />
+        </View>
+        <TouchableOpacity>
+          <Text
+            style={{color: COLORS.secondary, fontWeight: 'bold', fontSize: 12}}>
+            Tap to change picture
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View>
+        {/* <CustomInput placeholder="First Name" value={firstName} />
+        <CustomInput placeholder="Last Name" value={lastName} />
+        <CustomInput placeholder="Gender" value={gender} />
+        <CustomInput placeholder="Date of Birth" value={dateOfBirth} /> */}
+        <TextInput
+          style={[styles.textField]}
+          placeholder="First Name"
+          keyboardType="default"
+          // placeholderTextColor="#BFBFBF"
+          value={firstName}
+          onChangeText={(text) => setFirstName(text)}
+        />
+
+        <TextInput
+          style={[styles.textField]}
+          placeholder="Last Name"
+          keyboardType="default"
+          // placeholderTextColor="#BFBFBF"
+          value={lastName}
+          onChangeText={(text) => onChange(text)}
+        />
+
+        <TouchableOpacity
+          style={styles.customInput}
+          onPress={() => {
+            setShowSelectGenderModal(!showSelectGenderModal);
+          }}>
+          {selectedGender != '' ? (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: COLORS.primary,
+                textTransform: 'capitalize',
+              }}>
+              {selectedGender}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#BABABA',
+              }}>
+              Gender
+            </Text>
+          )}
+
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
+
+        {/* <TextInput
+          style={[styles.textField]}
+          placeholder="First Name"
+          keyboardType="number-pad"
+          // placeholderTextColor="#BFBFBF"
+          value={gender}
+          onChangeText={(text) => setGender(text)}
+        /> */}
+
+        {/* <TextInput
+          style={[styles.textField]}
+          placeholder="First Name"
+          keyboardType="number-pad"
+          // placeholderTextColor="#BFBFBF"
+          value={dateOfBirth}
+          onChangeText={(text) => setDateOfBirth(text)}
+        /> */}
+
+        {/* <TextInput
+          style={[styles.textField]}
+          placeholder="First Name"
+          keyboardType="number-pad"
+          // placeholderTextColor="#BFBFBF"
+          value={address}
+          onChangeText={(text) => setAddress(text)}
+        /> */}
+
+        <View style={{paddingVertical: 10}}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingHorizontal: 10,
+            }}>
+            <Text
+              style={{fontSize: 15, fontWeight: 'bold', color: COLORS.primary}}>
+              Address
+            </Text>
+            <TouchableOpacity
+              onPress={() => setShowAddressModal(!showAddressModal)}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.secondary,
+                }}>
+                Change address
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {/* <CustomInput placeholder="15 Herber Macaulay way, Yaba, Lagos, Nigeria" /> */}
+
+          <TouchableOpacity onPress={() => setShowAddressModal(true)}>
+            <TextInput
+              style={[styles.textField]}
+              placeholder="Address"
+              keyboardType="number-pad"
+              editable={false}
+
+              // placeholderTextColor="#BFBFBF"
+              // value={firstName}
+              // onChangeText={(text) => setFirstName(text)}
+            />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          onPress={updateProfile}
+          style={[
+            {
+              padding: 15,
+              borderRadius: 10,
+              marginTop: 20,
+              marginBottom: 20,
+              fontSize: 14,
+              fontFamily: 'CircularStd-Medium',
+              fontWeight: '600',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              elevation: 1,
+
+              backgroundColor: '#00DC99',
+              width: '100%',
+              borderRadius: 10,
+            },
+          ]}>
+          <Text
+            style={{
+              color: 'white',
+              fontSize: 12,
+              lineHeight: 30,
+              fontWeight: 'bold',
+            }}>
+            SAVE CHANGES
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <SelectGenderModal
+        onRequestClose={() => setShowSelectGenderModal(!showSelectGenderModal)}
+        visible={showSelectGenderModal}
+        onClick={(value) => setSelectedGender(value)}
+      />
+
+      <AddressModal
+        onConfirm={onConfirm}
+        onRequestClose={() => setShowAddressModal(!showAddressModal)}
+        visible={showAddressModal}
+        street={street}
+        setStreet={setStreet}
+        city={city}
+        setCity={setCity}
+        state={state}
+        setState={setState}
+        country={country}
+        setCountry={setCountry}
+      />
+    </ScrollView>
   );
+};
 
+const SecondRoute = () => {
+  // For tab two
+  const [employmentStatus, setEmploymentStatus] = useState('');
+  const [nameOfCompany, setNameOfCompany] = useState('');
+  const [location, setLocation] = useState('');
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <Space />
+      <CustomInput placeholder="Employment Status" />
+      <CustomInput placeholder="Name of Company" />
+      <CustomInput placeholder="Location" />
+      <SaveChangesBtn />
+    </ScrollView>
+  );
+};
+
+const ThirdRoute = () => {
+  // For tab three
+  const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [bvn, setBvn] = useState('');
+
+  return (
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <Space />
+      <CustomInput placeholder="Email" />
+      <CustomInput placeholder="Phone Number" />
+      <CustomInput placeholder="Bank Verification Number (BVN)" />
+      <SaveChangesBtn />
+    </ScrollView>
+  );
+};
+
+const renderTabBar = (props) => (
+  <TabBar
+    {...props}
+    indicatorStyle={{backgroundColor: '#9D98EC', flex: 1, height: '100%'}}
+    pressColor={'transparent'}
+    style={{
+      backgroundColor: 'white',
+      elevation: 0,
+      width: '100%',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      borderRadius: 10,
+      overflow: 'hidden',
+      backgroundColor: '#F7F8FD',
+    }}
+    renderLabel={({route, focused, color}) => (
+      <Text
+        style={{
+          color: focused ? 'white' : COLORS.grey,
+          fontSize: 12,
+          // fontWeight: 'bold',
+        }}>
+        {route.title}
+      </Text>
+    )}
+  />
+);
+
+export default function Profile({navigation}) {
+  const layout = useWindowDimensions();
+
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    {key: 'first', title: 'Personal'},
+    {key: 'second', title: 'Employment'},
+    {key: 'third', title: 'Security'},
+  ]);
 
   const renderScene = SceneMap({
     first: FirstRoute,
     second: SecondRoute,
-    third: ThirdRoute
+    third: ThirdRoute,
   });
-  
 
-const profile = ({navigation}) => {
-    const layout = useWindowDimensions();
+  return (
+    <View style={{flex: 1, backgroundColor: '#F7F8FD'}}>
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={25}
+        style={{paddingVertical: 20, paddingHorizontal: 10, fontWeight: '900'}}
+        color="#2A286A"
+      />
 
-    const [date, setDate] = useState(new Date(1598051730000));
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: 'bold',
+          marginBottom: 20,
+          marginLeft: 10,
+        }}>
+        Profile
+      </Text>
 
-    const [index, setIndex] = React.useState(0);
-    const [routes] = React.useState([
-      { key: 'first', title: 'Personal' },
-      { key: 'second', title: 'Employment' },
-      { key: 'third', title: 'Security' },
-    ]);
-
-    
-
-    const handleNavigation = () => {
-      setSuccessModal(false);
-     // navigation.navigate('GetCode');
-    };
-  
-    return (
-
-
-
-      <View style={{flex:1,backgroundColor:'#F7F8FD'}}>
-        
-        <Icon
-            onPress={() => navigation.goBack()}
-            name="arrow-back-outline"
-            size={25}
-            style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
-            color="#2A286A"
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: 'white',
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+          borderTopLeftRadius: 10,
+          borderTopRightRadius: 10,
+        }}>
+        <TabView
+          renderTabBar={renderTabBar}
+          navigationState={{index, routes}}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          initialLayout={{width: layout.width}}
+          tabStyle={{elevation: 0}}
         />
-
-
-          <TabView
-            renderTabBar={renderTabBar}
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            initialLayout={{ width: layout.width }}
-            style={{borderTopLeftRadius:20,borderTopRightRadius:20}}
-          />
-
-      
-      </View>  
-    );
+      </View>
+    </View>
+  );
 }
 
-export default profile;
-
 const styles = StyleSheet.create({
-  tabbar: {
-    backgroundColor: '#263238',
-    overflow: 'hidden',
+  textField: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+    color: COLORS.primary,
   },
-  icon: {
-    backgroundColor: 'transparent',
-    color: 'white',
-  },
-  container: {
-    flex: 1,
+
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  indicator: {
-    backgroundColor: 'rgb(0, 132, 255)',
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    margin: 6,
-  },
-  badge: {
-    marginTop: 4,
-    marginRight: 32,
-    backgroundColor: '#f44336',
-    height: 24,
-    width: 24,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  count: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginTop: -2,
+    justifyContent: 'space-between',
+    padding: 20,
   },
 });

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -10,51 +10,46 @@ import {
 import {images, icons} from '../../util/index';
 import designs from './style';
 import {sendVerificationCode} from '../../services/network';
-import Toast from 'react-native-toast-message';
 import Spinner from 'react-native-loading-spinner-overlay';
-import SuccessModal from '../../components/SuccessModal';
+
+import PhoneInput from 'react-native-phone-number-input';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function GetCode({navigation}) {
-  const [successModal, setSuccessModal] = useState(true);
-  const [successMessage, setSuccessMessage] = useState('');
   const [spinner, setSpinner] = useState(false);
-  const [telephone, setTelePhone] = useState('');
+  const [value, setValue] = useState('');
+  const [formattedValue, setFormattedValue] = useState('');
+  const [valid, setValid] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
+  const phoneInput = useRef(null);
 
   const handleSubmit = async () => {
-    if (telephone.trim().length == 0) {
-      return Alert.alert(
-        'Validation Error',
-        'Telephone number cannot be empty',
-      );
+    console.log(value.trim());
+    // check if phone number is valid
+    const checkValid = phoneInput.current?.isValidNumber(value);
+
+    if (!checkValid) setValid(false);
+    else {
+      setValid(true);
+      if (value.trim().length == 0) {
+        setValid(false);
+      }
+      const data = {telephone: formattedValue};
+      setSpinner(true);
+      const response = await sendVerificationCode(data);
+
+      if (response.status == 200) {
+        setValue('');
+
+        setSpinner(false);
+        navigation.navigate('VerifyNumber', {
+          phone_number: formattedValue,
+        });
+      } else {
+        setSpinner(false);
+        setValid(false);
+      }
     }
-    const data = {telephone: '+234' + telephone};
-    setSpinner(true);
-    const response = await sendVerificationCode(data);
-
-    if (response.status == 200) {
-      setSuccessMessage(response.data.statusMsg);
-      Toast.show({
-        text1: 'Code Sent',
-        text2: response.data.statusMsg + ' 👋',
-        visibilityTime: 2000,
-        position: 'top',
-        topOffset: 30,
-      });
-
-      setSpinner(false);
-      navigation.navigate('VerifyNumber', {
-        phone_number: '+234' + telephone,
-      });
-      //setSuccessModal(true);
-    } else {
-      setSpinner(false);
-      Alert.alert('Request Failed', response, [{text: 'Ok'}]);
-    }
-  };
-
-  const handleNavigation = () => {
-    setSuccessModal(false);
-    navigation.navigate('VerifyNumber');
   };
 
   return (
@@ -65,11 +60,8 @@ export default function GetCode({navigation}) {
         fontFamily: 'CircularStd',
         padding: 15,
         justifyContent: 'center',
-        // flexDirection: 'row',
-        // justifyContent: 'center',
-        // alignItems: 'center',
       }}>
-      <View style={{alignItems: 'center', marginBottom: 50, marginTop: 20}}>
+      <View style={{alignItems: 'center', marginBottom: 0, marginTop: 0}}>
         <Image
           style={[designs.image, {marginTop: 0}]}
           source={icons.kwabalogocol}
@@ -77,74 +69,70 @@ export default function GetCode({navigation}) {
         />
       </View>
       <Text style={[designs.heading, {textAlign: 'center', color: '#465969'}]}>
-        Enter your number
+        Enter your phone number
       </Text>
       <Text style={[designs.body, {textAlign: 'center', marginTop: 10}]}>
-        We will send a code to verify {'\n'} your number
+        We will send a code to verify your number
       </Text>
-      <View style={designs.customInput}>
-        <Image
-          style={{
-            width: 27,
-            height: 18,
-            position: 'absolute',
-            top: 18,
-            left: 10,
-          }}
-          source={icons.naijaFlag}
-        />
-        <Text
-          style={{
-            color: '#465969',
-            fontSize: 16,
-            fontWeight: '600',
-            // lineHeight: 30,
-            position: 'absolute',
-            top: 15,
-            left: 50,
-          }}>
-          +234
-        </Text>
-        <TextInput
-          placeholder="Phone Number"
-          style={{
-            width: '100%',
-            paddingLeft: 100,
-            paddingRight: 50,
-            paddingTop: 12,
-            paddingBottom: 12,
-          }}
-          keyboardType="number-pad"
-          value={telephone}
-          onChangeText={(text) => setTelePhone(text)}
-        />
-      </View>
-      <Spinner
-        visible={spinner}
-        textContent={'Sending...'}
-        animation="fade"
-        textStyle={{
-          color: '#2A286A',
-          fontSize: 20,
-          fontWeight: 'bold',
-          lineHeight: 30,
+
+      <PhoneInput
+        ref={phoneInput}
+        defaultValue={value}
+        defaultCode="NG"
+        layout="first"
+        placeholder="Phone number"
+        onChangeText={setValue}
+        onChangeFormattedText={(text) => {
+          setFormattedValue(text);
         }}
-        size="large"
+        renderDropdownImage={<Icon name="chevron-down" />}
+        // autoFocus
+        containerStyle={{
+          width: '100%',
+          height: 60,
+          borderWidth: 1,
+          borderRadius: 5,
+          borderColor: '#EFEFEF',
+          backgroundColor: 'white',
+          marginTop: 20,
+        }}
+        flagButtonStyle={{
+          backgroundColor: 'transparent',
+        }}
+        codeTextStyle={{
+          backgroundColor: 'transparent',
+          fontSize: 14,
+        }}
+        textContainerStyle={{
+          backgroundColor: 'transparent',
+        }}
+        textInputStyle={{
+          fontSize: 14,
+          padding: 0,
+          margin: 0,
+        }}
       />
+      {/* {!valid && (
+        <View
+          style={{
+            paddingHorizontal: 20,
+            marginTop: 5,
+          }}>
+          <Text style={{color: 'pink'}}>Invalid phone number</Text>
+        </View>
+      )} */}
+      <Spinner visible={spinner} animation="fade" size="large" />
       <TouchableOpacity
         onPress={handleSubmit}
-        disabled={telephone.trim().length == 0}
+        // disabled={value.trim().length == 0}
         style={[
           designs.btn,
           {
-            // backgroundColor:
-            //   !telephone.trim().length == 0 ? '#00DC99' : '#EAEAEA',
             backgroundColor: '#00DC99',
           },
         ]}>
         <Text
           style={{
-            // color: !telephone.trim().length == 0 ? 'white' : '#D6D6D6',
             color: 'white',
             fontSize: 12,
             lineHeight: 32,
@@ -153,13 +141,6 @@ export default function GetCode({navigation}) {
           GET CODE
         </Text>
       </TouchableOpacity>
-      <SuccessModal
-        successModal={successModal}
-        setSuccessModal={setSuccessModal}
-        handlePress={handleNavigation}
-        successHeading="Message sent!"
-        successText={successMessage}
-      />
     </View>
   );
 }

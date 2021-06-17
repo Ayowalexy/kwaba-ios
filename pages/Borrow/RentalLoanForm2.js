@@ -92,7 +92,7 @@ const RentalLoanForm2 = ({navigation}) => {
                 fontSize: 20,
               },
             ]}>
-            Rent Top-up
+            Rent Now Pay Later
           </Text>
           <View style={designs.contentWrapper}>
             <View style={designs.formHeader}>

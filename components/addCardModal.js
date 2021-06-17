@@ -98,16 +98,9 @@ export default function AddCardModal(props) {
           </View>
 
           <TouchableOpacity
-            disabled={checkIfInputsEmpty() ? true : false}
             onPress={onConfirm}
-            style={[
-              styles.btn,
-              {
-                backgroundColor: '#2A286A',
-                opacity: checkIfInputsEmpty() ? 0.5 : 1,
-              },
-            ]}>
-            <Text style={{color: 'white', fontWeight: 'bold'}}>CONFIRM</Text>
+            style={[styles.btn, {backgroundColor: '#2A286A'}]}>
+            <Text style={{color: 'white'}}>CONFIRM</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -128,28 +121,15 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '100%',
-    // top: 50,
-    // height: 400,
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
     padding: 25,
-    // paddingTop: 15,
-    // shadowColor: '#BFBFBF',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 4,
-    // elevation: 6,
   },
   btn: {
     width: '100%',
-    // height: 70,
     paddingVertical: 20,
-    // paddingHorizontal: 20,
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
@@ -158,11 +138,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    // elevation: 5,
   },
   textInput: {
     width: '100%',
-    // height: 70,
     borderRadius: 5,
     paddingVertical: 12,
     paddingHorizontal: 20,

@@ -80,12 +80,20 @@ const mastercarddesign = require('../assets/images/mastercarddesign.png');
 const visacarddesign = require('../assets/images/visacarddesign.png');
 const companyLogo = require('../assets/images/companyLogo.png');
 const ellipsis = require('../assets/images/circle-bg.png');
+const eligibilityImage = require('../assets/images/eligibilityImage.png');
 
 const buyAirtime = require('../assets/images/buy-airtime.png');
 const airtime1 = require('../assets/images/airtime-mtn.png');
 const airtime2 = require('../assets/images/airtime-airtel.png');
 const airtime3 = require('../assets/images/airtime-glo.png');
 const airtime4 = require('../assets/images/airtime-9mobile.png');
+
+const rentNowPayLaterOnboarding = require('../assets/images/rentNowPayLaterOnboarding.png');
+const congratulation = require('../assets/images/congratulation.png');
+const manualUpload = require('../assets/images/manual_upload.png');
+const mobileInternetBanking = require('../assets/images/mobile_internet_banking.png');
+const bankRequest = require('../assets/images/bank_request.png');
+const uploadDocument = require('../assets/images/uploadDocument.png');
 
 export {
   logo,
@@ -175,4 +183,11 @@ export {
   airtime2,
   airtime3,
   airtime4,
+  rentNowPayLaterOnboarding,
+  eligibilityImage,
+  congratulation,
+  manualUpload,
+  mobileInternetBanking,
+  bankRequest,
+  uploadDocument,
 };

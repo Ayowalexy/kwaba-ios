@@ -59,7 +59,7 @@ const designs = StyleSheet.create({
   linearGradient: {
     // paddingLeft: 25,
     // paddingBottom: 15,
-    padding: 25,
+    padding: 20,
     // height: 139,
     // padding: 10,
     opacity: 0.95,
@@ -68,6 +68,7 @@ const designs = StyleSheet.create({
     // borderColor: 'red',
     justifyContent: 'space-between',
     overflow: 'hidden',
+    flex: 1,
   },
 
   bottom: {

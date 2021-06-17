@@ -16,14 +16,14 @@ import Indicators from '../../components/indicators';
 const screens = [
   {
     id: 1,
-    title: 'Rent Savings',
+    title: 'Rent Saving',
     content: 'Save towards your rent with your \n flatmates or spouse.',
     image: icons.onboardingImage,
     loader: icons.onboardingLoader1,
   },
   {
     id: 2,
-    title: 'Emergency Funds',
+    title: 'Emergency Fund',
     content:
       'Get instant loans from Kwaba when \n you need to sort out life\n emergencies or unexpected \n expenses.',
     image: icons.onboardingImage2,

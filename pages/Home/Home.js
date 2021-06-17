@@ -7,9 +7,10 @@ import {
   ImageBackground,
   Image,
   Dimensions,
+  StatusBar,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {icons, images} from '../../util/index';
+import {icons, images, COLORS} from '../../util/index';
 import designs from './style';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
@@ -18,6 +19,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
+import ComingSoon from '../../components/ComingSoon';
 
 const width = Dimensions.get('window').get;
 export default function Home({navigation}) {
@@ -31,11 +33,13 @@ export default function Home({navigation}) {
   const [rentalFinance, setRentalFinance] = useState(0);
   const [instantLoan, setInstantLoan] = useState(0);
 
+  const [showModal, setShowModal] = useState(false);
+
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
 
-      console.log('hello here is our data ', JSON.parse(userData));
+      // console.log('hello here is our data ', JSON.parse(userData));
       if (userData) {
         setName(JSON.parse(userData).username);
       }
@@ -67,14 +71,14 @@ export default function Home({navigation}) {
       id: 2,
       title: 'RENTAL FINANCE',
       subtitle: 'Next payment amount',
-      amount: `₦${rentalFinance}`,
+      amount: `₦${currencyFormat(rentalFinance)}`,
       image: images.rentalFinanceCard,
     },
     {
       id: 3,
       title: 'INSTANT LOAN',
       subtitle: 'Repayment amount',
-      amount: `₦${instantLoan}`,
+      amount: `₦${currencyFormat(instantLoan)}`,
       image: images.instantLoanCard,
     },
   ];
@@ -90,14 +94,14 @@ export default function Home({navigation}) {
 
     {
       id: 2,
-      title: 'Rent Top-up',
+      title: 'Rent Now, Pay Later',
       body:
-        'Get a rent top-up if you are running short on your rent or obtain discounts if you have your complete rent when you pay via Kwaba',
+        "Let's help you pay your rent so you can pay back in easy monthly payments",
       image: images.maskGroup29,
     },
     {
       id: 3,
-      title: 'Emergency Funds',
+      title: 'Emergency Fund',
       body: 'Access quick loans to sort out life emergencies',
       image: images.maskGroup44,
     },
@@ -113,35 +117,53 @@ export default function Home({navigation}) {
   const goToPage = (item) => {
     if (item.title == 'Rent Savings') {
       navigation.navigate('SavingsHome');
-    } else if (item.title == 'Rent Top-up') {
-      navigation.navigate('EmploymentStatus');
-    } else if (item.title == 'Emergency Funds') {
-      navigation.navigate('EmergencyLoanHome');
+    } else if (item.title == 'Rent Now, Pay Later') {
+      navigation.navigate('RentNowPayLaterOnboarding');
+    } else if (item.title == 'Emergency Fund') {
+      navigation.navigate('EmergencyFundOnboarding');
     } else {
-      navigation.navigate('CompleteProfile1');
+      navigation.navigate('Referral');
     }
   };
 
   return (
     <View style={designs.container}>
+      {/* <StatusBar translucent backgroundColor="#00000050" /> */}
+      <StatusBar backgroundColor={COLORS.primary} />
       <View style={designs.topBar}>
         <View style={designs.user}>
-          <Image
+          {/* <Image
             style={{width: 35, height: 35, borderRadius: 50, marginRight: 11}}
             source={images.ellipse96}
-          />
+          /> */}
+          <View
+            style={{
+              width: 30,
+              height: 30,
+              borderRadius: 30,
+              backgroundColor: '#8B8AAE',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginRight: 10,
+            }}>
+            <Text style={{fontWeight: 'bold', fontSize: 15, color: '#fff'}}>
+              {name.charAt(0)}
+            </Text>
+          </View>
           <Text style={{color: 'white', fontSize: 15, lineHeight: 19}}>
             Hello, {name}
           </Text>
         </View>
-        <Icon
-          name="notifications"
-          color="#8B8AAE"
-          size={20}
-          style={{width: 21, height: 24}}
-        />
+        <TouchableOpacity onPress={() => setShowModal(!showModal)}>
+          <Icon
+            name="notifications"
+            color="#8B8AAE"
+            size={20}
+            style={{width: 21, height: 24}}
+          />
+        </TouchableOpacity>
       </View>
-      {!isProfileComplete && (
+      {isProfileComplete && (
         <View style={designs.secondBar}>
           <View
             style={{
@@ -165,12 +187,12 @@ export default function Home({navigation}) {
               }}>
               Complete your profile{' '}
               <Text style={{color: 'white'}}>
-                and get access to{'\n'}rental finance and instant loan
+                and get access to{'\n'}Emergency funds and Rent now pay later
               </Text>
             </Text>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('CompleteProfile1')}>
+            onPress={() => navigation.navigate('CompleteProfile2')}>
             <View
               style={{
                 display: 'flex',
@@ -225,7 +247,7 @@ export default function Home({navigation}) {
                       }}>
                       {item.id == 1 ? (
                         <Image
-                          style={{width: 50, height: 40}}
+                          style={{width: 30, height: 30, resizeMode: 'contain'}}
                           source={images.piggyBank}
                         />
                       ) : (
@@ -424,7 +446,7 @@ export default function Home({navigation}) {
                     style={{
                       color: '#2A286A',
                       fontFamily: 'CircularStd',
-                      fontSize: 16,
+                      fontSize: 14,
                       lineHeight: 23,
                       fontWeight: 'bold',
                     }}>
@@ -436,7 +458,7 @@ export default function Home({navigation}) {
                       marginTop: 9,
                       color: '#ADADAD',
                       fontFamily: 'CircularStd',
-                      fontSize: 12.89,
+                      fontSize: 12,
                       lineHeight: 20,
                       fontWeight: '600',
                     }}>
@@ -463,6 +485,12 @@ export default function Home({navigation}) {
           {/* </View> */}
         </View>
       </ScrollView>
+
+      <ComingSoon
+        onRequestClose={() => setShowModal(!showModal)}
+        visible={showModal}
+        name="notification"
+      />
     </View>
   );
 }

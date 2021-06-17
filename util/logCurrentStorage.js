@@ -5,10 +5,10 @@ export function logCurrentStorage() {
     AsyncStorage.multiGet(keyArray).then((keyValArray) => {
       let myStorage = {};
       for (let keyVal of keyValArray) {
-        myStorage[keyVal[0]] = keyVal[1]
+        myStorage[keyVal[0]] = keyVal[1];
       }
 
-      console.log('CURRENT STORAGE: ', myStorage);
-    })
+      // console.log('CURRENT STORAGE: ', myStorage);
+    });
   });
 }
