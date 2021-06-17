@@ -5,77 +5,123 @@ import {
   Image,
   ImageBackground,
   TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
 } from 'react-native';
 import designs from './style';
 import {FONTS, icons, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useSelector,useDispatch} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
+import LinearGradient from 'react-native-linear-gradient';
+
+const STYLES = ['default', 'dark-content', 'light-content'];
+const TRANSITIONS = ['fade', 'slide', 'none'];
 
 const Welcome = ({navigation}) => {
-  const [userToken, setUserToken] = useState(null);
+  const [userToken, setUserToken] = useState('');
+  const [hidden, setHidden] = useState(false);
+  const [statusBarStyle, setstatusBarStyle] = useState(STYLES[0]);
+  const [statusBarTransition, setstatusBarTransition] = useState(
+    TRANSITIONS[0],
+  );
+
+  const changeStatusBarVisibility = () => setHidden(!hidden);
+
+  const changeStatusBarStyle = () => {
+    const styled = STYLES.indexOf(statusBarStyle) + 1;
+    if (styled === STYLES.length) {
+      setstatusBarStyle(STYLES[0]);
+    } else {
+      setstatusBarStyle(STYLES[styled]);
+    }
+  };
 
   const store2 = useSelector((state) => state.loginReducer);
 
-  useEffect(() => {
-    // const getuser = async () => {
-    //   const userData = await AsyncStorage.getItem('userData');
-    //   const token = userData != null ? JSON.parse(userData).token : null;
-    //   setUserToken(token);
-    // };
-    // getuser();
-  }, [userToken]);
+  useEffect(() => {}, [userToken]);
 
   return (
-    <View style={designs.container}>
-      <Image style={designs.image} source={images.kwabaLogo} />
-      <View style={designs.bgImageContainer}>
-        <ImageBackground source={images.maskGroup6} style={designs.bgImage}>
-          <View style={designs.innerView}>
-            <View>
-              <Text style={[designs.bigText,{fontWeight:'bold',color:'#fff',fontSize:FONTS.largeTitle,}]}>
-                Welcome to{'\n'}
-                Kwaba
-              </Text>
-              <Text style={[designs.smallText, FONTS.body1]}>
-                The future of rent payment
-              </Text>
-            </View>
+    <SafeAreaView style={designs.container}>
+      <StatusBar hidden />
+      <Image
+        source={icons.welcomeShape1}
+        style={{
+          minWidth: 50,
+          minHeight: 10,
+          resizeMode: 'cover',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+        }}
+      />
 
-            <TouchableOpacity
-              onPress={() => navigation.navigate('Onboarding')}
-              activeOpacity={0.7}
-              style={designs.button}>
-              <ImageBackground
-                style={designs.arrowFwd}
-                source={icons.arrowForward}>
-                <Icon name="arrow-forward-outline" size={50} color="white" />
-              </ImageBackground>
-            </TouchableOpacity>
-          </View>
-          <View style={{marginTop: 100}}>
-            <TouchableOpacity
-              // onPress={() => navigation.navigate('GetCode')}
-              onPress={() => navigation.navigate('SignUp')}
-              style={designs.getStartedBtn}>
-              <Text style={{fontWeight: '600', color: '#2A286A'}}>
-                GET STARTED
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {store2.token == null && (
-            <View style={designs.linkContainer}>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={{color: 'white'}}>
-                  Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
-                </Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </ImageBackground>
+      <Image
+        source={icons.welcomeShape2}
+        style={{
+          minWidth: 50,
+          minHeight: 10,
+          resizeMode: 'cover',
+          position: 'absolute',
+          bottom: '20%',
+          right: 0,
+        }}
+      />
+      <View style={designs.logoContainer}>
+        <Image source={icons.kwabalogocol} style={designs.logo} />
       </View>
-    </View>
+      <View style={{flex: 1, padding: 20, paddingBottom: 30}}>
+        <View style={{flex: 1, alignItems: 'center'}}>
+          <Text style={{fontSize: 28, fontWeight: 'bold', color: '#2A286A'}}>
+            Welcome to Kwaba
+          </Text>
+          <Text
+            style={{
+              width: 220,
+              textAlign: 'center',
+              marginTop: 5,
+              color: '#2A286A',
+              fontSize: 14,
+              // fontWeight: 'bold',
+            }}>
+            The Future of rent.
+          </Text>
+        </View>
+
+        <View style={{alignItems: 'center'}}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Onboarding')}
+            style={{
+              width: '100%',
+              paddingVertical: 22,
+              backgroundColor: '#00DC99',
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: '#FFF',
+              alignItems: 'center',
+              borderRadius: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                color: '#FFF',
+                // color: '#2A286A',
+              }}>
+              Get Started
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{marginTop: 15}}
+            onPress={() => navigation.navigate('Login')}>
+            <Text style={{color: '#2A286A', fontWeight: '600'}}>
+              Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 

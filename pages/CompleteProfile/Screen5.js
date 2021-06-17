@@ -6,7 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -15,31 +15,25 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 import Modal from '../../components/modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logCurrentStorage } from '../../util/logCurrentStorage';
+import {logCurrentStorage} from '../../util/logCurrentStorage';
 import moment from 'moment';
 
-
-
 const Screen5 = ({navigation}) => {
-  const [lastRentAmount, setLastRentAmount]= useState("");
+  const [lastRentAmount, setLastRentAmount] = useState('');
   const [date, setDate] = useState(new Date());
   const [selectedValue, setSelectedValue] = useState('Landlord');
   const [showDate, setShowDate] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   const isError = () => {
-    if (
-      (lastRentAmount.trim().length == 0 ||
-        selectedValue.trim().length == 0)) {
+    if (lastRentAmount.trim().length == 0 || selectedValue.trim().length == 0) {
       return true;
     } else {
       return false;
     }
   };
 
-  const dateFormatted = moment(date).format(
-    'YYYY-MM-D',
-  );
+  const dateFormatted = moment(date).format('YYYY-MM-D');
 
   console.log(dateFormatted);
 
@@ -51,8 +45,8 @@ const Screen5 = ({navigation}) => {
 
   const handleNavigation = async () => {
     const data = {
-    last_rent_amount: lastRentAmount,
-    next_rent_due: dateFormatted
+      last_rent_amount: lastRentAmount,
+      next_rent_due: dateFormatted,
     };
     if (isError()) {
       return Alert.alert('Missing inputs', 'Please Fill out all fields', [
@@ -60,7 +54,10 @@ const Screen5 = ({navigation}) => {
       ]);
     }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    await AsyncStorage.setItem('rentalLoanForm', JSON.stringify({...JSON.parse(loanFormData), ...data}));
+    await AsyncStorage.setItem(
+      'rentalLoanForm',
+      JSON.stringify({...JSON.parse(loanFormData), ...data}),
+    );
     logCurrentStorage();
     setModalVisible(true);
     // try {
@@ -70,23 +67,25 @@ const Screen5 = ({navigation}) => {
     // } catch (error) {}
   };
 
-
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
+        style={{fontWeight: '900'}}
         color="#2A286A"
       />
-      <ScrollView scrollEnabled={true} style={{height: '100%'}} >
+      <ScrollView
+        scrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        style={{height: '100%'}}>
         <View
           style={{
             marginTop: 25,
             marginBottom: 49,
-            marginLeft: 16,
-            marginRight: 16,
+            // marginLeft: 16,
+            // marginRight: 16,
           }}>
           <Text
             style={[
@@ -118,6 +117,7 @@ const Screen5 = ({navigation}) => {
             placeholderTextColor="#BFBFBF"
             value={lastRentAmount}
             onChangeText={(text) => setLastRentAmount(text)}
+            keyboardType="number-pad"
           />
           <Text
             style={[
@@ -134,16 +134,18 @@ const Screen5 = ({navigation}) => {
           </Text>
           <View style={designs.customInput}>
             <TextInput
-              style={{flex: 1}}
+              style={[designs.input, {flex: 1}]}
               placeholder="When is your next rent due?"
               placeholderTextColor="#BFBFBF"
               value={date.toLocaleDateString()}
+              keyboardType="number-pad"
             />
             <TouchableOpacity
               onPress={() => setShowDate(true)}
               style={designs.iconBtn}>
               <Image
                 style={{width: 20, height: 20}}
+                resizeMode="contain"
                 source={icons.dateTimePicker}
               />
             </TouchableOpacity>
@@ -182,13 +184,13 @@ const Screen5 = ({navigation}) => {
             placeholder="How long have you lived at your address?"
             placeholderTextColor="#BFBFBF"
           /> */}
-        <View style={{flex: 1, justifyContent: 'flex-end'}}> 
-          <TouchableOpacity
-            onPress={handleNavigation}
-            disabled={isError()}
-            style={[designs.btn, {backgroundColor: '#00DC99'}]}>
-            <Text style={{color: 'white'}}>COMPLETE</Text>
-          </TouchableOpacity>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <TouchableOpacity
+              onPress={handleNavigation}
+              disabled={isError()}
+              style={[designs.btn, {backgroundColor: '#00DC99'}]}>
+              <Text style={{color: 'white'}}>COMPLETE</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

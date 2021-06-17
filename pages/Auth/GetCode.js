@@ -15,7 +15,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import SuccessModal from '../../components/SuccessModal';
 
 export default function GetCode({navigation}) {
-  const [successModal, setSuccessModal] = useState(false);
+  const [successModal, setSuccessModal] = useState(true);
   const [successMessage, setSuccessMessage] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [telephone, setTelePhone] = useState('');
@@ -30,22 +30,22 @@ export default function GetCode({navigation}) {
     const data = {telephone: '+234' + telephone};
     setSpinner(true);
     const response = await sendVerificationCode(data);
-   
+
     if (response.status == 200) {
       setSuccessMessage(response.data.statusMsg);
       Toast.show({
         text1: 'Code Sent',
-        text2: response.data.statusMsg+' 👋',
+        text2: response.data.statusMsg + ' 👋',
         visibilityTime: 2000,
         position: 'top',
         topOffset: 30,
       });
-      
+
       setSpinner(false);
-      navigation.navigate('VerifyNumber',{
+      navigation.navigate('VerifyNumber', {
         phone_number: '+234' + telephone,
       });
-     //setSuccessModal(true);
+      //setSuccessModal(true);
     } else {
       setSpinner(false);
       Alert.alert('Request Failed', response, [{text: 'Ok'}]);
@@ -58,18 +58,39 @@ export default function GetCode({navigation}) {
   };
 
   return (
-    <View style={designs.container}>
-      <Image
-        style={[designs.image, {marginLeft: 10}]}
-        source={images.kwabaLogoWithName}
-      />
-      <Text style={[designs.heading, {marginLeft: 30}]}>Enter your number</Text>
-      <Text style={designs.body}>
-        We will send a code to verify your number
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: '#F7F8FD',
+        fontFamily: 'CircularStd',
+        padding: 15,
+        justifyContent: 'center',
+        // flexDirection: 'row',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+      }}>
+      <View style={{alignItems: 'center', marginBottom: 50, marginTop: 20}}>
+        <Image
+          style={[designs.image, {marginTop: 0}]}
+          source={icons.kwabalogocol}
+          resizeMode="contain"
+        />
+      </View>
+      <Text style={[designs.heading, {textAlign: 'center', color: '#465969'}]}>
+        Enter your number
+      </Text>
+      <Text style={[designs.body, {textAlign: 'center', marginTop: 10}]}>
+        We will send a code to verify {'\n'} your number
       </Text>
       <View style={designs.customInput}>
         <Image
-          style={{width: 27, height: 18, marginRight: 10}}
+          style={{
+            width: 27,
+            height: 18,
+            position: 'absolute',
+            top: 18,
+            left: 10,
+          }}
           source={icons.naijaFlag}
         />
         <Text
@@ -77,13 +98,22 @@ export default function GetCode({navigation}) {
             color: '#465969',
             fontSize: 16,
             fontWeight: '600',
-            lineHeight: 30,
+            // lineHeight: 30,
+            position: 'absolute',
+            top: 15,
+            left: 50,
           }}>
           +234
         </Text>
         <TextInput
           placeholder="Phone Number"
-          style={{flex: 1, paddingLeft: 10}}
+          style={{
+            width: '100%',
+            paddingLeft: 100,
+            paddingRight: 50,
+            paddingTop: 12,
+            paddingBottom: 12,
+          }}
           keyboardType="number-pad"
           value={telephone}
           onChangeText={(text) => setTelePhone(text)}
@@ -107,15 +137,18 @@ export default function GetCode({navigation}) {
         style={[
           designs.btn,
           {
-            backgroundColor:
-              !telephone.trim().length == 0 ? '#00DC99' : '#EAEAEA',
+            // backgroundColor:
+            //   !telephone.trim().length == 0 ? '#00DC99' : '#EAEAEA',
+            backgroundColor: '#00DC99',
           },
         ]}>
         <Text
           style={{
-            color: !telephone.trim().length == 0 ? 'white' : '#D6D6D6',
-            fontSize: 14,
+            // color: !telephone.trim().length == 0 ? 'white' : '#D6D6D6',
+            color: 'white',
+            fontSize: 12,
             lineHeight: 32,
+            fontWeight: 'bold',
           }}>
           GET CODE
         </Text>

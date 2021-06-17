@@ -55,7 +55,7 @@ const SetUpPaymentPlan = ({navigation}) => {
               response.data.data.authorization_url,
             );
             console.log('done')
-            console.log('result', result);
+            console.log('result', result); 
             
             if (result.type == 'cancel') {
               let data = {reference: response.data.data.reference};

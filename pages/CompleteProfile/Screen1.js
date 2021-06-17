@@ -22,7 +22,9 @@ export default function screen1({navigation}) {
         <TouchableOpacity
           onPress={() => navigation.navigate('CompleteProfile2')}
           style={[designs.btn, {backgroundColor: '#2A286A'}]}>
-          <Text style={{color: 'white'}}>COMPLETE PROFILE</Text>
+          <Text style={{color: 'white', fontWeight: 'bold'}}>
+            COMPLETE PROFILE
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

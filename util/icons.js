@@ -72,6 +72,27 @@ const linkedin = require('../assets/icons/linkedin-in.png');
 const cancelIcon = require('../assets/icons/cancel.png');
 const kwabalogocol = require('../assets/icons/kwabalogocol.png');
 const kwabalogonocol = require('../assets/icons/kwabalogonocol.png');
+const card = require('../assets/icons/card.jpeg');
+const bank = require('../assets/icons/bank.jpeg');
+
+// bottom navigation icons
+const borrowIcon = require('../assets/icons/bottom-navigation-icons/borrow.svg');
+
+// welcome
+const welcomeShape1 = require('../assets/shapes/welcome-shape-1.png');
+const welcomeShape2 = require('../assets/shapes/welcome-shape-2.png');
+
+// onBoarding - screen1
+const onboardingImage = require('../assets/shapes/onboardingImage.png');
+const onboardingLoader1 = require('../assets/shapes/onboardingLoader1.png');
+
+// onBoarding - screen2
+const onboardingImage2 = require('../assets/shapes/onboardingImage-2.png');
+const onboardingLoader2 = require('../assets/shapes/onboardingLoader2.png');
+
+// onBoarding - screen3
+const onboardingImage3 = require('../assets/shapes/onboardingImage-3.png');
+const onboardingLoader3 = require('../assets/shapes/onboardingLoader3.png');
 
 export {
   instagram,
@@ -141,12 +162,23 @@ export {
   savings,
   savingslight,
   paybills,
-  payrent ,
+  payrent,
   quicksave,
   buyairtime,
   whatsapp,
   cancelIcon,
   kwabalogocol,
-  kwabalogonocol
-
+  kwabalogonocol,
+  // bottom  navigation icons
+  borrowIcon,
+  welcomeShape1,
+  welcomeShape2,
+  onboardingImage,
+  onboardingImage2,
+  onboardingImage3,
+  onboardingLoader1,
+  onboardingLoader2,
+  onboardingLoader3,
+  card,
+  bank,
 };

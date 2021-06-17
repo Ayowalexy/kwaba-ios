@@ -15,6 +15,7 @@ import CompleteProfile2 from './pages/CompleteProfile/Screen2';
 import CompleteProfile3 from './pages/CompleteProfile/Screen3';
 import CompleteProfile4 from './pages/CompleteProfile/Screen4';
 import CompleteProfile5 from './pages/CompleteProfile/Screen5';
+import ForgotPassword from './pages/Auth/ForgotPassword';
 import GetCode from './pages/Auth/GetCode';
 import VerifyNumber from './pages/Auth/VerifyNumber';
 import SignUp from './pages/Auth/SignUp';
@@ -36,6 +37,7 @@ import {
   BuddySavingDashBoard,
 } from './pages/Savings/index';
 import Borrow from './pages/Borrow/Borrow';
+import EmploymentStatus from './pages/Borrow/EmploymentStatus';
 import RentalLoanForm1 from './pages/Borrow/RentalLoanForm1';
 import RentalLoanForm2 from './pages/Borrow/RentalLoanForm2';
 import RentalLoanForm3 from './pages/Borrow/RentalLoanForm3';
@@ -51,15 +53,15 @@ import LinkingAccount from './pages/Borrow/LinkingAccount';
 import ThirdPartyLink from './pages/Borrow/ThirdPartyLink';
 import RentalLoanRequestDashBoard from './pages/Borrow/RentalLoanRequestDashboard';
 import PayWithSavings from './pages/Payment/PayWithSavings';
-import { logCurrentStorage } from './util/logCurrentStorage';
+import {logCurrentStorage} from './util/logCurrentStorage';
 import FileUploadTest from './pages/Borrow/FileUploadTest';
 import RentalLoanOfferTest from './pages/Borrow/RentalLoanOfferTest';
 import BottomNavigator from './pages/Navigation/BottomNavigation';
-import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard'
+import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
 import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
 import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
 import Account from './pages/UserAccount/Account';
-import { FileViewAndDelete } from './pages/Borrow/FileViewAndDelete';
+import {FileViewAndDelete} from './pages/Borrow/FileViewAndDelete';
 import AccountPage from './pages/UserAccount/AccountPage';
 import CardAndBankDetails from './pages/UserAccount/CardAndBank';
 import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
@@ -71,6 +73,9 @@ import LoanOfferContent from './pages/Payment/LoanOfferContent';
 import AddressVerificationPayment from './pages/Payment/AddressVerificationPayment';
 import AwaitingDisbursement from './pages/Payment/AwaitingDisbursement';
 import BillsHome from './pages/Bills/BillsHome';
+import CableTv from './pages/Bills/CableTv';
+import AirtimeHome from './pages/Airtime/AirtimeHome';
+import PurchaseAirtime from './pages/Airtime/PurchaseAirtime';
 import PrintOfferLetter from './pages/Payment/PrintOfferLetter';
 import UploadDocumentsList from './pages/UserAccount/UploadDocumentsList';
 import profile from './pages/CompleteProfile/profile';
@@ -82,10 +87,13 @@ import {setLoginState} from './redux/actions/userActions';
 import Toast from 'react-native-toast-message';
 //import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
 
-import {useSelector,useDispatch} from 'react-redux';
+import ApplicationProgress from './pages/Borrow/ApplicationProgress';
+import UploadBankStatementDocument from './pages/Borrow/UploadBankStatementDocument';
+
+import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import { View,Text } from 'react-native';
+import {View, Text} from 'react-native';
 import {COLORS} from './util/index';
 
 const Stack = createStackNavigator();
@@ -103,7 +111,7 @@ const App = () => {
       const token = userData != null ? JSON.parse(userData).token : null;
 
       dispatch(setLoginState(JSON.parse(userData)));
-      console.log("here is the store",store2.token );
+      console.log('here is the store', store2.token);
       const loggedInStatus =
         userData != null ? JSON.parse(userData).isLoggedIn : false;
       setIsLoggedIn(loggedInStatus);
@@ -114,56 +122,68 @@ const App = () => {
 
   logCurrentStorage();
 
-
   const toastConfig = {
-    success: ({ text1,text2, props, ...rest }) => (
-      <View style={{ height: 60, width: '90%', backgroundColor: COLORS.primary,paddingLeft:7 }}>
-        <Text style={{color:COLORS.white, fontFamily: 'CircularStd',}}>{text1}</Text>
-        <Text style={{color:COLORS.white, fontFamily: 'CircularStd',}}>{text2}</Text>
+    success: ({text1, text2, props, ...rest}) => (
+      <View
+        style={{
+          height: 60,
+          width: '90%',
+          backgroundColor: COLORS.primary,
+          paddingLeft: 7,
+        }}>
+        <Text style={{color: COLORS.white, fontFamily: 'CircularStd'}}>
+          {text1}
+        </Text>
+        <Text style={{color: COLORS.white, fontFamily: 'CircularStd'}}>
+          {text2}
+        </Text>
       </View>
     ),
     error: () => {},
     info: () => {},
-    any_custom_type: () => {}
+    any_custom_type: () => {},
   };
 
   return (
-
-
     <>
-     
       <NavigationContainer>
-     
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
+          // initialRouteName={'ApplicationProgress'}>
           initialRouteName={'Welcome'}>
-
           {/* {!store2.isLoggedIn && store2.userToken == '' ? (    */}
 
-           {!store2.isLoggedIn && store2.token == '' ? (
-          
+          {!store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
                 name="Onboarding"
                 component={Onboarding}></Stack.Screen>
-               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
+              <Stack.Screen
+                name="ForgotPassword"
+                component={ForgotPassword}></Stack.Screen>
+              <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen
                 name="VerifyNumber"
-                component={VerifyNumber}></Stack.Screen> 
+                component={VerifyNumber}></Stack.Screen>
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
               <Stack.Screen name="Login" component={Login}></Stack.Screen>
               {/* <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen> */}
             </>
-          ) : ( 
+          ) : (
             <>
+              {/* <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
+              <Stack.Screen
+                name="VerifyNumber"
+                component={VerifyNumber}></Stack.Screen>
+              <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
+              <Stack.Screen name="Login" component={Login}></Stack.Screen> */}
 
-            
-
-
-              <Stack.Screen name="Home" component={BottomNavigator}></Stack.Screen>
+              <Stack.Screen
+                name="Home"
+                component={BottomNavigator}></Stack.Screen>
               <Stack.Screen
                 name="CompleteProfile1"
                 component={CompleteProfile1}></Stack.Screen>
@@ -218,69 +238,158 @@ const App = () => {
               <Stack.Screen
                 name="BuddySavingDashBoard"
                 component={BuddySavingDashBoard}></Stack.Screen>
-            
 
-<Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
-<Stack.Screen name="RentalLoanForm1" component={RentalLoanForm1}></Stack.Screen>
-<Stack.Screen name="RentalLoanThirdPartyConnection" component={RentalLoanThirdPartyConnection}></Stack.Screen>
-<Stack.Screen name="LinkingAccount" component={LinkingAccount}></Stack.Screen>
-<Stack.Screen name="ThirdPartyLink" component={ThirdPartyLink}></Stack.Screen>
-<Stack.Screen name="RentalLoanRequestDashBoard" component={RentalLoanRequestDashBoard}></Stack.Screen>
-<Stack.Screen name="PayWithSavings" component={PayWithSavings}></Stack.Screen>
-<Stack.Screen name="RentalLoanForm2" component={RentalLoanForm2}></Stack.Screen>
-<Stack.Screen name="RentalLoanForm3" component={RentalLoanForm3}></Stack.Screen>
-<Stack.Screen name="UploadBankStatement" component={UploadBankStatement}></Stack.Screen>
-<Stack.Screen name="UploadDocuments" component={UploadDocuments}></Stack.Screen>
-<Stack.Screen name="AllDocuments" component={AllDocuments}></Stack.Screen>
-<Stack.Screen name="LoanRequestApproval" component={LoanRequestApproval}></Stack.Screen>
-<Stack.Screen name="RentalLoanOffer" component={RentalLoanOffer}></Stack.Screen>
-<Stack.Screen name="SetUpPaymentPlan" component={SetUpPaymentPlan}></Stack.Screen>
-<Stack.Screen name="PostPaymentForm1" component={PostPaymentForm1}></Stack.Screen>
-<Stack.Screen name="PostPaymentForm2" component={PostPaymentForm2}></Stack.Screen>
-<Stack.Screen name="PostPaymentForm3" component={PostPaymentForm3}></Stack.Screen>
-<Stack.Screen name="PostPaymentForm4" component={PostPaymentForm4}></Stack.Screen>
-<Stack.Screen name="OkraDebitMandate" component={OkraDebitMandate}></Stack.Screen>
-<Stack.Screen name="LoanOfferContent" component={LoanOfferContent}></Stack.Screen>
-<Stack.Screen name="AwaitingDisbursement" component={AwaitingDisbursement}></Stack.Screen>
-<Stack.Screen name="AddressVerificationPayment" component={AddressVerificationPayment}></Stack.Screen>
-<Stack.Screen name="RentalLoanActiveDashBoard" component={RentalLoanActiveDashBoard}></Stack.Screen>
-<Stack.Screen name="FileUploadTest" component={FileUploadTest}></Stack.Screen>
-<Stack.Screen name="RentalLoanOfferTest" component={RentalLoanOfferTest}></Stack.Screen> 
-<Stack.Screen name="PrintOfferLetter" component={PrintOfferLetter}></Stack.Screen>  
-<Stack.Screen name="UploadDocumentsList" component={UploadDocumentsList}></Stack.Screen>  
-<Stack.Screen name="BottomNavigation" component={BottomNavigator}></Stack.Screen>
-<Stack.Screen name="EmergencyLoanHome" component={EmergencyLoanHome}></Stack.Screen>
-<Stack.Screen name="EmergencyLoanRequestDashBoard" component={EmergencyLoanRequestDashBoard}></Stack.Screen>
-<Stack.Screen name="EmergencyLoanRequest" component={EmergencyLoanRequest}></Stack.Screen>
-<Stack.Screen name="EmergencyLoanDashBoard" component={EmergencyLoanDashBoard}></Stack.Screen>
-<Stack.Screen name="Account" component={Account}></Stack.Screen>
-<Stack.Screen name="FileViewAndDelete" component={FileViewAndDelete}></Stack.Screen> 
-<Stack.Screen name="AccountPage" component={AccountPage}></Stack.Screen>
-<Stack.Screen name="CardAndBankDetails" component={CardAndBankDetails}></Stack.Screen>
-<Stack.Screen name="BillsHome" component={BillsHome}></Stack.Screen>
-<Stack.Screen name="profile" component={profile}></Stack.Screen>
-<Stack.Screen name="Referral" component={Referral}></Stack.Screen>
-<Stack.Screen name="ReferralDetails" component={ReferralDetails}></Stack.Screen>
-<Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
-<Stack.Screen name="OkraDebitMandate2" component={OkraDebitMandate2}></Stack.Screen>
-<Stack.Screen name="MonoDebitMandate" component={MonoDebitMandate}></Stack.Screen>
-{/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
+              <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
+              <Stack.Screen
+                name="EmploymentStatus"
+                component={EmploymentStatus}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm1"
+                component={RentalLoanForm1}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanThirdPartyConnection"
+                component={RentalLoanThirdPartyConnection}></Stack.Screen>
+              <Stack.Screen
+                name="LinkingAccount"
+                component={LinkingAccount}></Stack.Screen>
+              <Stack.Screen
+                name="ThirdPartyLink"
+                component={ThirdPartyLink}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanRequestDashBoard"
+                component={RentalLoanRequestDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="PayWithSavings"
+                component={PayWithSavings}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm2"
+                component={RentalLoanForm2}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm3"
+                component={RentalLoanForm3}></Stack.Screen>
+              <Stack.Screen
+                name="UploadBankStatement"
+                component={UploadBankStatement}></Stack.Screen>
+              <Stack.Screen
+                name="UploadDocuments"
+                component={UploadDocuments}></Stack.Screen>
+              <Stack.Screen
+                name="AllDocuments"
+                component={AllDocuments}></Stack.Screen>
+              <Stack.Screen
+                name="LoanRequestApproval"
+                component={LoanRequestApproval}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanOffer"
+                component={RentalLoanOffer}></Stack.Screen>
+              <Stack.Screen
+                name="SetUpPaymentPlan"
+                component={SetUpPaymentPlan}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm1"
+                component={PostPaymentForm1}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm2"
+                component={PostPaymentForm2}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm3"
+                component={PostPaymentForm3}></Stack.Screen>
+              <Stack.Screen
+                name="PostPaymentForm4"
+                component={PostPaymentForm4}></Stack.Screen>
+              <Stack.Screen
+                name="OkraDebitMandate"
+                component={OkraDebitMandate}></Stack.Screen>
+              <Stack.Screen
+                name="LoanOfferContent"
+                component={LoanOfferContent}></Stack.Screen>
+              <Stack.Screen
+                name="AwaitingDisbursement"
+                component={AwaitingDisbursement}></Stack.Screen>
+              <Stack.Screen
+                name="AddressVerificationPayment"
+                component={AddressVerificationPayment}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanActiveDashBoard"
+                component={RentalLoanActiveDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="FileUploadTest"
+                component={FileUploadTest}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanOfferTest"
+                component={RentalLoanOfferTest}></Stack.Screen>
+              <Stack.Screen
+                name="PrintOfferLetter"
+                component={PrintOfferLetter}></Stack.Screen>
+              <Stack.Screen
+                name="UploadDocumentsList"
+                component={UploadDocumentsList}></Stack.Screen>
+              <Stack.Screen
+                name="BottomNavigation"
+                component={BottomNavigator}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanHome"
+                component={EmergencyLoanHome}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanRequestDashBoard"
+                component={EmergencyLoanRequestDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanRequest"
+                component={EmergencyLoanRequest}></Stack.Screen>
+              <Stack.Screen
+                name="EmergencyLoanDashBoard"
+                component={EmergencyLoanDashBoard}></Stack.Screen>
+              <Stack.Screen name="Account" component={Account}></Stack.Screen>
+              <Stack.Screen
+                name="FileViewAndDelete"
+                component={FileViewAndDelete}></Stack.Screen>
+              <Stack.Screen
+                name="AccountPage"
+                component={AccountPage}></Stack.Screen>
+              <Stack.Screen
+                name="CardAndBankDetails"
+                component={CardAndBankDetails}></Stack.Screen>
+              <Stack.Screen
+                name="BillsHome"
+                component={BillsHome}></Stack.Screen>
+              <Stack.Screen name="CableTv" component={CableTv}></Stack.Screen>
+              <Stack.Screen
+                name="PurchaseAirtime"
+                component={PurchaseAirtime}></Stack.Screen>
+              <Stack.Screen
+                name="AirtimeHome"
+                component={AirtimeHome}></Stack.Screen>
+              <Stack.Screen name="profile" component={profile}></Stack.Screen>
+              <Stack.Screen name="Referral" component={Referral}></Stack.Screen>
+              <Stack.Screen
+                name="ReferralDetails"
+                component={ReferralDetails}></Stack.Screen>
+              <Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
+              <Stack.Screen
+                name="OkraDebitMandate2"
+                component={OkraDebitMandate2}></Stack.Screen>
+              <Stack.Screen
+                name="MonoDebitMandate"
+                component={MonoDebitMandate}></Stack.Screen>
+              <Stack.Screen
+                name="ApplicationProgress"
+                component={ApplicationProgress}></Stack.Screen>
+              <Stack.Screen
+                name="UploadBankStatementDocument"
+                component={UploadBankStatementDocument}></Stack.Screen>
+              {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
-{/*            
+              {/*            
                <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen> 
               <Stack.Screen
                 name="VerifyNumber"
                 component={VerifyNumber}></Stack.Screen> 
               <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
               <Stack.Screen name="Login" component={Login}></Stack.Screen> */}
+            </>
+          )}
 
-
-
-
-</>
-           )} 
-
-              {/* <Stack.Screen
+          {/* <Stack.Screen
 
               <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
               <Stack.Screen
@@ -428,14 +537,11 @@ const App = () => {
               <Stack.Screen
                 name="BuddySavingDashBoard"
                 component={BuddySavingDashBoard}></Stack.Screen> */}
-                
         </Stack.Navigator>
 
-        <Toast  config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
       </NavigationContainer>
     </>
-    
-   
   );
 };
 

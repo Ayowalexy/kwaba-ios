@@ -6,7 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -16,9 +16,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
-
 const Screen2 = ({navigation}) => {
-  const [date, setDate] = useState(new Date(1598051730000));
+  // const [date, setDate] = useState(new Date(1598051730000));
+  const [date, setDate] = useState(new Date());
   const [bvn, setBVN] = useState('');
   const [country, setCountry] = useState(null);
   const [visible, setVisible] = useState(false);
@@ -31,22 +31,19 @@ const Screen2 = ({navigation}) => {
   };
 
   const isError = () => {
-    if (
-      bvn.trim().length == 0) {
+    if (bvn.trim().length == 0) {
       return true;
     } else {
       return false;
     }
   };
 
-  const dateFormatted = moment(date).format(
-    'YYYY-MM-DD',
-  );
+  const dateFormatted = moment(date).format('YYYY-MM-DD');
 
   const handleNavigation = async () => {
     const data = {
-    bvn,
-    dob: dateFormatted
+      bvn,
+      dob: dateFormatted,
     };
     if (isError()) {
       return Alert.alert('Missing inputs', 'Please Fill out all fields', [
@@ -54,7 +51,7 @@ const Screen2 = ({navigation}) => {
       ]);
     }
     await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
-    navigation.navigate('CompleteProfile5')
+    navigation.navigate('CompleteProfile5');
 
     // try {
     //   dispatch(soloSaving(data));
@@ -73,16 +70,16 @@ const Screen2 = ({navigation}) => {
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
+        style={{fontWeight: '900'}}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
           style={{
             marginTop: 25,
-            marginBottom: 49,
-            marginLeft: 16,
-            marginRight: 16,
+            // marginBottom: 49,
+            // marginLeft: 16,
+            // marginRight: 16,
           }}>
           <Text
             style={[
@@ -119,7 +116,7 @@ const Screen2 = ({navigation}) => {
                 marginTop: 29,
               },
             ]}>
-            Bank Verification Number 
+            Bank Verification Number
           </Text>
           <TextInput
             style={designs.textField}
@@ -127,6 +124,7 @@ const Screen2 = ({navigation}) => {
             placeholderTextColor="#BFBFBF"
             value={bvn}
             onChangeText={(text) => setBVN(text)}
+            keyboardType="number-pad"
           />
           <Text
             style={[
@@ -143,16 +141,18 @@ const Screen2 = ({navigation}) => {
           </Text>
           <View style={designs.customInput}>
             <TextInput
-              style={{flex: 1}}
+              style={[designs.input, {flex: 1}]}
               placeholder="Date of Birth"
               placeholderTextColor="#BFBFBF"
               value={date.toLocaleDateString()}
+              keyboardType="number-pad"
             />
             <TouchableOpacity
               onPress={() => setShowDate(true)}
               style={designs.iconBtn}>
               <Image
                 style={{width: 20, height: 20}}
+                resizeMode="contain"
                 source={icons.dateTimePicker}
               />
             </TouchableOpacity>
