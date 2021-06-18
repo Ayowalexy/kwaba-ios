@@ -12,6 +12,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 import moment from 'moment';
+import NumberFormat from '../../../components/NumberFormat';
 
 export default function Screen2({navigation}) {
   const dispatch = useDispatch();
@@ -210,11 +211,15 @@ export default function Screen2({navigation}) {
             <Text style={[designs.boldText, {marginTop: 26}]}>
               How much do you want to save today?
             </Text>
-            <TextInput
+            {/* <TextInput
               placeholder="Amount"
               placeholderTextColor="#BFBFBF"
               style={designs.textInput}
               keyboardType="number-pad"
+              value={formatNumber(instantSaving)}
+              onChangeText={(text) => setInstantSaving(text)}
+            /> */}
+            <NumberFormat
               value={instantSaving}
               onChangeText={(text) => setInstantSaving(text)}
             />

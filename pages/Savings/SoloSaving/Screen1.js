@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
 import {useDispatch} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
+import NumberFormat from '../../../components/NumberFormat';
 
 const width = Dimensions.get('window').width;
 export default function Screen1({navigation}) {
@@ -20,10 +21,6 @@ export default function Screen1({navigation}) {
   // const [amount, setAmount] = useState(null);
   const [targetAmount, setTargetAmount] = useState(null);
   const [title, setTitle] = useState('');
-
-  const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  };
 
   const handleNavigation = () => {
     const data = {
@@ -219,29 +216,21 @@ export default function Screen1({navigation}) {
           </TouchableOpacity>
         </View>
 
-        {/* <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much is your target?
-        </Text>
-        <TextInput
-          placeholder="Target saving amount"
-          placeholderTextColor="#BFBFBF"
-          style={designs.textInput}
-          keyboardType="number-pad"
-          value={targetAmount}
-          onChangeText={(text) => setTargetAmount(text)}
-        /> */}
-
         <Text style={[designs.boldText, {marginTop: 18}]}>
           How much is your target?
         </Text>
-        <TextInput
+        {/* <TextInput
           placeholder="Target amount"
           placeholderTextColor="#BFBFBF"
           style={designs.textInput}
           keyboardType="number-pad"
+          value={formatNumber(targetAmount)}
+          onChangeText={(text) => setTargetAmount(text)}
+        /> */}
+
+        <NumberFormat
           value={targetAmount}
           onChangeText={(text) => setTargetAmount(text)}
-          onBlur={(text) => console.log(text.value)}
         />
 
         <TouchableOpacity onPress={handleNavigation} style={designs.button}>

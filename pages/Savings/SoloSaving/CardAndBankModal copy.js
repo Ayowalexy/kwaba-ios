@@ -3,13 +3,14 @@ import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import {images, icons} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AddCardModal from './AddCardModal';
-import SubsequentModal from './SubsequentModal';
-import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 
 export default function CardAndBankModal(props) {
   const {store, visible, onRequestClose, navigation} = props;
   const [addCardModal, setAddCardModal] = useState(false);
-  const [subsequentModal, setSubsequentModal] = useState(false);
 
   return (
     <>
@@ -56,10 +57,7 @@ export default function CardAndBankModal(props) {
                     }}>
                     You are about to deposit{' '}
                     <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
-                      ₦
-                      {numberWithCommas(
-                        unFormatNumber(store.instant_saved_amount),
-                      )}
+                      ₦{numberWithCommas(store.instant_saved_amount)}
                     </Text>{' '}
                     towards your rent savings.
                   </Text>
@@ -87,8 +85,7 @@ export default function CardAndBankModal(props) {
                   // close add card and bank modal
                   onRequestClose();
                   // open add card modal
-                  // setAddCardModal(!addCardModal);
-                  setSubsequentModal(!subsequentModal);
+                  setAddCardModal(!addCardModal);
                 }}
                 style={{
                   flexDirection: 'row',
@@ -162,20 +159,19 @@ export default function CardAndBankModal(props) {
         </View>
       </Modal>
 
-      {/* <AddCardModal
+      <AddCardModal
+        //  onConfirm={addCard}
         onRequestClose={() => setAddCardModal(!addCardModal)}
         visible={addCardModal}
         goToDashboard={() => {
           navigation.navigate('SoloSavingDashBoard');
         }}
-      /> */}
-
-      <SubsequentModal
-        onRequestClose={() => setSubsequentModal(!subsequentModal)}
-        visible={subsequentModal}
-        goToDashboard={() => {
-          navigation.navigate('SoloSavingDashBoard');
-        }}
+        // cardNumber={cardNumber}
+        // setCardNumber={setCardNumber}
+        // expiryDate={expiryDate}
+        // setExpiryDate={setExpiryDate}
+        // cvv={cvv}
+        // setCVV={setCvv}
       />
     </>
   );

@@ -40,7 +40,8 @@ const designs = StyleSheet.create({
     marginTop: 13,
     backgroundColor: 'white',
     borderRadius: 10,
-    borderColor: '#EAEAEA',
+    // borderColor: '#EAEAEA',
+    borderColor: '#ADADAD50',
     borderWidth: 1,
   },
   options: {

@@ -32,20 +32,19 @@ export default function SoloSavingDashBoard({navigation}) {
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [savingsTarget, setSavingsTarget] = useState(0);
-  const [percentAchieved, setPercentAchieved] = useState(75);
+  const [percentAchieved, setPercentAchieved] = useState(0);
 
   useEffect(() => {
     dispatch(getCurrentUser());
   }, []);
 
   useEffect(() => {
-    const tottalSoloSavings = soloSavings?.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    );
-
-    const soloInterestTotal = soloSavings?.data?.reduce(
-      (saving, acc) => Number(saving.interest) + Number(acc.interest),
-    );
+    // const tottalSoloSavings = soloSavings?.data?.reduce(
+    //   (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    // );
+    // const soloInterestTotal = soloSavings?.data?.reduce(
+    //   (saving, acc) => Number(saving.interest) + Number(acc.interest),
+    // );
   }, []);
 
   return (

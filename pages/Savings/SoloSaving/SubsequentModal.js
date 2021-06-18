@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Dimensions,
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,25 +20,19 @@ import {
 } from '../../../services/network';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {unFormatNumber} from '../../../util/numberFormatter';
 
-export default function AddCardModal(props) {
+export default function SubsequentModal(props) {
   const {onRequestClose, visible, goToDashboard} = props;
-
-  const [cardNumber, setCardNumber] = useState('2222 2222 2222 2222');
-  const [expiryDate, setExpiryDate] = useState('11/21');
-  const [cvv, setCVV] = useState('234');
+  const [subsequent, setSubsequent] = useState('');
+  const subsequentOptions = ['Yes', 'No'];
 
   const [spinner, setSpinner] = useState(false);
-
   const store = useSelector((state) => state.soloSavingReducer);
 
-  //   const onConfirm = async () => {
-  //     if (cardNumber.length < 16 || expiryDate.length < 1 || cvv.length < 3)
-  //       return false;
-  //     else {
-  //       await handleTransactions();
-  //     }
-  //   };
+  // useEffect(() => {
+  //   console.log(subsequent);
+  // }, [subsequent]);
 
   const handleTransactions = async () => {
     // close modal
@@ -45,9 +40,9 @@ export default function AddCardModal(props) {
     // console.log(store);
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
-        setSpinner(true);
+        // setSpinner(true);
         const response = await makeOneOffPayment();
-        // console.log('RESPONSE:', response);
+        console.log('RESPONSE:', response);
         if (response.status === 200) {
           setSpinner(false);
           const result = await openInAppBrowser(
@@ -147,7 +142,7 @@ export default function AddCardModal(props) {
 
   const makeOneOffPayment = async () => {
     const data = {
-      instant_saved_amount: Number(store.instant_saved_amount),
+      instant_saved_amount: Number(unFormatNumber(store.instant_saved_amount)),
       savings_tenure: Number(store.savings_tenure[0]),
       locked: store.locked,
     };
@@ -222,14 +217,15 @@ export default function AddCardModal(props) {
               }}>
               <Text
                 style={{
-                  color: '#2A286A',
-                  fontFamily: 'CircularStd',
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                  lineHeight: 19,
+                  fontSize: 15,
+                  width: 260,
+                  color: '#465969',
+                  lineHeight: 25,
                 }}>
-                Add Card
+                Do you want to use this payment option for subsequent rent
+                saving?
               </Text>
+
               <Icon
                 onPress={onRequestClose}
                 name="close-outline"
@@ -237,89 +233,39 @@ export default function AddCardModal(props) {
                 color="#465969"
               />
             </View>
-
-            <TextInput
-              style={[styles.textInput, {marginTop: 18}]}
-              placeholder="Card number"
-              keyboardType="number-pad"
-              placeholderTextColor="#ADADAD"
-              value={cardNumber}
-              onChangeText={(text) => setCardNumber(text)}
-            />
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginTop: 18,
-              }}>
-              <TextInput
-                style={[styles.textInput, {width: '48%'}]}
-                placeholder="Expiry Date"
-                keyboardType="numeric"
-                placeholderTextColor="#ADADAD"
-                value={expiryDate}
-                onChangeText={(text) => setExpiryDate(text)}
-              />
-              <TextInput
-                style={[styles.textInput, {width: '48%'}]}
-                placeholder="CVV"
-                keyboardType="number-pad"
-                placeholderTextColor="#ADADAD"
-                value={cvv}
-                onChangeText={(text) => setCVV(text)}
-              />
-            </View>
-
-            <TouchableOpacity
-              onPress={handleTransactions}
-              style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
-              <Text style={{color: 'white'}}>CONFIRM</Text>
-            </TouchableOpacity>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: 10,
-              }}>
-              <Icon
-                name="lock-closed"
-                style={{fontSize: 20, marginRight: 10, color: COLORS.primary}}
-              />
-              <View style={{flexDirection: 'row'}}>
-                <Text style={{color: COLORS.primary, fontSize: 12}}>
-                  Secured by
-                </Text>
-                <Text
+            <View style={{marginTop: 20}}>
+              {subsequentOptions.map((value, index) => (
+                <TouchableOpacity
+                  // onPress={() => {
+                  //   onRequestClose();
+                  //   handleTransactions();
+                  //   // if (value.toLowerCase() === 'yes') {
+                  //   //   setSubsequent(value);
+                  //   // } else if (value.toLowerCase() === 'no') {
+                  //   //   setSubsequent(value);
+                  //   // }
+                  // }}
+                  onPress={handleTransactions}
+                  key={index}
                   style={{
-                    fontWeight: 'bold',
-                    color: COLORS.primary,
-                    fontSize: 12,
+                    paddingVertical: 15,
+                    alignItems: 'center',
                   }}>
-                  {' '}
-                  paystack
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 14 + index,
+                      fontWeight: 'bold',
+                      color: COLORS.primary,
+                    }}>
+                    {value}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
         </View>
       </Modal>
-
-      <Spinner
-        visible={spinner}
-        // textContent={'Initializing transactions...'}
-        animation="fade"
-        // textStyle={{
-        //   color: '#2A286A',
-        //   fontSize: 20,
-        //   fontWeight: 'bold',
-        //   lineHeight: 30,
-        // }}
-        size="large"
-      />
+      <Spinner visible={spinner} animation="fade" size="large" />
     </>
   );
 }
@@ -331,14 +277,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // borderColor: '#f00',
+    // borderWidth: 1,
   },
   modalView: {
     width: '100%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     overflow: 'hidden',
-    padding: 20,
+    padding: 25,
   },
   btn: {
     width: '100%',

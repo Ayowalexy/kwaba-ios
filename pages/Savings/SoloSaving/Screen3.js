@@ -15,9 +15,11 @@ import {images, icons} from '../../../util/index';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
+import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 
 import CardAndBankModal from './CardAndBankModal';
-import AddCardModal from '../../../components/addCardModal';
+// import AddCardModal from '../../../components/addCardModal';
+// import AddCardModal from './AddCardModal';
 
 // function numberWithCommas(x) {
 //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -60,16 +62,57 @@ export default function Screen3({navigation}) {
 
   useEffect(() => {
     const frequency = store.savings_frequency;
+    const targetAmount = store.savings_target_amount;
+    const tenure = store.savings_tenure;
+
     const locked_interest_rate = 0.08;
     const unlock_interest_rate = 0.07;
 
+    const numberOfDaysInAMonth = 30;
+    const numberOfWeeksInAMonth = 4;
+
+    console.log('Freq:', frequency);
+    console.log('Tenure:', tenure);
+
     if (frequency == 'Daily') {
+      if (tenure.toLowerCase() == '1 year') {
+        let amount_to_save = numberWithCommas(
+          unFormatNumber(targetAmount) / (numberOfDaysInAMonth * 12),
+        );
+        setAmountToSave(amount_to_save);
+      } else {
+        let amount_to_save = numberWithCommas(
+          unFormatNumber(targetAmount) / (numberOfDaysInAMonth * tenure[0]),
+        );
+        setAmountToSave(amount_to_save);
+      }
     } else if (frequency == 'Weekly') {
-    } else {
-      // 150000 * (d)
+      if (tenure.toLowerCase() == '1 year') {
+        let amount_to_save = numberWithCommas(
+          unFormatNumber(targetAmount) / (numberOfWeeksInAMonth * 12),
+        );
+        setAmountToSave(amount_to_save);
+      } else {
+        let amount_to_save = numberWithCommas(
+          unFormatNumber(targetAmount) / (numberOfWeeksInAMonth * tenure[0]),
+        );
+        setAmountToSave(amount_to_save);
+      }
+    } else if (frequency == 'Monthly') {
+      if (tenure.toLowerCase() == '1 year') {
+        let amount_to_save = numberWithCommas(
+          unFormatNumber(targetAmount) / 12,
+        );
+        setAmountToSave(amount_to_save);
+      } else {
+        let amount_to_save = numberWithCommas(
+          unFormatNumber(targetAmount) / tenure[0],
+        );
+        setAmountToSave(amount_to_save);
+      }
     }
 
-    console.log('Store:', store);
+    // console.log('Store:', store);
   }, []);
 
   return (
@@ -131,12 +174,20 @@ export default function Screen3({navigation}) {
               <Text style={designs.key}>
                 Amount To Save {store.savings_frequency}
               </Text>
-              <Text style={designs.value}>₦{amountToSave || ' 0.00'}</Text>
+              <Text style={designs.value}>
+                ₦
+                {numberWithCommas(
+                  Number(unFormatNumber(amountToSave)).toFixed(2),
+                ) || ' 0.00'}
+              </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>
-                ₦{store.savings_target_amount || ' 0.00'}
+                ₦
+                {numberWithCommas(
+                  unFormatNumber(store.savings_target_amount),
+                ) || ' 0.00'}
               </Text>
             </View>
             <View style={designs.dataInfo}>
@@ -240,6 +291,7 @@ export default function Screen3({navigation}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
+          // onPress={() => navigation.navigate('SetUpPaymentPlan')}
           // onPress={() => navigation.navigate('SoloSaving4')}
           onPress={addCardAndBankModal}
           style={[
@@ -267,18 +319,7 @@ export default function Screen3({navigation}) {
         onRequestClose={() => setModal(!modal)}
         visible={modal}
         store={store}
-      />
-
-      <AddCardModal
-        //  onConfirm={addCard}
-        onRequestClose={() => setAddCardModal(!addCardModal)}
-        visible={addCardModal}
-        // cardNumber={cardNumber}
-        // setCardNumber={setCardNumber}
-        // expiryDate={expiryDate}
-        // setExpiryDate={setExpiryDate}
-        // cvv={cvv}
-        // setCVV={setCvv}
+        navigation={navigation}
       />
     </View>
   );
