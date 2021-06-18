@@ -40,7 +40,7 @@ export default function SubsequentModal(props) {
     // console.log(store);
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
-        // setSpinner(true);
+        setSpinner(true);
         const response = await makeOneOffPayment();
         console.log('RESPONSE:', response);
         if (response.status === 200) {
