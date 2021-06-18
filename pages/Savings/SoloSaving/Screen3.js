@@ -186,7 +186,9 @@ export default function Screen3({navigation}) {
               <Text style={designs.value}>
                 ₦
                 {numberWithCommas(
-                  unFormatNumber(store.savings_target_amount),
+                  Number(unFormatNumber(store.savings_target_amount)).toFixed(
+                    2,
+                  ),
                 ) || ' 0.00'}
               </Text>
             </View>
