@@ -8,8 +8,6 @@ import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 
-<<<<<<< HEAD
-=======
 import CardAndBankModal from './CardAndBankModal';
 import AddCardModal from '../../../components/addCardModal';
 
@@ -17,7 +15,6 @@ import AddCardModal from '../../../components/addCardModal';
 //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 // }
 
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
 export default function Screen3({navigation}) {
   const store = useSelector((state) => state.soloSavingReducer);
   const dispatch = useDispatch();
@@ -35,8 +32,6 @@ export default function Screen3({navigation}) {
     setLocked((previousState) => !previousState);
   };
 
-<<<<<<< HEAD
-=======
   const [amountToSave, setAmountToSave] = useState(null);
 
   const [modal, setModal] = useState(false);
@@ -69,7 +64,6 @@ export default function Screen3({navigation}) {
     console.log('Store:', store);
   }, []);
 
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
   return (
     <View style={designs.container}>
       <Icon
@@ -79,14 +73,6 @@ export default function Screen3({navigation}) {
         style={{fontWeight: '900'}}
         color="#2A286A"
       />
-<<<<<<< HEAD
-      <Text style={[designs.boldText, {marginTop: 15}]}>
-        Review your saving details
-      </Text>
-      <View style={[designs.summaryBox, {paddingBottom: 16}]}>
-        <View style={designs.whiteBox}>
-          <View style={{marginTop: 16}}>
-=======
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
         <Text style={[designs.boldText, {marginTop: 15}]}>
           Review your saving details
@@ -171,7 +157,6 @@ export default function Screen3({navigation}) {
               marginRight: 'auto',
               marginTop: 23,
             }}>
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
             <Text
               style={{
                 fontSize: 10,
@@ -257,82 +242,6 @@ export default function Screen3({navigation}) {
             value={locked}
           />
         </View>
-<<<<<<< HEAD
-        <View
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 326,
-            height: 26,
-            borderRadius: 13,
-            backgroundColor: '#00000022',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            marginTop: 15,
-            marginBottom: 10,
-          }}>
-          <Text
-            style={{
-              color: '#FFE700',
-              fontSize: 10,
-              lineHeight: 13,
-              fontWeight: 'bold',
-              fontFamily: 'Circular Std',
-              textAlign: 'center',
-            }}>
-            {locked
-              ? ' Keep your rent savings locked to earn higher interest.\nHowever, if you withdraw your rent before the end date, you will attract a breaking fee.'
-              : 'You will get a lower interest rate if you unlock your rent savings.\nHowever, you can withdraw your funds anytime for free'}
-          </Text>
-        </View>
-      </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          marginTop: 10,
-        }}>
-        <CheckBox
-          disabled={false}
-          value={toggleCheckBox}
-          onValueChange={(newValue) => setToggleCheckBox(newValue)}
-        />
-        <Text
-          style={{
-            color: '#465969',
-            fontSize: 12,
-            lineHeight: 15,
-            fontWeight: 'bold',
-          }}>
-          I agree to{' '}
-          <Text style={{color: '#00DC99'}}>Terms and Conditions</Text>
-        </Text>
-      </View>
-      <TouchableOpacity
-        disabled={!toggleCheckBox}
-        onPress={() => navigation.navigate('SoloSaving4')}
-        style={[
-          designs.button,
-          {
-            marginTop: 15,
-            backgroundColor: toggleCheckBox ? '#00DC99' : '#EAEAEA',
-          },
-        ]}>
-        <Text
-          style={{
-            color: toggleCheckBox ? 'white' : '#000',
-            fontWeight: '600',
-            fontSize: 14,
-            lineHeight: 30,
-          }}>
-          NEXT
-        </Text>
-      </TouchableOpacity>
-=======
         <TouchableOpacity
           disabled={!toggleCheckBox}
           // onPress={() => navigation.navigate('SoloSaving4')}
@@ -375,7 +284,6 @@ export default function Screen3({navigation}) {
         // cvv={cvv}
         // setCVV={setCvv}
       />
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
     </View>
   );
 }

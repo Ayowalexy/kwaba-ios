@@ -5,16 +5,10 @@ const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8FD',
-<<<<<<< HEAD
-    paddingTop: 28,
-    paddingLeft: 16,
-    paddingRight: 16,
-=======
     // paddingTop: 20,
     // paddingLeft: 16,
     // paddingRight: 16,
     padding: 15,
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
     fontFamily: 'CircularStd',
     // borderWidth: 2,
     // borderColor: 'red',

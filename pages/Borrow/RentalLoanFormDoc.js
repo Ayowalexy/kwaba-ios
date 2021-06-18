@@ -26,6 +26,7 @@ const RentalLoanFormDoc = ({navigation}) => {
   const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [monthlyPayment, setMonthlyPayment] = useState('');
+  const [preApproveAmount, setPreApproveAmount] = useState('');
   // const
 
   useEffect(() => {
@@ -33,8 +34,10 @@ const RentalLoanFormDoc = ({navigation}) => {
       const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
       let data = JSON.parse(loanFormData);
-      setRequestAmount(data.request_amount);
+      console.log(data);
+      setRequestAmount(data.request_amount.toString());
       setSelectedMonth(data.selected_month);
+      await monthly_payment(data.request_amount,Number(data.selected_month));
     }
 
     console.log('selectedMonth:', selectedMonth);
@@ -58,13 +61,87 @@ const RentalLoanFormDoc = ({navigation}) => {
     navigation.navigate('RentalLoanForm2');
   };
 
-  const monthly_payment = () => {
-    let tenure = 6;
+  const monthly_payment = async(amount,timetorepay) => {
 
-    let temp = 0.045 * tenure + 1;
+    const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+
+    let salaryBalance;
+    let data = JSON.parse(loanFormData);
+    console.log(data);
+    const tenure=timetorepay;
+
+    if (data.request_amount) {
+      
+      //salaryBalance = parseFloat(data.salary_amount) - parseFloat(data.request_amount);
+
+      salaryBalance = parseFloat(data.salary_amount);
+    }
+    else {
+      salaryBalance = parseFloat(data.salary_amount);
+    }
+
+     
 
     let max_pre_approved_amount;
+
+    let max_repayment_amount = (salaryBalance * 0.4) * tenure;
+  
+
+    let temp = (0.045 * tenure) + 1;
+    
+
+    max_pre_approved_amount = max_repayment_amount / temp;
+   
+
+    let pre_approved_amount = 0;
+   
+
+    if (amount >= max_pre_approved_amount) {
+      pre_approved_amount = max_pre_approved_amount;
+    } else {
+      pre_approved_amount = amount;
+    }
+
+
+    let monthly_repayment = (0.045 * pre_approved_amount) + (pre_approved_amount / tenure);
+  
+
+    let non_refundable_deposit = 0;
+    let temp3 = 0.035 * pre_approved_amount;
+    if (temp3 >= 100000000) {
+      non_refundable_deposit = 100000000;
+    } else {
+      non_refundable_deposit = temp3;
+    }
+
+    let loanable_amount=0;
+
+    loanable_amount = round5(pre_approved_amount);
+    setPreApproveAmount(loanable_amount);
+   
+    monthly_repayment = Math.floor(monthly_repayment);
+    setMonthlyPayment(monthly_repayment);
+ 
+    non_refundable_deposit = Math.floor(non_refundable_deposit);
+
+    console.log(amount);
+    
   };
+
+  const roundUp =(n)=> {
+    return n > 1000 ? (Math.round(n / 1000) * 1000) : n;
+  }
+
+  const round5=(x)=> {
+    const round5No = x % 5 == 0 ? Number(Math.floor(x / 5)) * 5 : (Number(Math.floor(x / 5)) * 5) + 5;
+    return round5No > 1000 ? (Math.round(round5No / 1000) * 1000) : round5No;
+
+    // if (x % 5 == 0) {
+    //   return Number(Math.floor(x / 5)) * 5;
+    // } else {
+    //   return (Number(Math.floor(x / 5)) * 5) + 5;
+    // }
+  }
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -126,7 +203,10 @@ const RentalLoanFormDoc = ({navigation}) => {
             </Text>
             <NumberFormat
               value={requestAmount}
-              onChangeText={(text) => setRequestAmount(text)}
+              onChangeText={(text) => {
+                setRequestAmount(text);
+                monthly_payment(text,selectedMonth);
+              }}
             />
 
             <Text
@@ -218,7 +298,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                 }}>
                 <Text>Pre-approved amount</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
-                  ₦{numberWithCommas(requestAmount)}
+                  ₦{numberWithCommas(preApproveAmount)}
                 </Text>
               </View>
               <View
@@ -229,11 +309,11 @@ const RentalLoanFormDoc = ({navigation}) => {
                 }}>
                 <Text>Monthly payment:</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
-                  {/* ₦
+                  ₦
                   {numberWithCommas(
-                    Number(requestAmount) / Number(selectedMonth),
-                  )} */}
-                  --
+                    Number(monthlyPayment)
+                  )}
+                  {/* -- */}
                 </Text>
               </View>
               <View
@@ -242,7 +322,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                   justifyContent: 'space-between',
                   paddingVertical: 15,
                 }}>
-                <Text>Tenor</Text>
+                <Text>Tenure</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
                   {selectedMonth} {selectedMonth <= 1 ? 'month' : 'months'}
                 </Text>
@@ -276,7 +356,10 @@ const RentalLoanFormDoc = ({navigation}) => {
         onRequestClose={() => setShowSelectMonthModal(!showSelectMonthModal)}
         visible={showSelectMonthModal}
         // selectedMonth={selectedMonth}
-        onClick={(value) => setSelectedMonth(value)}
+        onClick={(value) => {
+          setSelectedMonth(value)
+          monthly_payment(requestAmount,Number(value))
+        }}
       />
     </View>
   );

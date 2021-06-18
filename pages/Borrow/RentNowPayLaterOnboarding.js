@@ -10,8 +10,60 @@ import {
 } from 'react-native';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default RentNowPayLaterOnboarding = ({navigation}) => {
+
+  const handleRentalLoanClick = async () => {
+    
+      const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+      const steps = JSON.parse(borrwSteps);
+
+      if (steps == null) {
+
+        navigation.navigate('UploadDocuments');
+
+      } else if (steps.documentdone == '') {
+
+        navigation.navigate('UploadDocuments');
+
+      } else if (steps.propertydetail == '') {
+
+        navigation.navigate('PostPaymentForm1');
+
+      } else if (steps.landlorddetail == '') {
+
+        navigation.navigate('PostPaymentForm2');
+
+      } else if (steps.refree == '') {
+
+        navigation.navigate('PostPaymentForm3');
+
+      } else if (steps.offeraccepted == '') {
+
+        navigation.navigate('RentalLoanOfferTest'); 
+
+      } else if (steps.addressverification == '') {
+
+        navigation.navigate('AddressVerificationPayment');
+
+      } else if (steps.debitmandate == '') {
+
+        navigation.navigate('OkraDebitMandate');
+
+      } else if (steps.awaitingdisbursment == '') {
+
+        navigation.navigate('AwaitingDisbursement');
+
+      }else {
+
+      navigation.navigate('RentalLoanForm1');
+      //navigation.navigate('EmergencyLoanRequestDashBoard');
+    }
+
+  };
+
+
   return (
     <View style={styles.container}>
       <TouchableOpacity

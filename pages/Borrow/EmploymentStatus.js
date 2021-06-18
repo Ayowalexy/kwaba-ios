@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import ComingSoon from '../../components/ComingSoon';
 

@@ -14,14 +14,8 @@ import {signUp} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-<<<<<<< HEAD
-import analytics from '@segment/analytics-react-native'
-
-const widthTouse = Dimensions.get('window').width;
-=======
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
 
 const CustomInput = (props) => {
   const {
@@ -122,48 +116,10 @@ const signUpValidationSchema = yup.object().shape({
     }),
 });
 
-<<<<<<< HEAD
-  React.useEffect(() => {
-    // Toast.show({
-    //   text1: 'Hello',
-    //   text2: 'This is some something 👋',
-    //   visibilityTime: 2000,
-    //   position: 'top',
-    //   topOffset: 30,
-    // });
-
-    initializeSegment();
-  }, []);
-
-
-  const initializeSegment=async()=>{
-    await analytics.setup('YOUR_WRITE_KEY', {
-      // Record screen views automatically!
-      //recordScreenViews: true,
-      // Record certain application events automatically!
-      trackAppLifecycleEvents: true
-    })
-  }
-
-  const isError = () => {
-    if (
-      (firstname.trim().length == 0 ||
-        lastname.trim().length == 0 ||
-        email.trim().length == 0,
-      password == '' || gender.length == 0)
-    ) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-  const handleSubmit = async () => {
-=======
 export default function SignUp({navigation}) {
   const [spinner, setSpinner] = useState(false);
 
   const handleSubmit = async (values, setValues, setErrors) => {
->>>>>>> 9f374e036e486629560403e1969dbc89e93f5e8d
     const data = {
       firstname: values.firstName,
       lastname: values.lastName,
