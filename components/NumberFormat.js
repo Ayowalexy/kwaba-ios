@@ -1,14 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import {icons, images, COLORS} from '../util/index';
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-// function formatNumberWidthComma() {
-
-// }
+import {formatNumber} from '../util/numberFormatter';
 
 export default function NumberFormat(props, {navigation}) {
   const {value, onChangeText} = props;
@@ -37,7 +30,7 @@ export default function NumberFormat(props, {navigation}) {
         placeholderTextColor="#BFBFBF"
         keyboardType="number-pad"
         // keyboardType="decimal-pad"
-        value={value}
+        value={formatNumber(value)}
         onChangeText={onChangeText}
       />
     </View>
@@ -46,11 +39,11 @@ export default function NumberFormat(props, {navigation}) {
 
 const styles = StyleSheet.create({
   customInput: {
-    borderRadius: 5,
+    borderRadius: 10,
     backgroundColor: '#FFFFFF',
     borderColor: '#ADADAD50',
     borderWidth: 1,
-    marginTop: 5,
+    marginTop: 10,
     width: '100%',
     position: 'relative',
 
