@@ -152,6 +152,40 @@ const RentalLoanForm3 = ({navigation}) => {
     navigation.navigate('RentalLoanFormCongratulation');
   };
 
+  const getApplicationData = async () => {
+    const getToken = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const token = JSON.parse(userData).token;
+      return token;
+    };
+    const token = await getToken();
+
+    const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+    const steps = JSON.parse(borrwSteps);
+
+    console.log('steps here' + steps);
+    try {
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      // console.log(applicationIDCallRes.data.data.id);
+      console.log(applicationIDCallRes.data.data);
+      const applicationId = applicationIDCallRes.data.data.id;
+      const status = applicationIDCallRes.data.data.status;
+      // const statement = applicationIDCallRes.data.data.statement;
+      if (status !== 4) {
+        // setExistingApplication(applicationId);
+        console.log('here', applicationId);
+        console.log('status', applicationIDCallRes.data.data.status);
+      }
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
@@ -469,7 +503,8 @@ const RentalLoanForm3 = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   // onPress={() => navigation.navigate('RentalLoanForm2')}
-                  onPress={() => setVisible(!modalVisible)}
+                  // onPress={() => setVisible(!modalVisible)}
+                  onPress={getApplicationData}
                   style={[
                     designs.button,
                     {

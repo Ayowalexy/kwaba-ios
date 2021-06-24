@@ -264,6 +264,46 @@ const resolveCardDetails = async (data) => {
   }
 };
 
+const tokenizeCard = async (data) => {
+  const url = apiUrl + '/api/v1/payment/cardtokenize';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const tokenizePayment = async (data) => {
+  const url = apiUrl + '/api/v1/payment/cardtokenize/payment';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+
+const referralDetails = async (data) => {
+  const url = apiUrl + '/api/v1/payment/referraldetails';
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -281,4 +321,7 @@ export {
   getSingleLoan,
   resolveBankAccount,
   resolveCardDetails,
+  tokenizeCard,
+  tokenizePayment,
+  referralDetails,
 };

@@ -181,8 +181,9 @@ const Onboarding = ({navigation}) => {
                       position: 'absolute',
                       bottom: 0,
                       right: 0,
-                      paddingVertical: 5,
+                      paddingVertical: 10,
                       paddingHorizontal: 20,
+                      // borderWidth: 1,
                     }}>
                     <Text
                       style={{

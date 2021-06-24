@@ -12,40 +12,77 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../../util/index';
-import {currencyFormat} from '../../../util/numberFormatter';
+import {currencyFormat, numberWithCommas} from '../../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
+import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
+
 import QuickSaveModal from '../../../components/QuickSaveModal';
 import moment from 'moment';
 
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SoloSavingDashBoard({navigation}) {
   const dispatch = useDispatch();
-  const soloSavings = useSelector((state) => state.getSoloSavingsReducer);
+  const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+  const soloSaving = useSelector((state) => state.soloSavingReducer);
   const currentUser = useSelector((state) => state.getUserReducer);
-  const [activeTab, setActiveTab] = useState(1);
+  // useSelector((state) => console.log('State:', state));
+  const [activeTab, setActiveTab] = useState(0);
   const [today, setToday] = useState('');
-  const [openQuickSave, setOpenQuickSave] = useState(false);
+  // const [openQuickSave, setOpenQuickSave] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [savingsTarget, setSavingsTarget] = useState(0);
   const [percentAchieved, setPercentAchieved] = useState(0);
+  const [savingTitle, setSavingTitle] = useState('');
+  const [transactions, setTransactions] = useState([]);
+  const [quickSaveModal, setQuickSaveModal] = useState(false);
 
   useEffect(() => {
     dispatch(getCurrentUser());
-  }, []);
+    dispatch(getTotalSoloSavings());
+  }, [getTotalSoloSavings]);
 
   useEffect(() => {
-    // const tottalSoloSavings = soloSavings?.data?.reduce(
-    //   (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    // );
-    // const soloInterestTotal = soloSavings?.data?.reduce(
-    //   (saving, acc) => Number(saving.interest) + Number(acc.interest),
-    // );
-  }, []);
+    const totalSoloSavings =
+      getSoloSaving?.data?.length > 0
+        ? getSoloSaving.data.reduce(
+            (acc, saving) => acc + Number(saving.amount),
+            0,
+          )
+        : 0;
+
+    setTotalSaving(totalSoloSavings);
+
+    const totalSoloSavingsInterest =
+      getSoloSaving?.data?.length > 0
+        ? getSoloSaving.data.reduce(
+            (acc, saving) => acc + Number(saving.interest),
+            0,
+          )
+        : 0;
+
+    setTotalInterest(totalSoloSavingsInterest);
+
+    setSavingsTarget(soloSaving.savings_amount);
+
+    setSavingTitle(soloSaving.savings_title);
+
+    let x = soloSaving.savings_amount - Number(totalSoloSavings);
+    let y = x / soloSaving.savings_amount;
+    let p = 100 - y * 100;
+    setPercentAchieved(Number(p).toFixed(0));
+
+    // const totalTransactions =
+    //   getSoloSaving?.data?.length > 0 && getSoloSaving.data.map((el) => el);
+    // console.log(totalTransactions.reference);
+
+    getSoloSaving.data.forEach((el) => console.log(el.reference));
+  }, [getSoloSaving]);
 
   return (
     <View style={styles.container}>
@@ -62,7 +99,9 @@ export default function SoloSavingDashBoard({navigation}) {
             <Text
               style={{fontSize: 25, fontWeight: 'bold', color: COLORS.primary}}>
               Solo Saving{' '}
-              <Text style={{fontSize: 10, color: '#ADADAD'}}>2021 rent</Text>
+              <Text style={{fontSize: 10, color: '#ADADAD'}}>
+                {savingTitle}
+              </Text>
             </Text>
             <Text style={{fontSize: 12, fontWeight: '700', color: '#ADADAD'}}>
               {moment().format('ddd, D MMM')}
@@ -83,14 +122,18 @@ export default function SoloSavingDashBoard({navigation}) {
               }}
             />
             <View style={{padding: 20}}>
-              <TouchableOpacity onPress={() => setOpenQuickSave(true)}>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                  zIndex: 5,
+                }}
+                onPress={() => setQuickSaveModal(true)}>
                 <Image
                   style={{
                     width: 50,
                     height: 50,
-                    position: 'absolute',
-                    right: -22,
-                    top: -22,
                   }}
                   source={icons.addIcon}
                 />
@@ -111,7 +154,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     fontWeight: 'bold',
                     color: COLORS.white,
                   }}>
-                  ₦{currencyFormat(totalSaving)}
+                  ₦{currencyFormat(Number(totalSaving))}
                 </Text>
                 <Icon
                   name="lock-closed"
@@ -211,7 +254,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦{currencyFormat(savingsTarget)}
+                  ₦{currencyFormat(Number(savingsTarget))}
                 </Text>
               </View>
             </View>
@@ -323,6 +366,7 @@ export default function SoloSavingDashBoard({navigation}) {
             </TouchableOpacity>
 
             <TouchableOpacity
+              onPress={() => navigation.navigate('SoloSavingDashBoard')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -409,6 +453,52 @@ export default function SoloSavingDashBoard({navigation}) {
                 </TouchableOpacity>
               ))}
             </View>
+
+            {/* Transactions */}
+            <View style={{flex: 1}}>
+              <View style={{flex: 1}}>
+                {getSoloSaving.data.map((el, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingVertical: 10,
+                        marginTop: 10,
+                      }}>
+                      <View
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: 20,
+                          backgroundColor: COLORS.secondary,
+                          marginRight: 10,
+                        }}
+                      />
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alingnItems: 'center',
+                        }}>
+                        <Text style={{fontSize: 12}}>{el.reference}</Text>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: COLORS.dark,
+                          }}>
+                          {/* {el.amount} */}₦
+                          {currencyFormat(Number(el.amount))}
+                        </Text>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
           </View>
 
           <View
@@ -420,6 +510,11 @@ export default function SoloSavingDashBoard({navigation}) {
           />
         </View>
       </ScrollView>
+
+      <QuickSaveModal
+        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+        visible={quickSaveModal}
+      />
     </View>
   );
 }

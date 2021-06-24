@@ -14,7 +14,7 @@ export default function NumberFormat(props, {navigation}) {
           fontWeight: 'bold',
           fontSize: 14,
           position: 'absolute',
-          left: 15,
+          left: 20,
           color: COLORS.dark,
         }}>
         ₦

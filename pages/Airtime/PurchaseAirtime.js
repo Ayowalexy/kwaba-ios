@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -9,20 +9,31 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, images, icons} from '../../util/index';
+import {
+  formatNumber,
+  unFormatNumber,
+  numberWithCommas,
+} from '../../util/numberFormatter';
 import ChooseNetworkModal from './chooseNetworkModal';
 import ConfirmModal from './ConfirmModal';
+import NumberFormat from '../../components/NumberFormat';
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+// function numberWithCommas(x) {
+//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+// }
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setName] = useState(route.params.name);
 
-  let name = route.params.name;
+  // let name = route.params.name;
+
+  useEffect(() => {
+    console.log(amount);
+  }, [amount]);
 
   return (
     <View style={{flex: 1}}>
@@ -84,8 +95,16 @@ const PurchaseAirtime = ({navigation, route}) => {
         </View>
 
         <View style={{marginTop: 20}}>
-          <Text style={{fontSize: 14, color: COLORS.primary}}>
-            Select amount
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              // marginLeft: 5,
+              marginBottom: 10,
+              color: COLORS.primary,
+            }}>
+            Select Amount
           </Text>
           <View
             style={{
@@ -102,12 +121,14 @@ const PurchaseAirtime = ({navigation, route}) => {
                     styles.amount,
                     {
                       backgroundColor:
-                        amount === value ? '#9D98EC' : '#9D98EC50',
+                        unFormatNumber(amount) === value
+                          ? '#9D98EC'
+                          : '#9D98EC50',
                     },
                   ]}
                   onPress={() => setAmount(value)}>
                   <Text style={styles.amountText}>
-                    ₦{numberWithCommas(value)}.00
+                    ₦{numberWithCommas(value)}
                   </Text>
                 </TouchableOpacity>
               ),
@@ -115,32 +136,10 @@ const PurchaseAirtime = ({navigation, route}) => {
           </View>
         </View>
 
-        <View style={[styles.customInput, {padding: 0}]}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 18,
-              position: 'absolute',
-              left: 20,
-              color: COLORS.dark,
-            }}>
-            ₦
-          </Text>
-          <TextInput
-            style={{
-              width: '100%',
-              paddingLeft: 50,
-              paddingVertical: 16,
-              fontWeight: 'bold',
-            }}
-            placeholder="Amount"
-            placeholderTextColor="#BFBFBF"
-            keyboardType="number-pad"
-            value={numberWithCommas(amount)}
-            onChangeText={(value) => setAmount(value)}
-          />
-        </View>
+        <NumberFormat value={amount} onChangeText={(text) => setAmount(text)} />
+      </ScrollView>
 
+      <View style={styles.btnContainer}>
         <TouchableOpacity
           onPress={() => {
             setConfirmModalVisible(!confirmModalVisible);
@@ -152,7 +151,7 @@ const PurchaseAirtime = ({navigation, route}) => {
               backgroundColor: '#00DC99',
               width: '100%',
               borderRadius: 10,
-              marginTop: 20,
+              // marginTop: 20,
               // opacity: isError() ? 0 : 1,
             },
           ]}>
@@ -166,12 +165,13 @@ const PurchaseAirtime = ({navigation, route}) => {
             NEXT
           </Text>
         </TouchableOpacity>
-      </ScrollView>
+      </View>
 
       <ChooseNetworkModal
         visible={visible}
         onRequestClose={() => setVisible(!visible)}
         selectedNetwork={name}
+        onClick={(value) => setName(value.name)}
       />
 
       <ConfirmModal
@@ -179,7 +179,7 @@ const PurchaseAirtime = ({navigation, route}) => {
         onRequestClose={() => setConfirmModalVisible(!confirmModalVisible)}
         selectedNetwork={name}
         selectedPhoneNumber={phoneNumber}
-        selectedAmount={numberWithCommas(amount)}
+        selectedAmount={formatNumber(amount)}
       />
     </View>
   );
@@ -219,6 +219,13 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: 13,
     fontWeight: 'bold',
+  },
+
+  btnContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    width: '100%',
+    // borderWidth: 1,
   },
 
   btn: {

@@ -45,7 +45,8 @@ export default function CardAndBankModal(props) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              {store.instant_saved_amount &&
+              {store.saving_start_option == 'today' &&
+                store.instant_saved_amount != '' &&
                 store.instant_saved_amount.length > 0 && (
                   <Text
                     style={{
@@ -64,6 +65,22 @@ export default function CardAndBankModal(props) {
                     towards your rent savings.
                   </Text>
                 )}
+
+              {store.saving_start_option == 'pick_date' && (
+                <Text
+                  style={{
+                    fontSize: 15,
+                    width: 260,
+                    color: '#465969',
+                    lineHeight: 25,
+                  }}>
+                  To verify your card you will be charged{' '}
+                  <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
+                    ₦{numberWithCommas(50)}.
+                  </Text>{' '}
+                  This money goes towards your rent savings.
+                </Text>
+              )}
               <Icon
                 onPress={onRequestClose}
                 name="close-outline"

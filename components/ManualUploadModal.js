@@ -15,6 +15,7 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import * as Animatable from 'react-native-animatable';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -24,63 +25,77 @@ const getToken = async () => {
 };
 
 export default function ManualUploadModal(props) {
-  const {onRequestClose, visible, onConfirm} = props;
+  const [fileUploaded, setFileUploaded] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadFilename, setUploadFilename] = useState('');
+  const [startUpload, setStartUpload] = useState(false);
+  // const [response, setResponse] = useState('');
 
-  const uploadBankStatementFile = async (item) => {
-    // console.log('ITEM: ', item);
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
-      });
+  const {onRequestClose, visible, onConfirm, navigation} = props;
 
-      const base64File = await RNFS.readFile(res.uri, 'base64');
+  const uploadBankStatementFile = async () => {
+    // console.log('Hello world');
 
-      const convertedFile = `data:${res.type},${base64File}`;
+    const file = await DocumentPicker.pick({
+      type: [DocumentPicker.types.allFiles],
+    });
 
-      const blob = {
-        uri: res.uri,
-        type: res.type,
-        name: res.name,
-      };
+    const formData = new FormData();
 
-      const token = await getToken();
+    formData.append('file', {
+      uri: file.uri,
+      type: file.type,
+      name: file.name,
+    });
+    formData.append('upload_preset', 'rental_loan_documents');
+    formData.append('cloud_name', 'kwaba');
 
-      const applicationIDCallRes = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
+    const token = await getToken();
+
+    const applicationIDCallRes = await axios.get(
+      'http://67.207.86.39:8000/api/v1/application/one',
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
+
+    const applicationId = applicationIDCallRes.data.data.id;
+
+    const options = {
+      onUploadProgress: (progressEvent) => {
+        const {loaded, total} = progressEvent;
+        let percentage = Math.floor((loaded * 100) / total);
+        console.log(`${loaded}kb of ${total}kb | ${percentage}%`);
+        setStartUpload(true);
+
+        if (percentage < 100) {
+          setUploadProgress(percentage);
+        }
+      },
+    };
+
+    await axios
+      .post(
+        'https://api.cloudinary.com/v1_1/kwaba/auto/upload',
+        formData,
+        options,
+      )
+      .then(
+        (res) => {
+          setUploadFilename(res.data.original_filename);
+          setUploadProgress(100);
+
+          console.log(res.data);
+        },
+        () => {
+          setTimeout(() => {
+            setUploadProgress(0);
+            setStartUpload(false);
+          }, 1000);
         },
       );
 
-      const applicationId = applicationIDCallRes.data.data.id;
-
-      const formdata = new FormData();
-
-      formdata.append('file', blob);
-      formdata.append('upload_preset', 'rental_loan_documents');
-      formdata.append('cloud_name', 'kwaba');
-
-      const response = await axios.post(
-        'https://api.cloudinary.com/v1_1/kwaba/auto/upload',
-        formdata,
-      );
-
-      console.log(
-        'here is the console log  from cloudinary ',
-        response.data.url,
-      );
-
-      const data = {
-        applicationId,
-        file: response.data.url,
-        document_type: item.id,
-        filename: item.title,
-      };
-
-      console.log('here is the data:', data);
-    } catch (err) {
-      console.log(err);
-    }
+    console.log('*****************');
   };
 
   return (
@@ -141,45 +156,70 @@ export default function ManualUploadModal(props) {
                   marginTop: 20,
                 }}
               />
+              <Text
+                style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
+                {uploadFilename}
+              </Text>
               <TouchableOpacity
                 onPress={uploadBankStatementFile}
                 style={[
                   styles.btn,
-                  {backgroundColor: COLORS.secondary, marginTop: 20},
+                  {backgroundColor: COLORS.secondary, marginTop: 10},
                 ]}>
+                <View
+                  style={[styles.progress, {width: uploadProgress + '%'}]}
+                />
                 <Text
                   style={[
-                    // designs.buttonText,
                     {
                       color: COLORS.white,
                       textAlign: 'center',
                       fontWeight: 'bold',
                       fontSize: 12,
+                      lineHeight: 50,
                     },
                   ]}>
-                  Choose a file
+                  {/* {startUpload &&
+                    uploadProgress > 0 &&
+                    'Uploading...  ' + uploadProgress + '%'} */}
+                  {uploadProgress == 100 && 'File has been uploaded'}
+                  {!startUpload && uploadProgress == 0 && 'Choose a file'}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <TouchableOpacity
-            // onPress={handleNavigation}
-            // disabled={isError()}
-            style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
-            <Text
-              style={[
-                // designs.buttonText,
-                {
-                  color: COLORS.white,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 12,
-                },
-              ]}>
-              PROCEED
-            </Text>
-          </TouchableOpacity>
+          {uploadProgress > 0 && (
+            <View style={{overflow: 'hidden'}}>
+              <Animatable.View
+                duration={300}
+                easing="ease-in-out"
+                animation="slideInUp"
+                style={{overflow: 'hidden'}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    onRequestClose();
+                    // navigation.navigate('PostPaymentForm1');
+                    navigation.navigate('LoanRequestApproval');
+                  }}
+                  // disabled={isError()}
+                  style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
+                  <Text
+                    style={[
+                      {
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                        lineHeight: 60,
+                      },
+                    ]}>
+                    PROCEED
+                  </Text>
+                </TouchableOpacity>
+              </Animatable.View>
+            </View>
+          )}
         </View>
       </View>
     </Modal>
@@ -207,7 +247,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: '100%',
-    paddingVertical: 20,
+    // paddingVertical: 20,
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
@@ -216,6 +256,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   textInput: {
     width: '100%',
@@ -236,5 +277,12 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+  progress: {
+    // width: '50%',
+    height: '100%',
+    backgroundColor: '#07BA84',
+    position: 'absolute',
+    left: 0,
   },
 });

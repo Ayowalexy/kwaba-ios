@@ -44,12 +44,23 @@ const EmergencyLoanDashBoard = ({navigation}) => {
       setRepaidLoans(paidLoans);
       setLoanAmount(activeLoan != undefined ? activeLoan.loan_amount : 0);
       setRepayment(activeLoan != undefined ? activeLoan.repayment_amount : 0);
+      // setDueDate(
+      //   activeLoan != undefined
+      //     ? moment(activeLoan.repayment_date.slice(0, 10)).format(
+      //         'DD, MMM YYYY',
+      //       )
+      //     : '',
+      // );
       setDueDate(
         activeLoan != undefined
-          ? moment(activeLoan.repayment_date).format('DD, MMM YYYY')
+          ? moment(activeLoan.repayment_date.split(' ')[0]).format(
+              'DD, MMM YYYY',
+            )
           : '',
       );
       setLoanId(activeLoan != undefined ? activeLoan.id : '');
+
+      // console.log(activeLoan);
     })();
   }, []);
 
@@ -130,10 +141,10 @@ const EmergencyLoanDashBoard = ({navigation}) => {
         onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"
         size={20}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+        style={{padding: 20, fontWeight: '900'}}
         color={COLORS.primary}
       />
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, paddingHorizontal: 20}}>
         <Text
           style={[
             FONTS.h1FontStyling,
@@ -142,7 +153,7 @@ const EmergencyLoanDashBoard = ({navigation}) => {
               textAlign: 'left',
               fontWeight: 'bold',
               marginBottom: 17,
-              marginLeft: 16,
+              // marginLeft: 16,
             },
           ]}>
           Emergency Loan
@@ -156,20 +167,22 @@ const EmergencyLoanDashBoard = ({navigation}) => {
               color: COLORS.light,
               backgroundColor: '#EDECFC',
               borderRadius: 5,
-              padding: 6,
-              marginHorizontal: 16,
+              paddingVertical: 10,
+              paddingLeft: 10,
+              paddingRight: 50,
+              // marginHorizontal: 16,
               marginBottom: 22,
             },
           ]}>
           We hope this loan was helpful. Please ensure to make repayment on
-          time, failure will incur 2.5% daily.
+          time.
         </Text>
 
         <View
           style={[
             designs.activeLoanDashboard,
             {
-              marginHorizontal: 16,
+              // marginHorizontal: 16,
               elevation: 20,
               backgroundColor: COLORS.white,
             },

@@ -22,6 +22,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import com.rnfs.RNFSPackage;
+import com.instabug.reactlibrary.RNInstabugReactnativePackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 
@@ -56,6 +57,13 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
 
   @Override
   public void onCreate() {
+    new RNInstabugReactnativePackage
+    .Builder("b47303822745b8ff58541cc8f3a54f23", MainApplication.this)
+    .setInvocationEvent("shake")
+    .setPrimaryColor("#1D82DC")
+    .setFloatingEdge("left")
+    .setFloatingButtonOffsetFromTop(250)
+    .build();
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());

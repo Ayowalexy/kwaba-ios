@@ -62,7 +62,12 @@ export default function ConfirmModal(props) {
                 Confirm
               </Text>
               <Text
-                style={{fontSize: 14, color: COLORS.primary, marginTop: 10}}>
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.primary,
+                  marginTop: 10,
+                }}>
                 You are about to buy airtime
               </Text>
             </View>
@@ -72,6 +77,7 @@ export default function ConfirmModal(props) {
                 flexDirection: 'row',
                 flexWrap: 'wrap',
                 marginTop: 20,
+                marginLeft: 20,
               }}>
               <View style={styles.info}>
                 <Text style={styles.title}>Phone Number</Text>

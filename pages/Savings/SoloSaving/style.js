@@ -61,11 +61,11 @@ const designs = StyleSheet.create({
     justifyContent: 'center',
     opacity: 1,
     backgroundColor: '#00DC99',
-    marginTop: 60,
+    marginTop: 40,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: 20,
-    elevation: 2,
+    // elevation: 2,
   },
   summaryBox: {
     // height: 400,

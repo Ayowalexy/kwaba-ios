@@ -42,9 +42,9 @@ export default function chooseNetworkModal(props) {
     },
   ];
 
-  const {onRequestClose, visible, selectedNetwork} = props;
+  const {onRequestClose, visible, selectedNetwork, onClick} = props;
 
-  console.log('This, props:', props);
+  // console.log('This, props:', props);
   return (
     <View>
       <Modal
@@ -112,6 +112,10 @@ export default function chooseNetworkModal(props) {
               <TouchableOpacity
                 key={index}
                 disabled={value.name === selectedNetwork ? true : false}
+                onPress={() => {
+                  onRequestClose();
+                  onClick(value);
+                }}
                 style={{
                   paddingHorizontal: 20,
                   paddingVertical: 10,

@@ -26,6 +26,7 @@
     "axios": "^0.21.1",
     "flutterwave-react-native": "^1.0.2",
     "formik": "^2.2.9",
+    "instabug-reactnative": "^10.4.0",
     "metro-config": "^0.65.1",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",

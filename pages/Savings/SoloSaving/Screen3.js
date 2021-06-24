@@ -16,14 +16,7 @@ import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
-
 import CardAndBankModal from './CardAndBankModal';
-// import AddCardModal from '../../../components/addCardModal';
-// import AddCardModal from './AddCardModal';
-
-// function numberWithCommas(x) {
-//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-// }
 
 export default function Screen3({navigation}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -48,71 +41,54 @@ export default function Screen3({navigation}) {
   const [addCardModal, setAddCardModal] = useState(false);
 
   const addCardAndBankModal = () => {
-    // console.log('Adding card and bank...');
     setModal(true);
-    // navigation.navigate('SoloSaving4');
-    // setAddCardModal(true);
-    // console.log(modal);
+    console.log(store);
   };
 
   useEffect(() => {
-    // console.log(locked);
     dispatch(soloSaving({locked: locked}));
+    // console.log(store.savings_target_amount);
   }, [locked]);
 
   useEffect(() => {
     const frequency = store.savings_frequency;
     const targetAmount = store.savings_target_amount;
     const tenure = store.savings_tenure;
-
     const locked_interest_rate = 0.08;
     const unlock_interest_rate = 0.07;
-
     const numberOfDaysInAMonth = 30;
     const numberOfWeeksInAMonth = 4;
-
     console.log('Freq:', frequency);
     console.log('Tenure:', tenure);
-
     if (frequency == 'Daily') {
       if (tenure.toLowerCase() == '1 year') {
-        let amount_to_save = numberWithCommas(
-          unFormatNumber(targetAmount) / (numberOfDaysInAMonth * 12),
-        );
+        let amount_to_save = targetAmount / (numberOfDaysInAMonth * 12);
+
         setAmountToSave(amount_to_save);
       } else {
-        let amount_to_save = numberWithCommas(
-          unFormatNumber(targetAmount) / (numberOfDaysInAMonth * tenure[0]),
-        );
+        let amount_to_save = targetAmount / (numberOfDaysInAMonth * tenure[0]);
+
         setAmountToSave(amount_to_save);
       }
     } else if (frequency == 'Weekly') {
       if (tenure.toLowerCase() == '1 year') {
-        let amount_to_save = numberWithCommas(
-          unFormatNumber(targetAmount) / (numberOfWeeksInAMonth * 12),
-        );
+        let amount_to_save = targetAmount / (numberOfWeeksInAMonth * 12);
+
         setAmountToSave(amount_to_save);
       } else {
-        let amount_to_save = numberWithCommas(
-          unFormatNumber(targetAmount) / (numberOfWeeksInAMonth * tenure[0]),
-        );
+        let amount_to_save = targetAmount / (numberOfWeeksInAMonth * tenure[0]);
+
         setAmountToSave(amount_to_save);
       }
     } else if (frequency == 'Monthly') {
       if (tenure.toLowerCase() == '1 year') {
-        let amount_to_save = numberWithCommas(
-          unFormatNumber(targetAmount) / 12,
-        );
+        let amount_to_save = targetAmount / 12;
         setAmountToSave(amount_to_save);
       } else {
-        let amount_to_save = numberWithCommas(
-          unFormatNumber(targetAmount) / tenure[0],
-        );
+        let amount_to_save = targetAmount / tenure[0];
         setAmountToSave(amount_to_save);
       }
     }
-
-    // console.log('Store:', store);
   }, []);
 
   return (
@@ -149,7 +125,6 @@ export default function Screen3({navigation}) {
                   lineHeight: 23,
                   fontFamily: 'Circular Std',
                 }}>
-                {/* {new Date().getFullYear()} Rent */}
                 {store.savings_title}
               </Text>
             </View>
@@ -167,18 +142,13 @@ export default function Screen3({navigation}) {
               marginTop: 20,
               alignItems: 'center',
               paddingHorizontal: 10,
-              // paddingLeft: 20,
-              // borderWidth: 1,
             }}>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>
                 Amount To Save {store.savings_frequency}
               </Text>
               <Text style={designs.value}>
-                ₦
-                {numberWithCommas(
-                  Number(unFormatNumber(amountToSave)).toFixed(2),
-                ) || ' 0.00'}
+                ₦{numberWithCommas(Number(amountToSave).toFixed(2)) || ' 0.00'}
               </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
@@ -186,9 +156,7 @@ export default function Screen3({navigation}) {
               <Text style={designs.value}>
                 ₦
                 {numberWithCommas(
-                  Number(unFormatNumber(store.savings_target_amount)).toFixed(
-                    2,
-                  ),
+                  Number(store.savings_target_amount).toFixed(2),
                 ) || ' 0.00'}
               </Text>
             </View>
@@ -241,15 +209,10 @@ export default function Screen3({navigation}) {
               alignItems: 'center',
               justifyContent: 'center',
               width: '100%',
-              // height: 26,
               borderRadius: 13,
               backgroundColor: '#00000022',
               padding: 2,
-              // paddingHorizontal: 5,
-              // marginRight: 'auto',
-              // marginLeft: 'auto',
               marginTop: 15,
-              // marginBottom: 10,
             }}>
             <Text
               style={{
@@ -293,9 +256,10 @@ export default function Screen3({navigation}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
+          onPress={() => navigation.navigate('SoloSavingDashBoard')}
           // onPress={() => navigation.navigate('SetUpPaymentPlan')}
           // onPress={() => navigation.navigate('SoloSaving4')}
-          onPress={addCardAndBankModal}
+          // onPress={addCardAndBankModal}
           style={[
             designs.button,
             {

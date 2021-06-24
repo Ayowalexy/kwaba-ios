@@ -52,13 +52,12 @@ export default function SubsequentModal(props) {
           if (result.type === 'cancel') {
             // navigation.navigate('SoloSavingDashBoard');
             // navigationToDashboard();
-
             goToDashboard();
 
             let data = {reference: response.data.data.reference};
             // setVerificationSpinner(true);
             const verify = await verifyPayment(data);
-            console.log('Verify: ', verify);
+            // console.log('Verify: ', verify);
             if (verify.data.status == 'success') {
               setVerificationSpinner(false);
               await createPlan();
@@ -78,12 +77,29 @@ export default function SubsequentModal(props) {
       // setSpinner(false);
       console.log('error', error);
     }
+
+    // DO NOT UNCOMMENT THIS CODE
+    // const data = {
+    //   savings_amount: Number(store.savings_target_amount),
+    //   // savings_target_amount: Number(store.savings_target_amount),
+    //   savings_frequency: store.savings_frequency.toLowerCase(),
+    //   savings_account_number: '',
+    //   savings_account_name: '',
+    //   savings_bank_code: '',
+    //   savings_tenure: Number(store.savings_tenure[0]),
+    //   savings_title: store.savings_title,
+    //   savings_start_date: store.savings_start_date,
+    //   savings_end_date: store.savings_end_date,
+    //   locked: store.locked,
+    // };
+    // console.log('DATA: ', data);
+    // console.log('STORE: ', store);
   };
 
   const createPlan = async () => {
     console.log('Creating...');
     const data = {
-      savings_amount: Number(store.savings_amount),
+      savings_amount: Number(store.savings_target_amount),
       // savings_target_amount: Number(store.savings_target_amount),
       savings_frequency: store.savings_frequency.toLowerCase(),
       savings_account_number: '',
@@ -245,7 +261,11 @@ export default function SubsequentModal(props) {
                   //   //   setSubsequent(value);
                   //   // }
                   // }}
-                  onPress={handleTransactions}
+                  onPress={
+                    value.toLowerCase() == 'yes'
+                      ? handleTransactions
+                      : onRequestClose
+                  }
                   key={index}
                   style={{
                     paddingVertical: 15,

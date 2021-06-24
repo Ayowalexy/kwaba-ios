@@ -92,7 +92,8 @@ const AccountPage = ({navigation}) => {
       iconName: 'cash-outline',
       tabTitle: 'Withdraw',
       onClickFunction: function openCardAndBank() {
-        setWithrawModalVisible(true);
+        // setWithrawModalVisible(true);
+        navigation.navigate('Withdraw');
       },
     },
     {

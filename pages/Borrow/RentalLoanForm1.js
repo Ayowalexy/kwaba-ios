@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import NumberFormat from '../../components/NumberFormat';
+import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import SelectMonthModal from '../../components/SelectMonthModal';
 
 import {Formik, Field} from 'formik';
@@ -62,8 +62,8 @@ const RentalLoanForm1 = ({navigation}) => {
   const handleSubmit = async (values) => {
     const data = {
       accomodationstatus: accommodationStatus,
-      salary_amount: Number(values.salaryAmount),
-      request_amount: Number(values.requestAmount),
+      salary_amount: Number(unFormatNumber(values.salaryAmount)),
+      request_amount: Number(unFormatNumber(values.requestAmount)),
       selected_month: Number(selectedMonth),
     };
 
@@ -113,7 +113,7 @@ const RentalLoanForm1 = ({navigation}) => {
               paddingVertical: 16,
             }}
             keyboardType="number-pad"
-            value={value}
+            value={formatNumber(value)}
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
@@ -122,6 +122,8 @@ const RentalLoanForm1 = ({navigation}) => {
             {...inputProps}
           />
         </View>
+
+        {/* <N */}
 
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
@@ -182,8 +184,8 @@ const RentalLoanForm1 = ({navigation}) => {
           <Formik
             validationSchema={rentalLoanFormSchema}
             initialValues={{
-              requestAmount: '200000',
-              salaryAmount: '100000',
+              requestAmount: '',
+              salaryAmount: '',
             }}
             onSubmit={(values) => {
               handleSubmit(values);
@@ -332,6 +334,7 @@ const RentalLoanForm1 = ({navigation}) => {
         visible={showSelectMonthModal}
         // selectedMonth={selectedMonth}
         onClick={(value) => setSelectedMonth(value)}
+        selectedMonth={selectedMonth}
       />
     </View>
   );
