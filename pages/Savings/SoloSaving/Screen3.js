@@ -7,13 +7,8 @@ import {images} from '../../../util/index';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
-
+import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 import CardAndBankModal from './CardAndBankModal';
-import AddCardModal from '../../../components/addCardModal';
-
-// function numberWithCommas(x) {
-//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-// }
 
 export default function Screen3({navigation}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -38,30 +33,54 @@ export default function Screen3({navigation}) {
   const [addCardModal, setAddCardModal] = useState(false);
 
   const addCardAndBankModal = () => {
-    // console.log('Adding card and bank...');
     setModal(true);
-    // navigation.navigate('SoloSaving4');
-    // setAddCardModal(true);
-    // console.log(modal);
+    console.log(store);
   };
 
   useEffect(() => {
-    // console.log(locked);
     dispatch(soloSaving({locked: locked}));
+    // console.log(store.savings_target_amount);
   }, [locked]);
 
   useEffect(() => {
     const frequency = store.savings_frequency;
+    const targetAmount = store.savings_target_amount;
+    const tenure = store.savings_tenure;
     const locked_interest_rate = 0.08;
     const unlock_interest_rate = 0.07;
-
+    const numberOfDaysInAMonth = 30;
+    const numberOfWeeksInAMonth = 4;
+    console.log('Freq:', frequency);
+    console.log('Tenure:', tenure);
     if (frequency == 'Daily') {
-    } else if (frequency == 'Weekly') {
-    } else {
-      // 150000 * (d)
-    }
+      if (tenure.toLowerCase() == '1 year') {
+        let amount_to_save = targetAmount / (numberOfDaysInAMonth * 12);
 
-    console.log('Store:', store);
+        setAmountToSave(amount_to_save);
+      } else {
+        let amount_to_save = targetAmount / (numberOfDaysInAMonth * tenure[0]);
+
+        setAmountToSave(amount_to_save);
+      }
+    } else if (frequency == 'Weekly') {
+      if (tenure.toLowerCase() == '1 year') {
+        let amount_to_save = targetAmount / (numberOfWeeksInAMonth * 12);
+
+        setAmountToSave(amount_to_save);
+      } else {
+        let amount_to_save = targetAmount / (numberOfWeeksInAMonth * tenure[0]);
+
+        setAmountToSave(amount_to_save);
+      }
+    } else if (frequency == 'Monthly') {
+      if (tenure.toLowerCase() == '1 year') {
+        let amount_to_save = targetAmount / 12;
+        setAmountToSave(amount_to_save);
+      } else {
+        let amount_to_save = targetAmount / tenure[0];
+        setAmountToSave(amount_to_save);
+      }
+    }
   }, []);
 
   return (
@@ -98,7 +117,6 @@ export default function Screen3({navigation}) {
                   lineHeight: 23,
                   fontFamily: 'Circular Std',
                 }}>
-                {/* {new Date().getFullYear()} Rent */}
                 {store.savings_title}
               </Text>
             </View>
@@ -116,19 +134,22 @@ export default function Screen3({navigation}) {
               marginTop: 20,
               alignItems: 'center',
               paddingHorizontal: 10,
-              // paddingLeft: 20,
-              // borderWidth: 1,
             }}>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>
                 Amount To Save {store.savings_frequency}
               </Text>
-              <Text style={designs.value}>₦{amountToSave || ' 0.00'}</Text>
+              <Text style={designs.value}>
+                ₦{numberWithCommas(Number(amountToSave).toFixed(2)) || ' 0.00'}
+              </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>
-                ₦{store.savings_target_amount || ' 0.00'}
+                ₦
+                {numberWithCommas(
+                  Number(store.savings_target_amount).toFixed(2),
+                ) || ' 0.00'}
               </Text>
             </View>
             <View style={designs.dataInfo}>
@@ -167,6 +188,28 @@ export default function Screen3({navigation}) {
               }}>
               SOLO SAVING
             </Text>
+<<<<<<< HEAD
+=======
+            <Switch
+              trackColor={{false: 'white', true: 'white'}}
+              thumbColor={locked ? '#00DC99' : '#ADADAD'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={locked}
+            />
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              borderRadius: 13,
+              backgroundColor: '#00000022',
+              padding: 2,
+              marginTop: 15,
+            }}>
+>>>>>>> 506b7739fae3916ddc38ea69070cdc8d8993711b
             <Text
               style={{
                 fontSize: 18,
@@ -244,8 +287,10 @@ export default function Screen3({navigation}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
+          onPress={() => navigation.navigate('SoloSavingDashBoard')}
+          // onPress={() => navigation.navigate('SetUpPaymentPlan')}
           // onPress={() => navigation.navigate('SoloSaving4')}
-          onPress={addCardAndBankModal}
+          // onPress={addCardAndBankModal}
           style={[
             designs.button,
             {
@@ -271,18 +316,7 @@ export default function Screen3({navigation}) {
         onRequestClose={() => setModal(!modal)}
         visible={modal}
         store={store}
-      />
-
-      <AddCardModal
-        //  onConfirm={addCard}
-        onRequestClose={() => setAddCardModal(!addCardModal)}
-        visible={addCardModal}
-        // cardNumber={cardNumber}
-        // setCardNumber={setCardNumber}
-        // expiryDate={expiryDate}
-        // setExpiryDate={setExpiryDate}
-        // cvv={cvv}
-        // setCVV={setCvv}
+        navigation={navigation}
       />
     </View>
   );

@@ -10,11 +10,19 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images} from '../util';
+import NumberFormat from './NumberFormat';
+import {
+  currencyFormat,
+  numberWithCommas,
+  unFormatNumber,
+  formatNumber,
+} from '../util/numberFormatter';
 
 export default function QuickSaveModal(props) {
   const {onRequestClose, visible, openSuccessModal} = props;
   const [start, setStart] = useState(false);
   const [proceed, setProceed] = useState(false);
+  const [amount, setAmount] = useState('');
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -27,7 +35,7 @@ export default function QuickSaveModal(props) {
             <View
               style={[
                 styles.displayFlex,
-                {justifyContent: 'space-between', width: 370},
+                {justifyContent: 'space-between', width: '100%'},
               ]}>
               {start ? (
                 <Icon
@@ -100,7 +108,7 @@ export default function QuickSaveModal(props) {
                       borderRadius: 50,
                     }}
                     name="arrow-forward"
-                    size={30}
+                    size={20}
                   />
                 </View>
               </TouchableOpacity>
@@ -139,7 +147,7 @@ export default function QuickSaveModal(props) {
                       borderRadius: 50,
                     }}
                     name="arrow-forward"
-                    size={30}
+                    size={20}
                   />
                 </View>
               </TouchableOpacity>
@@ -158,12 +166,16 @@ export default function QuickSaveModal(props) {
                   </Text>
                 )}
                 {!proceed && (
-                  <TextInput
-                    style={styles.textInput}
-                    placeholder="Amount"
-                    keyboardAppearance="dark"
-                    keyboardType="number-pad"
-                    placeholderTextColor="#BFBFBF"
+                  // <TextInput
+                  //   style={styles.textInput}
+                  //   placeholder="Amount"
+                  //   keyboardAppearance="dark"
+                  //   keyboardType="number-pad"
+                  //   placeholderTextColor="#BFBFBF"
+                  // />
+                  <NumberFormat
+                    value={amount}
+                    onChangeText={(text) => setAmount(text)}
                   />
                 )}
                 {!proceed && (
@@ -175,7 +187,11 @@ export default function QuickSaveModal(props) {
                       {backgroundColor: '#2A286A', marginBottom: 16},
                     ]}>
                     <Text
-                      style={{color: 'white', fontSize: 16, fontWeight: '800'}}>
+                      style={{
+                        color: 'white',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      }}>
                       PROCEED
                     </Text>
                   </TouchableOpacity>
@@ -194,7 +210,8 @@ export default function QuickSaveModal(props) {
                           fontWeight: 'bold',
                           marginTop: 10,
                         }}>
-                        ₦10,000.00
+                        {/* ₦10,000.00 */}
+                        {''}₦{formatNumber(unFormatNumber(amount))}
                       </Text>
                       <Text
                         style={{
@@ -287,8 +304,9 @@ export default function QuickSaveModal(props) {
                       <Text
                         style={{
                           color: 'white',
-                          fontSize: 16,
-                          fontWeight: '800',
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          // fontWeight: '800',
                         }}>
                         NEXT
                       </Text>
@@ -313,26 +331,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    margin: 20,
-    top: 50,
+    width: '100%',
     backgroundColor: 'white',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#BFBFBF',
-
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 6,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden',
+    padding: 20,
   },
   btn: {
-    width: 380,
-    height: 70,
+    width: '100%',
+    // height: 70,
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
@@ -342,7 +350,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingLeft: 16,
     paddingRight: 16,
-    elevation: 6,
+    elevation: 1,
+    paddingVertical: 20,
   },
   displayFlex: {
     display: 'flex',
@@ -350,7 +359,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   textInput: {
-    width: 380,
+    width: '100%',
     height: 70,
     borderRadius: 10,
     padding: 16,
@@ -362,7 +371,7 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   creditCard: {
-    width: 365,
+    width: '100%',
     height: 51,
     borderRadius: 10,
     backgroundColor: 'white',

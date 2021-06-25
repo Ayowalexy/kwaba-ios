@@ -7,14 +7,26 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Tooltip from 'rn-tooltip';
 import {useDispatch, useSelector} from 'react-redux';
 import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
-import {currencyFormat} from '../../../util/numberFormatter';
 import {COLORS, FONTS, images} from '../../../util/index';
 import designs from './style';
+import {
+  formatNumber,
+  unFormatNumber,
+  currencyFormat,
+} from '../../../util/numberFormatter';
+
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+
+const emergencyFundFormSchema = yup.object().shape({
+  requestAmount: yup.string().required('Provide an amount'),
+});
 
 export default function EmergencyLoanHome({navigation}) {
   const dispatch = useDispatch();
@@ -44,19 +56,95 @@ export default function EmergencyLoanHome({navigation}) {
     return repayment;
   };
 
-  const handleNavigation = () => {
-    if (loanAmount == '') {
-      return Alert.alert('', 'Please set a loan amount');
-    } else if (loanAmount > maximumLoanAmount) {
+  const handleSubmit = (values, setValues) => {
+    // console.log(values, repaymentAmount);
+    // if (loanAmount == '') {
+    //   return Alert.alert('', 'Please set a loan amount');
+    // } else
+
+    // console.log(unFormatNumber(values.requestAmount));
+
+    if (unFormatNumber(values.requestAmount) > maximumLoanAmount) {
       return Alert.alert(
         'Invalid Loan Amount',
         'Set a loan amount less than or equal to your maximum loan amount',
       );
-    } else
+    } else {
       navigation.navigate('EmergencyLoanRequest', {
-        loan_amount: loanAmount,
+        loan_amount: unFormatNumber(values.requestAmount),
         repayment_amount: repaymentAmount,
       });
+    }
+
+    // if (loanAmount > maximumLoanAmount) {
+    //   return Alert.alert(
+    //     'Invalid Loan Amount',
+    //     'Set a loan amount less than or equal to your maximum loan amount',
+    //   );
+    // } else
+    //   navigation.navigate('EmergencyLoanRequest', {
+    //     loan_amount: unFormatNumber(values.requestAmount),
+    //     repayment_amount: repaymentAmount,
+    //   });
+
+    // navigation.navigate('EmergencyLoanRequest', {
+    //   loan_amount: unFormatNumber(values.requestAmount),
+    //   repayment_amount: repaymentAmount,
+    // });
+  };
+
+  const NumberInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingLeft: 50,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={formatNumber(value)}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+              setRepaymentAmount(calculateRepayment(unFormatNumber(value)));
+            }}
+            onChangeText={(text) => {
+              onChange(name)(text);
+            }}
+            {...inputProps}
+          />
+        </View>
+
+        {/* <N */}
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
   return (
@@ -65,126 +153,160 @@ export default function EmergencyLoanHome({navigation}) {
         designs.container,
         {
           backgroundColor: '#F7F8FD',
-          paddingTop: 28,
-          paddingHorizontal: 16,
-          paddingBottom: 24,
+          // paddingTop: 28,
+          // paddingHorizontal: 10,
+          // paddingBottom: 24,
         },
       ]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900'}}
+        style={{
+          fontWeight: '900',
+          // borderWidth: 1,
+          paddingHorizontal: 15,
+          paddingVertical: 15,
+        }}
         color={COLORS.primary}
       />
 
-      <View style={{width: '100%', marginLeft: 25, marginBottom: 20}}></View>
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        <View style={{textAlign: 'left'}}>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {color: COLORS.primary, fontWeight: 'bold'},
-            ]}>
-            {/* Instant Loan */}
-            Emergency Fund
-          </Text>
-          <Text
-            style={[FONTS.body1FontStyling, {color: '#ADADAD', marginTop: 6}]}>
-            Based on your savings activities below the{'\n'}loan amount you can
-            get again you savings
-          </Text>
-        </View>
-        <View style={designs.rlDisplay}>
-          <View style={designs.displayCard}>
-            <View>
-              <View style={{display: 'flex', flexDirection: 'row'}}>
+      {/* <View style={{width: '100%', paddingHorizontal: 10}}></View> */}
+      <ScrollView
+        scrollEnabled
+        showsVerticalScrollIndicator={false}
+        style={{width: '100%', paddingHorizontal: 15}}>
+        <Formik
+          validationSchema={emergencyFundFormSchema}
+          initialValues={{
+            requestAmount: '',
+          }}
+          onSubmit={(values) => {
+            handleSubmit(values);
+          }}>
+          {({handleSubmit, isValid, values, setValues}) => (
+            <>
+              <View style={{textAlign: 'left'}}>
                 <Text
-                  style={{fontSize: 12, color: COLORS.white, lineHeight: 15}}>
-                  You have saved
+                  style={[
+                    // FONTS.h1FontStyling,
+                    {color: COLORS.primary, fontSize: 18, fontWeight: 'bold'},
+                  ]}>
+                  {/* Instant Loan */}
+                  Emergency Fund
+                </Text>
+                <Text
+                  style={[
+                    {
+                      color: '#46596990',
+                      fontSize: 13,
+                      marginTop: 6,
+                      lineHeight: 20,
+                    },
+                  ]}>
+                  Based on your savings activities below the loan amount you can
+                  get against you savings
                 </Text>
               </View>
-              <Text
-                style={{
-                  fontSize: 23,
-                  color: COLORS.white,
-                  lineHeight: 29,
-                  fontWeight: 'bold',
-                }}>
-                ₦{currencyFormat(savings)}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon
-                name="lock-closed"
-                size={15}
-                style={{fontWeight: '900'}}
-                color="yellow"
-              />
-            </View>
-          </View>
+              <View style={designs.rlDisplay}>
+                <View style={designs.displayCard}>
+                  <View>
+                    <View style={{display: 'flex', flexDirection: 'row'}}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: COLORS.white,
+                          lineHeight: 15,
+                        }}>
+                        You have saved
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        color: COLORS.white,
+                        lineHeight: 29,
+                        fontWeight: 'bold',
+                      }}>
+                      ₦{currencyFormat(savings)}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="lock-closed"
+                      size={15}
+                      style={{fontWeight: '900'}}
+                      color="yellow"
+                    />
+                  </View>
+                </View>
 
-          <View
-            style={{
-              marginTop: 8,
-              paddingBottom: 11,
-              borderBottomWidth: 1,
-              borderColor: '#EAEAEA',
-            }}>
-            <View style={{display: 'flex', flexDirection: 'row'}}>
-              <Text
-                style={{
-                  color: COLORS.primary,
-                  fontSize: 12,
-                  lineHeight: 15,
-                  marginBottom: 1,
-                }}>
-                Maximum Loan Amount
-              </Text>
-              <Tooltip
-                backgroundColor="#00DC99"
-                height={42.45}
-                withOverlay={false}
-                containerStyle={{
-                  justifyContent: 'flex-start',
-                  flexDirection: 'row',
-                }}
-                popover={
-                  <Text
-                    style={{fontSize: 10, color: 'white', textAlign: 'left'}}>
-                    This is the most amount{'\n'}you can get against your
-                    {'\n'}savings
-                  </Text>
-                }>
-                <Icon
-                  name="information-circle"
-                  size={15}
+                <View
                   style={{
-                    fontWeight: '900',
-                    marginLeft: 4,
-                    height: 15.32,
-                    width: 15.32,
-                  }}
-                  color="#00DC99"
-                />
-              </Tooltip>
-            </View>
-            <Text
-              style={{
-                color: COLORS.primary,
-                fontSize: 23,
-                lineHeight: 29,
-                fontWeight: 'bold',
-              }}>
-              ₦{currencyFormat(maximumLoanAmount)}
-            </Text>
-          </View>
-          <View>
+                    marginTop: 8,
+                    paddingBottom: 11,
+                    borderBottomWidth: 1,
+                    borderColor: '#EAEAEA',
+                  }}>
+                  <View style={{display: 'flex', flexDirection: 'row'}}>
+                    <Text
+                      style={{
+                        color: COLORS.primary,
+                        marginBottom: 4,
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                      }}>
+                      Maximum Loan Amount
+                    </Text>
+                    <Tooltip
+                      backgroundColor="#00DC99"
+                      height={42.45}
+                      withOverlay={false}
+                      containerStyle={{
+                        justifyContent: 'flex-start',
+                        flexDirection: 'row',
+                      }}
+                      popover={
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: 'white',
+                            textAlign: 'left',
+                          }}>
+                          This is the most amount{'\n'}you can get against your
+                          {'\n'}savings
+                        </Text>
+                      }>
+                      <Icon
+                        name="information-circle"
+                        size={20}
+                        style={{
+                          fontWeight: '900',
+                          marginLeft: 5,
+                          // marginTop: 3,
+                          // height: 20,
+                          // width: 20,
+                        }}
+                        color="#00DC99"
+                      />
+                    </Tooltip>
+                  </View>
+                  <Text
+                    style={{
+                      color: COLORS.primary,
+                      fontSize: 23,
+                      lineHeight: 29,
+                      fontWeight: 'bold',
+                    }}>
+                    ₦{currencyFormat(maximumLoanAmount)}
+                  </Text>
+                </View>
+                {/* <View>
             <Text
               style={{
                 color: COLORS.primary,
@@ -212,41 +334,106 @@ export default function EmergencyLoanHome({navigation}) {
                 setRepaymentAmount(calculateRepayment(text));
               }}
             />
-          </View>
-        </View>
-        <View style={designs.repaymentTermsBox}>
-          <Text
-            style={{
-              color: '#FB8B24',
-              fontSize: 18,
-              lineHeight: 23,
-              marginBottom: 11,
-              fontWeight: 'bold',
-            }}>
-            Repayment Terms
-          </Text>
-          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
-            <View style={designs.repaymentTermsContent}>
-              <Text style={designs.smallTextTitles}>Repayment Days</Text>
-              <Text style={designs.repaymentTermsValues}>30 days</Text>
-            </View>
-            <View style={designs.repaymentTermsContent}>
-              <Text style={designs.smallTextTitles}>Repayment Amount</Text>
-              <Text style={designs.repaymentTermsValues}>
-                ₦{currencyFormat(repaymentAmount)}
-              </Text>
-            </View>
-          </View>
-        </View>
-        <TouchableOpacity
-          style={[
-            designs.buttonStyleB,
-            {backgroundColor: '#00DC99', width: '100%'},
-          ]}
-          onPress={handleNavigation}>
-          <Text style={{color: COLORS.white}}>ACCESS LOAN</Text>
-        </TouchableOpacity>
+          </View> */}
+                <>
+                  <Text
+                    style={{
+                      color: COLORS.dark,
+                      fontSize: 14,
+                      fontWeight: 'bold',
+                      lineHeight: 20,
+                      marginTop: 20,
+                    }}>
+                    How much do you want?
+                  </Text>
+                  <Field
+                    component={NumberInput}
+                    name="requestAmount"
+                    placeholder="Amount"
+                  />
+                </>
+              </View>
+              <View style={designs.repaymentTermsBox}>
+                <Text
+                  style={{
+                    color: '#FB8B24',
+                    fontSize: 18,
+                    lineHeight: 23,
+                    marginBottom: 11,
+                    fontWeight: 'bold',
+                  }}>
+                  Repayment Terms
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                  }}>
+                  <View style={designs.repaymentTermsContent}>
+                    <Text style={designs.smallTextTitles}>Repayment Days</Text>
+                    <Text style={designs.repaymentTermsValues}>30 Days</Text>
+                  </View>
+                  <View style={designs.repaymentTermsContent}>
+                    <Text style={designs.smallTextTitles}>
+                      Repayment Amount
+                    </Text>
+                    <Text style={designs.repaymentTermsValues}>
+                      ₦
+                      {(maximumLoanAmount > 0 &&
+                        currencyFormat(repaymentAmount)) ||
+                        ' 0.00'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+              <TouchableOpacity
+                style={[
+                  designs.buttonStyleB,
+                  {backgroundColor: '#00DC99', width: '100%'},
+                ]}
+                onPress={handleSubmit}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                    fontSize: 12,
+                    fontWeight: 'bold',
+                  }}>
+                  ACCESS LOAN
+                </Text>
+              </TouchableOpacity>
+            </>
+          )}
+        </Formik>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    color: COLORS.dark,
+    marginTop: 8,
+    fontSize: 14,
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
+});

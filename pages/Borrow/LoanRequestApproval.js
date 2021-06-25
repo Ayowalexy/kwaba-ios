@@ -16,14 +16,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 
 const LoanRequestApproval = ({navigation}) => {
-
   const [accommodationStatus, setAccommodationStatus] = useState('');
   const [salaryAmount, setSalaryAmount] = useState('');
 
   const handleNavigation = () => {
     const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
+      accommodationStatus: accommodationStatus,
+      salaryAmount: salaryAmount,
     };
     // try {
     //   dispatch(soloSaving(data));
@@ -32,57 +31,89 @@ const LoanRequestApproval = ({navigation}) => {
     // } catch (error) {}
   };
 
-
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
-        color= {COLORS.primary}
+        style={{padding: 20, fontWeight: '900'}}
+        color={COLORS.primary}
       />
-        <View
+      <View
+        style={{
+          // marginVertical: 11,
+          // marginHorizontal: 16,
+          paddingHorizontal: 20,
+        }}>
+        <Text
+          style={[
+            // FONTS.h1FontStyling,
+            {
+              color: COLORS.primary,
+              textAlign: 'left',
+              fontSize: 20,
+              fontWeight: 'bold',
+              marginBottom: 117,
+            },
+          ]}>
+          Rent Now Pay Later
+        </Text>
+        <Image
+          source={images.group3701}
           style={{
-            marginVertical: 11,
-            marginHorizontal: 16,
-          }}>
+            width: 140,
+            height: 140,
+            marginBottom: 26,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+            resizeMode: 'contain',
+          }}
+        />
+        <Text
+          style={[
+            // FONTS.h1FontStyling,
+            {
+              color: '#2A286A',
+              textAlign: 'center',
+              fontSize: 20,
+              fontWeight: 'bold',
+              marginBottom: 10,
+            },
+          ]}>
+          Request is Approved
+        </Text>
+        <Text
+          style={[
+            // FONTS.body2FontStyling,
+            {
+              color: '#ADADAD',
+              textAlign: 'center',
+              paddingHorizontal: 28,
+              marginBottom: 26,
+            },
+          ]}>
+          Accept your offer to set up your rent payment.{' '}
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('RentalLoanOffer')}
+          style={[designs.button, {backgroundColor: COLORS.secondary}]}>
           <Text
             style={[
-              FONTS.h1FontStyling,
+              designs.buttonText,
               {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                marginBottom: 117
-              },
-            ]}>
-            Rental Loan
-          </Text>
-          <Image source={images.group3701} style={{width: 154, height: 164, marginBottom: 26, marginLeft: 'auto', marginRight: 'auto'}}/>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
+                color: COLORS.white,
                 textAlign: 'center',
                 fontWeight: 'bold',
-                marginBottom: 10
+                fontSize: 12,
               },
             ]}>
-            Request is Approved
+            VIEW OFFER
           </Text>
-          <Text style={[FONTS.body2FontStyling, {color: '#ADADAD', textAlign: 'center', paddingHorizontal: 28, marginBottom: 26}]}>Accept your offer to set up your rent payment. </Text>
-         
-          
-          <TouchableOpacity
-            onPress={() => navigation.navigate('RentalLoanOffer')}
-            style={[designs.button, {backgroundColor: COLORS.secondary}]}>
-            <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>VIEW OFFER</Text>
-          </TouchableOpacity>
-        </View>
-        
-   </View>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 

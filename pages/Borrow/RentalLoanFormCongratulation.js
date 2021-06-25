@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     fontWeight: '200',
     textAlign: 'center',
     marginTop: 0,
-    color: '#BFBFBF',
+    color: COLORS.dark,
     lineHeight: 20,
   },
 

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../../util';
@@ -20,7 +21,7 @@ import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function AddCardModal(props) {
-  const {onRequestClose, visible} = props;
+  const {onRequestClose, visible, goToDashboard} = props;
 
   const [cardNumber, setCardNumber] = useState('2222 2222 2222 2222');
   const [expiryDate, setExpiryDate] = useState('11/21');
@@ -39,33 +40,42 @@ export default function AddCardModal(props) {
   //   };
 
   const handleTransactions = async () => {
-    console.log(store);
+    // close modal
+    onRequestClose();
+    // console.log(store);
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
-        // setSpinner(true);
+        setSpinner(true);
         const response = await makeOneOffPayment();
-        console.log(response);
-        // if (response.status === 200) {
-        //   setSpinner(false);
-        //   const result = await openInAppBrowser(
-        //     response.data.data.authorization_url,
-        //   );
-        //   if (result.type === 'cancel') {
-        //     let data = {reference: response.data.data.reference};
-        //     setVerificationSpinner(true);
-        //     const verify = await verifyPayment(data);
-        //     if (verify.data.status == 'success') {
-        //       setVerificationSpinner(false);
-        //       await createPlan();
-        //     } else {
-        //       setVerificationSpinner(false);
-        //       Alert.alert(
-        //         'Payment Unverified',
-        //         'Your payment was not verified. Please retry.',
-        //       );
-        //     }
-        //   }
-        // }
+        // console.log('RESPONSE:', response);
+        if (response.status === 200) {
+          setSpinner(false);
+          const result = await openInAppBrowser(
+            response.data.data.authorization_url,
+          );
+          console.log(result.type);
+          if (result.type === 'cancel') {
+            // navigation.navigate('SoloSavingDashBoard');
+            // navigationToDashboard();
+
+            goToDashboard();
+
+            let data = {reference: response.data.data.reference};
+            // setVerificationSpinner(true);
+            const verify = await verifyPayment(data);
+            console.log('Verify: ', verify);
+            if (verify.data.status == 'success') {
+              setVerificationSpinner(false);
+              await createPlan();
+            } else {
+              // setVerificationSpinner(false);
+              Alert.alert(
+                'Payment Unverified',
+                'Your payment was not verified. Please retry.',
+              );
+            }
+          }
+        }
       } else {
         return await createPlan();
       }
@@ -78,8 +88,8 @@ export default function AddCardModal(props) {
   const createPlan = async () => {
     console.log('Creating...');
     const data = {
-      // savings_amount: Number(store.savings_amount),
-      savings_target_amount: Number(store.savings_target_amount),
+      savings_amount: Number(store.savings_amount),
+      // savings_target_amount: Number(store.savings_target_amount),
       savings_frequency: store.savings_frequency.toLowerCase(),
       savings_account_number: '',
       savings_account_name: '',
@@ -146,7 +156,6 @@ export default function AddCardModal(props) {
 
     try {
       const response = await oneOffPayment(data);
-      console.log('RESPONSE:', response);
       return response;
     } catch (error) {
       setSpinner(false);

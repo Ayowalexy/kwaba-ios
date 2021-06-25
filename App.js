@@ -75,6 +75,7 @@ import Account from './pages/UserAccount/Account';
 import {FileViewAndDelete} from './pages/Borrow/FileViewAndDelete';
 import AccountPage from './pages/UserAccount/AccountPage';
 import CardAndBankDetails from './pages/UserAccount/CardAndBank';
+import Withdraw from './pages/UserAccount/Withdraw';
 import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
 import PostPaymentForm2 from './pages/Payment/PostPaymentForm2';
 import PostPaymentForm3 from './pages/Payment/PostPaymentForm3';
@@ -113,6 +114,8 @@ import NetInfo from '@react-native-community/netinfo';
 
 import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import Instabug from 'instabug-reactnative';
+
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -122,6 +125,13 @@ const App = () => {
   const [isOffline, setOfflineStatus] = useState(false);
 
   const store2 = useSelector((state) => state.loginReducer);
+
+  useEffect(() => {
+    // console.log('Instabug: ', Instabug);
+    Instabug.startWithToken('b47303822745b8ff58541cc8f3a54f23', [
+      Instabug.invocationEvent.shake,
+    ]);
+  }, []);
 
   useEffect(() => {
     const getuser = async () => {
@@ -428,6 +438,7 @@ const App = () => {
               <Stack.Screen
                 name="CardAndBankDetails"
                 component={CardAndBankDetails}></Stack.Screen>
+              <Stack.Screen name="Withdraw" component={Withdraw}></Stack.Screen>
               <Stack.Screen
                 name="BillsHome"
                 component={BillsHome}></Stack.Screen>

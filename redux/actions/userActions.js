@@ -29,7 +29,7 @@ export const getCurrentUser = () => {
     const url = apiUrl + '/api/v1/me';
     try {
       const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', token: token},
+        headers: {'Content-Type': 'application/json', Authorization: token},
       });
       dispatch(currentUser(response.data.user));
       return response.data.user;

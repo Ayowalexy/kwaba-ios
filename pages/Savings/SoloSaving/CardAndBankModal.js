@@ -3,14 +3,13 @@ import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import {images, icons} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AddCardModal from './AddCardModal';
+import SubsequentModal from './SubsequentModal';
+import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
-
-export default function CardAndBankModal(props, {navigation}) {
-  const {store, visible, onRequestClose} = props;
+export default function CardAndBankModal(props) {
+  const {store, visible, onRequestClose, navigation} = props;
   const [addCardModal, setAddCardModal] = useState(false);
+  const [subsequentModal, setSubsequentModal] = useState(false);
 
   return (
     <>
@@ -46,7 +45,8 @@ export default function CardAndBankModal(props, {navigation}) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              {store.instant_saved_amount &&
+              {store.saving_start_option == 'today' &&
+                store.instant_saved_amount != '' &&
                 store.instant_saved_amount.length > 0 && (
                   <Text
                     style={{
@@ -57,11 +57,30 @@ export default function CardAndBankModal(props, {navigation}) {
                     }}>
                     You are about to deposit{' '}
                     <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
-                      ₦{numberWithCommas(store.instant_saved_amount)}
+                      ₦
+                      {numberWithCommas(
+                        unFormatNumber(store.instant_saved_amount),
+                      )}
                     </Text>{' '}
-                    into your savings plan.
+                    towards your rent savings.
                   </Text>
                 )}
+
+              {store.saving_start_option == 'pick_date' && (
+                <Text
+                  style={{
+                    fontSize: 15,
+                    width: 260,
+                    color: '#465969',
+                    lineHeight: 25,
+                  }}>
+                  To verify your card you will be charged{' '}
+                  <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
+                    ₦{numberWithCommas(50)}.
+                  </Text>{' '}
+                  This money goes towards your rent savings.
+                </Text>
+              )}
               <Icon
                 onPress={onRequestClose}
                 name="close-outline"
@@ -78,14 +97,15 @@ export default function CardAndBankModal(props, {navigation}) {
                   fontWeight: 'bold',
                   marginVertical: 20,
                 }}>
-                Pay using
+                Select a payment option
               </Text>
               <TouchableOpacity
                 onPress={() => {
                   // close add card and bank modal
                   onRequestClose();
                   // open add card modal
-                  setAddCardModal(!addCardModal);
+                  // setAddCardModal(!addCardModal);
+                  setSubsequentModal(!subsequentModal);
                 }}
                 style={{
                   flexDirection: 'row',
@@ -116,7 +136,7 @@ export default function CardAndBankModal(props, {navigation}) {
                 </View>
                 <View>
                   <Text style={{fontWeight: 'bold', color: '#465969'}}>
-                    Add Card
+                    Debit card
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -150,7 +170,7 @@ export default function CardAndBankModal(props, {navigation}) {
                 </View>
                 <View>
                   <Text style={{fontWeight: 'bold', color: '#465969'}}>
-                    Add Bank Account
+                    Connect bank account
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -159,16 +179,20 @@ export default function CardAndBankModal(props, {navigation}) {
         </View>
       </Modal>
 
-      <AddCardModal
-        //  onConfirm={addCard}
+      {/* <AddCardModal
         onRequestClose={() => setAddCardModal(!addCardModal)}
         visible={addCardModal}
-        // cardNumber={cardNumber}
-        // setCardNumber={setCardNumber}
-        // expiryDate={expiryDate}
-        // setExpiryDate={setExpiryDate}
-        // cvv={cvv}
-        // setCVV={setCvv}
+        goToDashboard={() => {
+          navigation.navigate('SoloSavingDashBoard');
+        }}
+      /> */}
+
+      <SubsequentModal
+        onRequestClose={() => setSubsequentModal(!subsequentModal)}
+        visible={subsequentModal}
+        goToDashboard={() => {
+          navigation.navigate('SoloSavingDashBoard');
+        }}
       />
     </>
   );

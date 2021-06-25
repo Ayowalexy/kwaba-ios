@@ -53,7 +53,7 @@ const AirtimeHome = ({navigation}) => {
           <View style={{flexDirection: 'column'}}>
             <Text style={styles.headerMainText}>Buy Airtime</Text>
             <Text style={styles.headertext}>
-              Recharge amy network easily and fast
+              Recharge any network easily and fast
             </Text>
           </View>
 
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     width: '70%',
     color: COLORS.white,
     fontFamily: 'CircularStd-bold,Book',
-    textAlign: 'justify',
+    // textAlign: 'justify',
     lineHeight: 20,
     // marginLeft: 16,
   },

@@ -16,10 +16,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import NumberFormat from '../../components/NumberFormat';
 import SelectMonthModal from '../../components/SelectMonthModal';
+import {
+  formatNumber,
+  unFormatNumber,
+  numberWithCommas,
+} from '../../util/numberFormatter';
 
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+// function numberWithCommas(x) {
+//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+// }
 
 const RentalLoanFormDoc = ({navigation}) => {
   const [requestAmount, setRequestAmount] = useState('');
@@ -37,7 +42,7 @@ const RentalLoanFormDoc = ({navigation}) => {
       console.log(data);
       setRequestAmount(data.request_amount.toString());
       setSelectedMonth(data.selected_month);
-      await monthly_payment(data.request_amount,Number(data.selected_month));
+      await monthly_payment(data.request_amount, Number(data.selected_month));
     }
 
     console.log('selectedMonth:', selectedMonth);
@@ -61,40 +66,32 @@ const RentalLoanFormDoc = ({navigation}) => {
     navigation.navigate('RentalLoanForm2');
   };
 
-  const monthly_payment = async(amount,timetorepay) => {
-
+  const monthly_payment = async (amount, timetorepay) => {
+    console.log('Time to repay: ', timetorepay);
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
     let salaryBalance;
     let data = JSON.parse(loanFormData);
     console.log(data);
-    const tenure=timetorepay;
+    const tenure = timetorepay;
 
     if (data.request_amount) {
-      
       //salaryBalance = parseFloat(data.salary_amount) - parseFloat(data.request_amount);
 
       salaryBalance = parseFloat(data.salary_amount);
-    }
-    else {
+    } else {
       salaryBalance = parseFloat(data.salary_amount);
     }
 
-     
-
     let max_pre_approved_amount;
 
-    let max_repayment_amount = (salaryBalance * 0.4) * tenure;
-  
+    let max_repayment_amount = salaryBalance * 0.4 * tenure;
 
-    let temp = (0.045 * tenure) + 1;
-    
+    let temp = 0.045 * tenure + 1;
 
     max_pre_approved_amount = max_repayment_amount / temp;
-   
 
     let pre_approved_amount = 0;
-   
 
     if (amount >= max_pre_approved_amount) {
       pre_approved_amount = max_pre_approved_amount;
@@ -102,9 +99,8 @@ const RentalLoanFormDoc = ({navigation}) => {
       pre_approved_amount = amount;
     }
 
-
-    let monthly_repayment = (0.045 * pre_approved_amount) + (pre_approved_amount / tenure);
-  
+    let monthly_repayment =
+      0.045 * pre_approved_amount + pre_approved_amount / tenure;
 
     let non_refundable_deposit = 0;
     let temp3 = 0.035 * pre_approved_amount;
@@ -114,18 +110,35 @@ const RentalLoanFormDoc = ({navigation}) => {
       non_refundable_deposit = temp3;
     }
 
-    let loanable_amount=0;
+    let loanable_amount = 0;
 
     loanable_amount = round5(pre_approved_amount);
     setPreApproveAmount(loanable_amount);
-   
+
     monthly_repayment = Math.floor(monthly_repayment);
     setMonthlyPayment(monthly_repayment);
- 
+
     non_refundable_deposit = Math.floor(non_refundable_deposit);
 
     console.log(amount);
-    
+  };
+
+  const roundUp = (n) => {
+    return n > 1000 ? Math.round(n / 1000) * 1000 : n;
+  };
+
+  const round5 = (x) => {
+    const round5No =
+      x % 5 == 0
+        ? Number(Math.floor(x / 5)) * 5
+        : Number(Math.floor(x / 5)) * 5 + 5;
+    return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
+
+    // if (x % 5 == 0) {
+    //   return Number(Math.floor(x / 5)) * 5;
+    // } else {
+    //   return (Number(Math.floor(x / 5)) * 5) + 5;
+    // }
   };
 
   const roundUp =(n)=> {
@@ -205,7 +218,7 @@ const RentalLoanFormDoc = ({navigation}) => {
               value={requestAmount}
               onChangeText={(text) => {
                 setRequestAmount(text);
-                monthly_payment(text,selectedMonth);
+                monthly_payment(unFormatNumber(text), selectedMonth);
               }}
             />
 
@@ -225,6 +238,7 @@ const RentalLoanFormDoc = ({navigation}) => {
               style={styles.customInput}
               onPress={() => {
                 setShowSelectMonthModal(!showSelectMonthModal);
+                // console.log(selectedMonth);
               }}>
               {selectedMonth != '' ? (
                 <Text
@@ -232,7 +246,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {selectedMonth} month
+                  {selectedMonth} {selectedMonth <= 1 ? 'month' : 'months'}
                 </Text>
               ) : (
                 <Text
@@ -298,7 +312,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                 }}>
                 <Text>Pre-approved amount</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
-                  ₦{numberWithCommas(preApproveAmount)}
+                  ₦{numberWithCommas(Number(preApproveAmount))}
                 </Text>
               </View>
               <View
@@ -309,11 +323,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                 }}>
                 <Text>Monthly payment:</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
-                  ₦
-                  {numberWithCommas(
-                    Number(monthlyPayment)
-                  )}
-                  {/* -- */}
+                  ₦{numberWithCommas(Number(monthlyPayment))}
                 </Text>
               </View>
               <View
@@ -357,9 +367,10 @@ const RentalLoanFormDoc = ({navigation}) => {
         visible={showSelectMonthModal}
         // selectedMonth={selectedMonth}
         onClick={(value) => {
-          setSelectedMonth(value)
-          monthly_payment(requestAmount,Number(value))
+          setSelectedMonth(value);
+          monthly_payment(unFormatNumber(requestAmount), Number(value));
         }}
+        selectedMonth={selectedMonth}
       />
     </View>
   );

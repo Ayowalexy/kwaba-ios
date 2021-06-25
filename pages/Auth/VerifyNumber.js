@@ -118,10 +118,14 @@ export default function VerifyNumber({navigation, route}) {
 
   const verify = async () => {
     setSpinner(true);
-    const res = await verifyPhone(value);
+    const res = await verifyPhone({code: value});
+    console.log('VALUE:', value);
+    console.log('RES:', res);
+
     if (res.status == 200) {
+      navigation.navigate('Login');
       setSpinner(false);
-      setSuccessModal(true);
+      // setSuccessModal(true);
       setValue('');
       setError(false);
     } else {

@@ -181,6 +181,13 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    allprojects {
+        repositories {
+            maven {
+                url "https://sdks.instabug.com/nexus/repository/instabug-cp"
+            }
+        }
+    }
 
     // applicationVariants are e.g. debug, release
     applicationVariants.all { variant ->

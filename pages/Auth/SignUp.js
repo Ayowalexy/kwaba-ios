@@ -104,8 +104,8 @@ const signUpValidationSchema = yup.object().shape({
     .required('Email is required'),
   password: yup
     .string()
-    .matches(/\w*[a-z]\w*/, 'Password must have a small letter')
-    .matches(/\w*[A-Z]\w*/, 'Password must have a capital letter')
+    // .matches(/\w*[a-z]\w*/, 'Password must have a small letter')
+    // .matches(/\w*[A-Z]\w*/, 'Password must have a capital letter')
     .matches(/\d/, 'Password must have a number')
     .min(6, ({min}) => `Password must be at least ${min} characters`)
     .required('Password is required'),
@@ -128,36 +128,42 @@ export default function SignUp({navigation}) {
       gender: values.gender,
     };
 
+    // console.log(data);
+
+    // navigation.navigate('VerifyNumber');
+
     setSpinner(true);
     const res = await signUp(data);
 
-    console.log(res);
+    console.log(res.status);
 
-    if (res == 'Request failed with status code 409') setSpinner(false);
-    // if (res.status == 201) {
-    //   setSpinner(false);
-    //   await AsyncStorage.setItem('authData', res.data.authData);
-    //   setValues({
-    //     firstName: '',
-    //     lastName: '',
-    //     email: '',
-    //     password: '',
-    //     confirmPassword: '',
-    //   });
-    //   navigation.navigate('GetCode');
-    // } else {
-    //   setSpinner(false);
-    //   if (res == 'Request failed with status code 409') {
-    //     // console.log('Email is already taken');
-    //     setErrors({email: 'Email is already taken'});
-    //   } else {
-    //     let errorMsg =
-    //       'An error occurred, please check you internet connection or try again';
+    // // if (res == 'Request failed with status code 409') setSpinner(false);
+    if (res.status == 201) {
+      setSpinner(false);
+      await AsyncStorage.setItem('authData', res.data.authData);
+      navigation.navigate('GetCode');
 
-    //     // setValues({...values, error: errorMsg});
-    //     console.log(errorMsg);
-    //   }
-    // }
+      setValues({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        gender: 'Female',
+      });
+    } else {
+      setSpinner(false);
+      if (res == 'Request failed with status code 409') {
+        // console.log('Email is already taken');
+        setErrors({email: 'Email is already taken'});
+      } else {
+        let errorMsg =
+          'An error occurred, please check you internet connection or try again';
+
+        // setValues({...values, error: errorMsg});
+        console.log(errorMsg);
+      }
+    }
   };
   return (
     <View style={[designs.container]}>
@@ -227,19 +233,19 @@ export default function SignUp({navigation}) {
         <Formik
           validationSchema={signUpValidationSchema}
           initialValues={{
-            // firstName: 'Joshua',
-            // lastName: 'Nwosu',
-            // email: 'joshuanwosu@gmail.com',
-            // password: 'joshuaA1',
-            // confirmPassword: 'joshuaA1',
-            // gender: 'male',
+            firstName: 'Joshua',
+            lastName: 'Nwosu',
+            email: 'joshuanwosu117@gmail.com',
+            password: 'joshuaA1',
+            confirmPassword: 'joshuaA1',
+            gender: 'Male',
 
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            gender: 'female',
+            // firstName: '',
+            // lastName: '',
+            // email: '',
+            // password: '',
+            // confirmPassword: '',
+            // gender: 'Female',
           }}
           onSubmit={(values, {setValues, setErrors}) => {
             handleSubmit(values, setValues, setErrors);
@@ -294,9 +300,7 @@ export default function SignUp({navigation}) {
                     key={index}
                     style={{
                       backgroundColor:
-                        values.gender.toLowerCase() == value.toLowerCase()
-                          ? '#9D98EC'
-                          : '#FFFFFF',
+                        values.gender == value ? '#9D98EC' : '#FFFFFF',
                       width: '48%',
                       padding: 16,
                       borderRadius: 5,
@@ -311,10 +315,7 @@ export default function SignUp({navigation}) {
                     }}>
                     <Text
                       style={{
-                        color:
-                          values.gender.toLowerCase() == value.toLowerCase()
-                            ? '#FFFFFF'
-                            : '#BFBFBF',
+                        color: values.gender == value ? '#FFFFFF' : '#BFBFBF',
                       }}>
                       {value}
                     </Text>

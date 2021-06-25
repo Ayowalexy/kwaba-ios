@@ -30,82 +30,85 @@ export default function AddCardModal(props) {
 
   return (
     // <View>
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onRequestClose}
-      style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <Text
-              style={{
-                color: '#2A286A',
-                fontFamily: 'CircularStd',
-                fontWeight: 'bold',
-                fontSize: 18,
-                lineHeight: 19,
-              }}>
-              Add Card
-            </Text>
-            <Icon
-              onPress={onRequestClose}
-              name="close-outline"
-              size={25}
-              color="#465969"
-            />
-          </View>
+    // <Modal
+    //   animationType="slide"
+    //   transparent={true}
+    //   visible={visible}
+    //   onRequestClose={onRequestClose}
+    //   style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
+    //   <View style={styles.centeredView}>
+    //     <View style={styles.modalView}>
+    //       <View
+    //         style={{
+    //           display: 'flex',
+    //           flexDirection: 'row',
+    //           alignItems: 'center',
+    //           justifyContent: 'space-between',
+    //         }}>
+    //         <Text
+    //           style={{
+    //             color: '#2A286A',
+    //             fontFamily: 'CircularStd',
+    //             fontWeight: 'bold',
+    //             fontSize: 18,
+    //             lineHeight: 19,
+    //           }}>
+    //           Add Card
+    //         </Text>
+    //         <Icon
+    //           onPress={onRequestClose}
+    //           name="close-outline"
+    //           size={25}
+    //           color="#465969"
+    //         />
+    //       </View>
 
-          <TextInput
-            style={[styles.textInput, {marginTop: 18}]}
-            placeholder="Card number"
-            keyboardType="number-pad"
-            placeholderTextColor="#ADADAD"
-            value={cardNumber}
-            onChangeText={(text) => setCardNumber(text)}
-          />
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginTop: 18,
-            }}>
-            <TextInput
-              style={[styles.textInput, {width: '48%'}]}
-              placeholder="Expiry Date"
-              keyboardType="numeric"
-              placeholderTextColor="#ADADAD"
-              value={expiryDate}
-              onChangeText={(text) => setExpiryDate(text)}
-            />
-            <TextInput
-              style={[styles.textInput, {width: '48%'}]}
-              placeholder="CVV"
-              keyboardType="number-pad"
-              placeholderTextColor="#ADADAD"
-              value={cvv}
-              onChangeText={(text) => setCVV(text)}
-            />
-          </View>
+    //       <TextInput
+    //         style={[styles.textInput, {marginTop: 18}]}
+    //         placeholder="Card number"
+    //         keyboardType="number-pad"
+    //         placeholderTextColor="#ADADAD"
+    //         value={cardNumber}
+    //         onChangeText={(text) => setCardNumber(text)}
+    //       />
+    //       <View
+    //         style={{
+    //           display: 'flex',
+    //           flexDirection: 'row',
+    //           alignItems: 'center',
+    //           justifyContent: 'space-between',
+    //           marginTop: 18,
+    //         }}>
+    //         <TextInput
+    //           style={[styles.textInput, {width: '48%'}]}
+    //           placeholder="Expiry Date"
+    //           keyboardType="numeric"
+    //           placeholderTextColor="#ADADAD"
+    //           value={expiryDate}
+    //           onChangeText={(text) => setExpiryDate(text)}
+    //         />
+    //         <TextInput
+    //           style={[styles.textInput, {width: '48%'}]}
+    //           placeholder="CVV"
+    //           keyboardType="number-pad"
+    //           placeholderTextColor="#ADADAD"
+    //           value={cvv}
+    //           onChangeText={(text) => setCVV(text)}
+    //         />
+    //       </View>
 
-          <TouchableOpacity
-            onPress={onConfirm}
-            style={[styles.btn, {backgroundColor: '#2A286A'}]}>
-            <Text style={{color: 'white'}}>CONFIRM</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+    //       <TouchableOpacity
+    //         onPress={onConfirm}
+    //         style={[styles.btn, {backgroundColor: '#2A286A'}]}>
+    //         <Text style={{color: 'white'}}>CONFIRM</Text>
+    //       </TouchableOpacity>
+    //     </View>
+    //   </View>
+    // </Modal>
     // </View>
+    <View>
+      <Text>Empty</Text>
+    </View>
   );
 }
 

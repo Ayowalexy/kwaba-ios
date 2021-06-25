@@ -115,6 +115,7 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
       <ManualUploadModal
         onRequestClose={() => setShowManualUploadModal(!showManualUploadModal)}
         visible={showManualUploadModal}
+        navigation={navigation}
         // onClick={(value) => setSelectedPayMethod(value)}
       />
     </View>

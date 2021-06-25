@@ -43,27 +43,45 @@ const Aboutus = ({navigation}) => {
         </Text>
         <View style={styles.aboutussection}>
           <Text style={styles.aboutusText}>
-            The easy way to save and pay for your rent. Kwaba helps you save
-            towards your rent, get rent top-ups and instant loans. Kwaba has
-            your privacy at heart. Our platform was built with Bank-grade
-            security features. We work with PCIDSS compliant payment processors
-            for the security of your data. Your savings are overseen by our
-            partners who are regulated at the highest standard of compliance
-            hence your funds are safe.
+            We're a team of believers building out the future of rent. We are
+            reimagining the interaction between rent and a renter's lifestyle.
+            Our innovative products are taking us ever closer to achieving our
+            vision. While on our journey, we are helping renters improve their
+            financial health, capacity and giving them more control over their
+            rent.
           </Text>
           <Text style={styles.contactusText}>Contact us</Text>
           <Text style={styles.aboutusMinorText}>
             131A Eti-Osa way, Dolphin Estate, Ikoyi, Lagos - Nigeria
           </Text>
-          <Text style={styles.aboutusMinorText}>hello@kwaba.ng</Text>
           <View style={styles.iconsSection}>
-            <Image source={icons.instagram} style={{height: 24, width: 24}} />
-            <Image source={icons.facebook} style={{height: 24, width: 24}} />
-            <Image source={icons.whatsapp} style={{height: 24, width: 24}} />
-            <Image source={icons.linkedin} style={{height: 24, width: 24}} />
-            <Image source={icons.telegram} style={{height: 24, width: 24}} />
+            <Image
+              source={icons.instagram}
+              style={{height: 24, width: 24, marginRight: 20}}
+            />
+            <Image
+              source={icons.facebook}
+              style={{height: 24, width: 24, marginRight: 20}}
+            />
+            <Image
+              source={icons.whatsapp}
+              style={{height: 24, width: 24, marginRight: 20}}
+            />
+            <Image
+              source={icons.linkedin}
+              style={{height: 24, width: 24, marginRight: 20}}
+            />
+            <Image
+              source={icons.telegram}
+              style={{height: 24, width: 24, marginRight: 20}}
+            />
           </View>
-          <Text style={styles.aboutusMinorText}>www.kwaba.ng</Text>
+          <Text style={styles.aboutusMinorText}>
+            Email : <Text>hello@kwaba.ng</Text>
+          </Text>
+          <Text style={styles.aboutusMinorText}>
+            Website : <Text>www.kwaba.ng</Text>
+          </Text>
           <Image
             style={[
               {
@@ -117,23 +135,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: COLORS.dark,
-    marginTop: 20,
+    marginTop: 10,
+    // borderWidth: 1,
   },
   contactusText: {
     fontFamily: 'CircularStd-Bold',
-    fontSize: SIZES.h1,
-    lineHeight: 32,
+    fontSize: 20,
+    // lineHeight: 32,
     color: '#2A286A',
     textAlign: 'left',
     fontWeight: 'bold',
     marginTop: 20,
-    marginBottom: 20,
+    // borderWidth: 1,
+    // marginBottom: 20,
   },
   iconsSection: {
     marginTop: 20,
-    marginBottom: 20,
+    // marginBottom: 20,
     flexDirection: 'row',
     height: 25,
-    justifyContent: 'space-evenly',
+    // justifyContent: 'space-evenly',
   },
 });
