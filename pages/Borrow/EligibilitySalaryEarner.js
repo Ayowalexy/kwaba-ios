@@ -18,17 +18,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function EligibilitySalaryEarner({navigation}) {
 
   const handleProceedClick = async () => {
-    
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
+    // let stepsdata={
+  //   documentdone:'',
+  //   propertydetail:'',
+  //   landlorddetail:'',
+  //   refree:'',
+  //   offeraccepted:'',
+  //   addressverification:'',
+  //   debitmandate:'',
+  //   awaitingdisbursment:'',
+  // };
+
+  // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+
     if (steps == null) {
 
-      navigation.navigate('UploadDocuments');
+      navigation.navigate('RentalLoanForm1');
 
     } else if (steps.documentdone == '') {
 
-      navigation.navigate('UploadDocuments');
+      navigation.navigate('RentalLoanFormCongratulation');
 
     } else if (steps.propertydetail == '') {
 
@@ -136,12 +148,13 @@ export default function EligibilitySalaryEarner({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
-            navigation.navigate('RentalLoanForm1');
+            //navigation.navigate('RentalLoanForm1');
             // navigation.navigate('UploadBankStatement');
             // navigation.navigate('RentalLoanFormBankStatementUploadMono');
             // navigation.navigate('RentalLoanFormBankStatementUpload');
             // navigation.navigate('RentalLoanFormCongratulation');
             // navigation.navigate('RentalLoanRequestDashBoard');
+             handleProceedClick();
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

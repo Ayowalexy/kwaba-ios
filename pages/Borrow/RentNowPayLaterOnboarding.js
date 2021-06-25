@@ -19,9 +19,22 @@ export default RentNowPayLaterOnboarding = ({navigation}) => {
       const borrwSteps = await AsyncStorage.getItem('borrwsteps');
       const steps = JSON.parse(borrwSteps);
 
+      // let stepsdata={
+    //   documentdone:'',
+    //   propertydetail:'',
+    //   landlorddetail:'',
+    //   refree:'',
+    //   offeraccepted:'',
+    //   addressverification:'',
+    //   debitmandate:'',
+    //   awaitingdisbursment:'',
+    // };
+
+    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+
       if (steps == null) {
 
-        navigation.navigate('UploadDocuments');
+        navigation.navigate('RentalLoanForm1');
 
       } else if (steps.documentdone == '') {
 
