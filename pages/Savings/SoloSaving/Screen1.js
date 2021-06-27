@@ -299,14 +299,14 @@ export default function Screen1({navigation}) {
         <Formik
           validationSchema={soloSavingFormSchema}
           initialValues={{
-            savingTitle: 'My Rent',
-            savingOption: 'auto',
-            savingFrequency: 'Daily',
-            targetAmount: '150000',
-            // savingTitle: '',
-            // savingOption: '',
-            // savingFrequency: '',
-            // targetAmount: '',
+            // savingTitle: 'My Rent',
+            // savingOption: 'auto',
+            // savingFrequency: 'Daily',
+            // targetAmount: '150000',
+            savingTitle: '',
+            savingOption: '',
+            savingFrequency: '',
+            targetAmount: '',
           }}
           onSubmit={(values) => {
             handleSubmit(values);

@@ -21,7 +21,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
 
-const width = Dimensions.get('window').get;
+// const width = Dimensions.get('window').get;
+
 export default function Home({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
@@ -69,14 +70,16 @@ export default function Home({navigation}) {
     },
     {
       id: 2,
-      title: 'RENTAL FINANCE',
+      // title: 'RENTAL FINANCE',
+      title: 'RENT NOW PAY LATER',
       subtitle: 'Next payment amount',
       amount: `₦${currencyFormat(rentalFinance)}`,
       image: images.rentalFinanceCard,
     },
     {
       id: 3,
-      title: 'INSTANT LOAN',
+      // title: 'INSTANT LOAN',
+      title: 'EMERGENCY FUND',
       subtitle: 'Repayment amount',
       amount: `₦${currencyFormat(instantLoan)}`,
       image: images.instantLoanCard,

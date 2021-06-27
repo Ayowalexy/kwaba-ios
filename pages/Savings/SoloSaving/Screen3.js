@@ -42,7 +42,7 @@ export default function Screen3({navigation}) {
 
   const addCardAndBankModal = () => {
     setModal(true);
-    console.log(store);
+    // console.log(store);
   };
 
   useEffect(() => {
@@ -52,14 +52,15 @@ export default function Screen3({navigation}) {
 
   useEffect(() => {
     const frequency = store.savings_frequency;
-    const targetAmount = store.savings_target_amount;
+    const targetAmount = store.savings_amount;
     const tenure = store.savings_tenure;
     const locked_interest_rate = 0.08;
     const unlock_interest_rate = 0.07;
     const numberOfDaysInAMonth = 30;
     const numberOfWeeksInAMonth = 4;
-    console.log('Freq:', frequency);
-    console.log('Tenure:', tenure);
+    // console.log('Freq:', frequency);
+    // console.log('Tenure:', tenure);
+    // console.log('Store:', store);
     if (frequency == 'Daily') {
       if (tenure.toLowerCase() == '1 year') {
         let amount_to_save = targetAmount / (numberOfDaysInAMonth * 12);
@@ -155,9 +156,8 @@ export default function Screen3({navigation}) {
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>
                 ₦
-                {numberWithCommas(
-                  Number(store.savings_target_amount).toFixed(2),
-                ) || ' 0.00'}
+                {numberWithCommas(Number(store.savings_amount).toFixed(2)) ||
+                  ' 0.00'}
               </Text>
             </View>
             <View style={designs.dataInfo}>
@@ -256,10 +256,10 @@ export default function Screen3({navigation}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
-          onPress={() => navigation.navigate('SoloSavingDashBoard')}
+          // onPress={() => navigation.navigate('SoloSavingDashBoard')}
           // onPress={() => navigation.navigate('SetUpPaymentPlan')}
           // onPress={() => navigation.navigate('SoloSaving4')}
-          // onPress={addCardAndBankModal}
+          onPress={addCardAndBankModal}
           style={[
             designs.button,
             {

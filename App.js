@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -50,6 +50,7 @@ import RentalLoanFormCongratulation from './pages/Borrow/RentalLoanFormCongratul
 import RentalLoanFormBankStatementUpload from './pages/Borrow/RentalLoanFormBankStatementUpload';
 import RentalLoanFormBankStatementUploadEmail from './pages/Borrow/RentalLoanFormBankStatementUploadEmail';
 import RentalLoanFormBankStatementUploadMono from './pages/Borrow/RentalLoanFormBankStatementUploadMono';
+import RentNowPayLaterDashboard from './pages/Borrow/RentNowPayLaterDashboard';
 
 import UploadBankStatement from './pages/Borrow/UploadBankStatement';
 import UploadDocuments from './pages/Borrow/UploadDocuments';
@@ -106,7 +107,7 @@ import UploadBankStatementDocument from './pages/Borrow/UploadBankStatementDocum
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import {View, Text} from 'react-native';
+import {View, Text, RefreshControl} from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
 
@@ -222,7 +223,7 @@ const App = () => {
           // }
           // initialRouteName={'SoloSaving3'}
           // initialRouteName={'SoloSavingDashBoard'}
-        >
+          initialRouteName={'RentNowPayLaterDashboard'}>
           {/* {!isLoggedIn ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
@@ -353,6 +354,9 @@ const App = () => {
                 component={
                   RentalLoanFormBankStatementUploadMono
                 }></Stack.Screen>
+              <Stack.Screen
+                name="RentNowPayLaterDashboard"
+                component={RentNowPayLaterDashboard}></Stack.Screen>
               <Stack.Screen
                 name="UploadBankStatement"
                 component={UploadBankStatement}></Stack.Screen>

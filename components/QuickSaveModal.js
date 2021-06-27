@@ -43,7 +43,7 @@ export default function QuickSaveModal(props) {
                     proceed ? setProceed(false) : setStart(false)
                   }
                   name="arrow-back-outline"
-                  size={35}
+                  size={20}
                   style={{fontWeight: '900'}}
                   color="#2A286A"
                 />

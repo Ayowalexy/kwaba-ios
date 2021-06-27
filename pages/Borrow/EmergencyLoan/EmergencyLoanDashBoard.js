@@ -156,7 +156,7 @@ const EmergencyLoanDashBoard = ({navigation}) => {
               // marginLeft: 16,
             },
           ]}>
-          Emergency Loan
+          Emergency Fund
         </Text>
         <Text
           style={[
@@ -174,8 +174,10 @@ const EmergencyLoanDashBoard = ({navigation}) => {
               marginBottom: 22,
             },
           ]}>
-          We hope this loan was helpful. Please ensure to make repayment on
-          time.
+          {/* We hope this loan was helpful. Please ensure to make repayment on
+          time. */}
+          Your fund will land into your account and your dashboard will be
+          updated soonest.
         </Text>
 
         <View
@@ -183,7 +185,7 @@ const EmergencyLoanDashBoard = ({navigation}) => {
             designs.activeLoanDashboard,
             {
               // marginHorizontal: 16,
-              elevation: 20,
+              // elevation: 20,
               backgroundColor: COLORS.white,
             },
           ]}>
@@ -214,11 +216,12 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                   fontWeight: 'bold',
                   marginLeft: 6,
                 }}>
-                ₦{currencyFormat(Number(repaymentAmount))}
+                {/* ₦{currencyFormat(Number(repaymentAmount))} */}₦
+                {currencyFormat(Number(0))}
               </Text>
             </View>
             <Image
-              style={{width: 90, height: 95, alignSelf: 'flex-end', right: -10}}
+              style={{width: 60, height: 60, alignSelf: 'flex-end', right: -10}}
               source={images.maskGroup31}
             />
           </View>
@@ -234,7 +237,7 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                 padding: 6,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                alignItems: 'flex-end',
+                alignItems: 'center',
               }}>
               <View>
                 <Text
@@ -249,7 +252,8 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                     FONTS.body1FontStyling,
                     {color: COLORS.white, fontSize: 16, fontWeight: 'bold'},
                   ]}>
-                  ₦{currencyFormat(Number(loanAmount))}
+                  {/* ₦{currencyFormat(Number(loanAmount))} */}₦
+                  {currencyFormat(Number(0))}
                 </Text>
               </View>
               <View>
@@ -281,7 +285,8 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                 padding: 6,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginTop: 15,
+                alignItems: 'center',
+                // marginTop: 15,
               }}>
               <View>
                 <Text
@@ -299,20 +304,20 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                   {dueDate != '' ? dueDate : '---'}
                 </Text>
               </View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   backgroundColor: COLORS.light,
-                  padding: 10,
+                  // padding: 10,
                   borderRadius: 20,
                   justifyContent: 'center',
                 }}
                 onPress={handlePayment}>
-                <View style={designs.flexRow}>
+                <View style={{flexDirection: 'row'}}>
                   <Text
                     style={{
                       color: COLORS.white,
                       fontSize: 12,
-                      paddingHorizontal: 3,
+                      // paddingHorizontal: 3,
                     }}>
                     Pay now
                   </Text>
@@ -326,7 +331,33 @@ const EmergencyLoanDashBoard = ({navigation}) => {
                     }}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              {/* <TouchableOpacity
+                style={{
+                  backgroundColor: COLORS.light,
+                  borderRadius: 10,
+                  justifyContent: 'center',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 15,
+                  paddingVertical: 10,
+                }}
+                onPress={handlePayment}>
+                <Text
+                  style={{
+                    color: COLORS.white,
+                  }}>
+                  Pay now
+                </Text>
+                <Icon
+                  name="chevron-forward-outline"
+                  size={12}
+                  style={{
+                    color: COLORS.white,
+                    marginLeft: 5,
+                  }}
+                />
+              </TouchableOpacity> */}
             </View>
           </View>
         </View>

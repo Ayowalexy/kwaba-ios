@@ -23,6 +23,7 @@ import moment from 'moment';
 
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function SoloSavingDashBoard({navigation}) {
   const dispatch = useDispatch();
@@ -72,17 +73,46 @@ export default function SoloSavingDashBoard({navigation}) {
 
     setSavingTitle(soloSaving.savings_title);
 
-    let x = soloSaving.savings_amount - Number(totalSoloSavings);
-    let y = x / soloSaving.savings_amount;
-    let p = 100 - y * 100;
-    setPercentAchieved(Number(p).toFixed(0));
+    // let x = soloSaving.savings_amount - Number(totalSoloSavings);
+    // let y = x / soloSaving.savings_amount;
+    // let p = 100 - y * 100;
+    // setPercentAchieved(Number(p).toFixed(0));
 
-    // const totalTransactions =
-    //   getSoloSaving?.data?.length > 0 && getSoloSaving.data.map((el) => el);
-    // console.log(totalTransactions.reference);
+    setPercentAchieved(
+      ((soloSaving.savings_amount / Number(totalSoloSavings)) * 100).toFixed(0),
+    );
 
-    getSoloSaving.data.forEach((el) => console.log(el.reference));
+    console.log('Percentage Earned: ', (50 / 150) * 100);
+
+    // fetchSavingsPlan();
+    // console.log('GET: ', getSoloSaving);
   }, [getSoloSaving]);
+
+  // fetchSavingsPlan
+
+  const fetchSavingsPlan = async () => {
+    const getToken = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const token = JSON.parse(userData).token;
+      return token;
+    };
+
+    const apiUrl = 'http://67.207.86.39:8000';
+    const token = await getToken();
+    const url = apiUrl + '/api/v1/savings_plan';
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+        // headers: {'Content-Type': 'application/json'},
+      });
+      // dispatch(currentUser(response.data.user));
+      // return response.data.user;
+      console.log(response.data);
+    } catch (error) {
+      // return error.message;
+      console.log(error);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -336,6 +366,7 @@ export default function SoloSavingDashBoard({navigation}) {
               justifyContent: 'space-evenly',
             }}>
             <TouchableOpacity
+              onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -366,7 +397,7 @@ export default function SoloSavingDashBoard({navigation}) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate('SoloSavingDashBoard')}
+              onPress={() => navigation.navigate('EmergencyFundOnboarding')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -481,18 +512,51 @@ export default function SoloSavingDashBoard({navigation}) {
                           flex: 1,
                           flexDirection: 'row',
                           justifyContent: 'space-between',
-                          alingnItems: 'center',
+                          alignItems: 'center',
+                          // borderWidth: 1,
                         }}>
-                        <Text style={{fontSize: 12}}>{el.reference}</Text>
-                        <Text
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              // fontWeight: 'bold',
+                              color: COLORS.dark,
+                            }}>
+                            My Rent Savings
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              // fontWeight: 'bold',
+                              color: COLORS.dark,
+                              opacity: 0.5,
+                            }}>
+                            {el.reference}
+                          </Text>
+                        </View>
+
+                        <View
                           style={{
-                            fontSize: 12,
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
+                            alignItems: 'flex-end',
                           }}>
-                          {/* {el.amount} */}₦
-                          {currencyFormat(Number(el.amount))}
-                        </Text>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                            }}>
+                            ₦{currencyFormat(Number(el.amount))}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                              opacity: 0.5,
+                            }}>
+                            {el.created_at}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   );

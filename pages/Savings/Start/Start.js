@@ -14,7 +14,7 @@ import {BlurView, VibrancyView} from '@react-native-community/blur';
 
 const width = Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/Ionicons';
-import {images} from '../../../util/index';
+import {COLORS, images} from '../../../util/index';
 import {currencyFormat} from '../../../util/numberFormatter';
 import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
@@ -40,24 +40,52 @@ export default function Start({navigation}) {
   }, []);
 
   useEffect(() => {
+    // const totalSoloSavings = store.data?.reduce(
+    //   (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    //   0,
+    // );
+
+    // const soloInterestTotal = store.data?.reduce(
+    //   (saving, acc) => Number(saving.interest) + Number(acc.interest),
+    //   0,
+    // );
+
+    //   const balance =
+    //   totalSoloSavings +
+    //   soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
+    // setTotalBalance(balance || 0);
+    // setTotalSaving(totalSoloSavings || 0);
+    // setTotalInterest(
+    //   soloInterestTotal?.toFixed(2) /
+    //     Number(currentUser.data?.savings_tenure) || 0,
+    // );
+    // setSoloSaving(totalSoloSavings || 0);
+
+    // setTotalBalance(balance || 0);
+    // setTotalSaving(totalSoloSavings || 0);
+    // setTotalInterest(
+    //   soloInterestTotal?.toFixed(2) /
+    //     Number(currentUser.data?.savings_tenure) || 0,
+    // );
+    // setSoloSaving(totalSoloSavings || 0);
+
     const totalSoloSavings = store.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+      (acc, saving) => acc + Number(saving.amount),
       0,
     );
+
     const soloInterestTotal = store.data?.reduce(
-      (saving, acc) => Number(saving.interest) + Number(acc.interest),
+      (acc, saving) => acc + Number(saving.interest),
       0,
     );
-    const balance =
-      totalSoloSavings +
-      soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
+    const balance = totalSoloSavings + soloInterestTotal;
+
     setTotalBalance(balance || 0);
     setTotalSaving(totalSoloSavings || 0);
-    setTotalInterest(
-      soloInterestTotal?.toFixed(2) /
-        Number(currentUser.data?.savings_tenure) || 0,
-    );
+    setTotalInterest(soloInterestTotal || 0);
     setSoloSaving(totalSoloSavings || 0);
+
+    console.log('Store: ', balance);
   }, []);
 
   const savingsCard = [
@@ -283,8 +311,9 @@ export default function Start({navigation}) {
                       // height: 27,
                       borderRadius: 21,
                       backgroundColor: '#F7F8FD',
-                      width: 131,
+                      // width: 131,
                       padding: 5,
+                      paddingHorizontal: 10,
                     },
                   ]}>
                   {soloSaving == 0 ? (
@@ -308,8 +337,8 @@ export default function Start({navigation}) {
                         {
                           marginTop: 0,
                           fontSize: 16,
+                          fontWeight: 'bold',
                           color: '#9D98EC',
-                          fontWeight: '600',
                           marginRight: 8,
                         },
                       ]}>
@@ -360,7 +389,7 @@ export default function Start({navigation}) {
                       padding: 5,
                     },
                   ]}>
-                  {soloSaving == 0 ? (
+                  {buddySaving == 0 ? (
                     <Text
                       style={[
                         designs.bodyText,

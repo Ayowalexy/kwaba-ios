@@ -75,7 +75,7 @@ export default function ConfirmModal(props) {
                 fontSize: 12,
                 textAlign: 'center',
               }}>
-              GO HOME
+              CONTINUE
             </Text>
           </TouchableOpacity>
         </View>
