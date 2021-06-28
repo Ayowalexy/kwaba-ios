@@ -35,6 +35,7 @@ export default function EmergencyLoanHome({navigation}) {
   const [maximumLoanAmount, setMaximumLoanAmount] = useState(0);
   const [loanAmount, setLoanAmount] = useState('');
   const [repaymentAmount, setRepaymentAmount] = useState(0);
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     dispatch(getTotalSoloSavings());
@@ -56,7 +57,7 @@ export default function EmergencyLoanHome({navigation}) {
     return repayment;
   };
 
-  const handleSubmit = (values, setValues) => {
+  const handleSubmit = (values) => {
     // console.log(values, repaymentAmount);
     // if (loanAmount == '') {
     //   return Alert.alert('', 'Please set a loan amount');
@@ -64,33 +65,41 @@ export default function EmergencyLoanHome({navigation}) {
 
     // console.log(unFormatNumber(values.requestAmount));
 
-    if (unFormatNumber(values.requestAmount) > maximumLoanAmount) {
-      return Alert.alert(
-        'Invalid Loan Amount',
-        'Set a loan amount less than or equal to your maximum loan amount',
-      );
-    } else {
+    // if (Number(unFormatNumber(values.requestAmount)) > maximumLoanAmount) {
+    //   // setStatus(
+    //   //   'Set a loan amount less than or equal to your maximum loan amount',
+    //   // );
+
+    //   setErrorMsg(
+    //     'Set a loan amount less than or equal to your maximum loan amount',
+    //   );
+    // }
+
+    //   else {
+    //     navigation.navigate('EmergencyLoanRequest', {
+    //       loan_amount: unFormatNumber(values.requestAmount),
+    //       repayment_amount: repaymentAmount,
+    //     });
+    // }
+    // console.log(values);
+
+    if (errorMsg == '')
       navigation.navigate('EmergencyLoanRequest', {
         loan_amount: unFormatNumber(values.requestAmount),
         repayment_amount: repaymentAmount,
       });
+  };
+
+  const checIfLoanable = (value) => {
+    if (Number(unFormatNumber(value)) > maximumLoanAmount) {
+      setErrorMsg(
+        'Set a loan amount less than or equal\nto your maximum loan amount',
+      );
+      setRepaymentAmount(0);
+    } else {
+      setErrorMsg('');
+      setRepaymentAmount(calculateRepayment(unFormatNumber(value)));
     }
-
-    // if (loanAmount > maximumLoanAmount) {
-    //   return Alert.alert(
-    //     'Invalid Loan Amount',
-    //     'Set a loan amount less than or equal to your maximum loan amount',
-    //   );
-    // } else
-    //   navigation.navigate('EmergencyLoanRequest', {
-    //     loan_amount: unFormatNumber(values.requestAmount),
-    //     repayment_amount: repaymentAmount,
-    //   });
-
-    // navigation.navigate('EmergencyLoanRequest', {
-    //   loan_amount: unFormatNumber(values.requestAmount),
-    //   repayment_amount: repaymentAmount,
-    // });
   };
 
   const NumberInput = (props) => {
@@ -104,6 +113,16 @@ export default function EmergencyLoanHome({navigation}) {
 
     return (
       <>
+        <Text
+          style={{
+            color: COLORS.dark,
+            fontSize: 14,
+            fontWeight: 'bold',
+            lineHeight: 20,
+            marginTop: 20,
+          }}>
+          How much do you want?
+        </Text>
         <View
           style={[
             styles.customInput,
@@ -131,7 +150,9 @@ export default function EmergencyLoanHome({navigation}) {
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
-              setRepaymentAmount(calculateRepayment(unFormatNumber(value)));
+
+              // checks if request amount is less than or equal to maximum loan amount
+              checIfLoanable(value);
             }}
             onChangeText={(text) => {
               onChange(name)(text);
@@ -139,8 +160,6 @@ export default function EmergencyLoanHome({navigation}) {
             {...inputProps}
           />
         </View>
-
-        {/* <N */}
 
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
@@ -153,9 +172,6 @@ export default function EmergencyLoanHome({navigation}) {
         designs.container,
         {
           backgroundColor: '#F7F8FD',
-          // paddingTop: 28,
-          // paddingHorizontal: 10,
-          // paddingBottom: 24,
         },
       ]}>
       <Icon
@@ -164,14 +180,12 @@ export default function EmergencyLoanHome({navigation}) {
         size={25}
         style={{
           fontWeight: '900',
-          // borderWidth: 1,
           paddingHorizontal: 15,
           paddingVertical: 15,
         }}
         color={COLORS.primary}
       />
 
-      {/* <View style={{width: '100%', paddingHorizontal: 10}}></View> */}
       <ScrollView
         scrollEnabled
         showsVerticalScrollIndicator={false}
@@ -181,18 +195,22 @@ export default function EmergencyLoanHome({navigation}) {
           initialValues={{
             requestAmount: '',
           }}
-          onSubmit={(values) => {
-            handleSubmit(values);
-          }}>
-          {({handleSubmit, isValid, values, setValues}) => (
+          onSubmit={handleSubmit}>
+          {({
+            handleSubmit,
+            isValid,
+            values,
+            status,
+            errors,
+            setValues,
+            setStatus,
+          }) => (
             <>
               <View style={{textAlign: 'left'}}>
                 <Text
                   style={[
-                    // FONTS.h1FontStyling,
                     {color: COLORS.primary, fontSize: 18, fontWeight: 'bold'},
                   ]}>
-                  {/* Instant Loan */}
                   Emergency Fund
                 </Text>
                 <Text
@@ -288,9 +306,6 @@ export default function EmergencyLoanHome({navigation}) {
                         style={{
                           fontWeight: '900',
                           marginLeft: 5,
-                          // marginTop: 3,
-                          // height: 20,
-                          // width: 20,
                         }}
                         color="#00DC99"
                       />
@@ -306,52 +321,17 @@ export default function EmergencyLoanHome({navigation}) {
                     ₦{currencyFormat(maximumLoanAmount)}
                   </Text>
                 </View>
-                {/* <View>
-            <Text
-              style={{
-                color: COLORS.primary,
-                fontSize: 16,
-                lineHeight: 20,
-                marginTop: 20,
-              }}>
-              How much do you want?
-            </Text>
-            <TextInput
-              style={[
-                designs.textField,
-                {
-                  marginTop: 8,
-                  textAlign: 'left',
-                  marginBottom: 0,
-                },
-              ]}
-              placeholder="Amount"
-              keyboardType="number-pad"
-              placeholderTextColor="#BFBFBF"
-              value={loanAmount}
-              onChangeText={(text) => {
-                setLoanAmount(text);
-                setRepaymentAmount(calculateRepayment(text));
-              }}
-            />
-          </View> */}
-                <>
-                  <Text
-                    style={{
-                      color: COLORS.dark,
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                      lineHeight: 20,
-                      marginTop: 20,
-                    }}>
-                    How much do you want?
+
+                <Field
+                  component={NumberInput}
+                  name="requestAmount"
+                  placeholder="Amount"
+                />
+                {errorMsg != '' && (
+                  <Text style={[styles.errorText, {marginTop: 5}]}>
+                    {errorMsg}
                   </Text>
-                  <Field
-                    component={NumberInput}
-                    name="requestAmount"
-                    placeholder="Amount"
-                  />
-                </>
+                )}
               </View>
               <View style={designs.repaymentTermsBox}>
                 <Text

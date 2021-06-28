@@ -133,8 +133,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       setSpinner(false);
       console.log(error);
     }
-
-    // console.log(data);
   };
 
   return (
@@ -220,8 +218,9 @@ const EmergencyLoanRequest = ({route, navigation}) => {
               designs.buttonStyleB,
               {backgroundColor: '#00DC99', width: '100%'},
             ]}
-            // onPress={() => setVisible(true)}
-            onPress={() => navigation.navigate('EmergencyLoanDashBoard')}>
+            onPress={() => setVisible(true)}
+            // onPress={() => navigation.navigate('EmergencyLoanDashBoard')}
+          >
             <Text
               style={{
                 color: COLORS.white,
