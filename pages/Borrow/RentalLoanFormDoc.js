@@ -123,23 +123,23 @@ const RentalLoanFormDoc = ({navigation}) => {
     console.log(amount);
   };
 
-  const roundUp = (n) => {
-    return n > 1000 ? Math.round(n / 1000) * 1000 : n;
-  };
+  // const roundUp = (n) => {
+  //   return n > 1000 ? Math.round(n / 1000) * 1000 : n;
+  // };
 
-  const round5 = (x) => {
-    const round5No =
-      x % 5 == 0
-        ? Number(Math.floor(x / 5)) * 5
-        : Number(Math.floor(x / 5)) * 5 + 5;
-    return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
+  // const round5 = (x) => {
+  //   const round5No =
+  //     x % 5 == 0
+  //       ? Number(Math.floor(x / 5)) * 5
+  //       : Number(Math.floor(x / 5)) * 5 + 5;
+  //   return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
 
-    // if (x % 5 == 0) {
-    //   return Number(Math.floor(x / 5)) * 5;
-    // } else {
-    //   return (Number(Math.floor(x / 5)) * 5) + 5;
-    // }
-  };
+  //   // if (x % 5 == 0) {
+  //   //   return Number(Math.floor(x / 5)) * 5;
+  //   // } else {
+  //   //   return (Number(Math.floor(x / 5)) * 5) + 5;
+  //   // }
+  // };
 
   const roundUp =(n)=> {
     return n > 1000 ? (Math.round(n / 1000) * 1000) : n;

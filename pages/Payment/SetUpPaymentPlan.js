@@ -35,44 +35,6 @@ const SetUpPaymentPlan = ({navigation}) => {
       return token;
     };
     const token = await getToken();
-<<<<<<< HEAD
-        const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          });
-          console.log(applicationIDCallRes.data.data.non_refundable_deposit);
-        const amount = applicationIDCallRes.data.data.non_refundable_deposit;
-        setSpinner(true);
-        try {
-          const response = await axios.post('http://67.207.86.39:8000/api/v1/application/payment/pay', {amount}, {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          });
-          setSpinner(true);
-          console.log(response);
-          if (response.status === 200) {
-            setSpinner(false);
-            const result = await openInAppBrowser(
-              response.data.data.authorization_url,
-            );
-            console.log('done')
-            console.log('result', result); 
-            
-            if (result.type == 'cancel') {
-              let data = {reference: response.data.data.reference};
-            console.log('data', data);
-              console.log('cancel')
-            
-              setVerificationSpinner(true);
-              const verify = await axios.put('http://67.207.86.39:8000/api/v1/application/payment/verify', JSON.stringify(data) , {
-                headers: {'Content-Type': 'application/json', Authorization: token},
-              });
-    
-              if (verify.data.status == 'success') {
-                setVerificationSpinner(false);
-                // Alert.alert(
-                //   'Payment verified',
-                //   'Your payment was verified. Thank you.',
-                // );
-=======
     const applicationIDCallRes = await axios.get(
       'http://67.207.86.39:8000/api/v1/application/one',
       {
@@ -99,7 +61,6 @@ const SetUpPaymentPlan = ({navigation}) => {
         );
         console.log('done');
         console.log('result', result);
->>>>>>> 506b7739fae3916ddc38ea69070cdc8d8993711b
 
         if (result.type == 'cancel') {
           let data = {reference: response.data.data.reference};

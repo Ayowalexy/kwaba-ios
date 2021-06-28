@@ -38,12 +38,9 @@ const designs = StyleSheet.create({
     marginTop: 13,
     backgroundColor: 'white',
     borderRadius: 10,
-<<<<<<< HEAD
-=======
     // borderColor: '#EAEAEA',
     borderColor: '#ADADAD50',
     borderWidth: 1,
->>>>>>> 506b7739fae3916ddc38ea69070cdc8d8993711b
   },
   options: {
     display: 'flex',
@@ -61,19 +58,11 @@ const designs = StyleSheet.create({
     justifyContent: 'center',
     opacity: 1,
     backgroundColor: '#00DC99',
-<<<<<<< HEAD
-    marginTop: 62,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginBottom: 20,
-    elevation: 6,
-=======
     marginTop: 40,
     marginLeft: 'auto',
     marginRight: 'auto',
     marginBottom: 20,
     // elevation: 2,
->>>>>>> 506b7739fae3916ddc38ea69070cdc8d8993711b
   },
   summaryBox: {
     height: 400,

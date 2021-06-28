@@ -199,8 +199,8 @@ export default function ManualUploadModal(props) {
                 <TouchableOpacity
                   onPress={() => {
                     onRequestClose();
-                    // navigation.navigate('PostPaymentForm1');
-                    navigation.navigate('LoanRequestApproval');
+                    navigation.navigate('PostPaymentForm1');
+                    //navigation.navigate('LoanRequestApproval');
                   }}
                   // disabled={isError()}
                   style={[styles.btn, {backgroundColor: COLORS.secondary}]}>

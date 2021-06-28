@@ -21,7 +21,7 @@ export default function EligibilitySalaryEarner({navigation}) {
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
-    // let stepsdata={
+  //   let stepsdata={
   //   documentdone:'',
   //   propertydetail:'',
   //   landlorddetail:'',

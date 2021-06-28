@@ -291,9 +291,6 @@ export default function Screen2({navigation}) {
       </ScrollView>
     </View>
   );
-<<<<<<< HEAD
-}
-=======
 }
 
 const styles = StyleSheet.create({
@@ -324,4 +321,3 @@ const styles = StyleSheet.create({
     borderColor: '#f0000050',
   },
 });
->>>>>>> 506b7739fae3916ddc38ea69070cdc8d8993711b

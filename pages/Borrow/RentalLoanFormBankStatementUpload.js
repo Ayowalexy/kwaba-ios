@@ -61,6 +61,12 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
     },
   };
 
+ 
+
+  const handleNavigation = () => {
+    navigation.navigate('PostPaymentForm1');
+  };
+
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
@@ -117,6 +123,10 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
         visible={showManualUploadModal}
         navigation={navigation}
         // onClick={(value) => setSelectedPayMethod(value)}
+        onClick={(value) => {
+          //setSelectedPayMethod(value)
+          
+        }}
       />
     </View>
   );

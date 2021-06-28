@@ -36,7 +36,8 @@ const widthtouse=Dimensions.get('window').width;
 export default function OkraDebitMandate({navigation}) {
 
   const [successModal, setSuccessModal] = useState(false);
-  const [existingApplication, setExistingApplication] = useState('')
+  const [existingApplication, setExistingApplication] = useState('');
+  const [monthlyRepayment, setmonthlyRepayment] = useState();
 
 
   useEffect(() => {
@@ -60,7 +61,8 @@ export default function OkraDebitMandate({navigation}) {
             const applicationId = applicationIDCallRes.data.data.id;
       
             setExistingApplication(applicationId);
-            console.log('here', applicationIDCallRes.data.data.id);
+            console.log('here', applicationIDCallRes.data.data.monthly_repayment );
+            setmonthlyRepayment(Number(applicationIDCallRes.data.data.monthly_repayment))
     
       }
       catch(error) {
@@ -108,7 +110,7 @@ export default function OkraDebitMandate({navigation}) {
           interval: "monthly",
           startDate: "2021-04-15",
           endDate: "2021-07-15",
-          amount: 50000,
+          amount: monthlyRepayment,
           loanId: existingApplication
         };
 

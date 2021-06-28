@@ -188,8 +188,6 @@ export default function Screen3({navigation}) {
               }}>
               SOLO SAVING
             </Text>
-<<<<<<< HEAD
-=======
             <Switch
               trackColor={{false: 'white', true: 'white'}}
               thumbColor={locked ? '#00DC99' : '#ADADAD'}
@@ -209,7 +207,6 @@ export default function Screen3({navigation}) {
               padding: 2,
               marginTop: 15,
             }}>
->>>>>>> 506b7739fae3916ddc38ea69070cdc8d8993711b
             <Text
               style={{
                 fontSize: 18,
