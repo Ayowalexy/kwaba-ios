@@ -10,27 +10,23 @@ import {
   Modal,
   Pressable,
   FlatList,
-  Animated
+  Animated,
+  StyleSheet,
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
-import IconFA from 'react-native-vector-icons/FontAwesome'
-import DropDownPicker from 'react-native-dropdown-picker';
+import IconFA from 'react-native-vector-icons/FontAwesome';
+import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import AddCardModal from '../../components/addCardModal';
-import { fetchBanks } from '../../services/network';
-import {Picker} from '@react-native-picker/picker';
+import {fetchBanks} from '../../services/network';
 import AddBankAccountModal from '../../components/addBankAccountModal';
 
-
-const CardAndBankDetails = ({navigation}) => {
-
-  
+export default function CardAndBankDetails({navigation}) {
   const [modalVisible, setVisible] = useState(false);
-  const [loanPurpose, setLoanPurpose] = useState('');
   const [cards, setCards] = useState([]);
   const [bankDetails, setBankDetails] = useState([]);
   const [banks, setBanks] = useState([]);
@@ -44,380 +40,368 @@ const CardAndBankDetails = ({navigation}) => {
   const [accountNumber, setAccountNumber] = useState('');
   const [bank, setBank] = useState('');
 
-
-
   const [bankModalVisible, setBankModalVisible] = useState(false);
-  const [loanAmount, setLoanAmount] = useState(0);
-  const [repaymentAmount, setRepaymentAmount] = useState(0);
-  const [bankAccountName, setBankAccountName] = useState('Adebisi Joseph');
-  const [bankAccountNumber, setBankAccountNumber] = useState('1411314521');
-  const [bankName, setBankName] = useState('UBA');
+  const [bankAccountName, setBankAccountName] = useState('');
+  const [bankAccountNumber, setBankAccountNumber] = useState('');
+  const [bankName, setBankName] = useState('');
   const [bankCode, setBankCode] = useState('');
-  const [loanPurposeOptions] = useState([
-    {label: 'Household', value: 'Household'},
-    {label: 'Personal', value: 'Personal'},
-])
 
-const [scrollViewWidth, setScrollViewWidth] = React.useState(0);
-const boxWidth = scrollViewWidth * 0.7;
-const boxDistance = scrollViewWidth - boxWidth;
-const halfBoxDistance = boxDistance / 2;
-const pan = React.useRef(new Animated.ValueXY()).current;
+  // id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
+  const paymentCards = [
+    {
+      id: '1',
+      cardnumber: '1234 3245 1234 5678',
+      default: 'true',
+      expires: '12/2022',
+      type: 'mastercard',
+    },
+    {
+      id: '2',
+      cardnumber: '1234 3245 1234 5678',
+      default: '',
+      expires: '12/2022',
+      type: 'visa',
+    },
+    {
+      id: '3',
+      cardnumber: '1234 3245 1234 5678',
+      default: '',
+      expires: '12/2022',
+      type: 'verizon',
+    },
+  ];
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    cardnumber: '1234 3245 1234 5678',
-    default: 'true',
-    expires: '12/2022',
-    type: 'mastercard',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    cardnumber: '1234 3245 1234 5678',
-    default: '',
-    expires: '12/2022',
-    type: 'visa',
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    cardnumber: '1234 3245 1234 5678',
-    default: '',
-    expires: '12/2022',
-    type: 'visa',
-  },
-  
-];
+  const BankAccounts = [
+    {
+      id: '1',
+      bankAccountName: 'Johnson Abraham',
+      bankAccountNumber: '0987654321',
+      bankName: 'Zenith Bank',
+      bankCode: '1234',
+    },
+    {
+      id: '2',
+      bankAccountName: 'Adebisi Joseph',
+      bankAccountNumber: '1411314521',
+      bankName: 'Fidelity Bank',
+      bankCode: '1234',
+    },
+    {
+      id: '3',
+      bankAccountName: 'Joshua Nwosu',
+      bankAccountNumber: '0094552107',
+      bankName: 'Access Bank',
+      bankCode: '1011',
+    },
+  ];
 
-
-const BankAccounts = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    bankAccountName: 'Adebisi Joseph',
-    bankAccountNumber: '1411314521',
-    bankName: 'Adebisi Joseph',
-    bankCode: '1234'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    bankAccountName: 'Adebisi Joseph',
-    bankAccountNumber: '1411314521',
-    bankName: 'Adebisi Joseph',
-    bankCode: '1234'
-  },
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    bankAccountName: 'Adebisi Joseph',
-    bankAccountNumber: '1411314521',
-    bankName: 'Adebisi Joseph',
-    bankCode: '1234'
-  },
- 
-];
-
-useEffect(()=> {
-  async function fetchBanksForDropdown(){
-    const banks = await fetchBanks();
-    console.log(banks);
-    if (banks.banks){
-      setBanks(banks.banks);
+  useEffect(() => {
+    async function fetchBanksForDropdown() {
+      const banks = await fetchBanks();
+      console.log(banks);
+      if (banks.banks) {
+        setBanks(banks.banks);
+      }
+      //
     }
-    // 
+    fetchBanksForDropdown();
+  }, []);
+
+  useEffect(() => {
+    const getCards = async () => {
+      const cards = await AsyncStorage.getItem('paymentCardDetails');
+      if (cards) {
+        setCards(JSON.parse(cards));
+      }
+    };
+    getCards();
+  }, []);
+
+  useEffect(() => {
+    const getAccounts = async () => {
+      const accountDetails = await AsyncStorage.getItem('accountDetails');
+      if (accountDetails) {
+        setBankDetails(JSON.parse(accountDetails));
+      }
+    };
+    getAccounts();
+  }, []);
+
+  const addCard = () => {
+    console.log('start');
+    const cardDetails = {
+      cardNumber: cardNumber,
+      cvv: cvv,
+      expiryDate: expiryDate,
+    };
+    console.log('cardDetails', cardDetails);
+    setCards([...cards, cardDetails]);
+    console.log(cards);
+    setAddCardModal(false);
+    saveCardsToStorage(cards);
   };
-  fetchBanksForDropdown()
-  
-}, []);
 
-useEffect(()=> {
-  const getCards = async () => {
-    const cards = await AsyncStorage.getItem('paymentCardDetails');
-    if (cards) {
-      setCards(JSON.parse(cards));
-    }
-  };
-  getCards();
-  
-}, []);
+  const addAccount = async () => {
+    console.log('start');
+    // const accountDetails = {accountNumber: accountNumber, bank: bank};
+    // console.log('accountDetails', accountDetails);
+    // setBankDetails([...bankDetails, accountDetails]);
+    // console.log(bankDetails);
+    // saveAccountsToStorage(bankDetails);
+    // setAddCardModal(false);
 
-useEffect(()=> {
-  const getAccounts = async () => {
-    const accountDetails = await AsyncStorage.getItem('accountDetails');
-    if (accountDetails) {
-      setBankDetails(JSON.parse(accountDetails));
-    }
-  };
-  getAccounts();
-  
-}, []);
-
-const addCard = () => {
-  console.log('start')
-  const cardDetails = {cardNumber: cardNumber, cvv: cvv, expiryDate: expiryDate};
-  console.log('cardDetails', cardDetails)
-  setCards([...cards, cardDetails]);
-  console.log(cards);
-  setAddCardModal(false);
-  saveCardsToStorage(cards)
-};
-
-const addAccount = () => {
-  console.log('start')
-  const accountDetails = {accountNumber: accountNumber, bank: bank};
-  console.log('accountDetails', accountDetails)
-  setBankDetails([...bankDetails, accountDetails]);
-  console.log(bankDetails);
-  saveAccountsToStorage(bankDetails)
-  // setAddCardModal(false);
-};
-
-const saveCardsToStorage = async (data) => {
-  try {
-    await AsyncStorage.setItem('paymentCardDetails', JSON.stringify(data));
-  } catch (error) {}
-};
-
-const saveAccountsToStorage = async (data) => {
-  try {
-    await AsyncStorage.setItem('accountDetails', JSON.stringify(data));
-  } catch (error) {}
-};
-
-const renderItem = ({ item, index }) => (
-  <Animated.View
-    style={{
-      transform: [
+    console.log(bankCode, bankAccountNumber);
+    const SECRET_KEY = 'sk_test_bc0f8a2e9c28d0291156739430fd631e6a867ba9';
+    try {
+      const response = await axios.get(
+        `api.paystack.co/bank/resolve?account_number=0094551124&bank_code=460`,
         {
-          scale: pan.x.interpolate({
-            inputRange: [
-              (index - 1) * boxWidth - halfBoxDistance,
-              index * boxWidth - halfBoxDistance,
-              (index + 1) * boxWidth - halfBoxDistance, // adjust positioning
-            ],
-            outputRange: [0.8, 1, 0.8], // scale down when out of scope
-            extrapolate: 'clamp',
-          }),
+          headers: {Authorization: `Bearer ${SECRET_KEY}`},
         },
-      ],
-    }}>
-    <View
-      style={
-        {
-          flex:1,
-          flexDirection:'column',
-          height: '100%',
-          width: boxWidth,
-          borderRadius: 24,
-          backgroundColor: '#fff',
-          marginLeft:10
+      );
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const saveCardsToStorage = async (data) => {
+    try {
+      await AsyncStorage.setItem('paymentCardDetails', JSON.stringify(data));
+    } catch (error) {}
+  };
+
+  const saveAccountsToStorage = async (data) => {
+    try {
+      await AsyncStorage.setItem('accountDetails', JSON.stringify(data));
+    } catch (error) {}
+  };
+
+  const renderPaymentCards = ({item}) => (
+    <View style={[styles.paymentCard]}>
+      {/* <Text>{item.cardnumber}</Text> */}
+      <View>
+        <Text style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
+          ****2345
+        </Text>
+      </View>
+      <View style={{marginTop: 100}}>
+        <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
+          EXPIRES
+        </Text>
+        <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
+          12/2022
+        </Text>
+      </View>
+      <Image
+        source={
+          item.type == 'mastercard'
+            ? images.mastercarddesign
+            : images.visacarddesign
         }
-      }>
-      <Text style={{marginLeft:10,marginTop:20}}>{item.cardnumber}</Text>
-      {/* {item.default=='true'?
-        <>
-         <Text style={{backgroundColor:COLORS.light,width:90,textAlign:'center', marginLeft:10,color:COLORS.primary,borderRadius:20}}>DEFAULT</Text>
-        </>
-      :
-      ''
-      } */}
-      <Text style={{backgroundColor:COLORS.light,width:90,textAlign:'center', marginLeft:10,color:COLORS.primary,borderRadius:20}}>{item.default?'DEFAULT':''}</Text>
-      <Image source={item.type=='mastercard'?images.mastercarddesign:images.visacarddesign} resizeMode='contain' style={{height:200,width:150,alignSelf:'flex-end', marginTop:-40}} />
-
+        resizeMode="contain"
+        style={{
+          height: 200,
+          width: 150,
+          resizeMode: 'contain',
+          position: 'absolute',
+          right: -5,
+        }}
+      />
     </View>
-  </Animated.View>
-);
+  );
 
+  const renderBankAccounts = ({item}) => (
+    <View style={[styles.bankCard]}>
+      <Text
+        style={{
+          fontSize: 14,
+          fontWeight: 'bold',
+          color: COLORS.white,
+        }}>
+        {item.bankAccountName}
+      </Text>
+      <Text
+        style={{
+          fontSize: 12,
+          color: COLORS.light,
+        }}>
+        {item.bankName}
+      </Text>
+      <Text
+        style={{
+          marginTop: 40,
+          fontSize: 14,
+          color: COLORS.white,
+          opacity: 0.8,
+        }}>
+        {item.bankAccountNumber}
+      </Text>
+
+      <Image
+        style={{
+          width: 71,
+          height: 110,
+          position: 'absolute',
+          resizeMode: 'contain',
+          right: 0,
+          bottom: 0,
+        }}
+        source={images.maskGroup24}
+      />
+    </View>
+  );
 
   return (
-    <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        <Icon
-            onPress={() => navigation.goBack()}
-            name="arrow-back-outline"
-            size={25}
-            style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
-            color="#2A286A"
-          />
+    <View style={[styles.container]}>
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={25}
+        style={{
+          paddingVertical: 15,
+          paddingHorizontal: 15,
+        }}
+        color={COLORS.primary}
+      />
+      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+        <Text style={[styles.heading]}>Card and Bank</Text>
+        <View style={[styles.content]}>
+          <Text style={[styles.contentTitle]}>Payment Card</Text>
+          <View style={[styles.contentView]}>
+            <TouchableOpacity
+              onPress={() => setAddCardModal(true)}
+              style={[styles.addButton]}>
+              <IconFA5 name="plus" size={15} color={COLORS.white} />
+            </TouchableOpacity>
 
-        <View
-          style={{
-            marginVertical: 11,
-            marginHorizontal: 16,
-          }}>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                marginBottom: 10
-              },
-            ]}>
-            Card and Bank
-          </Text>
+            <FlatList
+              data={paymentCards}
+              renderItem={renderPaymentCards}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              style={{
+                marginLeft: 10,
+              }}
+              contentContainerStyle={{
+                paddingVertical: 5,
+              }}
+            />
+          </View>
         </View>
 
+        <View style={[styles.content]}>
+          <Text style={[styles.contentTitle]}>Bank Account</Text>
+          <View style={[styles.contentView]}>
+            <TouchableOpacity
+              onPress={() => setBankModalVisible(true)}
+              style={[styles.addButton]}>
+              <IconFA5 name="plus" size={15} color={COLORS.white} />
+            </TouchableOpacity>
 
-        <View>
-            <View style={{flexDirection:'column',marginLeft:16}}>
-                <View>
-                  <Text style={[FONTS.h2FontStyling,{color: COLORS.primary,fontWeight: 'bold',marginBottom: 24,marginLeft:20}]}>Payment Card</Text>
-                 </View> 
-                 <View style={{flexDirection:'row',alignItems:'center'}}>
-                   <TouchableOpacity onPress = {()=> setAddCardModal(true)}   style={{height:45,width:45,borderRadius:25,backgroundColor:COLORS.secondary,marginLeft:20}}>
-                       <Icon name='add'  size={35} color={COLORS.white}  style={{alignSelf: 'center',marginTop:2}}/>
-                   </TouchableOpacity>
-                   <FlatList
-                    data={DATA}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                    horizontal
-                    //data={loremWords}
-                    style={{  height: 250,marginLeft:40 }}
-                    contentContainerStyle={{ paddingVertical: 16 }}
-                    contentInsetAdjustmentBehavior="never"
-                    snapToAlignment="center"
-                    decelerationRate="fast"
-                    automaticallyAdjustContentInsets={false}
-                    showsHorizontalScrollIndicator={false}
-                    showsVerticalScrollIndicator={false}
-                    scrollEventThrottle={1}
-                    snapToInterval={boxWidth}
-                    contentInset={{
-                      left: halfBoxDistance,
-                      right: halfBoxDistance,
-                    }}
-                    contentOffset={{ x: halfBoxDistance * -1, y: 0 }}
-                    onLayout={(e) => {
-                      setScrollViewWidth(e.nativeEvent.layout.width);
-                    }}
-                    onScroll={Animated.event(
-                      [{ nativeEvent: { contentOffset: { x: pan.x } } }],
-                      {
-                        useNativeDriver: false,
-                      },
-                    )}
-                    keyExtractor={(item, index) => `${index}-${item}`}
-                    renderItem={renderItem}
-                  />
-
-                </View>        
-            </View>
-
-
-            <View  style={{flexDirection:'column',marginLeft:16}}>
-
-              <View>
-                    <Text style={[FONTS.h2FontStyling,{color: COLORS.primary,fontWeight: 'bold',marginBottom: 24,marginLeft:20}]}>Bank Account</Text>
-              </View>
-              <View style={{flexDirection:'row',alignItems:'center'}}>
-                   <TouchableOpacity onPress={() => setBankModalVisible(true)}  style={{height:45,width:45,borderRadius:25,backgroundColor:COLORS.secondary,marginLeft:20}}>
-                       <Icon name='add'  size={35} color={COLORS.white}  style={{alignSelf: 'center',marginTop:2, fontWeight:'bold'}}/>
-                   </TouchableOpacity>
-
-                 
-
-                   <ScrollView scrollEnabled horizontal>
-                   
-
-                 
-
-                    {BankAccounts.map(()=>(
-
-                    <View
-                       style={{
-                         borderRadius: 15,
-                         backgroundColor: COLORS.primary,
-                         paddingTop: 16,
-                         paddingBottom: 16,
-                         paddingLeft: 16,
-                         display: 'flex',
-                         flexDirection: 'row',
-                         justifyContent: 'space-between',
-                         width: '35%',
-                         height: 125,
-                         marginLeft:40
-                       }}>
-                      
-                        <View>
-                          <Text
-                            style={{
-                              color: COLORS.white,
-                              fontSize: 15,
-                              lineHeight: 23,
-                              fontFamily: 'CircularStd',
-                              marginBottom: 1,
-                            }}>
-                            {bankAccountName != '' ? bankAccountName : '-'}
-                          </Text>
-                          <Text
-                            style={{
-                              color: COLORS.light,
-                              fontSize: 10,
-                              lineHeight: 13,
-                              fontFamily: 'CircularStd',
-                              marginBottom: 23,
-                            }}>
-                            {bankName != '' ? bankName : '-'}
-                          </Text>
-                          <Text
-                            style={{
-                              color: COLORS.white,
-                              fontSize: 10,
-                              lineHeight: 13,
-                              fontFamily: 'CircularStd',
-                            }}>
-                            {bankAccountNumber != '' ? bankAccountNumber : '-'}
-                          </Text>
-                        </View>
-                        <View>
-                          <Image
-                            style={{width: 71, height: 110}}
-                            source={images.maskGroup24}
-                          />  
-                        </View>
-                      
-                    </View>
-                    ))}
-
-                   </ScrollView>
-
-
-
-                   
-                  
-
-
-              </View>
-            </View>
-
-      
+            <FlatList
+              data={BankAccounts}
+              renderItem={renderBankAccounts}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              style={{
+                marginLeft: 10,
+              }}
+              contentContainerStyle={{
+                paddingVertical: 5,
+              }}
+            />
+          </View>
         </View>
-        <AddCardModal
-         onConfirm={addCard}
-          onRequestClose={() => setAddCardModal(!addCardModal)}
-          visible={addCardModal} 
-          cardNumber={cardNumber}
-          setCardNumber={setCardNumber}
-          expiryDate={expiryDate}
-          setExpiryDate={setExpiryDate}
-          cvv={cvv}
-          setCVV={setCvv}
-        />  
+      </ScrollView>
+
+      {/* <AddCardModal
+        onConfirm={addCard}
+        onRequestClose={() => setAddCardModal(!addCardModal)}
+        visible={addCardModal}
+        cardNumber={cardNumber}
+        setCardNumber={setCardNumber}
+        expiryDate={expiryDate}
+        setExpiryDate={setExpiryDate}
+        cvv={cvv}
+        setCVV={setCvv}
+      /> */}
 
       <AddBankAccountModal
-        onConfirm={addCard}
+        onConfirm={addAccount}
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
         accountNumber={bankAccountNumber}
         setAccountNumber={(text) => setBankAccountNumber(text)}
         bankCode={bankCode}
         setBankCode={(text) => setBankCode(text)}
-      /> 
-        
-
-
-   </ScrollView>
+      />
+    </View>
   );
-};
+}
 
-export default CardAndBankDetails;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F7F8FD',
+  },
+  heading: {
+    paddingHorizontal: 20,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  content: {
+    paddingLeft: 20,
+    // borderWidth: 1,
+    paddingVertical: 10,
+    marginTop: 20,
+    // backgroundColor: '#FFFFFF',
+  },
+  contentTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    // marginLeft: 10,
+    color: COLORS.primary,
+  },
+  contentView: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    // paddingVertical: 10,
+  },
+  addButton: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
+    backgroundColor: COLORS.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paymentCard: {
+    width: 150,
+    height: 200,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 20,
+    elevation: 1,
+    overflow: 'hidden',
+  },
+  bankCard: {
+    width: 250,
+    height: 140,
+    backgroundColor: COLORS.primary,
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 20,
+    elevation: 1,
+    overflow: 'hidden',
+  },
+});

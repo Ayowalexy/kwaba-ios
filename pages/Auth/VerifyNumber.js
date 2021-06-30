@@ -33,7 +33,7 @@ export default function VerifyNumber({navigation, route}) {
   const [error, setError] = useState(false);
   // For keeping a track on the Timer
   const [timerEnd, setTimerEnd] = useState(false);
-  const [timestamp, setTimestamp] = useState(45);
+  const [timestamp, setTimestamp] = useState(90);
 
   const [value, setValue] = useState('');
   const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
@@ -142,7 +142,7 @@ export default function VerifyNumber({navigation, route}) {
     const response = await sendVerificationCode(data);
     if (response.status == 200) {
       setTimerEnd(false);
-      setTimestamp(45);
+      setTimestamp(90);
 
       setSpinner(false);
     } else {

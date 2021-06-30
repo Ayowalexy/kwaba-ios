@@ -21,7 +21,7 @@ import {icons, images, COLORS, FONTS, designs} from '../../../util/index';
 
 const widthtouse = Dimensions.get('window').width;
 
-const Referral = () => {
+const Referral = ({navigation}) => {
   const [referralCode, setReferralCode] = useState('');
 
   const fetchReferralCode = async () => {
@@ -242,7 +242,11 @@ const Referral = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={{marginTop: 10}} onPress={() => {}}>
+        <TouchableOpacity
+          style={{marginTop: 10}}
+          onPress={() => {
+            navigation.navigate('ReferralDetails');
+          }}>
           <View
             style={{
               // height: 50,

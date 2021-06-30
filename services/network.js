@@ -292,11 +292,12 @@ const tokenizePayment = async (data) => {
   }
 };
 
-const referralDetails = async (data) => {
+const referralDetails = async () => {
   const url = apiUrl + '/api/v1/payment/referraldetails';
+  const token = await getToken();
   try {
     const response = await axios.get(url, {
-      headers: {'Content-Type': 'application/json'},
+      headers: {Authorization: token},
     });
     return response.data;
   } catch (error) {

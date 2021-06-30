@@ -104,6 +104,15 @@ import Toast from 'react-native-toast-message';
 import ApplicationProgress from './pages/Borrow/ApplicationProgress';
 import UploadBankStatementDocument from './pages/Borrow/UploadBankStatementDocument';
 
+// Notifications
+import Notifications from './pages/Notifications/Notifications';
+
+// Business Owner Route
+import EligibilityBusinessOwner from './pages/Borrow/Business/EligibilityBusinessOwner';
+import BusinessForm1 from './pages/Borrow/Business/BusinessForm1';
+import BusinessForm2 from './pages/Borrow/Business/BusinessForm2';
+import BusinessForm3 from './pages/Borrow/Business/BusinessForm3';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -223,7 +232,8 @@ const App = () => {
           // }
           // initialRouteName={'SoloSaving3'}
           // initialRouteName={'SoloSavingDashBoard'}
-          initialRouteName={'RentNowPayLaterDashboard'}>
+          // initialRouteName={'RentNowPayLaterDashboard'}
+        >
           {/* {!isLoggedIn ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
@@ -318,6 +328,12 @@ const App = () => {
                 name="RentalLoanFormDoc"
                 component={RentalLoanFormDoc}></Stack.Screen>
               <Stack.Screen
+                name="RentalLoanForm2"
+                component={RentalLoanForm2}></Stack.Screen>
+              <Stack.Screen
+                name="RentalLoanForm3"
+                component={RentalLoanForm3}></Stack.Screen>
+              <Stack.Screen
                 name="RentalLoanThirdPartyConnection"
                 component={RentalLoanThirdPartyConnection}></Stack.Screen>
               <Stack.Screen
@@ -332,12 +348,6 @@ const App = () => {
               <Stack.Screen
                 name="PayWithSavings"
                 component={PayWithSavings}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanForm2"
-                component={RentalLoanForm2}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanForm3"
-                component={RentalLoanForm3}></Stack.Screen>
               <Stack.Screen
                 name="RentalLoanFormCongratulation"
                 component={RentalLoanFormCongratulation}></Stack.Screen>
@@ -418,6 +428,18 @@ const App = () => {
                 name="BottomNavigation"
                 component={BottomNavigator}></Stack.Screen>
               <Stack.Screen
+                name="EligibilityBusinessOwner"
+                component={EligibilityBusinessOwner}></Stack.Screen>
+              <Stack.Screen
+                name="BusinessForm1"
+                component={BusinessForm1}></Stack.Screen>
+              <Stack.Screen
+                name="BusinessForm2"
+                component={BusinessForm2}></Stack.Screen>
+              <Stack.Screen
+                name="BusinessForm3"
+                component={BusinessForm3}></Stack.Screen>
+              <Stack.Screen
                 name="EmergencyLoanHome"
                 component={EmergencyLoanHome}></Stack.Screen>
               <Stack.Screen
@@ -474,6 +496,9 @@ const App = () => {
               <Stack.Screen
                 name="UploadBankStatementDocument"
                 component={UploadBankStatementDocument}></Stack.Screen>
+
+              <Stack.Screen name="Notifications" component={Notifications} />
+
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
               {/*            

@@ -52,7 +52,7 @@ const EmploymentStatus = ({navigation}) => {
               onPress={() =>
                 index == 0
                   ? navigation.navigate('EligibilitySalaryEarner')
-                  : setShowModal(!showModal)
+                  : navigation.navigate('EligibilityBusinessOwner')
               }
               key={index}
               // disabled={index == 1 ? true : false}
