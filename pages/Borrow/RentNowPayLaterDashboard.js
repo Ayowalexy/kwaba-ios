@@ -23,6 +23,8 @@ export default function RentNowPayLaterDashboard({navigation}) {
   const [noOfDaysToNextPayment, setnoOfDaysToNextPayment] = useState(45);
   const [repaymentBalance, setrepaymentBalance] = useState(45);
   const [monthlyRepayment, setmonthlyRepayment] = useState();
+  const [repaymentPlan, setrepaymentPlan] = useState();
+  const [repaymentPlanCount, setrepaymentPlanCount] = useState();
 
 
 
@@ -46,6 +48,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
         const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
             headers: {'Content-Type': 'application/json', Authorization: token},
           });
+
           console.log(applicationIDCallRes.data.data.non_refundable_deposit);
           const loanId = applicationIDCallRes.data.data.id;
           setmonthlyRepayment(Number(applicationIDCallRes.data.data.approvedrepayment))
@@ -54,6 +57,9 @@ export default function RentNowPayLaterDashboard({navigation}) {
           // const response = await axios.post('http://67.207.86.39:8000/api/v1/application/payment/pay', {amount}, {
           //   headers: {'Content-Type': 'application/json', Authorization: token},
           // });
+
+          //approved_repayment_plan
+          setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
       
           const res = await axios.post('http://67.207.86.39:8000/api/v1/application/dashboard', {loanId}, {
               headers: {'Content-Type': 'application/json', Authorization: token},
@@ -66,6 +72,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
             setnextPaymentDueDate(res.data.nextPaymentDueDate);
             setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
             setrepaymentBalance(res.data.repaymentBalance);
+            setrepaymentPlanCount(res.data.loanpaidcount);
                  
     
       }
@@ -194,7 +201,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
                     color: COLORS.white,
                     fontWeight: '200',
                   }}>
-                  1 of 2 months
+                  {repaymentPlanCount} of {repaymentPlan} months
                 </Text>
               </View>
 
