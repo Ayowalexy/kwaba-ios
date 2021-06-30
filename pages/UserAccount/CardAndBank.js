@@ -178,78 +178,83 @@ export default function CardAndBankDetails({navigation}) {
   };
 
   const renderPaymentCards = ({item}) => (
-    <View style={[styles.paymentCard]}>
-      {/* <Text>{item.cardnumber}</Text> */}
+    <TouchableOpacity style={[styles.paymentCard]}>
       <View>
-        <Text style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
-          ****2345
-        </Text>
+        {/* <Text>{item.cardnumber}</Text> */}
+        <View>
+          <Text
+            style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
+            ****2345
+          </Text>
+        </View>
+        <View style={{marginTop: 100}}>
+          <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
+            EXPIRES
+          </Text>
+          <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
+            12/2022
+          </Text>
+        </View>
+        <Image
+          source={
+            item.type == 'mastercard'
+              ? images.mastercarddesign
+              : images.visacarddesign
+          }
+          resizeMode="contain"
+          style={{
+            height: 200,
+            width: 150,
+            resizeMode: 'contain',
+            position: 'absolute',
+            right: -5,
+          }}
+        />
       </View>
-      <View style={{marginTop: 100}}>
-        <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
-          EXPIRES
-        </Text>
-        <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
-          12/2022
-        </Text>
-      </View>
-      <Image
-        source={
-          item.type == 'mastercard'
-            ? images.mastercarddesign
-            : images.visacarddesign
-        }
-        resizeMode="contain"
-        style={{
-          height: 200,
-          width: 150,
-          resizeMode: 'contain',
-          position: 'absolute',
-          right: -5,
-        }}
-      />
-    </View>
+    </TouchableOpacity>
   );
 
   const renderBankAccounts = ({item}) => (
-    <View style={[styles.bankCard]}>
-      <Text
-        style={{
-          fontSize: 14,
-          fontWeight: 'bold',
-          color: COLORS.white,
-        }}>
-        {item.bankAccountName}
-      </Text>
-      <Text
-        style={{
-          fontSize: 12,
-          color: COLORS.light,
-        }}>
-        {item.bankName}
-      </Text>
-      <Text
-        style={{
-          marginTop: 40,
-          fontSize: 14,
-          color: COLORS.white,
-          opacity: 0.8,
-        }}>
-        {item.bankAccountNumber}
-      </Text>
+    <TouchableOpacity style={[styles.bankCard]}>
+      <View>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: COLORS.white,
+          }}>
+          {item.bankAccountName}
+        </Text>
+        <Text
+          style={{
+            fontSize: 12,
+            color: COLORS.light,
+          }}>
+          {item.bankName}
+        </Text>
+        <Text
+          style={{
+            marginTop: 40,
+            fontSize: 14,
+            color: COLORS.white,
+            opacity: 0.8,
+          }}>
+          {item.bankAccountNumber}
+        </Text>
 
-      <Image
-        style={{
-          width: 71,
-          height: 110,
-          position: 'absolute',
-          resizeMode: 'contain',
-          right: 0,
-          bottom: 0,
-        }}
-        source={images.maskGroup24}
-      />
-    </View>
+        <Image
+          style={{
+            width: 71,
+            height: 110,
+            position: 'absolute',
+            resizeMode: 'contain',
+            right: 0,
+            bottom: 0,
+          }}
+          source={images.maskGroup24}
+        />
+      </View>
+    </TouchableOpacity>
   );
 
   return (

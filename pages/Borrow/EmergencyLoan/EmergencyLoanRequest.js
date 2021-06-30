@@ -200,7 +200,8 @@ const EmergencyLoanRequest = ({route, navigation}) => {
               <Text style={{color: COLORS.dark, fontSize: 12}}>
                 Disbursement Account
               </Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('CardAndBankDetails')}>
                 <Text
                   style={{
                     fontSize: 12,
