@@ -5,6 +5,7 @@ import OkraView from 'react-native-okra';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLORS, FONTS, images} from '../../util/index';
 import axios from 'axios';
+const moment = require("moment");
 
 
 
@@ -13,6 +14,8 @@ import axios from 'axios';
   const [successModal, setSuccessModal] = useState(false);
   const [existingApplication, setExistingApplication] = useState('');
   const [monthlyRepayment, setmonthlyRepayment] = useState();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
  // const [okraOptions, setOkraOptions] = useState({});
 
   
@@ -46,8 +49,17 @@ import axios from 'axios';
       
              setExistingApplication(applicationId);
             console.log('here', applicationIDCallRes.data.data.approvedamount );
-            setmonthlyRepayment(applicationIDCallRes.data.data.approvedamount);
+            setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
+            const approved_repayment_plan=applicationIDCallRes.data.data.approved_repayment_plan;
+            const repayment_start_date=applicationIDCallRes.data.data.remita_repayment_date;
+            const repayment_end_date=moment(repayment_start_date).add(Number(approved_repayment_plan)-1,'months').format("YYYY-MM-DD");
+            setStartDate(repayment_start_date);
+            setEndDate(repayment_end_date);
+
             console.log('here2', monthlyRepayment);
+
+            console.log('repayment_start_date', repayment_start_date);
+            console.log('repayment_end_date', repayment_end_date);
     
       }
       catch(error) {
@@ -99,8 +111,8 @@ import axios from 'axios';
         note: '', // optional note
         schedule: { // required
             interval: 'monthly',
-            startDate: 'YYYY-MM-DD', // If blank will default to today
-            endDate: 'YYYY-MM-DD' //If blank will not stop
+            startDate: startDate, // If blank will default to today
+            endDate: endDate //If blank will not stop
         }, 
         currency: 'NGN', // supports 'NGN'
         account: '5f450b2689a23801307c8b5b' // Your account ID to credit
@@ -144,8 +156,8 @@ import axios from 'axios';
 
         let data={
           interval: "monthly",
-          startDate: "2021-04-15",
-          endDate: "2021-07-15",
+          startDate: startDate,
+          endDate: endDate,
           amount: monthlyRepayment,
           loanId: existingApplication
         };
