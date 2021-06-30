@@ -143,12 +143,51 @@ const RentalLoanForm3 = ({navigation}) => {
     total_rent: '600000',
   };
 
-  const handleNavigation = () => {
+  const handleNavigation = async() => {
     // setSuccessModal(false);
     // navigation.navigate('UploadBankStatement');
 
     // added by Joshua Nwosu
     setVisible(false);
+
+    // let stepsdata={
+     
+    //   propertydetail:'done',
+    //   landlorddetail:'done',
+    //   documentdone:'',
+    //   refree:'',
+    //   offeraccepted:'',
+    //   addressverification:'',
+    //   debitmandate:'',
+    //   awaitingdisbursment:'',
+    // };
+    //   await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+
+    // // console.log('steps here', steps);
+    //   const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+    //   const steps = JSON.parse(borrwSteps);
+      
+    //   if (steps.documentdone == '') {
+    //     navigation.navigate('UploadDocuments');
+    //   } else if (steps.refree == '') {
+    //     navigation.navigate('UploadDocuments');
+    //   }
+    //   else if (steps.offeraccepted == '') {
+    //     navigation.navigate('RentalLoanOfferTest'); 
+    //   } else if (steps.addressverification == '') {
+    //     navigation.navigate('AddressVerificationPayment');
+    //   } else if (steps.debitmandate == '') {
+    //     navigation.navigate('OkraDebitMandate');
+    //   } else if (steps.awaitingdisbursment == '') {
+    //     navigation.navigate('AwaitingDisbursement');
+    //   }
+    // // } else {
+    // //   navigation.navigate('RentalLoanForm1');
+
+    //   //navigation.navigate('EmergencyLoanRequestDashBoard');
+
+    // //   return token;
+    // // }
     navigation.navigate('RentalLoanFormCongratulation');
   };
 

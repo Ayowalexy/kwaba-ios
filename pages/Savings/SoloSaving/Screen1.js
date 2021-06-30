@@ -37,6 +37,7 @@ export default function Screen1({navigation}) {
     // console.log(data);
     try {
       dispatch(soloSaving(data));
+
       return navigation.navigate('SoloSaving2');
     } catch (error) {}
   };
@@ -267,7 +268,7 @@ export default function Screen1({navigation}) {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={25}
+        size={35}
         style={{fontWeight: '900'}}
         color="#2A286A"
       />

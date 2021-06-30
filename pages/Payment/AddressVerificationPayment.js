@@ -85,7 +85,7 @@ const AddressVerificationPayment = ({navigation}) => {
                   'Payment verified',
                   'Your payment was verified. Thank you.',
                 );
-                navigation.navigate('MonoDebitMandate')
+                navigation.navigate('OkraDebitMandate')
               } else {
                 setVerificationSpinner(false);
                 Alert.alert(

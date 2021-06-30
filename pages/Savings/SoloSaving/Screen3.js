@@ -1,17 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  Switch,
-  ScrollView,
-  Modal,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Switch} from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
-import {images, icons} from '../../../util/index';
+import {images} from '../../../util/index';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
@@ -97,7 +89,7 @@ export default function Screen3({navigation}) {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={25}
+        size={35}
         style={{fontWeight: '900'}}
         color="#2A286A"
       />
@@ -188,12 +180,13 @@ export default function Screen3({navigation}) {
             }}>
             <Text
               style={{
-                color: 'white',
-                fontSize: 12,
+                fontSize: 10,
                 lineHeight: 15,
-                marginRight: 23,
+                fontWeight: '700',
+                color: '#9D98EC',
+                fontFamily: 'Circular Std',
               }}>
-              Lock saving?
+              SOLO SAVING
             </Text>
             <Switch
               trackColor={{false: 'white', true: 'white'}}
@@ -216,17 +209,51 @@ export default function Screen3({navigation}) {
             }}>
             <Text
               style={{
-                color: '#FFE700',
-                fontSize: 10,
-                lineHeight: 13,
+                fontSize: 18,
                 fontWeight: 'bold',
+                color: '#2A286A',
+                lineHeight: 23,
                 fontFamily: 'Circular Std',
-                textAlign: 'center',
               }}>
-              {locked
-                ? ' Keep your rent savings locked to earn higher interest. However, if you withdraw your rent before the end date, you will attract a breaking fee.'
-                : 'You will get a lower interest rate if you unlock your rent savings. However, you can withdraw your funds anytime for free'}
+              {new Date().getFullYear()} Rent
             </Text>
+          </View>
+          <Image style={{width: 61, height: 66}} source={images.maskGroup15} />
+        </View>
+        <View style={designs.data}>
+          <View>
+            <Text style={designs.key}>
+              Amount to save {store.savings_frequency}
+            </Text>
+            <Text style={designs.value}>₦{store.savings_amount}</Text>
+          </View>
+          <View style={{marginLeft: 90}}>
+            <Text style={designs.key}>Target Amount</Text>
+            <Text style={designs.value}>₦{savings_target}</Text>
+          </View>
+        </View>
+        <View style={{marginTop: 16, paddingLeft: 8}}>
+          <Text style={designs.key}>Amount to save today</Text>
+          <Text style={designs.value}>₦{store.instant_saved_amount}</Text>
+        </View>
+        <View style={designs.data}>
+          <View>
+            <Text style={designs.key}>Frequency</Text>
+            <Text style={designs.value}>{store.savings_frequency}</Text>
+          </View>
+          <View style={{marginLeft: 165}}>
+            <Text style={designs.key}>Start Date</Text>
+            <Text style={designs.value}>{savings_start_date}</Text>
+          </View>
+        </View>
+        <View style={designs.data}>
+          <View>
+            <Text style={designs.key}>End Date</Text>
+            <Text style={designs.value}>{savings_end_date}</Text>
+          </View>
+          <View style={{marginLeft: 125}}>
+            <Text style={designs.key}>Interest Rate</Text>
+            <Text style={designs.value}>{locked ? '8%' : '7%'}</Text>
           </View>
         </View>
         <View
@@ -234,25 +261,26 @@ export default function Screen3({navigation}) {
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
-            marginRight: 'auto',
             marginLeft: 'auto',
-            marginTop: 100,
+            marginRight: 'auto',
+            marginTop: 23,
           }}>
-          <CheckBox
-            disabled={false}
-            value={toggleCheckBox}
-            onValueChange={(newValue) => setToggleCheckBox(newValue)}
-          />
           <Text
             style={{
-              color: '#465969',
+              color: 'white',
               fontSize: 12,
               lineHeight: 15,
-              fontWeight: 'bold',
+              marginRight: 23,
             }}>
-            I agree to{' '}
-            <Text style={{color: '#00DC99'}}>Terms and Conditions</Text>
+            Lock saving?
           </Text>
+          <Switch
+            trackColor={{false: 'white', true: 'white'}}
+            thumbColor={locked ? '#00DC99' : '#ADADAD'}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleSwitch}
+            value={locked}
+          />
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}

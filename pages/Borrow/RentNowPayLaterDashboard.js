@@ -14,9 +14,83 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../util/index';
 import {currencyFormat} from '../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function RentNowPayLaterDashboard({navigation}) {
   const [percentAchieved, setPercentAchieved] = useState(75);
+  const [nextPaymentDueDate, setnextPaymentDueDate] = useState(45);
+  const [noOfDaysToNextPayment, setnoOfDaysToNextPayment] = useState(45);
+  const [repaymentBalance, setrepaymentBalance] = useState(45);
+  const [monthlyRepayment, setmonthlyRepayment] = useState();
+  const [repaymentPlan, setrepaymentPlan] = useState();
+  const [repaymentPlanCount, setrepaymentPlanCount] = useState();
+
+
+
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+
+  useEffect(()=>{
+
+
+    const getDashboardData =async ()=> {
+    
+      const token = await getToken();
+
+      
+      try{
+
+        const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          });
+
+          console.log(applicationIDCallRes.data.data.non_refundable_deposit);
+          const loanId = applicationIDCallRes.data.data.id;
+          setmonthlyRepayment(Number(applicationIDCallRes.data.data.approvedrepayment))
+        
+       
+          // const response = await axios.post('http://67.207.86.39:8000/api/v1/application/payment/pay', {amount}, {
+          //   headers: {'Content-Type': 'application/json', Authorization: token},
+          // });
+
+          //approved_repayment_plan
+          setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
+      
+          const res = await axios.post('http://67.207.86.39:8000/api/v1/application/dashboard', {loanId}, {
+              headers: {'Content-Type': 'application/json', Authorization: token},
+            });
+       
+            
+            console.log(res.data);
+
+            setPercentAchieved(res.data.percentagePaid);
+            setnextPaymentDueDate(res.data.nextPaymentDueDate);
+            setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
+            setrepaymentBalance(res.data.repaymentBalance);
+            setrepaymentPlanCount(res.data.loanpaidcount);
+                 
+    
+      }
+      catch(error) {
+        console.log(error.response.data)
+      }
+
+  
+
+      
+    };
+
+    getDashboardData();
+
+
+  },[nextPaymentDueDate])
+
+  if(nextPaymentDueDate!=null){
 
   return (
     <View style={styles.container}>
@@ -78,7 +152,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
                     fontWeight: 'bold',
                     color: COLORS.white,
                   }}>
-                  ₦{currencyFormat(Number(0))}
+                  ₦{currencyFormat(Number(monthlyRepayment))}
                 </Text>
 
                 <Image
@@ -97,15 +171,15 @@ export default function RentNowPayLaterDashboard({navigation}) {
               <View style={[styles.paymentDetail]}>
                 <View style={[styles.paymentDetailContent]}>
                   <Text style={[styles.text]}>Next loan payment</Text>
-                  <Text style={[styles.value]}>21 days</Text>
+                  <Text style={[styles.value]}>{noOfDaysToNextPayment} days</Text>
                 </View>
                 <View style={[styles.paymentDetailContent]}>
                   <Text style={[styles.text]}>Next payment due date</Text>
-                  <Text style={[styles.value]}>21, Feb 2021</Text>
+                  <Text style={[styles.value]}>{nextPaymentDueDate}</Text>
                 </View>
                 <View style={[styles.paymentDetailContent]}>
                   <Text style={[styles.text]}>Repayment balance</Text>
-                  <Text style={[styles.value]}>₦{currencyFormat(20000)}</Text>
+                  <Text style={[styles.value]}>₦{currencyFormat(repaymentBalance)}</Text>
                 </View>
               </View>
             </View>
@@ -127,7 +201,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
                     color: COLORS.white,
                     fontWeight: '200',
                   }}>
-                  1 of 2 months
+                  {repaymentPlanCount} of {repaymentPlan} months
                 </Text>
               </View>
 
@@ -231,7 +305,18 @@ export default function RentNowPayLaterDashboard({navigation}) {
         </View>
       </ScrollView>
     </View>
-  );
+  )
+}
+    else{
+      return (  
+    <>
+    <View>
+       <Text>loading...</Text>  
+    </View>
+    </>
+    )
+    }
+
 }
 
 const styles = StyleSheet.create({

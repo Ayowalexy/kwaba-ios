@@ -39,7 +39,6 @@ export default function Screen4({navigation}) {
   };
 
   const handleTransactions = async () => {
-    console.log(store);
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
         setSpinner(true);
@@ -192,7 +191,7 @@ export default function Screen4({navigation}) {
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
-        size={25}
+        size={35}
         style={{fontWeight: '900'}}
         color="#2A286A"
       />
@@ -221,7 +220,7 @@ export default function Screen4({navigation}) {
             <Icon name="folder-outline" size={20} color="#D6D6D6" />
             <Text
               style={{
-                fontSize: 14,
+                fontSize: 15,
                 lineHeight: 19,
                 fontWeight: '600',
                 color: '#2A286A',
@@ -253,8 +252,7 @@ export default function Screen4({navigation}) {
                 : '_'}
             </Text>
             <Image
-              style={{width: 30, height: 30}}
-              resizeMode="contain"
+              style={{width: 47, height: 30}}
               source={images.masterCardSymbol}
             />
           </View>
@@ -269,8 +267,7 @@ export default function Screen4({navigation}) {
           justifyContent: 'center',
           marginTop: 17,
           height: 70,
-          width: '100%',
-          // borderWidth: 1,
+          width: 380,
         }}>
         <Icon name="add" size={20} color="#00DC99" />
         <Text
