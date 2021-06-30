@@ -157,7 +157,9 @@ export default function Home({navigation}) {
             Hello, {name}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => setShowModal(!showModal)}>
+        <TouchableOpacity
+          // onPress={() => setShowModal(!showModal)}
+          onPress={() => navigation.navigate('Notifications')}>
           <Icon
             name="notifications"
             color="#8B8AAE"

@@ -11,7 +11,7 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../../util';
+import {COLORS, images} from '../../../util';
 
 export default function EligibilitySalaryEarner({navigation}) {
   return (
@@ -41,8 +41,8 @@ export default function EligibilitySalaryEarner({navigation}) {
             <Text style={[styles.redText]}>To Be Eligible, You Must</Text>
             <View style={[styles.listText]}>
               {[
-                'Earn a minimum monthly income of ₦80,000',
-                'Have received salary for at least 3 months',
+                'Generate a minimum monthly revenue of\n₦200,000.',
+                'Have being in business for at least 3 months',
                 'Have no bad loans and a clean credit history',
                 'Be above 21 years of age',
               ].map((text, index) => (
@@ -83,7 +83,7 @@ export default function EligibilitySalaryEarner({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
-            navigation.navigate('RentalLoanForm1');
+            navigation.navigate('BusinessForm1');
             // navigation.navigate('UploadBankStatement');
             // navigation.navigate('RentalLoanFormBankStatementUploadMono');
             // navigation.navigate('RentalLoanFormBankStatementUpload');
