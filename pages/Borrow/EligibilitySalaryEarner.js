@@ -92,7 +92,7 @@ export default function EligibilitySalaryEarner({navigation}) {
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
         <View style={[styles.content]}>
-          <Text style={[styles.heading]}>Eligibility for Salary Earners</Text>
+          <Text style={[styles.heading]}>Eligibility</Text>
           <View>
             <Image
               source={images.eligibilityImage}
