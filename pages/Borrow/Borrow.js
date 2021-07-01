@@ -65,16 +65,16 @@ const Borrow = ({navigation}) => {
 
   const handleRentalLoanClick = async () => {
     // if (existingApplication !== '') {
-    //   const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-    //   const steps = JSON.parse(borrwSteps);
+      const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+      const steps = JSON.parse(borrwSteps);
 
     // let stepsdata={
-    //   documentdone:'done',
-    //   propertydetail:'done',
-    //   landlorddetail:'done',
-    //   refree:'done',
-    //   offeraccepted:'done',
-    //   addressverification:'done',
+    //   documentdone:'',
+    //   propertydetail:'',
+    //   landlorddetail:'',
+    //   refree:'',
+    //   offeraccepted:'',
+    //   addressverification:'',
     //   debitmandate:'',
     //   awaitingdisbursment:'',
     // };
