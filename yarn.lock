@@ -1280,6 +1280,11 @@
     color "^3.1.3"
     react-native-iphone-x-helper "^1.3.0"
 
+"@segment/analytics-react-native@^1.4.8":
+  version "1.4.9"
+  resolved "https://registry.yarnpkg.com/@segment/analytics-react-native/-/analytics-react-native-1.4.9.tgz#42351efd41849b61e421b3076b31cc5662651931"
+  integrity sha512-i2IAJr62YO8Z2DT3rVAvorHAmlZWxPrLXfe5mBkuRjvAnO0kRCTJJI/2r1yIArjPi42jS1S0EG6jNk2ZB7gT8g==
+
 "@sinonjs/commons@^1.7.0":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.2.tgz#858f5c4b48d80778fde4b9d541f27edc0d56488b"
@@ -6711,6 +6716,11 @@ react-native-progress@^4.1.2:
   dependencies:
     "@react-native-community/art" "^1.1.2"
     prop-types "^15.7.2"
+
+react-native-push-notification@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-7.4.0.tgz#81192356eddfee8eeaf72a9a696c7c90bf5b0ece"
+  integrity sha512-Ac3Ep71e2D8Q/Vy0OHBAO5JwhsFsNSuf9knkpXQWS0B9488nIZJLEMuTpF8610xPvGw7XxVrL/q0oZO5F1pOzw==
 
 react-native-reanimated@^1.13.2:
   version "1.13.2"
