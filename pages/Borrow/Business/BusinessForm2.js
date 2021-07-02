@@ -24,18 +24,21 @@ import CompanySizeModal from './Modals/CompanySizeModal';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
-// rent_purpose: '',
-// business_name: '',
-// is_business_registered: '',
-// business_registration_type: '',
+// business_website: '',
+// social_media_platform: '',
+// social_media_handle: '',
+// business_address: '',
+// company_size: '',
 const businessFormSchema = yup.object().shape({
-  rent_purpose: yup.string().required('Please select rent purpose'),
-  business_name: yup.string().required('Please provide business name'),
-  is_business_registered: yup.string().required('Please select an option'),
-  business_registration_type: yup.string().required('Please select an option'),
+  business_website: yup.string().required('Please enter business website'),
+  social_media_platform: yup.string().required('Please select social media platform'),
+  social_media_handle: yup.string().required('Please enter social media handle'),
+  business_address: yup.string().required('Please enter business address'),
+  business_age: yup.string().required('Please select an option'),
+  company_size: yup.string().required('Please select company size'),
 });
 
-export default function BusinessForm1({navigation}) {
+export default function BusinessForm2({navigation}) {
   const [progress, setProgress] = useState(40);
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
 
@@ -46,50 +49,7 @@ export default function BusinessForm1({navigation}) {
 
   const [registration, setRegistration] = useState('');
 
-  const RentPurpose = (props) => {
-    const rent_purpose_list = ['Business space', 'Personal accommodation'];
-    const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-    return (
-      <>
-        <Text style={designs.label}>
-          What’s the purpose of the rent payment?{' '}
-        </Text>
-        {rent_purpose_list.map((purpose, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              designs.buttonStyleA,
-              {
-                borderColor: value == purpose ? COLORS.light : '#ADADAD50',
-              },
-            ]}
-            onPress={() => setFieldValue('rent_purpose', purpose)}>
-            <View>
-              <Text
-                style={[
-                  designs.btnText,
-                  {
-                    color: value == purpose ? COLORS.light : COLORS.grey,
-                    fontWeight: value == purpose ? 'bold' : 'normal',
-                  },
-                ]}>
-                {purpose}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
-
+  
   const CustomInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
@@ -129,62 +89,168 @@ export default function BusinessForm1({navigation}) {
     );
   };
 
-  const IsBusinessRegistered = (props) => {
-    const is_business_registered_list = ['Yes', 'No'];
+  const SocialMediaPlatform = (props) => {
     const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
       ...inputProps
     } = props;
 
     const hasError = errors[name] && touched[name];
+
+    return (
+    <>
+      <Text style={designs.label}>
+        Select social media platform{' '}
+      </Text>
+      <TouchableOpacity
+        style={[designs.customInput, {padding: 20}]}
+        onPress={() => {
+          setShowSocialMediaModal(!showSocialMediaModal);
+        }}>
+        {value != '' ? (
+          <Text
+            style={{
+              fontWeight: 'bold',
+              color: COLORS.dark,
+            }}>
+            {value}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              color: '#BABABA',
+            }}>
+            Select social media platform
+          </Text>
+        )}
+
+        <Icon
+          name="chevron-down-outline"
+          size={20}
+          style={{fontWeight: 'bold'}}
+          color="#BABABA"
+        />
+      </TouchableOpacity>
+
+      {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+    </>
+    )
+  }
+
+  const BusinessAge = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
     return (
       <>
-        <Text style={designs.label}>Is your business registered? </Text>
-        {is_business_registered_list.map((isRegistered, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              designs.buttonStyleA,
-              {
-                borderColor: value == isRegistered ? COLORS.light : '#ADADAD50',
-              },
-            ]}
-            onPress={() =>
-              setFieldValue('is_business_registered', isRegistered)
-            }>
-            <View>
-              <Text
-                style={[
-                  designs.btnText,
-                  {
-                    color: value == isRegistered ? COLORS.light : COLORS.grey,
-                    fontWeight: value == isRegistered ? 'bold' : 'normal',
-                  },
-                ]}>
-                {isRegistered}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
+      <Text style={designs.label}>
+        How long have you been in business{' '}
+      </Text>
+      <TouchableOpacity
+        style={[designs.customInput, {padding: 20}]}
+        onPress={() => {
+          setShowBusinessAgeModal(!showBusinessAgeModal);
+        }}>
+        {value != '' ? (
+          <Text
+            style={{
+              fontWeight: 'bold',
+              color: COLORS.dark,
+            }}>
+            {value}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              color: '#BABABA',
+            }}>
+            Select an option
+          </Text>
+        )}
+
+        <Icon
+          name="chevron-down-outline"
+          size={20}
+          style={{fontWeight: 'bold'}}
+          color="#BABABA"
+        />
+      </TouchableOpacity>
+
+      {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+    </>
+    )
+  }
+
+  const CompanySize = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+      <Text style={designs.label}>Company size </Text>
+      <TouchableOpacity
+        style={[designs.customInput, {padding: 20}]}
+        onPress={() => {
+          setShowCompanySizeModal(!showCompanySizeModal);
+        }}>
+        {value != '' ? (
+          <Text
+            style={{
+              fontWeight: 'bold',
+              color: COLORS.dark,
+            }}>
+            {value}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              color: '#BABABA',
+            }}>
+            Select an option
+          </Text>
+        )}
+
+        <Icon
+          name="chevron-down-outline"
+          size={20}
+          style={{fontWeight: 'bold'}}
+          color="#BABABA"
+        />
+      </TouchableOpacity>
+
+      {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+    </>
+    )
+  }
 
   const handleSubmit = async (values) => {
-    // console.log('VALUES: ', values);
+    console.log('VALUES: ', values);
     const {
-      rent_purpose,
-      business_name,
-      is_business_registered,
-      business_registration_type,
+      business_website,
+      social_media_platform,
+      social_media_handle,
+      business_address,
+      business_age,
+      company_size
     } = values;
     const data = {
-      rent_purpose,
-      business_name,
-      is_business_registered,
-      business_registration_type,
+      business_website,
+      social_media_platform,
+      social_media_handle,
+      business_address,
+      business_age,
+      company_size
     };
 
     const businessFormData = await AsyncStorage.getItem(
@@ -196,11 +262,10 @@ export default function BusinessForm1({navigation}) {
       JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
-    navigation.navigate('BusinessForm2');
+    console.log(data);
+    console.log(businessFormData)
 
-    // setTimeout(() => {
-    //   console.log('Business Form Data:', businessFormData);
-    // }, 2000);
+    navigation.navigate('BusinessForm3');
   };
 
   return (
@@ -216,13 +281,22 @@ export default function BusinessForm1({navigation}) {
       <Formik
         validationSchema={businessFormSchema}
         initialValues={{
-          rent_purpose: '',
-          business_name: '',
-          is_business_registered: '',
-          business_registration_type: 'partnership',
+          // business_website: 'www.kwaba.ng',
+          // social_media_platform: 'Facebook',
+          // social_media_handle: 'hello@kwaba.ng',
+          // business_address: '131a eti osa way dolphin estate',
+          // business_age: '3',
+          // company_size: '20',
+
+          business_website: '',
+          social_media_platform: '',
+          social_media_handle: '',
+          business_address: '',
+          business_age: '',
+          company_size: '',
         }}
         onSubmit={handleSubmit}>
-        {({handleSubmit, isValid, values}) => (
+        {({handleSubmit, isValid, values, setValues}) => (
           <>
             <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
               <View
@@ -284,49 +358,19 @@ export default function BusinessForm1({navigation}) {
                       component={CustomInput}
                       placeholder="Enter Link"
                     />
-                  </>
+                  </>  
 
-                  <>
-                    <Text style={designs.label}>
-                      Select social media platform{' '}
-                    </Text>
-                    <TouchableOpacity
-                      style={[designs.customInput, {padding: 20}]}
-                      onPress={() => {
-                        setShowSocialMediaModal(!showSocialMediaModal);
-                        // console.log(selectedMonth);
-                      }}>
-                      {businessRegistrationType != '' ? (
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
-                          }}>
-                          {businessRegistrationType}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            color: '#BABABA',
-                          }}>
-                          Select social media platform
-                        </Text>
-                      )}
+                  <Field
+                    name="social_media_platform"
+                    component={SocialMediaPlatform}
+                  />
 
-                      <Icon
-                        name="chevron-down-outline"
-                        size={20}
-                        style={{fontWeight: 'bold'}}
-                        color="#BABABA"
-                      />
-                    </TouchableOpacity>
-                    <Field
-                      name="social_media_handle"
-                      component={CustomInput}
-                      placeholder="Enter handle"
-                    />
-                  </>
-
+                  <Field
+                    name="social_media_handle"
+                    component={CustomInput}
+                    placeholder="Enter handle"
+                  />
+                  
                   <>
                     <Text style={designs.label}>Business address </Text>
                     <Field
@@ -335,89 +379,30 @@ export default function BusinessForm1({navigation}) {
                       placeholder="Business address"
                     />
                   </>
+                  
+                  <Field
+                    name="business_age"
+                    component={BusinessAge}
+                  />
 
-                  <>
-                    <Text style={designs.label}>
-                      How long have you been in business{' '}
-                    </Text>
-                    <TouchableOpacity
-                      style={[designs.customInput, {padding: 20}]}
-                      onPress={() => {
-                        setShowBusinessAgeModal(!showBusinessAgeModal);
-                        // console.log(selectedMonth);
-                      }}>
-                      {businessRegistrationType != '' ? (
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
-                          }}>
-                          {businessRegistrationType}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            color: '#BABABA',
-                          }}>
-                          Select an option
-                        </Text>
-                      )}
-
-                      <Icon
-                        name="chevron-down-outline"
-                        size={20}
-                        style={{fontWeight: 'bold'}}
-                        color="#BABABA"
-                      />
-                    </TouchableOpacity>
-                  </>
-
-                  <>
-                    <Text style={designs.label}>Company size </Text>
-                    <TouchableOpacity
-                      style={[designs.customInput, {padding: 20}]}
-                      onPress={() => {
-                        setShowCompanySizeModal(!showCompanySizeModal);
-                        // console.log(selectedMonth);
-                      }}>
-                      {businessRegistrationType != '' ? (
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
-                          }}>
-                          {businessRegistrationType}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            color: '#BABABA',
-                          }}>
-                          Select an option
-                        </Text>
-                      )}
-
-                      <Icon
-                        name="chevron-down-outline"
-                        size={20}
-                        style={{fontWeight: 'bold'}}
-                        color="#BABABA"
-                      />
-                    </TouchableOpacity>
-                  </>
+                  <Field
+                    name="company_size"
+                    component={CompanySize}
+                  />
                 </View>
               </View>
             </ScrollView>
             <View style={designs.buttonContainer}>
               <TouchableOpacity
-                // onPress={handleSubmit}
-                onPress={() => navigation.navigate('BusinessForm3')}
+                onPress={handleSubmit}
+                // onPress={()=> console.log(values)}
+                // onPress={() => navigation.navigate('BusinessForm3')}
                 // disabled={isValid ? false : true}
                 style={[
                   designs.button,
-                  {
-                    backgroundColor: isValid ? '#00DC99' : '#00DC9950',
-                  },
+                  // {
+                  //   backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                  // },
                 ]}>
                 <Text
                   style={{
@@ -431,33 +416,29 @@ export default function BusinessForm1({navigation}) {
                 </Text>
               </TouchableOpacity>
             </View>
+
+
+            <SocialMediaModal
+              visible={showSocialMediaModal}
+              onRequestClose={() => setShowSocialMediaModal(!showSocialMediaModal)}
+              onClick={(value) => setValues({...values, 'social_media_platform':value})}
+            />
+
+            <BusinessAgeModal
+              visible={showBusinessAgeModal}
+              onRequestClose={() => setShowBusinessAgeModal(!showBusinessAgeModal)}
+              onClick={(value) => setValues({...values, 'business_age':value})}
+            />
+
+            <CompanySizeModal
+              visible={showCompanySizeModal}
+              onRequestClose={() => setShowCompanySizeModal(!showCompanySizeModal)}
+              onClick={(value) => setValues({...values,'company_size':value})}
+            />
+
           </>
         )}
       </Formik>
-
-      <SocialMediaModal
-        visible={showSocialMediaModal}
-        onRequestClose={() => setShowSocialMediaModal(!showSocialMediaModal)}
-        // onClick={(value) => setSocialMedia(value)}
-        // registration={registration}
-        // setRegistration={setRegistration}
-      />
-
-      <BusinessAgeModal
-        visible={showBusinessAgeModal}
-        onRequestClose={() => setShowBusinessAgeModal(!showBusinessAgeModal)}
-        // onClick={(value) => setRegistration(value)}
-        // registration={registration}
-        // setRegistration={setRegistration}
-      />
-
-      <CompanySizeModal
-        visible={showCompanySizeModal}
-        onRequestClose={() => setShowCompanySizeModal(!showCompanySizeModal)}
-        // onClick={(value) => setRegistration(value)}
-        // registration={registration}
-        // setRegistration={setRegistration}
-      />
     </View>
   );
 }

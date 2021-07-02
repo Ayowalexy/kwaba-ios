@@ -266,6 +266,7 @@ const [numberOfBedroomsOptions, setNumberOfBedroomsOptions] = useState([{label: 
           
           <TouchableOpacity
             onPress={()=>{handleNavigation()}}
+            // onPress={()=> navigation.navigate('SetUpPaymentPlan')}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
           </TouchableOpacity>

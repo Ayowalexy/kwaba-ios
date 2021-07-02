@@ -24,6 +24,7 @@ import axios from 'axios';
 import AddCardModal from '../../components/addCardModal';
 import {fetchBanks} from '../../services/network';
 import AddBankAccountModal from '../../components/addBankAccountModal';
+import SelectBankModal from '../../components/SelectBankModal';
 
 export default function CardAndBankDetails({navigation}) {
   const [modalVisible, setVisible] = useState(false);
@@ -44,7 +45,15 @@ export default function CardAndBankDetails({navigation}) {
   const [bankAccountName, setBankAccountName] = useState('');
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [bankName, setBankName] = useState('');
+  
+  const [selectedBank, setSelectedBank] = useState('');
+  const [bankData, setBankData] = useState('')
+
   const [bankCode, setBankCode] = useState('');
+
+  const [selectedAccountType, setSelectedAccountType] = useState('')
+
+  // const [bankCode, setBankCode] = useState('');
 
   // id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
   const paymentCards = [
@@ -95,6 +104,45 @@ export default function CardAndBankDetails({navigation}) {
     },
   ];
 
+  // useEffect(() => {
+  //   const data = {
+  //     bank_name: '' ,
+  //     bank_account_number: '0094552107',
+  //     bank_short_code: '',
+  //     type: 'savings'
+  //   }
+  //   // async function createUserBankAccount() {
+  //   //   try {
+  //   //     const apiUrl = 'http://67.207.86.39:8000';
+  //   //     const response = await axios.post(apiUrl + '/api/v1/createbankaccount')
+  //   //   } catch (error) {
+        
+  //   //   }
+  //   // }
+  // },[])
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const url = 'http://67.207.86.39:8000/api/v1/bank_email';
+        const response = await axios.get(url, {
+          headers: {'Content-Type': 'application/json'},
+        });
+        const data = response.data;
+
+        const userData = await AsyncStorage.getItem('userData');
+        const parsedUserData = JSON.parse(userData);
+
+        if (response.status == 200) {
+          // console.log(data.banks);
+          setBankData(data.banks);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
+
   useEffect(() => {
     async function fetchBanksForDropdown() {
       const banks = await fetchBanks();
@@ -141,29 +189,144 @@ export default function CardAndBankDetails({navigation}) {
     saveCardsToStorage(cards);
   };
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   const addAccount = async () => {
     console.log('start');
-    // const accountDetails = {accountNumber: accountNumber, bank: bank};
-    // console.log('accountDetails', accountDetails);
-    // setBankDetails([...bankDetails, accountDetails]);
-    // console.log(bankDetails);
-    // saveAccountsToStorage(bankDetails);
-    // setAddCardModal(false);
-
-    console.log(bankCode, bankAccountNumber);
-    const SECRET_KEY = 'sk_test_bc0f8a2e9c28d0291156739430fd631e6a867ba9';
-    try {
-      const response = await axios.get(
-        `api.paystack.co/bank/resolve?account_number=0094551124&bank_code=460`,
-        {
-          headers: {Authorization: `Bearer ${SECRET_KEY}`},
-        },
-      );
-      console.log(response);
-    } catch (error) {
-      console.log(error);
+    const data = {
+      bank_name: selectedBank,
+      bank_account_number: bankAccountNumber,
+      bank_short_code: bankCode.toString().length == 2 ? '0' + bankCode : bankCode,
+      type: selectedAccountType
     }
+
+    // console.log('DATA: ', data);
+
+    verifyBankAccount(data.bank_account_number, data.bank_short_code)
+
+    
   };
+
+  const verifyBankAccount = async (account_number, bank_code) => {
+      const url = 'http://67.207.86.39:8000/api/v1/user/bank_details';
+      try {
+        const token = await getToken();
+        const response = await axios.post(url, JSON.stringify({
+          account_number: account_number,
+          bank_code: bank_code
+        }), {
+          headers: {'Content-Type': 'application/json', Authorization: token}
+        })
+        // console.log('VERIFY CARD FROM BACKEND: ', response.data.data);
+        if(response.data.accountStatus == true) {
+          console.log('Account Verified')
+          console.log('VERIFY CARD FROM BACKEND: ', response.data.data);
+        }else {
+          console.log('Account not verified')
+        }
+      } catch (error) {
+        console.log(error);
+      }
+  }
+
+  const createBankAccount = async () => {
+    // const url = 'http://67.207.86.39:8000/api/v1/createbankaccount';
+    // try {
+    //   const token = await getToken();
+    //   const response = await axios.post(url, data, {
+    //     headers: {'Content-Type': 'application/json', Authorization: token},
+    //   });
+    //   console.log('RESPONSE:', response)
+    // } catch (error) {
+    //   console.log(error)
+    // }
+  }
+
+  const getBankAccounts = async () => {
+    // const url = 'http://67.207.86.39:8000/api/v1/getuserbankaccounts'
+    // try {
+    //   const token = await getToken();
+    //   const response = await axios.get(url, {
+    //     headers: {'Content-Type': 'application/json', Authorization: token}
+    //   })
+    //   console.log('GET USERS CARDS: ', response.data);
+    // } catch (error) {
+    //   console.log(error)
+    // }
+  }
+
+
+  useEffect(()=> {
+    // async function getCards() {
+    //   const url = 'http://67.207.86.39:8000/api/v1/getuserbankaccounts'
+    //   try {
+    //     const token = await getToken();
+    //     const response = await axios.get(url, {
+    //       headers: {'Content-Type': 'application/json', Authorization: token}
+    //     })
+    //     console.log('GET USERS CARDS: ', response);
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+    // getCards()
+
+    // (async()=> {
+    //   const url = 'http://67.207.86.39:8000/api/v1/getuserbankaccounts'
+    //   try {
+    //     const token = await getToken();
+    //     const response = await axios.get(url, {
+    //       headers: {'Content-Type': 'application/json', Authorization: token}
+    //     })
+    //     console.log('GET USERS CARDS: ', response.data);
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // })()
+  },[])
+
+  useEffect(()=> {
+
+    // (async()=> {
+    //   // const account_number = 0094552107;
+    //   // const bank_code = 63;
+    //   const url = "https://api.paystack.co/bank/resolve?account_number=4174714023&bank_code=214"
+    //   // const url = "https://api.paystack.co/bank/resolve?account_number=0001234567&bank_code=058"
+    //   // const url = 'https://api.paystack.co/bank/resolve?account_number=3510013219bank_code=50'
+    //   // const url = 'https://api.paystack.co/bank/resolve?account_number=0094552107bank_code=063'
+    //   try {
+    //     const SECRET_KEY = 'sk_test_bc0f8a2e9c28d0291156739430fd631e6a867ba9';
+    //     const response = await axios.get(url,{
+    //       headers: {'Content-Type': 'application/json', Authorization: `Bearer ${SECRET_KEY}`},
+    //     });
+    //     console.log('Pay Stack:',response.data);
+    //   } catch (error) {
+    //     console.log('Pay Stack Error:', error.message);
+    //   }
+    // })()
+
+
+    // (async()=> {
+    //   const url = 'http://67.207.86.39:8000/api/v1/user/bank_details';
+    //   try {
+    //     const token = await getToken();
+    //     const response = await axios.post(url, JSON.stringify({
+    //       account_number: '0094552107',
+    //       bank_code: '063'
+    //     }), {
+    //       headers: {'Content-Type': 'application/json', Authorization: token}
+    //     })
+    //     console.log('VERIFY CARD FROM BACKEND: ', response.data);
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    // })()
+
+  },[])
 
   const saveCardsToStorage = async (data) => {
     try {
@@ -324,26 +487,29 @@ export default function CardAndBankDetails({navigation}) {
         </View>
       </ScrollView>
 
-      {/* <AddCardModal
-        onConfirm={addCard}
-        onRequestClose={() => setAddCardModal(!addCardModal)}
-        visible={addCardModal}
-        cardNumber={cardNumber}
-        setCardNumber={setCardNumber}
-        expiryDate={expiryDate}
-        setExpiryDate={setExpiryDate}
-        cvv={cvv}
-        setCVV={setCvv}
-      /> */}
-
       <AddBankAccountModal
         onConfirm={addAccount}
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
-        accountNumber={bankAccountNumber}
-        setAccountNumber={(text) => setBankAccountNumber(text)}
-        bankCode={bankCode}
-        setBankCode={(text) => setBankCode(text)}
+
+        // bankAccountName={bankAccountName}
+        // setBankAccountName={(text) => setBankAccountName(text)}
+
+        bankAccountNumber={bankAccountNumber}
+        setBankAccountNumber={(text) => setBankAccountNumber(text)}
+
+        // bankName={bankName}
+        // setBankName={(text) => setBankName(text)}
+
+        selectedBank={selectedBank}
+        setSelectedBank={(text) => setSelectedBank(text)}
+
+        selectedAccountType={selectedAccountType}
+        setSelectedAccountType={setSelectedAccountType}
+
+        setBankCode={setBankCode}
+
+        bankData={bankData}
       />
     </View>
   );

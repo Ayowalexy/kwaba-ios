@@ -64,7 +64,7 @@ export default function RegistrationModal(props) {
               {lists.map((list, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    onClick(index + 1);
+                    onClick(list);
                     onRequestClose();
                   }}
                   key={index}

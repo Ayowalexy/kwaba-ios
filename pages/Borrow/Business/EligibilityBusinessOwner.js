@@ -83,12 +83,13 @@ export default function EligibilitySalaryEarner({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
-            navigation.navigate('BusinessForm1');
+            // navigation.navigate('BusinessForm1');
             // navigation.navigate('UploadBankStatement');
             // navigation.navigate('RentalLoanFormBankStatementUploadMono');
             // navigation.navigate('RentalLoanFormBankStatementUpload');
             // navigation.navigate('RentalLoanFormCongratulation');
             // navigation.navigate('RentalLoanRequestDashBoard');
+            navigation.navigate('BusinessForm5');
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

@@ -112,6 +112,8 @@ import EligibilityBusinessOwner from './pages/Borrow/Business/EligibilityBusines
 import BusinessForm1 from './pages/Borrow/Business/BusinessForm1';
 import BusinessForm2 from './pages/Borrow/Business/BusinessForm2';
 import BusinessForm3 from './pages/Borrow/Business/BusinessForm3';
+import BusinessForm4 from './pages/Borrow/Business/BusinessForm4';
+import BusinessForm5 from './pages/Borrow/Business/BusinessForm5';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -439,6 +441,12 @@ const App = () => {
               <Stack.Screen
                 name="BusinessForm3"
                 component={BusinessForm3}></Stack.Screen>
+              <Stack.Screen
+                name="BusinessForm4"
+                component={BusinessForm4}></Stack.Screen>
+              <Stack.Screen
+                name="BusinessForm5"
+                component={BusinessForm5}></Stack.Screen>
               <Stack.Screen
                 name="EmergencyLoanHome"
                 component={EmergencyLoanHome}></Stack.Screen>

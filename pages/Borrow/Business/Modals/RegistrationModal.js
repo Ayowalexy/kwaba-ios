@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../../../util';
 
 export default function RegistrationModal(props) {
-  const {onRequestClose, visible, onClick} = props;
+  const {onRequestClose, visible, onClick, registration, setRegistration} = props;
   const registration_list = [
     'Limited liability',
     'Partnership',
@@ -62,7 +62,7 @@ export default function RegistrationModal(props) {
               {registration_list.map((list, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    onClick(index + 1);
+                    onClick(list);
                     onRequestClose();
                   }}
                   key={index}
@@ -72,7 +72,7 @@ export default function RegistrationModal(props) {
                     color: COLORS.dark,
 
                     backgroundColor:
-                      list.toLowerCase() == 'partnership'
+                      list.toLowerCase() == registration.toLowerCase()
                         ? COLORS.secondary
                         : 'transparent',
                   }}>
@@ -81,7 +81,7 @@ export default function RegistrationModal(props) {
                       fontSize: 14,
                       color: COLORS.dark,
                       color:
-                        list.toLowerCase() == 'partnership'
+                        list.toLowerCase() == registration.toLowerCase()
                           ? COLORS.white
                           : COLORS.dark,
                     }}>

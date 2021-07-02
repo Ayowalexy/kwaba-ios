@@ -160,12 +160,12 @@ const PostPaymentForm2 = ({navigation}) => {
             rotation={0}
             tintColor= {COLORS.secondary}
             backgroundColor="#D6D6D6" />
-  </View>
+        </View>
           
           </View>
           <TextInput
             style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Full Name"
+            placeholder="First Name"
             placeholderTextColor= {COLORS.grey}
             value={landLordFirstName}
           onChangeText={(text) => setLandLordFirstName(text)}

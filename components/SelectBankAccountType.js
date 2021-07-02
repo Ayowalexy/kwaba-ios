@@ -7,16 +7,13 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ScrollView,
 } from 'react-native';
-import {color} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS} from '../../../../util';
+import {COLORS} from '../util';
 
-export default function SocialMediaModal(props) {
-  const {onRequestClose, visible, onClick} = props;
-  const lists = ['Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'WhatsApp'];
-
+export default function SelectBankAccountType(props) {
+  const {onRequestClose, visible, onClick, selectedAccountType} = props;
+  const account_type = ['Savings', 'Current'];
   return (
     // <View>
     <Modal
@@ -27,16 +24,7 @@ export default function SocialMediaModal(props) {
       style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 14,
-              color: COLORS.primary,
-              paddingLeft: 20,
-              marginTop: 20,
-            }}>
-            Select a social media platform
-          </Text>
+          {/* <Text style={{fontWeight: 'bold', fontSize: 16}}>Select Month</Text> */}
           <Icon
             onPress={onRequestClose}
             name="close-outline"
@@ -47,47 +35,34 @@ export default function SocialMediaModal(props) {
               position: 'absolute',
               top: 0,
               right: 0,
-              zIndex: 2,
             }}
           />
-          <ScrollView
-            style={{marginTop: 40}}
-            scrollEnabled
-            showsVerticalScrollIndicator={false}>
-            <View>
-              {lists.map((list, index) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    onClick(list);
-                    onRequestClose();
-                    // console.log(list)
-                  }}
-                  key={index}
+          <View style={{marginTop: 20}}>
+            {account_type.map((type, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  onClick(type);
+                  onRequestClose();
+                }}
+                key={index}
+                style={{
+                  paddingVertical: 15,
+                  alignItems: 'center',
+                  backgroundColor:
+                      type == selectedAccountType ? COLORS.secondary : 'transparent',
+                }}>
+                <Text
                   style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 25,
-                    color: COLORS.dark,
-
-                    backgroundColor:
-                      list.toLowerCase() == 'partnership'
-                        ? COLORS.secondary
-                        : 'transparent',
+                    fontSize: 14 + index,
+                    fontWeight: 'bold',
+                    color:
+                          type == selectedAccountType ? COLORS.white : COLORS.primary,
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      color: COLORS.dark,
-                      color:
-                        list.toLowerCase() == 'partnership'
-                          ? COLORS.white
-                          : COLORS.dark,
-                    }}>
-                    {list}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
     </Modal>
@@ -107,13 +82,11 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '100%',
-    maxHeight: '60%',
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
-    // padding: 25,
-    paddingVertical: 25,
+    padding: 25,
   },
   btn: {
     width: '100%',

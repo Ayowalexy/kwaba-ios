@@ -17,30 +17,26 @@ import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
-import RegistrationModal from './Modals/RegistrationModal';
+import BusinessSectorModal from './Modals/BusinessSectorModal';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
-// rent_purpose: '',
-// business_name: '',
-// is_business_registered: '',
-// business_registration_type: '',
+
 const businessFormSchema = yup.object().shape({
-  rent_purpose: yup.string().required('Please select rent purpose'),
-  business_name: yup.string().required('Please provide business name'),
-  is_business_registered: yup.string().required('Please select an option'),
-  business_registration_type: yup.string().required('Please select an option'),
+  pay_in_bank: yup.string().required('Please select an option'),
+  // monthly_business_expenditure: yup.string().required('Please enter amount'),
+  monthly_business_revenue: yup.string().required('Please enter amount'),
 });
 
 export default function BusinessForm1({navigation}) {
-  const [progress, setProgress] = useState(20);
+  const [progress, setProgress] = useState(60);
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
-  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
+  const [showBusinessSectorModal, setShowBusinessSectorModal] = useState(false);
   const [registration, setRegistration] = useState('');
 
-  const RentPurpose = (props) => {
-    const rent_purpose_list = ['Business space', 'Personal accommodation'];
+  const PayInBank = (props) => {
+    const option_list = ['Yes', 'No'];
     const {
       field: {name, value},
       form: {errors, touched, setFieldValue},
@@ -51,28 +47,28 @@ export default function BusinessForm1({navigation}) {
     return (
       <>
         <Text style={designs.label}>
-          What’s the purpose of the rent payment?{' '}
+          Do you pay your business revenue into a bank account?{' '}
         </Text>
-        {rent_purpose_list.map((purpose, index) => (
+        {option_list.map((option, index) => (
           <TouchableOpacity
             key={index}
             style={[
               designs.buttonStyleA,
               {
-                borderColor: value == purpose ? COLORS.light : '#ADADAD50',
+                borderColor: value == option ? COLORS.light : '#ADADAD50',
               },
             ]}
-            onPress={() => setFieldValue('rent_purpose', purpose)}>
+            onPress={() => setFieldValue('pay_in_bank', option)}>
             <View>
               <Text
                 style={[
                   designs.btnText,
                   {
-                    color: value == purpose ? COLORS.light : COLORS.grey,
-                    fontWeight: value == purpose ? 'bold' : 'normal',
+                    color: value == option ? COLORS.light : COLORS.grey,
+                    fontWeight: value == option ? 'bold' : 'normal',
                   },
                 ]}>
-                {purpose}
+                {option}
               </Text>
             </View>
           </TouchableOpacity>
@@ -81,9 +77,9 @@ export default function BusinessForm1({navigation}) {
         {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
       </>
     );
-  };
+  }
 
-  const CustomInput = (props) => {
+  const NumberInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
       form: {errors, touched, setFieldTouched},
@@ -100,14 +96,24 @@ export default function BusinessForm1({navigation}) {
             props.multiline && {height: props.numberOfLines * 40},
             hasError && designs.errorInput,
           ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
           <TextInput
             style={{
               width: '100%',
-              paddingHorizontal: 16,
+              paddingLeft: 50,
               paddingVertical: 16,
             }}
-            keyboardType="default"
-            value={value}
+            keyboardType="number-pad"
+            value={formatNumber(value)}
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
@@ -122,62 +128,33 @@ export default function BusinessForm1({navigation}) {
     );
   };
 
-  const IsBusinessRegistered = (props) => {
-    const is_business_registered_list = ['Yes', 'No'];
-    const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-    return (
-      <>
-        <Text style={designs.label}>Is your business registered? </Text>
-        {is_business_registered_list.map((isRegistered, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[
-              designs.buttonStyleA,
-              {
-                borderColor: value == isRegistered ? COLORS.light : '#ADADAD50',
-              },
-            ]}
-            onPress={() =>
-              setFieldValue('is_business_registered', isRegistered)
-            }>
-            <View>
-              <Text
-                style={[
-                  designs.btnText,
-                  {
-                    color: value == isRegistered ? COLORS.light : COLORS.grey,
-                    fontWeight: value == isRegistered ? 'bold' : 'normal',
-                  },
-                ]}>
-                {isRegistered}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
-
   const handleSubmit = async (values) => {
-    // console.log('VALUES: ', values);
+    // const dummyData = {
+    //   rent_purpose: '',
+    //   business_name: '',
+    //   is_business_registered: '',
+    //   business_registration_type: '',
+    //   business_website: '',
+    //   social_media_platform: '',
+    //   social_media_handle: '',
+    //   business_address: '',
+    //   business_age: '',
+    //   company_size: '',
+    //   business_sector: '',
+    //   more_info: '',
+    //   how_many_is_collected: '',
+    //   is_payment_made_to_bank_account: '',
+    //   monthly_business_expenditure: '',
+    //   monthly_business_revenue: '',
+    // };
+
     const {
-      rent_purpose,
-      business_name,
-      is_business_registered,
-      business_registration_type,
+      monthly_business_expenditure,
+      monthly_business_revenue,
     } = values;
     const data = {
-      rent_purpose,
-      business_name,
-      is_business_registered,
-      business_registration_type,
+      monthly_business_expenditure,
+      monthly_business_revenue,
     };
 
     const businessFormData = await AsyncStorage.getItem(
@@ -186,14 +163,13 @@ export default function BusinessForm1({navigation}) {
 
     await AsyncStorage.setItem(
       'businessFormDataStore',
-      JSON.stringify({...JSON.parse(businessFormData), ...data}),
+      JSON.stringify({ ...JSON.parse(businessFormData), ...data }),
     );
 
-    navigation.navigate('BusinessForm2');
+    console.log(data);
+    console.log(businessFormData);
 
-    // setTimeout(() => {
-    //   console.log('Business Form Data:', businessFormData);
-    // }, 2000);
+    // navigation.navigate('BusinessForm5')
   };
 
   return (
@@ -209,10 +185,9 @@ export default function BusinessForm1({navigation}) {
       <Formik
         validationSchema={businessFormSchema}
         initialValues={{
-          rent_purpose: '',
-          business_name: '',
-          is_business_registered: '',
-          business_registration_type: 'partnership',
+          pay_in_bank: '',
+          monthly_business_expenditure: '',
+          monthly_business_revenue: '',
         }}
         onSubmit={handleSubmit}>
         {({handleSubmit, isValid, values}) => (
@@ -247,7 +222,7 @@ export default function BusinessForm1({navigation}) {
                           fontSize: 16,
                         },
                       ]}>
-                      Business Information
+                      Financial details
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
@@ -257,7 +232,7 @@ export default function BusinessForm1({navigation}) {
                           color: '#ADADAD',
                           marginRight: 15,
                         }}>
-                        1 of 5
+                        4 of 5
                       </Text>
                       <AnimatedCircularProgress
                         size={25}
@@ -270,74 +245,40 @@ export default function BusinessForm1({navigation}) {
                     </View>
                   </View>
 
-                  <Field name="rent_purpose" component={RentPurpose} />
+                  {/*  */}
+
+                  <Field name="pay_in_bank" component={PayInBank} />
+
+                  {values.pay_in_bank.toLowerCase() == 'yes' && 
+                    <>
+                      <Text style={[designs.boldText, {marginTop: 18}]}>
+                        How much is the business monthly revenue?
+                      </Text>
+                      <Field name="monthly_business_expenditure" component={NumberInput} />
+                    </>
+                  }
 
                   <>
-                    <Text style={designs.label}>
-                      What's your business name?{' '}
+                    <Text style={[designs.boldText, {marginTop: 18}]}>
+                      How much is spent monthly on the business?
                     </Text>
-                    <Field
-                      name="business_name"
-                      component={CustomInput}
-                      placeholder="Business name"
-                    />
+                    <Field name="monthly_business_revenue" component={NumberInput} />
                   </>
 
-                  <Field
-                    name="is_business_registered"
-                    component={IsBusinessRegistered}
-                  />
-
-                  {values.is_business_registered.toLowerCase() == 'yes' && (
-                    <>
-                      <Text style={designs.label}>
-                        What type of company registration?{' '}
-                      </Text>
-                      <TouchableOpacity
-                        style={[designs.customInput, {padding: 20}]}
-                        onPress={() => {
-                          setShowRegistrationModal(!showRegistrationModal);
-                          // console.log(selectedMonth);
-                        }}>
-                        {registration != '' ? (
-                          <Text
-                            style={{
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                            }}>
-                            {registration}
-                          </Text>
-                        ) : (
-                          <Text
-                            style={{
-                              color: '#BABABA',
-                            }}>
-                            Select type
-                          </Text>
-                        )}
-
-                        <Icon
-                          name="chevron-down-outline"
-                          size={20}
-                          style={{fontWeight: 'bold'}}
-                          color="#BABABA"
-                        />
-                      </TouchableOpacity>
-                    </>
-                  )}
+                  
                 </View>
               </View>
             </ScrollView>
             <View style={designs.buttonContainer}>
               <TouchableOpacity
                 onPress={handleSubmit}
-                // onPress={() => navigation.navigate('BusinessForm2')}
+                // onPress={()=> navigation.navigate('BusinessForm5')}
                 // disabled={isValid ? false : true}
                 style={[
                   designs.button,
-                  //   {
-                  //     backgroundColor: isValid ? '#00DC99' : '#00DC9950',
-                  //   },
+                  {
+                    backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                  },
                 ]}>
                 <Text
                   style={{
@@ -354,15 +295,6 @@ export default function BusinessForm1({navigation}) {
           </>
         )}
       </Formik>
-
-      <RegistrationModal
-        visible={showRegistrationModal}
-        onRequestClose={() => setShowRegistrationModal(!showRegistrationModal)}
-        onClick={(value) => setRegistration(value)}
-        // onClick={(value) => console.log(value)}
-        registration={registration}
-        setRegistration={setRegistration}
-      />
     </View>
   );
 }

@@ -21,6 +21,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
 
+// import PushNotification from "react-native-push-notification";
+
 // const width = Dimensions.get('window').get;
 
 export default function Home({navigation}) {
@@ -35,6 +37,30 @@ export default function Home({navigation}) {
   const [instantLoan, setInstantLoan] = useState(0);
 
   const [showModal, setShowModal] = useState(false);
+
+  // Must be outside of any component LifeCycle (such as `componentDidMount`).
+  // PushNotification.configure({
+  //   onRegister: function (token) {
+  //     console.log("TOKEN:", token);
+  //   },
+  //   onNotification: function (notification) {
+  //     console.log("NOTIFICATION:", notification);
+  //   },
+  //   permissions: {
+  //     alert: true,
+  //     badge: true,
+  //     sound: true,
+  //   },
+  //   popInitialNotification: true,
+  //   requestPermissions: true,
+  // });
+
+  // const testPush = () => {
+  //   PushNotification.localNotification({
+  //     title: "My Notification Title", // (optional)
+  //     message: "My Notification Message", // (required)
+  //   });
+  // }
 
   useEffect(() => {
     const getUserData = async () => {
@@ -159,7 +185,8 @@ export default function Home({navigation}) {
         </View>
         <TouchableOpacity
           // onPress={() => setShowModal(!showModal)}
-          onPress={() => navigation.navigate('Notifications')}>
+          onPress={() => navigation.navigate('Notifications')}
+          >
           <Icon
             name="notifications"
             color="#8B8AAE"

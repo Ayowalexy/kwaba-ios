@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -9,31 +9,27 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
-import {icons} from '../../../util/index';
+import { icons } from '../../../util/index';
 import designs from './style';
-import {COLORS, FONTS, images} from '../../../util/index';
+import { COLORS, FONTS, images } from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
+import { formatNumber, unFormatNumber } from '../../../util/numberFormatter';
 import BusinessSectorModal from './Modals/BusinessSectorModal';
 
-import {Formik, Field} from 'formik';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 
-// rent_purpose: '',
-// business_name: '',
-// is_business_registered: '',
-// business_registration_type: '',
+// business_sector: '',
+// more_info: '',
 const businessFormSchema = yup.object().shape({
-  rent_purpose: yup.string().required('Please select rent purpose'),
-  business_name: yup.string().required('Please provide business name'),
-  is_business_registered: yup.string().required('Please select an option'),
-  business_registration_type: yup.string().required('Please select an option'),
+  business_sector: yup.string().required('Please select an option'),
+  more_info: yup.string().required('This field is required'),
 });
 
-export default function BusinessForm1({navigation}) {
+export default function BusinessForm1({ navigation }) {
   const [progress, setProgress] = useState(60);
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
   const [showBusinessSectorModal, setShowBusinessSectorModal] = useState(false);
@@ -41,8 +37,8 @@ export default function BusinessForm1({navigation}) {
 
   const CustomInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -50,10 +46,14 @@ export default function BusinessForm1({navigation}) {
 
     return (
       <>
+        <Text style={designs.label}>
+          Tell us more about your business to support{'\n'}your
+          applictaion{' '}
+        </Text>
         <View
           style={[
             designs.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && designs.errorInput,
           ]}>
           <TextInput
@@ -82,48 +82,103 @@ export default function BusinessForm1({navigation}) {
     );
   };
 
+  const BusinessSector = (props) => {
+    const {
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <Text style={designs.label}>
+          What Industry does you business belong?
+        </Text>
+        <TouchableOpacity
+          style={[designs.customInput, { padding: 20 }]}
+          onPress={() => {
+            setShowBusinessSectorModal(!showBusinessSectorModal);
+            // console.log(selectedMonth);
+          }}>
+          {value != '' ? (
+            <Text
+              style={{
+                fontWeight: 'bold',
+                color: COLORS.dark,
+              }}>
+              {value}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                color: '#BABABA',
+              }}>
+              Select an option
+            </Text>
+          )}
+
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{ fontWeight: 'bold' }}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
+
+
+        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+      </>
+    )
+  }
+
   const handleSubmit = async (values) => {
-    // console.log('VALUES: ', values);
-    const dummyData = {
-      rent_purpose: '',
-      business_name: '',
-      is_business_registered: '',
-      business_registration_type: '',
-      business_website: '',
-      social_media_plaform: '',
-      social_media_handle: '',
-      business_address: '',
-      business_age: '',
-      company_size: '',
-      business_sector: '',
-      more_info: '',
-      how_many_is_collected: '',
-      is_payment_made_to_bank_account: '',
-      monthly_business_expenditure: '',
-      monthly_business_revenue: '',
+    const {
+      business_sector,
+      more_info,
+    } = values;
+    const data = {
+      business_sector,
+      more_info,
     };
+
+    const businessFormData = await AsyncStorage.getItem(
+      'businessFormDataStore',
+    );
+
+    await AsyncStorage.setItem(
+      'businessFormDataStore',
+      JSON.stringify({ ...JSON.parse(businessFormData), ...data }),
+    );
+
+    console.log(data);
+    console.log(businessFormData);
+
+    navigation.navigate('BusinessForm4')
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
+        style={{ fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10 }}
         color={COLORS.primary}
       />
 
       <Formik
         validationSchema={businessFormSchema}
         initialValues={{
-          rent_purpose: '',
-          business_name: '',
-          is_business_registered: '',
-          business_registration_type: 'partnership',
+          // business_sector: 'Banking',
+          // more_info: 'A medium sized fintech company',
+
+          business_sector: '',
+          more_info: '',
         }}
         onSubmit={handleSubmit}>
-        {({handleSubmit, isValid, values}) => (
+        {({ handleSubmit, isValid, values, setValues }) => (
           <>
             <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
               <View
@@ -157,7 +212,7 @@ export default function BusinessForm1({navigation}) {
                       ]}>
                       Business Information
                     </Text>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Text
                         style={{
                           fontSize: 12,
@@ -178,65 +233,32 @@ export default function BusinessForm1({navigation}) {
                     </View>
                   </View>
 
-                  <>
-                    <Text style={designs.label}>
-                      What Industry does you business belong?
-                    </Text>
-                    <TouchableOpacity
-                      style={[designs.customInput, {padding: 20}]}
-                      onPress={() => {
-                        setShowBusinessSectorModal(!showBusinessSectorModal);
-                        // console.log(selectedMonth);
-                      }}>
-                      {businessRegistrationType != '' ? (
-                        <Text
-                          style={{
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
-                          }}>
-                          {businessRegistrationType}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            color: '#BABABA',
-                          }}>
-                          Select an option
-                        </Text>
-                      )}
+                  <Field
+                    name="business_sector"
+                    component={BusinessSector}
+                  />
 
-                      <Icon
-                        name="chevron-down-outline"
-                        size={20}
-                        style={{fontWeight: 'bold'}}
-                        color="#BABABA"
-                      />
-                    </TouchableOpacity>
-                  </>
 
-                  <>
-                    <Text style={designs.label}>
-                      Tell us more about your business to support{'\n'}your
-                      applictaion{' '}
-                    </Text>
                     <Field
-                      name="social_media_handle"
+                      name="more_info"
                       component={CustomInput}
                       placeholder="Tell us more"
                     />
-                  </>
+                  
                 </View>
               </View>
             </ScrollView>
             <View style={designs.buttonContainer}>
               <TouchableOpacity
                 onPress={handleSubmit}
+                // onPress={()=> console.log('Helow')}
+                // onPress={()=> navigation.navigate('BusinessForm4')}
                 // disabled={isValid ? false : true}
                 style={[
                   designs.button,
-                  {
-                    backgroundColor: isValid ? '#00DC99' : '#00DC9950',
-                  },
+                  // {
+                  //   backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                  // },
                 ]}>
                 <Text
                   style={{
@@ -250,11 +272,22 @@ export default function BusinessForm1({navigation}) {
                 </Text>
               </TouchableOpacity>
             </View>
+
+            <BusinessSectorModal
+              visible={showBusinessSectorModal}
+              onRequestClose={() =>
+                setShowBusinessSectorModal(!showBusinessSectorModal)
+              }
+              onClick={(value) => setValues({ ...values, 'business_sector': value })}
+            // registration={registration}
+            // setRegistration={setRegistration}
+            />
+
           </>
         )}
       </Formik>
 
-      <BusinessSectorModal
+      {/* <BusinessSectorModal
         visible={showBusinessSectorModal}
         onRequestClose={() =>
           setShowBusinessSectorModal(!showBusinessSectorModal)
@@ -262,7 +295,7 @@ export default function BusinessForm1({navigation}) {
         // onClick={(value) => setRegistration(value)}
         // registration={registration}
         // setRegistration={setRegistration}
-      />
+      /> */}
     </View>
   );
 }

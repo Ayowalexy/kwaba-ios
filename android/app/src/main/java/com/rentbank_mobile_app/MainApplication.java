@@ -23,6 +23,7 @@ import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import com.rnfs.RNFSPackage;
 import com.instabug.reactlibrary.RNInstabugReactnativePackage;
+// import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
 

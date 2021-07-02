@@ -16,8 +16,6 @@ import {COLORS, images, icons} from '../util';
 export default function SelectBankModal(props) {
   const {onRequestClose, visible, onClick, banks, selectedBank} = props;
 
-  // console.log('Banks:', banks);
-
   return (
     // <View>
     <Modal
@@ -48,10 +46,10 @@ export default function SelectBankModal(props) {
             // showsVerticalScrollIndicator={false}
           >
             <View>
-              {banks.map(({name}, index) => (
+              {banks && banks.length && banks.map(({name, code}, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    onClick(name);
+                    onClick(name, code);
                     onRequestClose();
                   }}
                   key={index}
