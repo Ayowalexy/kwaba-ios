@@ -14,72 +14,47 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 export default function EligibilitySalaryEarner({navigation}) {
-
   const handleProceedClick = async () => {
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
-  //   let stepsdata={
-  //   documentdone:'',
-  //   propertydetail:'',
-  //   landlorddetail:'',
-  //   refree:'',
-  //   offeraccepted:'',
-  //   addressverification:'',
-  //   debitmandate:'',
-  //   awaitingdisbursment:'',
-  // };
+    //   let stepsdata={
+    //   documentdone:'',
+    //   propertydetail:'',
+    //   landlorddetail:'',
+    //   refree:'',
+    //   offeraccepted:'',
+    //   addressverification:'',
+    //   debitmandate:'',
+    //   awaitingdisbursment:'',
+    // };
 
-  // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
     if (steps == null) {
-
       navigation.navigate('RentalLoanForm1');
-
     } else if (steps.documentdone == '') {
-
       navigation.navigate('RentalLoanFormCongratulation');
-
     } else if (steps.propertydetail == '') {
-
       navigation.navigate('PostPaymentForm1');
-
     } else if (steps.landlorddetail == '') {
-
       navigation.navigate('PostPaymentForm2');
-
     } else if (steps.refree == '') {
-
       navigation.navigate('PostPaymentForm3');
-
     } else if (steps.offeraccepted == '') {
-
-      navigation.navigate('RentalLoanOfferTest'); 
-
+      navigation.navigate('RentalLoanOfferTest');
     } else if (steps.addressverification == '') {
-
       navigation.navigate('AddressVerificationPayment');
-
     } else if (steps.debitmandate == '') {
-
       navigation.navigate('OkraDebitMandate');
-
     } else if (steps.awaitingdisbursment == '') {
-
       navigation.navigate('AwaitingDisbursement');
-
-    }else {
-
-    navigation.navigate('RentalLoanForm1');
-    //navigation.navigate('EmergencyLoanRequestDashBoard');
-  }
-
-};
-
-
-
+    } else {
+      navigation.navigate('RentalLoanForm1');
+      //navigation.navigate('EmergencyLoanRequestDashBoard');
+    }
+  };
 
   return (
     <View style={[styles.container]}>
@@ -150,13 +125,15 @@ export default function EligibilitySalaryEarner({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
-            //navigation.navigate('RentalLoanForm1');
+            navigation.navigate('AddressVerificationPayment');
+            // navigation.navigate('PostPaymentForm3');
+            // navigation.navigate('RentalLoanForm3');
             // navigation.navigate('UploadBankStatement');
             // navigation.navigate('RentalLoanFormBankStatementUploadMono');
             // navigation.navigate('RentalLoanFormBankStatementUpload');
             // navigation.navigate('RentalLoanFormCongratulation');
             // navigation.navigate('RentalLoanRequestDashBoard');
-             handleProceedClick();
+            //  handleProceedClick();
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

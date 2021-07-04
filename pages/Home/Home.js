@@ -38,30 +38,6 @@ export default function Home({navigation}) {
 
   const [showModal, setShowModal] = useState(false);
 
-  // Must be outside of any component LifeCycle (such as `componentDidMount`).
-  // PushNotification.configure({
-  //   onRegister: function (token) {
-  //     console.log("TOKEN:", token);
-  //   },
-  //   onNotification: function (notification) {
-  //     console.log("NOTIFICATION:", notification);
-  //   },
-  //   permissions: {
-  //     alert: true,
-  //     badge: true,
-  //     sound: true,
-  //   },
-  //   popInitialNotification: true,
-  //   requestPermissions: true,
-  // });
-
-  // const testPush = () => {
-  //   PushNotification.localNotification({
-  //     title: "My Notification Title", // (optional)
-  //     message: "My Notification Message", // (required)
-  //   });
-  // }
-
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
@@ -79,12 +55,16 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
+    // const totalSoloSavings = store.data?.reduce(
+    //   (saving, acc) => Number(saving.amount) + Number(acc.amount),
+    //   0,
+    // );
     const totalSoloSavings = store.data?.reduce(
-      (saving, acc) => Number(saving.amount) + Number(acc.amount),
+      (acc, saving) => acc + Number(saving.amount),
       0,
     );
     setSavings(totalSoloSavings || 0);
-  }, []);
+  }, [store]);
 
   const topCards = [
     {
@@ -185,8 +165,7 @@ export default function Home({navigation}) {
         </View>
         <TouchableOpacity
           // onPress={() => setShowModal(!showModal)}
-          onPress={() => navigation.navigate('Notifications')}
-          >
+          onPress={() => navigation.navigate('Notifications')}>
           <Icon
             name="notifications"
             color="#8B8AAE"

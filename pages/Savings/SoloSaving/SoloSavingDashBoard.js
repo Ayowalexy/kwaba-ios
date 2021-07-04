@@ -43,6 +43,12 @@ export default function SoloSavingDashBoard({navigation}) {
   const [transactions, setTransactions] = useState([]);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   useEffect(() => {
     dispatch(getCurrentUser());
     dispatch(getTotalSoloSavings());
@@ -91,12 +97,6 @@ export default function SoloSavingDashBoard({navigation}) {
   // fetchSavingsPlan
 
   const fetchSavingsPlan = async () => {
-    const getToken = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const token = JSON.parse(userData).token;
-      return token;
-    };
-
     const apiUrl = 'http://67.207.86.39:8000';
     const token = await getToken();
     const url = apiUrl + '/api/v1/savings_plan';
@@ -113,6 +113,21 @@ export default function SoloSavingDashBoard({navigation}) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    (async () => {
+      const token = await getToken();
+      const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+      try {
+        const response = await axios.get(url, {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        });
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  });
 
   return (
     <View style={styles.container}>

@@ -52,9 +52,12 @@ const RentalLoanFormDoc = ({navigation}) => {
 
   const handleAccpet = async () => {
     const data = {
-      request_amount: requestAmount,
+      pre_approved_amount: preApproveAmount,
+      monthly_payment: monthlyPayment,
+      request_amount: Number(unFormatNumber(requestAmount)),
       selected_month: selectedMonth,
     };
+
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
@@ -62,6 +65,10 @@ const RentalLoanFormDoc = ({navigation}) => {
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
+
+    // console.log('loanFormData:', loanFormData)
+
+    // console.log('data:', data);
 
     navigation.navigate('RentalLoanForm2');
   };

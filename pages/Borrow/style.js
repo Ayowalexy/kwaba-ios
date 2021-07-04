@@ -190,19 +190,31 @@ const designs = StyleSheet.create({
 
   //   thirdpartylink
   customInput: {
-    borderRadius: 10,
+    // borderRadius: 10,
+    // backgroundColor: '#FFFFFF',
+    // borderColor: '#EFEFEF',
+    // borderWidth: 1,
+    // marginBottom: 12,
+    // paddingLeft: 18,
+    // paddingRight: 19,
+    // display: 'flex',
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    // justifyContent: 'space-between',
+    // marginRight: 'auto',
+    // marginLeft: 'auto',
+
+    borderRadius: 5,
     backgroundColor: '#FFFFFF',
-    borderColor: '#EFEFEF',
+    borderColor: '#ADADAD50',
     borderWidth: 1,
-    marginBottom: 12,
-    paddingLeft: 18,
-    paddingRight: 19,
-    display: 'flex',
+    marginTop: 5,
+    width: '100%',
+    position: 'relative',
+
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginRight: 'auto',
-    marginLeft: 'auto',
   },
   // rentalLoanDashboard
   rlDisplay: {
@@ -380,6 +392,15 @@ const designs = StyleSheet.create({
     // borderTopEndRadius: 10,
     borderColor: '#EFEFEF',
     // borderColor: '#f00',
+  },
+
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
   },
 });
 

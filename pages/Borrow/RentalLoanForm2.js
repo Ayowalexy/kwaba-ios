@@ -17,6 +17,17 @@ import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+
+const rentalLoanFormSchema = yup.object().shape({
+  employer_name: yup.string().required('Field required'),
+  company_street_name: yup.string().required('Field required'),
+  company_city_name: yup.string().required('Field required'),
+  company_state_name: yup.string().required('Field required'),
+  company_country_name: yup.string().required('Field required')
+});
+
 const RentalLoanForm2 = ({navigation}) => {
   const [employersName, setEmployersName] = useState('');
   const [
@@ -42,21 +53,27 @@ const RentalLoanForm2 = ({navigation}) => {
     }
   };
 
-  const handleNavigation = async () => {
+  const handleSubmit = async (values) => {
     const data = {
-      employer_name: employersName,
-      employer_address: `${companyAddressNumberAndStreet} ${companyAddressCity} ${companyAddressState} ${companyAddressCountry} `,
+      employer_name: values.employer_name,
+      // employer_address: `${companyAddressNumberAndStreet} ${companyAddressCity} ${companyAddressState} ${companyAddressCountry} `,
+      employer_address: `${values.company_street_name} ${values.company_city_name} ${values.company_state_name} ${values.company_country_name}`
     };
-    if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+
     await AsyncStorage.setItem(
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
+
+    // console.log(loanFormData)
+
+    // console.log(data)
 
     navigation.navigate('RentalLoanForm3');
     // try {
@@ -64,6 +81,45 @@ const RentalLoanForm2 = ({navigation}) => {
 
     //   return navigation.navigate('SoloSaving2');
     // } catch (error) {}
+  };
+
+  const CustomInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <View
+          style={[
+            designs.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && designs.errorInput,
+          ]}>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingHorizontal: 16,
+              paddingVertical: 16,
+            }}
+            keyboardType="default"
+            value={value}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
   return (
@@ -82,6 +138,20 @@ const RentalLoanForm2 = ({navigation}) => {
             // marginHorizontal: 16,
             paddingHorizontal: 10,
           }}>
+            <Formik 
+            validationSchema={rentalLoanFormSchema}
+            initialValues={{
+              employer_name: '',
+              company_street_name: '',
+              company_city_name: '',
+              company_state_name: '',
+              company_country_name: ''
+            }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}>
+              {({handleSubmit, isValid, values, setValues}) => (
+                <>
           <Text
             style={[
               FONTS.h1FontStyling,
@@ -128,62 +198,43 @@ const RentalLoanForm2 = ({navigation}) => {
                 />
               </View>
             </View>
-            <Text
-              style={[
-                FONTS.body1FontStyling,
-                {color: COLORS.dark, marginBottom: 8, fontSize: 14},
-              ]}>
-              What’s the name of the company you work for?{' '}
-            </Text>
-            <TextInput
-              style={[designs.textField, {marginBottom: 17, textAlign: 'left'}]}
-              placeholder="Employer's Name"
-              placeholderTextColor={COLORS.grey}
-              value={employersName}
-              onChangeText={(text) => setEmployersName(text)}
-            />
+
+            <>
+              <Text
+                style={[
+                  FONTS.body1FontStyling,
+                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
+                ]}>
+                What’s the name of the company you work for?{' '}
+              </Text>
+              <Field component={CustomInput} name="employer_name" placeholder="Employer's name" />
+            </>
+
+            <>
 
             <Text
               style={[
                 FONTS.body1FontStyling,
-                {color: COLORS.dark, marginBottom: 8, fontSize: 14},
+                {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
               ]}>
               Address of the company?
             </Text>
-            <TextInput
-              style={[designs.textField, {marginBottom: 8, textAlign: 'left'}]}
-              placeholder="Number and street name"
-              placeholderTextColor={COLORS.grey}
-              value={companyAddressNumberAndStreet}
-              onChangeText={(text) => setCompanyAddressNumberAndStreet(text)}
-            />
 
-            <TextInput
-              style={[designs.textField, {marginBottom: 8, textAlign: 'left'}]}
-              placeholder="City"
-              placeholderTextColor={COLORS.grey}
-              value={companyAddressCity}
-              onChangeText={(text) => setCompanyAddressCity(text)}
-            />
-            <TextInput
-              style={[designs.textField, {marginBottom: 8, textAlign: 'left'}]}
-              placeholder="State"
-              placeholderTextColor={COLORS.grey}
-              value={companyAddressState}
-              onChangeText={(text) => setCompanyAddressState(text)}
-            />
-            <TextInput
-              style={[designs.textField, {marginBottom: 0, textAlign: 'left'}]}
-              placeholder="Country"
-              placeholderTextColor={COLORS.grey}
-              value={companyAddressCountry}
-              onChangeText={(text) => setCompanyAddressCountry(text)}
-            />
+            <Field component={CustomInput} name="company_street_name" placeholder="Number and street name" />
+
+            <Field component={CustomInput} name="company_city_name" placeholder="City" />
+
+            <Field component={CustomInput} name="company_state_name" placeholder="State" />
+
+            <Field component={CustomInput} name="company_country_name" placeholder="Country" />
+
+            </>
+
           </View>
 
           <TouchableOpacity
-            onPress={handleNavigation}
-            disabled={isError()}
+            onPress={handleSubmit}
+            // disabled={isError()}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text
               style={[
@@ -198,6 +249,9 @@ const RentalLoanForm2 = ({navigation}) => {
               NEXT
             </Text>
           </TouchableOpacity>
+          </>
+          )}
+          </Formik>
         </View>
       </ScrollView>
     </View>

@@ -23,9 +23,10 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
 const rentalLoanFormSchema = yup.object().shape({
-  // accommodationStatus: yup.string().required('Select accomodation status'),
+  accommodationStatus: yup.string().required('Select accomodation status'),
   requestAmount: yup.string().required('Provide an amount'),
   salaryAmount: yup.string().required('Provide an amount'),
+  monthlyPaymentPlan: yup.string().required('Select a monthly payment plan')
 });
 
 const RentalLoanForm1 = ({navigation}) => {
@@ -33,12 +34,6 @@ const RentalLoanForm1 = ({navigation}) => {
   const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [progress, setProgress] = useState(33);
-
-  const accomdation_list = [
-    'Looking to renew my rent',
-    'Want to pay for a new place',
-    'I’m still searching',
-  ];
 
   // const handleNavigation = async () => {
   //   const data = {
@@ -61,13 +56,15 @@ const RentalLoanForm1 = ({navigation}) => {
 
   const handleSubmit = async (values) => {
     const data = {
-      accomodationstatus: accommodationStatus,
+      accommodationstatus: values.accommodationStatus,
       salary_amount: Number(unFormatNumber(values.salaryAmount)),
       request_amount: Number(unFormatNumber(values.requestAmount)),
-      selected_month: Number(selectedMonth),
+      selected_month: Number(values.monthlyPaymentPlan),
     };
 
     // console.log('VALUES:', data);
+
+    // await AsyncStorage.removeItem('rentalLoanForm')
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     console.log(loanFormData);
@@ -76,6 +73,8 @@ const RentalLoanForm1 = ({navigation}) => {
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
+
+    // console.log('DATA:', data)
     navigation.navigate('RentalLoanFormDoc');
   };
 
@@ -130,39 +129,107 @@ const RentalLoanForm1 = ({navigation}) => {
     );
   };
 
-  const AccomodationOptions = (props) => {
+  const AccommodationOptions = (props) => {
+    const accomdation_list = [
+      'Looking to renew my rent',
+      'Want to pay for a new place',
+      'I’m still searching',
+    ];
+
+    const {
+      field: {name, value},
+      form: {errors, touched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
     return (
       <>
-        {accomdation_list.map((value, index) => (
+        {accomdation_list.map((option, index) => (
           <TouchableOpacity
             key={index}
             style={[
               designs.buttonStyleA,
               {
                 borderColor:
-                  accommodationStatus == value ? COLORS.light : '#ADADAD50',
+                  value == option ? COLORS.light : '#ADADAD50',
               },
             ]}
-            onPress={() => setAccommodationStatus(value)}>
+            onPress={() => setFieldValue('accommodationStatus',option)}>
             <View>
               <Text
                 style={[
                   designs.btnText,
                   {
                     color:
-                      accommodationStatus == value ? COLORS.light : COLORS.grey,
+                      value == option ? COLORS.light : COLORS.grey,
                     fontWeight:
-                      accommodationStatus == value ? 'bold' : 'normal',
+                      value == option ? 'bold' : 'normal',
                   },
                 ]}>
-                {value}
+                {option}
               </Text>
             </View>
           </TouchableOpacity>
         ))}
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
     );
   };
+
+  const SelectMonthlyPlan = (props) => {
+    const {
+      field: {name, value},
+      form: {errors, touched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+    <>
+      <Text style={styles.label}>
+        Choose a monthly payment plan
+      </Text>
+      <TouchableOpacity
+        style={[styles.customInput, {padding: 20}]}
+        onPress={() => {
+          setShowSelectMonthModal(!showSelectMonthModal);
+        }}>
+        {value != '' ? (
+          <Text
+            style={{
+              // fontWeight: 'bold',
+              color: COLORS.primary,
+            }}>
+            {value}{' '}
+            {value <= 1 ? 'month' : 'months'}
+          </Text>
+        ) : (
+          <Text
+            style={{
+              // fontWeight: 'bold',
+              color: '#BABABA',
+            }}>
+            Choose a month
+          </Text>
+        )}
+
+        <Icon
+          name="chevron-down-outline"
+          size={20}
+          style={{fontWeight: 'bold'}}
+          color="#BABABA"
+        />
+      </TouchableOpacity>
+
+      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+
+    </>
+    )
+  }
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -184,8 +251,10 @@ const RentalLoanForm1 = ({navigation}) => {
           <Formik
             validationSchema={rentalLoanFormSchema}
             initialValues={{
+              accommodationStatus: '',
               requestAmount: '',
               salaryAmount: '',
+              monthlyPaymentPlan: '',
             }}
             onSubmit={(values) => {
               handleSubmit(values);
@@ -243,7 +312,8 @@ const RentalLoanForm1 = ({navigation}) => {
                       What’s your accommodation status?{' '}
                     </Text>
 
-                    <AccomodationOptions />
+                    {/* <AccomodationOptions /> */}
+                    <Field component={AccommodationOptions} name="accommodationStatus" />
                   </>
 
                   <>
@@ -268,42 +338,9 @@ const RentalLoanForm1 = ({navigation}) => {
                     />
                   </>
 
-                  <>
-                    <Text style={styles.label}>
-                      Choose a monthly payment plan
-                    </Text>
-                    <TouchableOpacity
-                      style={[styles.customInput, {padding: 20}]}
-                      onPress={() => {
-                        setShowSelectMonthModal(!showSelectMonthModal);
-                      }}>
-                      {selectedMonth != '' ? (
-                        <Text
-                          style={{
-                            // fontWeight: 'bold',
-                            color: COLORS.primary,
-                          }}>
-                          {selectedMonth}{' '}
-                          {selectedMonth <= 1 ? 'month' : 'months'}
-                        </Text>
-                      ) : (
-                        <Text
-                          style={{
-                            // fontWeight: 'bold',
-                            color: '#BABABA',
-                          }}>
-                          Choose a month
-                        </Text>
-                      )}
+                  <Field component={SelectMonthlyPlan} name="monthlyPaymentPlan" />
 
-                      <Icon
-                        name="chevron-down-outline"
-                        size={20}
-                        style={{fontWeight: 'bold'}}
-                        color="#BABABA"
-                      />
-                    </TouchableOpacity>
-                  </>
+                  
                 </View>
 
                 <TouchableOpacity
@@ -323,19 +360,21 @@ const RentalLoanForm1 = ({navigation}) => {
                     NEXT
                   </Text>
                 </TouchableOpacity>
+
+                <SelectMonthModal
+                  onRequestClose={() => setShowSelectMonthModal(!showSelectMonthModal)}
+                  visible={showSelectMonthModal}
+                  onClick={(value)=> {
+                     setValues({...values, 'monthlyPaymentPlan': value})
+                     setSelectedMonth(value)
+                  }}
+                  selectedMonth={selectedMonth}
+                />
               </>
             )}
           </Formik>
         </View>
       </ScrollView>
-
-      <SelectMonthModal
-        onRequestClose={() => setShowSelectMonthModal(!showSelectMonthModal)}
-        visible={showSelectMonthModal}
-        // selectedMonth={selectedMonth}
-        onClick={(value) => setSelectedMonth(value)}
-        selectedMonth={selectedMonth}
-      />
     </View>
   );
 };

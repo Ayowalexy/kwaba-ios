@@ -4,56 +4,41 @@ import {
   ScrollView,
   Text,
   TextInput,
-  Image,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Modal,
-  Alert
+  StyleSheet,
+  Alert,
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import DropDownPicker from 'react-native-dropdown-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { logCurrentStorage } from '../../util/logCurrentStorage';
 import axios from 'axios';
 
+import SelectRelationshipModal from '../../components/SelectRelationshipModal';
 
-const PostPaymentForm3 = ({navigation}) => {
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
 
-  const [refereeFirstName, setRefereeFirstName] = useState('');
-  const [refereeLastName, setRefereeLastName] = useState('');
-  const [refereePhoneNumber, setRefereePhoneNumber] = useState('');
-  const [refereeEmail, setRefereeEmail] = useState('');
-  const [refereeStreet, setRefereeStreet] = useState('');
-  const [refereeCity, setRefereeCity] = useState('');
-  const [refereeState, setRefereeState] = useState('');
-  const [refereeCountry, setRefereeCountry] = useState('');
-  const [relationships] = useState([
-    {label: 'Cousin', value: 'Cousin'},
-    {label: 'Brother', value: 'brother'},
-])
-  const [refereeRelationship, setRefereeRelationship] = useState(null);
-  const [pickerModalOpen, setPickerModalOpen] = useState(false)
+const postPaymentFormSchema = yup.object().shape({
+  refereeFirstName: yup.string().required('Field required'),
+  refereeLastName: yup.string().required('Field required'),
+  refereePhoneNumber: yup.string().required('Field required'),
+  refereeEmail: yup.string().required('Field required'),
+  refereeStreet: yup.string().required('Field required'),
+  refereeCity: yup.string().required('Field required'),
+  refereeState: yup.string().required('Field required'),
+  refereeCountry: yup.string().required('Field required'),
+  refereeRelationship: yup.string().required('Field required'),
+});
+
+const PostPaymentForm1 = ({navigation}) => {
   const [progress, setProgress] = useState(75);
-  let controller;
-
-
-  const dummyData =
-  {
-    landlord_firstname: "Adams",
-    landlord_lastname: "Eve",
-    landlord_telephone: "07034969842",
-    landlord_address: "23B Njoku Ekpor Street, Ketu, Lagos",
-    landlord_accountnumber: "0045682546",
-    landlord_bankname: "Ecobank",
-    next_rent_address: "24 Daniel Makinde Street, Ketu, Lagos",
-    next_rent_property_type: "House",
-    next_rent_property_no_of_bedrooms: "3",
-    next_rent_paid_to: "LandLord"
-  };
+  const [
+    showSelectRelationshipModal,
+    setShowSelectRelationshipModal,
+  ] = useState(false);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -61,339 +46,386 @@ const PostPaymentForm3 = ({navigation}) => {
     return token;
   };
 
-
-  const isError = () => {
-    if ( (refereeStreet.trim().length == 0 ||
-    refereeCity.trim().length == 0||
-    refereeState.trim().length == 0||
-    refereeCountry.trim().length == 0||
-    refereeEmail.trim().length == 0||
-    refereeRelationship.trim().length == 0||
-    refereeFirstName.trim().length == 0||
-    refereeLastName.trim().length == 0||
-    refereePhoneNumber.trim().length == 0)
-     ) {
-        return true;
-    } else {
-      return false;
-    }
-  };
-
-  const handleNavigation = async() => {
-
+  const handleSubmit = async (values) => {
     // const data = {
-    //   refereeFirstName: refereeFirstName,
-    //   refereeLastName: refereeLastName,
-    //   refereePhoneNumber: refereePhoneNumber,
-    //   refereeEmail: refereeEmail,
-    //   refereeStreet: refereeStreet,
-    //   refereeCity: refereeCity,
-    //   refereeState: refereeState,
-    //   refereeCountry: refereeCountry,
+    //   refereeFirstName: values.refereeFirstName,
+    //   refereeLastName: values.refereeLastName,
+    //   refereePhoneNumber: values.refereePhoneNumber,
+    //   refereeEmail: values.refereeEmail,
+    //   refereeStreet: values.refereeStreet,
+    //   refereeCity: values.refereeCity,
+    //   refereeState: values.refereeState,
+    //   refereeCountry: values.refereeCountry,
+    //   relationship: values.relationship,
     // };
 
-
-    if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
-
     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
-    const data=JSON.parse(postPaymentFormData);
-    const url = 'http://67.207.86.39:8000/api/v1/application/update/landlord_and_property';
-    const refreeUrl = 'http://67.207.86.39:8000/api/v1/application/update/referee';
+    const data = JSON.parse(postPaymentFormData);
+    const url =
+      'http://67.207.86.39:8000/api/v1/application/update/landlord_and_property';
+    const refereeUrl =
+      'http://67.207.86.39:8000/api/v1/application/update/referee';
 
     const token = await getToken();
-    console.log(dummyData);
-    console.log(token);
-    // console.log({...dummyData,...JSON.parse(postPaymentFormData),...data});
-    
-    const refreedata={
-      referee_address: refereeStreet+" "+refereeCity+" "+refereeState+" "+refereeCountry,
-      referee_email: refereeEmail,
-      referee_relationship: refereeRelationship,
-      referee_firstname: refereeFirstName,
-      referee_lastname: refereeLastName,
-      referee_telephone: refereePhoneNumber
+
+    const refereedata = {
+      referee_address:
+        values.refereeStreet +
+        ' ' +
+        values.refereeCity +
+        ' ' +
+        values.refereeState +
+        ' ' +
+        values.refereeCountry,
+      referee_email: values.refereeEmail,
+      referee_relationship: values.refereeRelationship,
+      referee_firstname: values.refereeFirstName,
+      referee_lastname: values.refereeLastName,
+      referee_telephone: values.refereePhoneNumber,
     };
 
-   
-
-    const landlordAndPropertyData={
+    const landlordAndPropertyData = {
       landlord_firstname: data.landLordFirstName,
       landlord_lastname: data.landLordLastName,
       landlord_telephone: data.landLordPhoneNumber,
-      landlord_address:data.propertyState,
+      landlord_address: data.propertyState,
       landlord_accountnumber: data.landLordAccountNumber,
       landlord_bankname: data.landLordAccountBank,
-      next_rent_address: data.propertyStreet+" "+data.propertyState+" "+data.propertyCountry,
+      next_rent_address:
+        data.propertyStreet +
+        ' ' +
+        data.propertyState +
+        ' ' +
+        data.propertyCountry,
       next_rent_property_type: data.typeOfProperty,
-      next_rent_property_no_of_bedrooms:data.numberOfBedrooms,
-      next_rent_paid_to: "LandLord"
+      next_rent_property_no_of_bedrooms: data.numberOfBedrooms,
+      next_rent_paid_to: 'LandLord',
     };
-    
 
-  
-
-
-   
-    
-    
     try {
-    
+      const response2 = await axios.put(
+        refereeUrl,
+        JSON.stringify(refereedata),
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
 
-      const response2 = await axios.put(refreeUrl,JSON.stringify(refreedata)  , {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      
-      console.log(refreedata);
+      const response = await axios.put(
+        url,
+        JSON.stringify(landlordAndPropertyData),
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
 
-      const response = await axios.put(url, JSON.stringify(landlordAndPropertyData) , {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-
-
-      console.log(landlordAndPropertyData);
-
-      //console.log(response);
-
-       //navigation.navigate('PostPaymentForm4');
-
-       let stepsdata={
-        documentdone:'done',
-        propertydetail:'done',
-        landlorddetail:'done',
-        refree:'done',
-        offeraccepted:'',
-        addressverification:'',
-        debitmandate:'',
-        awaitingdisbursment:'',
+      let stepsdata = {
+        documentdone: 'done',
+        propertydetail: 'done',
+        landlorddetail: 'done',
+        refree: 'done',
+        offeraccepted: '',
+        addressverification: '',
+        debitmandate: '',
+        awaitingdisbursment: '',
       };
-    
       await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
-
-      // if( response2.status==200){
-          
-      // }   
       navigation.navigate('RentalLoanOfferTest');
 
-       //navigation.navigate('LoanOfferContent');
+      // console.log({Response: response.data, 'Response 2': response2.data});
+    } catch (error) {
+      Alert.alert('Message', error.reponse.data.statusMsg);
+    }
 
-      } catch (error) {
-        //console.log(error.response.data);
-        Alert.alert('Message', error.response.data.statusMsg, [
-          {text: 'Close'},
-        ]);
-      }
-
-   
-
+    // await AsyncStorage.setItem(
+    //   'postPaymentForm',
+    //   JSON.stringify({...JSON.parse(postPaymentFormData), ...data}),
+    // );
   };
 
+  const CustomInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
 
-  // useEffect(()=>{
+    const hasError = errors[name] && touched[name];
 
-  //   const logData=async()=>{
-  //     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
-  //     console.log(JSON.stringify(postPaymentFormData))
-  //   }
-  
-  //  logData();
-  // })
+    return (
+      <>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingHorizontal: 16,
+              paddingVertical: 16,
+            }}
+            keyboardType="default"
+            value={value}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
 
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
+
+  const Relationship = (props) => {
+    const {
+      field: {name, value},
+      form: {errors, touched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <Text style={[styles.label, {fontWeight: 'bold'}]}>Relationship</Text>
+        <TouchableOpacity
+          style={[styles.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowSelectRelationshipModal(!showSelectRelationshipModal);
+          }}>
+          {value != '' ? (
+            <Text
+              style={{
+                color: COLORS.primary,
+              }}>
+              {value}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                color: '#BABABA',
+              }}>
+              Relationship
+            </Text>
+          )}
+
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
 
   return (
-
-    <ScrollView style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
-          color= {COLORS.primary}
-        />
-
+    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={25}
+        style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
+        color={COLORS.primary}
+      />
+      <ScrollView>
         <View
           style={{
-            marginVertical: 11,
-            marginHorizontal: 16,
-            justifyContent: 'flex-end'
+            paddingHorizontal: 10,
           }}>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold'
-              },
-            ]}>
-            Rental Loan
-          </Text>
-          <View style = {designs.contentWrapper}>
-          <View style = {designs.formHeader}>
-          <Text
-            style={[
-              FONTS.h3FontStyling,
-              {
-                color: COLORS.primary,
-                textAlign: 'left',
-                fontWeight: 'bold'
-              },
-            ]}>
-            Referee
-          </Text>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{fontSize: 12, lineHeight: 15, color: '#ADADAD', marginRight: 15}}>3 of 4</Text>
-          <AnimatedCircularProgress
-            size={25}
-            width={5}
-            fill={progress}
-            rotation={0}
-            tintColor= {COLORS.secondary}
-            backgroundColor="#D6D6D6" 
-          />
-       </View>
-          
-          </View>
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="First Name"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeFirstName}
-          onChangeText={(text) => setRefereeFirstName(text)}
-          />
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Last Name"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeLastName}
-          onChangeText={(text) => setRefereeLastName(text)}
-          />
-          <TextInput
-          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="Phone Number"
-          placeholderTextColor= {COLORS.grey}
-          value={refereePhoneNumber}
-        onChangeText={(text) => setRefereePhoneNumber(text)}
-        />
-        <TextInput
-        style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-        placeholder="Email"
-        placeholderTextColor= {COLORS.grey}
-        value={refereeEmail}
-        onChangeText={(text) => setRefereeEmail(text)}
-       />
+          <Formik
+            validationSchema={postPaymentFormSchema}
+            initialValues={{
+              refereeFirstName: '',
+              refereeLastName: '',
+              refereePhoneNumber: '',
+              refereeEmail: '',
+              refereeStreet: '',
+              refereeCity: '',
+              refereeState: '',
+              refereeCountry: '',
+              refereeRelationship: '',
+            }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}>
+            {({handleSubmit, isValid, values, setValues}) => (
+              <>
+                <Text
+                  style={[
+                    FONTS.h1FontStyling,
+                    {
+                      color: '#2A286A',
+                      textAlign: 'left',
+                      fontWeight: 'bold',
+                      fontSize: 20,
+                    },
+                  ]}>
+                  Rent Now, Pay Later
+                </Text>
+                <View style={designs.contentWrapper}>
+                  <View style={designs.formHeader}>
+                    <Text
+                      style={[
+                        FONTS.h3FontStyling,
+                        {
+                          color: COLORS.primary,
+                          textAlign: 'left',
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        },
+                      ]}>
+                      Referee details
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 15,
+                          color: '#ADADAD',
+                          marginRight: 15,
+                        }}>
+                        3 of 4
+                      </Text>
+                      <AnimatedCircularProgress
+                        size={25}
+                        width={5}
+                        fill={progress}
+                        rotation={0}
+                        tintColor={COLORS.secondary}
+                        backgroundColor="#D6D6D6"
+                      />
+                    </View>
+                  </View>
 
-      <Text
-            style={[
-              FONTS.h3FontStyling,
-              {
-                color: COLORS.primary,
-                textAlign: 'left',
-                fontWeight: 'bold',
-                marginTop: 20, 
-                marginBottom: 15
-              },
-            ]}>
-            Office Address
-          </Text>
+                  {/* <Text style={[styles.label, {fontWeight: 'bold'}]}>
+                    Address of property to be paid for
+                  </Text> */}
 
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="Street"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeStreet}
-          onChangeText={(text) => setRefereeStreet(text)}
-          />
-          <TextInput
-            style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-            placeholder="City"
-            placeholderTextColor= {COLORS.grey}
-            value={refereeCity}
-          onChangeText={(text) => setRefereeCity(text)}
-          />
-          <TextInput
-          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="State"
-          placeholderTextColor= {COLORS.grey}
-          value={refereeState}
-        onChangeText={(text) => setRefereeState(text)}
-        />
-        <TextInput
-          style={[designs.textField, {marginBottom: 15, textAlign: 'left'}]}
-          placeholder="Country"
-          placeholderTextColor= {COLORS.grey}
-          value={refereeCountry}
-        onChangeText={(text) => setRefereeCountry(text)}
-        />
-        <View style={{minHeight: 0}}>
-        <DropDownPicker
-                    items={relationships}
-                    defaultNull
-                    placeholder="Relationship"
-                    placeholderStyle={{color: COLORS.grey, fontSize: 16, lineHeight: 30}}
-                    style={designs.dropDownPicker}
-                    controller={instance => controller = instance}
-                    dropDownStyle={{height: 0, borderWidth: 0}}
-                    dropDownMaxHeight={0}
-                    arrowStyle={{marginRight: 10, size: 15}}
-                    onChangeItem={item => setRefereeRelationship(item.value)}
-                    onOpen={() => setPickerModalOpen(true)}
-                />
-            </View>
-         
-          </View>
-         
-          
-          <TouchableOpacity
-            onPress={()=>{handleNavigation()}}
-            style={[designs.button, {backgroundColor: COLORS.secondary}]}>
-            <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>NEXT</Text>
-          </TouchableOpacity>
-        </View>
+                  <Field
+                    component={CustomInput}
+                    name="refereeFirstName"
+                    placeholder="First Name"
+                  />
+                  <Field
+                    component={CustomInput}
+                    name="refereeLastName"
+                    placeholder="Last Name"
+                  />
+                  <Field
+                    component={CustomInput}
+                    name="refereePhoneNumber"
+                    placeholder="Phone Number"
+                  />
+                  <Field
+                    component={CustomInput}
+                    name="refereeEmail"
+                    placeholder="Email"
+                  />
 
-        <Modal visible={pickerModalOpen} animationType="fade" transparent={true} onRequestClose ={()=>{}}>
-            <View style={designs.modalWrapper}>
-            <View style={designs.modalView}> 
-            <View style={[designs.modalHeader, {marginBottom: 11}]}>
-            <Icon
-              onPress={() => {controller.close();
-                setPickerModalOpen(false)}}
-              style={{marginLeft: 'auto'}}
-              name="close-outline"
-              size={30}
-              color="#D6D6D6"
-            />
-            </View>
-            <View>
-                <Text style={designs.modalTitleText}>Relationship with your Referee</Text>
-                <Text style={[designs.modalBodyText, {marginLeft: 10}]}>Search</Text>
-            <View>
-                
-            {relationships.map((relationship, index) => {
-            return (
-                
-                <TouchableOpacity key={index} onPress={()=> {controller.selectItem(relationship.value);
-                    controller.close();
-                    setPickerModalOpen(false)}} style={{marginBottom: 22, marginLeft: 10}}>
-                <Text style={[designs.buttonText, {fontSize: 16, lineHeight: 20, fontWeight: 'normal'}]}>{relationship.label}</Text>
-              </TouchableOpacity>
-            )
-              
-        })}
-        </View>
+                  <Text style={[styles.label, {fontWeight: 'bold'}]}>
+                    Office Address
+                  </Text>
+
+                  <Field
+                    component={CustomInput}
+                    name="refereeStreet"
+                    placeholder="Street"
+                  />
+                  <Field
+                    component={CustomInput}
+                    name="refereeCity"
+                    placeholder="City"
+                  />
+                  <Field
+                    component={CustomInput}
+                    name="refereeState"
+                    placeholder="State"
+                  />
+                  <Field
+                    component={CustomInput}
+                    name="refereeCountry"
+                    placeholder="Country"
+                  />
+
+                  <Field component={Relationship} name="refereeRelationship" />
                 </View>
-            </View>
 
-            </View>
-            
-        </Modal>
-        
-   </ScrollView>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  // onPress={() => {
+                  //   handleNavigation();
+                  // }}
+                  // onPress={()=> navigation.navigate('SetUpPaymentPlan')}
+                  style={[designs.button, {backgroundColor: COLORS.secondary}]}>
+                  <Text
+                    style={[
+                      designs.buttonText,
+                      {
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
+                    ]}>
+                    NEXT
+                  </Text>
+                </TouchableOpacity>
+
+                <SelectRelationshipModal
+                  onRequestClose={() =>
+                    setShowSelectRelationshipModal(!showSelectRelationshipModal)
+                  }
+                  visible={showSelectRelationshipModal}
+                  onClick={(value) => {
+                    setValues({...values, refereeRelationship: value});
+                  }}
+                />
+              </>
+            )}
+          </Formik>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
-export default PostPaymentForm3;
+export default PostPaymentForm1;
+
+const styles = StyleSheet.create({
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    color: COLORS.dark,
+    marginTop: 20,
+    fontSize: 12,
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
+});

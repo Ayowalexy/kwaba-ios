@@ -7,17 +7,15 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../util';
 
-export default function SelectMonthModal(props) {
-  const {onRequestClose, visible, onClick, selectedMonth} = props;
-  const months = new Array(12).fill();
+export default function SelectRoomsModal(props) {
+  const {onRequestClose, visible, onClick} = props;
+  const rooms = new Array(4).fill();
   useEffect(() => {
-    // console.log(months);
-    // console.log('Selected Month:', selectedMonth);
+    console.log(rooms);
   }, []);
   return (
     // <View>
@@ -29,7 +27,6 @@ export default function SelectMonthModal(props) {
       style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          {/* <Text style={{fontWeight: 'bold', fontSize: 16}}>Select Month</Text> */}
           <Icon
             onPress={onRequestClose}
             name="close-outline"
@@ -40,49 +37,31 @@ export default function SelectMonthModal(props) {
               position: 'absolute',
               top: 0,
               right: 0,
-              zIndex: 2,
             }}
           />
-          <ScrollView
-            style={{marginTop: 40}}
-            scrollEnabled
-            // showsVerticalScrollIndicator={false}
-          >
-            <View>
-              {months.map((number, index) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    onClick(index + 1);
-                    onRequestClose();
-                  }}
-                  key={index}
+          <View style={{marginTop: 20}}>
+            {rooms.map((number, index) => (
+              <TouchableOpacity
+                onPress={() => {
+                  onClick(index + 1);
+                  onRequestClose();
+                }}
+                key={index}
+                style={{
+                  paddingVertical: 15,
+                  alignItems: 'center',
+                }}>
+                <Text
                   style={{
-                    paddingVertical: 15,
-                    paddingHorizontal: 25,
-                    backgroundColor:
-                      index + 1 == selectedMonth
-                        ? COLORS.secondary
-                        : 'transparent',
-
-                    alignItems: 'center',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: COLORS.primary,
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      // fontSize: 14,
-                      fontWeight: 'bold',
-                      // color: COLORS.primary,
-                      color:
-                        index + 1 == selectedMonth
-                          ? COLORS.white
-                          : COLORS.primary,
-                    }}>
-                    {index + 1} {index + 1 <= 1 ? 'month' : 'months'}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+                  {index + 1}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
     </Modal>
@@ -102,13 +81,11 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '100%',
-    maxHeight: '60%',
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
-    // padding: 25,
-    paddingVertical: 25,
+    padding: 25,
   },
   btn: {
     width: '100%',
