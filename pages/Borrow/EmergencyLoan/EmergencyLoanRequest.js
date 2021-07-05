@@ -45,6 +45,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   const [pickerModalVisible, setPickerModalVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
+  const [userSelectedBankAccount, setUserSelectedBankAccount] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -55,6 +56,8 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       setBankAccountName(accountName != null ? accountName : '');
       setBankAccountNumber(accountNumber != null ? accountNumber : '');
       setBankCode(code != null ? code : '');
+
+      console.log(accountNumber, accountName, code, JSON.parse(userData).user);
     })();
   }, []);
 
@@ -64,25 +67,38 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     setDueDate(moment().add(30, 'days').format('DD, MMM YYYY'));
   }, []);
 
-  const addCard = async () => {
-    setBankModalVisible(false);
-    const data = {
-      account_number: bankAccountNumber,
-      bank_code: bankCode,
-    };
-    try {
-      let bankDetails = await resolveBankAccount(data);
-      let banks = await fetchBanks();
-      if (bankDetails.accountStatus == true) {
-        setBankAccountName(bankDetails.data.account_name);
-        setBankAccountNumber(bankDetails.data.account_number);
-        let bank = banks.banks.filter((c) => c.code == bankCode);
-        setBankName(bank[0].name);
-      }
-    } catch (error) {
-      Alert.alert('', error);
-    }
-  };
+  useEffect(() => {
+    (async () => {
+      const userBankAccount = await AsyncStorage.getItem('selectedBankAccount');
+      const parsedUserBankAccount = JSON.parse(userBankAccount);
+      // console.log(userBankAccount);
+      setUserSelectedBankAccount(parsedUserBankAccount);
+
+      setBankAccountName(parsedUserBankAccount.user_bank_name);
+      setBankAccountNumber(parsedUserBankAccount.bank_account_number);
+      setBankName(parsedUserBankAccount.bank_name);
+    })();
+  }, [userSelectedBankAccount]);
+
+  // const addCard = async () => {
+  //   setBankModalVisible(false);
+  //   const data = {
+  //     account_number: bankAccountNumber,
+  //     bank_code: bankCode,
+  //   };
+  //   try {
+  //     let bankDetails = await resolveBankAccount(data);
+  //     let banks = await fetchBanks();
+  //     if (bankDetails.accountStatus == true) {
+  //       setBankAccountName(bankDetails.data.account_name);
+  //       setBankAccountNumber(bankDetails.data.account_number);
+  //       let bank = banks.banks.filter((c) => c.code == bankCode);
+  //       setBankName(bank[0].name);
+  //     }
+  //   } catch (error) {
+  //     Alert.alert('', error);
+  //   }
+  // };
 
   const loanTable = [
     {
@@ -107,9 +123,9 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     setSpinner(true);
     setVisible(false);
     // setting this manually
-    setBankAccountName('Joshua Udo Nwosu');
-    setBankAccountNumber('0094552107');
-    setBankName('Access Bank');
+    // setBankAccountName('Joshua Udo Nwosu');
+    // setBankAccountNumber('0094552107');
+    // setBankName('Access Bank');
 
     const data = {
       loan_amount: loanAmount,
@@ -212,6 +228,53 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                 </Text>
               </TouchableOpacity>
             </View>
+
+            <View style={{marginTop: 20, alignItems: 'center'}}>
+              <TouchableOpacity activeOpacity={0.9} style={[styles.bankCard]}>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: 'bold',
+                      color: COLORS.white,
+                    }}>
+                    {userSelectedBankAccount.user_bank_name}
+                    {/* JOSHUA NWOSU */}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: COLORS.light,
+                    }}>
+                    {userSelectedBankAccount.bank_name}
+                    {/* Access Bank */}
+                  </Text>
+                  <Text
+                    style={{
+                      marginTop: 40,
+                      fontSize: 14,
+                      color: COLORS.white,
+                      opacity: 0.8,
+                    }}>
+                    {userSelectedBankAccount.bank_account_number}
+                    {/* 0094552107 */}
+                  </Text>
+
+                  <Image
+                    style={{
+                      width: 71,
+                      height: 110,
+                      position: 'absolute',
+                      resizeMode: 'contain',
+                      right: -21,
+                      bottom: -20,
+                      borderWidth: 1,
+                    }}
+                    source={images.maskGroup24}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
 
           <TouchableOpacity
@@ -312,5 +375,16 @@ const styles = StyleSheet.create({
     color: COLORS.dark,
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  bankCard: {
+    width: 250,
+    height: 140,
+    backgroundColor: COLORS.primary,
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 20,
+    elevation: 1,
+    overflow: 'hidden',
   },
 });

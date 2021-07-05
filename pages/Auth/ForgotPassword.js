@@ -13,89 +13,31 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images, icons} from '../../util/index';
 import designs from './style';
-import CheckBox from '@react-native-community/checkbox';
-import {useSelector, useDispatch} from 'react-redux';
-import {setLoginState} from '../../redux/actions/userActions';
 import Spinner from 'react-native-loading-spinner-overlay';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {login} from '../../services/network';
-
-const widthTouse = Dimensions.get('window').width;
+import axios from 'axios';
+import {forgotPassword} from '../../services/network';
 
 export default function Login({navigation}) {
-  const dispatch = useDispatch();
   const [spinner, setSpinner] = useState(false);
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [email, setEmail] = useState('');
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
-  const isError = () => {
-    if (email.trim().length == 0) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  const saveLoginToStorage = async (data) => {
-    console.log(data);
+  const handleForgotPassword = async () => {
+    // console.log('settingUp...');
+    // console.log(email);
+    const data = {
+      email: email,
+    };
     try {
-      await AsyncStorage.setItem('userData', JSON.stringify(data));
-    } catch (error) {}
-  };
+      const res = await forgotPassword(data);
 
-  const handleLogin = async () => {
-    if (isError()) {
-      // Alert.alert('Required', 'All fields are required.');
-      ToastAndroid.show(
-        'Please enter your email address',
-        ToastAndroid.LONG,
-        ToastAndroid.TOP,
-      );
-    } else {
-      setSpinner(true);
-      const data = {email: email};
-      try {
-        const response = await login(data);
-        if (response.status == 200) {
-          setSpinner(false);
-          console.log('here is auth data', response.data.authData);
-          saveLoginToStorage({
-            ...response.data.authData,
-            username: response.data.authData.user.firstname,
-            isLoggedIn: true,
-          });
-          dispatch(
-            setLoginState({
-              ...response.data.authData,
-              username: response.data.authData.user.firstname,
-              isLoggedIn: true,
-            }),
-          );
-          navigation.navigate('Home');
-        } else {
-          setSpinner(false);
-          Alert.alert(
-            'INVALID CREDENTIALS',
-            'Please provide valid email and password',
-          );
-        }
-      } catch (error) {
-        setSpinner(false);
-        Alert.alert('ERROR', 'An error occurred, please retry');
-      }
+      // setSpinner(true)
+      // if(res.status ==)
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      setSpinner(false);
     }
   };
-
-  const toggleSecureEntry = () => {
-    setSecureTextEntry(!secureTextEntry);
-  };
-
-  const renderIcon = (props) => (
-    <TouchableWithoutFeedback onPress={toggleSecureEntry}>
-      <Icon name={secureTextEntry ? 'eye-slash' : 'eye'} />
-    </TouchableWithoutFeedback>
-  );
 
   return (
     <View style={[designs.container]}>
@@ -168,7 +110,7 @@ export default function Login({navigation}) {
             marginTop: 10,
             textAlign: 'center',
           }}>
-          Enter your registered email below to receive password reset
+          Enter your registered email below to receive{'\n'}password reset
           instructions
         </Text>
         <View style={[designs.customInput]}>
@@ -208,7 +150,7 @@ export default function Login({navigation}) {
             justifyContent: 'space-between',
           }}>
           <TouchableOpacity
-            onPress={handleLogin}
+            onPress={handleForgotPassword}
             // disabled={!isError()}
             style={[
               designs.btn,
@@ -229,12 +171,6 @@ export default function Login({navigation}) {
               SEND
             </Text>
           </TouchableOpacity>
-          {/* <View style={designs.fingerPrint}>
-          <Image
-            style={{width: 38, height: 38, tintColor: '#BFBFBF'}}
-            source={images.fingerPrint}
-          />
-        </View> */}
         </View>
         <TouchableOpacity
           onPress={() => navigation.navigate('Login')}
@@ -255,18 +191,7 @@ export default function Login({navigation}) {
             Remember password? <Text style={{color: '#00DC99'}}>Login</Text>
           </Text>
         </TouchableOpacity>
-        <Spinner
-          visible={spinner}
-          textContent={'Authenticating...'}
-          animation="fade"
-          textStyle={{
-            color: '#2A286A',
-            fontSize: 20,
-            fontWeight: 'bold',
-            lineHeight: 30,
-          }}
-          size="large"
-        />
+        <Spinner visible={spinner} size="large" />
       </ScrollView>
     </View>
   );

@@ -2,6 +2,12 @@ import apiUrl from './api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
+
 const fetchBanks = async () => {
   try {
     const banks = await axios.get(apiUrl + '/api/v1/bank', {
@@ -72,20 +78,19 @@ const verifyPhone = async (data) => {
 };
 
 const forgotPassword = async (data) => {
-  const authData = await AsyncStorage.getItem('authData');
-  const token = authData;
+  // const token = await getToken();
+  const url = apiUrl + '/api/v1/forgot_password';
   try {
-    const url = apiUrl + '/api/v1/forgot_password';
-    // const response = await axios.put(url, )
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        // Authorization: token,
+      },
+    });
+    return response;
   } catch (error) {
     return error.message;
   }
-};
-
-const getToken = async () => {
-  const userData = await AsyncStorage.getItem('userData');
-  const token = JSON.parse(userData).token;
-  return token;
 };
 
 const createSavingsPlan = async (data) => {
@@ -309,6 +314,7 @@ export {
   fetchBanks,
   signUp,
   login,
+  forgotPassword,
   sendVerificationCode,
   verifyPhone,
   createSavingsPlan,

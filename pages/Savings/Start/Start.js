@@ -102,6 +102,17 @@ export default function Start({navigation}) {
   ];
   return (
     <View style={[designs.container]}>
+      <Icon
+        onPress={() => navigation.goBack()}
+        name="arrow-back-outline"
+        size={25}
+        style={{
+          paddingVertical: 15,
+          paddingHorizontal: 15,
+          zIndex: 1,
+        }}
+        color={COLORS.white}
+      />
       <Image
         source={images.group4585}
         style={{

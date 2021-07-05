@@ -249,7 +249,7 @@ export default function CardAndBankDetails({navigation}) {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      console.log('USER BANK ACCOUNT:', response.data.userBanks);
+      // console.log('USER BANK ACCOUNT:', response.data.userBanks);
       setUserBankAccounts(response.data.userBanks);
     } catch (error) {
       console.log(error);
@@ -303,8 +303,30 @@ export default function CardAndBankDetails({navigation}) {
     } catch (error) {}
   };
 
+  // get selected bank account.
+  useEffect(() => {
+    (async () => {
+      // console.log(userBankAccounts);
+      // console.log(clickedID);
+
+      const selectedAccount = userBankAccounts.find(
+        (account) => clickedID == account.id,
+      );
+      console.log('Selected Bank Account:', selectedAccount);
+
+      try {
+        await AsyncStorage.setItem(
+          'selectedBankAccount',
+          JSON.stringify(selectedAccount),
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [clickedID]);
+
   const renderPaymentCards = ({item}) => (
-    <TouchableOpacity style={[styles.paymentCard]}>
+    <TouchableOpacity activeOpacity={0.9} style={[styles.paymentCard]}>
       <View>
         {/* <Text>{item.cardnumber}</Text> */}
         <View>
@@ -352,7 +374,6 @@ export default function CardAndBankDetails({navigation}) {
       ]}
       onPress={() => {
         setClickedID(item.id);
-        console.log(item.id);
       }}>
       <View>
         <Text

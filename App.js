@@ -200,6 +200,8 @@ const App = () => {
     any_custom_type: () => {},
   };
 
+  const [test, setTest] = useState('');
+
   // if (!store2.token) {
   //   return <Login />;
   // }
@@ -236,7 +238,7 @@ const App = () => {
           // initialRouteName={'SoloSavingDashBoard'}
           // initialRouteName={'RentNowPayLaterDashboard'}
         >
-          {/* {!isLoggedIn ? ( */}
+          {/* {test != '' ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>

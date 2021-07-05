@@ -125,7 +125,7 @@ export default function EligibilitySalaryEarner({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
-            navigation.navigate('AddressVerificationPayment');
+            // navigation.navigate('AddressVerificationPayment');
             // navigation.navigate('PostPaymentForm3');
             // navigation.navigate('RentalLoanForm3');
             // navigation.navigate('UploadBankStatement');
@@ -133,7 +133,7 @@ export default function EligibilitySalaryEarner({navigation}) {
             // navigation.navigate('RentalLoanFormBankStatementUpload');
             // navigation.navigate('RentalLoanFormCongratulation');
             // navigation.navigate('RentalLoanRequestDashBoard');
-            //  handleProceedClick();
+            handleProceedClick();
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

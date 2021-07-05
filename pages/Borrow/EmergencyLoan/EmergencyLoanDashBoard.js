@@ -392,7 +392,8 @@ const EmergencyLoanDashBoard = ({navigation}) => {
           successHeading="Transaction Successful"
           successText="Your payment has been verified"
         />
-        <View
+
+        {/* <View
           style={{
             flex: 1,
             borderTopLeftRadius: 20,
@@ -485,7 +486,7 @@ const EmergencyLoanDashBoard = ({navigation}) => {
               />
             )}
           </View>
-        </View>
+        </View> */}
       </View>
     </View>
   );

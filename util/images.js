@@ -95,6 +95,8 @@ const mobileInternetBanking = require('../assets/images/mobile_internet_banking.
 const bankRequest = require('../assets/images/bank_request.png');
 const uploadDocument = require('../assets/images/uploadDocument.png');
 
+const piggy = require('../assets/images/piggy.png');
+
 export {
   logo,
   applicationReview,
@@ -190,4 +192,5 @@ export {
   mobileInternetBanking,
   bankRequest,
   uploadDocument,
+  piggy,
 };

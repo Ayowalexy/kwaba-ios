@@ -44,21 +44,21 @@ const Screen5 = ({navigation}) => {
   };
 
   const handleNavigation = async () => {
-    const data = {
-      last_rent_amount: lastRentAmount,
-      next_rent_due: dateFormatted,
-    };
-    if (isError()) {
-      return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-        {text: 'Close'},
-      ]);
-    }
-    const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    await AsyncStorage.setItem(
-      'rentalLoanForm',
-      JSON.stringify({...JSON.parse(loanFormData), ...data}),
-    );
-    logCurrentStorage();
+    // const data = {
+    //   last_rent_amount: lastRentAmount,
+    //   next_rent_due: dateFormatted,
+    // };
+    // if (isError()) {
+    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
+    //     {text: 'Close'},
+    //   ]);
+    // }
+    // const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    // await AsyncStorage.setItem(
+    //   'rentalLoanForm',
+    //   JSON.stringify({...JSON.parse(loanFormData), ...data}),
+    // );
+    // logCurrentStorage();
     setModalVisible(true);
     // try {
     //   dispatch(soloSaving(data));
@@ -193,7 +193,7 @@ const Screen5 = ({navigation}) => {
           <View style={{flex: 1, justifyContent: 'flex-end'}}>
             <TouchableOpacity
               onPress={handleNavigation}
-              disabled={isError()}
+              // disabled={isError()}
               style={[designs.btn, {backgroundColor: '#00DC99'}]}>
               <Text style={{color: 'white'}}>COMPLETE</Text>
             </TouchableOpacity>

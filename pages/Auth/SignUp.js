@@ -233,19 +233,19 @@ export default function SignUp({navigation}) {
         <Formik
           validationSchema={signUpValidationSchema}
           initialValues={{
-            firstName: 'Joshua',
-            lastName: 'Nwosu',
-            email: 'joshuanwosu117@gmail.com',
-            password: 'joshuaA1',
-            confirmPassword: 'joshuaA1',
-            gender: 'Male',
+            // firstName: 'Joshua',
+            // lastName: 'Nwosu',
+            // email: 'joshuanwosu117@gmail.com',
+            // password: 'joshuaA1',
+            // confirmPassword: 'joshuaA1',
+            // gender: 'Male',
 
-            // firstName: '',
-            // lastName: '',
-            // email: '',
-            // password: '',
-            // confirmPassword: '',
-            // gender: 'Female',
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            gender: 'Female',
           }}
           onSubmit={(values, {setValues, setErrors}) => {
             handleSubmit(values, setValues, setErrors);

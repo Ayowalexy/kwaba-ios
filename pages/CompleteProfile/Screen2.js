@@ -53,13 +53,15 @@ const Screen2 = ({navigation}) => {
     // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
     // navigation.navigate('CompleteProfile5');
 
-    console.log(dateFormatted, bvn);
+    // console.log(dateFormatted, bvn);
 
     // try {
     //   dispatch(soloSaving(data));
 
     //   return navigation.navigate('SoloSaving2');
     // } catch (error) {}
+
+    navigation.navigate('CompleteProfile5');
   };
 
   const onSelect = (country) => {
@@ -218,7 +220,7 @@ const Screen2 = ({navigation}) => {
           /> */}
           <TouchableOpacity
             onPress={handleNavigation}
-            disabled={isError()}
+            // disabled={isError()}
             style={[designs.btn, {backgroundColor: '#00DC99'}]}>
             <Text style={{color: 'white'}}>NEXT</Text>
           </TouchableOpacity>

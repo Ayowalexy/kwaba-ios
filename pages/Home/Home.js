@@ -174,7 +174,7 @@ export default function Home({navigation}) {
           />
         </TouchableOpacity>
       </View>
-      {isProfileComplete && (
+      {!isProfileComplete && (
         <View style={designs.secondBar}>
           <View
             style={{
