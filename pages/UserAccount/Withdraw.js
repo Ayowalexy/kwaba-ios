@@ -276,7 +276,7 @@ export default function Withdraw({navigation}) {
       <Text style={[styles.heading]}>Withdraw</Text>
 
       <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        {savings ? (
+        {!savings ? (
           <View style={[styles.content, {alignItems: 'center'}]}>
             <Image source={images.piggy} style={[styles.image]} />
             <Text
@@ -296,7 +296,7 @@ export default function Withdraw({navigation}) {
                 textAlign: 'center',
                 marginVertical: 10,
               }}>
-              You know you don't have an active{'\n'}rent saving right?
+              You know you don't have an active{'\n'}rent savings right?
             </Text>
             <TouchableOpacity
               style={[styles.button]}

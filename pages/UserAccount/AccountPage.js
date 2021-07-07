@@ -49,7 +49,7 @@ const AccountPage = ({navigation}) => {
   const [fullName, setFullName] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const store2 = useSelector((state) => state.loginReducer);
+  const login = useSelector((state) => state.loginReducer);
 
   const [loanPurpose] = useState([
     {label: 'Household', value: 'Household'},
@@ -59,20 +59,21 @@ const AccountPage = ({navigation}) => {
   const [userToken, setUserToken] = useState(null);
 
   const LogOut = async () => {
-    try {
-      // dispatch(
-      //   setLoginState({
-      //     username: '',
-      //     isLoggedIn: false,
-      //   }),
-      // );
+    await AsyncStorage.removeItem('userData');
 
-      await AsyncStorage.removeItem('userData');
+    dispatch(
+      setLoginState({
+        ...login,
+        isLoggedIn: false,
+        token: '',
+      }),
+    );
 
-      console.log('DATA: ', data);
-
-      navigation.navigate('Login');
-    } catch (error) {}
+    // await AsyncStorage.setItem(
+    //   'userData',
+    //   JSON.stringify({...JSON.parse(login), isLoggedIn: false, token: ''}),
+    // );
+    navigation.navigate('Login');
   };
 
   const Referral = () => {};
@@ -205,6 +206,7 @@ const AccountPage = ({navigation}) => {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
+      console.log(userData);
 
       if (userData) {
         let {firstname, lastname} = JSON.parse(userData).user;
@@ -215,7 +217,7 @@ const AccountPage = ({navigation}) => {
       }
     };
     getUserData();
-  }, []);
+  }, [login]);
 
   return (
     <ScrollView>

@@ -378,13 +378,14 @@ export default function UploadDocumentsList({navigation}) {
             </View>
             <TouchableOpacity
               onPress={() => {
-                if (item.title == 'Bank Statement') {
-                  // console.log('redirect to upload bank statment page');
-                  // navigation.navigate('UploadBankStatement');
-                  navigation.navigate('RentalLoanFormBankStatementUpload');
-                } else {
-                  selectOneFile(item);
-                }
+                // if (item.title == 'Bank Statement') {
+                //   // console.log('redirect to upload bank statment page');
+                //   // navigation.navigate('UploadBankStatement');
+                //   navigation.navigate('RentalLoanFormBankStatementUpload');
+                // } else {
+                //   selectOneFile(item);
+                // }
+                selectOneFile(item);
               }}>
               <Image
                 source={images.group3745}

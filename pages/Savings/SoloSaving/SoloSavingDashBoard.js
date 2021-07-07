@@ -96,38 +96,42 @@ export default function SoloSavingDashBoard({navigation}) {
 
   // fetchSavingsPlan
 
-  const fetchSavingsPlan = async () => {
-    const apiUrl = 'http://67.207.86.39:8000';
-    const token = await getToken();
-    const url = apiUrl + '/api/v1/savings_plan';
-    try {
-      const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-        // headers: {'Content-Type': 'application/json'},
-      });
-      // dispatch(currentUser(response.data.user));
-      // return response.data.user;
-      console.log(response.data);
-    } catch (error) {
-      // return error.message;
-      console.log(error);
-    }
-  };
+  // const fetchSavingsPlan = async () => {
+  //   const apiUrl = 'http://67.207.86.39:8000';
+  //   const token = await getToken();
+  //   const url = apiUrl + '/api/v1/savings_plan';
+  //   try {
+  //     const response = await axios.get(url, {
+  //       headers: {'Content-Type': 'application/json', Authorization: token},
+  //       // headers: {'Content-Type': 'application/json'},
+  //     });
+  //     // dispatch(currentUser(response.data.user));
+  //     // return response.data.user;
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     // return error.message;
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     (async () => {
       const token = await getToken();
-      const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+      // const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+      // const url = 'http://67.207.86.39:8000/api/v1/payments';
+      const url = 'http://67.207.86.39:8000/api/v1/savings';
+
       try {
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
-        console.log(response);
+        console.log('Fetch savings plan: ', response);
+        console.log(token);
       } catch (error) {
-        console.log(error);
+        console.log('Error: ', error);
       }
     })();
-  });
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -318,7 +322,7 @@ export default function SoloSavingDashBoard({navigation}) {
               width={10}
               rotation={0}
               style={styles.circularProgress}
-              fill={percentAchieved}
+              fill={Number(percentAchieved)}
               tintColor={COLORS.secondary}
               backgroundColor="#2A286A90">
               {(fill) => (

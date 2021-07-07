@@ -37,7 +37,13 @@ export default function BusinessForm1({navigation}) {
   const [registration, setRegistration] = useState('');
 
   const PaymentCollected = (props) => {
-    const payment_collected_list = ['Cash', 'Bank transfer', 'Point of sale (POS)', 'Online', 'All of the above'];
+    const payment_collected_list = [
+      'Cash',
+      'Bank transfer',
+      'Point of sale (POS)',
+      'Online',
+      'All of the above',
+    ];
     const {
       field: {name, value},
       form: {errors, touched, setFieldValue},
@@ -49,7 +55,10 @@ export default function BusinessForm1({navigation}) {
       <>
         <Text style={designs.label}>
           How do you collect payment for your business?{'\n'}
-          <Text style={{fontSize: 12, fontWeight: 'normal', color: COLORS.grey}}>Select as many that apply</Text>
+          <Text
+            style={{fontSize: 12, fontWeight: 'normal', color: COLORS.grey}}>
+            Select as many that apply
+          </Text>
         </Text>
         {payment_collected_list.map((option, index) => (
           <TouchableOpacity
@@ -61,8 +70,8 @@ export default function BusinessForm1({navigation}) {
               },
             ]}
             onPress={() => {
-               setFieldValue('how_many_is_collected', option)
-               console.log('value: ',value, 'option:', option)
+              setFieldValue('how_many_is_collected', option);
+              console.log('value: ', value, 'option:', option);
             }}>
             <View>
               <Text
@@ -85,11 +94,9 @@ export default function BusinessForm1({navigation}) {
   };
 
   const handleSubmit = async (values) => {
-    const {
-      how_many_is_collected
-    } = values;
+    const {how_many_is_collected} = values;
     const data = {
-      how_many_is_collected
+      how_many_is_collected,
     };
 
     const businessFormData = await AsyncStorage.getItem(
@@ -98,13 +105,15 @@ export default function BusinessForm1({navigation}) {
 
     await AsyncStorage.setItem(
       'businessFormDataStore',
-      JSON.stringify({ ...JSON.parse(businessFormData), ...data }),
+      JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
     console.log(data);
     console.log(businessFormData);
 
-    navigation.navigate('BusinessForm5')
+    console.log('KWABA');
+
+    navigation.navigate('BusinessForm5');
   };
 
   return (
@@ -120,7 +129,7 @@ export default function BusinessForm1({navigation}) {
       <Formik
         validationSchema={businessFormSchema}
         initialValues={{
-          how_many_is_collected: ''
+          how_many_is_collected: '',
         }}
         onSubmit={handleSubmit}>
         {({handleSubmit, isValid, values}) => (
@@ -180,9 +189,10 @@ export default function BusinessForm1({navigation}) {
 
                   {/*  */}
 
-                  <Field name="how_many_is_collected" component={PaymentCollected} />
-
-                  
+                  <Field
+                    name="how_many_is_collected"
+                    component={PaymentCollected}
+                  />
                 </View>
               </View>
             </ScrollView>

@@ -89,7 +89,7 @@ export default function EligibilitySalaryEarner({navigation}) {
             // navigation.navigate('RentalLoanFormBankStatementUpload');
             // navigation.navigate('RentalLoanFormCongratulation');
             // navigation.navigate('RentalLoanRequestDashBoard');
-            navigation.navigate('BusinessForm5');
+            navigation.navigate('BusinessForm4');
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

@@ -110,7 +110,7 @@ export default function Login({navigation}) {
   const [errorMsg, setErrorMsg] = useState('');
 
   const saveLoginToStorage = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
     } catch (error) {}
@@ -126,7 +126,7 @@ export default function Login({navigation}) {
       setSpinner(true);
       const res = await login(data);
 
-      console.log(res);
+      // console.log('LOGIN: ', res.data.authData);
 
       if (res.status == 200) {
         setSpinner(false);
@@ -226,8 +226,8 @@ export default function Login({navigation}) {
 
         <Formik
           validationSchema={LoginValidationSchema}
-          initialValues={{email: 'joshnwosu01@gmail.com', password: 'janedoe'}}
-          // initialValues={{email: '', password: ''}}
+          // initialValues={{email: 'joshnwosu01@gmail.com', password: 'janedoe'}}
+          initialValues={{email: '', password: ''}}
           onSubmit={(values) => {
             handleSubmit(values);
           }}>

@@ -73,20 +73,6 @@ export default function CardAndBankDetails({navigation}) {
       expires: '12/2022',
       type: 'mastercard',
     },
-    {
-      id: '2',
-      cardnumber: '1234 3245 1234 5678',
-      default: '',
-      expires: '12/2022',
-      type: 'visa',
-    },
-    {
-      id: '3',
-      cardnumber: '1234 3245 1234 5678',
-      default: '',
-      expires: '12/2022',
-      type: 'verizon',
-    },
   ];
 
   const BankAccounts = [
@@ -251,6 +237,7 @@ export default function CardAndBankDetails({navigation}) {
       });
       // console.log('USER BANK ACCOUNT:', response.data.userBanks);
       setUserBankAccounts(response.data.userBanks);
+      console.log('Token: ', token);
     } catch (error) {
       console.log(error);
     }

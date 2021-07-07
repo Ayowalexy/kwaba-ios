@@ -26,8 +26,8 @@ export default function AddressModal(props) {
     setCountry,
   } = props;
 
-  const checkIfInputsEmpty = () =>
-    cardNumber.length == 0 || expiryDate.length == 0 || cvv.length == 0;
+  // const checkIfInputsEmpty = () =>
+  //   cardNumber.length == 0 || expiryDate.length == 0 || cvv.length == 0;
 
   return (
     // <View>
@@ -65,41 +65,41 @@ export default function AddressModal(props) {
           </View>
 
           <TextInput
-            style={[styles.textInput, {marginTop: 18}]}
+            style={[styles.textInput]}
             placeholder="Street"
             // keyboardType="number-pad"
-            placeholderTextColor="#ADADAD"
+            placeholderTextColor="#777"
             value={street}
             onChangeText={(text) => setStreet(text)}
           />
           <TextInput
-            style={[styles.textInput, {marginTop: 18}]}
+            style={[styles.textInput]}
             placeholder="City"
             // keyboardType="number-pad"
-            placeholderTextColor="#ADADAD"
+            placeholderTextColor="#777"
             value={city}
             onChangeText={(text) => setCity(text)}
           />
           <TextInput
-            style={[styles.textInput, {marginTop: 18}]}
+            style={[styles.textInput]}
             placeholder="State"
             // keyboardType="number-pad"
-            placeholderTextColor="#ADADAD"
+            placeholderTextColor="#777"
             value={state}
             onChangeText={(text) => setState(text)}
           />
           <TextInput
-            style={[styles.textInput, {marginTop: 18}]}
+            style={[styles.textInput]}
             placeholder="Country"
             // keyboardType="number-pad"
-            placeholderTextColor="#ADADAD"
+            placeholderTextColor="#777"
             value={country}
             onChangeText={(text) => setCountry(text)}
           />
 
           <TouchableOpacity
             onPress={onConfirm}
-            style={[styles.btn, {backgroundColor: '#2A286A'}]}>
+            style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
             <Text style={{color: 'white', fontSize: 12, fontWeight: 'bold'}}>
               DONE
             </Text>
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   textInput: {
     width: '100%',
     borderRadius: 5,
-    paddingVertical: 12,
+    paddingVertical: 15,
     paddingHorizontal: 20,
     fontSize: 13,
     fontFamily: 'CircularStd-Medium',
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     borderColor: '#EFEFEF',
     borderWidth: 1,
     color: COLORS.primary,
+    marginTop: 10,
   },
   textStyle: {
     color: 'white',

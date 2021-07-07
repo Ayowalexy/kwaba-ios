@@ -286,6 +286,7 @@ export default function BusinessForm1({navigation}) {
                   <Field
                     name="is_business_registered"
                     component={IsBusinessRegistered}
+                    placeholder="Amount"
                   />
 
                   {values.is_business_registered.toLowerCase() == 'yes' && (

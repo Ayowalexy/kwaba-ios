@@ -127,7 +127,8 @@ export default function EligibilitySalaryEarner({navigation}) {
           onPress={() => {
             // navigation.navigate('AddressVerificationPayment');
             // navigation.navigate('PostPaymentForm3');
-            // navigation.navigate('RentalLoanForm3');
+            // navigation.navigate('RentalLoanOfferTest');
+            // navigation.navigate('RentalLoanForm1');
             // navigation.navigate('UploadBankStatement');
             // navigation.navigate('RentalLoanFormBankStatementUploadMono');
             // navigation.navigate('RentalLoanFormBankStatementUpload');

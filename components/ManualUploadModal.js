@@ -8,6 +8,8 @@ import {
   View,
   Image,
   Dimensions,
+  Permissions,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../util';
@@ -29,73 +31,42 @@ export default function ManualUploadModal(props) {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadFilename, setUploadFilename] = useState('');
   const [startUpload, setStartUpload] = useState(false);
+  const [uploadedFileInfo, setUploadedFileInfo] = useState([]);
   // const [response, setResponse] = useState('');
 
   const {onRequestClose, visible, onConfirm, navigation} = props;
 
   const uploadBankStatementFile = async () => {
-    // console.log('Hello world');
-
     const file = await DocumentPicker.pick({
       type: [DocumentPicker.types.allFiles],
     });
 
-    const formData = new FormData();
-
-    formData.append('file', {
+    const data = new FormData();
+    // data.append('file', file);
+    data.append('file', {
       uri: file.uri,
       type: file.type,
       name: file.name,
     });
-    formData.append('upload_preset', 'rental_loan_documents');
-    formData.append('cloud_name', 'kwaba');
+    data.append('upload_preset', 'rental_loan_documents');
+    data.append('cloud_name', 'kwaba');
 
-    const token = await getToken();
-
-    const applicationIDCallRes = await axios.get(
-      'http://67.207.86.39:8000/api/v1/application/one',
-      {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+    fetch('https://api.cloudinary.com/v1_1/kwaba/image/upload', {
+      method: 'POST',
+      body: data,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
-    );
-
-    const applicationId = applicationIDCallRes.data.data.id;
-
-    const options = {
-      onUploadProgress: (progressEvent) => {
-        const {loaded, total} = progressEvent;
-        let percentage = Math.floor((loaded * 100) / total);
-        console.log(`${loaded}kb of ${total}kb | ${percentage}%`);
-        setStartUpload(true);
-
-        if (percentage < 100) {
-          setUploadProgress(percentage);
-        }
-      },
-    };
-
-    await axios
-      .post(
-        'https://api.cloudinary.com/v1_1/kwaba/auto/upload',
-        formData,
-        options,
-      )
-      .then(
-        (res) => {
-          setUploadFilename(res.data.original_filename);
-          setUploadProgress(100);
-
-          console.log(res.data);
-        },
-        () => {
-          setTimeout(() => {
-            setUploadProgress(0);
-            setStartUpload(false);
-          }, 1000);
-        },
-      );
-
-    console.log('*****************');
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setUploadedFileInfo(data);
+      })
+      .catch((err) => {
+        Alert.alert('An error occupied while uploading file');
+      });
   };
 
   return (
@@ -158,7 +129,9 @@ export default function ManualUploadModal(props) {
               />
               <Text
                 style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
-                {uploadFilename}
+                {/* {uploadFilename} */}
+                {uploadedFileInfo.length != 0 &&
+                  'File: ' + uploadedFileInfo.original_filename}
               </Text>
               <TouchableOpacity
                 onPress={uploadBankStatementFile}
@@ -182,14 +155,18 @@ export default function ManualUploadModal(props) {
                   {/* {startUpload &&
                     uploadProgress > 0 &&
                     'Uploading...  ' + uploadProgress + '%'} */}
-                  {uploadProgress == 100 && 'File has been uploaded'}
-                  {!startUpload && uploadProgress == 0 && 'Choose a file'}
+                  {/* {uploadProgress == 100 && 'File has been uploaded'}
+                  {!startUpload && uploadProgress == 0 && 'Choose a file'} */}
+                  Choose a file
+                  {/* {uploadedFileInfo.length != 0
+                    ? 'File Uploaded'
+                    : 'Choose a file'} */}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          {uploadProgress > 0 && (
+          {uploadedFileInfo.length != 0 && (
             <View style={{overflow: 'hidden'}}>
               <Animatable.View
                 duration={300}

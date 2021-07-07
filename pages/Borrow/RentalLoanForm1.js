@@ -26,7 +26,7 @@ const rentalLoanFormSchema = yup.object().shape({
   accommodationStatus: yup.string().required('Select accomodation status'),
   requestAmount: yup.string().required('Provide an amount'),
   salaryAmount: yup.string().required('Provide an amount'),
-  monthlyPaymentPlan: yup.string().required('Select a monthly payment plan')
+  monthlyPaymentPlan: yup.string().required('Select a monthly payment plan'),
 });
 
 const RentalLoanForm1 = ({navigation}) => {
@@ -56,15 +56,15 @@ const RentalLoanForm1 = ({navigation}) => {
 
   const handleSubmit = async (values) => {
     const data = {
-      accommodationstatus: values.accommodationStatus,
+      accomodationstatus: values.accommodationStatus,
       salary_amount: Number(unFormatNumber(values.salaryAmount)),
-      request_amount: Number(unFormatNumber(values.requestAmount)),
-      selected_month: Number(values.monthlyPaymentPlan),
+      amount_needed_from_kwaba: Number(unFormatNumber(values.requestAmount)),
+      repayment_plan: values.monthlyPaymentPlan,
     };
 
     // console.log('VALUES:', data);
 
-    // await AsyncStorage.removeItem('rentalLoanForm')
+    await AsyncStorage.removeItem('rentalLoanForm');
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     console.log(loanFormData);
@@ -152,20 +152,17 @@ const RentalLoanForm1 = ({navigation}) => {
             style={[
               designs.buttonStyleA,
               {
-                borderColor:
-                  value == option ? COLORS.light : '#ADADAD50',
+                borderColor: value == option ? COLORS.light : '#ADADAD50',
               },
             ]}
-            onPress={() => setFieldValue('accommodationStatus',option)}>
+            onPress={() => setFieldValue('accommodationStatus', option)}>
             <View>
               <Text
                 style={[
                   designs.btnText,
                   {
-                    color:
-                      value == option ? COLORS.light : COLORS.grey,
-                    fontWeight:
-                      value == option ? 'bold' : 'normal',
+                    color: value == option ? COLORS.light : COLORS.grey,
+                    fontWeight: value == option ? 'bold' : 'normal',
                   },
                 ]}>
                 {option}
@@ -189,47 +186,43 @@ const RentalLoanForm1 = ({navigation}) => {
     const hasError = errors[name] && touched[name];
 
     return (
-    <>
-      <Text style={styles.label}>
-        Choose a monthly payment plan
-      </Text>
-      <TouchableOpacity
-        style={[styles.customInput, {padding: 20}]}
-        onPress={() => {
-          setShowSelectMonthModal(!showSelectMonthModal);
-        }}>
-        {value != '' ? (
-          <Text
-            style={{
-              // fontWeight: 'bold',
-              color: COLORS.primary,
-            }}>
-            {value}{' '}
-            {value <= 1 ? 'month' : 'months'}
-          </Text>
-        ) : (
-          <Text
-            style={{
-              // fontWeight: 'bold',
-              color: '#BABABA',
-            }}>
-            Choose a month
-          </Text>
-        )}
+      <>
+        <Text style={styles.label}>Choose a monthly payment plan</Text>
+        <TouchableOpacity
+          style={[styles.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowSelectMonthModal(!showSelectMonthModal);
+          }}>
+          {value != '' ? (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              {value}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#BABABA',
+              }}>
+              Choose a month
+            </Text>
+          )}
 
-        <Icon
-          name="chevron-down-outline"
-          size={20}
-          style={{fontWeight: 'bold'}}
-          color="#BABABA"
-        />
-      </TouchableOpacity>
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
 
-      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-
-    </>
-    )
-  }
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -313,7 +306,10 @@ const RentalLoanForm1 = ({navigation}) => {
                     </Text>
 
                     {/* <AccomodationOptions /> */}
-                    <Field component={AccommodationOptions} name="accommodationStatus" />
+                    <Field
+                      component={AccommodationOptions}
+                      name="accommodationStatus"
+                    />
                   </>
 
                   <>
@@ -338,9 +334,10 @@ const RentalLoanForm1 = ({navigation}) => {
                     />
                   </>
 
-                  <Field component={SelectMonthlyPlan} name="monthlyPaymentPlan" />
-
-                  
+                  <Field
+                    component={SelectMonthlyPlan}
+                    name="monthlyPaymentPlan"
+                  />
                 </View>
 
                 <TouchableOpacity
@@ -362,11 +359,13 @@ const RentalLoanForm1 = ({navigation}) => {
                 </TouchableOpacity>
 
                 <SelectMonthModal
-                  onRequestClose={() => setShowSelectMonthModal(!showSelectMonthModal)}
+                  onRequestClose={() =>
+                    setShowSelectMonthModal(!showSelectMonthModal)
+                  }
                   visible={showSelectMonthModal}
-                  onClick={(value)=> {
-                     setValues({...values, 'monthlyPaymentPlan': value})
-                     setSelectedMonth(value)
+                  onClick={(value) => {
+                    setValues({...values, monthlyPaymentPlan: value});
+                    setSelectedMonth(value);
                   }}
                   selectedMonth={selectedMonth}
                 />

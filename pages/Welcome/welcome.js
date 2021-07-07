@@ -37,6 +37,20 @@ const Welcome = ({navigation}) => {
     }
   };
 
+  const handleNavigation = async () => {
+    try {
+      const value = await AsyncStorage.getItem('onboarding_done_flag');
+      console.log(value);
+      if (value === null || value != 'true') {
+        navigation.navigate('Onboarding');
+      } else {
+        navigation.navigate('SignUp');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const store2 = useSelector((state) => state.loginReducer);
 
   useEffect(() => {}, [userToken]);
@@ -84,13 +98,14 @@ const Welcome = ({navigation}) => {
               fontSize: 14,
               // fontWeight: 'bold',
             }}>
-            The Future of rent.
+            The future of rent.
           </Text>
         </View>
 
         <View style={{alignItems: 'center'}}>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Onboarding')}
+            // onPress={() => navigation.navigate('Onboarding')}
+            onPress={handleNavigation}
             style={{
               width: '100%',
               paddingVertical: 22,

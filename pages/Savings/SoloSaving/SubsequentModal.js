@@ -30,14 +30,9 @@ export default function SubsequentModal(props) {
   const [spinner, setSpinner] = useState(false);
   const store = useSelector((state) => state.soloSavingReducer);
 
-  // useEffect(() => {
-  //   console.log(subsequent);
-  // }, [subsequent]);
-
   const handleTransactions = async () => {
     // close modal
     onRequestClose();
-    // console.log(store);
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
         setSpinner(true);
@@ -50,16 +45,15 @@ export default function SubsequentModal(props) {
           );
           console.log(result.type);
           if (result.type === 'cancel') {
-            // navigation.navigate('SoloSavingDashBoard');
-            // navigationToDashboard();
-            goToDashboard();
-
             let data = {reference: response.data.data.reference};
             // setVerificationSpinner(true);
             const verify = await verifyPayment(data);
+            console.log('Verify', verify);
             // console.log('Verify: ', verify);
             if (verify.data.status == 'success') {
-              setVerificationSpinner(false);
+              console.log('createPlan');
+              // setVerificationSpinner(false);
+              goToDashboard();
               await createPlan();
             } else {
               // setVerificationSpinner(false);
@@ -77,23 +71,6 @@ export default function SubsequentModal(props) {
       // setSpinner(false);
       console.log('error', error);
     }
-
-    // DO NOT UNCOMMENT THIS CODE
-    // const data = {
-    //   savings_amount: Number(store.savings_target_amount),
-    //   // savings_target_amount: Number(store.savings_target_amount),
-    //   savings_frequency: store.savings_frequency.toLowerCase(),
-    //   savings_account_number: '',
-    //   savings_account_name: '',
-    //   savings_bank_code: '',
-    //   savings_tenure: Number(store.savings_tenure[0]),
-    //   savings_title: store.savings_title,
-    //   savings_start_date: store.savings_start_date,
-    //   savings_end_date: store.savings_end_date,
-    //   locked: store.locked,
-    // };
-    // console.log('DATA: ', data);
-    // console.log('STORE: ', store);
   };
 
   const createPlan = async () => {
@@ -102,9 +79,9 @@ export default function SubsequentModal(props) {
       savings_amount: Number(store.savings_target_amount),
       // savings_target_amount: Number(store.savings_target_amount),
       savings_frequency: store.savings_frequency.toLowerCase(),
-      savings_account_number: '',
-      savings_account_name: '',
-      savings_bank_code: '',
+      savings_account_number: '0094552107',
+      savings_account_name: 'JOSHUA UDO NWOSU',
+      savings_bank_code: '063',
       savings_tenure: Number(store.savings_tenure[0]),
       savings_title: store.savings_title,
       savings_start_date: store.savings_start_date,
@@ -297,8 +274,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    // borderColor: '#f00',
-    // borderWidth: 1,
   },
   modalView: {
     width: '100%',

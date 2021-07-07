@@ -22,7 +22,6 @@ import BusinessSectorModal from './Modals/BusinessSectorModal';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
-
 const businessFormSchema = yup.object().shape({
   pay_in_bank: yup.string().required('Please select an option'),
   // monthly_business_expenditure: yup.string().required('Please enter amount'),
@@ -77,7 +76,7 @@ export default function BusinessForm1({navigation}) {
         {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
       </>
     );
-  }
+  };
 
   const NumberInput = (props) => {
     const {
@@ -148,10 +147,7 @@ export default function BusinessForm1({navigation}) {
     //   monthly_business_revenue: '',
     // };
 
-    const {
-      monthly_business_expenditure,
-      monthly_business_revenue,
-    } = values;
+    const {monthly_business_expenditure, monthly_business_revenue} = values;
     const data = {
       monthly_business_expenditure,
       monthly_business_revenue,
@@ -163,7 +159,7 @@ export default function BusinessForm1({navigation}) {
 
     await AsyncStorage.setItem(
       'businessFormDataStore',
-      JSON.stringify({ ...JSON.parse(businessFormData), ...data }),
+      JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
     console.log(data);
@@ -232,7 +228,7 @@ export default function BusinessForm1({navigation}) {
                           color: '#ADADAD',
                           marginRight: 15,
                         }}>
-                        4 of 5
+                        5 of 5
                       </Text>
                       <AnimatedCircularProgress
                         size={25}
@@ -249,23 +245,29 @@ export default function BusinessForm1({navigation}) {
 
                   <Field name="pay_in_bank" component={PayInBank} />
 
-                  {values.pay_in_bank.toLowerCase() == 'yes' && 
+                  {values.pay_in_bank.toLowerCase() == 'yes' && (
                     <>
                       <Text style={[designs.boldText, {marginTop: 18}]}>
                         How much is the business monthly revenue?
                       </Text>
-                      <Field name="monthly_business_expenditure" component={NumberInput} />
+                      <Field
+                        name="monthly_business_expenditure"
+                        component={NumberInput}
+                        placeholder="Amount"
+                      />
                     </>
-                  }
+                  )}
 
                   <>
                     <Text style={[designs.boldText, {marginTop: 18}]}>
                       How much is spent monthly on the business?
                     </Text>
-                    <Field name="monthly_business_revenue" component={NumberInput} />
+                    <Field
+                      name="monthly_business_revenue"
+                      component={NumberInput}
+                      placeholder="Amount"
+                    />
                   </>
-
-                  
                 </View>
               </View>
             </ScrollView>

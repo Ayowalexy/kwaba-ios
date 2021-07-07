@@ -28,6 +28,8 @@ import ComingSoon from '../../components/ComingSoon';
 export default function Home({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
+  const user = useSelector((state) => state.getUserReducer);
+  const login = useSelector((state) => state.loginReducer);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [name, setName] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,16 +41,22 @@ export default function Home({navigation}) {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const getUserData = async () => {
-      const userData = await AsyncStorage.getItem('userData');
+    // const getUserData = async () => {
+    //   const userData = await AsyncStorage.getItem('userData');
 
-      // console.log('hello here is our data ', JSON.parse(userData));
-      if (userData) {
-        setName(JSON.parse(userData).username);
-      }
-    };
-    getUserData();
-  }, []);
+    //   // console.log('hello here is our data ', JSON.parse(userData));
+    //   if (userData) {
+    //     setName(JSON.parse(userData).username);
+    //   }
+    // };
+    // getUserData();
+    // console.log(user.data);
+    const userFirstname = login;
+    // console.log(userFirstname);
+    console.log('Login:', userFirstname);
+
+    if (userFirstname) setName(userFirstname.username);
+  }, [login]);
 
   useEffect(() => {
     dispatch(getTotalSoloSavings());
@@ -174,7 +182,7 @@ export default function Home({navigation}) {
           />
         </TouchableOpacity>
       </View>
-      {!isProfileComplete && (
+      {isProfileComplete && (
         <View style={designs.secondBar}>
           <View
             style={{

@@ -14,7 +14,21 @@ import {COLORS} from '../util';
 
 export default function SelectMonthModal(props) {
   const {onRequestClose, visible, onClick, selectedMonth} = props;
-  const months = new Array(12).fill();
+  // const months = new Array(12).fill();
+  const months = [
+    '1 Month',
+    '2 Months',
+    '3 Months',
+    '4 Months',
+    '5 Months',
+    '6 Months',
+    '7 Months',
+    '8 Months',
+    '9 Months',
+    '10 Months',
+    '11 Months',
+    '12 Months',
+  ];
   useEffect(() => {
     // console.log(months);
     // console.log('Selected Month:', selectedMonth);
@@ -49,10 +63,10 @@ export default function SelectMonthModal(props) {
             // showsVerticalScrollIndicator={false}
           >
             <View>
-              {months.map((number, index) => (
+              {months.map((month, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    onClick(index + 1);
+                    onClick(month);
                     onRequestClose();
                   }}
                   key={index}
@@ -60,9 +74,7 @@ export default function SelectMonthModal(props) {
                     paddingVertical: 15,
                     paddingHorizontal: 25,
                     backgroundColor:
-                      index + 1 == selectedMonth
-                        ? COLORS.secondary
-                        : 'transparent',
+                      month == selectedMonth ? COLORS.secondary : 'transparent',
 
                     alignItems: 'center',
                   }}>
@@ -73,11 +85,10 @@ export default function SelectMonthModal(props) {
                       fontWeight: 'bold',
                       // color: COLORS.primary,
                       color:
-                        index + 1 == selectedMonth
-                          ? COLORS.white
-                          : COLORS.primary,
+                        month == selectedMonth ? COLORS.white : COLORS.primary,
                     }}>
-                    {index + 1} {index + 1 <= 1 ? 'month' : 'months'}
+                    {/* {index + 1} {index + 1 <= 1 ? 'month' : 'months'} */}
+                    {month}
                   </Text>
                 </TouchableOpacity>
               ))}

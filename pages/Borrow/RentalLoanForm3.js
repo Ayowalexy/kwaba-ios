@@ -91,9 +91,8 @@ const RentalLoanForm3 = ({navigation}) => {
 
   const dummyData2 = {
     bvn: '123456789',
-    dob: '1991-10-09'
-  }
-
+    dob: '1991-10-09',
+  };
 
   const handleModalButtonPush = async () => {
     setVisible(false);
@@ -143,7 +142,7 @@ const RentalLoanForm3 = ({navigation}) => {
 
     // console.log(data);
 
-    const loanFormData = await AsyncStorage.getItem('rentalLoanForm')
+    const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
     await AsyncStorage.setItem(
       'rentalLoanForm',
@@ -155,11 +154,10 @@ const RentalLoanForm3 = ({navigation}) => {
     // console.log(loanFormData)
 
     // console.log(data)
+  };
 
-  }
-
-
-  const handleNavigation = async() => {
+  const handleNavigation = async () => {
+    setVisible(false);
     // setSuccessModal(false);
     // navigation.navigate('UploadBankStatement');
 
@@ -167,7 +165,7 @@ const RentalLoanForm3 = ({navigation}) => {
     // setVisible(false);
 
     // let stepsdata={
-     
+
     //   propertydetail:'done',
     //   landlorddetail:'done',
     //   documentdone:'',
@@ -182,14 +180,14 @@ const RentalLoanForm3 = ({navigation}) => {
     // // console.log('steps here', steps);
     //   const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     //   const steps = JSON.parse(borrwSteps);
-      
+
     //   if (steps.documentdone == '') {
     //     navigation.navigate('UploadDocuments');
     //   } else if (steps.refree == '') {
     //     navigation.navigate('UploadDocuments');
     //   }
     //   else if (steps.offeraccepted == '') {
-    //     navigation.navigate('RentalLoanOfferTest'); 
+    //     navigation.navigate('RentalLoanOfferTest');
     //   } else if (steps.addressverification == '') {
     //     navigation.navigate('AddressVerificationPayment');
     //   } else if (steps.debitmandate == '') {
@@ -205,10 +203,26 @@ const RentalLoanForm3 = ({navigation}) => {
     // //   return token;
     // // }
 
-    let loanFormData
-    loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    loanFormData = JSON.parse(loanFormData);
-    // console.log(loanFormData)
+    let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    let parsedData = JSON.parse(loanFormData);
+    console.log(parsedData);
+
+    const url = 'http://67.207.86.39:8000/api/v1/application/new';
+    const token = await getToken();
+
+    try {
+      const response = await axios.post(
+        url,
+        {...dummyData, ...parsedData},
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.response.data);
+      Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
+    }
 
     // const data = {
     //   accomodationstatus: loanFormData.accommodationstatus,
@@ -257,7 +271,7 @@ const RentalLoanForm3 = ({navigation}) => {
     //   Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
     // }
 
-    navigation.navigate('RentalLoanFormCongratulation');
+    // navigation.navigate('RentalLoanFormCongratulation');
   };
 
   const getApplicationData = async () => {
@@ -382,13 +396,8 @@ const RentalLoanForm3 = ({navigation}) => {
     );
   };
 
-
   const WhoDidYouPayTo = (props) => {
-    const lists = [
-      'Landlord',
-      'Caretaker',
-      'Agent',
-    ];
+    const lists = ['Landlord', 'Caretaker', 'Agent'];
 
     const {
       field: {name, value},
@@ -406,20 +415,17 @@ const RentalLoanForm3 = ({navigation}) => {
             style={[
               designs.buttonStyleA,
               {
-                borderColor:
-                  value == option ? COLORS.light : '#ADADAD50',
+                borderColor: value == option ? COLORS.light : '#ADADAD50',
               },
             ]}
-            onPress={() => setFieldValue('whoDidYouPayTo',option)}>
+            onPress={() => setFieldValue('whoDidYouPayTo', option)}>
             <View>
               <Text
                 style={[
                   designs.btnText,
                   {
-                    color:
-                      value == option ? COLORS.light : COLORS.grey,
-                    fontWeight:
-                      value == option ? 'bold' : 'normal',
+                    color: value == option ? COLORS.light : COLORS.grey,
+                    fontWeight: value == option ? 'bold' : 'normal',
                   },
                 ]}>
                 {option}
@@ -433,7 +439,6 @@ const RentalLoanForm3 = ({navigation}) => {
     );
   };
 
-
   const HowDidYouPay = (props) => {
     const {
       field: {name, value},
@@ -444,43 +449,42 @@ const RentalLoanForm3 = ({navigation}) => {
     const hasError = errors[name] && touched[name];
 
     return (
-    <>
-      <TouchableOpacity
-        style={[designs.customInput, {padding: 20}]}
-        onPress={() => {
-          setShowSelectPayMethodModal(!showSelectPayMethodModal);
-        }}>
-        {value != '' ? (
-          <Text
-            style={{
-              // fontWeight: 'bold',
-              color: COLORS.primary,
-            }}>
-            {value}
-          </Text>
-        ) : (
-          <Text
-            style={{
-              // fontWeight: 'bold',
-              color: '#BABABA',
-            }}>
-            How did you pay
-          </Text>
-        )}
+      <>
+        <TouchableOpacity
+          style={[designs.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowSelectPayMethodModal(!showSelectPayMethodModal);
+          }}>
+          {value != '' ? (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              {value}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#BABABA',
+              }}>
+              How did you pay
+            </Text>
+          )}
 
-        <Icon
-          name="chevron-down-outline"
-          size={20}
-          style={{fontWeight: 'bold'}}
-          color="#BABABA"
-        />
-      </TouchableOpacity>
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
 
-      {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
-
-    </>
-    )
-  }
+        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
 
   const LengthOfResidence = (props) => {
     const {
@@ -492,43 +496,42 @@ const RentalLoanForm3 = ({navigation}) => {
     const hasError = errors[name] && touched[name];
 
     return (
-    <>
-      <TouchableOpacity
-        style={[designs.customInput, {padding: 20}]}
-        onPress={() => {
-          setShowSelectYearModal(!showSelectYearModal);
-        }}>
-        {value != '' ? (
-          <Text
-            style={{
-              // fontWeight: 'bold',
-              color: COLORS.primary,
-            }}>
-            {value} {value <= 1 ? 'year' : 'years'}
-          </Text>
-        ) : (
-          <Text
-            style={{
-              // fontWeight: 'bold',
-              color: '#BABABA',
-            }}>
-            Choose a year
-          </Text>
-        )}
+      <>
+        <TouchableOpacity
+          style={[designs.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowSelectYearModal(!showSelectYearModal);
+          }}>
+          {value != '' ? (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              {value}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#BABABA',
+              }}>
+              Choose a year
+            </Text>
+          )}
 
-        <Icon
-          name="chevron-down-outline"
-          size={20}
-          style={{fontWeight: 'bold'}}
-          color="#BABABA"
-        />
-      </TouchableOpacity>
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
 
-      {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
-
-    </>
-    )
-  }
+        {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -544,159 +547,200 @@ const RentalLoanForm3 = ({navigation}) => {
           style={{
             paddingHorizontal: 10,
           }}>
-          <Formik 
-           validationSchema={rentalLoanFormSchema}
-           initialValues={{
-            homeAddress: '',
-            lengthOfResidence: '',
-            lastRentAmount: '',
-            whoDidYouPayTo: '',
-            howDidYouPay: '',
-           }}
-           onSubmit={(values) => {
-             handleSubmit(values);
-           }}
-          >
-             {({handleSubmit, isValid, values, setValues}) => (
-                <>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                fontSize: 20,
-              },
-            ]}>
-            Rent Now Pay Later
-          </Text>
-          <View style={designs.contentWrapper}>
-            <View style={designs.formHeader}>
-              <Text
-                style={[
-                  FONTS.h3FontStyling,
-                  {
-                    color: COLORS.primary,
-                    textAlign: 'left',
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                  },
-                ]}>
-                Rent Information
-              </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Formik
+            validationSchema={rentalLoanFormSchema}
+            initialValues={{
+              homeAddress: '',
+              lengthOfResidence: '',
+              lastRentAmount: '',
+              whoDidYouPayTo: '',
+              howDidYouPay: '',
+            }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}>
+            {({handleSubmit, isValid, values, setValues}) => (
+              <>
                 <Text
-                  style={{
-                    fontSize: 12,
-                    lineHeight: 15,
-                    color: '#ADADAD',
-                    marginRight: 15,
-                  }}>
-                  3 of 3
+                  style={[
+                    FONTS.h1FontStyling,
+                    {
+                      color: '#2A286A',
+                      textAlign: 'left',
+                      fontWeight: 'bold',
+                      fontSize: 20,
+                    },
+                  ]}>
+                  Rent Now Pay Later
                 </Text>
-                <AnimatedCircularProgress
-                  size={25}
-                  width={5}
-                  fill={progress}
-                  rotation={0}
-                  tintColor={COLORS.secondary}
-                  backgroundColor="#D6D6D6"
+                <View style={designs.contentWrapper}>
+                  <View style={designs.formHeader}>
+                    <Text
+                      style={[
+                        FONTS.h3FontStyling,
+                        {
+                          color: COLORS.primary,
+                          textAlign: 'left',
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        },
+                      ]}>
+                      Rent Information
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 15,
+                          color: '#ADADAD',
+                          marginRight: 15,
+                        }}>
+                        3 of 3
+                      </Text>
+                      <AnimatedCircularProgress
+                        size={25}
+                        width={5}
+                        fill={progress}
+                        rotation={0}
+                        tintColor={COLORS.secondary}
+                        backgroundColor="#D6D6D6"
+                      />
+                    </View>
+                  </View>
+
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      What is your current home address?
+                    </Text>
+                    <Field
+                      component={CustomInput}
+                      name="homeAddress"
+                      placeholder="Enter Address"
+                    />
+                  </>
+
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      How long have you lived here?
+                    </Text>
+
+                    <Field
+                      component={LengthOfResidence}
+                      name="lengthOfResidence"
+                    />
+                  </>
+
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      How much was your last rent?{' '}
+                    </Text>
+                    <Field
+                      component={NumberInput}
+                      name="lastRentAmount"
+                      placeholder="Amount"
+                    />
+                  </>
+
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      Who did you pay to?{' '}
+                    </Text>
+                    <Field component={WhoDidYouPayTo} name="whoDidYouPayTo" />
+                  </>
+
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      How did you pay?{' '}
+                    </Text>
+                    <Field component={HowDidYouPay} name="howDidYouPay" />
+                  </>
+                </View>
+
+                <TouchableOpacity
+                  // onPress={() => setVisible(true)}
+                  onPress={handleSubmit}
+                  // onPress={()=> console.log('Submitting...')}
+                  style={[designs.button, {backgroundColor: COLORS.secondary}]}>
+                  <Text
+                    style={[
+                      designs.buttonText,
+                      {
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
+                    ]}>
+                    NEXT
+                  </Text>
+                </TouchableOpacity>
+
+                <SelectPayMethodModal
+                  onRequestClose={() =>
+                    setShowSelectPayMethodModal(!showSelectPayMethodModal)
+                  }
+                  visible={showSelectPayMethodModal}
+                  onClick={(value) =>
+                    setValues({...values, howDidYouPay: value})
+                  }
                 />
-              </View>
-            </View>
 
-            <>
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-                ]}>
-                What is your current home address?
-              </Text>
-              <Field component={CustomInput} name="homeAddress" placeholder="Enter Address" />
-            </>
-
-            <>
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-                ]}>
-                How long have you lived here?
-              </Text>
-
-              <Field component={LengthOfResidence} name="lengthOfResidence" />
-            </>
-
-            <>
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-                ]}>
-                How much was your last rent?{' '}
-              </Text>
-              <Field component={NumberInput} name="lastRentAmount" placeholder="Amount" />
-            </>
-
-            <>
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-                ]}>
-                Who did you pay to?{' '}
-              </Text>
-              <Field component={WhoDidYouPayTo} name="whoDidYouPayTo" />
-            </>
-
-            <>
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-                ]}>
-                How did you pay?{' '}
-              </Text>
-              <Field component={HowDidYouPay} name="howDidYouPay" />
-            </>
-          </View>
-
-          <TouchableOpacity
-            // onPress={() => setVisible(true)}
-            onPress={handleSubmit}
-            // onPress={()=> console.log('Submitting...')}
-            style={[designs.button, {backgroundColor: COLORS.secondary}]}>
-            <Text
-              style={[
-                designs.buttonText,
-                {
-                  color: COLORS.white,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 12,
-                },
-              ]}>
-              NEXT
-            </Text>
-          </TouchableOpacity>
-
-          <SelectPayMethodModal
-            onRequestClose={() =>
-              setShowSelectPayMethodModal(!showSelectPayMethodModal)
-            }
-            visible={showSelectPayMethodModal}
-            onClick={(value) => setValues({...values, 'howDidYouPay': value})}
-          />
-
-          <SelectYearModal
-            onRequestClose={() => setShowSelectYearModal(!showSelectYearModal)}
-            visible={showSelectYearModal}
-            onClick={(value) => setValues({...values, 'lengthOfResidence': value})}
-          />
-          </>
-          )}
+                <SelectYearModal
+                  onRequestClose={() =>
+                    setShowSelectYearModal(!showSelectYearModal)
+                  }
+                  visible={showSelectYearModal}
+                  onClick={(value) =>
+                    setValues({...values, lengthOfResidence: value})
+                  }
+                />
+              </>
+            )}
           </Formik>
         </View>
 
@@ -779,8 +823,6 @@ const RentalLoanForm3 = ({navigation}) => {
           </View>
         </Modal>
       </ScrollView>
-
-      
     </View>
   );
 };

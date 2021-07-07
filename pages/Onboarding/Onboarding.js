@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Image,
@@ -12,12 +12,15 @@ import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import Indicators from '../../components/indicators';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const screens = [
   {
     id: 1,
     title: 'Rent Saving',
-    content: 'Save towards your rent with your \n flatmates or spouse.',
+    // content: 'Save towards your rent with your \n flatmates or spouse.',
+    content:
+      'Save towards your rent individually \n or with your family and friends. \n Unlike your bank or other apps, \n let Kwaba make your rent work for you',
     image: icons.onboardingImage,
     loader: icons.onboardingLoader1,
   },
@@ -41,6 +44,26 @@ const screens = [
 
 const Onboarding = ({navigation}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // useEffect(() => {
+  //   console.log('currentIndex:', currentIndex);
+  //   if (currentIndex == 2) console.log('Done');
+  // }, [currentIndex]);
+
+  const handleDone = async () => {
+    // await AsyncStorage.removeItem('onboarding_done_flag');
+
+    try {
+      let value = await AsyncStorage.getItem('onboarding_done_flag');
+      if (value === null || value != 'true') {
+        AsyncStorage.setItem('onboarding_done_flag', 'true');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    navigation.navigate('SignUp');
+  };
+
   return (
     <View style={designs.container}>
       <SwiperFlatList
@@ -150,7 +173,8 @@ const Onboarding = ({navigation}) => {
 
                 {item.id == 3 ? (
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUp')}
+                    // onPress={() => navigation.navigate('SignUp')}
+                    onPress={handleDone}
                     style={{
                       width: '100%',
                       paddingVertical: 20,

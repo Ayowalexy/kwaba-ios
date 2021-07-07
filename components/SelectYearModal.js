@@ -13,7 +13,14 @@ import {COLORS} from '../util';
 
 export default function SelectYearModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const years = new Array(3).fill();
+  // const years = new Array(5).fill();
+  const years = [
+    '1 Year',
+    '2 Years',
+    '3 Years',
+    '4 Years',
+    '5 Years and above',
+  ];
   useEffect(() => {
     console.log(years);
   }, []);
@@ -40,10 +47,10 @@ export default function SelectYearModal(props) {
             }}
           />
           <View style={{marginTop: 20}}>
-            {years.map((number, index) => (
+            {years.map((year, index) => (
               <TouchableOpacity
                 onPress={() => {
-                  onClick(index + 1);
+                  onClick(year);
                   onRequestClose();
                 }}
                 key={index}
@@ -53,11 +60,17 @@ export default function SelectYearModal(props) {
                 }}>
                 <Text
                   style={{
-                    fontSize: 14 + index,
+                    fontSize: 14,
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {index + 1} {index + 1 <= 1 ? 'year' : 'years'}
+                  {/* {index + 1}{' '}
+                  {index + 1 <= 1
+                    ? 'year'
+                    : index == 4
+                    ? 'years and above'
+                    : 'years'} */}
+                  {year}
                 </Text>
               </TouchableOpacity>
             ))}

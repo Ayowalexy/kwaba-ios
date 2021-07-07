@@ -25,7 +25,7 @@ const rentalLoanFormSchema = yup.object().shape({
   company_street_name: yup.string().required('Field required'),
   company_city_name: yup.string().required('Field required'),
   company_state_name: yup.string().required('Field required'),
-  company_country_name: yup.string().required('Field required')
+  company_country_name: yup.string().required('Field required'),
 });
 
 const RentalLoanForm2 = ({navigation}) => {
@@ -57,7 +57,7 @@ const RentalLoanForm2 = ({navigation}) => {
     const data = {
       employer_name: values.employer_name,
       // employer_address: `${companyAddressNumberAndStreet} ${companyAddressCity} ${companyAddressState} ${companyAddressCountry} `,
-      employer_address: `${values.company_street_name} ${values.company_city_name} ${values.company_state_name} ${values.company_country_name}`
+      employer_address: `${values.company_street_name} ${values.company_city_name} ${values.company_state_name} ${values.company_country_name}`,
     };
     // if (isError()) {
     //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
@@ -71,9 +71,9 @@ const RentalLoanForm2 = ({navigation}) => {
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
 
-    // console.log(loanFormData)
+    console.log(loanFormData);
 
-    // console.log(data)
+    // console.log(data);
 
     navigation.navigate('RentalLoanForm3');
     // try {
@@ -138,119 +138,146 @@ const RentalLoanForm2 = ({navigation}) => {
             // marginHorizontal: 16,
             paddingHorizontal: 10,
           }}>
-            <Formik 
+          <Formik
             validationSchema={rentalLoanFormSchema}
             initialValues={{
               employer_name: '',
               company_street_name: '',
               company_city_name: '',
               company_state_name: '',
-              company_country_name: ''
+              company_country_name: '',
             }}
             onSubmit={(values) => {
               handleSubmit(values);
             }}>
-              {({handleSubmit, isValid, values, setValues}) => (
-                <>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                fontSize: 20,
-              },
-            ]}>
-            Rent Now Pay Later
-          </Text>
-          <View style={designs.contentWrapper}>
-            <View style={designs.formHeader}>
-              <Text
-                style={[
-                  FONTS.h3FontStyling,
-                  {
-                    color: COLORS.primary,
-                    textAlign: 'left',
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                  },
-                ]}>
-                Financial Details
-              </Text>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {({handleSubmit, isValid, values, setValues}) => (
+              <>
                 <Text
-                  style={{
-                    fontSize: 12,
-                    lineHeight: 15,
-                    color: '#ADADAD',
-                    marginRight: 15,
-                  }}>
-                  2 of 3
+                  style={[
+                    FONTS.h1FontStyling,
+                    {
+                      color: '#2A286A',
+                      textAlign: 'left',
+                      fontWeight: 'bold',
+                      fontSize: 20,
+                    },
+                  ]}>
+                  Rent Now Pay Later
                 </Text>
-                <AnimatedCircularProgress
-                  size={25}
-                  width={5}
-                  fill={progress}
-                  rotation={0}
-                  tintColor={COLORS.secondary}
-                  backgroundColor="#D6D6D6"
-                />
-              </View>
-            </View>
+                <View style={designs.contentWrapper}>
+                  <View style={designs.formHeader}>
+                    <Text
+                      style={[
+                        FONTS.h3FontStyling,
+                        {
+                          color: COLORS.primary,
+                          textAlign: 'left',
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        },
+                      ]}>
+                      Financial Details
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          lineHeight: 15,
+                          color: '#ADADAD',
+                          marginRight: 15,
+                        }}>
+                        2 of 3
+                      </Text>
+                      <AnimatedCircularProgress
+                        size={25}
+                        width={5}
+                        fill={progress}
+                        rotation={0}
+                        tintColor={COLORS.secondary}
+                        backgroundColor="#D6D6D6"
+                      />
+                    </View>
+                  </View>
 
-            <>
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-                ]}>
-                What’s the name of the company you work for?{' '}
-              </Text>
-              <Field component={CustomInput} name="employer_name" placeholder="Employer's name" />
-            </>
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      What’s the name of the company you work for?{' '}
+                    </Text>
+                    <Field
+                      component={CustomInput}
+                      name="employer_name"
+                      placeholder="Employer's name"
+                    />
+                  </>
 
-            <>
+                  <>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.dark,
+                          marginBottom: 0,
+                          marginTop: 20,
+                          fontSize: 14,
+                        },
+                      ]}>
+                      Address of the company?
+                    </Text>
 
-            <Text
-              style={[
-                FONTS.body1FontStyling,
-                {color: COLORS.dark, marginBottom: 0, marginTop: 20, fontSize: 14},
-              ]}>
-              Address of the company?
-            </Text>
+                    <Field
+                      component={CustomInput}
+                      name="company_street_name"
+                      placeholder="Number and street name"
+                    />
 
-            <Field component={CustomInput} name="company_street_name" placeholder="Number and street name" />
+                    <Field
+                      component={CustomInput}
+                      name="company_city_name"
+                      placeholder="City"
+                    />
 
-            <Field component={CustomInput} name="company_city_name" placeholder="City" />
+                    <Field
+                      component={CustomInput}
+                      name="company_state_name"
+                      placeholder="State"
+                    />
 
-            <Field component={CustomInput} name="company_state_name" placeholder="State" />
+                    <Field
+                      component={CustomInput}
+                      name="company_country_name"
+                      placeholder="Country"
+                    />
+                  </>
+                </View>
 
-            <Field component={CustomInput} name="company_country_name" placeholder="Country" />
-
-            </>
-
-          </View>
-
-          <TouchableOpacity
-            onPress={handleSubmit}
-            // disabled={isError()}
-            style={[designs.button, {backgroundColor: COLORS.secondary}]}>
-            <Text
-              style={[
-                designs.buttonText,
-                {
-                  color: COLORS.white,
-                  textAlign: 'center',
-                  fontWeight: 'bold',
-                  fontSize: 12,
-                },
-              ]}>
-              NEXT
-            </Text>
-          </TouchableOpacity>
-          </>
-          )}
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  // disabled={isError()}
+                  style={[designs.button, {backgroundColor: COLORS.secondary}]}>
+                  <Text
+                    style={[
+                      designs.buttonText,
+                      {
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
+                    ]}>
+                    NEXT
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
           </Formik>
         </View>
       </ScrollView>

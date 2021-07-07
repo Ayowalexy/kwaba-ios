@@ -151,9 +151,11 @@ export default function Start({navigation}) {
             }}>
             {/* Save towards your next rent with your flatmates, friends or family and
           earn interest on every deposit. */}
-            Save effortlessly towards your rent by yourself or with friends and
+            {/* Save effortlessly towards your rent by yourself or with friends and
             family. Use Kwaba’s solo or buddy saving features to meet your rent
-            target with ease.
+            target with ease. */}
+            Use Kwaba’s solo or buddy savings to meet your rent target with
+            ease. Earn daily interest while your rent works for you.
           </Text>
         </View>
         <View style={designs.scrollContainer}>
