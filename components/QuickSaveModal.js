@@ -351,7 +351,7 @@ const styles = StyleSheet.create({
     paddingLeft: 16,
     paddingRight: 16,
     elevation: 1,
-    paddingVertical: 20,
+    paddingVertical: 15,
   },
   displayFlex: {
     display: 'flex',

@@ -70,13 +70,15 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   useEffect(() => {
     (async () => {
       const userBankAccount = await AsyncStorage.getItem('selectedBankAccount');
-      const parsedUserBankAccount = JSON.parse(userBankAccount);
-      // console.log(userBankAccount);
-      setUserSelectedBankAccount(parsedUserBankAccount);
+      if (userBankAccount) {
+        const parsedUserBankAccount = JSON.parse(userBankAccount);
+        console.log(userBankAccount);
+        setUserSelectedBankAccount(parsedUserBankAccount);
 
-      setBankAccountName(parsedUserBankAccount.user_bank_name);
-      setBankAccountNumber(parsedUserBankAccount.bank_account_number);
-      setBankName(parsedUserBankAccount.bank_name);
+        setBankAccountName(parsedUserBankAccount.user_bank_name);
+        setBankAccountNumber(parsedUserBankAccount.bank_account_number);
+        setBankName(parsedUserBankAccount.bank_name);
+      }
     })();
   }, [userSelectedBankAccount]);
 
@@ -229,52 +231,57 @@ const EmergencyLoanRequest = ({route, navigation}) => {
               </TouchableOpacity>
             </View>
 
-            <View style={{marginTop: 20, alignItems: 'center'}}>
-              <TouchableOpacity activeOpacity={0.9} style={[styles.bankCard]}>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                      color: COLORS.white,
-                    }}>
-                    {userSelectedBankAccount.user_bank_name}
-                    {/* JOSHUA NWOSU */}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: COLORS.light,
-                    }}>
-                    {userSelectedBankAccount.bank_name}
-                    {/* Access Bank */}
-                  </Text>
-                  <Text
-                    style={{
-                      marginTop: 40,
-                      fontSize: 14,
-                      color: COLORS.white,
-                      opacity: 0.8,
-                    }}>
-                    {userSelectedBankAccount.bank_account_number}
-                    {/* 0094552107 */}
-                  </Text>
+            {userSelectedBankAccount.length > 0 && (
+              <View style={{marginTop: 20, alignItems: 'center'}}>
+                <TouchableOpacity activeOpacity={0.9} style={[styles.bankCard]}>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        color: COLORS.white,
+                      }}>
+                      {userSelectedBankAccount &&
+                        userSelectedBankAccount.user_bank_name}
+                      {/* JOSHUA NWOSU */}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: COLORS.light,
+                      }}>
+                      {userSelectedBankAccount &&
+                        userSelectedBankAccount.bank_name}
+                      {/* Access Bank */}
+                    </Text>
+                    <Text
+                      style={{
+                        marginTop: 40,
+                        fontSize: 14,
+                        color: COLORS.white,
+                        opacity: 0.8,
+                      }}>
+                      {userSelectedBankAccount &&
+                        userSelectedBankAccount.bank_account_number}
+                      {/* 0094552107 */}
+                    </Text>
 
-                  <Image
-                    style={{
-                      width: 71,
-                      height: 110,
-                      position: 'absolute',
-                      resizeMode: 'contain',
-                      right: -21,
-                      bottom: -20,
-                      borderWidth: 1,
-                    }}
-                    source={images.maskGroup24}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
+                    <Image
+                      style={{
+                        width: 71,
+                        height: 110,
+                        position: 'absolute',
+                        resizeMode: 'contain',
+                        right: -21,
+                        bottom: -20,
+                        borderWidth: 1,
+                      }}
+                      source={images.maskGroup24}
+                    />
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
           </View>
 
           <TouchableOpacity

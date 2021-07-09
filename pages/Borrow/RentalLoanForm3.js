@@ -27,6 +27,8 @@ import SelectYearModal from '../../components/SelectYearModal';
 import SelectPayMethodModal from '../../components/SelectPayMethodModal';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
@@ -62,13 +64,13 @@ const RentalLoanForm3 = ({navigation}) => {
   };
 
   const dummyData = {
-    accomodationstatus: 'Want to pay for a new place',
-    amount: '600000',
-    amount_needed_from_kwaba: '600000',
-    bvn: '123456789',
-    dob: '1991-10-09',
-    employee_work_email: 'prince@kwaba.ng',
-    employer_address: 'Etiosa, Ikoyi',
+    accomodationstatus: '',
+    amount: '',
+    amount_needed_from_kwaba: '',
+    bvn: '',
+    dob: '',
+    employee_work_email: '',
+    employer_address: '',
     employer_email: 'Hello.kwaba@gmail.com',
     employer_name: 'Kwaba',
     existing_loan_amount: '0',
@@ -203,26 +205,28 @@ const RentalLoanForm3 = ({navigation}) => {
     // //   return token;
     // // }
 
-    let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    let parsedData = JSON.parse(loanFormData);
-    console.log(parsedData);
+    // let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    // let parsedData = JSON.parse(loanFormData);
+    // console.log(parsedData);
 
-    const url = 'http://67.207.86.39:8000/api/v1/application/new';
-    const token = await getToken();
+    // const url = 'http://67.207.86.39:8000/api/v1/application/new';
+    // const token = await getToken();
 
-    try {
-      const response = await axios.post(
-        url,
-        {...dummyData, ...parsedData},
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.log(error.response.data);
-      Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
-    }
+    // try {
+    //   const response = await axios.post(url, ...parsedData, {
+    //     headers: {'Content-Type': 'application/json', Authorization: token},
+    //   });
+    //   console.log(response.data);
+
+    //   navigation.navigate('RentalLoanFormCongratulation');
+
+    //   navigation.navigate('RentalLoanFormCongratulation');
+    // } catch (error) {
+    //   console.log(error.response.data);
+    //   // Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
+    // }
+
+    navigation.navigate('RentalLoanFormCongratulation');
 
     // const data = {
     //   accomodationstatus: loanFormData.accommodationstatus,
@@ -793,8 +797,8 @@ const RentalLoanForm3 = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   // onPress={() => navigation.navigate('RentalLoanForm2')}
-                  // onPress={() => setVisible(!modalVisible)}
-                  onPress={getApplicationData}
+                  onPress={() => setVisible(!modalVisible)}
+                  // onPress={getApplicationData}
                   style={[
                     designs.button,
                     {

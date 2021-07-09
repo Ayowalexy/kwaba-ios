@@ -73,56 +73,34 @@ export default function SoloSavingDashBoard({navigation}) {
           )
         : 0;
 
+    // console.log('Tot:', totalsolo)
+
     setTotalInterest(totalSoloSavingsInterest);
 
-    setSavingsTarget(soloSaving.savings_amount);
+    setSavingsTarget(soloSaving.savings_amount || 150000);
 
     setSavingTitle(soloSaving.savings_title);
 
-    // let x = soloSaving.savings_amount - Number(totalSoloSavings);
-    // let y = x / soloSaving.savings_amount;
-    // let p = 100 - y * 100;
-    // setPercentAchieved(Number(p).toFixed(0));
-
     setPercentAchieved(
-      ((soloSaving.savings_amount / Number(totalSoloSavings)) * 100).toFixed(0),
+      (
+        (Number(totalSoloSavings) /
+          Number(soloSaving.savings_amount || 150000)) *
+        100
+      ).toFixed(0),
     );
 
-    console.log('Percentage Earned: ', (50 / 150) * 100);
-
-    // fetchSavingsPlan();
-    // console.log('GET: ', getSoloSaving);
+    // console.log('Percentage Earned: ', (50 / 150) * 100);
   }, [getSoloSaving]);
-
-  // fetchSavingsPlan
-
-  // const fetchSavingsPlan = async () => {
-  //   const apiUrl = 'http://67.207.86.39:8000';
-  //   const token = await getToken();
-  //   const url = apiUrl + '/api/v1/savings_plan';
-  //   try {
-  //     const response = await axios.get(url, {
-  //       headers: {'Content-Type': 'application/json', Authorization: token},
-  //       // headers: {'Content-Type': 'application/json'},
-  //     });
-  //     // dispatch(currentUser(response.data.user));
-  //     // return response.data.user;
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     // return error.message;
-  //     console.log(error);
-  //   }
-  // };
 
   useEffect(() => {
     (async () => {
       const token = await getToken();
-      // const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+      const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
       // const url = 'http://67.207.86.39:8000/api/v1/payments';
-      const url = 'http://67.207.86.39:8000/api/v1/savings';
+      // const url = 'http://67.207.86.39:8000/api/v1/savings';
 
       try {
-        const response = await axios.get(url, {
+        const response = await axios.post(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
         console.log('Fetch savings plan: ', response);
@@ -282,7 +260,8 @@ export default function SoloSavingDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦{currencyFormat(totalInterest)}
+                  {/* ₦{currencyFormat(totalInterest)} */}
+                  ₦0.00
                 </Text>
               </View>
 

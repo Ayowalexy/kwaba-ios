@@ -20,6 +20,7 @@ import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
+import QuickSaveModal from '../../components/QuickSaveModal';
 
 // import PushNotification from "react-native-push-notification";
 
@@ -39,6 +40,8 @@ export default function Home({navigation}) {
   const [instantLoan, setInstantLoan] = useState(0);
 
   const [showModal, setShowModal] = useState(false);
+
+  const [quickSaveModal, setQuickSaveModal] = useState(false);
 
   useEffect(() => {
     // const getUserData = async () => {
@@ -177,8 +180,8 @@ export default function Home({navigation}) {
           <Icon
             name="notifications"
             color="#8B8AAE"
-            size={20}
-            style={{width: 21, height: 24}}
+            size={25}
+            // style={{width: 21, height: 24}}
           />
         </TouchableOpacity>
       </View>
@@ -288,7 +291,8 @@ export default function Home({navigation}) {
                       )}
                       {item.id == 1 ? (
                         <TouchableOpacity
-                          onPress={() => setIndex(1)}
+                          // onPress={() => setIndex(1)}
+                          onPress={() => setQuickSaveModal(true)}
                           style={{
                             // width: 60,
                             // height: 60,
@@ -372,7 +376,7 @@ export default function Home({navigation}) {
             // paddingLeft: 20,
             // paddingRight: 20,
           }}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => setQuickSaveModal(true)}>
             <Image
               resizeMode="contain"
               source={icons.quicksave}
@@ -509,6 +513,11 @@ export default function Home({navigation}) {
         onRequestClose={() => setShowModal(!showModal)}
         visible={showModal}
         name="notification"
+      />
+
+      <QuickSaveModal
+        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+        visible={quickSaveModal}
       />
     </View>
   );

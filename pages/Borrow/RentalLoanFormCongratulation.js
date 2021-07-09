@@ -7,15 +7,14 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-function numberWithCommas(x) {
-  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-}
+import {numberWithCommas} from '../../util/numberFormatter';
+import axios from 'axios';
 
 export default function RentalLoanFormCongratulation({navigation}) {
   const [requestAmount, setRequestAmount] = useState('');
@@ -25,10 +24,42 @@ export default function RentalLoanFormCongratulation({navigation}) {
       // console.log('LOAN:');
       const data = JSON.parse(loanFormData);
 
-      setRequestAmount(data.request_amount);
+      // console.log(data);
+
+      setRequestAmount(data.pre_approved_amount);
     })();
   }, []);
-  const handleNavigation = () => {
+
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const handleNavigation = async () => {
+    // const token = await getToken();
+    // // console.log(token);
+    // const application = await axios.get(
+    //   'http://67.207.86.39:8000/api/v1/application/one',
+    //   {
+    //     headers: {'Content-Type': 'application/json', Authorization: token},
+    //   },
+    // );
+
+    // console.log(application.data);
+
+    // if (application.data.data.verified) {
+    //   Alert.alert('Application approval');
+    //   setTimeout(() => {
+    //     navigation.navigate('RentalLoanFormBankStatementUpload');
+    //   }, 1000);
+    // } else {
+    //   Alert.alert('Awating approval');
+    //   // navigation.navigate('RentalLoanFormBankStatementUpload');
+    // }
+
+    // console.log(application.data.data.id);
+
     navigation.navigate('RentalLoanFormBankStatementUpload');
   };
 

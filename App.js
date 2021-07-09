@@ -75,7 +75,7 @@ import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDa
 import Account from './pages/UserAccount/Account';
 import {FileViewAndDelete} from './pages/Borrow/FileViewAndDelete';
 import AccountPage from './pages/UserAccount/AccountPage';
-import CardAndBankDetails from './pages/UserAccount/CardAndBank';
+import CardAndBankDetails from './pages/UserAccount/CardAndBank/CardAndBank';
 import Withdraw from './pages/UserAccount/Withdraw';
 import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
 import PostPaymentForm2 from './pages/Payment/PostPaymentForm2';
@@ -239,7 +239,7 @@ const App = () => {
           // initialRouteName={'RentNowPayLaterDashboard'}
         >
           {/* {test != '' ? ( */}
-          {!store2.isLoggedIn && store2.token == '' ? (
+          {store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen

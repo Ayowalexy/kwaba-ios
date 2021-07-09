@@ -100,6 +100,8 @@ const RentalLoanFormDoc = ({navigation}) => {
 
     let max_repayment_amount = salaryBalance * 0.4 * tenure;
 
+    // change 0.045 to 0.039
+
     let temp = 0.045 * tenure + 1;
 
     max_pre_approved_amount = max_repayment_amount / temp;

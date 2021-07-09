@@ -74,6 +74,7 @@ const kwabalogocol = require('../assets/icons/kwabalogocol.png');
 const kwabalogonocol = require('../assets/icons/kwabalogonocol.png');
 const card = require('../assets/icons/card.jpeg');
 const bank = require('../assets/icons/bank.jpeg');
+const cardAndBank = require('../assets/icons/cardAndBank.png');
 
 // bottom navigation icons
 const borrowIcon = require('../assets/icons/bottom-navigation-icons/borrow.svg');
@@ -181,4 +182,5 @@ export {
   onboardingLoader3,
   card,
   bank,
+  cardAndBank,
 };

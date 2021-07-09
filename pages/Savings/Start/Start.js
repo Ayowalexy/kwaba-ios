@@ -74,11 +74,20 @@ export default function Start({navigation}) {
       0,
     );
 
-    const soloInterestTotal = store.data?.reduce(
-      (acc, saving) => acc + Number(saving.interest),
-      0,
-    );
-    const balance = totalSoloSavings + soloInterestTotal;
+    // Ineterst should be calculated after 24 hours
+    //! TODO
+    // const soloInterestTotal = store.data?.reduce(
+    //   (acc, saving) => acc + Number(saving.interest),
+    //   0,
+    // );
+
+    const soloInterestTotal = 0;
+
+    // interest
+    // const balance = totalSoloSavings + soloInterestTotal;
+
+    // without interest
+    const balance = totalSoloSavings;
 
     setTotalBalance(balance || 0);
     setTotalSaving(totalSoloSavings || 0);

@@ -134,6 +134,7 @@ export default function EligibilitySalaryEarner({navigation}) {
             // navigation.navigate('RentalLoanFormBankStatementUpload');
             // navigation.navigate('RentalLoanFormCongratulation');
             // navigation.navigate('RentalLoanRequestDashBoard');
+            // navigation.navigate('RentalLoanFormCongratulation');
             handleProceedClick();
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>

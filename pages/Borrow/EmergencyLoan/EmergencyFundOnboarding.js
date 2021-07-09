@@ -38,8 +38,10 @@ export default EmergencyFundOnboarding = ({navigation}) => {
           <View style={styles.textWrapper}>
             <Text style={styles.heading}>Emergency Fund</Text>
             <Text style={styles.content}>
-              Be a good saver and access instant loans of up to 40% to the value
-              of your rent savings.
+              {/* Be a good saver and access instant loans of up to 40% to the value
+              of your rent savings. */}
+              Access instant loans to help sort out life’s emergencies without
+              compromising your rent. Kwaba has got you covered
             </Text>
           </View>
 

@@ -121,7 +121,8 @@ export default function EmergencyLoanHome({navigation}) {
             lineHeight: 20,
             marginTop: 20,
           }}>
-          How much do you want?
+          {/* How much do you want? */}
+          Tell us how much you want
         </Text>
         <View
           style={[
