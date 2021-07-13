@@ -26,7 +26,7 @@ export default function RentalLoanFormCongratulation({navigation}) {
 
       // console.log(data);
 
-      setRequestAmount(data.pre_approved_amount);
+      setRequestAmount(data.loanable_amount);
     })();
   }, []);
 
@@ -59,6 +59,28 @@ export default function RentalLoanFormCongratulation({navigation}) {
     // }
 
     // console.log(application.data.data.id);
+    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const steps = JSON.parse(rentalSteps);
+
+    let stepsData = {
+      application_form: 'done',
+      congratulation: 'done',
+      bank_statement_upload: '',
+      all_documents: '',
+      verifying_documents: '',
+      offer_breakdown: '',
+      property_detail: '',
+      landlord_detail: '',
+      referee_detail: '',
+      offer_letter: '',
+      address_verification: '',
+      debitmandate: '',
+      awaiting_disbursement: '',
+    };
+
+    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+
+    console.log('STEPS: ', steps);
 
     navigation.navigate('RentalLoanFormBankStatementUpload');
   };

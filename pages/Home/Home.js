@@ -44,19 +44,7 @@ export default function Home({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
 
   useEffect(() => {
-    // const getUserData = async () => {
-    //   const userData = await AsyncStorage.getItem('userData');
-
-    //   // console.log('hello here is our data ', JSON.parse(userData));
-    //   if (userData) {
-    //     setName(JSON.parse(userData).username);
-    //   }
-    // };
-    // getUserData();
-    // console.log(user.data);
     const userFirstname = login;
-    // console.log(userFirstname);
-    console.log('Login:', userFirstname);
 
     if (userFirstname) setName(userFirstname.username);
   }, [login]);
@@ -66,10 +54,6 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
-    // const totalSoloSavings = store.data?.reduce(
-    //   (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    //   0,
-    // );
     const totalSoloSavings = store.data?.reduce(
       (acc, saving) => acc + Number(saving.amount),
       0,
@@ -175,7 +159,7 @@ export default function Home({navigation}) {
           </Text>
         </View>
         <TouchableOpacity
-          // onPress={() => setShowModal(!showModal)}
+          // onPress={() => navigation.navigate('NewAllDocuments')}
           onPress={() => navigation.navigate('Notifications')}>
           <Icon
             name="notifications"

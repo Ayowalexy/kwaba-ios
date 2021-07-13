@@ -115,6 +115,29 @@ import BusinessForm3 from './pages/Borrow/Business/BusinessForm3';
 import BusinessForm4 from './pages/Borrow/Business/BusinessForm4';
 import BusinessForm5 from './pages/Borrow/Business/BusinessForm5';
 
+// Signature
+import Signature from './pages/Signature/Signature';
+
+// New All Documents
+import NewAllDocuments from './pages/AllDocuments/AllDocuments';
+
+// OfferApprovalBreakDown
+import OfferApprovalBreakDown from './pages/Borrow/OfferApprovalBreakDown';
+
+// VerifyingDocuments
+import VerifyingDocuments from './pages/Borrow/VerifyingDocuments';
+
+// OfferLetter
+import OfferLetter from './pages/Borrow/OfferLetter';
+
+// Guarantor
+import GuarantorOnboarding from './pages/Guarantor/GuarantorOnboarding';
+import GuarantorForm from './pages/Guarantor/GuarantorForm';
+
+// Acceptance Letter
+import AcceptanceLetterAddosser from './pages/Borrow/AcceptanceletterAddosser';
+import AcceptanceLetterKwaba from './pages/Borrow/AcceptanceLetterKwaba';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -231,15 +254,12 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={
-          //   !store2.isLoggedIn && store2.token == '' ? 'Login' : 'Home'
-          // }
-          // initialRouteName={'SoloSaving3'}
-          // initialRouteName={'SoloSavingDashBoard'}
           // initialRouteName={'RentNowPayLaterDashboard'}
+          // initialRouteName={'NewAllDocuments'}
+          // initialRouteName={'NewAllDocuments'}
         >
           {/* {test != '' ? ( */}
-          {store2.isLoggedIn && store2.token == '' ? (
+          {!store2.isLoggedIn && store2.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
@@ -508,6 +528,42 @@ const App = () => {
                 component={UploadBankStatementDocument}></Stack.Screen>
 
               <Stack.Screen name="Notifications" component={Notifications} />
+
+              <Stack.Screen name="Signature" component={Signature} />
+
+              <Stack.Screen
+                name="NewAllDocuments"
+                component={NewAllDocuments}
+              />
+
+              <Stack.Screen
+                name="OfferApprovalBreakDown"
+                component={OfferApprovalBreakDown}
+              />
+
+              <Stack.Screen
+                name="VerifyingDocuments"
+                component={VerifyingDocuments}
+              />
+
+              <Stack.Screen name="OfferLetter" component={OfferLetter} />
+
+              <Stack.Screen
+                name="GuarantorOnboarding"
+                component={GuarantorOnboarding}
+              />
+
+              <Stack.Screen name="GuarantorForm" component={GuarantorForm} />
+
+              <Stack.Screen
+                name="AcceptanceLetterKwaba"
+                component={AcceptanceLetterKwaba}
+              />
+
+              <Stack.Screen
+                name="AcceptanceLetterAddosser"
+                component={AcceptanceLetterAddosser}
+              />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

@@ -13,7 +13,7 @@ import {COLORS} from '../util';
 
 export default function SelectPropertyModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const lists = ['Duplex', 'Semi-detached'];
+  const lists = ['House', 'Duplex', 'Bongalo', 'Flat'];
   return (
     // <View>
     <Modal

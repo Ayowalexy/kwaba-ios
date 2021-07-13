@@ -60,6 +60,7 @@ const RentalLoanForm3 = ({navigation}) => {
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const token = JSON.parse(userData).token;
+    // console.log(userData);
     return token;
   };
 
@@ -71,24 +72,24 @@ const RentalLoanForm3 = ({navigation}) => {
     dob: '',
     employee_work_email: '',
     employer_address: '',
-    employer_email: 'Hello.kwaba@gmail.com',
-    employer_name: 'Kwaba',
-    existing_loan_amount: '0',
-    home_address: '32 Adebisi Street,Ketu',
-    home_stay_duration: 'Less Than 1 Year',
-    last_rent_amount: '500000',
-    last_rent_paid_to: 'Landlord',
-    last_rent_payment_method: 'Bank transfer',
-    loanable_amount: '600000',
-    monthly_repayment: '60000',
-    next_rent_address: '32 Trans-Bucknor Street, Lagos',
-    next_rent_paid_to: 'Landlord',
-    non_refundable_deposit: '2000',
-    pre_available_rent_amount: '0',
+    employer_email: '',
+    employer_name: '',
+    existing_loan_amount: '',
+    home_address: '',
+    home_stay_duration: '',
+    last_rent_amount: '',
+    last_rent_paid_to: '',
+    last_rent_payment_method: '',
+    loanable_amount: '',
+    monthly_repayment: '',
+    next_rent_address: '',
+    next_rent_paid_to: '',
+    non_refundable_deposit: '',
+    pre_available_rent_amount: '',
     referrer: '',
-    repayment_plan: '6 Months',
-    salary_amount: '100000',
-    total_rent: '600000',
+    repayment_plan: '',
+    salary_amount: '',
+    total_rent: '',
   };
 
   const dummyData2 = {
@@ -102,7 +103,7 @@ const RentalLoanForm3 = ({navigation}) => {
     const data = {
       home_address: homeAddress,
       home_stay_duration: lengthOfResidence,
-      last_rent_amount: lastRentAmount,
+      last_rent_amount: unFormatNumber(lastRentAmount),
       last_rent_paid_to: lastPaymentRecipient,
       last_rent_payment_method: modeOfPayment,
     };
@@ -142,7 +143,7 @@ const RentalLoanForm3 = ({navigation}) => {
       last_rent_payment_method: values.howDidYouPay,
     };
 
-    // console.log(data);
+    console.log(data);
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
@@ -153,129 +154,55 @@ const RentalLoanForm3 = ({navigation}) => {
 
     setVisible(true);
 
-    // console.log(loanFormData)
+    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const steps = JSON.parse(rentalSteps);
 
-    // console.log(data)
+    let stepsData = {
+      application_form: 'done',
+      congratulation: '',
+      bank_statement_upload: '',
+      all_documents: '',
+      verifying_documents: '',
+      offer_breakdown: '',
+      property_detail: '',
+      landlord_detail: '',
+      referee_detail: '',
+      offer_letter: '',
+      address_verification: '',
+      debitmandate: '',
+      awaiting_disbursement: '',
+    };
+
+    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+
+    console.log('STEPS: ', steps);
   };
 
-  const handleNavigation = async () => {
+  const handlePostSubmit = async () => {
     setVisible(false);
-    // setSuccessModal(false);
-    // navigation.navigate('UploadBankStatement');
 
-    // added by Joshua Nwosu
-    // setVisible(false);
+    const token = await getToken();
+    let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    let parsedData = JSON.parse(loanFormData);
 
-    // let stepsdata={
+    // let data = {...dummyData, ...parsedData};
 
-    //   propertydetail:'done',
-    //   landlorddetail:'done',
-    //   documentdone:'',
-    //   refree:'',
-    //   offeraccepted:'',
-    //   addressverification:'',
-    //   debitmandate:'',
-    //   awaitingdisbursment:'',
-    // };
-    //   await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
-
-    // // console.log('steps here', steps);
-    //   const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-    //   const steps = JSON.parse(borrwSteps);
-
-    //   if (steps.documentdone == '') {
-    //     navigation.navigate('UploadDocuments');
-    //   } else if (steps.refree == '') {
-    //     navigation.navigate('UploadDocuments');
-    //   }
-    //   else if (steps.offeraccepted == '') {
-    //     navigation.navigate('RentalLoanOfferTest');
-    //   } else if (steps.addressverification == '') {
-    //     navigation.navigate('AddressVerificationPayment');
-    //   } else if (steps.debitmandate == '') {
-    //     navigation.navigate('OkraDebitMandate');
-    //   } else if (steps.awaitingdisbursment == '') {
-    //     navigation.navigate('AwaitingDisbursement');
-    //   }
-    // // } else {
-    // //   navigation.navigate('RentalLoanForm1');
-
-    //   //navigation.navigate('EmergencyLoanRequestDashBoard');
-
-    // //   return token;
-    // // }
-
-    // let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    // let parsedData = JSON.parse(loanFormData);
-    // console.log(parsedData);
-
-    // const url = 'http://67.207.86.39:8000/api/v1/application/new';
-    // const token = await getToken();
-
-    // try {
-    //   const response = await axios.post(url, ...parsedData, {
-    //     headers: {'Content-Type': 'application/json', Authorization: token},
-    //   });
-    //   console.log(response.data);
-
-    //   navigation.navigate('RentalLoanFormCongratulation');
-
-    //   navigation.navigate('RentalLoanFormCongratulation');
-    // } catch (error) {
-    //   console.log(error.response.data);
-    //   // Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
-    // }
-
-    navigation.navigate('RentalLoanFormCongratulation');
-
-    // const data = {
-    //   accomodationstatus: loanFormData.accommodationstatus,
-    //   amount_needed_from_kwaba: loanFormData.request_amount,
-    //   employer_address: loanFormData.employer_address,
-    //   employer_name: loanFormData.employer_name,
-    //   home_address: loanFormData.home_address,
-    //   home_stay_duration: loanFormData.home_stay_duration,
-    //   last_rent_amount: loanFormData.last_rent_amount,
-    //   last_rent_paid_to: loanFormData.last_rent_paid_to,
-    //   last_rent_payment_method: loanFormData.last_rent_payment_method,
-    //   loanable_amount: loanFormData.pre_approved_amount,
-    //   monthly_repayment: loanFormData.monthly_payment,
-    //   repayment_plan: loanFormData.selected_month,
-    //   salary_amount: loanFormData.salary_amount,
-    //   total_rent: '',
-    //   amount: '',
-    //   referrer: '',
-    //   next_rent_address: '',
-    //   next_rent_paid_to: '',
-    //   non_refundable_deposit: '',
-    //   pre_available_rent_amount: '',
-    //   bvn: '',
-    //   dob: '1991-10-09',
-    //   existing_loan_amount: '',
-    //   employer_email: '',
-    //   employee_work_email: '',
-    // }
-    // const url = 'http://67.207.86.39:8000/api/v1/application/new';
-    // const token = await getToken();
-    // try {
-    //   const response = await axios.post(
-    //     url,
-    //     // {...dummyData, ...JSON.parse(loanFormData), ...data},
-    //     {data},
-    //     {
-    //       headers: {'Content-Type': 'application/json', Authorization: token},
-    //     },
-    //   );
-    //   console.log(response);
-    //   setSuccessModal(true);
-
-    //   logCurrentStorage();
-    // } catch (error) {
-    //   console.log(error.response.data);
-    //   Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
-    // }
-
-    // navigation.navigate('RentalLoanFormCongratulation');
+    try {
+      const url = 'http://67.207.86.39:8000/api/v1/application/new';
+      const response = await axios.post(url, parsedData, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      console.log(response);
+      navigation.navigate('RentalLoanFormCongratulation');
+    } catch (error) {
+      console.log(error.response.data);
+      if (
+        error?.response?.data?.statusMsg ==
+        'You already have a pending application!'
+      ) {
+        navigation.navigate('RentalLoanFormCongratulation');
+      }
+    }
   };
 
   const getApplicationData = async () => {
@@ -749,15 +676,16 @@ const RentalLoanForm3 = ({navigation}) => {
         </View>
 
         <Modal
+          // visible={true}
           visible={modalVisible}
           animationType="fade"
           transparent={true}
-          onRequestClose={() => {}}>
+          onRequestClose={() => setVisible(false)}>
           <View style={designs.modalWrapper}>
             <View style={designs.modalView}>
               <View style={[designs.modalHeader, {marginBottom: 11}]}>
                 <Icon
-                  onPress={() => setVisible(!modalVisible)}
+                  onPress={() => setVisible(false)}
                   style={{marginLeft: 'auto'}}
                   name="close-outline"
                   size={30}
@@ -771,7 +699,7 @@ const RentalLoanForm3 = ({navigation}) => {
                 </Text>
                 <TouchableOpacity
                   // onPress={handleModalButtonPush}
-                  onPress={handleNavigation}
+                  onPress={handlePostSubmit}
                   // disabled={isError()}
                   style={[
                     designs.button,
@@ -797,8 +725,8 @@ const RentalLoanForm3 = ({navigation}) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   // onPress={() => navigation.navigate('RentalLoanForm2')}
-                  onPress={() => setVisible(!modalVisible)}
-                  // onPress={getApplicationData}
+                  // onPress={() => setVisible(!modalVisible)}
+                  onPress={getApplicationData}
                   style={[
                     designs.button,
                     {

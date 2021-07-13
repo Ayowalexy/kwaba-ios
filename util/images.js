@@ -97,6 +97,8 @@ const uploadDocument = require('../assets/images/uploadDocument.png');
 
 const piggy = require('../assets/images/piggy.png');
 
+const guarantorImage = require('../assets/images/guarantorImage.png');
+
 export {
   logo,
   applicationReview,
@@ -193,4 +195,5 @@ export {
   bankRequest,
   uploadDocument,
   piggy,
+  guarantorImage,
 };

@@ -28,52 +28,7 @@ import NoCardAndBank from './NoCardAndBank';
 import AvailableCardAndBank from './AvailableCardAndBank';
 
 export default function CardAndBankDetails({navigation}) {
-  const [modalVisible, setVisible] = useState(false);
-  const [cards, setCards] = useState([]);
-  const [bankDetails, setBankDetails] = useState([]);
-  const [banks, setBanks] = useState([]);
-  const [pickerModalVisible, setPickerModalVisible] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
-  const [addCardModal, setAddCardModal] = useState(false);
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [addAccountModal, setAddAccountModal] = useState(false);
-  const [accountNumber, setAccountNumber] = useState('');
-  const [bank, setBank] = useState('');
-
-  const [bankModalVisible, setBankModalVisible] = useState(false);
-  const [bankAccountName, setBankAccountName] = useState('');
-  const [bankAccountNumber, setBankAccountNumber] = useState('');
-  const [bankName, setBankName] = useState('');
-
-  const [selectedBank, setSelectedBank] = useState('');
-  const [bankData, setBankData] = useState('');
-
-  const [bankCode, setBankCode] = useState('');
-
-  const [selectedAccountType, setSelectedAccountType] = useState('');
-
-  const [userBankAccounts, setUserBankAccounts] = useState([]);
-
-  const [actionModal, setActionModal] = useState(false);
-
-  const [spinner, setSpinner] = useState(false);
-
-  const [clickedID, setClickedID] = useState('');
-
-  const [type, setType] = useState('');
-  const [showCardAndBankModal, setShowCardAndCardModal] = useState(false);
-  const [paymentCard, setPaymentCard] = useState([
-    // {
-    //   id: '1',
-    //   cardnumber: '1234 3245 1234 5678',
-    //   default: 'true',
-    //   expires: '12/2022',
-    //   type: 'mastercard',
-    // },
-  ]);
-  const [bankAccount, setBankAccount] = useState([
+  const [paymentCards, setPaymentCards] = useState([
     {
       id: '1',
       cardnumber: '1234 3245 1234 5678',
@@ -82,6 +37,18 @@ export default function CardAndBankDetails({navigation}) {
       type: 'mastercard',
     },
   ]);
+
+  const [userBankAccounts, setUserBankAccounts] = useState([]);
+
+  useEffect(() => {
+    (async () => {
+      let accounts = await AsyncStorage.getItem('userBankAccounts');
+      let parseAccount = JSON.parse(accounts);
+
+      console.log('parseAccount', parseAccount.length);
+      setUserBankAccounts(parseAccount);
+    })();
+  }, []);
 
   return (
     <View style={[styles.container]}>
@@ -97,10 +64,13 @@ export default function CardAndBankDetails({navigation}) {
       />
       <Text style={[styles.heading]}>Card and Bank</Text>
 
-      {!paymentCard.length && !bankAccount.length ? (
+      {!paymentCards.length && !userBankAccounts.length ? (
         <NoCardAndBank />
       ) : (
-        <AvailableCardAndBank />
+        <AvailableCardAndBank
+          paymentCards={paymentCards}
+          userBankAccounts={userBankAccounts}
+        />
       )}
     </View>
   );

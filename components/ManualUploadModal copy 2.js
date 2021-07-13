@@ -18,47 +18,12 @@ import RNFS from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import * as Animatable from 'react-native-animatable';
-import {uploadFile} from '../redux/actions/documentUploadActions';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
 
   const token = JSON.parse(userData).token;
   return token;
-};
-
-const getDocuments = async () => {
-  const token = await getToken();
-  try {
-    const uploadedDocumentsRes = await axios.get(
-      'http://67.207.86.39:8000/api/v1/application/documents',
-      {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      },
-    );
-    return uploadedDocumentsRes.data.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-const deleteFile = async (item) => {
-  const token = await getToken();
-
-  try {
-    const response = await axios.get(
-      'http://67.207.86.39:8000/api/v1/application/document/delete',
-      {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-        data: {
-          id: item.documentID,
-        },
-      },
-    );
-    console.log('Deleted Item: ', response);
-  } catch (error) {
-    console.log('error here : ', error);
-  }
 };
 
 export default function ManualUploadModal(props) {
@@ -72,21 +37,6 @@ export default function ManualUploadModal(props) {
   // const [response, setResponse] = useState('');
 
   const {onRequestClose, visible, onConfirm, navigation} = props;
-
-  useEffect(() => {
-    (async () => {
-      const documentUploaded = await getDocuments();
-      console.log(documentUploaded);
-      documentUploaded.forEach((document) => {
-        const id = Number(document.document_type);
-        try {
-          console.log(Number(document.document_type), document.id);
-        } catch (error) {
-          console.log('error: ', error);
-        }
-      });
-    })();
-  }, []);
 
   const uploadBankStatementFile = async () => {
     try {
@@ -105,117 +55,101 @@ export default function ManualUploadModal(props) {
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         // console.log('You can use the storage');
-        const res = await DocumentPicker.pick({
+        const file = await DocumentPicker.pick({
           type: [DocumentPicker.types.allFiles],
         });
 
-        const blob = {
-          uri: res.uri,
-          type: res.type,
-          name: res.name,
-        };
+        const data = new FormData();
+        data.append('file', {
+          uri: file.uri,
+          type: file.type,
+          name: file.name,
+        });
+        data.append('upload_preset', 'rental_loan_documents');
+        data.append('cloud_name', 'kwaba');
 
-        const token = await getToken();
-        const applicationIDCallRes = await axios.get(
-          'http://67.207.86.39:8000/api/v1/application/one',
-          {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          },
-        );
+        // fetch('https://api.cloudinary.com/v1_1/kwaba/image/upload', {
+        //   method: 'POST',
+        //   body: data,
+        //   headers: {
+        //     Accept: 'application/json',
+        //     'Content-Type': 'multipart/form-data',
+        //   },
+        // })
+        //   .then((res) => res.json())
+        //   .then((data) => {
+        //     console.log(data);
+        //     setUploadedFileInfo(data);
+        //   })
+        //   .catch((err) => {
+        //     Alert.alert('An error occupied while uploading file');
+        //   });
 
-        const applicationId = applicationIDCallRes.data.data.id;
-        console.log('App ID: ', applicationId);
+        axios
+          .request({
+            method: 'POST',
+            url: 'https://api.cloudinary.com/v1_1/kwaba/image/upload',
+            data: data,
+            onUploadProgress: (p) => {
+              // console.log(p);
 
-        const formdata = new FormData();
-        formdata.append('file', blob);
-        formdata.append('upload_preset', 'rental_loan_documents');
-        formdata.append('cloud_name', 'kwaba');
-
-        const response = await axios.post(
-          'https://api.cloudinary.com/v1_1/kwaba/image/upload',
-          formdata,
-        );
-
-        console.log('cloudinary: ', response.data.url);
-
-        const data = {
-          applicationId,
-          file: response.data.url,
-          document_type: '1',
-          filename: 'Bank Statement',
-        };
-
-        console.log('DATA: ', data);
-
-        try {
-          // uploadFile(token, data)
-          const config = {
-            onUploadProgress: (progressEvent) => {
-              const {loaded, total} = progressEvent;
-              const percentageProgress = Math.floor((loaded * 100) / total);
-              console.log(percentageProgress);
-              setFileProgress(percentageProgress);
-              // console.log(`${loaded}kb of ${total}kb | ${percentageProgress}%`);
+              let calc = (p.loaded / p.total) * 100;
+              setFileProgress(calc - 20);
+              setFileUploaded(false);
             },
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: token,
-            },
-          };
-          const response = await axios.post(
-            'http://67.207.86.39:8000/api/v1/application/documents/upload',
-            data,
-            config,
-          );
-
-          if (response.status == 200) {
-            console.log('File uploaded successfully...');
-            console.log('RESPONSE:', response.data.statusMsg);
+          })
+          .then((data) => {
+            console.log('**************************************');
+            console.log(data.data);
+            setFileProgress(100);
             setFileUploaded(true);
-          }
-        } catch (error) {
-          console.log('File not uploaded: ', error.response.data);
-        }
+            setUploadFilename(
+              data.data.original_filename + '.' + data.data.format,
+            );
+            setTimeout(() => {
+              setFileProgress(0);
+            }, 2000);
+          });
       } else {
         console.log('File permission denied');
       }
     } catch (error) {
       console.log(error);
     }
+    // const file = await DocumentPicker.pick({
+    //   type: [DocumentPicker.types.allFiles],
+    // });
+
+    // const data = new FormData();
+    // data.append('file', {
+    //   uri: file.uri,
+    //   type: file.type,
+    //   name: file.name,
+    // });
+    // data.append('upload_preset', 'rental_loan_documents');
+    // data.append('cloud_name', 'kwaba');
+
+    // fetch('https://api.cloudinary.com/v1_1/kwaba/image/upload', {
+    //   method: 'POST',
+    //   body: data,
+    //   headers: {
+    //     Accept: 'application/json',
+    //     'Content-Type': 'multipart/form-data',
+    //   },
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log(data);
+    //     setUploadedFileInfo(data);
+    //   })
+    //   .catch((err) => {
+    //     Alert.alert('An error occupied while uploading file');
+    //   });
   };
 
-  const handleProceed = async () => {
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
-    const steps = JSON.parse(rentalSteps);
-
-    let stepsData = {
-      application_form: 'done',
-      congratulation: 'done',
-      bank_statement_upload: 'done',
-      all_documents: '',
-      verifying_documents: '',
-      offer_breakdown: '',
-      property_detail: '',
-      landlord_detail: '',
-      referee_detail: '',
-      offer_letter: '',
-      address_verification: '',
-      debitmandate: '',
-      awaiting_disbursement: '',
-    };
-
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
-
-    console.log('STEPS: ', steps);
-
-    // navigation.navigate('RentalLoanFormBankStatementUpload');
-
-    onRequestClose();
-    setFileUploaded(false);
-    // navigation.navigate('PostPaymentForm1');
-    //navigation.navigate('LoanRequestApproval');
-    navigation.navigate('NewAllDocuments');
-  };
+  useEffect(() => {
+    console.log('fileProgress:', fileProgress);
+  }, [fileProgress]);
 
   return (
     // <View>
@@ -318,7 +252,13 @@ export default function ManualUploadModal(props) {
                 animation="slideInUp"
                 style={{overflow: 'hidden'}}>
                 <TouchableOpacity
-                  onPress={handleProceed}
+                  onPress={() => {
+                    onRequestClose();
+                    setFileUploaded(false);
+                    // navigation.navigate('PostPaymentForm1');
+                    //navigation.navigate('LoanRequestApproval');
+                    navigation.navigate('NewAllDocuments');
+                  }}
                   // disabled={isError()}
                   style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
                   <Text

@@ -4,13 +4,26 @@ import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {COLORS, FONTS, images, icons} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CardAndBankModal from './CardAndBankModal';
+import AddBankAccountModal from '../../../components/addBankAccountModal';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function NoCardAndBank({navigation}) {
   const [showCardAndBankModal, setShowCardAndCardModal] = useState(false);
+  const [bankModalVisible, setBankModalVisible] = useState(false);
 
   const handleAdd = async () => {
     console.log('Opening...');
     setShowCardAndCardModal(true);
+  };
+
+  const checkType = async (type) => {
+    console.log('The Type:', type);
+    if (type == 'add-bank-account') {
+      setBankModalVisible(true);
+    } else {
+      // for payment card
+    }
   };
 
   return (
@@ -60,7 +73,12 @@ export default function NoCardAndBank({navigation}) {
         onRequestClose={() => setShowCardAndCardModal(!showCardAndBankModal)}
         visible={showCardAndBankModal}
         navigation={navigation}
-        onClick={(type) => console.log(type)}
+        onClick={(type) => checkType(type)}
+      />
+
+      <AddBankAccountModal
+        onRequestClose={() => setBankModalVisible(!bankModalVisible)}
+        visible={bankModalVisible}
       />
     </>
   );

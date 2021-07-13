@@ -57,14 +57,14 @@ const RentalLoanForm1 = ({navigation}) => {
   const handleSubmit = async (values) => {
     const data = {
       accomodationstatus: values.accommodationStatus,
-      salary_amount: Number(unFormatNumber(values.salaryAmount)),
-      amount_needed_from_kwaba: Number(unFormatNumber(values.requestAmount)),
+      salary_amount: unFormatNumber(values.salaryAmount),
+      amount_needed_from_kwaba: unFormatNumber(values.requestAmount),
       repayment_plan: values.monthlyPaymentPlan,
     };
 
     // console.log('VALUES:', data);
 
-    await AsyncStorage.removeItem('rentalLoanForm');
+    // await AsyncStorage.removeItem('rentalLoanForm');
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     console.log(loanFormData);

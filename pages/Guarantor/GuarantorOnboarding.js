@@ -11,9 +11,28 @@ import {
   Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../../../util';
+import {COLORS, images} from '../../util';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
-export default function EligibilitySalaryEarner({navigation}) {
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
+
+export default function GuarantorOnboarding({navigation}) {
+  useEffect(() => {
+    (async () => {
+      // await AsyncStorage.removeItem('rentalLoanForm');
+      console.log('HERE: ', await AsyncStorage.getItem('rentalLoanForm'));
+    })();
+  }, []);
+
+  const handleProceedClick = async () => {
+    navigation.navigate('GuarantorForm');
+  };
+
   return (
     <View style={[styles.container]}>
       <Icon
@@ -25,26 +44,39 @@ export default function EligibilitySalaryEarner({navigation}) {
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
         <View style={[styles.content]}>
-          <Text style={[styles.heading]}>Eligibility</Text>
+          <Text style={[styles.heading]}>Invite Guarantor</Text>
           <View>
             <Image
-              source={images.eligibilityImage}
+              source={images.guarantorImage}
               style={{
                 width: '100%',
-                height: 250,
+                height: 200,
                 resizeMode: 'contain',
                 marginTop: 30,
               }}
             />
           </View>
+          <View style={{marginVertical: 25}}>
+            <Text
+              style={{
+                fontSize: 13,
+                color: COLORS.dark,
+                textAlign: 'center',
+                lineHeight: 20,
+              }}>
+              To conitinue you application, we need{'\n'}you to provide a
+              guarantor to support{'\n'}your application.
+            </Text>
+          </View>
           <View style={[styles.textContent]}>
-            <Text style={[styles.redText]}>To Be Eligible, You Must</Text>
+            <Text style={[styles.redText]}>Conditions</Text>
             <View style={[styles.listText]}>
               {[
-                'Generate a minimum monthly revenue of\n₦200,000.',
-                'Have being in business for at least 3 months',
-                'Have no bad loans and a clean credit history',
-                'Be above 21 years of age',
+                'Guarantor must be in salaried employment',
+                'Eran above N200,000 monthly',
+                'Have no bad loans',
+                'We will set up your monthly repayment on\nyour guarantors account.',
+                'You will be responsible to fund your guarantors\naccount for yout monthly repayments.',
               ].map((text, index) => (
                 <View style={[styles.list]} key={index}>
                   <View
@@ -83,13 +115,7 @@ export default function EligibilitySalaryEarner({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
-            // navigation.navigate('BusinessForm1');
-            // navigation.navigate('UploadBankStatement');
-            // navigation.navigate('RentalLoanFormBankStatementUploadMono');
-            // navigation.navigate('RentalLoanFormBankStatementUpload');
-            // navigation.navigate('RentalLoanFormCongratulation');
-            // navigation.navigate('RentalLoanRequestDashBoard');
-            navigation.navigate('BusinessForm1');
+            handleProceedClick();
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

@@ -21,6 +21,14 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
 import moment from 'moment';
 import ComingSoon from '../../../components/ComingSoon';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -109,6 +117,26 @@ export default function Start({navigation}) {
       image: images.maskGroup14,
     },
   ];
+
+  useEffect(() => {
+    (async () => {
+      const token = await getToken();
+      const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+      // const url = 'http://67.207.86.39:8000/api/v1/payments';
+      // const url = 'http://67.207.86.39:8000/api/v1/savings';
+
+      try {
+        const response = await axios.post(url, {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        });
+        console.log('Fetch savings plan: ', response);
+        console.log(token);
+      } catch (error) {
+        console.log('Error: ', error);
+      }
+    })();
+  }, []);
+
   return (
     <View style={[designs.container]}>
       <Icon

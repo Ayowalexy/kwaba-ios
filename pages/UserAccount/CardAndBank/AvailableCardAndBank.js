@@ -26,220 +26,41 @@ import AddBankAccountModal from '../../../components/addBankAccountModal';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import Modal from 'react-native-modal';
+import AddPaymentCardModal from '../../../components/addPaymentCardModal';
 
-export default function AvailableCardAndBank({navigation}) {
-  const [modalVisible, setVisible] = useState(false);
-  const [cards, setCards] = useState([]);
-  const [bankDetails, setBankDetails] = useState([]);
-  const [banks, setBanks] = useState([]);
-  const [pickerModalVisible, setPickerModalVisible] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
+export default function AvailableCardAndBank(props, {navigation}) {
   const [addCardModal, setAddCardModal] = useState(false);
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiryDate, setExpiryDate] = useState('');
-  const [cvv, setCvv] = useState('');
-  const [addAccountModal, setAddAccountModal] = useState(false);
-  const [accountNumber, setAccountNumber] = useState('');
-  const [bank, setBank] = useState('');
-
   const [bankModalVisible, setBankModalVisible] = useState(false);
-  const [bankAccountName, setBankAccountName] = useState('');
-  const [bankAccountNumber, setBankAccountNumber] = useState('');
-  const [bankName, setBankName] = useState('');
-
-  const [selectedBank, setSelectedBank] = useState('');
-  const [bankData, setBankData] = useState('');
-
-  const [bankCode, setBankCode] = useState('');
-
   const [selectedAccountType, setSelectedAccountType] = useState('');
-
-  const [userBankAccounts, setUserBankAccounts] = useState([]);
-
+  // const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [actionModal, setActionModal] = useState(false);
-
   const [spinner, setSpinner] = useState(false);
-
   const [clickedID, setClickedID] = useState('');
+  const {userBankAccounts, paymentCards} = props;
 
-  // const [bankCode, setBankCode] = useState('');
+  const [paymentCardModal, setPaymentCardModal] = useState(false);
 
-  // id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-  const paymentCards = [
-    {
-      id: '1',
-      cardnumber: '1234 3245 1234 5678',
-      default: 'true',
-      expires: '12/2022',
-      type: 'mastercard',
-    },
-    {
-      id: '2',
-      cardnumber: '1234 5678 1234 3245',
-      default: 'true',
-      expires: '12/2022',
-      type: 'visa',
-    },
-  ];
+  // const [userBankAccounts, setUserBankAccounts] = useState([]);
+  // const [paymentCards, setPaymentCard] = useState([])
 
-  const BankAccounts = [
-    {
-      id: '1',
-      bankAccountName: 'Johnson Abraham',
-      bankAccountNumber: '0987654321',
-      bankName: 'Zenith Bank',
-      bankCode: '1234',
-    },
-    {
-      id: '2',
-      bankAccountName: 'Adebisi Joseph',
-      bankAccountNumber: '1411314521',
-      bankName: 'Fidelity Bank',
-      bankCode: '1234',
-    },
-    {
-      id: '3',
-      bankAccountName: 'Joshua Nwosu',
-      bankAccountNumber: '0094552107',
-      bankName: 'Access Bank',
-      bankCode: '1011',
-    },
-  ];
+  // const paymentCards = [
+  //   {
+  //     id: '1',
+  //     cardnumber: '1234 3245 1234 5678',
+  //     default: 'true',
+  //     expires: '12/2022',
+  //     type: 'mastercard',
+  //   },
+  // ];
 
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
-  };
-
-  // fetch banks
   useEffect(() => {
-    (async () => {
-      try {
-        const url = 'http://67.207.86.39:8000/api/v1/bank_email';
-        const response = await axios.get(url, {
-          headers: {'Content-Type': 'application/json'},
-        });
-        const data = response.data;
-
-        const userData = await AsyncStorage.getItem('userData');
-        const parsedUserData = JSON.parse(userData);
-
-        if (response.status == 200) {
-          // console.log(data.banks);
-          setBankData(data.banks);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-
-    return () => {
-      setBankData('');
-    };
+    console.log('Coming from Available Account Page');
+    console.log('HEREREREREE:', userBankAccounts);
   }, []);
-
-  const addAccount = async () => {
-    setSpinner(true);
-    console.log('start');
-    const data = {
-      bank_name: selectedBank,
-      bank_account_number: bankAccountNumber,
-      bank_short_code:
-        bankCode.toString().length == 2 ? '0' + bankCode : bankCode,
-      type: selectedAccountType,
-    };
-
-    // console.log('DATA: ', data);
-
-    verifyBankAccount(data.bank_account_number, data.bank_short_code);
-    setBankModalVisible(false);
-  };
-
-  const verifyBankAccount = async (account_number, bank_code) => {
-    const url = 'http://67.207.86.39:8000/api/v1/user/bank_details';
-    try {
-      const token = await getToken();
-      const response = await axios.post(
-        url,
-        JSON.stringify({
-          account_number: account_number,
-          bank_code: bank_code,
-        }),
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      if (response.data.accountStatus == true) {
-        setSpinner(false);
-        console.log('VERIFY CARD FROM BACKEND: ', response.data.data);
-
-        const {account_name, account_number} = response.data.data;
-        const userAccountDetails = {
-          user_bank_name: account_name,
-          bank_account_number: account_number,
-          bank_name: selectedBank,
-          bank_short_code: bank_code,
-          type: selectedAccountType,
-        };
-        await createBankAccount(userAccountDetails);
-      } else {
-        setSpinner(false);
-        console.log('Account not verified');
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log(error);
-    }
-  };
-
-  const createBankAccount = async (data) => {
-    // @params - bank_name, bank_account_name, bank_account_number,
-    // bank_short_code, type(savings or current)
-    // api/v1/createbankaccount
-
-    console.log('DETAIL', data);
-    const url = 'http://67.207.86.39:8000/api/v1/createbankaccount';
-    try {
-      const token = await getToken();
-      const response = await axios.post(url, JSON.stringify(data), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      // console.log('RESPONSE:', response);
-      if (response.status == 200) {
-        console.log('Card successfully added');
-        setActionModal(true);
-        getBankAccounts();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // get user bank accounts
-  useEffect(() => {
-    getBankAccounts();
-  }, []);
-
-  const getBankAccounts = async () => {
-    const url = 'http://67.207.86.39:8000/api/v1/getuserbankaccounts';
-    try {
-      const token = await getToken();
-      const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      // console.log('USER BANK ACCOUNT:', response.data.userBanks);
-      setUserBankAccounts(response.data.userBanks);
-      console.log('Token: ', token);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const renderPaymentCards = ({item}) => (
     <TouchableOpacity activeOpacity={0.9} style={[styles.paymentCard]}>
       <View>
-        {/* <Text>{item.cardnumber}</Text> */}
         <View>
           <Text
             style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
@@ -362,7 +183,7 @@ export default function AvailableCardAndBank({navigation}) {
           <Text style={[styles.contentTitle]}>Payment Card</Text>
           <View style={[styles.contentView]}>
             <TouchableOpacity
-              onPress={() => setAddCardModal(true)}
+              onPress={() => setPaymentCardModal(true)}
               style={[styles.addButton]}>
               <IconFA5 name="plus" size={15} color={COLORS.white} />
             </TouchableOpacity>
@@ -387,43 +208,49 @@ export default function AvailableCardAndBank({navigation}) {
         <View style={[styles.content]}>
           <Text style={[styles.contentTitle]}>Bank Account</Text>
           <View style={[styles.contentView]}>
-            {/* <TouchableOpacity
-              onPress={() => setBankModalVisible(true)}
-              style={[styles.addButton]}>
-              <IconFA5 name="plus" size={15} color={COLORS.white} />
-            </TouchableOpacity>
-
-            <FlatList
-              data={userBankAccounts}
-              renderItem={renderBankAccounts}
-              keyExtractor={(item) => item.id.toString()}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              style={{
-                marginLeft: 10,
-              }}
-              contentContainerStyle={{
-                paddingVertical: 5,
-              }}
-            /> */}
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'row',
-                alignItems: 'center',
-                paddingVertical: 20,
-                paddingLeft: 20,
-              }}>
-              <TouchableOpacity
-                onPress={() => setBankModalVisible(true)}
-                style={[styles.addButtonEmpty]}>
-                <IconFA5 name="plus" size={15} color={COLORS.primary} />
-              </TouchableOpacity>
-              <Text style={{marginLeft: 20, color: COLORS.light}}>
-                Add Bank Account
-              </Text>
-            </View>
+            {!userBankAccounts.length ? (
+              <>
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 20,
+                    paddingLeft: 20,
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => setBankModalVisible(true)}
+                    style={[styles.addButtonEmpty]}>
+                    <IconFA5 name="plus" size={15} color={COLORS.primary} />
+                  </TouchableOpacity>
+                  <Text style={{marginLeft: 20, color: COLORS.light}}>
+                    Add Bank Account
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <TouchableOpacity
+                  onPress={() => setBankModalVisible(true)}
+                  style={[styles.addButton]}>
+                  <IconFA5 name="plus" size={15} color={COLORS.white} />
+                </TouchableOpacity>
+                <FlatList
+                  data={userBankAccounts}
+                  renderItem={renderBankAccounts}
+                  keyExtractor={(item) => item.id.toString()}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  style={{
+                    marginLeft: 10,
+                  }}
+                  contentContainerStyle={{
+                    paddingVertical: 5,
+                  }}
+                />
+              </>
+            )}
           </View>
         </View>
 
@@ -443,17 +270,13 @@ export default function AvailableCardAndBank({navigation}) {
       </ScrollView>
 
       <AddBankAccountModal
-        onConfirm={addAccount}
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
-        bankAccountNumber={bankAccountNumber}
-        setBankAccountNumber={(text) => setBankAccountNumber(text)}
-        selectedBank={selectedBank}
-        setSelectedBank={(text) => setSelectedBank(text)}
-        selectedAccountType={selectedAccountType}
-        setSelectedAccountType={setSelectedAccountType}
-        setBankCode={setBankCode}
-        bankData={bankData}
+      />
+
+      <AddPaymentCardModal
+        onRequestClose={() => setPaymentCardModal(!paymentCardModal)}
+        visible={paymentCardModal}
       />
     </>
   );

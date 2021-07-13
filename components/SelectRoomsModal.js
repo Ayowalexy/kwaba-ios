@@ -13,7 +13,14 @@ import {COLORS} from '../util';
 
 export default function SelectRoomsModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const rooms = new Array(4).fill();
+  // const rooms = new Array(4).fill();
+  const rooms = [
+    '1 Room',
+    '2 Rooms',
+    '3 Rooms',
+    '4 Rooms',
+    '5 rooms and above',
+  ];
   useEffect(() => {
     console.log(rooms);
   }, []);
@@ -40,10 +47,10 @@ export default function SelectRoomsModal(props) {
             }}
           />
           <View style={{marginTop: 20}}>
-            {rooms.map((number, index) => (
+            {rooms.map((room, index) => (
               <TouchableOpacity
                 onPress={() => {
-                  onClick(index + 1);
+                  onClick(room);
                   onRequestClose();
                 }}
                 key={index}
@@ -57,7 +64,7 @@ export default function SelectRoomsModal(props) {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {index + 1}
+                  {room}
                 </Text>
               </TouchableOpacity>
             ))}

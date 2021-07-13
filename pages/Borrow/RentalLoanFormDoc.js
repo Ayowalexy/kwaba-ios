@@ -59,7 +59,7 @@ const RentalLoanFormDoc = ({navigation}) => {
 
   const handleAccpet = async () => {
     const data = {
-      pre_approved_amount: preApproveAmount,
+      loanable_amount: preApproveAmount,
       monthly_repayment: monthlyPayment,
       amount_needed_from_kwaba: Number(unFormatNumber(requestAmount)),
       repayment_plan: selectedMonth,
@@ -74,7 +74,7 @@ const RentalLoanFormDoc = ({navigation}) => {
 
     console.log('loanFormData:', loanFormData);
 
-    // console.log('data:', data);
+    console.log('data:', preApproveAmount);
 
     navigation.navigate('RentalLoanForm2');
   };
@@ -101,8 +101,9 @@ const RentalLoanFormDoc = ({navigation}) => {
     let max_repayment_amount = salaryBalance * 0.4 * tenure;
 
     // change 0.045 to 0.039
+    // Initially 0.039 was 0.045
 
-    let temp = 0.045 * tenure + 1;
+    let temp = 0.039 * tenure + 1;
 
     max_pre_approved_amount = max_repayment_amount / temp;
 
@@ -115,7 +116,7 @@ const RentalLoanFormDoc = ({navigation}) => {
     }
 
     let monthly_repayment =
-      0.045 * pre_approved_amount + pre_approved_amount / tenure;
+      0.039 * pre_approved_amount + pre_approved_amount / tenure;
 
     let non_refundable_deposit = 0;
     let temp3 = 0.035 * pre_approved_amount;

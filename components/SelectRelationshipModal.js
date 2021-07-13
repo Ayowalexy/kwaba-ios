@@ -13,7 +13,7 @@ import {COLORS} from '../util';
 
 export default function SelectRelationshipModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const lists = ['Cousin', 'Brother', 'Sister'];
+  const lists = ['Cousin', 'Brother', 'Sister', 'Spouse'];
   return (
     // <View>
     <Modal

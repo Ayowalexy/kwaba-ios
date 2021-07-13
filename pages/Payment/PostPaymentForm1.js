@@ -53,20 +53,40 @@ const PostPaymentForm1 = ({navigation}) => {
       'postPaymentForm',
       JSON.stringify({...JSON.parse(postPaymentFormData), ...data}),
     );
-    let stepsdata = {
-      documentdone: 'done',
-      propertydetail: 'done',
-      landlorddetail: '',
-      refree: '',
-      offeraccepted: '',
-      addressverification: '',
-      debitmandate: '',
-      awaitingdisbursment: '',
-    };
 
-    await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    // let stepsdata = {
+    //   documentdone: 'done',
+    //   propertydetail: 'done',
+    //   landlorddetail: '',
+    //   refree: '',
+    //   offeraccepted: '',
+    //   addressverification: '',
+    //   debitmandate: '',
+    //   awaitingdisbursment: '',
+    // };
+    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+
+    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const steps = JSON.parse(rentalSteps);
+    let stepsData = {
+      application_form: 'done',
+      congratulation: 'done',
+      bank_statement_upload: 'done',
+      all_documents: 'done',
+      verifying_documents: 'done',
+      offer_breakdown: 'done',
+      property_detail: 'done',
+      landlord_detail: '',
+      referee_detail: '',
+      offer_letter: '',
+      address_verification: '',
+      debitmandate: '',
+      awaiting_disbursement: '',
+    };
+    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+    console.log('STEPS: ', steps);
+
     navigation.navigate('PostPaymentForm2');
-    console.log(data);
   };
 
   const CustomInput = (props) => {
@@ -268,7 +288,7 @@ const PostPaymentForm1 = ({navigation}) => {
                           color: '#ADADAD',
                           marginRight: 15,
                         }}>
-                        1 of 4
+                        1 of 3
                       </Text>
                       <AnimatedCircularProgress
                         size={25}

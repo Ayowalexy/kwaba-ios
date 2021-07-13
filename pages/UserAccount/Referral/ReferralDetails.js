@@ -143,18 +143,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: COLORS.grey,
-    paddingVertical: 20,
+    paddingVertical: 22,
     paddingHorizontal: 5,
   },
 
   text: {
-    fontSize: 10,
+    fontSize: 14,
     fontWeight: 'bold',
     color: COLORS.dark,
   },
 
   value: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     color: COLORS.dark,
   },
