@@ -14,12 +14,12 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
 const guarantorFormSchema = yup.object().shape({
-  full_name: yup.string().required('Field required'),
+  full_name: yup.string().required('Enter your full name'),
   email: yup
     .string()
     .email('Please enter valid email')
-    .required('Field required'),
-  phone_no: yup.string().required('Field required'),
+    .required('Email is required'),
+  phone_no: yup.string().required('Phone number is required'),
 });
 
 export default function GuarantorForm({navigation}) {
