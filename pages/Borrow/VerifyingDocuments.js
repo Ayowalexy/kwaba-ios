@@ -46,7 +46,7 @@ const VerifyingDocuments = ({navigation, route}) => {
         setExistingApplication(applicationId);
         console.log('here', applicationIDCallRes.data.data.approvedamount);
 
-        if (applicationId == 3) {
+        if (applicationId >= 3) {
           // const rentalSteps = await AsyncStorage.getItem('rentalSteps');
           // const steps = JSON.parse(rentalSteps);
           // let stepsData = {
@@ -146,25 +146,26 @@ const VerifyingDocuments = ({navigation, route}) => {
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+        style={{padding: 15, paddingVertical: 15, fontWeight: '900'}}
         color={COLORS.primary}
       />
       <View
         style={{
-          marginVertical: 11,
+          // marginVertical: 11,
           marginHorizontal: 16,
         }}>
         <Text
           style={[
-            FONTS.h1FontStyling,
+            // FONTS.h1FontStyling,
             {
               color: '#2A286A',
               textAlign: 'left',
               fontWeight: 'bold',
               marginBottom: 134,
+              fontSize: 18,
             },
           ]}>
-          Rental Loan
+          Rent Now Pay Later
         </Text>
         {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
         <Image

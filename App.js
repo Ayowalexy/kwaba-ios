@@ -18,6 +18,7 @@ import CompleteProfile3 from './pages/CompleteProfile/Screen3';
 import CompleteProfile4 from './pages/CompleteProfile/Screen4';
 import CompleteProfile5 from './pages/CompleteProfile/Screen5';
 import ForgotPassword from './pages/Auth/ForgotPassword';
+import PasswordResetSuccess from './pages/Auth/PasswordResetSuccess';
 import GetCode from './pages/Auth/GetCode';
 import VerifyNumber from './pages/Auth/VerifyNumber';
 import SignUp from './pages/Auth/SignUp';
@@ -187,12 +188,12 @@ const App = () => {
   }, [store2.token]);
 
   useEffect(() => {
-    if (store2.isLoggedIn) {
-      setTimeout(function () {
-        SplashScreen.hide();
-      }, 1000);
-    }
-  }, [store2.isLoggedIn]);
+    // if (store2.isLoggedIn) {
+    setTimeout(function () {
+      SplashScreen.hide();
+    }, 1000);
+    // }
+  }, []);
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
@@ -287,6 +288,9 @@ const App = () => {
               <Stack.Screen
                 name="ForgotPassword"
                 component={ForgotPassword}></Stack.Screen>
+              <Stack.Screen
+                name="PasswordResetSuccess"
+                component={PasswordResetSuccess}></Stack.Screen>
             </>
           ) : (
             <>

@@ -151,7 +151,25 @@ const PostPaymentForm1 = ({navigation}) => {
       await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
       console.log('STEPS: ', steps);
 
-      navigation.navigate('OfferLetter');
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+
+      console.log(applicationIDCallRes.data.data.assigned_to);
+
+      if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
+        navigation.navigate('AcceptanceLetterKwaba');
+
+        // navigation.navigate('AcceptanceletterAddosser');
+      } else {
+        navigation.navigate('AcceptanceLetterKwaba');
+        // navigation.navigate('AcceptanceletterAddosser');
+      }
+
+      // navigation.navigate('OfferLetter');
 
       // console.log({Response: response.data, 'Response 2': response2.data});
     } catch (error) {

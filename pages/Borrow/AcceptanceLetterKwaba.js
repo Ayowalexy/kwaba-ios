@@ -1,150 +1,135 @@
-import React,{useState,useEffect} from 'react';
-import { View, Text,TouchableOpacity, } from 'react-native';
-import { WebView } from 'react-native-webview';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {WebView} from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 import axios from 'axios';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 
-
 const AcceptanceLetterKwaba = ({navigation}) => {
+  const [name, setName] = useState('');
+  const today = moment().format('DD/MM/YYYY');
+  const [eSignatureModal, setESignatureModal] = useState(false);
+  const [acceptOfferResponse, setAcceptOfferResponse] = useState({});
+  const [approvedAmount, setApprovedAmount] = useState('');
+  const [monthlyPayment, setMonthlyPayment] = useState('');
+  const [duration, setDuration] = useState('');
+  const [percentAchieved, setPercentAchieved] = useState(75);
+  const [nextPaymentDueDate, setnextPaymentDueDate] = useState(45);
+  const [noOfDaysToNextPayment, setnoOfDaysToNextPayment] = useState(45);
+  const [repaymentBalance, setrepaymentBalance] = useState(45);
+  const [monthlyRepayment, setmonthlyRepayment] = useState();
+  const [repaymentPlan, setrepaymentPlan] = useState();
+  const [repaymentPlanCount, setrepaymentPlanCount] = useState();
+  const [approved_amount, setapproved_amount] = useState();
+  const [address, setaddress] = useState();
+  const [workplace, setworkplace] = useState();
+  const [repayment_day, setrepayment_day] = useState();
+  const [totalrepayment, settotalrepayment] = useState();
+  const [repayment_amount, setrepayment_amount] = useState();
+  const [repayment_start_day, setrepayment_start_day] = useState();
 
-    const [name, setName] = useState('');
-    const today=moment().format('DD/MM/YYYY');
-    const [eSignatureModal, setESignatureModal] = useState(false);
-    const [acceptOfferResponse, setAcceptOfferResponse]=useState({});
-    const [approvedAmount, setApprovedAmount] = useState('');
-    const [monthlyPayment, setMonthlyPayment] = useState('');
-    const [duration, setDuration] = useState('');
-    const [percentAchieved, setPercentAchieved] = useState(75);
-    const [nextPaymentDueDate, setnextPaymentDueDate] = useState(45);
-    const [noOfDaysToNextPayment, setnoOfDaysToNextPayment] = useState(45);
-    const [repaymentBalance, setrepaymentBalance] = useState(45);
-    const [monthlyRepayment, setmonthlyRepayment] = useState();
-    const [repaymentPlan, setrepaymentPlan] = useState();
-    const [repaymentPlanCount, setrepaymentPlanCount] = useState();
-    const [approved_amount, setapproved_amount] = useState();
-    const [address, setaddress] = useState();
-    const [workplace, setworkplace] = useState();
-    const [repayment_day, setrepayment_day] = useState();
-    const [totalrepayment, settotalrepayment] = useState();
-    const [repayment_amount, setrepayment_amount ]= useState();
-    const [repayment_start_day, setrepayment_start_day ]= useState();
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
 
-   
+  const setLoanOffer = async () => {
+    const token = await getToken();
+    const applicationIDCallRes = await axios.get(
+      'http://67.207.86.39:8000/api/v1/application/one',
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
 
+    setApprovedAmount(applicationIDCallRes.data.data.loanable_amount);
+    setMonthlyPayment(applicationIDCallRes.data.data.monthly_repayment);
+    setDuration(applicationIDCallRes.data.data.repayment_plan);
 
-    const getToken = async () => {
-        const userData = await AsyncStorage.getItem('userData');
-        const token = JSON.parse(userData).token;
-        return token;
-      };
-  
-      
-  
-      const setLoanOffer=async()=>{
-       
-        const token = await getToken();
-        const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
+    console.log(applicationIDCallRes.data.data);
+  };
+
+  useEffect(() => {
+    const getinitialData = async () => {
+      const token = await getToken();
+
+      try {
+        const applicationIDCallRes = await axios.get(
+          'http://67.207.86.39:8000/api/v1/application/one',
+          {
             headers: {'Content-Type': 'application/json', Authorization: token},
-          });
-  
-  
-          setApprovedAmount(applicationIDCallRes.data.data.loanable_amount);
-          setMonthlyPayment(applicationIDCallRes.data.data.monthly_repayment);
-          setDuration(applicationIDCallRes.data.data.repayment_plan);
-
-          console.log(applicationIDCallRes.data.data)
-  
-      }  
-
-    useEffect(() => {
-
-
-        const getinitialData =async ()=> {
-    
-            const token = await getToken();
-      
-            
-            try{
-      
-              const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
-                  headers: {'Content-Type': 'application/json', Authorization: token},
-                });
-      
-                console.log(applicationIDCallRes.data.data.non_refundable_deposit);
-                const loanId = applicationIDCallRes.data.data.id;
-                setmonthlyRepayment(Number(applicationIDCallRes.data.data.approvedrepayment))
-                setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
-                setapproved_amount(applicationIDCallRes.data.data.approvedamount);
-                setaddress(applicationIDCallRes.data.data.home_address);
-                setworkplace(applicationIDCallRes.data.data.employer_name);
-            
-                const res = await axios.post('http://67.207.86.39:8000/api/v1/application/dashboard', {loanId}, {
-                    headers: {'Content-Type': 'application/json', Authorization: token},
-                  });
-               
-                  
-                  console.log(res.data);    
-                  setPercentAchieved(res.data.percentagePaid);
-                  setnextPaymentDueDate(res.data.nextPaymentDueDate);
-                  setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
-                  setrepaymentBalance(res.data.repaymentBalance);
-                  setrepaymentPlanCount(res.data.loanpaidcount);
-                  setrepayment_day(res.data.nextPaymentDueDate);
-
-                  const date = moment(res.data.noOfDaysToNextPayment); // Thursday Feb 2015
-                  const dow = date.day();
-                  setrepayment_start_day(dow);
-
-                  settotalrepayment(Number(repaymentPlan*monthlyRepayment));
-                  
-                       
-          
-            }
-            catch(error) {
-              console.log(error.response.data)
-            }
-         
-            
-          };
-      
-          getinitialData();
-
-
-
-
-        const getUserData = async () => {
-          const userData = await AsyncStorage.getItem('userData');
-    
-          console.log("hello here is our data ",JSON.parse(userData));
-          if (userData) {
-            setName(JSON.parse(userData).user.lastname+" "+JSON.parse(userData).user.firstname);
-          }
-        };
-        getUserData();
-        setLoanOffer();
-      }, []);
-
-
-      const handleRejectOffer=()=>{
-     
-
-
-        Alert.alert(
-          'Offer Rejected',
-          'Offer Rejected.',
+          },
         );
-      } 
-  
 
-    return (
-        <>
-           <View style={{flex:1,flexDirection:'column'}}>
+        console.log(applicationIDCallRes.data.data.non_refundable_deposit);
+        const loanId = applicationIDCallRes.data.data.id;
+        setmonthlyRepayment(
+          Number(applicationIDCallRes.data.data.approvedrepayment),
+        );
+        setrepaymentPlan(
+          applicationIDCallRes.data.data.approved_repayment_plan,
+        );
+        setapproved_amount(applicationIDCallRes.data.data.approvedamount);
+        setaddress(applicationIDCallRes.data.data.home_address);
+        setworkplace(applicationIDCallRes.data.data.employer_name);
 
-               <WebView
-               source={{ html:`<html>
+        const res = await axios.post(
+          'http://67.207.86.39:8000/api/v1/application/dashboard',
+          {loanId},
+          {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          },
+        );
+
+        console.log(res.data);
+        setPercentAchieved(res.data.percentagePaid);
+        setnextPaymentDueDate(res.data.nextPaymentDueDate);
+        setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
+        setrepaymentBalance(res.data.repaymentBalance);
+        setrepaymentPlanCount(res.data.loanpaidcount);
+        setrepayment_day(res.data.nextPaymentDueDate);
+
+        const date = moment(res.data.noOfDaysToNextPayment); // Thursday Feb 2015
+        const dow = date.day();
+        setrepayment_start_day(dow);
+
+        settotalrepayment(Number(repaymentPlan * monthlyRepayment));
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    };
+
+    getinitialData();
+
+    const getUserData = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+
+      console.log('hello here is our data ', JSON.parse(userData));
+      if (userData) {
+        setName(
+          JSON.parse(userData).user.lastname +
+            ' ' +
+            JSON.parse(userData).user.firstname,
+        );
+      }
+    };
+    getUserData();
+    setLoanOffer();
+  }, []);
+
+  const handleRejectOffer = () => {
+    Alert.alert('Offer Rejected', 'Offer Rejected.');
+  };
+
+  return (
+    <>
+      <View style={{flex: 1, flexDirection: 'column'}}>
+        <WebView
+          source={{
+            html: `<html>
    
                <head>
                <meta http-equiv=Content-Type content="text/html; charset=utf-8">
@@ -1069,32 +1054,61 @@ const AcceptanceLetterKwaba = ({navigation}) => {
                </body>
                
                </html>
-               ` }}
-               // onMessage={event => {
-               //     alert(event.nativeEvent.data);
-               // }}
-   
-                style={{ flex: 1 }} scalesPageToFit={true}
-               />
-           </View>
+               `,
+          }}
+          // onMessage={event => {
+          //     alert(event.nativeEvent.data);
+          // }}
 
-        <View style={{ flexDirection: 'row', marginBottom: 19, justifyContent: 'space-around', alignItems: 'flex-end'}}>
+          style={{flex: 1}}
+          scalesPageToFit={true}
+        />
+      </View>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          //   marginBottom: 19,
+          justifyContent: 'space-around',
+          alignItems: 'flex-end',
+          paddingHorizontal: 10,
+          paddingVertical: 10,
+        }}>
         <TouchableOpacity
-            onPress={handleRejectOffer}
-            style={[designs.button, {backgroundColor: COLORS.white, elevation: 6, width: '43%'}]}>
-            <Text style={[designs.buttonText, {fontSize: 14, color:'#ADADAD', textAlign: 'center', fontWeight: 'normal'}]}>REJECT OFFER</Text>
-        </TouchableOpacity>    
+          onPress={handleRejectOffer}
+          style={[styles.btn, {backgroundColor: COLORS.white}]}>
+          <Text style={[styles.btnText, {color: '#888'}]}>REJECT OFFER</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
-            onPress={() => {navigation.navigate('PostPaymentForm1');}}
-            style={[designs.button, {backgroundColor: COLORS.secondary, elevation: 6, width: '43%'}]}>
-            <Text style={[designs.buttonText, {fontSize: 14, color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>ACCEPT OFFER</Text>
-        </TouchableOpacity>    
-
-        </View>
-
-        </>
-       
-    )
-}
+          onPress={() => {
+            // navigation.navigate('PostPaymentForm1');
+            navigation.navigate('Signature');
+          }}
+          style={[styles.btn]}>
+          <Text style={[styles.btnText]}>ACCEPT OFFER</Text>
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+};
 
 export default AcceptanceLetterKwaba;
+
+const styles = StyleSheet.create({
+  btn: {
+    width: '48%',
+    borderRadius: 10,
+    backgroundColor: COLORS.secondary,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    marginBottom: 20,
+    // marginTop: 50,
+  },
+  btnText: {
+    fontSize: 12,
+    color: COLORS.white,
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+});

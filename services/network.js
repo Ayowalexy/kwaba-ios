@@ -78,18 +78,14 @@ const verifyPhone = async (data) => {
 };
 
 const forgotPassword = async (data) => {
-  // const token = await getToken();
-  const url = apiUrl + '/api/v1/forgot_password';
+  const url = apiUrl + '/api/v1/user/forgot_password';
   try {
-    const response = await axios.put(url, JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json',
-        // Authorization: token,
-      },
+    const response = await axios.put(url, data, {
+      headers: {'Content-Type': 'application/json'},
     });
     return response;
   } catch (error) {
-    return error.message;
+    return error;
   }
 };
 

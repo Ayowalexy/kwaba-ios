@@ -17,25 +17,30 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
 import {forgotPassword} from '../../services/network';
 
-export default function Login({navigation}) {
+export default function ForgotPassword({navigation}) {
   const [spinner, setSpinner] = useState(false);
   const [email, setEmail] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleForgotPassword = async () => {
-    // console.log('settingUp...');
-    // console.log(email);
-    const data = {
-      email: email,
-    };
-    try {
-      const res = await forgotPassword(data);
+    setSpinner(true);
+    setErrorMsg('');
+    const res = await forgotPassword({email});
 
-      // setSpinner(true)
-      // if(res.status ==)
-      console.log(res);
+    try {
+      console.log('RES: ', res);
+      if (res.status == 200) {
+        setSpinner(false);
+        navigation.navigate('PasswordResetSuccess', {msg: res.data.statusMsg});
+        setErrorMsg('');
+      } else {
+        setSpinner(false);
+        setErrorMsg('User not found');
+      }
     } catch (error) {
-      console.log(error);
+      console.log('Error: ', error.response.statusMsg);
       setSpinner(false);
+      setErrorMsg('User not found');
     }
   };
 
@@ -110,7 +115,7 @@ export default function Login({navigation}) {
             marginTop: 10,
             textAlign: 'center',
           }}>
-          Enter your registered email below to receive{'\n'}password reset
+          Enter your registered email below to{'\n'}receive password reset
           instructions
         </Text>
         <View style={[designs.customInput]}>
@@ -142,6 +147,7 @@ export default function Login({navigation}) {
             onChangeText={(text) => setEmail(text)}
           />
         </View>
+        <Text style={{fontSize: 12, color: 'red', padding: 2}}>{errorMsg}</Text>
         <View
           style={{
             display: 'flex',

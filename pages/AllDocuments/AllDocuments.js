@@ -134,23 +134,25 @@ export default function AllDocuments({navigation}) {
     // console.log('Counts: ', countDocuments());
 
     // console.log(fileProgress);
-    const countDocuments = async () => {
-      const token = await getToken();
-      try {
-        const resp = await axios.get(
-          'http://67.207.86.39:8000/api/v1/application/documents',
-          {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          },
-        );
 
-        setCount(resp.data.data.length);
-      } catch (error) {
-        console.log(error);
-      }
-    };
     countDocuments();
   }, []);
+
+  const countDocuments = async () => {
+    const token = await getToken();
+    try {
+      const resp = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/documents',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+
+      setCount(resp.data.data.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDocumentType = async (item) => {
     setShowChooseFileModal(true);
@@ -160,6 +162,7 @@ export default function AllDocuments({navigation}) {
   };
 
   const handleBrowseFile = async () => {
+    setShowChooseFileModal(false);
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -207,6 +210,8 @@ export default function AllDocuments({navigation}) {
         dispatch(uploadFile(token, item, data));
         appendID(item);
         setSpinner(false);
+
+        countDocuments();
       } catch (error) {
         console.log(error);
         setSpinner(false);
@@ -306,7 +311,7 @@ export default function AllDocuments({navigation}) {
         <Docs />
         {/* )} */}
 
-        {count >= 2 ? (
+        {count >= 5 ? (
           <View style={{paddingHorizontal: 20}}>
             <TouchableOpacity
               // onPress={() => {
