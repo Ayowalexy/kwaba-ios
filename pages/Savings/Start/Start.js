@@ -103,7 +103,7 @@ export default function Start({navigation}) {
     setSoloSaving(totalSoloSavings || 0);
 
     console.log('Store: ', balance);
-  }, []);
+  }, [store]);
 
   const savingsCard = [
     {
@@ -117,25 +117,6 @@ export default function Start({navigation}) {
       image: images.maskGroup14,
     },
   ];
-
-  useEffect(() => {
-    (async () => {
-      const token = await getToken();
-      const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
-      // const url = 'http://67.207.86.39:8000/api/v1/payments';
-      // const url = 'http://67.207.86.39:8000/api/v1/savings';
-
-      try {
-        const response = await axios.post(url, {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        });
-        console.log('Fetch savings plan: ', response);
-        console.log(token);
-      } catch (error) {
-        console.log('Error: ', error);
-      }
-    })();
-  }, []);
 
   return (
     <View style={[designs.container]}>
@@ -420,12 +401,15 @@ export default function Start({navigation}) {
                   Save towards your rent with{'\n'}your flatmates or spouse
                 </Text>
                 <TouchableOpacity
-                  onPress={() =>
-                    // navigation.navigate(
-                    //   soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
-                    // )
-                    setShowModal(!showModal)
-                  }
+                  onPress={() => {
+                    // console.log('Hello')
+                    navigation.navigate(
+                      buddySaving == 0
+                        ? 'BuddySaving1'
+                        : 'BuddySavingDashboard',
+                    );
+                    // setShowModal(!showModal)
+                  }}
                   style={[
                     designs.cardFlex,
                     {

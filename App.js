@@ -187,8 +187,12 @@ const App = () => {
   }, [store2.token]);
 
   useEffect(() => {
-    SplashScreen.hide();
-  }, []);
+    if (store2.isLoggedIn) {
+      setTimeout(function () {
+        SplashScreen.hide();
+      }, 1000);
+    }
+  }, [store2.isLoggedIn]);
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
@@ -223,6 +227,15 @@ const App = () => {
     any_custom_type: () => {},
   };
 
+  useEffect(() => {
+    console.log('****************************');
+    console.log('Store 2: ', store2);
+    (async () => {
+      let data = AsyncStorage.getItem('userData');
+      console.log('User Data: ', data);
+    })();
+  }, []);
+
   const [test, setTest] = useState('');
 
   // if (!store2.token) {
@@ -256,7 +269,7 @@ const App = () => {
           }}
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
-          // initialRouteName={'NewAllDocuments'}
+          // initialRouteName={'Home'}
         >
           {/* {test != '' ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (

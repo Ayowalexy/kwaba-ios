@@ -129,7 +129,7 @@ export default function TabTwo(props) {
               // setShowSelectGenderModal(!showSelectGenderModal);
               setEmploymentStatusModal(!employmentStatusModal);
             }}>
-            {employmentStatus != '' ? (
+            {employmentStatus != null ? (
               <Text
                 style={{
                   color: '#777',

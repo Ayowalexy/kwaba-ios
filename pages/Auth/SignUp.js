@@ -143,14 +143,14 @@ export default function SignUp({navigation}) {
       await AsyncStorage.setItem('authData', res.data.authData);
       navigation.navigate('GetCode');
 
-      setValues({
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        gender: 'Female',
-      });
+      // setValues({
+      //   firstName: '',
+      //   lastName: '',
+      //   email: '',
+      //   password: '',
+      //   confirmPassword: '',
+      //   gender: 'Female',
+      // });
     } else {
       setSpinner(false);
       if (res == 'Request failed with status code 409') {

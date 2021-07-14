@@ -92,25 +92,32 @@ export default function SoloSavingDashBoard({navigation}) {
     // console.log('Percentage Earned: ', (50 / 150) * 100);
   }, [getSoloSaving]);
 
+  // const url = 'http://67.207.86.39:8000/api/v1/payments';
+  // const url = 'http://67.207.86.39:8000/api/v1/savings';
+
   useEffect(() => {
-    (async () => {
-      const token = await getToken();
-      const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
-      // const url = 'http://67.207.86.39:8000/api/v1/payments';
-      // const url = 'http://67.207.86.39:8000/api/v1/savings';
-
-      console.log(token);
-
-      try {
-        const response = await axios.post(url, {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        });
-        console.log('Fetch savings plan: ', response);
-      } catch (error) {
-        console.log('Error: ', error.response.data);
-      }
-    })();
+    getSavingsPlan();
   }, []);
+
+  const getSavingsPlan = async () => {
+    const token = await getToken();
+    const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+
+    console.log('Token: ', token);
+
+    try {
+      const response = await axios.post(
+        url,
+        {},
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      console.log('Fetch savings plan: ', response);
+    } catch (error) {
+      console.log('Error: ', error.response.data);
+    }
+  };
 
   return (
     <View style={styles.container}>
