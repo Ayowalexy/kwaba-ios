@@ -149,21 +149,21 @@ export default function SubsequentModal(props) {
           if (result.type === 'cancel') {
             let verifyData = {reference: sub.data.data.reference};
             console.log('The Verify Data: ', verifyData);
-            // setVerificationSpinner(true);
-            // const verify = await verifyPayment(verifyData);
-            // if (verify.data.status == 'success') {
-            //   setVerificationSpinner(false);
-            //   setSuccessModal(true);
-            //   console.log('Payment verified');
+            setVerificationSpinner(true);
+            const verify = await verifyPayment(verifyData);
+            if (verify.data.status == 'success') {
+              setVerificationSpinner(false);
+              setSuccessModal(true);
+              console.log('Payment verified');
 
-            //   goToDashboard();
-            // } else {
-            //   setVerificationSpinner(false);
-            //   Alert.alert(
-            //     'Payment Unverified',
-            //     'Your payment was not verified. Please retry.',
-            //   );
-            // }
+              goToDashboard();
+            } else {
+              setVerificationSpinner(false);
+              Alert.alert(
+                'Payment Unverified',
+                'Your payment was not verified. Please retry.',
+              );
+            }
           }
         } else {
           setSpinner(false);
