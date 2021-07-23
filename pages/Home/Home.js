@@ -68,22 +68,22 @@ export default function Home({navigation}) {
     setSavings(totalSoloSavings || 0);
   }, [store]);
 
-  useEffect(() => {
-    (async () => {
-      const token = await getToken();
-      try {
-        const response = await axios.get('http://67.207.86.39:8000/api/v1/me', {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: token,
-          },
-        });
-        console.log('ME: ', response.data.user);
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const token = await getToken();
+  //     try {
+  //       const response = await axios.get('http://67.207.86.39:8000/api/v1/me', {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           Authorization: token,
+  //         },
+  //       });
+  //       console.log('ME: ', response.data.user);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+  // }, []);
 
   const topCards = [
     {

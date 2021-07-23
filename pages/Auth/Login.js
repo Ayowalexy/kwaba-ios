@@ -135,12 +135,14 @@ export default function Login({navigation}) {
           ...res.data.authData,
           username: res.data.authData.user.firstname,
           isLoggedIn: true,
+          isProfileCompleted: res.data.authData.user.profile_complete,
         });
         dispatch(
           setLoginState({
             ...res.data.authData,
             username: res.data.authData.user.firstname,
             isLoggedIn: true,
+            isProfileCompleted: res.data.authData.user.profile_complete,
           }),
         );
         navigation.navigate('Home');
