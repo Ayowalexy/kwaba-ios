@@ -89,15 +89,16 @@ export default function SoloSavingDashBoard({navigation}) {
       ).toFixed(0),
     );
 
-    // console.log('Percentage Earned: ', (50 / 150) * 100);
+    console.log(getSoloSaving);
+    getSavingsPlan();
   }, [getSoloSaving]);
 
   // const url = 'http://67.207.86.39:8000/api/v1/payments';
   // const url = 'http://67.207.86.39:8000/api/v1/savings';
 
-  useEffect(() => {
-    getSavingsPlan();
-  }, []);
+  // useEffect(() => {
+  //   getSavingsPlan();
+  // }, []);
 
   const getSavingsPlan = async () => {
     const token = await getToken();
@@ -113,7 +114,9 @@ export default function SoloSavingDashBoard({navigation}) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      console.log('Fetch savings plan: ', response);
+      console.log('Fetch savings plan: ', response.data.data);
+      let resData = response.data.data;
+      setSavingsTarget(resData.amount);
     } catch (error) {
       console.log('Error: ', error.response.data);
     }

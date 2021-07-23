@@ -32,8 +32,7 @@ export default function EligibilitySalaryEarner({navigation}) {
   const handleProceedClick = async () => {
     // await AsyncStorage.removeItem('rentalSteps');
 
-    // const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-    // const steps = JSON.parse(borrwSteps);
+    const token = await getToken();
 
     const rentalSteps = await AsyncStorage.getItem('rentalSteps');
     const steps = JSON.parse(rentalSteps);
@@ -59,7 +58,20 @@ export default function EligibilitySalaryEarner({navigation}) {
     } else if (steps.referee_detail == '') {
       navigation.navigate('PostPaymentForm3');
     } else if (steps.offer_letter == '') {
-      navigation.navigate('OfferLetter');
+      // navigation.navigate('OfferLetter');
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      // console.log(applicationIDCallRes.data.data.assigned_to);
+
+      if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
+        navigation.navigate('AcceptanceLetterKwaba');
+      } else {
+        navigation.navigate('AcceptanceLetterAddosser');
+      }
     } else if (steps.address_verification == '') {
       navigation.navigate('AddressVerification');
     } else if (steps.debitmandate == '') {
@@ -143,7 +155,7 @@ export default function EligibilitySalaryEarner({navigation}) {
               source={images.eligibilityImage}
               style={{
                 width: '100%',
-                height: 250,
+                height: 170,
                 resizeMode: 'contain',
                 marginTop: 30,
               }}

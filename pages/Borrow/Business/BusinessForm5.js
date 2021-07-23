@@ -23,13 +23,15 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
 const businessFormSchema = yup.object().shape({
-  pay_in_bank: yup.string().required('Please select an option'),
+  is_payment_made_to_bank_account: yup
+    .string()
+    .required('Please select an option'),
   // monthly_business_expenditure: yup.string().required('Please enter amount'),
   monthly_business_revenue: yup.string().required('Please enter amount'),
 });
 
 export default function BusinessForm1({navigation}) {
-  const [progress, setProgress] = useState(60);
+  const [progress, setProgress] = useState(100);
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
   const [showBusinessSectorModal, setShowBusinessSectorModal] = useState(false);
   const [registration, setRegistration] = useState('');
@@ -57,7 +59,9 @@ export default function BusinessForm1({navigation}) {
                 borderColor: value == option ? COLORS.light : '#ADADAD50',
               },
             ]}
-            onPress={() => setFieldValue('pay_in_bank', option)}>
+            onPress={() =>
+              setFieldValue('is_payment_made_to_bank_account', option)
+            }>
             <View>
               <Text
                 style={[
@@ -128,24 +132,26 @@ export default function BusinessForm1({navigation}) {
   };
 
   const handleSubmit = async (values) => {
-    // const dummyData = {
-    //   rent_purpose: '',
-    //   business_name: '',
-    //   is_business_registered: '',
-    //   business_registration_type: '',
-    //   business_website: '',
-    //   social_media_platform: '',
-    //   social_media_handle: '',
-    //   business_address: '',
-    //   business_age: '',
-    //   company_size: '',
-    //   business_sector: '',
-    //   more_info: '',
-    //   how_many_is_collected: '',
-    //   is_payment_made_to_bank_account: '',
-    //   monthly_business_expenditure: '',
-    //   monthly_business_revenue: '',
-    // };
+    const url = 'http://67.207.86.39:8000/api/v1/business/application/new';
+    const dummyData = {
+      rent_purpose: 'Business space',
+      business_name: 'Kwaba',
+      is_business_registered: 'yes',
+      business_registration_type: 'Limited liability',
+      business_website: 'https://www.kwaba.ng',
+      social_media_platform: 'facebook.com',
+      social_media_handle: 'kwabang',
+      business_address: '131a eti osa way dolphin estate Ikoyi Lagos, Nigeria',
+      business_age: '3 years',
+      company_size: '11 - 50 employees',
+      business_sector: 'Construction/Real Estate',
+      more_info: "Let's pay your landlord, You can pay us later.",
+      how_many_is_collected:
+        'Cash, Bank Transfer, Point of sale (POS), Online, All of the above', // seperated with commas
+      is_payment_made_to_bank_account: 'yes',
+      monthly_business_expenditure: '500000',
+      monthly_business_revenue: '200000',
+    };
 
     const {monthly_business_expenditure, monthly_business_revenue} = values;
     const data = {
@@ -162,10 +168,11 @@ export default function BusinessForm1({navigation}) {
       JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
-    console.log(data);
-    console.log(businessFormData);
+    console.log('DATA: ', data);
+    console.log('BUSINESS FORM DAT: ', businessFormData);
+    console.log('DUMMY DATA: ', dummyData);
 
-    // navigation.navigate('BusinessForm5')
+    navigation.navigate('RentalFormBusiness1');
   };
 
   return (
@@ -181,7 +188,7 @@ export default function BusinessForm1({navigation}) {
       <Formik
         validationSchema={businessFormSchema}
         initialValues={{
-          pay_in_bank: '',
+          is_payment_made_to_bank_account: '',
           monthly_business_expenditure: '',
           monthly_business_revenue: '',
         }}
@@ -243,9 +250,13 @@ export default function BusinessForm1({navigation}) {
 
                   {/*  */}
 
-                  <Field name="pay_in_bank" component={PayInBank} />
+                  <Field
+                    name="is_payment_made_to_bank_account"
+                    component={PayInBank}
+                  />
 
-                  {values.pay_in_bank.toLowerCase() == 'yes' && (
+                  {values.is_payment_made_to_bank_account.toLowerCase() ==
+                    'yes' && (
                     <>
                       <Text style={[designs.boldText, {marginTop: 18}]}>
                         How much is the business monthly revenue?

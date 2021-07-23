@@ -135,9 +135,15 @@ import OfferLetter from './pages/Borrow/OfferLetter';
 import GuarantorOnboarding from './pages/Guarantor/GuarantorOnboarding';
 import GuarantorForm from './pages/Guarantor/GuarantorForm';
 
+// Decline
+import Decline from './pages/Decline/Decline';
+
 // Acceptance Letter
 import AcceptanceLetterAddosser from './pages/Borrow/AcceptanceletterAddosser';
 import AcceptanceLetterKwaba from './pages/Borrow/AcceptanceLetterKwaba';
+
+// Rental Form Business
+import {RentalFormBusiness1} from './pages/Borrow/Business/RentalFormBusiness/index';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -270,7 +276,7 @@ const App = () => {
           }}
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
-          // initialRouteName={'Home'}
+          // initialRouteName={'CardAndBankDetails'}
         >
           {/* {test != '' ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
@@ -580,6 +586,13 @@ const App = () => {
               <Stack.Screen
                 name="AcceptanceLetterAddosser"
                 component={AcceptanceLetterAddosser}
+              />
+
+              <Stack.Screen name="Decline" component={Decline} />
+
+              <Stack.Screen
+                name="RentalFormBusiness1"
+                component={RentalFormBusiness1}
               />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}

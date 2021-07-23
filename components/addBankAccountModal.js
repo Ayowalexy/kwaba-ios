@@ -13,6 +13,7 @@ import SelectBankAccountType from './SelectBankAccountType';
 import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function AddBankAccountModal(props) {
   const {onRequestClose, visible, onConfirm} = props;
@@ -28,6 +29,8 @@ export default function AddBankAccountModal(props) {
   const [showSelectAccountTypeModal, setShowSelectAccountTypeModal] = useState(
     false,
   );
+
+  const [spinner, setSpinner] = useState(false);
 
   const [userBankAccounts, setUserBankAccounts] = useState([]);
 
@@ -65,7 +68,7 @@ export default function AddBankAccountModal(props) {
   }, []);
 
   const addAccount = async () => {
-    // setSpinner(true);
+    setSpinner(true);
     // console.log('start');
     const data = {
       bank_name: selectedBank,
@@ -94,7 +97,7 @@ export default function AddBankAccountModal(props) {
         },
       );
       if (response.data.accountStatus == true) {
-        // setSpinner(false);
+        setSpinner(false);
         console.log('VERIFY CARD FROM BACKEND: ', response.data.data);
 
         const {account_name, account_number} = response.data.data;
@@ -106,13 +109,14 @@ export default function AddBankAccountModal(props) {
           type: 'savings',
         };
         await createBankAccount(userAccountDetails);
+        getBankAccounts();
       } else {
-        // setSpinner(false);
+        setSpinner(false);
         console.log('Account not verified');
       }
     } catch (error) {
-      // setSpinner(false);
-      console.log('The Error:', error);
+      setSpinner(false);
+      console.log('The Error:', error.response);
     }
   };
 
@@ -122,6 +126,8 @@ export default function AddBankAccountModal(props) {
       created_at: '',
       updated_at: '',
     };
+
+    console.log(d);
 
     // console.log('DETAIL', data);
     const url = 'http://67.207.86.39:8000/api/v1/createbankaccount';
@@ -313,6 +319,8 @@ export default function AddBankAccountModal(props) {
         onClick={(value) => setSelectedAccountType(value)}
         selectedAccountType={selectedAccountType}
       /> */}
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

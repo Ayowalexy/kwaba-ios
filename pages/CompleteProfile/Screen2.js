@@ -15,6 +15,7 @@ import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import axios from 'axios';
 
 const Screen2 = ({navigation}) => {
   // const [date, setDate] = useState(new Date(1598051730000));
@@ -40,32 +41,48 @@ const Screen2 = ({navigation}) => {
 
   const dateFormatted = moment(date).format('YYYY-MM-DD');
 
-  const handleNavigation = async () => {
-    // const data = {
-    //   bvn,
-    //   dob: dateFormatted,
-    // };
-    // if (isError()) {
-    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-    //     {text: 'Close'},
-    //   ]);
-    // }
-    // await AsyncStorage.setItem('rentalLoanForm', JSON.stringify(data));
-    // navigation.navigate('CompleteProfile5');
-
-    // console.log(dateFormatted, bvn);
-
-    // try {
-    //   dispatch(soloSaving(data));
-
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
-
-    navigation.navigate('CompleteProfile5');
+  const data = {
+    number: '22447783250',
   };
 
-  const onSelect = (country) => {
-    setCountry(country.name);
+  // bvn verification is paid
+  const bvnVerification = async () => {
+    try {
+      const res = await axios.post(
+        'https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/bvn_validation',
+        data,
+        {
+          headers: {
+            'x-api-key': '5MNVWN9G.NMiQsCPNhJy6cTKQdwTwP1PH9hYp5Ntf',
+          },
+        },
+      );
+
+      console.log('RES: ', res.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+  };
+
+  const handleNavigation = async () => {
+    console.log('Loading...');
+
+    try {
+      const res = await axios.get(
+        'https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/bank_code',
+        {
+          headers: {
+            'x-api-key': '5MNVWN9G.NMiQsCPNhJy6cTKQdwTwP1PH9hYp5Ntf',
+          },
+        },
+      );
+
+      console.log('RES: ', res.data);
+    } catch (error) {
+      console.log(error.response);
+    }
+
+    // navigation.navigate('CompleteProfile5');
   };
 
   return (

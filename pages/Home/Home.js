@@ -21,10 +21,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat} from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
 import QuickSaveModal from '../../components/QuickSaveModal';
+import axios from 'axios';
 
 // import PushNotification from "react-native-push-notification";
 
 // const width = Dimensions.get('window').get;
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
 
 export default function Home({navigation}) {
   const dispatch = useDispatch();
@@ -60,6 +67,23 @@ export default function Home({navigation}) {
     );
     setSavings(totalSoloSavings || 0);
   }, [store]);
+
+  useEffect(() => {
+    (async () => {
+      const token = await getToken();
+      try {
+        const response = await axios.get('http://67.207.86.39:8000/api/v1/me', {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
+          },
+        });
+        console.log('ME: ', response.data.user);
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   const topCards = [
     {
@@ -169,7 +193,7 @@ export default function Home({navigation}) {
           />
         </TouchableOpacity>
       </View>
-      {isProfileComplete && (
+      {!isProfileComplete && (
         <View style={designs.secondBar}>
           <View
             style={{

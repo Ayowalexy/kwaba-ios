@@ -136,6 +136,7 @@ export default function SignUp({navigation}) {
     const res = await signUp(data);
 
     console.log(res.status);
+    console.log('The RES', res.status);
 
     // // if (res == 'Request failed with status code 409') setSpinner(false);
     if (res.status == 201) {

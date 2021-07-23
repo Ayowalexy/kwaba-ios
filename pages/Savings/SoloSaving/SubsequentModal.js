@@ -21,6 +21,8 @@ import {
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {unFormatNumber} from '../../../util/numberFormatter';
+import moment from 'moment';
+import {savings} from '../../../util/icons';
 
 export default function SubsequentModal(props) {
   const {onRequestClose, visible, goToDashboard} = props;
@@ -30,14 +32,54 @@ export default function SubsequentModal(props) {
   const [spinner, setSpinner] = useState(false);
   const store = useSelector((state) => state.soloSavingReducer);
 
+  // const handleTransactions = async () => {
+  //   // const data = {
+  //   //   savings_amount: Number(store.savings_amount),
+  //   //   // savings_target_amount: Number(store.savings_target_amount),
+  //   //   savings_frequency: store.savings_frequency.toLowerCase(),
+  //   //   savings_account_number: '0094552107',
+  //   //   savings_account_name: 'JOSHUA UDO NWOSU',
+  //   //   savings_bank_code: '063',
+  //   //   savings_tenure: Number(store.savings_tenure[0]),
+  //   //   savings_title: store.savings_title,
+  //   //   savings_start_date: moment(store.savings_start_date).format('YYYY-MM-DD'),
+  //   //   savings_end_date: moment(store.savings_end_date).format('YYYY-MM-DD'),
+  //   //   locked: store.locked,
+  //   // };
+  //   // console.log('Hello', data);
+
+  //   // try {
+  //   //   const response = await createSavingsPlan(data);
+  //   //   console.log(response);
+  //   // } catch (error) {
+  //   //   console.log(error.response.data);
+  //   // }
+
+  //   const data = {
+  //     instant_saved_amount: Number(unFormatNumber(store.instant_saved_amount)),
+  //     savings_tenure: Number(store.savings_tenure[0]),
+  //     locked: true,
+  //   };
+
+  //   try {
+  //     const response = await oneOffPayment(data);
+  //     console.log(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+
+  //   // console.log(data);
+  // };
+
   const handleTransactions = async () => {
+    console.log('******************************');
     // close modal
     onRequestClose();
     try {
       if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
         setSpinner(true);
         const response = await makeOneOffPayment();
-        console.log('RESPONSE:', response);
+        console.log('RESPONSE:', response.data.data);
         if (response.status === 200) {
           setSpinner(false);
           const result = await openInAppBrowser(
@@ -48,12 +90,11 @@ export default function SubsequentModal(props) {
             let data = {reference: response.data.data.reference};
             // setVerificationSpinner(true);
             const verify = await verifyPayment(data);
-            console.log('Verify', verify);
+            console.log('Verify', verify.data);
             // console.log('Verify: ', verify);
             if (verify.data.status == 'success') {
               console.log('createPlan');
               // setVerificationSpinner(false);
-              goToDashboard();
               await createPlan();
             } else {
               // setVerificationSpinner(false);
@@ -65,7 +106,7 @@ export default function SubsequentModal(props) {
           }
         }
       } else {
-        return await createPlan();
+        await createPlan();
       }
     } catch (error) {
       // setSpinner(false);
@@ -76,16 +117,19 @@ export default function SubsequentModal(props) {
   const createPlan = async () => {
     console.log('Creating...');
     const data = {
-      savings_amount: Number(store.savings_target_amount),
+      savings_amount: Number(store.savings_amount),
       // savings_target_amount: Number(store.savings_target_amount),
       savings_frequency: store.savings_frequency.toLowerCase(),
-      savings_account_number: '0094552107',
-      savings_account_name: 'JOSHUA UDO NWOSU',
-      savings_bank_code: '063',
+      // savings_account_number: '0094552107',
+      // savings_account_name: 'JOSHUA UDO NWOSU',
+      // savings_bank_code: '063',
+      savings_account_number: '',
+      savings_account_name: '',
+      savings_bank_code: '',
       savings_tenure: Number(store.savings_tenure[0]),
       savings_title: store.savings_title,
-      savings_start_date: store.savings_start_date,
-      savings_end_date: store.savings_end_date,
+      savings_start_date: moment(store.savings_start_date).format('YYYY-MM-DD'),
+      savings_end_date: moment(store.savings_end_date).format('YYYY-MM-DD'),
       locked: store.locked,
     };
     try {
@@ -104,30 +148,34 @@ export default function SubsequentModal(props) {
           );
           if (result.type === 'cancel') {
             let verifyData = {reference: sub.data.data.reference};
-            setVerificationSpinner(true);
-            const verify = await verifyPayment(verifyData);
-            if (verify.data.status == 'success') {
-              setVerificationSpinner(false);
-              setSuccessModal(true);
-            } else {
-              setVerificationSpinner(false);
-              Alert.alert(
-                'Payment Unverified',
-                'Your payment was not verified. Please retry.',
-              );
-            }
+            console.log('The Verify Data: ', verifyData);
+            // setVerificationSpinner(true);
+            // const verify = await verifyPayment(verifyData);
+            // if (verify.data.status == 'success') {
+            //   setVerificationSpinner(false);
+            //   setSuccessModal(true);
+            //   console.log('Payment verified');
+
+            //   goToDashboard();
+            // } else {
+            //   setVerificationSpinner(false);
+            //   Alert.alert(
+            //     'Payment Unverified',
+            //     'Your payment was not verified. Please retry.',
+            //   );
+            // }
           }
         } else {
           setSpinner(false);
-          Alert.alert('Request Failed', sub);
+          Alert.alert('Request Failed - Subscribe', sub);
         }
       } else {
         setSpinner(false);
-        Alert.alert('Request Failed', response);
+        Alert.alert('Request Failed - Create Plan', response);
       }
     } catch (error) {
       setSpinner(false);
-      console.log('catch error', error);
+      console.log('catch error', error.response);
 
       Alert.alert('Error', 'An error occurred, please retry');
     }
@@ -190,6 +238,8 @@ export default function SubsequentModal(props) {
       return error.message;
     }
   };
+
+  const instantPayment = () => {};
 
   return (
     <>

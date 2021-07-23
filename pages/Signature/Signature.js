@@ -30,6 +30,8 @@ export default function Signature({navigation}) {
   const [signature, setSignature] = useState('');
   const [filename, setFilename] = useState('');
 
+  const [enableScroll, setEnableScroll] = useState(false);
+
   const ref = useRef();
 
   const handleSignature = (signature) => {
@@ -39,11 +41,16 @@ export default function Signature({navigation}) {
 
   const handleEnd = () => {
     ref.current?.readSignature();
+    setEnableScroll(true);
   };
 
   const handleClear = () => {
     ref.current.clearSignature();
     setSignature('');
+  };
+
+  const handleBegin = () => {
+    setEnableScroll(false);
   };
 
   const handleConfirm = async () => {
@@ -147,7 +154,9 @@ export default function Signature({navigation}) {
       />
       <Text style={[styles.heading]}>Signature</Text>
 
-      <ScrollView scrollEnabled={false} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        scrollEnabled={enableScroll}
+        showsVerticalScrollIndicator={false}>
         <View style={[styles.content]}>
           <View style={[styles.signLabel]}>
             <Text
@@ -164,6 +173,7 @@ export default function Signature({navigation}) {
               ref={ref}
               onEnd={handleEnd}
               onOK={handleSignature}
+              onBegin={handleBegin}
               // onEmpty={handleEmpty}
               // onClear={() => handleClear()}
               autoClear={false}

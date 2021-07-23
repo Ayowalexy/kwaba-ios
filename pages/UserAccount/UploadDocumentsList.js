@@ -41,10 +41,11 @@ const getDocuments = async () => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
     );
-    // console.log(uploadedDocumentsRes)
+    // console.log('The One:', uploadedDocumentsRes.data);
     return uploadedDocumentsRes.data.data;
   } catch (error) {
-    console.log(error);
+    // console.log('The error:', error.response.data.statusMsg);
+    return error.response.data;
   }
 };
 
@@ -62,22 +63,25 @@ export default function UploadDocumentsList({navigation}) {
     getUserData();
   }, []);
 
+  const showUploadedDocuments = async () => {
+    const documentsUploaded = await getDocuments();
+    console.log(documentsUploaded);
+    // documentsUploaded.forEach((document) => {
+    //   const id = Number(document.document_type);
+    //   console.log(document.filename);
+    //   try {
+    //     dispatch(
+    //       showUploadedFiles(Number(document.document_type), document.id),
+    //     );
+    //     //console.log('here', fileProgress)
+    //   } catch (error) {
+    //     console.log('error', error);
+    //   }
+    // });
+  };
+
   useEffect(() => {
-    const showUploadedDocuments = async () => {
-      const documentsUploaded = await getDocuments();
-      documentsUploaded.forEach((document) => {
-        const id = Number(document.document_type);
-        console.log(document.filename);
-        try {
-          dispatch(
-            showUploadedFiles(Number(document.document_type), document.id),
-          );
-          //console.log('here', fileProgress)
-        } catch (error) {
-          console.log('error', error);
-        }
-      });
-    };
+    showUploadedDocuments();
 
     // console.log('df',documents)
     //   documentsUploaded.forEach(document => {
@@ -93,8 +97,6 @@ export default function UploadDocumentsList({navigation}) {
     //     console.log('error',error)
     //   }
     // })
-
-    showUploadedDocuments();
   }, []);
 
   const dispatch = useDispatch();

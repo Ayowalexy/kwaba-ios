@@ -22,19 +22,17 @@ import BusinessSectorModal from './Modals/BusinessSectorModal';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
-// rent_purpose: '',
-// business_name: '',
-// is_business_registered: '',
-// business_registration_type: '',
 const businessFormSchema = yup.object().shape({
   how_many_is_collected: yup.string().required('Please select options'),
 });
 
 export default function BusinessForm1({navigation}) {
-  const [progress, setProgress] = useState(60);
+  const [progress, setProgress] = useState(80);
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
   const [showBusinessSectorModal, setShowBusinessSectorModal] = useState(false);
   const [registration, setRegistration] = useState('');
+
+  const [isActive, setActive] = useState([]);
 
   const PaymentCollected = (props) => {
     const payment_collected_list = [
@@ -51,6 +49,34 @@ export default function BusinessForm1({navigation}) {
     } = props;
 
     const hasError = errors[name] && touched[name];
+
+    const toggleAll = (item) => {
+      if (isActive.indexOf(item) === -1) {
+        setActive(payment_collected_list);
+      } else {
+        setActive([]);
+      }
+    };
+
+    const toggle = (item) => {
+      if (isActive.indexOf(item) === -1) {
+        setActive([...isActive, item]);
+      } else {
+        let x = isActive.filter((e) => e != item);
+        setActive(x);
+        setActive(x.filter((e) => e != 'All of the above'));
+      }
+    };
+
+    useEffect(() => {
+      if (payment_collected_list.length - isActive.length == 1) {
+        setActive(payment_collected_list);
+      }
+
+      console.log(isActive.toString());
+      setFieldValue('how_many_is_collected', isActive.toString());
+    }, [isActive]);
+
     return (
       <>
         <Text style={designs.label}>
@@ -66,20 +92,29 @@ export default function BusinessForm1({navigation}) {
             style={[
               designs.buttonStyleA,
               {
-                borderColor: value == option ? COLORS.light : '#ADADAD50',
+                // borderColor: value == option ? COLORS.light : '#ADADAD50',
+                borderColor:
+                  isActive.indexOf(option) !== -1 ? COLORS.light : '#ADADAD50',
               },
             ]}
             onPress={() => {
-              setFieldValue('how_many_is_collected', option);
-              console.log('value: ', value, 'option:', option);
+              if (option.toLowerCase() == 'all of the above') {
+                toggleAll(option);
+              } else {
+                toggle(option);
+              }
             }}>
             <View>
               <Text
                 style={[
                   designs.btnText,
                   {
-                    color: value == option ? COLORS.light : COLORS.grey,
+                    // color: value == option ? COLORS.light : COLORS.grey,
                     fontWeight: value == option ? 'bold' : 'normal',
+                    color:
+                      isActive.indexOf(option) !== -1
+                        ? COLORS.light
+                        : COLORS.grey,
                   },
                 ]}>
                 {option}
@@ -108,10 +143,7 @@ export default function BusinessForm1({navigation}) {
       JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
-    console.log(data);
-    console.log(businessFormData);
-
-    console.log('KWABA');
+    console.log('BUSINESS: ', businessFormData);
 
     navigation.navigate('BusinessForm5');
   };

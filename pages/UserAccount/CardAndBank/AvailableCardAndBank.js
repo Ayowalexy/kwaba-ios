@@ -29,34 +29,13 @@ import Modal from 'react-native-modal';
 import AddPaymentCardModal from '../../../components/addPaymentCardModal';
 
 export default function AvailableCardAndBank(props, {navigation}) {
-  const [addCardModal, setAddCardModal] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
-  const [selectedAccountType, setSelectedAccountType] = useState('');
-  // const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [actionModal, setActionModal] = useState(false);
-  const [spinner, setSpinner] = useState(false);
+  // const [spinner, setSpinner] = useState(false);
   const [clickedID, setClickedID] = useState('');
   const {userBankAccounts, paymentCards} = props;
 
   const [paymentCardModal, setPaymentCardModal] = useState(false);
-
-  // const [userBankAccounts, setUserBankAccounts] = useState([]);
-  // const [paymentCards, setPaymentCard] = useState([])
-
-  // const paymentCards = [
-  //   {
-  //     id: '1',
-  //     cardnumber: '1234 3245 1234 5678',
-  //     default: 'true',
-  //     expires: '12/2022',
-  //     type: 'mastercard',
-  //   },
-  // ];
-
-  useEffect(() => {
-    console.log('Coming from Available Account Page');
-    console.log('HEREREREREE:', userBankAccounts);
-  }, []);
 
   const renderPaymentCards = ({item}) => (
     <TouchableOpacity activeOpacity={0.9} style={[styles.paymentCard]}>
@@ -265,8 +244,6 @@ export default function AvailableCardAndBank(props, {navigation}) {
             </Text>
           </View>
         </Modal>
-
-        <Spinner visible={spinner} size="large" />
       </ScrollView>
 
       <AddBankAccountModal

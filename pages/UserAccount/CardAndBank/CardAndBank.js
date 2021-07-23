@@ -28,6 +28,12 @@ import NoCardAndBank from './NoCardAndBank';
 import AvailableCardAndBank from './AvailableCardAndBank';
 
 export default function CardAndBankDetails({navigation}) {
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   const [paymentCards, setPaymentCards] = useState([
     {
       id: '1',
@@ -41,13 +47,28 @@ export default function CardAndBankDetails({navigation}) {
   const [userBankAccounts, setUserBankAccounts] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      let accounts = await AsyncStorage.getItem('userBankAccounts');
-      let parseAccount = JSON.parse(accounts);
+    getBankAccounts();
+  }, []);
 
-      console.log('parseAccount', parseAccount.length);
-      setUserBankAccounts(parseAccount);
-    })();
+  const getBankAccounts = async () => {
+    const url = 'http://67.207.86.39:8000/api/v1/getuserbankaccounts';
+    try {
+      const token = await getToken();
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      setUserBankAccounts(response.data.userBanks);
+      console.log('B for Bank: ', response.data.userBanks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (paymentCards && userBankAccounts) {
+    } else if (paymentCards && !userBankAccounts) {
+    } else if (!paymentCards && userBankAccounts) {
+    }
   }, []);
 
   return (

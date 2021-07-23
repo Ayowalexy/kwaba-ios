@@ -111,19 +111,27 @@ const Screen5 = ({navigation}) => {
             ]}>
             Provide your rent details
           </Text>
+          <Text
+            style={[
+              designs.heading,
+              {
+                fontSize: 15,
+                color: '#2A286A',
+                textAlign: 'left',
+                lineHeight: 19,
+                marginTop: 29,
+              },
+            ]}>
+            How much is your rent?
+          </Text>
           <TextInput
             style={designs.textField}
-            placeholder="How much is your rent?"
+            placeholder="Amount"
             placeholderTextColor="#BFBFBF"
             value={lastRentAmount}
             onChangeText={(text) => setLastRentAmount(text)}
             keyboardType="number-pad"
           />
-          {/* <NumberFormat
-              value={setLastRentAmount}
-              // placeholder="How much is your rent?"
-              onChangeText={(text) => setLastRentAmount(text)}
-            /> */}
           <Text
             style={[
               designs.heading,
