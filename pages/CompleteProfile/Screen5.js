@@ -18,6 +18,7 @@ import * as yup from 'yup';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
 import Modal from '../../components/modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
@@ -137,23 +138,34 @@ const Screen5 = (props) => {
   };
 
   const handleSubmit = async (values) => {
-    let data = {
-      bvn: route.params.data.bvn,
-      dob: moment(route.params.data.dob).format('YYYY-MM-DD'),
-      how_much_is_your_rent: unFormatNumber(values.how_much_is_your_rent),
-      when_is_your_next_rent_due: moment(
-        values.when_is_your_next_rent_due,
-      ).format('YYYY-MM-DD'),
-    };
-
-    setCompleteProfileData(data);
+    const complete_profile = await AsyncStorage.getItem('complete_profile');
+    await AsyncStorage.setItem(
+      'complete_profile',
+      JSON.stringify({...JSON.parse(complete_profile), ...values}),
+    );
 
     setModalVisible(true);
   };
 
   const HandleCompleteProfile = async () => {
-    console.log('profile data: ', completeProfileData);
-    // navigation.navigate('Home');
+    const complete_profile = await AsyncStorage.getItem('complete_profile');
+    const parseData = JSON.parse(complete_profile);
+
+    let {
+      bvn,
+      dob,
+      how_much_is_your_rent,
+      when_is_your_next_rent_due,
+    } = parseData;
+
+    console.log(
+      bvn,
+      moment(dob).format('MMM-DD-YYYY'),
+      unFormatNumber(how_much_is_your_rent),
+      moment(when_is_your_next_rent_due).format('YYYY-MM-DD'),
+    );
+    setModalVisible(false);
+    navigation.navigate('Home');
   };
 
   return (

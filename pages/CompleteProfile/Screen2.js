@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import moment from 'moment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const completeProfileSchema = yup.object().shape({
   bvn: yup
@@ -125,10 +126,12 @@ const Screen2 = ({navigation}) => {
   };
 
   const handleSubmit = async (values) => {
-    console.log('Loading...');
-    console.log(values);
-
-    navigation.navigate('CompleteProfile5', {data: values});
+    const complete_profile = await AsyncStorage.getItem('complete_profile');
+    await AsyncStorage.setItem(
+      'complete_profile',
+      JSON.stringify({...JSON.parse(complete_profile), ...values}),
+    );
+    navigation.navigate('CompleteProfile5');
   };
 
   return (
