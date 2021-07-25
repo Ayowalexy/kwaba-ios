@@ -8,154 +8,249 @@ import {
   Dimensions,
   StyleSheet,
 } from 'react-native';
-import IconFA from 'react-native-vector-icons/FontAwesome';
+import IconFA from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from '../style';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {COLORS} from '../../../util';
 import {formatNumber} from '../../../util/numberFormatter';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 const buddySavingFormSchema = yup.object().shape({
   savingDuration: yup.string().required('Please select saving duration'),
+  savingStartDate: yup.string().required('Required'),
+  savingEndDate: yup.string().required('Required'),
+  // saving,
 });
 
-const HowLongSelection = (props) => {
-  const howLongList = ['3 Months', '6 Months', '1 Year', 'Others'];
-
-  const {
-    field: {name, onBlur, onChange, value},
-    form: {errors, touched, setFieldTouched, setFieldValue},
-    ...inputProps
-  } = props;
-
-  const hasError = errors[name] && touched[name];
-  return (
-    <>
-      <View style={designs.options}>
-        {howLongList.map((duration, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => setFieldValue('savingDuration', duration)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: 5,
-                width: '32%',
-                height: 54,
-                backgroundColor: duration == value ? '#9D98EC' : 'white',
-                marginTop: 5,
-              }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '600',
-                  color: duration == value ? 'white' : '#465969',
-                  lineHeight: 19,
-                }}>
-                {duration}
-              </Text>
-              {duration == 'Others' && (
-                <IconFA
-                  name="calendar"
-                  size={15}
-                  style={{marginLeft: 10}}
-                  color="#2A286A"
-                />
-              )}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-
-      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-    </>
-  );
-};
-
-const StartAndStopDate = (props) => {
-  const howLongList = ['Start date', 'End date'];
-
-  const {
-    field: {name, onBlur, onChange, value},
-    form: {errors, touched, setFieldTouched, setFieldValue},
-    ...inputProps
-  } = props;
-
-  const hasError = errors[name] && touched[name];
-  return (
-    <>
-      <View style={designs.options}>
-        {howLongList.map((duration, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => setFieldValue('savingDuration', duration)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                borderRadius: 5,
-                width: '48%',
-                height: 54,
-                backgroundColor: duration == value ? '#9D98EC' : 'white',
-                marginTop: 5,
-              }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '600',
-                  color: duration == value ? 'white' : '#465969',
-                  lineHeight: 19,
-                }}>
-                {duration}
-              </Text>
-              <IconFA
-                name="calendar"
-                size={15}
-                style={{marginLeft: 10}}
-                color="#2A286A"
-              />
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-
-      {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-    </>
-  );
-};
-
 export default function Screen1({navigation}) {
+  const [showStartDate, setShowStartDate] = useState(false);
+  const [showEndDate, setShowEndDate] = useState(false);
+
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const HowLongSelection = (props) => {
+    const howLongList = ['3 Months', '6 Months', '1 Year'];
+
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+    return (
+      <>
+        <View style={designs.options}>
+          {howLongList.map((duration, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => setFieldValue('savingDuration', duration)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  width: '32%',
+                  height: 54,
+                  backgroundColor: duration == value ? '#9D98EC' : 'white',
+                  marginTop: 8,
+                }}>
+                {duration == 'Others' ? (
+                  <>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: '600',
+                          color: duration == value ? 'white' : '#465969',
+                          lineHeight: 19,
+                        }}>
+                        {duration}
+                      </Text>
+                      <IconFA
+                        name="calendar-alt"
+                        size={20}
+                        style={{
+                          marginLeft: 10,
+                          marginTop: 2,
+                          color: duration == value ? 'white' : '#465969',
+                        }}
+                        color="#2A286A"
+                      />
+                    </View>
+                  </>
+                ) : (
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: '600',
+                      color: duration == value ? 'white' : '#465969',
+                      lineHeight: 19,
+                    }}>
+                    {duration}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
+
+  const StartDate = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    const handleStartDateSelect = (event, selectedDate) => {
+      const currentDate = selectedDate || startDate;
+      setShowStartDate(Platform.OS === 'ios');
+      setStartDate(currentDate);
+      setFieldValue('savingStartDate', currentDate);
+    };
+
+    return (
+      <View style={[styles.dateBtnWrapper]}>
+        <TouchableOpacity
+          style={[styles.dateBtn]}
+          onPress={() => {
+            setShowStartDate(true);
+          }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '600',
+              color: '#465969',
+              lineHeight: 19,
+            }}>
+            {startDate != ''
+              ? moment(startDate).format('YYYY-MM-DD')
+              : 'Start date'}
+          </Text>
+          <IconFA
+            name="calendar-alt"
+            size={18}
+            style={{marginLeft: 10}}
+            color="#2A286A"
+          />
+        </TouchableOpacity>
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+
+        {showStartDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={startDate || new Date(Date.now())}
+            onChange={handleStartDateSelect}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            minimumDate={moment().toDate()}
+          />
+        )}
+      </View>
+    );
+  };
+
+  const EndDate = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    const handleEndDateSelect = (event, selectedDate) => {
+      const currentDate = selectedDate || endDate;
+      setShowEndDate(Platform.OS === 'ios');
+      setEndDate(currentDate);
+      setFieldValue('savingEndDate', currentDate);
+    };
+
+    return (
+      <View style={[styles.dateBtnWrapper]}>
+        <TouchableOpacity
+          style={[styles.dateBtn]}
+          onPress={() => {
+            setShowEndDate(true);
+          }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: '600',
+              color: '#465969',
+              lineHeight: 19,
+            }}>
+            {endDate != '' ? moment(endDate).format('YYYY-MM-DD') : 'End date'}
+          </Text>
+          <IconFA
+            name="calendar-alt"
+            size={18}
+            style={{marginLeft: 10}}
+            color="#2A286A"
+          />
+        </TouchableOpacity>
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+
+        {showEndDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={endDate || new Date(Date.now())}
+            onChange={handleEndDateSelect}
+            mode="date"
+            is24Hour={true}
+            display="default"
+            minimumDate={moment().toDate()}
+          />
+        )}
+      </View>
+    );
+  };
+
   const handleSubmit = async (values) => {
     console.log(values);
 
-    navigation.navigate('BuddySaving2');
+    navigation.navigate('BuddySaving3');
   };
 
   return (
-    <View style={designs.container}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={25}
-        style={{fontWeight: '900'}}
-        color="#2A286A"
-      />
-      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
-        <Formik
-          validationSchema={buddySavingFormSchema}
-          initialValues={{
-            savingDuration: '',
-          }}
-          onSubmit={(values) => {
-            handleSubmit(values);
-          }}>
-          {({handleSubmit, isValid, values, setValues}) => (
-            <>
+    <Formik
+      validationSchema={buddySavingFormSchema}
+      initialValues={{
+        savingDuration: '',
+        savingStartDate: '',
+        savingEndDate: '',
+      }}
+      onSubmit={(values) => {
+        handleSubmit(values);
+      }}>
+      {({handleSubmit, isValid, values, setValues}) => (
+        <>
+          <View style={designs.container}>
+            <Icon
+              onPress={() => navigation.goBack()}
+              name="arrow-back-outline"
+              size={25}
+              style={{fontWeight: '900'}}
+              color="#2A286A"
+            />
+            <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
               <>
                 <Text style={[designs.boldText, {marginTop: 20}]}>
                   How long do you and your buddies want{'\n'}to save for?
@@ -164,7 +259,66 @@ export default function Screen1({navigation}) {
               </>
 
               <>
-                <Field component={StartAndStopDate} name="savingDuration" />
+                <View
+                  style={[
+                    {
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      // flexWrap: 'wrap',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginTop: 13,
+                      flexWrap: 'nowrap',
+                      // borderWidth: 1,
+                    },
+                  ]}>
+                  <Field component={StartDate} name="savingStartDate" />
+                  <Text style={{paddingHorizontal: 10, color: COLORS.dark}}>
+                    to
+                  </Text>
+                  <Field component={EndDate} name="savingEndDate" />
+                </View>
+              </>
+
+              <>
+                <Text style={[designs.boldText, {marginTop: 40}]}>
+                  Withdrawal date will be
+                </Text>
+                <TouchableOpacity
+                  style={[
+                    {
+                      borderRadius: 5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 1,
+                      backgroundColor: '#00DC99',
+                      marginTop: 10,
+                      marginBottom: 50,
+                      width: '100%',
+                      paddingVertical: 15,
+                      backgroundColor: COLORS.primary,
+                      flexDirection: 'row',
+                    },
+                  ]}>
+                  <IconFA
+                    name="calendar-check"
+                    size={20}
+                    style={{marginRight: 10, color: COLORS.yellow}}
+                  />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 30,
+                    }}>
+                    {endDate != ''
+                      ? moment(endDate).format('DD MMMM YYYY')
+                      : 'withdrawal date'}
+                  </Text>
+                </TouchableOpacity>
               </>
 
               <TouchableOpacity
@@ -186,11 +340,11 @@ export default function Screen1({navigation}) {
                   Next
                 </Text>
               </TouchableOpacity>
-            </>
-          )}
-        </Formik>
-      </ScrollView>
-    </View>
+            </ScrollView>
+          </View>
+        </>
+      )}
+    </Formik>
   );
 }
 
@@ -220,5 +374,22 @@ const styles = StyleSheet.create({
   },
   errorInput: {
     borderColor: '#f0000050',
+  },
+  dateBtnWrapper: {
+    flexDirection: 'column',
+    width: '45%',
+    marginTop: 5,
+    // borderWidth: 1,
+  },
+  dateBtn: {
+    // display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    borderRadius: 5,
+    // width: '100%',
+    height: 54,
+    backgroundColor: '#FFF',
+    // borderWidth: 1,
   },
 });

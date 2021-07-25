@@ -160,6 +160,8 @@ export default function TabOne(props) {
     }
   };
 
+  const uploadProfilePic = async () => {};
+
   return (
     <>
       <ScrollView

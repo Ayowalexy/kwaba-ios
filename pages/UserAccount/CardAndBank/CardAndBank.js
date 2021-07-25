@@ -35,19 +35,20 @@ export default function CardAndBankDetails({navigation}) {
   };
 
   const [paymentCards, setPaymentCards] = useState([
-    {
-      id: '1',
-      cardnumber: '1234 3245 1234 5678',
-      default: 'true',
-      expires: '12/2022',
-      type: 'mastercard',
-    },
+    // {
+    //   id: '1',
+    //   cardnumber: '1234 3245 1234 5678',
+    //   default: 'true',
+    //   expires: '12/2022',
+    //   type: 'mastercard',
+    // },
   ]);
 
   const [userBankAccounts, setUserBankAccounts] = useState([]);
 
   useEffect(() => {
     getBankAccounts();
+    console.log(userBankAccounts, paymentCards);
   }, []);
 
   const getBankAccounts = async () => {
@@ -58,7 +59,6 @@ export default function CardAndBankDetails({navigation}) {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       setUserBankAccounts(response.data.userBanks);
-      console.log('B for Bank: ', response.data.userBanks);
     } catch (error) {
       console.log(error);
     }
@@ -69,6 +69,7 @@ export default function CardAndBankDetails({navigation}) {
     } else if (paymentCards && !userBankAccounts) {
     } else if (!paymentCards && userBankAccounts) {
     }
+    // console.log('The lengths: ', paymentCards.length, userBankAccounts.length);
   }, []);
 
   return (
@@ -85,14 +86,20 @@ export default function CardAndBankDetails({navigation}) {
       />
       <Text style={[styles.heading]}>Card and Bank</Text>
 
-      {!paymentCards.length && !userBankAccounts.length ? (
-        <NoCardAndBank />
+      {/* {paymentCards.length < 0 && userBankAccounts.length < 0 ? (
+        <NoCardAndBank allBanks={(value) => setUserBankAccounts(value)} />
       ) : (
-        <AvailableCardAndBank
-          paymentCards={paymentCards}
-          userBankAccounts={userBankAccounts}
-        />
-      )}
+      <AvailableCardAndBank
+        paymentCards={paymentCards}
+        userBankAccounts={userBankAccounts}
+        allBanks={(value) => setUserBankAccounts(value)}
+      />
+      )} */}
+      <AvailableCardAndBank
+        paymentCards={paymentCards}
+        userBankAccounts={userBankAccounts}
+        allBanks={(value) => setUserBankAccounts(value)}
+      />
     </View>
   );
 }

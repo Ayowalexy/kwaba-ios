@@ -33,7 +33,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
   const [actionModal, setActionModal] = useState(false);
   // const [spinner, setSpinner] = useState(false);
   const [clickedID, setClickedID] = useState('');
-  const {userBankAccounts, paymentCards} = props;
+  const {allBanks, userBankAccounts, paymentCards} = props;
 
   const [paymentCardModal, setPaymentCardModal] = useState(false);
 
@@ -161,26 +161,56 @@ export default function AvailableCardAndBank(props, {navigation}) {
         <View style={[styles.content]}>
           <Text style={[styles.contentTitle]}>Payment Card</Text>
           <View style={[styles.contentView]}>
-            <TouchableOpacity
-              onPress={() => setPaymentCardModal(true)}
-              style={[styles.addButton]}>
-              <IconFA5 name="plus" size={15} color={COLORS.white} />
-            </TouchableOpacity>
+            {!paymentCards.length ? (
+              <>
+                <View
+                  style={{
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 20,
+                    paddingLeft: 10,
+                  }}>
+                  <TouchableOpacity
+                    // onPress={() => setBankModalVisible(true)}
+                    style={[styles.addButtonEmpty]}>
+                    <IconFA5 name="plus" size={15} color={COLORS.primary} />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      color: COLORS.dark,
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                    }}>
+                    Add Payment Card
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <>
+                <TouchableOpacity
+                  onPress={() => setPaymentCardModal(true)}
+                  style={[styles.addButton]}>
+                  <IconFA5 name="plus" size={15} color={COLORS.white} />
+                </TouchableOpacity>
 
-            <FlatList
-              data={paymentCards}
-              renderItem={renderPaymentCards}
-              keyExtractor={(item) => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              style={{
-                marginLeft: 10,
-              }}
-              contentContainerStyle={{
-                paddingVertical: 5,
-              }}
-            />
+                <FlatList
+                  data={paymentCards}
+                  renderItem={renderPaymentCards}
+                  keyExtractor={(item) => item.id}
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  showsVerticalScrollIndicator={false}
+                  style={{
+                    marginLeft: 10,
+                  }}
+                  contentContainerStyle={{
+                    paddingVertical: 5,
+                  }}
+                />
+              </>
+            )}
           </View>
         </View>
 
@@ -195,14 +225,20 @@ export default function AvailableCardAndBank(props, {navigation}) {
                     flexDirection: 'row',
                     alignItems: 'center',
                     paddingVertical: 20,
-                    paddingLeft: 20,
+                    paddingLeft: 10,
                   }}>
                   <TouchableOpacity
                     onPress={() => setBankModalVisible(true)}
                     style={[styles.addButtonEmpty]}>
                     <IconFA5 name="plus" size={15} color={COLORS.primary} />
                   </TouchableOpacity>
-                  <Text style={{marginLeft: 20, color: COLORS.light}}>
+                  <Text
+                    style={{
+                      marginLeft: 20,
+                      color: COLORS.dark,
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                    }}>
                     Add Bank Account
                   </Text>
                 </View>
@@ -249,12 +285,13 @@ export default function AvailableCardAndBank(props, {navigation}) {
       <AddBankAccountModal
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
+        setDisplayAllBankAccounts={(all) => allBanks(all)}
       />
 
-      <AddPaymentCardModal
+      {/* <AddPaymentCardModal
         onRequestClose={() => setPaymentCardModal(!paymentCardModal)}
         visible={paymentCardModal}
-      />
+      /> */}
     </>
   );
 }

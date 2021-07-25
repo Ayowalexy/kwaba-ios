@@ -6,13 +6,8 @@ const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8FD',
-    // paddingTop: 20,
-    // paddingLeft: 16,
-    // paddingRight: 16,
-    padding: 15,
+    padding: 20,
     fontFamily: 'CircularStd',
-    // borderWidth: 2,
-    // borderColor: 'red',
   },
   header: {
     marginTop: 22,
@@ -55,8 +50,6 @@ const designs = StyleSheet.create({
     // borderWidth: 1,
   },
   button: {
-    width: 380,
-    // height: 70,
     borderRadius: 10,
     display: 'flex',
     alignItems: 'center',
@@ -66,7 +59,7 @@ const designs = StyleSheet.create({
     marginTop: 40,
     // marginLeft: 'auto',
     // marginRight: 'auto',
-    marginBottom: 20,
+    // marginBottom: 20,
 
     width: '100%',
     paddingVertical: 15,

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -7,64 +7,153 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons} from '../../util/index';
+import {icons, COLORS} from '../../util/index';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Picker} from '@react-native-picker/picker';
-import Modal from '../../components/modal';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {logCurrentStorage} from '../../util/logCurrentStorage';
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
+import Modal from '../../components/modal';
 
-const Screen5 = ({navigation}) => {
-  const [lastRentAmount, setLastRentAmount] = useState('');
+const completeProfileSchema = yup.object().shape({
+  how_much_is_your_rent: yup.string().required('Please enter an amount'),
+  when_is_your_next_rent_due: yup.string().required('Select a date'),
+});
+
+const Screen5 = (props) => {
+  const {navigation, route} = props;
   const [date, setDate] = useState(new Date());
-  const [selectedValue, setSelectedValue] = useState('Landlord');
   const [showDate, setShowDate] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [completeProfileData, setCompleteProfileData] = useState([]);
 
-  const isError = () => {
-    if (lastRentAmount.trim().length == 0 || selectedValue.trim().length == 0) {
-      return true;
-    } else {
-      return false;
-    }
+  const NumberInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <Text style={styles.label}>How much is your rent?</Text>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingLeft: 50,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={formatNumber(value)}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
-  const dateFormatted = moment(date).format('YYYY-MM-D');
+  const SelectDate = (props) => {
+    const {
+      field: {name, value},
+      form: {errors, touched, setFieldValue},
+      ...inputProps
+    } = props;
 
-  console.log(dateFormatted);
+    const hasError = errors[name] && touched[name];
 
-  const handleDateSelect = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDate(Platform.OS === 'ios');
-    setDate(currentDate);
+    const handleDateSelect = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShowDate(Platform.OS === 'ios');
+      setDate(currentDate);
+      setFieldValue('when_is_your_next_rent_due', currentDate);
+    };
+
+    return (
+      <>
+        <Text style={styles.label}>When is your next rent due?</Text>
+        <TouchableOpacity
+          style={[styles.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowDate(true);
+            setFieldValue('when_is_your_next_rent_due', date);
+          }}>
+          <Text
+            style={{
+              color: COLORS.primary,
+            }}>
+            {moment(date).format('YYYY-MM-DD')}
+          </Text>
+
+          <Image
+            style={{width: 20, height: 20}}
+            resizeMode="contain"
+            source={icons.dateTimePicker}
+          />
+        </TouchableOpacity>
+
+        {showDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            onChange={handleDateSelect}
+            mode="date"
+            is24Hour={true}
+            display="default"
+          />
+        )}
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
-  const handleNavigation = async () => {
-    // const data = {
-    //   last_rent_amount: lastRentAmount,
-    //   next_rent_due: dateFormatted,
-    // };
-    // if (isError()) {
-    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-    //     {text: 'Close'},
-    //   ]);
-    // }
-    // const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    // await AsyncStorage.setItem(
-    //   'rentalLoanForm',
-    //   JSON.stringify({...JSON.parse(loanFormData), ...data}),
-    // );
-    // logCurrentStorage();
+  const handleSubmit = async (values) => {
+    let data = {
+      bvn: route.params.data.bvn,
+      dob: moment(route.params.data.dob).format('YYYY-MM-DD'),
+      how_much_is_your_rent: unFormatNumber(values.how_much_is_your_rent),
+      when_is_your_next_rent_due: moment(
+        values.when_is_your_next_rent_due,
+      ).format('YYYY-MM-DD'),
+    };
+
+    setCompleteProfileData(data);
+
     setModalVisible(true);
-    // try {
-    //   dispatch(soloSaving(data));
+  };
 
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
+  const HandleCompleteProfile = async () => {
+    console.log('profile data: ', completeProfileData);
+    // navigation.navigate('Home');
   };
 
   return (
@@ -76,16 +165,10 @@ const Screen5 = ({navigation}) => {
         style={{fontWeight: '900'}}
         color="#2A286A"
       />
-      <ScrollView
-        scrollEnabled={true}
-        showsVerticalScrollIndicator={false}
-        style={{height: '100%'}}>
+      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
           style={{
             marginTop: 25,
-            marginBottom: 49,
-            // marginLeft: 16,
-            // marginRight: 16,
           }}>
           <Text
             style={[
@@ -109,112 +192,87 @@ const Screen5 = ({navigation}) => {
                 lineHeight: 19,
               },
             ]}>
-            Provide your rent details
+            Provide your personal details
           </Text>
-          <Text
-            style={[
-              designs.heading,
-              {
-                fontSize: 15,
-                color: '#2A286A',
-                textAlign: 'left',
-                lineHeight: 19,
-                marginTop: 29,
-              },
-            ]}>
-            How much is your rent?
-          </Text>
-          <TextInput
-            style={designs.textField}
-            placeholder="Amount"
-            placeholderTextColor="#BFBFBF"
-            value={lastRentAmount}
-            onChangeText={(text) => setLastRentAmount(text)}
-            keyboardType="number-pad"
-          />
-          <Text
-            style={[
-              designs.heading,
-              {
-                fontSize: 15,
-                color: '#2A286A',
-                textAlign: 'left',
-                lineHeight: 19,
-                marginTop: 29,
-              },
-            ]}>
-            When is your next rent due?
-          </Text>
-          <View style={designs.customInput}>
-            <TextInput
-              style={[designs.input, {flex: 1}]}
-              placeholder="When is your next rent due?"
-              placeholderTextColor="#BFBFBF"
-              value={date.toLocaleDateString()}
-              keyboardType="number-pad"
-            />
-            <TouchableOpacity
-              onPress={() => setShowDate(true)}
-              style={designs.iconBtn}>
-              <Image
-                style={{width: 20, height: 20}}
-                resizeMode="contain"
-                source={icons.dateTimePicker}
-              />
-            </TouchableOpacity>
-          </View>
-          {showDate && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              onChange={handleDateSelect}
-              mode="date"
-              is24Hour={true}
-              display="default"
-              placeholderText="When is your next rent due?"
-              minimumDate={moment().toDate()}
-            />
-          )}
-          {/* <View style={designs.customInput}>
-            <Picker
-              mode="dropdown"
-              dropdownIconColor="white"
-              accessibilityLabel="Who do you pay your rent to?"
-              style={{flex: 1}}
-              selectedValue={selectedValue}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedValue(itemValue)
-              }>
-              <Picker.Item label="Landlord" value="Landlord" />
-              <Picker.Item label="Agent" value="Agent" />
-            </Picker>
-            <TouchableOpacity style={designs.iconBtn}>
-              <Icon name="chevron-down-outline" size={20} color="#BFBFBF" />
-            </TouchableOpacity>
-          </View>
 
-          <TextInput
-            style={designs.textField}
-            placeholder="How long have you lived at your address?"
-            placeholderTextColor="#BFBFBF"
-          /> */}
-          <View style={{flex: 1, justifyContent: 'flex-end'}}>
-            <TouchableOpacity
-              onPress={handleNavigation}
-              // disabled={isError()}
-              style={[designs.btn, {backgroundColor: '#00DC99'}]}>
-              <Text style={{color: 'white'}}>COMPLETE</Text>
-            </TouchableOpacity>
-          </View>
+          <Formik
+            validationSchema={completeProfileSchema}
+            initialValues={{
+              how_much_is_your_rent: '',
+              when_is_your_next_rent_due: '',
+            }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}>
+            {({handleSubmit, isValid, values, setValues}) => (
+              <>
+                <Field
+                  component={NumberInput}
+                  name="how_much_is_your_rent"
+                  placeholder="Amount"
+                />
+                <Field
+                  component={SelectDate}
+                  name="when_is_your_next_rent_due"
+                />
+
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={[designs.btn, {backgroundColor: '#00DC99'}]}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 14,
+                      lineHeight: 30,
+                    }}>
+                    COMPLETE
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
         </View>
       </ScrollView>
+
       <Modal
         onRequestClose={() => setModalVisible(!modalVisible)}
         visible={modalVisible}
-        onSave={() => navigation.navigate('Home')}
+        onSave={() => HandleCompleteProfile()}
       />
     </View>
   );
 };
 
 export default Screen5;
+
+const styles = StyleSheet.create({
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    color: COLORS.dark,
+    marginTop: 40,
+    marginLeft: 2,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
+});

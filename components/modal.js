@@ -52,10 +52,26 @@ export default function CustomModal(props) {
             <TouchableOpacity
               onPress={onSave}
               style={[styles.btn, {backgroundColor: '#00DC99'}]}>
-              <Text style={{color: 'white'}}>YES, SAVE IT</Text>
+              <Text
+                style={{
+                  color: 'white',
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  lineHeight: 25,
+                }}>
+                YES, SAVE IT
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={onRequestClose} style={[styles.btn]}>
-              <Text style={{color: '#BFBFBF'}}>NO, NOT NOW</Text>
+              <Text
+                style={{
+                  color: '#BFBFBF',
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  lineHeight: 25,
+                }}>
+                NO, NOT NOW
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

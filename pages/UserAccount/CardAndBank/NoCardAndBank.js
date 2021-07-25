@@ -8,7 +8,8 @@ import AddBankAccountModal from '../../../components/addBankAccountModal';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function NoCardAndBank({navigation}) {
+export default function NoCardAndBank(props, {navigation}) {
+  const {allBanks} = props;
   const [showCardAndBankModal, setShowCardAndCardModal] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
 
@@ -79,6 +80,7 @@ export default function NoCardAndBank({navigation}) {
       <AddBankAccountModal
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
+        setDisplayAllBankAccounts={(all) => allBanks(all)}
       />
     </>
   );

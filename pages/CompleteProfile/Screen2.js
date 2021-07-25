@@ -7,82 +7,128 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons} from '../../util/index';
+import {icons, COLORS} from '../../util/index';
 import designs from './style';
-import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
 import moment from 'moment';
-import axios from 'axios';
+
+const completeProfileSchema = yup.object().shape({
+  bvn: yup
+    .string()
+    .required()
+    .matches(/^[0-9]{11}$/, 'Must be exactly 11 digits'),
+  dob: yup.string().required('Field'),
+});
 
 const Screen2 = ({navigation}) => {
-  // const [date, setDate] = useState(new Date(1598051730000));
   const [date, setDate] = useState(new Date());
-  const [bvn, setBVN] = useState('');
-  const [country, setCountry] = useState(null);
-  const [visible, setVisible] = useState(false);
   const [showDate, setShowDate] = useState(false);
 
-  const handleDateSelect = (event, selectedDate) => {
-    const currentDate = selectedDate || date;
-    setShowDate(Platform.OS === 'ios');
-    setDate(currentDate);
+  const CustomInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <Text style={styles.label}>Bank Verification Number</Text>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingHorizontal: 16,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={value}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
-  const isError = () => {
-    if (bvn.trim().length == 0) {
-      return true;
-    } else {
-      return false;
-    }
+  const DOB = (props) => {
+    const {
+      field: {name, value},
+      form: {errors, touched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    const handleDateSelect = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShowDate(Platform.OS === 'ios');
+      setDate(currentDate);
+      setFieldValue('dob', currentDate);
+    };
+
+    return (
+      <>
+        <Text style={styles.label}>Date of Birth</Text>
+        <TouchableOpacity
+          style={[styles.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowDate(true);
+            setFieldValue('dob', date);
+          }}>
+          <Text
+            style={{
+              color: COLORS.primary,
+            }}>
+            {moment(date).format('YYYY-MM-DD')}
+          </Text>
+
+          <Image
+            style={{width: 20, height: 20}}
+            resizeMode="contain"
+            source={icons.dateTimePicker}
+          />
+        </TouchableOpacity>
+
+        {showDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            onChange={handleDateSelect}
+            mode="date"
+            is24Hour={true}
+            display="default"
+          />
+        )}
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
-  const dateFormatted = moment(date).format('YYYY-MM-DD');
-
-  const data = {
-    number: '22447783250',
-  };
-
-  // bvn verification is paid
-  const bvnVerification = async () => {
-    try {
-      const res = await axios.post(
-        'https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/bvn_validation',
-        data,
-        {
-          headers: {
-            'x-api-key': '5MNVWN9G.NMiQsCPNhJy6cTKQdwTwP1PH9hYp5Ntf',
-          },
-        },
-      );
-
-      console.log('RES: ', res.data);
-    } catch (error) {
-      console.log(error.response);
-    }
-  };
-
-  const handleNavigation = async () => {
+  const handleSubmit = async (values) => {
     console.log('Loading...');
+    console.log(values);
 
-    try {
-      const res = await axios.get(
-        'https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/bank_code',
-        {
-          headers: {
-            'x-api-key': '5MNVWN9G.NMiQsCPNhJy6cTKQdwTwP1PH9hYp5Ntf',
-          },
-        },
-      );
-
-      console.log('RES: ', res.data);
-    } catch (error) {
-      console.log(error.response);
-    }
-
-    // navigation.navigate('CompleteProfile5');
+    navigation.navigate('CompleteProfile5', {data: values});
   };
 
   return (
@@ -98,9 +144,6 @@ const Screen2 = ({navigation}) => {
         <View
           style={{
             marginTop: 25,
-            // marginBottom: 49,
-            // marginLeft: 16,
-            // marginRight: 16,
           }}>
           <Text
             style={[
@@ -126,121 +169,37 @@ const Screen2 = ({navigation}) => {
             ]}>
             Provide your personal details
           </Text>
-          <Text
-            style={[
-              designs.heading,
-              {
-                fontSize: 15,
-                color: '#2A286A',
-                textAlign: 'left',
-                lineHeight: 19,
-                marginTop: 29,
-              },
-            ]}>
-            Bank Verification Number
-          </Text>
-          <TextInput
-            style={designs.textField}
-            placeholder="BVN"
-            placeholderTextColor="#BFBFBF"
-            value={bvn}
-            onChangeText={(text) => setBVN(text)}
-            keyboardType="number-pad"
-          />
-          <Text
-            style={[
-              designs.heading,
-              {
-                fontSize: 15,
-                color: '#2A286A',
-                textAlign: 'left',
-                lineHeight: 19,
-                marginTop: 29,
-              },
-            ]}>
-            Date of Birth
-          </Text>
-          <View style={designs.customInput}>
-            <TextInput
-              style={[designs.input, {flex: 1}]}
-              placeholder="Date of Birth"
-              placeholderTextColor="#BFBFBF"
-              value={date.toLocaleDateString()}
-              keyboardType="number-pad"
-            />
-            <TouchableOpacity
-              onPress={() => setShowDate(true)}
-              style={designs.iconBtn}>
-              <Image
-                style={{width: 20, height: 20}}
-                resizeMode="contain"
-                source={icons.dateTimePicker}
-              />
-            </TouchableOpacity>
-          </View>
-          {showDate && (
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
-              onChange={handleDateSelect}
-              mode="date"
-              is24Hour={true}
-              display="default"
-            />
-          )}
-          {/* <Text
-            style={[
-              designs.heading,
-              {
-                fontSize: 15,
-                color: '#2A286A',
-                textAlign: 'left',
-                lineHeight: 19,
-                marginTop: 29,
-              },
-            ]}>
-            Address
-          </Text>
-          <TextInput
-            style={designs.textField}
-            placeholder="Street"
-            placeholderTextColor="#BFBFBF"
-          />
-          <TextInput
-            style={designs.textField}
-            placeholder="City"
-            placeholderTextColor="#BFBFBF"
-          />
-          <TextInput
-            style={designs.textField}
-            placeholder="State"
-            placeholderTextColor="#BFBFBF"
-          />
-          <View style={designs.customInput}>
-            <TextInput
-              style={{flex: 1}}
-              placeholder="Country"
-              placeholderTextColor="#BFBFBF"
-              value={country}
-            />
-            <TouchableOpacity
-              onPress={() => setVisible(true)}
-              style={designs.iconBtn}>
-              <Icon name="chevron-down-outline" size={20} color="#BFBFBF" />
-            </TouchableOpacity>
-          </View>
-          <CountrySelect
-            onSelect={onSelect}
-            onOpen={() => setVisible(true)}
-            onClose={() => setVisible(false)}
-            visible={visible}
-          /> */}
-          <TouchableOpacity
-            onPress={handleNavigation}
-            // disabled={isError()}
-            style={[designs.btn, {backgroundColor: '#00DC99'}]}>
-            <Text style={{color: 'white'}}>NEXT</Text>
-          </TouchableOpacity>
+
+          <Formik
+            validationSchema={completeProfileSchema}
+            initialValues={{
+              bvn: '',
+              dob: '',
+            }}
+            onSubmit={(values) => {
+              handleSubmit(values);
+            }}>
+            {({handleSubmit, isValid, values, setValues}) => (
+              <>
+                <Field component={CustomInput} name="bvn" placeholder="BVN" />
+                <Field component={DOB} name="dob" />
+
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={[designs.btn, {backgroundColor: '#00DC99'}]}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 14,
+                      lineHeight: 30,
+                    }}>
+                    NEXT
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </Formik>
         </View>
       </ScrollView>
     </View>
@@ -248,3 +207,34 @@ const Screen2 = ({navigation}) => {
 };
 
 export default Screen2;
+
+const styles = StyleSheet.create({
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    color: COLORS.dark,
+    marginTop: 40,
+    marginLeft: 2,
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
+});

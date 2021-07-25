@@ -51,9 +51,15 @@ export default function Home({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
 
   useEffect(() => {
-    const userFirstname = login;
+    if (login) setName(login.username);
 
-    if (userFirstname) setName(userFirstname.username);
+    if (login.isProfileCompleted == 0) {
+      setIsProfileComplete(false);
+    } else {
+      setIsProfileComplete(true);
+    }
+
+    // console.log('isProfile completed: ', login.isProfileCompleted);
   }, [login]);
 
   useEffect(() => {
