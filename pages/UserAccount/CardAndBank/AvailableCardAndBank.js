@@ -29,13 +29,40 @@ import Modal from 'react-native-modal';
 import AddPaymentCardModal from '../../../components/addPaymentCardModal';
 
 export default function AvailableCardAndBank(props, {navigation}) {
+  const [paymentCardModal, setPaymentCardModal] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
   const [actionModal, setActionModal] = useState(false);
-  // const [spinner, setSpinner] = useState(false);
+  const [spinner, setSpinner] = useState(false);
   const [clickedID, setClickedID] = useState('');
-  const {allBanks, userBankAccounts, paymentCards} = props;
+  const {allBanks, userBankAccounts} = props;
 
-  const [paymentCardModal, setPaymentCardModal] = useState(false);
+  const [paymentCards, setPaymentCards] = useState([
+    {
+      id: '1',
+      cardnumber: '1234 3245 1234 5678',
+      default: 'true',
+      expires: '12/2022',
+      type: 'mastercard',
+    },
+    {
+      id: '2',
+      cardnumber: '1234 3245 1234 5678',
+      default: 'true',
+      expires: '12/2022',
+      type: 'visa',
+    },
+    {
+      id: '3',
+      cardnumber: '1234 3245 1234 5678',
+      default: 'true',
+      expires: '12/2022',
+      type: 'mastercard',
+    },
+  ]);
+
+  const handlePayment = async () => {
+    console.log('Hello');
+  };
 
   const renderPaymentCards = ({item}) => (
     <TouchableOpacity activeOpacity={0.9} style={[styles.paymentCard]}>
@@ -172,7 +199,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
                     paddingLeft: 10,
                   }}>
                   <TouchableOpacity
-                    // onPress={() => setBankModalVisible(true)}
+                    onPress={() => setPaymentCardModal(true)}
                     style={[styles.addButtonEmpty]}>
                     <IconFA5 name="plus" size={15} color={COLORS.primary} />
                   </TouchableOpacity>
@@ -288,10 +315,10 @@ export default function AvailableCardAndBank(props, {navigation}) {
         setDisplayAllBankAccounts={(all) => allBanks(all)}
       />
 
-      {/* <AddPaymentCardModal
+      <AddPaymentCardModal
         onRequestClose={() => setPaymentCardModal(!paymentCardModal)}
         visible={paymentCardModal}
-      /> */}
+      />
     </>
   );
 }

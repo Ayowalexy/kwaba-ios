@@ -34,21 +34,21 @@ export default function CardAndBankDetails({navigation}) {
     return token;
   };
 
-  const [paymentCards, setPaymentCards] = useState([
-    // {
-    //   id: '1',
-    //   cardnumber: '1234 3245 1234 5678',
-    //   default: 'true',
-    //   expires: '12/2022',
-    //   type: 'mastercard',
-    // },
-  ]);
+  // const [paymentCards, setPaymentCards] = useState([
+  //   // {
+  //   //   id: '1',
+  //   //   cardnumber: '1234 3245 1234 5678',
+  //   //   default: 'true',
+  //   //   expires: '12/2022',
+  //   //   type: 'mastercard',
+  //   // },
+  // ]);
 
   const [userBankAccounts, setUserBankAccounts] = useState([]);
 
   useEffect(() => {
     getBankAccounts();
-    console.log(userBankAccounts, paymentCards);
+    // console.log(userBankAccounts, paymentCards);
   }, []);
 
   const getBankAccounts = async () => {
@@ -64,13 +64,13 @@ export default function CardAndBankDetails({navigation}) {
     }
   };
 
-  useEffect(() => {
-    if (paymentCards && userBankAccounts) {
-    } else if (paymentCards && !userBankAccounts) {
-    } else if (!paymentCards && userBankAccounts) {
-    }
-    // console.log('The lengths: ', paymentCards.length, userBankAccounts.length);
-  }, []);
+  // useEffect(() => {
+  //   if (paymentCards && userBankAccounts) {
+  //   } else if (paymentCards && !userBankAccounts) {
+  //   } else if (!paymentCards && userBankAccounts) {
+  //   }
+  //   // console.log('The lengths: ', paymentCards.length, userBankAccounts.length);
+  // }, []);
 
   return (
     <View style={[styles.container]}>
@@ -96,7 +96,7 @@ export default function CardAndBankDetails({navigation}) {
       />
       )} */}
       <AvailableCardAndBank
-        paymentCards={paymentCards}
+        // paymentCards={paymentCards}
         userBankAccounts={userBankAccounts}
         allBanks={(value) => setUserBankAccounts(value)}
       />

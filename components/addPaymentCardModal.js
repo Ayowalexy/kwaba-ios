@@ -8,35 +8,15 @@ import {
   View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import SelectBankModal from './SelectBankModal';
-import SelectBankAccountType from './SelectBankAccountType';
 import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddPaymentCardModal(props) {
   const {onRequestClose, visible, onConfirm} = props;
-  const [selectedBank, setSelectedBank] = useState('');
-  const [bankAccountNumber, setBankAccountNumber] = useState('');
-
-  const [bankData, setBankData] = useState([]);
-  const [bankCode, setBankCode] = useState('');
-
-  const [showSelectBankModal, setShowSelectBankModal] = useState(false);
 
   const addAccount = async () => {
-    // setSpinner(true);
-    // console.log('start');
-    const data = {
-      bank_name: selectedBank,
-      bank_account_number: bankAccountNumber,
-      bank_short_code:
-        bankCode.toString().length == 2 ? '0' + bankCode : bankCode,
-    };
-
-    console.log('DATA: ', data);
-
-    verifyBankAccount(data.bank_account_number, data.bank_short_code);
+    console.log('Opening paystack...');
   };
 
   return (
@@ -58,7 +38,7 @@ export default function AddPaymentCardModal(props) {
                 }}>
                 <Text
                   style={{
-                    color: '#2A286A',
+                    color: COLORS.dark,
                     fontFamily: 'CircularStd',
                     fontWeight: 'bold',
                     fontSize: 18,
@@ -74,50 +54,40 @@ export default function AddPaymentCardModal(props) {
                 />
               </View>
 
-              <TextInput
-                style={[styles.textInput, {marginTop: 10}]}
-                placeholder="Account Number"
-                keyboardType="number-pad"
-                placeholderTextColor="#ADADAD"
-                value={bankAccountNumber}
-                onChangeText={setBankAccountNumber}
-              />
-              <TextInput
-                style={[styles.textInput, {marginTop: 10}]}
-                placeholder="Account Number"
-                keyboardType="number-pad"
-                placeholderTextColor="#ADADAD"
-                value={bankAccountNumber}
-                onChangeText={setBankAccountNumber}
-              />
+              <View style={{marginVertical: 20}}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    width: '100%',
+                    color: '#465969',
+                    lineHeight: 25,
+                    paddingRight: 80,
+                  }}>
+                  To verify your card you will be charged{' '}
+                  <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
+                    ₦50.
+                  </Text>{' '}
+                  This money goes towards your rent savings.
+                </Text>
+              </View>
+
               <TouchableOpacity
-                disabled={!bankAccountNumber ? true : false}
                 onPress={addAccount}
                 style={[
                   styles.btn,
                   {
-                    backgroundColor: !bankAccountNumber
-                      ? '#2A286A50'
-                      : '#2A286A',
+                    backgroundColor: COLORS.secondary,
                   },
                 ]}>
-                <Text style={{color: 'white'}}>CONFIRM</Text>
+                <Text
+                  style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
+                  CONTINUE
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
       </View>
-
-      <SelectBankModal
-        onRequestClose={() => setShowSelectBankModal(!showSelectBankModal)}
-        visible={showSelectBankModal}
-        onClick={(bank, bankCode) => {
-          setSelectedBank(bank);
-          setBankCode(bankCode);
-        }}
-        banks={bankData}
-        selectedBank={selectedBank}
-      />
     </>
   );
 }

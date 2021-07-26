@@ -196,7 +196,7 @@ export default function AddBankAccountModal(props) {
                 }}>
                 <Text
                   style={{
-                    color: '#2A286A',
+                    color: COLORS.dark,
                     fontFamily: 'CircularStd',
                     fontWeight: 'bold',
                     fontSize: 18,
@@ -252,38 +252,6 @@ export default function AddBankAccountModal(props) {
                 value={bankAccountNumber}
                 onChangeText={setBankAccountNumber}
               />
-              {/* <TouchableOpacity
-                style={styles.customInput}
-                onPress={() => {
-                  // setShowSelectBankModal(!showSelectBankModal);
-                  setShowSelectAccountTypeModal(!showSelectAccountTypeModal);
-                }}>
-                {selectedAccountType != '' ? (
-                  <Text
-                    style={{
-                      // fontWeight: 'bold',
-                      color: COLORS.primary,
-                    }}>
-                    {selectedAccountType}
-                  </Text>
-                ) : (
-                  <Text
-                    style={{
-                      // fontWeight: 'bold',
-                      color: '#aaa',
-                      fontSize: 13,
-                    }}>
-                    Account Type
-                  </Text>
-                )}
-
-                <Icon
-                  name="chevron-down-outline"
-                  size={20}
-                  style={{fontWeight: 'bold'}}
-                  color="#BABABA"
-                />
-              </TouchableOpacity> */}
               <TouchableOpacity
                 disabled={!bankAccountNumber || !selectedBank ? true : false}
                 onPress={addAccount}
@@ -292,11 +260,14 @@ export default function AddBankAccountModal(props) {
                   {
                     backgroundColor:
                       !bankAccountNumber || !selectedBank
-                        ? '#2A286A50'
-                        : '#2A286A',
+                        ? '#00DC99'
+                        : '#00DC99',
                   },
                 ]}>
-                <Text style={{color: 'white'}}>CONFIRM</Text>
+                <Text
+                  style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
+                  CONFIRM
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
