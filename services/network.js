@@ -267,13 +267,15 @@ const resolveCardDetails = async (data) => {
 
 const tokenizeCard = async (data) => {
   const url = apiUrl + '/api/v1/payment/cardtokenize';
+  const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token,
       },
     });
-    return response.data;
+    return response;
   } catch (error) {
     return error.message;
   }
@@ -281,13 +283,15 @@ const tokenizeCard = async (data) => {
 
 const tokenizePayment = async (data) => {
   const url = apiUrl + '/api/v1/payment/cardtokenize/payment';
+  const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: token,
       },
     });
-    return response.data;
+    return response;
   } catch (error) {
     return error.message;
   }

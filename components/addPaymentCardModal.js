@@ -11,12 +11,109 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  oneOffPayment,
+  tokenizeCard,
+  tokenizePayment,
+  verifyPayment,
+} from '../services/network';
+import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 
 export default function AddPaymentCardModal(props) {
   const {onRequestClose, visible, onConfirm} = props;
 
+  const makeOneOffPayment = async () => {
+    const data = {
+      instant_saved_amount: 50,
+      savings_tenure: '',
+      locked: '',
+    };
+
+    console.log('DATA:', data);
+
+    try {
+      const response = await oneOffPayment(data);
+      return response;
+    } catch (error) {
+      console.log('catch error', error);
+    }
+  };
+
+  const openInAppBrowser = async (url) => {
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        const result = await InAppBrowser.open(url, {
+          // iOS Properties
+          dismissButtonStyle: 'done',
+          preferredBarTintColor: '#453AA4',
+          preferredControlTintColor: 'white',
+          readerMode: false,
+          animated: true,
+          modalPresentationStyle: 'fullScreen',
+          modalTransitionStyle: 'coverVertical',
+          modalEnabled: true,
+          enableBarCollapsing: false,
+          // Android Properties
+          showTitle: true,
+          toolbarColor: '#2A286A',
+          secondaryToolbarColor: 'black',
+          enableUrlBarHiding: true,
+          enableDefaultShare: true,
+          forceCloseOnRedirection: false,
+          hasBackButton: true,
+          // Specify full animation resource identifier(package:anim/name)
+          // or only resource name(in case of animation bundled with app).
+          animations: {
+            startEnter: 'slide_in_right',
+            startExit: 'slide_out_left',
+            endEnter: 'slide_in_left',
+            endExit: 'slide_out_right',
+          },
+        });
+
+        return result;
+      } else Linking.openURL(url);
+    } catch (error) {
+      return error.message;
+    }
+  };
+
   const addAccount = async () => {
     console.log('Opening paystack...');
+    // const response = await makeOneOffPayment();
+    // console.log('RESPONSE:', response.data.data);
+
+    // if (response.status === 200) {
+    //   // setSpinner(false);
+    //   const result = await openInAppBrowser(
+    //     response.data.data.authorization_url,
+    //   );
+    //   if (result.type === 'cancel') {
+    //     let data = {reference: response.data.data.reference};
+    //     const verify = await verifyPayment(data);
+    //     // console.log('Verify', verify.data);
+
+    //     // console.log('daaa:', data);
+
+    //     // const verify = await tokenizeCard(data);
+    //     console.log('Tokenize', verify.data);
+
+    //     // if (verify.data.status == 'success') {
+    //     //   console.log('Tokenize card');
+    //     //   // setVerificationSpinner(false);
+    //     //   // await createPlan();
+    //     // } else {
+    //     //   // setVerificationSpinner(false);
+    //     //   Alert.alert(
+    //     //     'Payment Unverified',
+    //     //     'Your payment was not verified. Please retry.',
+    //     //   );
+    //     // }
+
+    //     // if (verify.status === 'success') {
+    //     // }
+    //   }
+    // }
   };
 
   return (
@@ -81,7 +178,7 @@ export default function AddPaymentCardModal(props) {
                 ]}>
                 <Text
                   style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
-                  CONTINUE
+                  CONTINUE TO ADD CARD
                 </Text>
               </TouchableOpacity>
             </View>

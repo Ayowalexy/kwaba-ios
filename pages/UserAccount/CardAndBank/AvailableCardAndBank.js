@@ -37,27 +37,27 @@ export default function AvailableCardAndBank(props, {navigation}) {
   const {allBanks, userBankAccounts} = props;
 
   const [paymentCards, setPaymentCards] = useState([
-    {
-      id: '1',
-      cardnumber: '1234 3245 1234 5678',
-      default: 'true',
-      expires: '12/2022',
-      type: 'mastercard',
-    },
-    {
-      id: '2',
-      cardnumber: '1234 3245 1234 5678',
-      default: 'true',
-      expires: '12/2022',
-      type: 'visa',
-    },
-    {
-      id: '3',
-      cardnumber: '1234 3245 1234 5678',
-      default: 'true',
-      expires: '12/2022',
-      type: 'mastercard',
-    },
+    // {
+    //   id: '1',
+    //   cardnumber: '1234 3245 1234 5678',
+    //   default: 'true',
+    //   expires: '12/2022',
+    //   type: 'mastercard',
+    // },
+    // {
+    //   id: '2',
+    //   cardnumber: '1234 3245 1234 5678',
+    //   default: 'true',
+    //   expires: '12/2022',
+    //   type: 'visa',
+    // },
+    // {
+    //   id: '3',
+    //   cardnumber: '1234 3245 1234 5678',
+    //   default: 'true',
+    //   expires: '12/2022',
+    //   type: 'mastercard',
+    // },
   ]);
 
   const handlePayment = async () => {
