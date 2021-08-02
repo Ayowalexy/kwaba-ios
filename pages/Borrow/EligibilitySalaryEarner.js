@@ -80,7 +80,7 @@ export default function EligibilitySalaryEarner({navigation}) {
     //   navigation.navigate('AwaitingDisbursement');
     // }
 
-    navigation.navigate('Signature');
+    navigation.navigate('RentalLoanFormBankStatementUpload');
 
     //   let stepsdata={
     //   documentdone:'',
