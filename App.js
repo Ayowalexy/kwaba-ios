@@ -143,7 +143,11 @@ import AcceptanceLetterAddosser from './pages/Borrow/AcceptanceletterAddosser';
 import AcceptanceLetterKwaba from './pages/Borrow/AcceptanceLetterKwaba';
 
 // Rental Form Business
-import {RentalFormBusiness1} from './pages/Borrow/Business/RentalFormBusiness/index';
+import {
+  RentalFormBusiness1,
+  RentalFormBusiness2,
+  RentalFormBusinessDoc,
+} from './pages/Borrow/Business/RentalFormBusiness/index';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -593,6 +597,16 @@ const App = () => {
               <Stack.Screen
                 name="RentalFormBusiness1"
                 component={RentalFormBusiness1}
+              />
+
+              <Stack.Screen
+                name="RentalFormBusiness2"
+                component={RentalFormBusiness2}
+              />
+
+              <Stack.Screen
+                name="RentalFormBusinessDoc"
+                component={RentalFormBusinessDoc}
               />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}

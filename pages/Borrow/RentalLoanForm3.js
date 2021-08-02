@@ -187,12 +187,14 @@ const RentalLoanForm3 = ({navigation}) => {
 
     // let data = {...dummyData, ...parsedData};
 
+    console.log(parsedData);
+
     try {
       const url = 'http://67.207.86.39:8000/api/v1/application/new';
       const response = await axios.post(url, parsedData, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      console.log(response);
+      // console.log('The response: ', response);
       navigation.navigate('RentalLoanFormCongratulation');
     } catch (error) {
       console.log(error.response.data);

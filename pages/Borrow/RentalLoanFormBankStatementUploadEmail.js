@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import SelectBankModal from '../../components/SelectBankModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import email from 'react-native-email';
 
 export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
   const [selectedBank, setSelectedBank] = useState('');
@@ -56,6 +57,19 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
       }
     })();
   }, []);
+
+  const sendMail = () => {
+    console.log('Hello');
+
+    const to = 'bankemail@email.com'; // string or array of email addresses
+    email(to, {
+      // Optional additional arguments
+      cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
+      bcc: 'mee@mee.com', // string or array of email addresses
+      subject: 'Request for a copy of my bank statement',
+      body: 'Hello, I need the copy of my bank statement',
+    }).catch(console.error);
+  };
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
@@ -174,7 +188,7 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
           // backgroundColor: 'red',
         }}>
         <TouchableOpacity
-          // onPress={handleNavigation}
+          onPress={sendMail}
           // disabled={isError()}
           style={[
             designs.button,

@@ -34,31 +34,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
   const [actionModal, setActionModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [clickedID, setClickedID] = useState('');
-  const {allBanks, userBankAccounts} = props;
-
-  const [paymentCards, setPaymentCards] = useState([
-    // {
-    //   id: '1',
-    //   cardnumber: '1234 3245 1234 5678',
-    //   default: 'true',
-    //   expires: '12/2022',
-    //   type: 'mastercard',
-    // },
-    // {
-    //   id: '2',
-    //   cardnumber: '1234 3245 1234 5678',
-    //   default: 'true',
-    //   expires: '12/2022',
-    //   type: 'visa',
-    // },
-    // {
-    //   id: '3',
-    //   cardnumber: '1234 3245 1234 5678',
-    //   default: 'true',
-    //   expires: '12/2022',
-    //   type: 'mastercard',
-    // },
-  ]);
+  const {allBanks, userBankAccounts, allCards, paymentCards} = props;
 
   const handlePayment = async () => {
     console.log('Hello');
@@ -70,7 +46,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
         <View>
           <Text
             style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
-            ****2345
+            ****{item.last_four_digits}
           </Text>
         </View>
         <View style={{marginTop: 100}}>
@@ -78,7 +54,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
             EXPIRES
           </Text>
           <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
-            12/2022
+            {item.exp_month}-{item.exp_year}
           </Text>
         </View>
         <Image
@@ -225,7 +201,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
                 <FlatList
                   data={paymentCards}
                   renderItem={renderPaymentCards}
-                  keyExtractor={(item) => item.id}
+                  keyExtractor={(item) => item.id.toString()}
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   showsVerticalScrollIndicator={false}
@@ -318,6 +294,7 @@ export default function AvailableCardAndBank(props, {navigation}) {
       <AddPaymentCardModal
         onRequestClose={() => setPaymentCardModal(!paymentCardModal)}
         visible={paymentCardModal}
+        setDisplayAllPaymentCards={(all) => allCards(all)}
       />
     </>
   );

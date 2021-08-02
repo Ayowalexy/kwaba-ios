@@ -217,10 +217,11 @@ export default function EmergencyLoanHome({navigation}) {
                 <Text
                   style={[
                     {
-                      color: '#46596990',
+                      color: '#46596995',
                       fontSize: 13,
                       marginTop: 6,
                       lineHeight: 20,
+                      paddingRight: 50,
                     },
                   ]}>
                   Based on your savings activities below the loan amount you can

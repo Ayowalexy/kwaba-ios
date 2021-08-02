@@ -108,19 +108,19 @@ const AddressVerificationPayment = ({navigation}) => {
         } else {
           console.log('maybe here ' + result.type);
           setVerificationSpinner(false);
-          Alert.alert(
-            'Payment Unverified',
-            'Your payment was not verified. Please retry.here',
-          );
+          // Alert.alert(
+          //   'Payment Unverified',
+          //   'Your payment was not verified. Please retry.here',
+          // );
         }
       }
     } catch (error) {
       console.log('maybe here canceled ', error.response.data);
       setVerificationSpinner(false);
-      Alert.alert(
-        'Payment Unverified',
-        'Your payment was not verified. Please retry.',
-      );
+      // Alert.alert(
+      //   'Payment Unverified',
+      //   'Your payment was not verified. Please retry.',
+      // );
     }
   };
 
@@ -212,13 +212,36 @@ const AddressVerificationPayment = ({navigation}) => {
             FONTS.body2FontStyling,
             {
               color: '#ADADAD',
+              color: COLORS.dark,
               textAlign: 'center',
               marginBottom: 30,
               fontSize: 14,
+              lineHeight: 25,
+              paddingHorizontal: 10,
             },
           ]}>
-          Make payment for Address verification
+          {/* Make payment for Address verification */}
+          {/* We will need to verify your address before we pay your rent. Please
+          make payment by clicking on the button below. */}
+          You’re almost done. We just need to verify your address to proceed
+          with your rent payment.
         </Text>
+        {/* <Text
+          style={[
+            FONTS.body2FontStyling,
+            {
+              color: '#ADADAD',
+              color: COLORS.dark,
+              textAlign: 'center',
+              marginBottom: 30,
+              fontSize: 14,
+              lineHeight: 25,
+              paddingHorizontal: 30,
+            },
+          ]}>
+          You’re a step closer to paying your rent. We just need is to verify
+          your address
+        </Text> */}
 
         <TouchableOpacity
           onPress={handleNavigation}

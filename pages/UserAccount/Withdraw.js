@@ -20,6 +20,10 @@ import {formatNumber} from '../../util/numberFormatter';
 import {onChange} from 'react-native-reanimated';
 
 import SelectSavingsOptionModal from '../../components/SelectSavingsOptionModal';
+import LoandPurposeModal from '../../components/LoanPurposeModal';
+
+import {useDispatch, useSelector} from 'react-redux';
+import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -28,11 +32,28 @@ const withdrawalFormSchema = yup.object().shape({
 });
 
 export default function Withdraw({navigation}) {
-  const [savings, setSavings] = useState(false);
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.getSoloSavingsReducer);
+  const [savings, setSavings] = useState(0);
   const [amountValue, setAmountValue] = useState('');
   const [showSavingsOptionModal, setShowSavingsOptionModal] = useState(false);
 
   const [selectedAmountIndex, setSelectedAmountIndex] = useState(1);
+
+  const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
+  const [loanPurpose, setLoanPurpose] = useState('');
+
+  useEffect(() => {
+    dispatch(getTotalSoloSavings());
+  }, []);
+
+  useEffect(() => {
+    const totalSoloSavings =
+      store?.data?.length > 0
+        ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
+        : 0;
+    setSavings(totalSoloSavings);
+  }, [store]);
 
   const handleSubmit = async (values) => {
     console.log(values);
@@ -184,7 +205,7 @@ export default function Withdraw({navigation}) {
                     keyboardType="number-pad"
                     value={formatNumber(amountValue)}
                     onChangeText={(text) => setAmountValue(text)}
-                    autoFocus={selectedAmountIndex == 1 ? true : false}
+                    // autoFocus={selectedAmountIndex == 1 ? true : false}
                   />
                 </View>
               ) : (
@@ -202,7 +223,7 @@ export default function Withdraw({navigation}) {
                       fontWeight: 'bold',
                       color: COLORS.dark,
                     }}>
-                    ₦ 200,000
+                    ₦ 0.00
                   </Text>
                 </View>
               )}
@@ -230,13 +251,14 @@ export default function Withdraw({navigation}) {
           style={[styles.customInput, {padding: 20}]}
           onPress={() => {
             // setShowTypeOfPropertiesModal(!showTypeOfPropertiesModal);
+            setShowLoanPurposehModal(!showLoanPurposeModal);
           }}>
-          {value != '' ? (
+          {loanPurpose != '' ? (
             <Text
               style={{
                 color: COLORS.primary,
               }}>
-              {value}
+              {loanPurpose}
             </Text>
           ) : (
             <Text
@@ -275,7 +297,7 @@ export default function Withdraw({navigation}) {
       <Text style={[styles.heading]}>Withdraw</Text>
 
       <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        {savings ? (
+        {savings <= 0 ? (
           <View style={[styles.content, {alignItems: 'center'}]}>
             <Image source={images.piggy} style={[styles.image]} />
             <Text
@@ -358,7 +380,20 @@ export default function Withdraw({navigation}) {
                     </TouchableOpacity>
                   </View>
 
-                  <View style={{marginTop: 20, alignItems: 'center'}}>
+                  <View style={{marginVertical: 30, alignItems: 'center'}}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('CardAndBankDetails')}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: COLORS.primary,
+                          textAlign: 'center',
+                        }}>
+                        No account? Click to select bank account
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                  {/* <View style={{marginTop: 20, alignItems: 'center'}}>
                     <TouchableOpacity
                       activeOpacity={0.9}
                       style={[styles.bankCard]}>
@@ -369,7 +404,6 @@ export default function Withdraw({navigation}) {
                             fontWeight: 'bold',
                             color: COLORS.white,
                           }}>
-                          {/* {userSelectedBankAccount.user_bank_name} */}
                           JOSHUA UDO NWOSU
                         </Text>
                         <Text
@@ -377,7 +411,6 @@ export default function Withdraw({navigation}) {
                             fontSize: 12,
                             color: COLORS.light,
                           }}>
-                          {/* {userSelectedBankAccount.bank_name} */}
                           Access Bank
                         </Text>
                         <Text
@@ -387,7 +420,6 @@ export default function Withdraw({navigation}) {
                             color: COLORS.white,
                             opacity: 0.8,
                           }}>
-                          {/* {userSelectedBankAccount.bank_account_number} */}
                           0094552107
                         </Text>
 
@@ -405,7 +437,7 @@ export default function Withdraw({navigation}) {
                         />
                       </View>
                     </TouchableOpacity>
-                  </View>
+                  </View> */}
 
                   <TouchableOpacity
                     style={[styles.button]}
@@ -432,6 +464,16 @@ export default function Withdraw({navigation}) {
                   onClick={(value) => {
                     setValues({...values, savingsOption: value});
                   }}
+                />
+
+                <LoandPurposeModal
+                  visible={showLoanPurposeModal}
+                  onRequestClose={() =>
+                    setShowLoanPurposehModal(!showLoanPurposeModal)
+                  }
+                  onClick={(value) => setLoanPurpose(value)}
+                  loanPurpose={loanPurpose}
+                  setLoanPurpose={setLoanPurpose}
                 />
               </>
             )}
@@ -515,8 +557,9 @@ const styles = StyleSheet.create({
   },
 
   bankCard: {
-    width: '100%',
-    height: 180,
+    width: 300,
+    maxWidth: '100%',
+    height: 170,
     backgroundColor: COLORS.primary,
     borderRadius: 20,
     marginLeft: 5,

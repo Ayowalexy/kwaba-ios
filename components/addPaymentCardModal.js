@@ -12,7 +12,6 @@ import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
-  oneOffPayment,
   tokenizeCard,
   tokenizePayment,
   verifyPayment,
@@ -21,23 +20,6 @@ import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 
 export default function AddPaymentCardModal(props) {
   const {onRequestClose, visible, onConfirm} = props;
-
-  const makeOneOffPayment = async () => {
-    const data = {
-      instant_saved_amount: 50,
-      savings_tenure: '',
-      locked: '',
-    };
-
-    console.log('DATA:', data);
-
-    try {
-      const response = await oneOffPayment(data);
-      return response;
-    } catch (error) {
-      console.log('catch error', error);
-    }
-  };
 
   const openInAppBrowser = async (url) => {
     try {
@@ -80,40 +62,34 @@ export default function AddPaymentCardModal(props) {
 
   const addAccount = async () => {
     console.log('Opening paystack...');
-    // const response = await makeOneOffPayment();
-    // console.log('RESPONSE:', response.data.data);
 
-    // if (response.status === 200) {
-    //   // setSpinner(false);
-    //   const result = await openInAppBrowser(
-    //     response.data.data.authorization_url,
-    //   );
-    //   if (result.type === 'cancel') {
-    //     let data = {reference: response.data.data.reference};
-    //     const verify = await verifyPayment(data);
-    //     // console.log('Verify', verify.data);
+    const data = {
+      amount: 50,
+    };
 
-    //     // console.log('daaa:', data);
+    try {
+      const res = await tokenizePayment(data);
+      // console.log('RES: ', res.data.data);
+      if (res.status == 200) {
+        const result = await openInAppBrowser(res.data.data.authorization_url);
+        if (result.type == 'cancel') {
+          let data = {reference: res.data.data.reference};
+          const verify = await verifyPayment(data);
 
-    //     // const verify = await tokenizeCard(data);
-    //     console.log('Tokenize', verify.data);
+          if (verify.status == 200) {
+            const card = await tokenizeCard(data);
 
-    //     // if (verify.data.status == 'success') {
-    //     //   console.log('Tokenize card');
-    //     //   // setVerificationSpinner(false);
-    //     //   // await createPlan();
-    //     // } else {
-    //     //   // setVerificationSpinner(false);
-    //     //   Alert.alert(
-    //     //     'Payment Unverified',
-    //     //     'Your payment was not verified. Please retry.',
-    //     //   );
-    //     // }
-
-    //     // if (verify.status === 'success') {
-    //     // }
-    //   }
-    // }
+            if (card.data.status == 'success') {
+              console.log('CARD: ', card.response);
+            }
+          } else {
+            console.log('Your payment was not verified. Please retry.');
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -178,7 +154,7 @@ export default function AddPaymentCardModal(props) {
                 ]}>
                 <Text
                   style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
-                  CONTINUE TO ADD CARD
+                  ADD CARD
                 </Text>
               </TouchableOpacity>
             </View>

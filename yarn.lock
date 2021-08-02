@@ -1050,7 +1050,7 @@
   resolved "https://registry.yarnpkg.com/@react-native-clipboard/clipboard/-/clipboard-1.7.0.tgz#43320841870b82b2f311f375dd5f178da46e244e"
   integrity sha512-i5dJgR+wM8Om+hFEB/PqNb65/x5WxpaZG+UjEBX2/gmmIrmAWI72tI9rVL1gjPA9RWNpdpzvp+ioGjpdl7MyWQ==
 
-"@react-native-community/art@^1.1.2", "@react-native-community/art@^1.2.0":
+"@react-native-community/art@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/art/-/art-1.2.0.tgz#386d95393f6042d9006f9d4bc6063fb898794460"
   integrity sha512-a+ZcRGl/BzLa89yi33Mbn5SHavsEXqKUMdbfLf3U8MDLElndPqUetoJyGkv63+BcPO49UMWiQRP1YUz6/zfJ+A==
@@ -6717,12 +6717,11 @@ react-native-phone-number-input@^2.1.0:
     google-libphonenumber "^3.2.10"
     react-native-country-picker-modal "^2.0.0"
 
-react-native-progress@^4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-4.1.2.tgz#ffb2264ddfeba409c730e36a9791bb7bbe07a00d"
-  integrity sha512-sFHs6k6npWDOyvQoL2NeyOyHb+q1s8iOAOeyzoObN77zkxOAsgJt9FcSJLRq70Mw7qSGNJMFDqCgvYR1huYRwQ==
+react-native-progress@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-5.0.0.tgz#f5ac6ceaeee27f184c660b00f29419e82a9d0ab0"
+  integrity sha512-KjnGIt3r9i5Kn2biOD9fXLJocf0bwxPRxOyAgXEnZTJQU2O+HyzgGFRCbM5h3izm9kKIkSc1txh8aGmMafCD9A==
   dependencies:
-    "@react-native-community/art" "^1.1.2"
     prop-types "^15.7.2"
 
 react-native-push-notification@^7.4.0:

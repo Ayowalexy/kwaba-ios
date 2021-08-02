@@ -33,7 +33,7 @@ const RentalFormBusiness1 = ({navigation}) => {
   const [accommodationStatus, setAccommodationStatus] = useState('');
   const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
-  const [progress, setProgress] = useState(33);
+  const [progress, setProgress] = useState(50);
 
   const handleSubmit = async (values) => {
     const data = {
@@ -52,17 +52,27 @@ const RentalFormBusiness1 = ({navigation}) => {
     );
 
     // console.log('DATA:', data)
-    navigation.navigate('RentalLoanFormDoc');
+    navigation.navigate('RentalFormBusinessDoc');
   };
 
   const NumberInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      form: {errors, touched, setFieldTouched, setFieldValue},
       ...inputProps
     } = props;
 
     const hasError = errors[name] && touched[name];
+
+    useEffect(() => {
+      (async () => {
+        const businessFormData = await AsyncStorage.getItem(
+          'businessFormDataStore',
+        );
+        const parseData = JSON.parse(businessFormData);
+        setFieldValue('salaryAmount', parseData.monthly_business_expenditure);
+      })();
+    }, []);
 
     return (
       <>
@@ -265,7 +275,7 @@ const RentalFormBusiness1 = ({navigation}) => {
                           color: '#ADADAD',
                           marginRight: 15,
                         }}>
-                        1 of 3
+                        1 of 2
                       </Text>
                       <AnimatedCircularProgress
                         size={25}
@@ -300,7 +310,7 @@ const RentalFormBusiness1 = ({navigation}) => {
                     />
                   </>
 
-                  <>
+                  {/* <>
                     <Text style={styles.label}>
                       How much do you earn monthly?
                     </Text>
@@ -309,7 +319,7 @@ const RentalFormBusiness1 = ({navigation}) => {
                       name="salaryAmount"
                       placeholder="Amount"
                     />
-                  </>
+                  </> */}
 
                   <Field
                     component={SelectMonthlyPlan}

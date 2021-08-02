@@ -266,7 +266,7 @@ const resolveCardDetails = async (data) => {
 };
 
 const tokenizeCard = async (data) => {
-  const url = apiUrl + '/api/v1/payment/cardtokenize';
+  const url = apiUrl + '/api/v1/cardtokenize';
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -282,7 +282,7 @@ const tokenizeCard = async (data) => {
 };
 
 const tokenizePayment = async (data) => {
-  const url = apiUrl + '/api/v1/payment/cardtokenize/payment';
+  const url = apiUrl + '/api/v1/paycardtokenize';
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {

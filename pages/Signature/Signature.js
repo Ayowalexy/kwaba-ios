@@ -159,11 +159,11 @@ export default function Signature({navigation}) {
         showsVerticalScrollIndicator={false}>
         <View style={[styles.content]}>
           <View style={[styles.signLabel]}>
-            <Text
+            {/* <Text
               style={{fontSize: 16, fontWeight: 'bold', color: COLORS.primary}}>
               Sign Here
-            </Text>
-            <Text style={{fontSize: 14, marginTop: 5, color: COLORS.primary}}>
+            </Text> */}
+            <Text style={{fontSize: 14, marginTop: 0, color: COLORS.primary}}>
               Sign below to confirm your acceptance.
             </Text>
           </View>

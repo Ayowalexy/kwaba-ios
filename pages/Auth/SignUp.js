@@ -126,9 +126,10 @@ export default function SignUp({navigation}) {
       email: values.email,
       password: values.password,
       gender: values.gender,
+      referral_code: values.referral_code,
     };
 
-    // console.log(data);
+    console.log(data);
 
     // navigation.navigate('VerifyNumber');
 
@@ -247,6 +248,7 @@ export default function SignUp({navigation}) {
             password: '',
             confirmPassword: '',
             gender: 'Female',
+            referral_code: '',
           }}
           onSubmit={(values, {setValues, setErrors}) => {
             handleSubmit(values, setValues, setErrors);
@@ -282,6 +284,13 @@ export default function SignUp({navigation}) {
                 component={CustomInput}
                 name="confirmPassword"
                 placeholder="Confirm Password"
+              />
+
+              <Field
+                component={CustomInput}
+                name="referral_code"
+                placeholder="Referral Code (optional)"
+                keyboardType="default"
               />
 
               <View

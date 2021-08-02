@@ -25,7 +25,7 @@ import {
   fetchBanks,
 } from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
-import LoanPurposeModal from './LoanPurposeModal';
+import LoanPurposeModal from '../../../components/LoanPurposeModal';
 import ConfirmModal from './ConfirmModal';
 import SuccessModal from './SuccessModal';
 

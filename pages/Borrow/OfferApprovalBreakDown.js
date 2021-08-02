@@ -388,6 +388,7 @@ const RentalLoanOfferTest = ({navigation}) => {
           }}>
           <TouchableOpacity
             // onPress={handleRejectOffer}
+            onPress={() => navigation.navigate('Decline')}
             style={[
               designs.button,
               {backgroundColor: COLORS.white, elevation: 1, width: '43%'},

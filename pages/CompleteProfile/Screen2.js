@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -29,6 +29,15 @@ const completeProfileSchema = yup.object().shape({
 const Screen2 = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
+
+  // getting the age of the user??
+  useEffect(() => {
+    var years = moment().diff('1997-07-08', 'years');
+    var days = moment().diff('1981-01-01', 'days');
+
+    console.log('Years: ', years);
+    console.log('Days: ', days);
+  }, []);
 
   const CustomInput = (props) => {
     const {
@@ -99,7 +108,7 @@ const Screen2 = ({navigation}) => {
             style={{
               color: COLORS.primary,
             }}>
-            {moment(date).format('YYYY-MM-DD')}
+            {moment(date).format('DD-MM-YYYY')}
           </Text>
 
           <Image
@@ -116,7 +125,7 @@ const Screen2 = ({navigation}) => {
             onChange={handleDateSelect}
             mode="date"
             is24Hour={true}
-            display="default"
+            display="spinner"
           />
         )}
 

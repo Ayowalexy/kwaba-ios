@@ -20,6 +20,8 @@ import axios from 'axios';
 import * as Animatable from 'react-native-animatable';
 import {uploadFile} from '../redux/actions/documentUploadActions';
 
+import * as Progress from 'react-native-progress';
+
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
 
@@ -88,6 +90,14 @@ export default function ManualUploadModal(props) {
     })();
   }, []);
 
+  useEffect(() => {
+    if (fileProgress == 100) {
+      setTimeout(() => {
+        setFileProgress(0);
+      }, 2000);
+    }
+  }, [fileProgress]);
+
   const uploadBankStatementFile = async () => {
     try {
       const granted = await PermissionsAndroid.request(
@@ -104,7 +114,6 @@ export default function ManualUploadModal(props) {
       );
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        // console.log('You can use the storage');
         const res = await DocumentPicker.pick({
           type: [DocumentPicker.types.allFiles],
         });
@@ -114,6 +123,8 @@ export default function ManualUploadModal(props) {
           type: res.type,
           name: res.name,
         };
+
+        setFileProgress(20);
 
         const token = await getToken();
         const applicationIDCallRes = await axios.get(
@@ -150,37 +161,41 @@ export default function ManualUploadModal(props) {
         try {
           // uploadFile(token, data)
           const config = {
-            onUploadProgress: (progressEvent) => {
-              const {loaded, total} = progressEvent;
-              const percentageProgress = Math.floor((loaded * 100) / total);
-              console.log(percentageProgress);
-              setFileProgress(percentageProgress);
-              // console.log(`${loaded}kb of ${total}kb | ${percentageProgress}%`);
+            onUploadProgress: function (progressEvent) {
+              setFileProgress(
+                Math.round((progressEvent.loaded * 100) / progressEvent.total),
+              );
             },
             headers: {
               'Content-Type': 'application/json',
               Authorization: token,
             },
           };
-          const response = await axios.post(
-            'http://67.207.86.39:8000/api/v1/application/documents/upload',
-            data,
-            config,
-          );
 
-          if (response.status == 200) {
-            console.log('File uploaded successfully...');
-            console.log('RESPONSE:', response.data.statusMsg);
-            setFileUploaded(true);
-          }
+          axios
+            .post(
+              'http://67.207.86.39:8000/api/v1/application/documents/upload',
+              data,
+              config,
+            )
+            .then(function (response) {
+              if (response.status == 200) {
+                console.log('File uploaded successfully...');
+                console.log('RESPONSE:', response.data.statusMsg);
+                setFileUploaded(true);
+              }
+            });
         } catch (error) {
           console.log('File not uploaded: ', error.response.data);
+          setFileProgress(0);
         }
       } else {
         console.log('File permission denied');
+        setFileProgress(0);
       }
     } catch (error) {
       console.log(error);
+      setFileProgress(0);
     }
   };
 
@@ -248,7 +263,7 @@ export default function ManualUploadModal(props) {
             style={{
               marginTop: 10,
               marginBottom: 20,
-              fontSize: 12,
+              fontSize: 14,
               color: '#2A286A',
             }}>
             Upload your latest 6 months bank statement.
@@ -285,26 +300,37 @@ export default function ManualUploadModal(props) {
               {fileUploaded && <Text>{uploadFilename}</Text>}
               {/* <Text>{fileProgress}%</Text> */}
 
+              <Progress.Bar
+                progress={fileProgress / 100}
+                width={200}
+                height={10}
+                color={COLORS.secondary}
+                borderColor="transparent"
+              />
+
               <TouchableOpacity
                 onPress={uploadBankStatementFile}
                 style={[
                   styles.btn,
-                  {backgroundColor: COLORS.secondary, marginTop: 10},
+                  {
+                    backgroundColor: COLORS.secondary,
+                    marginTop: 10,
+                    backgroundColor: COLORS.dark,
+                  },
                 ]}>
-                <View style={[styles.progress, {width: fileProgress + '%'}]} />
+                <View style={[styles.progress]} />
                 <Text
                   style={[
                     {
                       color: COLORS.white,
+                      // color: COLORS.primary,
                       textAlign: 'center',
                       fontWeight: 'bold',
                       fontSize: 12,
                       lineHeight: 50,
                     },
                   ]}>
-                  {fileProgress == 100
-                    ? 'File upload complete'
-                    : 'Choose a file'}
+                  Choose a file
                 </Text>
               </TouchableOpacity>
             </View>
@@ -320,7 +346,7 @@ export default function ManualUploadModal(props) {
                 <TouchableOpacity
                   onPress={handleProceed}
                   // disabled={isError()}
-                  style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
+                  style={[styles.btn, {backgroundColor: COLORS.dark}]}>
                   <Text
                     style={[
                       {

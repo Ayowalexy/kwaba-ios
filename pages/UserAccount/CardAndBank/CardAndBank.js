@@ -45,10 +45,11 @@ export default function CardAndBankDetails({navigation}) {
   // ]);
 
   const [userBankAccounts, setUserBankAccounts] = useState([]);
+  const [paymentCards, setPaymentCards] = useState([]);
 
   useEffect(() => {
     getBankAccounts();
-    // console.log(userBankAccounts, paymentCards);
+    getPaymentCards();
   }, []);
 
   const getBankAccounts = async () => {
@@ -59,6 +60,19 @@ export default function CardAndBankDetails({navigation}) {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       setUserBankAccounts(response.data.userBanks);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getPaymentCards = async () => {
+    const url = 'http://67.207.86.39:8000/api/v1/usercards';
+    try {
+      const token = await getToken();
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      setPaymentCards(response.data.cards);
     } catch (error) {
       console.log(error);
     }
@@ -96,9 +110,10 @@ export default function CardAndBankDetails({navigation}) {
       />
       )} */}
       <AvailableCardAndBank
-        // paymentCards={paymentCards}
+        paymentCards={paymentCards}
         userBankAccounts={userBankAccounts}
         allBanks={(value) => setUserBankAccounts(value)}
+        allCards={(value) => setPaymentCards(value)}
       />
     </View>
   );

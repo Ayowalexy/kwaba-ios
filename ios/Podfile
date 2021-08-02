@@ -23,6 +23,7 @@ target 'rentbank_mobile_app' do
 
 =======
 >>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
+
   target 'rentbank_mobile_appTests' do
     inherit! :complete
     # Pods for testing

@@ -77,19 +77,21 @@ export default function SoloSavingDashBoard({navigation}) {
 
     setTotalInterest(totalSoloSavingsInterest);
 
-    setSavingsTarget(soloSaving.savings_amount || 150000);
+    // setSavingsTarget(soloSaving.savings_amount || 150000);
 
     setSavingTitle(soloSaving.savings_title);
 
     setPercentAchieved(
-      (
-        (Number(totalSoloSavings) /
-          Number(soloSaving.savings_amount || 150000)) *
-        100
-      ).toFixed(0),
+      ((Number(totalSoloSavings) / Number(savingsTarget)) * 100).toFixed(0),
     );
 
-    console.log(getSoloSaving);
+    // console.log('TOT: ', totalSoloSavings, savingsTarget);
+
+    // console.log(getSoloSaving);
+    getSavingsPlan();
+  }, [savingsTarget]);
+
+  useEffect(() => {
     getSavingsPlan();
   }, [getSoloSaving]);
 
@@ -104,7 +106,7 @@ export default function SoloSavingDashBoard({navigation}) {
     const token = await getToken();
     const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
 
-    console.log('Token: ', token);
+    // console.log('Token: ', token);
 
     try {
       const response = await axios.post(
@@ -116,7 +118,7 @@ export default function SoloSavingDashBoard({navigation}) {
       );
       console.log('Fetch savings plan: ', response.data.data);
       let resData = response.data.data;
-      setSavingsTarget(resData.amount);
+      setSavingsTarget(resData.amount || 150000);
     } catch (error) {
       console.log('Error: ', error.response.data);
     }
@@ -312,7 +314,7 @@ export default function SoloSavingDashBoard({navigation}) {
               width={10}
               rotation={0}
               style={styles.circularProgress}
-              fill={Number(percentAchieved)}
+              fill={Number(percentAchieved) || 0}
               tintColor={COLORS.secondary}
               backgroundColor="#2A286A90">
               {(fill) => (
@@ -347,7 +349,7 @@ export default function SoloSavingDashBoard({navigation}) {
                       // lineHeight: 27,
                       textAlign: 'center',
                     }}>
-                    {percentAchieved}%
+                    {percentAchieved || 0}%
                   </Text>
                   <Text
                     style={{

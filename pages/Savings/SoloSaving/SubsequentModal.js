@@ -33,42 +33,15 @@ export default function SubsequentModal(props) {
   const store = useSelector((state) => state.soloSavingReducer);
 
   // const handleTransactions = async () => {
-  //   // const data = {
-  //   //   savings_amount: Number(store.savings_amount),
-  //   //   // savings_target_amount: Number(store.savings_target_amount),
-  //   //   savings_frequency: store.savings_frequency.toLowerCase(),
-  //   //   savings_account_number: '0094552107',
-  //   //   savings_account_name: 'JOSHUA UDO NWOSU',
-  //   //   savings_bank_code: '063',
-  //   //   savings_tenure: Number(store.savings_tenure[0]),
-  //   //   savings_title: store.savings_title,
-  //   //   savings_start_date: moment(store.savings_start_date).format('YYYY-MM-DD'),
-  //   //   savings_end_date: moment(store.savings_end_date).format('YYYY-MM-DD'),
-  //   //   locked: store.locked,
-  //   // };
-  //   // console.log('Hello', data);
-
-  //   // try {
-  //   //   const response = await createSavingsPlan(data);
-  //   //   console.log(response);
-  //   // } catch (error) {
-  //   //   console.log(error.response.data);
-  //   // }
-
-  //   const data = {
-  //     instant_saved_amount: Number(unFormatNumber(store.instant_saved_amount)),
-  //     savings_tenure: Number(store.savings_tenure[0]),
-  //     locked: true,
-  //   };
-
   //   try {
-  //     const response = await oneOffPayment(data);
-  //     console.log(response);
+  //     if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
+  //       console.log('Instant Saving');
+  //     } else {
+  //       console.log('Not saving now');
+  //     }
   //   } catch (error) {
-  //     console.log(error);
+  //     console.log('error:', error);
   //   }
-
-  //   // console.log(data);
   // };
 
   const handleTransactions = async () => {
@@ -128,16 +101,19 @@ export default function SubsequentModal(props) {
       savings_bank_code: '',
       savings_tenure: Number(store.savings_tenure[0]),
       savings_title: store.savings_title,
-      savings_start_date: moment(store.savings_start_date).format('YYYY-MM-DD'),
-      savings_end_date: moment(store.savings_end_date).format('YYYY-MM-DD'),
+      savings_start_date: store.savings_start_date,
+      savings_end_date: store.savings_end_date,
       locked: store.locked,
     };
+
     try {
       setSpinner(true);
       const response = await createSavingsPlan(data);
       if (response.status === 201) {
         //On successfully creating savings plan, create a subscription
         const sub = await subscribeToSavingsPlan();
+
+        console.log('SUB: ', sub);
 
         if (sub.status === 200) {
           setSpinner(false);
@@ -146,20 +122,25 @@ export default function SubsequentModal(props) {
           const result = await openInAppBrowser(
             sub.data.data.authorization_url,
           );
+
           if (result.type === 'cancel') {
             let verifyData = {reference: sub.data.data.reference};
             console.log('The Verify Data: ', verifyData);
-            setVerificationSpinner(true);
+            // setVerificationSpinner(true);
             const verify = await verifyPayment(verifyData);
             if (verify.data.status == 'success') {
-              setVerificationSpinner(false);
+              // setVerificationSpinner(false);
               setSuccessModal(true);
               console.log('Payment verified');
 
               goToDashboard();
             } else {
-              setVerificationSpinner(false);
-              Alert.alert(
+              // setVerificationSpinner(false);
+              // Alert.alert(
+              //   'Payment Unverified',
+              //   'Your payment was not verified. Please retry.',
+              // );
+              console.log(
                 'Payment Unverified',
                 'Your payment was not verified. Please retry.',
               );
@@ -167,17 +148,18 @@ export default function SubsequentModal(props) {
           }
         } else {
           setSpinner(false);
-          Alert.alert('Request Failed - Subscribe', sub);
+          // Alert.alert('Request Failed - Subscribe', sub);
+          console.log('Request Failed - Subscribe', sub);
         }
       } else {
         setSpinner(false);
-        Alert.alert('Request Failed - Create Plan', response);
+        // Alert.alert('Request Failed - Create Plan', response);
+        console.log('Request Failed - Create Plan', response);
       }
     } catch (error) {
       setSpinner(false);
+      // Alert.alert('Error', 'An error occurred, please retry');
       console.log('catch error', error.response);
-
-      Alert.alert('Error', 'An error occurred, please retry');
     }
   };
 
@@ -238,8 +220,6 @@ export default function SubsequentModal(props) {
       return error.message;
     }
   };
-
-  const instantPayment = () => {};
 
   return (
     <>

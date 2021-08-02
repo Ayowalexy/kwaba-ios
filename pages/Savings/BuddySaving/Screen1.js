@@ -294,16 +294,18 @@ export default function Screen1({navigation}) {
                 />
               </>
 
-              <>
-                <Text style={[designs.boldText, {marginTop: 20}]}>
-                  What is the target amount?
-                </Text>
-                <Field
-                  component={NumberInput}
-                  name="savingTargetAmount"
-                  placeholder="Enter amount"
-                />
-              </>
+              {values.yesOrNo.toLocaleLowerCase() == 'yes' && (
+                <>
+                  <Text style={[designs.boldText, {marginTop: 20}]}>
+                    What is the target amount?
+                  </Text>
+                  <Field
+                    component={NumberInput}
+                    name="savingTargetAmount"
+                    placeholder="Enter amount"
+                  />
+                </>
+              )}
 
               <TouchableOpacity
                 onPress={handleSubmit}
