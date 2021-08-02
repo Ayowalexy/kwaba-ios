@@ -147,7 +147,7 @@ export default function ManualUploadModal(props) {
           formdata,
         );
 
-        console.log('cloudinary: ', response.data.url);
+        // console.log('cloudinary: ', response.data.url);
 
         const data = {
           applicationId,
@@ -156,7 +156,7 @@ export default function ManualUploadModal(props) {
           filename: 'Bank Statement',
         };
 
-        console.log('DATA: ', data);
+        // console.log('DATA: ', data);
 
         try {
           // uploadFile(token, data)
@@ -182,6 +182,7 @@ export default function ManualUploadModal(props) {
               if (response.status == 200) {
                 console.log('File uploaded successfully...');
                 console.log('RESPONSE:', response.data.statusMsg);
+                // console.log('DATA: ', response.data.original_filename);
                 setFileUploaded(true);
               }
             });
