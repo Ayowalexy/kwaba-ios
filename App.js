@@ -149,6 +149,9 @@ import {
   RentalFormBusinessDoc,
 } from './pages/Borrow/Business/RentalFormBusiness/index';
 
+// Offer Letters
+import {KwabaLetter} from './pages/OfferLetters';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -280,8 +283,7 @@ const App = () => {
           }}
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
-          // initialRouteName={'CardAndBankDetails'}
-        >
+          initialRouteName={'KwabaLetter'}>
           {/* {test != '' ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
@@ -608,6 +610,10 @@ const App = () => {
                 name="RentalFormBusinessDoc"
                 component={RentalFormBusinessDoc}
               />
+
+              {/* Offer Letter screen */}
+
+              <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 
