@@ -19,13 +19,25 @@ import AddBankAccountModal from '../../../components/addBankAccountModal';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import Modal from 'react-native-modal';
+import ActionModal from './ActionModal';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function BankAccount(props, {navigation}) {
   const [bankModalVisible, setBankModalVisible] = useState(false);
   const [actionModal, setActionModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
+  const [successMsg, setSuccessMsg] = useState(false);
   const [clickedID, setClickedID] = useState('');
+  const [clickedItem, setClickedItem] = useState('');
+
   const {allBanks, userBankAccounts} = props;
+
+  const handlePress = async (item) => {
+    // console.log('Hello....', item.id);
+    setActionModal(true);
+    setClickedID(item.id);
+    setClickedItem(item);
+  };
 
   const renderBankAccounts = ({item}) => (
     <TouchableOpacity
@@ -33,12 +45,12 @@ export default function BankAccount(props, {navigation}) {
       style={[
         styles.bankCard,
         {
-          borderWidth: 2,
-          borderColor: item.id == clickedID ? COLORS.secondary : 'transparent',
+          borderWidth: item.id == clickedID ? 2 : 0,
+          borderColor: item.id == clickedID ? COLORS.secondary : 'none',
         },
       ]}
       onPress={() => {
-        setClickedID(item.id);
+        handlePress(item);
       }}>
       <View>
         <Text
@@ -82,29 +94,18 @@ export default function BankAccount(props, {navigation}) {
           source={images.maskGroup24}
         />
 
-        <View
-          style={{
-            width: 25,
-            height: 25,
-            backgroundColor: COLORS.dark,
-            position: 'absolute',
-            top: -10,
-            right: -10,
-
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 15,
-          }}>
-          <View
+        {item.defaultbank == 1 && (
+          <Icon
+            name="checkbox"
+            size={20}
+            color={COLORS.secondary}
             style={{
-              width: 10,
-              height: 10,
-              backgroundColor:
-                clickedID == item.id ? COLORS.secondary : 'transparent',
-              borderRadius: 10,
+              position: 'absolute',
+              top: -10,
+              right: -10,
             }}
           />
-        </View>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -168,9 +169,9 @@ export default function BankAccount(props, {navigation}) {
         </View>
 
         <Modal
-          isVisible={actionModal}
-          onBackButtonPress={() => setActionModal(false)}
-          onBackdropPress={() => setActionModal(false)}>
+          isVisible={successMsg}
+          onBackButtonPress={() => setSuccessMsg(false)}
+          onBackdropPress={() => setSuccessMsg(false)}>
           <View
             style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
             <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
@@ -184,6 +185,16 @@ export default function BankAccount(props, {navigation}) {
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
         setDisplayAllBankAccounts={(all) => allBanks(all)}
+      />
+
+      <ActionModal
+        onRequestClose={() => {
+          setActionModal(!actionModal);
+          setClickedID('');
+        }}
+        visible={actionModal}
+        type="bank account"
+        clickedItem={clickedItem}
       />
     </>
   );

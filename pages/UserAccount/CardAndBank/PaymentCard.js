@@ -21,15 +21,39 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import Modal from 'react-native-modal';
 import AddPaymentCardModal from '../../../components/addPaymentCardModal';
+import ActionModal from './ActionModal';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function PaymentCard(props) {
   const [paymentCardModal, setPaymentCardModal] = useState(false);
   const [actionModal, setActionModal] = useState(false);
   const [spinner, setSpinner] = useState(false);
+  const [successMsg, setSuccessMsg] = useState(false);
+  const [clickedID, setClickedID] = useState('');
+  const [clickedItem, setClickedItem] = useState('');
+
   const {allCards, paymentCards} = props;
 
+  const handlePress = async (item) => {
+    // console.log('Hello....', item.id);
+    setActionModal(true);
+    setClickedID(item.id);
+    setClickedItem(item);
+  };
+
   const renderPaymentCards = ({item}) => (
-    <TouchableOpacity activeOpacity={0.9} style={[styles.paymentCard]}>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      style={[
+        styles.paymentCard,
+        {
+          borderWidth: item.id == clickedID ? 2 : 0,
+          borderColor: item.id == clickedID ? COLORS.secondary : 'none',
+        },
+      ]}
+      onPress={() => {
+        handlePress(item);
+      }}>
       <View>
         <View>
           <Text
@@ -60,6 +84,19 @@ export default function PaymentCard(props) {
             right: -22,
           }}
         />
+
+        {item.defaultcard == 1 && (
+          <Icon
+            name="checkbox"
+            size={20}
+            color={COLORS.secondary}
+            style={{
+              position: 'absolute',
+              top: -10,
+              right: -10,
+            }}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -124,9 +161,9 @@ export default function PaymentCard(props) {
         </View>
 
         <Modal
-          isVisible={actionModal}
-          onBackButtonPress={() => setActionModal(false)}
-          onBackdropPress={() => setActionModal(false)}>
+          isVisible={successMsg}
+          onBackButtonPress={() => setSuccessMsg(false)}
+          onBackdropPress={() => setSuccessMsg(false)}>
           <View
             style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
             <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
@@ -140,6 +177,16 @@ export default function PaymentCard(props) {
         onRequestClose={() => setPaymentCardModal(!paymentCardModal)}
         visible={paymentCardModal}
         setDisplayAllPaymentCards={(all) => allCards(all)}
+      />
+
+      <ActionModal
+        onRequestClose={() => {
+          setActionModal(!actionModal);
+          setClickedID('');
+        }}
+        visible={actionModal}
+        type="card"
+        clickedItem={clickedItem}
       />
     </>
   );
