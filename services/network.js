@@ -297,6 +297,110 @@ const tokenizePayment = async (data) => {
   }
 };
 
+const getTokenizeCard = async () => {
+  const url = apiUrl + '/api/v1/usercards';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const updateTokenizeCard = async (data) => {
+  const url = apiUrl + '/api/v1/updatecard';
+  const token = await getToken();
+  try {
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const deleteTokinzeCard = async (data) => {
+  const url = apiUrl + '/api/v1/deletecard';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const verifyBankAccount = async (data) => {
+  const url = apiUrl + '/api/v1/user/bank_details';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const createBankAccount = async (data) => {
+  const url = apiUrl + '/api/v1/createbankaccount';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return message;
+  }
+};
+
+const getBankAccounts = async () => {
+  const url = apiUrl + '/api/v1/getuserbankaccounts';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const updateBankAccount = async (data) => {
+  const url = apiUrl + '/api/v1/updateuserbankaccount';
+  const token = await getToken();
+  try {
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const deleteBankAccount = async (data) => {
+  const url = apiUrl + '/api/v1/deletebank';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 const referralDetails = async () => {
   const url = apiUrl + '/api/v1/payment/referraldetails';
   const token = await getToken();
