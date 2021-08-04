@@ -8,7 +8,8 @@ export const COLORS = {
   grey: '#BFBFBF',
   white: '#FFFFFF',
   dark: '#465969',
-  yellow:'#FFE700'
+  yellow: '#FFE700',
+  red: 'rgb(255,99,71)',
 };
 
 export const SIZES = {
@@ -35,7 +36,7 @@ export const FONTS = {
   h1FontStyling: {
     fontFamily: 'CircularStd-Bold',
     fontSize: SIZES.h1,
-    lineHeight: 32
+    lineHeight: 32,
   },
   h2FontStyling: {
     fontFamily: 'CircularStd-Bold',
