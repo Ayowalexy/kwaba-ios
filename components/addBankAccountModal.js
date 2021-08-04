@@ -14,6 +14,7 @@ import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {getBankAccounts} from '../services/network';
 
 export default function AddBankAccountModal(props) {
   const {onRequestClose, visible, onConfirm, setDisplayAllBankAccounts} = props;
@@ -69,15 +70,12 @@ export default function AddBankAccountModal(props) {
 
   const addAccount = async () => {
     setSpinner(true);
-    // console.log('start');
     const data = {
       bank_name: selectedBank,
       bank_account_number: bankAccountNumber,
       bank_short_code:
         bankCode.toString().length == 2 ? '0' + bankCode : bankCode,
     };
-
-    // console.log('DATA: ', data);
 
     verifyBankAccount(data.bank_account_number, data.bank_short_code);
   };
@@ -98,7 +96,6 @@ export default function AddBankAccountModal(props) {
       );
       if (response.data.accountStatus == true) {
         setSpinner(false);
-        // console.log('VERIFY CARD FROM BACKEND: ', response.data.data);
 
         const {account_name, account_number} = response.data.data;
         const userAccountDetails = {
@@ -109,7 +106,7 @@ export default function AddBankAccountModal(props) {
           type: 'savings',
         };
         await createBankAccount(userAccountDetails);
-        getBankAccounts();
+        // getBankAccounts();
       } else {
         setSpinner(false);
         console.log('Account not verified');
@@ -127,9 +124,6 @@ export default function AddBankAccountModal(props) {
       updated_at: '',
     };
 
-    // console.log(d);
-
-    // console.log('DETAIL', data);
     const url = 'http://67.207.86.39:8000/api/v1/createbankaccount';
     const token = await getToken();
     try {
@@ -137,16 +131,8 @@ export default function AddBankAccountModal(props) {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       if (response.status == 200) {
-        // console.log('Card successfully added');
-        // setActionModal(true)
         onRequestClose();
-        // setUserBankAccounts((oldValues) => [
-        //   ...oldValues,
-        //   response.data.userBanks,
-        // ]);
         setUserBankAccounts([...userBankAccounts, response.data.userBanks]);
-        // console.log('RESPONSE:', response.data.userBanks);
-        // getBankAccounts();
       }
     } catch (error) {
       console.log('Another Error:', error);
@@ -154,28 +140,21 @@ export default function AddBankAccountModal(props) {
   };
 
   useEffect(() => {
-    getBankAccounts();
-  }, []);
-
-  useEffect(() => {
-    // console.log('******');
-    // console.log('All bank accounts: ', userBankAccounts);
     setDisplayAllBankAccounts(userBankAccounts);
   }, [userBankAccounts]);
 
-  const getBankAccounts = async () => {
-    const url = 'http://67.207.86.39:8000/api/v1/getuserbankaccounts';
-    try {
-      const token = await getToken();
-      const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
+  useEffect(() => {
+    const getAllBanks = async () => {
+      try {
+        const res = await getBankAccounts();
+        setUserBankAccounts(res.data.userBanks);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-      setUserBankAccounts(response.data.userBanks);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    getAllBanks();
+  }, []);
 
   return (
     <>

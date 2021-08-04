@@ -12,6 +12,7 @@ import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
+  getTokenizeCards,
   tokenizeCard,
   tokenizePayment,
   verifyPayment,
@@ -19,7 +20,9 @@ import {
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 
 export default function AddPaymentCardModal(props) {
-  const {onRequestClose, visible, onConfirm} = props;
+  const {onRequestClose, visible, onConfirm, setDisplayAllPaymentCards} = props;
+
+  const [paymentCards, setPaymentCards] = useState([]);
 
   const openInAppBrowser = async (url) => {
     try {
@@ -80,7 +83,7 @@ export default function AddPaymentCardModal(props) {
             const card = await tokenizeCard(data);
 
             if (card.data.status == 'success') {
-              console.log('CARD: ', card.response);
+              setPaymentCards([...paymentCards, card.data.card]);
             }
           } else {
             console.log('Your payment was not verified. Please retry.');
@@ -91,6 +94,23 @@ export default function AddPaymentCardModal(props) {
       console.log(error);
     }
   };
+
+  useEffect(() => {
+    setDisplayAllPaymentCards(paymentCards);
+  }, [paymentCards]);
+
+  useEffect(() => {
+    const getAllCards = async () => {
+      try {
+        const res = await getTokenizeCards();
+        setPaymentCards(res.data.cards);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAllCards();
+  }, []);
 
   return (
     <>
