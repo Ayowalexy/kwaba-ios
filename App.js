@@ -283,7 +283,8 @@ const App = () => {
           }}
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
-          initialRouteName={'KwabaLetter'}>
+          // initialRouteName={'KwabaLetter'}
+        >
           {/* {test != '' ? ( */}
           {!store2.isLoggedIn && store2.token == '' ? (
             <>
