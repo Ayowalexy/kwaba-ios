@@ -297,7 +297,7 @@ const tokenizePayment = async (data) => {
   }
 };
 
-const getTokenizeCard = async () => {
+const getTokenizeCards = async () => {
   const url = apiUrl + '/api/v1/usercards';
   const token = await getToken();
   try {
@@ -323,7 +323,7 @@ const updateTokenizeCard = async (data) => {
   }
 };
 
-const deleteTokinzeCard = async (data) => {
+const deleteTokenizeCard = async (data) => {
   const url = apiUrl + '/api/v1/deletecard';
   const token = await getToken();
   try {
@@ -447,6 +447,14 @@ export {
   resolveCardDetails,
   tokenizeCard,
   tokenizePayment,
+  getTokenizeCards,
+  updateTokenizeCard,
+  deleteTokenizeCard,
+  verifyBankAccount,
+  createBankAccount,
+  getBankAccounts,
+  updateBankAccount,
+  deleteBankAccount,
   referralDetails,
   me,
 };
