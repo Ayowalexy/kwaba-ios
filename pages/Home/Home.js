@@ -130,20 +130,20 @@ export default function Home({navigation}) {
       id: 2,
       title: 'Rent Now, Pay Later',
       body:
-        "Let's help you pay your rent so you can pay back in easy monthly payments",
+        "Let's help you pay your rent so you can\n pay back in easy monthly payments",
       image: images.maskGroup29,
     },
     {
       id: 3,
       title: 'Emergency Fund',
-      body: 'Access quick loans to sort out life emergencies',
+      body: 'Access quick loans to sort out \nlife emergencies',
       image: images.maskGroup44,
     },
     {
       id: 4,
       title: 'Invite Friends',
       body:
-        'Refer and invite your friends and family to stand a chance to get rent discount and earn money',
+        'Refer and invite your friends and family \nto stand a chance to get rent discount \nand earn money',
       image: images.giftPackage,
     },
   ];
