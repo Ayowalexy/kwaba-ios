@@ -187,6 +187,10 @@ export default function PaymentCard(props) {
         visible={actionModal}
         type="card"
         clickedItem={clickedItem}
+        setDeleteResponse={(data) => {
+          allCards(data.cards);
+          console.log('DATA ATAD:  ', data);
+        }}
       />
     </>
   );

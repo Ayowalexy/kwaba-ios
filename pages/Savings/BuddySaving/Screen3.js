@@ -22,10 +22,10 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const soloSavingFormSchema = yup.object().shape({
-  savingTitle: yup.string().required('Please provide saving title'),
   savingOption: yup.string().required('Please select saving option'),
   savingFrequency: yup.string().required('Please select saving frequency'),
   targetAmount: yup.string().required('Please provide saving amount'),
+  savingStartOption: yup.string().required('Field is required'),
 });
 
 export default function Screen1({navigation}) {
@@ -42,10 +42,10 @@ export default function Screen1({navigation}) {
 
   const handleSubmit = (values) => {
     const data = {
-      savings_title: values.savingTitle,
       savings_activeOption: values.savingOption,
       savings_amount: Number(unFormatNumber(values.targetAmount)),
       savings_frequency: values.savingFrequency,
+      savings_startOption: values.savingsStartOption,
     };
     // console.log(data);
     try {
@@ -298,10 +298,10 @@ export default function Screen1({navigation}) {
     <Formik
       validationSchema={soloSavingFormSchema}
       initialValues={{
-        savingTitle: '',
         savingOption: '',
         savingFrequency: '',
         targetAmount: '',
+        savingStartOption: '',
       }}
       onSubmit={(values) => {
         handleSubmit(values);

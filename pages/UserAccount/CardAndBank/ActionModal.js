@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import DeleteModal from './DeleteModal';
 
 export default function ActionModal(props) {
-  const {visible, onRequestClose, type, clickedItem} = props;
+  const {visible, onRequestClose, type, clickedItem, setDeleteResponse} = props;
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [defaultcard, setDefaultcard] = useState(false);
@@ -40,6 +40,16 @@ export default function ActionModal(props) {
   useEffect(() => {
     if (visible) console.log('clickedItem: ', clickedItem);
   }, [visible]);
+
+  // const setDeleteResponse = async (data) => {
+  //   if (type == 'card') {
+  //     // console.log('A card was deleted:', data);
+  //     setCards(data);
+  //   } else {
+  //     // console.log('A bank was deleted:', data);
+  //     setBanks(data);
+  //   }
+  // };
 
   const CardLayout = () => {
     return (
@@ -229,6 +239,10 @@ export default function ActionModal(props) {
         showDeleteModal={showDeleteModal}
         setShowDeleteModal={setShowDeleteModal}
         type={type}
+        clickedItem={clickedItem}
+        // deleteResponse={(all) => setDeleteResponse(all)}
+        deleteResponse={(cards) => setDeleteResponse({cards, type})}
+        hideActionModal={(bol) => onRequestClose(bol)}
       />
     </>
   );

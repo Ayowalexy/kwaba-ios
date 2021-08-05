@@ -193,8 +193,12 @@ export default function BankAccount(props, {navigation}) {
           setClickedID('');
         }}
         visible={actionModal}
-        type="bank account"
+        type="account"
         clickedItem={clickedItem}
+        setDeleteResponse={(data) => {
+          allBanks(data.cards);
+          console.log('DATA ATAD:  ', data);
+        }}
       />
     </>
   );

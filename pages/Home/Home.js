@@ -149,14 +149,18 @@ export default function Home({navigation}) {
   ];
 
   const goToPage = (item) => {
-    if (item.title == 'Rent Savings') {
-      navigation.navigate('SavingsHome');
-    } else if (item.title == 'Rent Now, Pay Later') {
-      navigation.navigate('RentNowPayLaterOnboarding');
-    } else if (item.title == 'Emergency Fund') {
-      navigation.navigate('EmergencyFundOnboarding');
+    if (!isProfileComplete) {
+      navigation.navigate('CompleteProfile1');
     } else {
-      navigation.navigate('Referral');
+      if (item.title == 'Rent Savings') {
+        navigation.navigate('SavingsHome');
+      } else if (item.title == 'Rent Now, Pay Later') {
+        navigation.navigate('RentNowPayLaterOnboarding');
+      } else if (item.title == 'Emergency Fund') {
+        navigation.navigate('EmergencyFundOnboarding');
+      } else {
+        navigation.navigate('Referral');
+      }
     }
   };
 

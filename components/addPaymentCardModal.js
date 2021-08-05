@@ -18,11 +18,13 @@ import {
   verifyPayment,
 } from '../services/network';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function AddPaymentCardModal(props) {
   const {onRequestClose, visible, onConfirm, setDisplayAllPaymentCards} = props;
 
   const [paymentCards, setPaymentCards] = useState([]);
+  const [spinner, setSpinner] = useState(false);
 
   const openInAppBrowser = async (url) => {
     try {
@@ -65,6 +67,7 @@ export default function AddPaymentCardModal(props) {
 
   const addAccount = async () => {
     console.log('Opening paystack...');
+    setSpinner(true);
 
     const data = {
       amount: 50,
@@ -74,23 +77,29 @@ export default function AddPaymentCardModal(props) {
       const res = await tokenizePayment(data);
       // console.log('RES: ', res.data.data);
       if (res.status == 200) {
+        setSpinner(false);
         const result = await openInAppBrowser(res.data.data.authorization_url);
         if (result.type == 'cancel') {
+          setSpinner(false);
           let data = {reference: res.data.data.reference};
           const verify = await verifyPayment(data);
 
           if (verify.status == 200) {
+            setSpinner(false);
             const card = await tokenizeCard(data);
 
             if (card.data.status == 'success') {
+              setSpinner(false);
               setPaymentCards([...paymentCards, card.data.card]);
             }
           } else {
+            setSpinner(false);
             console.log('Your payment was not verified. Please retry.');
           }
         }
       }
     } catch (error) {
+      setSpinner(false);
       console.log(error);
     }
   };
@@ -181,6 +190,7 @@ export default function AddPaymentCardModal(props) {
           </View>
         </Modal>
       </View>
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

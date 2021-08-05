@@ -2,11 +2,56 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {images, icons, COLORS} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 import Modal from 'react-native-modal';
+import {deleteBankAccount, deleteTokenizeCard} from '../../../services/network';
 
 export default function DeleteModal(props) {
-  const {type, showDeleteModal, setShowDeleteModal} = props;
+  const {
+    type,
+    showDeleteModal,
+    setShowDeleteModal,
+    clickedItem,
+    deleteResponse,
+    hideActionModal,
+  } = props;
+
+  const [spinner, setSpinner] = useState(false);
+
+  const handleConfirmDelete = async () => {
+    setShowDeleteModal(false);
+    hideActionModal(false);
+    setSpinner(true);
+
+    let data = {
+      id: clickedItem.id,
+    };
+
+    if (type == 'card') {
+      try {
+        const res = await deleteTokenizeCard(data);
+        if (res.data.status == 'success') {
+          deleteResponse(res.data.cards);
+          setSpinner(false);
+        }
+      } catch (error) {
+        console.log(error);
+        setSpinner(false);
+      }
+    } else {
+      try {
+        const res = await deleteBankAccount(data);
+        if (res.data.status == 'success') {
+          deleteResponse(res.data.cards);
+          setSpinner(false);
+        }
+      } catch (error) {
+        console.log(error);
+        setSpinner(false);
+      }
+    }
+  };
 
   return (
     <>
@@ -14,7 +59,12 @@ export default function DeleteModal(props) {
         isVisible={showDeleteModal}
         onBackButtonPress={() => setShowDeleteModal(false)}
         onBackdropPress={() => setShowDeleteModal(false)}>
-        <View style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
+        <View
+          style={{
+            backgroundColor: 'white',
+            padding: 20,
+            borderRadius: 5,
+          }}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Icon name="ios-warning" size={50} color={COLORS.red} />
 
@@ -26,7 +76,7 @@ export default function DeleteModal(props) {
                   textTransform: 'uppercase',
                   color: COLORS.dark,
                 }}>
-                Delete {type}
+                Delete {type}?
               </Text>
               <Text style={{fontSize: 13, color: COLORS.dark}}>
                 This action cannot be undone.
@@ -61,6 +111,7 @@ export default function DeleteModal(props) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={handleConfirmDelete}
               style={[styles.button, {borderColor: COLORS.red}]}>
               <Icon
                 name="trash-bin"
@@ -73,6 +124,8 @@ export default function DeleteModal(props) {
           </View>
         </View>
       </Modal>
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }
@@ -81,11 +134,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderTopWidth: 1,
     borderTopColor: '#46596920',
-    padding: 10,
+    paddingHorizontal: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
     paddingTop: 20,
   },
   button: {
