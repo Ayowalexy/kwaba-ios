@@ -37,6 +37,8 @@ const RentalLoanOfferTest = ({navigation}) => {
   const [monthlyPayment, setMonthlyPayment] = useState('');
   const [duration, setDuration] = useState('');
 
+  const [rentInsuranceCal, setRentInsuranceCal] = useState(0);
+
   const ref = useRef();
 
   useEffect(() => {
@@ -61,6 +63,10 @@ const RentalLoanOfferTest = ({navigation}) => {
       setDuration(applicationIDCallRes.data.data.repayment_plan);
 
       console.log('HHH:', applicationIDCallRes.data.data.loanable_amount);
+
+      setRentInsuranceCal(
+        0.05 * applicationIDCallRes.data.data.loanable_amount,
+      ); // Rent Insurance Calculation
     };
 
     setLoanOffer();
@@ -254,7 +260,7 @@ const RentalLoanOfferTest = ({navigation}) => {
                 fontSize: 18,
               },
             ]}>
-            Rental Now Pay Later
+            Rent Now Pay Later
           </Text>
           <Text
             style={{
@@ -371,7 +377,7 @@ const RentalLoanOfferTest = ({navigation}) => {
                   style={[
                     {fontWeight: 'bold', color: '#465969', fontSize: 12},
                   ]}>
-                  ₦2,500
+                  ₦{formatNumber(rentInsuranceCal)}
                 </Text>
               </View>
             </View>

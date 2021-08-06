@@ -21,7 +21,7 @@ const getToken = async () => {
   return token;
 };
 
-export default function Decline({navigation}) {
+export default function Reject({navigation}) {
   useEffect(() => {
     (async () => {
       // await AsyncStorage.removeItem('rentalLoanForm');

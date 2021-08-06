@@ -103,6 +103,7 @@ export default function RentalLoanFormCongratulation({navigation}) {
                 width: '100%',
                 height: 200,
                 resizeMode: 'contain',
+                // borderWidth: 2,
                 // marginTop: 20,
               }}
             />

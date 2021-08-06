@@ -47,12 +47,13 @@ export default function Screen1({navigation}) {
       savings_frequency: values.savingFrequency,
       savings_startOption: values.savingsStartOption,
     };
+    navigation.navigate('BuddySaving4');
     // console.log(data);
-    try {
-      dispatch(soloSaving(data));
+    // try {
+    //   dispatch(soloSaving(data));
 
-      return navigation.navigate('SoloSaving2');
-    } catch (error) {}
+    //   return navigation.navigate('SoloSaving2');
+    // } catch (error) {}
   };
 
   const NumberInput = (props) => {
@@ -67,7 +68,7 @@ export default function Screen1({navigation}) {
     return (
       <>
         <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much is your rent target?
+          How much do you want to save?
         </Text>
         <View
           style={[

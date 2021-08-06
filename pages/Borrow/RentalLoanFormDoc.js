@@ -119,7 +119,7 @@ const RentalLoanFormDoc = ({navigation}) => {
       0.039 * pre_approved_amount + pre_approved_amount / tenure;
 
     let non_refundable_deposit = 0;
-    let temp3 = 0.035 * pre_approved_amount;
+    let temp3 = 0.05 * pre_approved_amount;
     if (temp3 >= 100000000) {
       non_refundable_deposit = 100000000;
     } else {

@@ -57,6 +57,8 @@ const RentalLoanForm3 = ({navigation}) => {
   const [selectedPayMethod, setSelectedPayMethod] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
 
+  const [spinner, setSpinner] = useState(false);
+
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const token = JSON.parse(userData).token;
@@ -180,6 +182,7 @@ const RentalLoanForm3 = ({navigation}) => {
 
   const handlePostSubmit = async () => {
     setVisible(false);
+    setSpinner(true);
 
     const token = await getToken();
     let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
@@ -757,6 +760,8 @@ const RentalLoanForm3 = ({navigation}) => {
           </View>
         </Modal>
       </ScrollView>
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 };

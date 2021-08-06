@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {icons} from '../../../util';
+import {COLORS, icons} from '../../../util';
 import ProgressBar from 'react-native-progress/Bar';
 
 const Screen4 = ({navigation}) => {
@@ -134,14 +134,14 @@ const Screen4 = ({navigation}) => {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            marginTop: 32,
+            marginTop: 30,
           }}>
           <Image source={icons.addUser} />
           <Text
             style={{
               color: '#00DC99',
               fontFamily: 'Circular Std',
-              fontSize: 15,
+              fontSize: 14,
               lineHeight: 19,
               fontWeight: '700',
               marginLeft: 12,
@@ -153,7 +153,7 @@ const Screen4 = ({navigation}) => {
           style={{
             borderBottomColor: '#EAEAEA',
             borderBottomWidth: 1,
-            marginTop: 13,
+            marginTop: 30,
           }}
         />
         <Text
@@ -165,9 +165,9 @@ const Screen4 = ({navigation}) => {
             color: '#ADADAD',
             marginTop: 8,
           }}>
-          Buddies {`(${1} of ${4}) `}{' '}
+          Buddies {`(${0} of ${4}) `}{' '}
         </Text>
-        <View style={designs.buddyCard}>
+        {/* <View style={designs.buddyCard}>
           <View
             style={[
               designs.displayFlex,
@@ -277,15 +277,15 @@ const Screen4 = ({navigation}) => {
               </Text>
             </View>
           </View>
-        </View>
+        </View> */}
         <TouchableOpacity
           onPress={() => navigation.navigate('BuddySaving5')}
-          style={[designs.button, {marginTop: 30}]}>
+          style={[designs.button, {marginTop: 100}]}>
           <Text
             style={{
               color: 'white',
-              fontWeight: '600',
-              fontSize: 14,
+              fontWeight: 'bold',
+              fontSize: 12,
               lineHeight: 30,
             }}>
             NEXT
@@ -303,7 +303,7 @@ const Screen4 = ({navigation}) => {
               <Icon
                 onPress={() => setVisible(false)}
                 name="arrow-back-outline"
-                size={35}
+                size={25}
                 style={{fontWeight: '900'}}
                 color="#2A286A"
               />
@@ -322,7 +322,7 @@ const Screen4 = ({navigation}) => {
                 fontWeight: 'bold',
                 fontSize: 18,
                 lineHeight: 23,
-                marginTop: 14,
+                marginTop: 20,
               }}>
               Enter your buddy details
             </Text>
@@ -331,9 +331,10 @@ const Screen4 = ({navigation}) => {
                 designs.textInput,
                 {
                   marginTop: 16,
-                  borderColor: '#ADADAD',
+                  borderColor: '#ADADAD50',
                   borderWidth: 1,
-                  width: 350,
+                  // width: 350,
+                  width: '100%',
                   marginLeft: 'auto',
                   marginRight: 'auto',
                 },
@@ -347,9 +348,10 @@ const Screen4 = ({navigation}) => {
                 designs.textInput,
                 {
                   marginTop: 16,
-                  borderColor: '#ADADAD',
+                  borderColor: '#ADADAD50',
                   borderWidth: 1,
-                  width: 350,
+                  // width: 350,
+                  width: '100%',
                   marginLeft: 'auto',
                   marginRight: 'auto',
                 },
@@ -389,6 +391,7 @@ const Screen4 = ({navigation}) => {
                     style={{
                       fontFamily: 'Circular Std',
                       color: '#000000',
+                      color: COLORS.dark,
                       fontSize: 16,
                       lineHeight: 30,
                       fontWeight: '600',
@@ -435,13 +438,13 @@ const Screen4 = ({navigation}) => {
             <TouchableOpacity
               style={[
                 designs.button,
-                {marginTop: 30, backgroundColor: '#2A286A', width: 350},
+                {marginTop: 30, backgroundColor: '#2A286A'},
               ]}>
               <Text
                 style={{
                   color: 'white',
-                  fontWeight: '600',
-                  fontSize: 14,
+                  fontWeight: 'bold',
+                  fontSize: 12,
                   lineHeight: 30,
                 }}>
                 INVITE

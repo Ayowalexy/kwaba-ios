@@ -291,12 +291,6 @@ export default function ManualUploadModal(props) {
                   marginTop: 20,
                 }}
               />
-              <Text
-                style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
-                {/* {uploadFilename} */}
-                {uploadedFileInfo.length != 0 &&
-                  'File: ' + uploadedFileInfo.original_filename}
-              </Text>
 
               {fileUploaded && <Text>{uploadFilename}</Text>}
               {/* <Text>{fileProgress}%</Text> */}
@@ -308,6 +302,14 @@ export default function ManualUploadModal(props) {
                 color={COLORS.secondary}
                 borderColor="transparent"
               />
+
+              <Text
+                style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
+                {/* {uploadFilename} */}
+                {/* {uploadedFileInfo.length != 0 &&
+                  'File: ' + uploadedFileInfo.original_filename} */}
+                {/* Bankstatement.pdf */}
+              </Text>
 
               <TouchableOpacity
                 onPress={uploadBankStatementFile}

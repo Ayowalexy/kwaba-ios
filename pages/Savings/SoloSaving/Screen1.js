@@ -54,7 +54,7 @@ export default function Screen1({navigation}) {
     return (
       <>
         <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much is your rent target?
+          How much is your saving target?
         </Text>
         <View
           style={[
@@ -202,7 +202,7 @@ export default function Screen1({navigation}) {
       },
       {
         title: 'Manual Savings',
-        body: 'I would like to save whenever I want',
+        body: 'I would like to save \nwhenever I want',
         tag: 'manual',
       },
     ];
