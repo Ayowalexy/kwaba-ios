@@ -35,22 +35,6 @@ export default function Notifications({navigation}) {
     }
   };
 
-  // const getNotification = async() => {
-  //   try {
-  //     const token = await getToken();
-  //     const url = apiUrl + '/api/v1/notification';
-  //     const response = await axios.get(url, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: token
-  //       }
-  //     })
-  //     console.log('RESPONSE:', response.data);
-  //   }catch (error) {
-  //     console.log(error);
-  //   }
-  // }
-
   const handleClick = async () => {
     const data = {
       savings_amount: 500000,
@@ -78,15 +62,6 @@ export default function Notifications({navigation}) {
       />
       <View style={[styles.content]}>
         <Text style={[styles.text]}>No new notifications</Text>
-        <TouchableOpacity style={[styles.btn]} onPress={handleClick}>
-          <Icon
-            name="notifications"
-            size={25}
-            style={{marginRight: 10, fontSize: 16}}
-            color={COLORS.white}
-          />
-          <Text style={[styles.btnText]}>Notify me</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
