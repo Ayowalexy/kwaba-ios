@@ -17,6 +17,7 @@ import CompleteProfile2 from './pages/CompleteProfile/Screen2';
 import CompleteProfile3 from './pages/CompleteProfile/Screen3';
 import CompleteProfile4 from './pages/CompleteProfile/Screen4';
 import CompleteProfile5 from './pages/CompleteProfile/Screen5';
+import CompleteProfile6 from './pages/CompleteProfile/Screen6';
 import ForgotPassword from './pages/Auth/ForgotPassword';
 import PasswordResetSuccess from './pages/Auth/PasswordResetSuccess';
 import GetCode from './pages/Auth/GetCode';
@@ -325,6 +326,9 @@ const App = () => {
               <Stack.Screen
                 name="CompleteProfile5"
                 component={CompleteProfile5}></Stack.Screen>
+              <Stack.Screen
+                name="CompleteProfile6"
+                component={CompleteProfile6}></Stack.Screen>
               <Stack.Screen
                 name="SavingsHome"
                 component={SavingsHome}></Stack.Screen>

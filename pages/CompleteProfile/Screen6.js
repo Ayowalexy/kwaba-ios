@@ -17,19 +17,22 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
+import Modal from '../../components/modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const completeProfileSchema = yup.object().shape({
-  how_much_is_your_rent: yup.string().required('Please enter an amount'),
-  when_is_your_next_rent_due: yup.string().required('Select a date'),
+  email: yup
+    .string()
+    .email('Please enter valid email')
+    .required('Email is required'),
 });
 
 const Screen5 = (props) => {
   const {navigation, route} = props;
-  const [date, setDate] = useState(new Date());
-  const [showDate, setShowDate] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [completeProfileData, setCompleteProfileData] = useState([]);
 
-  const NumberInput = (props) => {
+  const CustomInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
       form: {errors, touched, setFieldTouched},
@@ -40,31 +43,21 @@ const Screen5 = (props) => {
 
     return (
       <>
-        <Text style={styles.label}>How much is your rent?</Text>
+        <Text style={styles.label}>Verify email address</Text>
         <View
           style={[
             styles.customInput,
             props.multiline && {height: props.numberOfLines * 40},
             hasError && styles.errorInput,
           ]}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 14,
-              position: 'absolute',
-              left: 15,
-              color: COLORS.dark,
-            }}>
-            ₦
-          </Text>
           <TextInput
             style={{
               width: '100%',
-              paddingLeft: 50,
+              paddingHorizontal: 16,
               paddingVertical: 16,
             }}
-            keyboardType="number-pad"
-            value={formatNumber(value)}
+            keyboardType="email-address"
+            value={value}
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
@@ -79,68 +72,35 @@ const Screen5 = (props) => {
     );
   };
 
-  const SelectDate = (props) => {
-    const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-
-    const handleDateSelect = (event, selectedDate) => {
-      const currentDate = selectedDate || date;
-      setShowDate(Platform.OS === 'ios');
-      setDate(currentDate);
-      setFieldValue('when_is_your_next_rent_due', currentDate);
-    };
-
-    return (
-      <>
-        <Text style={styles.label}>When is your next rent due?</Text>
-        <TouchableOpacity
-          style={[styles.customInput, {padding: 20}]}
-          onPress={() => {
-            setShowDate(true);
-            setFieldValue('when_is_your_next_rent_due', date);
-          }}>
-          <Text
-            style={{
-              color: COLORS.primary,
-            }}>
-            {moment(date).format('YYYY-MM-DD')}
-          </Text>
-
-          <Image
-            style={{width: 20, height: 20}}
-            resizeMode="contain"
-            source={icons.dateTimePicker}
-          />
-        </TouchableOpacity>
-
-        {showDate && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            onChange={handleDateSelect}
-            mode="date"
-            is24Hour={true}
-            display="spinner"
-          />
-        )}
-
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
-
   const handleSubmit = async (values) => {
     const complete_profile = await AsyncStorage.getItem('complete_profile');
     await AsyncStorage.setItem(
       'complete_profile',
       JSON.stringify({...JSON.parse(complete_profile), ...values}),
     );
-    navigation.navigate('CompleteProfile6');
+
+    setModalVisible(true);
+  };
+
+  const HandleCompleteProfile = async () => {
+    const complete_profile = await AsyncStorage.getItem('complete_profile');
+    const parseData = JSON.parse(complete_profile);
+
+    let {
+      bvn,
+      dob,
+      how_much_is_your_rent,
+      when_is_your_next_rent_due,
+    } = parseData;
+
+    console.log(
+      bvn,
+      moment(dob).format('MMM-DD-YYYY'),
+      unFormatNumber(how_much_is_your_rent),
+      moment(when_is_your_next_rent_due).format('YYYY-MM-DD'),
+    );
+    setModalVisible(false);
+    navigation.navigate('Home');
   };
 
   return (
@@ -185,8 +145,7 @@ const Screen5 = (props) => {
           <Formik
             validationSchema={completeProfileSchema}
             initialValues={{
-              how_much_is_your_rent: '',
-              when_is_your_next_rent_due: '',
+              email: '',
             }}
             onSubmit={(values) => {
               handleSubmit(values);
@@ -194,13 +153,9 @@ const Screen5 = (props) => {
             {({handleSubmit, isValid, values, setValues}) => (
               <>
                 <Field
-                  component={NumberInput}
-                  name="how_much_is_your_rent"
-                  placeholder="Amount"
-                />
-                <Field
-                  component={SelectDate}
-                  name="when_is_your_next_rent_due"
+                  component={CustomInput}
+                  name="email"
+                  placeholder="Email"
                 />
 
                 <TouchableOpacity
@@ -213,7 +168,7 @@ const Screen5 = (props) => {
                       fontSize: 14,
                       lineHeight: 30,
                     }}>
-                    NEXT
+                    Verify
                   </Text>
                 </TouchableOpacity>
               </>
@@ -221,6 +176,12 @@ const Screen5 = (props) => {
           </Formik>
         </View>
       </ScrollView>
+
+      <Modal
+        onRequestClose={() => setModalVisible(!modalVisible)}
+        visible={modalVisible}
+        onSave={() => HandleCompleteProfile()}
+      />
     </View>
   );
 };
