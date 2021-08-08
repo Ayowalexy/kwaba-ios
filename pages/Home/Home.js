@@ -512,7 +512,7 @@ export default function Home({navigation}) {
                     width: '40%',
                     height: 100,
                     position: 'absolute',
-                    right: -15,
+                    right: -30,
                     bottom: -10,
                   }}
                   source={item.image}
