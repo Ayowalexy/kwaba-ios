@@ -10,6 +10,7 @@ import BuddySaving3 from './BuddySaving/Screen3';
 import BuddySaving4 from './BuddySaving/Screen4';
 import BuddySaving5 from './BuddySaving/Screen5';
 import BuddySaving6 from './BuddySaving/Screen6';
+import BuddySaving7 from './BuddySaving/Screen7';
 import BuddySavingDashBoard from './BuddySaving/BuddySavingDashBoard';
 
 export {
@@ -25,5 +26,6 @@ export {
   BuddySaving4,
   BuddySaving5,
   BuddySaving6,
+  BuddySaving7,
   BuddySavingDashBoard,
 };

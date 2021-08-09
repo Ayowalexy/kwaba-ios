@@ -11,18 +11,9 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../util';
 
-export default function SelectBuddiesModal(props) {
+export default function SelectBuddyRelationshipModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const buddies = [
-    '1 Buddy',
-    '2 Buddies',
-    '3 Buddies',
-    '4 Buddies',
-    '5 Buddies and above',
-  ];
-  useEffect(() => {
-    console.log(buddies);
-  }, []);
+  const lists = ['Spouse/partner', 'Flatmates', 'Just friends saving together'];
   return (
     // <View>
     <Modal
@@ -33,6 +24,10 @@ export default function SelectBuddiesModal(props) {
       style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          <Text
+            style={{fontWeight: 'bold', fontSize: 18, color: COLORS.primary}}>
+            Relationship with buddy
+          </Text>
           <Icon
             onPress={onRequestClose}
             name="close-outline"
@@ -46,15 +41,16 @@ export default function SelectBuddiesModal(props) {
             }}
           />
           <View style={{marginTop: 20}}>
-            {buddies.map((room, index) => (
+            {lists.map((value, index) => (
               <TouchableOpacity
                 onPress={() => {
-                  onClick(room);
+                  onClick(value);
                   onRequestClose();
                 }}
                 key={index}
                 style={{
                   paddingVertical: 15,
+                  paddingLeft: 10,
                   // alignItems: 'center',
                 }}>
                 <Text
@@ -63,7 +59,7 @@ export default function SelectBuddiesModal(props) {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {room}
+                  {value}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -82,6 +78,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // borderColor: '#f00',
+    // borderWidth: 1,
   },
   modalView: {
     width: '100%',
@@ -90,6 +88,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     overflow: 'hidden',
     padding: 25,
+    paddingTop: 50,
+    paddingBottom: 25,
   },
   btn: {
     width: '100%',

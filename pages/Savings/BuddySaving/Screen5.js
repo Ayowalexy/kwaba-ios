@@ -1,15 +1,36 @@
-import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, Image, Switch} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Switch,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
-import {images} from '../../../util/index';
+import {COLORS, icons, images} from '../../../util/index';
+import moment from 'moment';
+// import {useDispatch, useSelector} from 'react-redux';
+// import {soloSaving} from '../../../redux/actions/savingsActions';
+import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
+import InviteBuddyModal from '../../../components/InviteBuddyModal';
 
-const Screen5 = ({navigation}) => {
-  const [toggleCheckBox, setToggleCheckBox] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+export default function Screen5({navigation}) {
+  const [locked, setLocked] = useState(true);
 
-  const toggleSwitch = () => setIsLocked((previousState) => !previousState);
+  const [showInviteBuddyModal, setShowInviteBuddyModal] = useState(false);
+
+  const toggleSwitch = () => {
+    setLocked((previousState) => !previousState);
+  };
+
+  const handleSubmit = () => {
+    console.log('Hello, world');
+    navigation.navigate('BuddySaving6');
+  };
 
   return (
     <View style={designs.container}>
@@ -20,155 +41,324 @@ const Screen5 = ({navigation}) => {
         style={{fontWeight: '900'}}
         color="#2A286A"
       />
-      <Text style={[designs.boldText, {marginTop: 25}]}>
-        Review your saving details
-      </Text>
-      <View style={designs.summaryBox}>
-        <View style={designs.whiteBox}>
-          <View style={{marginTop: 16}}>
+      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
+        <Text style={[designs.boldText, {marginTop: 15, marginLeft: 10}]}>
+          Invite your buddy
+        </Text>
+        <Text
+          style={{
+            color: '#ADADAD',
+            fontSize: 12,
+            fontWeight: '600',
+            lineHeight: 18,
+            marginTop: 8,
+            marginLeft: 10,
+          }}>
+          An invite will be sent to any of your buddy{'\n'}you add to this
+          saving plan.
+        </Text>
+        <View style={[styles.summaryBox]}>
+          {/* Top */}
+          <View style={[styles.summaryBoxTop]}>
+            <Text style={[styles.summaryBoxTopTitle]}>Target Amount</Text>
+            <Text style={[styles.summaryBoxTopAmount]}>₦2,500,000</Text>
+            <View style={[styles.summaryBoxTopLabel]}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.white,
+                  marginTop: -2,
+                }}>
+                You are saving with{' '}
+                <Text style={{color: COLORS.secondary}}>3 buddies</Text>
+              </Text>
+            </View>
+          </View>
+          {/* end Top */}
+
+          <View style={[styles.summaryBoxTargetCal]}>
+            <View style={[styles.summaryBoxTargetCalValue]}>
+              <View>
+                <Text style={[styles.summaryBoxTargetCalValueText]}>
+                  Your target:{' '}
+                  <Text style={[styles.summaryBoxTargetCalValueTextBold]}>
+                    {' '}
+                    ₦625,000
+                  </Text>
+                </Text>
+              </View>
+              <View>
+                <Text style={[styles.summaryBoxTargetCalValueText]}>
+                  Other buddies target:{' '}
+                  <Text style={[styles.summaryBoxTargetCalValueTextBold]}>
+                    {' '}
+                    ₦1,875,000
+                  </Text>
+                </Text>
+              </View>
+            </View>
+
+            <View style={[styles.summaryBoxTargetCalProgress]}>
+              <View style={[styles.summaryBoxTargetCalProgressFill]}></View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              marginTop: 20,
+              alignItems: 'center',
+            }}>
+            <View style={styles.dataInfo}>
+              <Text style={styles.key}>Frequency</Text>
+              <Text style={styles.value}>Monthly</Text>
+            </View>
+            <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
+              <Text style={styles.key}>Start Date</Text>
+              <Text style={styles.value}>Dec 22, 2020</Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              justifyContent: 'space-between',
+              marginTop: 20,
+              alignItems: 'center',
+            }}>
+            <View style={styles.dataInfo}>
+              <Text style={styles.key}>End Date</Text>
+              <Text style={styles.value}>Dec 22, 2021</Text>
+            </View>
+            <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
+              <Text style={styles.key}>Interest Rate</Text>
+              <Text style={styles.value}>{locked ? '2.5%' : '4.5%'} P.A</Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: 23,
+            }}>
             <Text
               style={{
-                fontSize: 10,
+                color: 'white',
+                fontSize: 12,
                 lineHeight: 15,
-                fontWeight: '700',
-                color: '#9D98EC',
-                fontFamily: 'Circular Std',
+                marginRight: 23,
               }}>
-              BUDDY SAVING
+              Lock saving?
             </Text>
+            <Switch
+              trackColor={{false: 'white', true: 'white'}}
+              thumbColor={locked ? '#00DC99' : '#ADADAD'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleSwitch}
+              value={locked}
+            />
+          </View>
+          <View
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '100%',
+              borderRadius: 13,
+              backgroundColor: '#00000022',
+              padding: 2,
+              marginTop: 15,
+            }}>
             <Text
               style={{
-                fontSize: 18,
+                color: '#FFE700',
+                fontSize: 10,
+                lineHeight: 13,
                 fontWeight: 'bold',
-                color: '#2A286A',
-                lineHeight: 23,
                 fontFamily: 'Circular Std',
+                textAlign: 'center',
               }}>
-              {new Date().getFullYear()} Rent
+              {locked
+                ? "You can't withdraw your savings until the set maturity date"
+                : "You can't withdraw your savings until the set maturity date"}
             </Text>
           </View>
-          <Image style={{width: 61, height: 66}} source={images.maskGroup14} />
         </View>
-        <View style={designs.data}>
-          <View>
-            <Text style={designs.key}>No. of Buddies</Text>
-            <Text style={designs.value}>4</Text>
-          </View>
-          <View style={{marginLeft: 135}}>
-            <Text style={designs.key}>Target Amount</Text>
-            <Text style={designs.value}>₦2,500,000</Text>
-          </View>
-        </View>
-        <View style={designs.data}>
-          <View>
-            <Text style={designs.key}>Frequency</Text>
-            <Text style={designs.value}>Monthly</Text>
-          </View>
-          <View style={{marginLeft: 165}}>
-            <Text style={designs.key}>Start Date</Text>
-            <Text style={designs.value}>Dec 22, 2020</Text>
-          </View>
-        </View>
-        <View style={designs.data}>
-          <View>
-            <Text style={designs.key}>End Date</Text>
-            <Text style={designs.value}>Dec 22, 2021</Text>
-          </View>
-          <View style={{marginLeft: 125}}>
-            <Text style={designs.key}>Interest Rate</Text>
-            <Text style={designs.value}>2.5% P.A</Text>
-          </View>
-        </View>
-        <View
+
+        <TouchableOpacity
+          onPress={() => setShowInviteBuddyModal(!showInviteBuddyModal)}
           style={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            marginTop: 33,
-          }}>
-          <Text
-            style={{
-              color: 'white',
-              fontSize: 12,
-              lineHeight: 15,
-              marginRight: 23,
-            }}>
-            Lock saving?
-          </Text>
-          <Switch
-            trackColor={{false: 'white', true: 'white'}}
-            thumbColor={isLocked ? '#00DC99' : '#ADADAD'}
-            ios_backgroundColor="#3e3e3e"
-            onValueChange={toggleSwitch}
-            value={isLocked}
-          />
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            alignItems: 'center',
             justifyContent: 'center',
-            width: 326,
-            height: 26,
-            borderRadius: 13,
-            backgroundColor: '#00000022',
-            marginRight: 'auto',
-            marginLeft: 'auto',
-            marginTop: 15,
+            alignItems: 'center',
+            paddingVertical: 20,
           }}>
+          <Icon
+            name="ios-person-add-outline"
+            style={{color: COLORS.secondary, fontSize: 20}}
+          />
           <Text
             style={{
-              color: '#FFE700',
-              fontSize: 10,
-              lineHeight: 13,
-              fontWeight: 'bold',
-              fontFamily: 'Circular Std',
+              color: '#00DC99',
+              fontSize: 12,
+              fontWeight: '700',
+              marginLeft: 12,
             }}>
-            You can’t withdraw your savings until the set maturity date
+            Invite a buddy
           </Text>
+        </TouchableOpacity>
+
+        <View style={[styles.buddyInvites]}>
+          {/* Buddies of 1 of how many buddies to invite */}
+          <Text style={[styles.buddyInvitesCount]}>Buddies(0 of 4) </Text>
+
+          <View style={[styles.noBuddy]}>
+            <Text style={{fontSize: 12, color: COLORS.grey, fontWeight: '700'}}>
+              No Buddy Invite yet
+            </Text>
+          </View>
         </View>
-      </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginRight: 'auto',
-          marginLeft: 'auto',
-          marginTop: 10,
-        }}>
-        <CheckBox
-          disabled={false}
-          value={toggleCheckBox}
-          onValueChange={(newValue) => setToggleCheckBox(newValue)}
-        />
-        <Text
-          style={{
-            color: '#465969',
-            fontSize: 12,
-            lineHeight: 15,
-            fontWeight: 'bold',
-          }}>
-          I agree to{' '}
-          <Text style={{color: '#00DC99'}}>Terms and Conditions</Text>
-        </Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => navigation.navigate('BuddySaving6')}
-        style={[designs.button, {marginTop: 15}]}>
-        <Text
-          style={{
-            color: 'white',
-            fontWeight: '600',
-            fontSize: 14,
-            lineHeight: 30,
-          }}>
-          NEXT
-        </Text>
-      </TouchableOpacity>
+
+        <TouchableOpacity
+          // disabled={!toggleCheckBox}
+          onPress={handleSubmit}
+          style={[
+            designs.button,
+            {
+              marginTop: 15,
+              backgroundColor: '#00DC99',
+            },
+          ]}>
+          <Text
+            style={{
+              // color: toggleCheckBox ? 'white' : '#000',
+              // color: toggleCheckBox ? '#fff' : '#ffffff50',
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: 12,
+              lineHeight: 30,
+            }}>
+            NEXT
+          </Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      <InviteBuddyModal
+        onRequestClose={() => setShowInviteBuddyModal(!showInviteBuddyModal)}
+        visible={showInviteBuddyModal}
+      />
     </View>
   );
-};
-export default Screen5;
+}
+
+const styles = StyleSheet.create({
+  summaryBox: {
+    minHeight: 200,
+    width: '100%',
+    borderRadius: 30,
+    backgroundColor: '#2A286A',
+    marginTop: 16,
+    padding: 23,
+    paddingVertical: 30,
+  },
+  summaryBoxTop: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  summaryBoxTopTitle: {
+    fontSize: 12,
+    color: COLORS.white,
+  },
+  summaryBoxTopAmount: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    marginVertical: 5,
+  },
+  summaryBoxTopLabel: {
+    backgroundColor: '#9D98EC50',
+    paddingHorizontal: 20,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  summaryBoxTargetCal: {
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  summaryBoxTargetCalValue: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // borderWidth: 1,
+  },
+  summaryBoxTargetCalValueText: {
+    fontSize: 10,
+    color: COLORS.white,
+  },
+  summaryBoxTargetCalValueTextBold: {
+    fontWeight: 'bold',
+  },
+  summaryBoxTargetCalProgress: {
+    width: '100%',
+    height: 5,
+    backgroundColor: COLORS.white,
+    borderRadius: 5,
+    marginTop: 10,
+    overflow: 'hidden',
+  },
+  summaryBoxTargetCalProgressFill: {
+    width: '30%',
+    height: 5,
+    backgroundColor: COLORS.secondary,
+  },
+
+  data: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    // justifyContent: 'space-between',
+    marginTop: 30,
+    paddingLeft: 6,
+    paddingRight: 6,
+  },
+  key: {
+    fontSize: 10,
+    fontWeight: '500',
+    lineHeight: 15,
+    color: 'white',
+  },
+  value: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    lineHeight: 20,
+    color: 'white',
+  },
+
+  buddyInvites: {
+    borderTopColor: '#BFBFBF50',
+    borderTopWidth: 1,
+  },
+  buddyInvitesCount: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: COLORS.grey,
+    paddingVertical: 10,
+    marginLeft: 10,
+  },
+  noBuddy: {
+    width: '100%',
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

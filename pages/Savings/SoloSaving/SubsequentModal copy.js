@@ -273,6 +273,15 @@ export default function SubsequentModal(props) {
             <View style={{marginTop: 20}}>
               {subsequentOptions.map((value, index) => (
                 <TouchableOpacity
+                  // onPress={() => {
+                  //   onRequestClose();
+                  //   handleTransactions();
+                  //   // if (value.toLowerCase() === 'yes') {
+                  //   //   setSubsequent(value);
+                  //   // } else if (value.toLowerCase() === 'no') {
+                  //   //   setSubsequent(value);
+                  //   // }
+                  // }}
                   onPress={
                     value.toLowerCase() == 'yes'
                       ? handleTransactions

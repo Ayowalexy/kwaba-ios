@@ -405,7 +405,7 @@ export default function Start({navigation}) {
                     // console.log('Hello')
                     navigation.navigate(
                       buddySaving == 0
-                        ? 'BuddySaving1'
+                        ? 'BuddySaving5'
                         : 'BuddySavingDashboard',
                     );
                     // setShowModal(!showModal)
