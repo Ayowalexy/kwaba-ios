@@ -404,9 +404,9 @@ export default function Start({navigation}) {
                   onPress={() => {
                     // console.log('Hello')
                     navigation.navigate(
-                      buddySaving == 0
+                      buddySaving == 1
                         ? 'BuddySaving5'
-                        : 'BuddySavingDashboard',
+                        : 'BuddySavingDashBoard',
                     );
                     // setShowModal(!showModal)
                   }}
