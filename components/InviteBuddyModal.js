@@ -50,11 +50,9 @@ export default function InviteBuddyModal(props) {
   }, []);
 
   const copyToClipboard = async () => {
-    const msg = ` "${userName
+    const msg = `${userName
       .toString()
-      .toUpperCase()} Has Invited You To Join Them To Save For Rent On Kwaba -
-    Join Now"{'\n'}
-    https://www.kwaba.ng/?ref=1`;
+      .toUpperCase()} Has Invited You To Join Them To Save For Rent On Kwaba - Join Now https://www.kwaba.ng/?ref=1`;
     Clipboard.setString(msg);
     ToastAndroid.show('Copied', ToastAndroid.SHORT);
   };
@@ -62,11 +60,9 @@ export default function InviteBuddyModal(props) {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: ` "${userName
+        message: `${userName
           .toString()
-          .toUpperCase()} Has Invited You To Join Them To Save For Rent On Kwaba -
-        Join Now"{'\n'}
-        https://www.kwaba.ng/?ref=1`,
+          .toUpperCase()} Has Invited You To Join Them To Save For Rent On Kwaba - Join Now https://www.kwaba.ng/?ref=1`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
