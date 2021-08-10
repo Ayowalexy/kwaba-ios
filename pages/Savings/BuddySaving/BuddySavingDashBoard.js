@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -7,189 +7,309 @@ import {
   Image,
   ScrollView,
   Modal,
+  StyleSheet,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {icons, images} from '../../../util/index';
-import QuickSaveModal from '../../../components/QuickSaveModal';
+import {icons, images, COLORS} from '../../../util/index';
+import {currencyFormat, numberWithCommas} from '../../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {useSelector, useDispatch} from 'react-redux';
+import {getCurrentUser} from '../../../redux/actions/userActions';
+import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
 
-export default function BuddySavingDashBoard({navigation}) {
-  const [activeTab, setActiveTab] = useState(1);
-  const [openQuickSave, setOpenQuickSave] = useState(false);
+import QuickSaveModal from '../../../components/QuickSaveModal';
+import moment from 'moment';
+
+import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+export default function SoloSavingDashBoard({navigation}) {
+  const dispatch = useDispatch();
+  const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+  const soloSaving = useSelector((state) => state.soloSavingReducer);
+  const currentUser = useSelector((state) => state.getUserReducer);
+  // useSelector((state) => console.log('State:', state));
+  const [activeTab, setActiveTab] = useState(0);
+  const [today, setToday] = useState('');
+  // const [openQuickSave, setOpenQuickSave] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
-  const [progress, setProgress] = useState(75);
+  const [totalSaving, setTotalSaving] = useState(0);
+  const [totalInterest, setTotalInterest] = useState(0);
+  const [savingsTarget, setSavingsTarget] = useState(0);
+  const [percentAchieved, setPercentAchieved] = useState(0);
+  const [savingTitle, setSavingTitle] = useState('');
+  const [transactions, setTransactions] = useState([]);
+  const [quickSaveModal, setQuickSaveModal] = useState(false);
+
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+    dispatch(getTotalSoloSavings());
+  }, [getTotalSoloSavings]);
+
+  useEffect(() => {
+    const totalSoloSavings =
+      getSoloSaving?.data?.length > 0
+        ? getSoloSaving.data.reduce(
+            (acc, saving) => acc + Number(saving.amount),
+            0,
+          )
+        : 0;
+
+    setTotalSaving(totalSoloSavings);
+
+    const totalSoloSavingsInterest =
+      getSoloSaving?.data?.length > 0
+        ? getSoloSaving.data.reduce(
+            (acc, saving) => acc + Number(saving.interest),
+            0,
+          )
+        : 0;
+
+    // console.log('Tot:', totalsolo)
+
+    setTotalInterest(totalSoloSavingsInterest);
+
+    // setSavingsTarget(soloSaving.savings_amount || 150000);
+
+    setSavingTitle(soloSaving.savings_title);
+
+    setPercentAchieved(
+      ((Number(totalSoloSavings) / Number(savingsTarget)) * 100).toFixed(0),
+    );
+
+    // console.log('TOT: ', totalSoloSavings, savingsTarget);
+
+    // console.log(getSoloSaving);
+    getSavingsPlan();
+  }, [savingsTarget]);
+
+  useEffect(() => {
+    getSavingsPlan();
+  }, [getSoloSaving]);
+
+  const getSavingsPlan = async () => {
+    const token = await getToken();
+    const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+
+    // console.log('Token: ', token);
+
+    try {
+      const response = await axios.post(
+        url,
+        {},
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      console.log('Fetch savings plan: ', response.data.data);
+      let resData = response.data.data;
+      setSavingsTarget(resData.amount || 150000);
+    } catch (error) {
+      console.log('Error: ', error.response.data);
+    }
+  };
 
   return (
-    <View style={[designs.container, {paddingLeft: 0, paddingRight: 0}]}>
+    <View style={styles.container}>
       <Icon
-        onPress={() => navigation.navigate('SavingsHome')}
+        onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"
-        size={35}
-        style={{fontWeight: '900', marginLeft: 16}}
+        size={25}
+        style={{padding: 18, paddingHorizontal: 10}}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
-        <Text
-          style={[
-            designs.boldText,
-            {marginTop: 15, fontSize: 25, lineHeight: 32, marginLeft: 16},
-          ]}>
-          Buddy Saving{' '}
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '700',
-              color: '#ADADAD',
-            }}>
-            2021 Rent
-          </Text>
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            fontWeight: '700',
-            color: '#ADADAD',
-            lineHeight: 15,
-            marginLeft: 16,
-          }}>
-          Weds, 15 Oct
-        </Text>
-        <ImageBackground
-          style={designs.soloSavingCard}
-          source={images.soloSavingsCard}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              paddingLeft: 23,
-            }}>
+        <View style={[styles.content]}>
+          <View style={{marginBottom: 20}}>
             <Text
-              style={{
-                fontSize: 15,
-                lineHeight: 19,
-                color: 'white',
-                fontWeight: '600',
-                marginTop: 19,
-              }}>
-              Buddy Saving Balance
-            </Text>
-            <TouchableOpacity onPress={() => setOpenQuickSave(true)}>
-              <Image style={{width: 43, height: 43}} source={icons.addIcon} />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingLeft: 23,
-            }}>
-            <Text
-              style={{
-                fontSize: 30,
-                lineHeight: 38,
-                color: 'white',
-                fontWeight: 'bold',
-                marginRight: 5,
-              }}>
-              ₦2,0007,000.00
-            </Text>
-            <Image style={{width: 13, height: 15}} source={icons.lock} />
-          </View>
-          <View
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginTop: 6,
-              paddingRight: 26,
-              paddingLeft: 23,
-            }}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-around',
-                width: 128,
-                height: 19,
-                borderRadius: 10,
-                backgroundColor: '#9D98EC',
-                opacity: 1,
-              }}>
-              <View
-                style={{
-                  backgroundColor: '#00DC99',
-                  height: 8,
-                  width: 8,
-                  borderRadius: 50,
-                }}></View>
-              <Text
-                style={{
-                  color: '#2A286A',
-                  fontSize: 10,
-                  lineHeight: 13,
-                  fontWeight: '700',
-                  fontFamily: 'Circular Std',
-                }}>
-                You guys are doing great
+              style={{fontSize: 20, fontWeight: 'bold', color: COLORS.primary}}>
+              Buddy Saving{' '}
+              <Text style={{fontSize: 10, color: '#ADADAD'}}>
+                {savingTitle}
               </Text>
-            </View>
-            <TouchableOpacity>
+            </Text>
+            <Text style={{fontSize: 12, fontWeight: '700', color: '#ADADAD'}}>
+              {moment().format('ddd, D MMM')}
+            </Text>
+          </View>
+          <View style={[styles.soloSavingCard]}>
+            <Image
+              source={images.soloSavingsCard}
+              style={{
+                width: '100%',
+                height: '100%',
+                resizeMode: 'stretch',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0,
+              }}
+            />
+            <View style={{padding: 20}}>
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  right: 0,
+                  top: 0,
+                  zIndex: 5,
+                }}
+                onPress={() => setQuickSaveModal(true)}>
+                <Image
+                  style={{
+                    width: 50,
+                    height: 50,
+                  }}
+                  source={icons.addIcon}
+                />
+              </TouchableOpacity>
+
+              <Text style={{color: COLORS.white}}>Buddy Saving Balance</Text>
               <View
                 style={{
-                  display: 'flex',
                   flexDirection: 'row',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  marginTop: 5,
+                  marginLeft: 5,
+                  // borderWidth: 1,
                 }}>
                 <Text
                   style={{
-                    fontFamily: 'CircularStd',
-                    fontSize: 10,
-                    fontWeight: '700',
-                    lineHeight: 13,
-                    color: 'white',
+                    fontSize: 22,
+                    fontWeight: 'bold',
+                    color: COLORS.white,
                   }}>
-                  View savings details
+                  ₦{currencyFormat(Number(1645978))}
                 </Text>
-                <Icon name="chevron-forward" color="white" size={15} />
+                <Icon
+                  name="lock-closed"
+                  size={15}
+                  style={{marginLeft: 10}}
+                  color={COLORS.primary}
+                />
               </View>
-            </TouchableOpacity>
-          </View>
-          <View style={designs.fadedBottom}>
-            <View>
-              <Text
+              <View
                 style={{
-                  fontSize: 10,
-                  lineHeight: 15,
-                  color: 'white',
-                  fontWeight: '600',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 10,
                 }}>
-                Interest Earned
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  lineHeight: 15,
-                  color: 'white',
-                  fontWeight: 'bold',
-                  marginTop: 5,
-                }}>
-                ₦7,000.00
-              </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    backgroundColor: '#FFFFFF50',
+                    paddingHorizontal: 10,
+                    paddingVertical: 4,
+                    borderRadius: 10,
+                  }}>
+                  <View
+                    style={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: 10,
+                      marginRight: 10,
+                      backgroundColor: COLORS.secondary,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      marginTop: -2,
+                      color: COLORS.primary,
+                    }}>
+                    You are doing great
+                  </Text>
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Text style={{fontSize: 10, color: COLORS.white}}>
+                    View saving details
+                  </Text>
+                  <Icon
+                    name="chevron-forward-outline"
+                    size={15}
+                    style={{color: COLORS.white, marginLeft: 10}}
+                  />
+                </View>
+              </View>
             </View>
+            <View
+              style={{
+                backgroundColor: '#ffffff20',
+                flex: 1,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <View style={{alignItems: 'flex-start'}}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: COLORS.white,
+                    fontWeight: '200',
+                  }}>
+                  Interest Earned
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: COLORS.white,
+                    fontWeight: 'bold',
+                  }}>
+                  {/* ₦{currencyFormat(totalInterest)} */}
+                  ₦0.00
+                </Text>
+              </View>
+
+              <View />
+
+              <View style={{alignItems: 'flex-end'}}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: COLORS.white,
+                    fontWeight: '200',
+                  }}>
+                  Saving Target
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: COLORS.white,
+                    fontWeight: 'bold',
+                  }}>
+                  ₦{currencyFormat(Number(2000000))}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              // borderWidth: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: -50,
+              elevation: 10,
+            }}>
             <AnimatedCircularProgress
-              size={100}
+              size={90}
               width={10}
               rotation={0}
-              style={designs.circularProgress}
-              fill={progress}
-              tintColor="#FFE700"
-              backgroundColor="#2A286A">
+              style={styles.circularProgress}
+              fill={Number(70) || 0}
+              tintColor={COLORS.yellow}
+              backgroundColor="#2A286A90">
               {(fill) => (
                 <View
                   style={{
@@ -200,16 +320,29 @@ export default function BuddySavingDashBoard({navigation}) {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
+                  <Image
+                    source={images.darkPurpleCircle}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      resizeMode: 'stretch',
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      left: 0,
+                    }}
+                  />
                   <Text
                     style={{
                       fontFamily: 'CircularStd',
-                      fontSize: 18,
+                      fontSize: 16,
                       fontWeight: 'bold',
                       color: 'white',
-                      lineHeight: 27,
+                      // lineHeight: 27,
                       textAlign: 'center',
                     }}>
-                    {progress}%
+                    {70 || 0}%
                   </Text>
                   <Text
                     style={{
@@ -217,340 +350,308 @@ export default function BuddySavingDashBoard({navigation}) {
                       fontSize: 10,
                       fontWeight: '600',
                       color: 'white',
-                      lineHeight: 14,
+                      // lineHeight: 14,
                       textAlign: 'center',
+                      marginTop: -5,
                     }}>
                     achieved
                   </Text>
                 </View>
               )}
             </AnimatedCircularProgress>
+          </View>
 
-            <View>
-              <Text
-                style={{
-                  fontSize: 10,
-                  lineHeight: 15,
-                  color: 'white',
-                  fontWeight: '600',
-                }}>
-                Savings Target
-              </Text>
-              <Text
-                style={{
-                  fontSize: 15,
-                  lineHeight: 15,
-                  color: 'white',
-                  fontWeight: 'bold',
-                  marginTop: 5,
-                }}>
-                ₦2,500,000.00
-              </Text>
-            </View>
-          </View>
-        </ImageBackground>
-        <View style={designs.faces}>
-          <View>
-            <Text
-              style={{
-                fontFamily: 'Circular Std',
-                fontSize: 10,
-                lineHeight: 13,
-                fontWeight: '600',
-                color: '#2A286A',
-              }}>
-              You have saved
-            </Text>
-            <Text
-              style={{
-                fontFamily: 'Circular Std',
-                fontSize: 15,
-                lineHeight: 19,
-                fontWeight: 'bold',
-                color: '#2A286A',
-              }}>
-              ₦425,000
-            </Text>
-          </View>
-          <View
-            style={[
-              designs.displayFlex,
-              {
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                marginTop: 0,
-                marginLeft: 5,
-                marginRight: 0,
-              },
-            ]}>
-            <Image style={{width: 31, height: 31}} source={images.ellipse96} />
-            <Image style={{width: 31, height: 31}} source={images.ellipse116} />
-            <Image style={{width: 31, height: 31}} source={images.ellipse117} />
-          </View>
-        </View>
-        <ScrollView
-          style={{marginTop: 30}}
-          horizontal
-          scrollEnabled={true}
-          showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity>
-            <View style={designs.whiteCard}>
-              <Image style={{width: 52, height: 52}} source={icons.invite} />
-              <Text
-                style={{
-                  fontFamily: 'Circular Std',
-                  fontSize: 18,
-                  lineHeight: 23,
-                  fontWeight: 'bold',
-                  color: '#2A286A',
-                  marginTop: 10,
-                }}>
-                Invite
-              </Text>
-              <Text
-                style={{
-                  color: '#ADADAD',
-                  fontFamily: 'Circular Std',
-                  fontSize: 10,
-                  lineHeight: 13,
-                  fontWeight: '700',
-                }}>
-                Invite your friends,family{'\n'}or to save with you
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={designs.whiteCard}>
-              <Image style={{width: 52, height: 52}} source={icons.topUp} />
-              <Text
-                style={{
-                  fontFamily: 'Circular Std',
-                  fontSize: 18,
-                  lineHeight: 23,
-                  fontWeight: 'bold',
-                  color: '#2A286A',
-                  marginTop: 10,
-                }}>
-                Rent Top-up
-              </Text>
-              <Text
-                style={{
-                  color: '#ADADAD',
-                  fontFamily: 'Circular Std',
-                  fontSize: 10,
-                  lineHeight: 13,
-                  fontWeight: '700',
-                }}>
-                Let your family, friends{'\n'}assist you with your rent
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <View style={designs.whiteCard}>
-              <Image
-                style={{width: 52, height: 52}}
-                source={icons.instantLoan}
-              />
-              <Text
-                style={{
-                  fontFamily: 'Circular Std',
-                  fontSize: 18,
-                  lineHeight: 23,
-                  fontWeight: 'bold',
-                  color: '#2A286A',
-                  marginTop: 10,
-                }}>
-                Instant Loan
-              </Text>
-              <Text
-                style={{
-                  color: '#ADADAD',
-                  fontFamily: 'Circular Std',
-                  fontSize: 10,
-                  lineHeight: 13,
-                  fontWeight: '700',
-                }}>
-                Access instant loans{'\n'}against your rent savings
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </ScrollView>
-
-        <View style={designs.transactions}>
-          <Text style={[designs.boldText, {fontSize: 18, lineHeight: 23}]}>
-            My Transactions
-          </Text>
-          <View
-            style={[
-              designs.displayFlex,
-              {
-                marginTop: 11,
-                marginLeft: 0,
-                marginRight: 0,
-                justifyContent: 'center',
-                width: 380,
-                height: 32,
-                borderRadius: 5,
-                backgroundColor: '#F7F8FD',
-              },
-            ]}>
-            <TouchableOpacity
-              onPress={() => setActiveTab(1)}
-              style={[
-                designs.transactionTab,
-                {backgroundColor: activeTab == 1 ? '#9D98EC' : '#F7F8FD'},
-              ]}>
-              <Text
-                style={{
-                  color: activeTab == 1 ? 'white' : '#BFBFBF',
-                  fontSize: 12,
-                  lineHeight: 15,
-                  fontWeight: '700',
-                  fontFamily: 'Circular Std',
-                }}>
-                All
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setActiveTab(2)}
-              style={[
-                designs.transactionTab,
-                {backgroundColor: activeTab == 2 ? '#9D98EC' : '#F7F8FD'},
-              ]}>
-              <Text
-                style={{
-                  color: activeTab == 2 ? 'white' : '#BFBFBF',
-                  fontSize: 12,
-                  lineHeight: 15,
-                  fontWeight: '700',
-                  fontFamily: 'Circular Std',
-                }}>
-                Savings
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setActiveTab(3)}
-              style={[
-                designs.transactionTab,
-                {backgroundColor: activeTab == 3 ? '#9D98EC' : '#F7F8FD'},
-              ]}>
-              <Text
-                style={{
-                  color: activeTab == 3 ? 'white' : '#BFBFBF',
-                  fontSize: 12,
-                  lineHeight: 15,
-                  fontWeight: '700',
-                  fontFamily: 'Circular Std',
-                }}>
-                Withdrawal
-              </Text>
-            </TouchableOpacity>
-          </View>
           <View
             style={{
-              borderBottomColor: '#BFBFBF',
-              borderBottomWidth: 1,
-              marginTop: 10,
+              backgroundColor: '#9D98EC50',
+              width: '95%',
+              minHeight: 50,
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              marginTop: -50,
+              borderRadius: 10,
+              borderTopRightRadius: 0,
+              borderTopLeftRadius: 0,
+              // paddingVertical: 5,
+              paddingHorizontal: 15,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <View>
+              <Text
+                style={{fontSize: 10, fontWeight: 'bold', color: COLORS.dark}}>
+                You have saved
+              </Text>
+              <Text
+                style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
+                ₦645,000
+              </Text>
+            </View>
+
+            <View></View>
+          </View>
+
+          {/*  */}
+
+          <View
+            style={{
+              marginTop: 20,
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+            }}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
+              style={{
+                width: '45%',
+                minHeight: 100,
+                backgroundColor: '#fff',
+                padding: 15,
+                borderRadius: 10,
+                paddingBottom: 20,
+                elevation: 1,
+              }}>
+              <View>
+                <Image
+                  style={{width: 80, height: 80, marginLeft: -20}}
+                  source={icons.invite}
+                />
+                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                  Invite
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    marginTop: 10,
+                    color: '#ADADAD',
+                    lineHeight: 20,
+                  }}>
+                  Invite your friends, family or spouse to save with you
+                </Text>
+              </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('EmergencyFundOnboarding')}
+              style={{
+                width: '45%',
+                minHeight: 100,
+                backgroundColor: '#fff',
+                padding: 15,
+                borderRadius: 10,
+                paddingBottom: 20,
+                elevation: 1,
+              }}>
+              <View>
+                <Image
+                  style={{width: 80, height: 80, marginLeft: -20}}
+                  source={icons.topUp}
+                />
+                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                  Top up
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    marginTop: 10,
+                    color: '#ADADAD',
+                    lineHeight: 20,
+                  }}>
+                  Let your family, friends assist you with your rent
+                </Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/*  */}
+
+        <View
+          style={{
+            backgroundColor: '#fff',
+            flex: 1,
+            minHeight: 200,
+            marginTop: 10,
+            borderTopRightRadius: 20,
+            borderTopLeftRadius: 20,
+            elevation: 10,
+          }}>
+          <View style={{padding: 20}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 16,
+                color: COLORS.primary,
+              }}>
+              My Transactions
+            </Text>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                backgroundColor: '#F7F8FD',
+                borderRadius: 10,
+                overflow: 'hidden',
+                marginTop: 10,
+              }}>
+              {['All', 'Savings', 'Withdrawals'].map((value, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setActiveTab(index)}
+                  style={{
+                    flex: 1,
+                    padding: 12,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor:
+                      activeTab == index ? COLORS.light : 'transparent',
+                  }}>
+                  {/* <View> */}
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      color: activeTab == index ? COLORS.white : '#BFBFBF',
+                    }}>
+                    {value}
+                  </Text>
+                  {/* </View> */}
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            {/* Transactions */}
+            <View style={{flex: 1}}>
+              <View style={{flex: 1}}>
+                {getSoloSaving?.data?.map((el, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingVertical: 10,
+                        marginTop: 10,
+                      }}>
+                      <View
+                        style={{
+                          width: 8,
+                          height: 8,
+                          borderRadius: 20,
+                          backgroundColor: COLORS.secondary,
+                          marginRight: 10,
+                        }}
+                      />
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          // borderWidth: 1,
+                        }}>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              // fontWeight: 'bold',
+                              color: COLORS.dark,
+                            }}>
+                            My Rent Savings
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              // fontWeight: 'bold',
+                              color: COLORS.dark,
+                              opacity: 0.5,
+                            }}>
+                            {el.reference}
+                          </Text>
+                        </View>
+
+                        <View
+                          style={{
+                            alignItems: 'flex-end',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                            }}>
+                            ₦{currencyFormat(Number(el.amount))}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                              opacity: 0.5,
+                            }}>
+                            {el.created_at}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </View>
+
+          <View
+            style={{
+              width: '100%',
+              height: 1,
+              backgroundColor: '#F7F8FD',
             }}
           />
-          <View
-            style={{marginTop: 40, marginRight: 'auto', marginLeft: 'auto'}}>
-            <Image
-              style={{
-                width: 62,
-                height: 78,
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}
-              source={images.fileImage}
-            />
-            <Text
-              style={{
-                marginTop: 13,
-                color: '#ADADAD',
-                fontSize: 12,
-                lineHeight: 15,
-                fontWeight: '700',
-                marginLeft: 'auto',
-                marginRight: 'auto',
-              }}>
-              No transaction yet
-            </Text>
-            <TouchableOpacity
-              onPress={() => setOpenQuickSave(true)}
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: 40,
-                width: 380,
-              }}>
-              <Icon name="add" size={20} color="#00DC99" />
-              <Text
-                style={{
-                  color: '#00DC99',
-                  fontSize: 14,
-                  fontWeight: '700',
-                  lineHeight: 30,
-                }}>
-                Quick save
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
       </ScrollView>
+
       <QuickSaveModal
-        onRequestClose={() => setOpenQuickSave(false)}
-        visible={openQuickSave}
-        openSuccessModal={() => {
-          setSuccessModal(true);
-          setOpenQuickSave(false);
-        }}
+        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+        visible={quickSaveModal}
       />
-      <Modal visible={successModal} animationType="fade" transparent={true}>
-        <View style={designs.modal}>
-          <View style={designs.successModal}>
-            <Icon
-              style={{alignSelf: 'flex-end'}}
-              onPress={() => setSuccessModal(false)}
-              name="close-outline"
-              size={30}
-              color="#465969"
-            />
-            <Image source={icons.tick} />
-            <Text style={[designs.boldText, {marginTop: 45, fontSize: 22}]}>
-              You are good to go
-            </Text>
-            <Text
-              style={{
-                color: '#ADADAD',
-                fontSize: 14,
-                lineHeight: 15,
-                fontWeight: 'bold',
-                marginTop: 15,
-              }}>
-              Quick save was successful
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setSuccessModal(false);
-                navigation.navigate('SoloSavingDashBoard');
-              }}
-              style={[designs.button, {marginTop: 55, width: 340}]}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontWeight: '700',
-                  fontSize: 14,
-                  lineHeight: 30,
-                }}>
-                DONE
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    // backgroundColor: '#f00',
+    backgroundColor: '#F7F8FD',
+    flex: 1,
+  },
+  content: {
+    paddingHorizontal: 10,
+    flex: 1,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    // backgroundColor: '#f00',
+  },
+  heading: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  soloSavingCard: {
+    width: '100%',
+    minHeight: 180,
+    // marginTop: 10,
+    backgroundColor: COLORS.light,
+    borderRadius: 20,
+    elevation: 10,
+    overflow: 'hidden',
+  },
+  circularProgress: {
+    width: 97,
+    height: 97,
+    zIndex: 9,
+    position: 'relative',
+    // top: -50,
+    // left: 50,
+    // transform: [{translateX: 50}],
+  },
+});
