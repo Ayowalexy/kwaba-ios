@@ -427,6 +427,20 @@ const me = async () => {
   }
 };
 
+// Buddy saving API
+const createBuddySavings = async (data) => {
+  const url = apiUrl + '/api/v1/create_buddy_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {Authorization: token},
+    });
+    return response;
+  } catch (erro) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -457,4 +471,5 @@ export {
   deleteBankAccount,
   referralDetails,
   me,
+  createBuddySavings,
 };
