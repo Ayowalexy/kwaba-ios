@@ -71,7 +71,7 @@ const RentalLoanForm3 = ({navigation}) => {
     amount: '',
     amount_needed_from_kwaba: '',
     bvn: '',
-    dob: '',
+    dob: '1991-10-09',
     employee_work_email: '',
     employer_address: '',
     employer_email: '',
@@ -188,24 +188,26 @@ const RentalLoanForm3 = ({navigation}) => {
     let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     let parsedData = JSON.parse(loanFormData);
 
-    // let data = {...dummyData, ...parsedData};
-
-    console.log(parsedData);
+    let data = {...dummyData, ...parsedData};
+    console.log('The Data: ', data);
 
     try {
       const url = 'http://67.207.86.39:8000/api/v1/application/new';
-      const response = await axios.post(url, parsedData, {
+      const response = await axios.post(url, data, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       // console.log('The response: ', response);
       navigation.navigate('RentalLoanFormCongratulation');
+      setSpinner(false);
     } catch (error) {
+      setSpinner(false);
       console.log(error.response.data);
       if (
         error?.response?.data?.statusMsg ==
         'You already have a pending application!'
       ) {
         navigation.navigate('RentalLoanFormCongratulation');
+        setSpinner(false);
       }
     }
   };

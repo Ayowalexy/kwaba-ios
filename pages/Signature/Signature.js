@@ -84,8 +84,9 @@ export default function Signature({navigation}) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      console.log('Res: ', response);
-      navigation.navigate('AddressVerificationPayment', response);
+      // console.log('Res: ', response);
+      // navigation.navigate('AddressVerificationPayment', response);
+      navigation.navigate('AddressVerificationPayment');
     } catch (error) {
       console.log(error.response.data);
     }

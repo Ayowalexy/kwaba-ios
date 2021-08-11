@@ -32,6 +32,8 @@ const RentalLoanFormDoc = ({navigation}) => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [monthlyPayment, setMonthlyPayment] = useState('');
   const [preApproveAmount, setPreApproveAmount] = useState('');
+
+  const [requestAmountEmpty, setRequestAmountEmpty] = useState(false);
   // const
 
   useEffect(() => {
@@ -72,15 +74,24 @@ const RentalLoanFormDoc = ({navigation}) => {
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
 
-    console.log('loanFormData:', loanFormData);
+    // console.log('loanFormData:', loanFormData);
 
-    console.log('data:', preApproveAmount);
+    // console.log('data:', preApproveAmount);
 
-    navigation.navigate('RentalLoanForm2');
+    if (data.amount_needed_from_kwaba <= 0) {
+      console.log('False');
+      setRequestAmountEmpty(true);
+    } else {
+      setRequestAmountEmpty(false);
+      navigation.navigate('RentalLoanForm2');
+    }
+
+    // navigation.navigate('RentalLoanForm2');
   };
 
   const monthly_payment = async (amount, timetorepay) => {
-    console.log('Time to repay: ', timetorepay);
+    console.log('The value', amount, timetorepay);
+    // console.log('Time to repay: ', timetorepay);
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
     let salaryBalance;
@@ -139,24 +150,6 @@ const RentalLoanFormDoc = ({navigation}) => {
     // console.log(amount);
   };
 
-  // const roundUp = (n) => {
-  //   return n > 1000 ? Math.round(n / 1000) * 1000 : n;
-  // };
-
-  // const round5 = (x) => {
-  //   const round5No =
-  //     x % 5 == 0
-  //       ? Number(Math.floor(x / 5)) * 5
-  //       : Number(Math.floor(x / 5)) * 5 + 5;
-  //   return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
-
-  //   // if (x % 5 == 0) {
-  //   //   return Number(Math.floor(x / 5)) * 5;
-  //   // } else {
-  //   //   return (Number(Math.floor(x / 5)) * 5) + 5;
-  //   // }
-  // };
-
   const roundUp = (n) => {
     return n > 1000 ? Math.round(n / 1000) * 1000 : n;
   };
@@ -167,12 +160,6 @@ const RentalLoanFormDoc = ({navigation}) => {
         ? Number(Math.floor(x / 5)) * 5
         : Number(Math.floor(x / 5)) * 5 + 5;
     return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
-
-    // if (x % 5 == 0) {
-    //   return Number(Math.floor(x / 5)) * 5;
-    // } else {
-    //   return (Number(Math.floor(x / 5)) * 5) + 5;
-    // }
   };
 
   return (
@@ -237,9 +224,14 @@ const RentalLoanFormDoc = ({navigation}) => {
               value={requestAmount}
               onChangeText={(text) => {
                 setRequestAmount(text);
-                monthly_payment(unFormatNumber(text), selectedMonth);
+                monthly_payment(unFormatNumber(text), Number(selectedMonth[0]));
               }}
             />
+            {requestAmountEmpty && (
+              <Text style={{fontSize: 12, color: 'red', margin: 5}}>
+                Field required
+              </Text>
+            )}
 
             <Text
               style={[
@@ -284,24 +276,6 @@ const RentalLoanFormDoc = ({navigation}) => {
                 color="#BABABA"
               />
             </TouchableOpacity>
-
-            {/* <Text
-              style={[
-                FONTS.body1FontStyling,
-                {
-                  color: COLORS.dark,
-                  // marginBottom: 8,
-                  marginTop: 20,
-                  // fontWeight: 'bold',
-                  fontSize: 14,
-                },
-              ]}>
-              Monthly payment plan
-            </Text>
-            <NumberFormat
-              value={salaryAmount}
-              onChangeText={(text) => setSalaryAmount(text)}
-            /> */}
 
             <Text
               style={[

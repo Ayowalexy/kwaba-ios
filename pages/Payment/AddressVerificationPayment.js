@@ -205,7 +205,7 @@ const AddressVerificationPayment = ({navigation}) => {
               marginBottom: 10,
             },
           ]}>
-          Address verification
+          Address Verification
         </Text>
         <Text
           style={[
