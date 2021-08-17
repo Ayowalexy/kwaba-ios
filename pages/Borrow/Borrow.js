@@ -64,7 +64,7 @@ const Borrow = ({navigation}) => {
   };
 
   const handleRentalLoanClick = async () => {
-    await AsyncStorage.removeItem('rentalSteps');
+    // await AsyncStorage.removeItem('rentalSteps');
 
     // const token = await getToken();
 

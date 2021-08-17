@@ -105,7 +105,7 @@ export default function Screen4({navigation}) {
             <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
               <>
                 <Text style={[designs.boldText, {marginTop: 20}]}>
-                  How many buddies will you be saving with?
+                  Relationship with buddies
                 </Text>
                 <Field
                   component={SelectBuddyRelationship}

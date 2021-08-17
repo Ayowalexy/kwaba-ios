@@ -23,6 +23,21 @@ export default function Screen5({navigation}) {
 
   const [showInviteBuddyModal, setShowInviteBuddyModal] = useState(false);
 
+  const [buddies, setBuddies] = useState([
+    {
+      fullname: 'Joshson Amunez',
+      email: 'johnsoamu@gmail.com',
+      allocatedAmount: 1000000,
+      monthlySaving: 330000,
+    },
+    {
+      fullname: 'Tobi Odenjimi',
+      email: 'tobiodenjimi@gmail.com',
+      allocatedAmount: 1000000,
+      monthlySaving: 330000,
+    },
+  ]);
+
   const toggleSwitch = () => {
     setLocked((previousState) => !previousState);
   };
@@ -30,6 +45,15 @@ export default function Screen5({navigation}) {
   const handleSubmit = () => {
     console.log('Hello, world');
     navigation.navigate('BuddySaving6');
+  };
+
+  const CreateBuddiesTemplate = () => {
+    return (
+      <View style={{width: '100%', borderWidth: 1}}>
+        <View></View>
+        <View></View>
+      </View>
+    );
   };
 
   return (
@@ -223,11 +247,18 @@ export default function Screen5({navigation}) {
           {/* Buddies of 1 of how many buddies to invite */}
           <Text style={[styles.buddyInvitesCount]}>Buddies(0 of 4) </Text>
 
-          <View style={[styles.noBuddy]}>
-            <Text style={{fontSize: 12, color: COLORS.grey, fontWeight: '700'}}>
-              No Buddy Invite yet
-            </Text>
-          </View>
+          {!buddies.length ? (
+            <View style={[styles.noBuddy]}>
+              <Text
+                style={{fontSize: 12, color: COLORS.grey, fontWeight: '700'}}>
+                No Buddy Invite yet
+              </Text>
+            </View>
+          ) : (
+            <View style={[styles.buddiesContainer]}>
+              <CreateBuddiesTemplate />
+            </View>
+          )}
         </View>
 
         <TouchableOpacity
@@ -360,5 +391,12 @@ const styles = StyleSheet.create({
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+
+  // buddies container
+  buddiesContainer: {
+    borderWidth: 1,
+    borderColor: 'red',
+    paddingVertical: 10,
   },
 });
