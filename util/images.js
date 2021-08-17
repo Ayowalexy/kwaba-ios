@@ -101,6 +101,8 @@ const guarantorImage = require('../assets/images/guarantorImage.png');
 
 const declineImage = require('../assets/images/declineImage.png');
 
+const addosserLogo = require('../assets/images/addosser_logo.png');
+
 export {
   logo,
   applicationReview,
@@ -199,4 +201,5 @@ export {
   piggy,
   guarantorImage,
   declineImage,
+  addosserLogo,
 };

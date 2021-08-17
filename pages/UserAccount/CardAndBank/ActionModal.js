@@ -150,7 +150,11 @@ export default function ActionModal(props) {
       />
       {['Withdrawal', 'Pay Rent', 'Default Bank Account'].map((item, index) => (
         <TouchableOpacity
-          onPress={() => setDefaultCard(item)}
+          // onPress={() => setDefaultCard(item)}
+          onPress={() => {
+            setDefaultCard(item);
+            console.log(item);
+          }}
           key={index}
           style={{
             flexDirection: 'row',

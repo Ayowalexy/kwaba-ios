@@ -57,8 +57,7 @@ export default function Decline({navigation}) {
             />
           </View>
           <View style={[styles.textContent]}>
-            {/* <Text style={[styles.redText]}>Request Declined</Text> */}
-            <Text style={[styles.redText]}>Confirm Rejection</Text>
+            <Text style={[styles.redText]}>Request Declined</Text>
             <View style={{paddingHorizontal: 20, marginTop: 30}}>
               <Text
                 style={{
@@ -67,13 +66,10 @@ export default function Decline({navigation}) {
                   color: COLORS.dark,
                   lineHeight: 30,
                 }}>
-                {/* Unfortunately, your rent payment request has been declined
+                Unfortunately, your rent payment request has been declined
                 because you have not met one or more of our eligibility
                 criteria. However, you can still qualify if you provide a
-                gurantor */}
-                Are you sure you want to reject the offer? If you need more
-                money towards your rent, you can invite a guarantor to support
-                your application
+                gurantor
               </Text>
             </View>
           </View>

@@ -13,7 +13,7 @@ import designs from '../style';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {COLORS} from '../../../util';
-import {formatNumber} from '../../../util/numberFormatter';
+import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 import SelectBuddiesModal from '../../../components/SelectBuddiesModal';
 
 const buddySavingFormSchema = yup.object().shape({
@@ -204,9 +204,14 @@ export default function Screen1({navigation}) {
   };
 
   const handleSubmit = async (values) => {
-    console.log(values);
+    // console.log(values);
+    const data = {
+      title: values.savingTitle,
+      number_of_buddies: values.savingNumberOfBuddies[0],
+      target_amount: unFormatNumber(values.savingTargetAmount),
+    };
 
-    navigation.navigate('BuddySaving2');
+    navigation.navigate('BuddySaving2', data);
   };
 
   return (

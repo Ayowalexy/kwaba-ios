@@ -1,27 +1,21 @@
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { MonoProvider, useMonoConnect } from '@mono.co/connect-react-native';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {MonoProvider, useMonoConnect} from '@mono.co/connect-react-native';
 import OkraView from 'react-native-okra';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLORS, FONTS, images} from '../../util/index';
 import axios from 'axios';
-const moment = require("moment");
+const moment = require('moment');
 
-
-
- export default function OkraDebitMandate2({navigation}) {
-
+export default function OkraDebitMandate2({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
   const [existingApplication, setExistingApplication] = useState('');
   const [monthlyRepayment, setmonthlyRepayment] = useState();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
- // const [okraOptions, setOkraOptions] = useState({});
+  // const [okraOptions, setOkraOptions] = useState({});
 
-  
-  
   //const okraOptions;
-  
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -29,57 +23,47 @@ const moment = require("moment");
     return token;
   };
 
-
- 
   useEffect(() => {
-
-    const getApplicationData =async ()=> {
-    
+    const getApplicationData = async () => {
       const token = await getToken();
 
-      
-      try{
-      
-          const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
-              headers: {'Content-Type': 'application/json', Authorization: token},
-            });
-           // console.log(applicationIDCallRes.data.data.id);
+      try {
+        const applicationIDCallRes = await axios.get(
+          'http://67.207.86.39:8000/api/v1/application/one',
+          {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          },
+        );
+        // console.log(applicationIDCallRes.data.data.id);
 
-             const applicationId = applicationIDCallRes.data.data.id;
-      
-             setExistingApplication(applicationId);
-            console.log('here', applicationIDCallRes.data.data.approvedamount );
-            setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
-            const approved_repayment_plan=applicationIDCallRes.data.data.approved_repayment_plan;
-            const repayment_start_date=applicationIDCallRes.data.data.remita_repayment_date;
-            const repayment_end_date=moment(repayment_start_date).add(Number(approved_repayment_plan)-1,'months').format("YYYY-MM-DD");
-            setStartDate(repayment_start_date);
-            setEndDate(repayment_end_date);
+        const applicationId = applicationIDCallRes.data.data.id;
 
-            console.log('here2', monthlyRepayment);
+        setExistingApplication(applicationId);
+        console.log('here', applicationIDCallRes.data.data.approvedamount);
+        setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
+        const approved_repayment_plan =
+          applicationIDCallRes.data.data.approved_repayment_plan;
+        const repayment_start_date =
+          applicationIDCallRes.data.data.remita_repayment_date;
+        const repayment_end_date = moment(repayment_start_date)
+          .add(Number(approved_repayment_plan) - 1, 'months')
+          .format('YYYY-MM-DD');
+        setStartDate(repayment_start_date);
+        setEndDate(repayment_end_date);
 
-            console.log('repayment_start_date', repayment_start_date);
-            console.log('repayment_end_date', repayment_end_date);
-    
+        console.log('here2', monthlyRepayment);
+
+        console.log('repayment_start_date', repayment_start_date);
+        console.log('repayment_end_date', repayment_end_date);
+      } catch (error) {
+        console.log(error.response.data);
       }
-      catch(error) {
-        console.log(error.response.data)
-      }
-
-  
-
-      
     };
-        
+
     getApplicationData();
-
-  
-    
-
   }, [monthlyRepayment]);
 
-
-  let okraOptions={
+  let okraOptions = {
     callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
     clientName: 'Kwaba',
     color: COLORS.secondary,
@@ -103,72 +87,73 @@ const moment = require("moment");
     token: '5e5bb362bd83ab0826527d30',
     widget_failed: '',
     widget_success: 'Your account was successfully linked to Okra, Inc',
-    debitLater:true,
+    debitLater: true,
     payment: true,
     charge: {
-        type: 'recurring', 
-        amount: monthlyRepayment*100, // amount in KOBO
-        note: '', // optional note
-        schedule: { // required
-            interval: 'monthly',
-            startDate: startDate, // If blank will default to today
-            endDate: endDate //If blank will not stop
-        }, 
-        currency: 'NGN', // supports 'NGN'
-        account: '5f450b2689a23801307c8b5b' // Your account ID to credit
-    }
-   };
+      type: 'recurring',
+      amount: monthlyRepayment * 100, // amount in KOBO
+      note: '', // optional note
+      schedule: {
+        // required
+        interval: 'monthly',
+        startDate: startDate, // If blank will default to today
+        endDate: endDate, //If blank will not stop
+      },
+      currency: 'NGN', // supports 'NGN'
+      account: '5f450b2689a23801307c8b5b', // Your account ID to credit
+    },
+  };
 
-  const handleLinkingSucess = async(response) => {
+  const handleLinkingSucess = async (response) => {
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
       const token = JSON.parse(userData).token;
       return token;
-    }; 
+    };
     const token = await getToken();
     console.log(token);
 
-    let linkdata={
+    let linkdata = {
       bank_id: response.bank_id,
-      customer_id:response.customer_id,
-      record_id:response.record_id,
-      account_id: response.accounts[0].id
+      customer_id: response.customer_id,
+      record_id: response.record_id,
+      account_id: response.accounts[0].id,
     };
 
-    console.log(linkdata);
+    console.log('Link Data: ', linkdata);
 
-    const linkUrl="http://67.207.86.39:8000/api/v1/application/link_account";
-    
+    const linkUrl = 'http://67.207.86.39:8000/api/v1/application/link_account';
 
     try {
-
-      const response = await axios.put(linkUrl, linkdata, {
+      const response = await axios.put(linkUrl, JSON.stringify(linkdata), {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      console.log("here is the linkurl resposonse ",response);
+      console.log('here is the linkurl resposonse ', response);
 
       // if(response.status==200){
-      
+
       // }
 
-      if(response.status==200){
+      if (response.status == 200) {
         const url = 'http://67.207.86.39:8000/api/v1/application/direct_debit';
 
-        let data={
-          interval: "monthly",
+        let data = {
+          interval: 'monthly',
           startDate: startDate,
           endDate: endDate,
           amount: monthlyRepayment,
-          loanId: existingApplication
+          loanId: existingApplication,
         };
 
+        console.log('DATA RES TATA: ', data);
+
         try {
-          const response = await axios.post(url, data, {
+          const response = await axios.post(url, JSON.stringify(data), {
             headers: {'Content-Type': 'application/json', Authorization: token},
           });
-          console.log(response);
+          console.log('REDIRECT DEBIT: ', response);
           setSuccessModal(true);
-          
+
           logCurrentStorage();
 
           navigation.navigate('AwaitingDisbursement');
@@ -179,62 +164,48 @@ const moment = require("moment");
           // ]);
         }
       }
-      
-      
-      
-    
     } catch (error) {
-
-      Alert.alert('Message', error.response.data.statusMsg, [
-        {text: 'Close'},
-      ]);
-
+      Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
     }
+  };
 
+  if (monthlyRepayment != null) {
+    return (
+      <>
+        <OkraView
+          okraOptions={okraOptions}
+          onClose={(response) => {
+            console.log('on close');
+            //navigation.navigate('PostPaymentForm4')
+            // navigation.goBack();
+            navigation.navigate('AwaitingDisbursement');
+            // console.log('on success we go ' + monthlyRepayment);
+            // console.log('The RESPONSE: ', response);
+          }}
+          onSuccess={(response) => {
+            console.log('Na here we dey oo');
+            console.log('on success we go ' + JSON.stringify(response));
+            // handleLinkingSucess(response);
+            navigation.navigate('AwaitingDisbursement');
+          }}
+          onError={(response) => {
+            console.log('on error');
+          }}
+        />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <View>
+          <Text style={{fontSize: 20, textAlign: 'center', top: 10}}>
+            preparing...
+          </Text>
+        </View>
+      </>
+    );
   }
-
-  if(monthlyRepayment!=null){
-
-  return (
-
-    
-    <>
-
-
-
-    <OkraView
-        okraOptions={okraOptions}
-        onClose={response => {
-          console.log('on close');
-          //navigation.navigate('PostPaymentForm4')
-          navigation.navigate('Borrow');
-          console.log('on success we go '+ monthlyRepayment);
-        }}
-        onSuccess={response => {
-          console.log('on success we go '+ JSON.stringify(response));
-          handleLinkingSucess(response);
-        }}
-        onError={response => {
-          console.log('on error');
-        }}
-    />
-
-  </>
-  ) 
-}else{
-  return (  
-<>
-<View>
-   <Text>loading...</Text>  
-</View>
-</>
-)
 }
-
-
- 
-}
-
 
 const styles = StyleSheet.create({
   container: {
@@ -242,6 +213,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
 });

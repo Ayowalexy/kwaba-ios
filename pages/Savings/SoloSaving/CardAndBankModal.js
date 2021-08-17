@@ -1,15 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import {images, icons} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AddCardModal from './AddCardModal';
 import SubsequentModal from './SubsequentModal';
-import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
+import {
+  unFormatNumber,
+  numberWithCommas,
+  formatNumber,
+} from '../../../util/numberFormatter';
 
 export default function CardAndBankModal(props) {
-  const {store, visible, onRequestClose, navigation} = props;
+  const {store, visible, onRequestClose, navigation, storeData} = props;
   const [addCardModal, setAddCardModal] = useState(false);
   const [subsequentModal, setSubsequentModal] = useState(false);
+
+  useEffect(() => {
+    console.log('The store: ', storeData);
+  }, [storeData]);
 
   return (
     <>
@@ -45,28 +53,23 @@ export default function CardAndBankModal(props) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              {store.saving_start_option == 'today' &&
-                store.instant_saved_amount != '' &&
-                store.instant_saved_amount.length > 0 && (
-                  <Text
-                    style={{
-                      fontSize: 15,
-                      width: 260,
-                      color: '#465969',
-                      lineHeight: 25,
-                    }}>
-                    You are about to deposit{' '}
-                    <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
-                      ₦
-                      {numberWithCommas(
-                        unFormatNumber(store.instant_saved_amount),
-                      )}
-                    </Text>{' '}
-                    towards your rent savings.
-                  </Text>
-                )}
+              {storeData?.savings_amount > 50 && (
+                <Text
+                  style={{
+                    fontSize: 15,
+                    width: 260,
+                    color: '#465969',
+                    lineHeight: 25,
+                  }}>
+                  You are about to deposit{' '}
+                  <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
+                    ₦{formatNumber(storeData.savings_amount)}
+                  </Text>{' '}
+                  towards your rent savings.
+                </Text>
+              )}
 
-              {store.saving_start_option == 'pick_date' && (
+              {storeData?.savings_amount <= 50 && (
                 <Text
                   style={{
                     fontSize: 15,
@@ -76,7 +79,7 @@ export default function CardAndBankModal(props) {
                   }}>
                   To verify your card you will be charged{' '}
                   <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
-                    ₦{numberWithCommas(50)}.
+                    ₦{formatNumber(storeData.savings_amount)}.
                   </Text>{' '}
                   This money goes towards your rent savings.
                 </Text>
@@ -179,20 +182,13 @@ export default function CardAndBankModal(props) {
         </View>
       </Modal>
 
-      {/* <AddCardModal
-        onRequestClose={() => setAddCardModal(!addCardModal)}
-        visible={addCardModal}
-        goToDashboard={() => {
-          navigation.navigate('SoloSavingDashBoard');
-        }}
-      /> */}
-
       <SubsequentModal
         onRequestClose={() => setSubsequentModal(!subsequentModal)}
         visible={subsequentModal}
         goToDashboard={() => {
           navigation.navigate('SoloSavingDashBoard');
         }}
+        savingsData={storeData}
       />
     </>
   );

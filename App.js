@@ -136,8 +136,9 @@ import OfferLetter from './pages/Borrow/OfferLetter';
 import GuarantorOnboarding from './pages/Guarantor/GuarantorOnboarding';
 import GuarantorForm from './pages/Guarantor/GuarantorForm';
 
-// Decline
+// Decline and Reject screens
 import Decline from './pages/Decline/Decline';
+import Reject from './pages/Decline/Reject';
 
 // Acceptance Letter
 import AcceptanceLetterAddosser from './pages/Borrow/AcceptanceletterAddosser';
@@ -151,7 +152,7 @@ import {
 } from './pages/Borrow/Business/RentalFormBusiness/index';
 
 // Offer Letters
-import {KwabaLetter} from './pages/OfferLetters';
+import {KwabaLetter, AddosserLetter} from './pages/OfferLetters';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -600,6 +601,7 @@ const App = () => {
               />
 
               <Stack.Screen name="Decline" component={Decline} />
+              <Stack.Screen name="Reject" component={Reject} />
 
               <Stack.Screen
                 name="RentalFormBusiness1"
@@ -619,6 +621,7 @@ const App = () => {
               {/* Offer Letter screen */}
 
               <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
+              <Stack.Screen name="AddosserLetter" component={AddosserLetter} />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

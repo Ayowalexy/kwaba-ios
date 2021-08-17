@@ -53,6 +53,7 @@ export default function Withdraw({navigation}) {
         ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
         : 0;
     setSavings(totalSoloSavings);
+    console.log('Total: ', totalSoloSavings);
   }, [store]);
 
   const handleSubmit = async (values) => {
@@ -223,7 +224,7 @@ export default function Withdraw({navigation}) {
                       fontWeight: 'bold',
                       color: COLORS.dark,
                     }}>
-                    ₦ 0.00
+                    ₦ {formatNumber(savings)}
                   </Text>
                 </View>
               )}

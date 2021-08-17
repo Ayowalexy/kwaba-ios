@@ -69,6 +69,10 @@ export default function AllDocuments({navigation}) {
   );
 
   useEffect(() => {
+    console.log('file: ', fileProgress);
+  }, []);
+
+  useEffect(() => {
     let a = [
       {id: 1, isloading: false},
       {id: 2, isloading: false},
@@ -136,7 +140,7 @@ export default function AllDocuments({navigation}) {
     // console.log(fileProgress);
 
     countDocuments();
-  }, []);
+  }, [fileProgress]);
 
   const countDocuments = async () => {
     const token = await getToken();
@@ -163,6 +167,7 @@ export default function AllDocuments({navigation}) {
 
   const handleBrowseFile = async () => {
     setShowChooseFileModal(false);
+
     try {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
@@ -173,6 +178,7 @@ export default function AllDocuments({navigation}) {
         type: res.type,
         name: res.name,
       };
+      setSpinner(true);
 
       console.log(blob);
 
@@ -204,7 +210,6 @@ export default function AllDocuments({navigation}) {
       };
 
       console.log(data);
-      setSpinner(true);
 
       try {
         dispatch(uploadFile(token, item, data));
@@ -390,7 +395,8 @@ export default function AllDocuments({navigation}) {
             <View>
               {Object.values(fileProgress).map(
                 (item, index) =>
-                  item.isUploaded == false && (
+                  item.isUploaded == false &&
+                  item.id && (
                     <TouchableOpacity
                       onPress={() => {
                         handleDocumentType(item);

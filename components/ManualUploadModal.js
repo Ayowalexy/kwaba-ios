@@ -349,7 +349,7 @@ export default function ManualUploadModal(props) {
                 <TouchableOpacity
                   onPress={handleProceed}
                   // disabled={isError()}
-                  style={[styles.btn, {backgroundColor: COLORS.dark}]}>
+                  style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
                   <Text
                     style={[
                       {

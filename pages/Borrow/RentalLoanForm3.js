@@ -86,7 +86,7 @@ const RentalLoanForm3 = ({navigation}) => {
     monthly_repayment: '',
     next_rent_address: '',
     next_rent_paid_to: '',
-    non_refundable_deposit: '',
+    non_refundable_deposit: '2500',
     pre_available_rent_amount: '',
     referrer: '',
     repayment_plan: '',

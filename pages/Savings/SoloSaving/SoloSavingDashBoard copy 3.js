@@ -24,7 +24,6 @@ import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function SoloSavingDashBoard({navigation}) {
   const dispatch = useDispatch();
@@ -43,9 +42,6 @@ export default function SoloSavingDashBoard({navigation}) {
   const [savingTitle, setSavingTitle] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
-  const [locked, setLocked] = useState(true);
-
-  const [spinner, setSpinner] = useState(false);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -54,49 +50,78 @@ export default function SoloSavingDashBoard({navigation}) {
   };
 
   useEffect(() => {
-    console.log('Down....');
+    dispatch(getCurrentUser());
     dispatch(getTotalSoloSavings());
-  }, []);
+  }, [getTotalSoloSavings]);
 
   useEffect(() => {
-    console.log('Loading....');
-    getUserSavings();
-  }, []);
+    const totalSoloSavings =
+      getSoloSaving?.data?.length > 0
+        ? getSoloSaving.data.reduce(
+            (acc, saving) => acc + Number(saving.amount),
+            0,
+          )
+        : 0;
 
-  const getUserSavings = async () => {
-    setSpinner(true);
+    setTotalSaving(totalSoloSavings);
+
+    const totalSoloSavingsInterest =
+      getSoloSaving?.data?.length > 0
+        ? getSoloSaving.data.reduce(
+            (acc, saving) => acc + Number(saving.interest),
+            0,
+          )
+        : 0;
+
+    // console.log('Tot:', totalsolo)
+
+    setTotalInterest(totalSoloSavingsInterest);
+
+    // setSavingsTarget(soloSaving.savings_amount || 150000);
+
+    setSavingTitle(soloSaving.savings_title);
+
+    setPercentAchieved(
+      ((Number(totalSoloSavings) / Number(savingsTarget)) * 100).toFixed(0),
+    );
+
+    // console.log('TOT: ', totalSoloSavings, savingsTarget);
+
+    // console.log(getSoloSaving);
+    getSavingsPlan();
+  }, [savingsTarget]);
+
+  useEffect(() => {
+    getSavingsPlan();
+  }, [getSoloSaving]);
+
+  // const url = 'http://67.207.86.39:8000/api/v1/payments';
+  // const url = 'http://67.207.86.39:8000/api/v1/savings';
+
+  // useEffect(() => {
+  //   getSavingsPlan();
+  // }, []);
+
+  const getSavingsPlan = async () => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/get_user_savings';
+    const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
+
+    // console.log('Token: ', token);
+
     try {
-      const response = await axios.get(url, {
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: token,
+      const response = await axios.post(
+        url,
+        {},
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
         },
-      });
-      // console.log('RES: ', response.data.data[0]);
-
-      let resData = response.data.data[0];
-
-      setLocked(resData.locked);
-      setSavingTitle(resData.name);
-      setTotalSaving(resData.amount_save);
-      setSavingsTarget(resData.target_amount);
-      setPercentAchieved(
-        (
-          (Number(resData.amount_save) / Number(resData.target_amount)) *
-          100
-        ).toFixed(0),
       );
-      setSpinner(false);
+      console.log('Fetch savings plan: ', response.data.data);
+      let resData = response.data.data;
+      setSavingsTarget(resData.amount || 150000);
     } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
+      console.log('Error: ', error.response.data);
     }
-  };
-
-  const getTransactions = async () => {
-    const url = '/api/v1/get_savings_history/:savings_id';
   };
 
   return (
@@ -172,7 +197,7 @@ export default function SoloSavingDashBoard({navigation}) {
                   ₦{currencyFormat(Number(totalSaving))}
                 </Text>
                 <Icon
-                  name={locked ? 'lock-closed' : 'lock-open'}
+                  name="lock-closed"
                   size={15}
                   style={{marginLeft: 10}}
                   color={COLORS.primary}
@@ -426,8 +451,6 @@ export default function SoloSavingDashBoard({navigation}) {
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
             elevation: 10,
-            // borderWidth: 1,
-            // width: '100%',
           }}>
           <View style={{padding: 20}}>
             <Text
@@ -506,13 +529,13 @@ export default function SoloSavingDashBoard({navigation}) {
                         <View>
                           <Text
                             style={{
-                              fontSize: 14,
+                              fontSize: 12,
                               // fontWeight: 'bold',
                               color: COLORS.dark,
                             }}>
-                            {savingTitle}
+                            My Rent Savings
                           </Text>
-                          {/* <Text
+                          <Text
                             style={{
                               fontSize: 10,
                               // fontWeight: 'bold',
@@ -520,7 +543,7 @@ export default function SoloSavingDashBoard({navigation}) {
                               opacity: 0.5,
                             }}>
                             {el.reference}
-                          </Text> */}
+                          </Text>
                         </View>
 
                         <View
@@ -567,8 +590,6 @@ export default function SoloSavingDashBoard({navigation}) {
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
       />
-
-      <Spinner visible={spinner} size="large" />
     </View>
   );
 }

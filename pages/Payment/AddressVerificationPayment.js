@@ -29,6 +29,7 @@ const AddressVerificationPayment = ({navigation}) => {
   const [verificationSpinner, setVerificationSpinner] = useState(false);
 
   const handleNavigation = async () => {
+    setSpinner(true);
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
       const token = JSON.parse(userData).token;
@@ -41,8 +42,10 @@ const AddressVerificationPayment = ({navigation}) => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
     );
-    console.log(applicationIDCallRes.data.data.non_refundable_deposit);
-    const amount = applicationIDCallRes.data.data.non_refundable_deposit;
+    // console.log(applicationIDCallRes.data.data.non_refundable_deposit);
+    // const amount = applicationIDCallRes.data.data.non_refundable_deposit;
+    const amount = 2500;
+    console.log('tHE RESpOnSe: ', applicationIDCallRes.data.data);
     //setSpinner(true);
     try {
       const response = await axios.post(
@@ -81,18 +84,18 @@ const AddressVerificationPayment = ({navigation}) => {
 
           if (verify.data.status == 'success') {
             setVerificationSpinner(false);
-            let stepsdata = {
-              documentdone: 'done',
-              propertydetail: 'done',
-              landlorddetail: 'done',
-              refree: 'done',
-              offeraccepted: 'done',
-              addressverification: 'done',
-              debitmandate: '',
-              awaitingdisbursment: '',
-            };
+            // let stepsdata = {
+            //   documentdone: 'done',
+            //   propertydetail: 'done',
+            //   landlorddetail: 'done',
+            //   refree: 'done',
+            //   offeraccepted: 'done',
+            //   addressverification: 'done',
+            //   debitmandate: '',
+            //   awaitingdisbursment: '',
+            // };
 
-            await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+            // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
             Alert.alert(
               'Payment verified',
               'Your payment was verified. Thank you.',
@@ -117,6 +120,7 @@ const AddressVerificationPayment = ({navigation}) => {
     } catch (error) {
       console.log('maybe here canceled ', error.response.data);
       setVerificationSpinner(false);
+      setSpinner(false);
       // Alert.alert(
       //   'Payment Unverified',
       //   'Your payment was not verified. Please retry.',
@@ -262,26 +266,26 @@ const AddressVerificationPayment = ({navigation}) => {
         </TouchableOpacity>
         <Spinner
           visible={spinner}
-          textContent={'Initializing transactions...'}
+          // textContent={'Initializing transactions...'}
           animation="fade"
-          textStyle={{
-            color: '#2A286A',
-            fontSize: 20,
-            fontWeight: 'bold',
-            lineHeight: 30,
-          }}
+          // textStyle={{
+          //   color: '#2A286A',
+          //   fontSize: 20,
+          //   fontWeight: 'bold',
+          //   lineHeight: 30,
+          // }}
           size="large"
         />
         <Spinner
           visible={verificationSpinner}
-          textContent={'Verifying transactions...'}
+          // textContent={'Verifying transactions...'}
           animation="fade"
-          textStyle={{
-            color: '#2A286A',
-            fontSize: 20,
-            fontWeight: 'bold',
-            lineHeight: 30,
-          }}
+          // textStyle={{
+          //   color: '#2A286A',
+          //   fontSize: 20,
+          //   fontWeight: 'bold',
+          //   lineHeight: 30,
+          // }}
           size="large"
         />
       </View>

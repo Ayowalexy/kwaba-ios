@@ -21,11 +21,11 @@ import * as Animatable from 'react-native-animatable';
 import {unFormatNumber} from '../../../util/numberFormatter';
 
 const soloSavingFormSchema = yup.object().shape({
-  savingDuration: yup.string().required('Please select saving duration'),
-  savingStartOption: yup.string().required('Please select saving start date'),
+  // savingDuration: yup.string().required('Please select saving duration'),
+  // savingStartOption: yup.string().required('Please select saving start date'),
 });
 
-export default function Screen2({navigation}) {
+export default function Screen2(props) {
   const dispatch = useDispatch();
   // const savings = useSelector((state) => state.soloSavingReducer);
   // const [duration, setDuration] = useState('');
@@ -40,54 +40,29 @@ export default function Screen2({navigation}) {
     setDate(currentDate);
   };
 
-  // console.log('Moment:', new Date().toISOString());
-
   const handleSubmit = (values) => {
-    // try {
-    //   let chosenDuration =
-    //     // I replaced 1 year which is 1y to 12 months which is 12M
-    //     duration == '3 Months' ? '3M' : duration == '6 Months' ? '6M' : '12M';
-    //   const data = {
-    //     savings_tenure: duration,
-    //     savings_start_date:
-    //       startOption == 'today' ? moment().format() : moment(date).format(),
-    //     savings_end_date: moment(date)
-    //       .add(Number(chosenDuration[0]), chosenDuration[1])
-    //       .format(),
-    //     instant_saved_amount: instantSaving,
-    //   };
-    //   // console.log('M: ', savings_tenure);
-    //   dispatch(soloSaving(data));
-    //   navigation.navigate('SoloSaving3');
-    // } catch (error) {}
     try {
       let chosenDuration =
         values.savingDuration == '3 Months'
-          ? '3M'
+          ? '3months'
           : values.savingDuration == '6 Months'
-          ? '6M'
-          : '1Y';
-
+          ? '6months'
+          : '1years';
       const data = {
-        savings_tenure: values.savingDuration,
-        savings_start_date:
+        ...props.route.params,
+        how_long: chosenDuration,
+        start_date:
           values.savingStartOption == 'today'
-            ? moment().format()
-            : moment(date).format(),
-        savings_end_date: moment(date).add(
-          Number(chosenDuration[0]),
-          chosenDuration[1],
-        ),
-        instant_saved_amount: unFormatNumber(instantSaving),
-        saving_start_option: values.savingStartOption,
+            ? moment().format('YYYY-MM-DD')
+            : moment(date).format('YYYY-MM-DD'),
+        savings_amount:
+          values.savingStartOption == 'today'
+            ? Number(unFormatNumber(instantSaving))
+            : 50,
       };
-
-      console.log(data);
-      dispatch(soloSaving(data));
-      navigation.navigate('SoloSaving3');
-    } catch (error) {
-      console.log(error);
-    }
+      // console.log(data);
+      props.navigation.navigate('SoloSaving3', data);
+    } catch (error) {}
   };
 
   const HowLongSelection = (props) => {
@@ -204,7 +179,7 @@ export default function Screen2({navigation}) {
   return (
     <View style={designs.container}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => props.navigation.goBack()}
         name="arrow-back-outline"
         size={25}
         style={{fontWeight: '900'}}
@@ -234,8 +209,9 @@ export default function Screen2({navigation}) {
                   width: '100%',
                   fontSize: 12,
                   marginTop: 10,
-                  textAlign: 'right',
-                  paddingRight: 10,
+                  textAlign:
+                    values.savingStartOption == 'today' ? 'left' : 'right',
+                  paddingHorizontal: 10,
                   color: '#465969',
                 }}>
                 {values.savingStartOption &&
@@ -269,7 +245,7 @@ export default function Screen2({navigation}) {
                   onChange={handleDateSelect}
                   mode="date"
                   is24Hour={true}
-                  display="default"
+                  display="spinner"
                   minimumDate={moment().toDate()}
                 />
               )}

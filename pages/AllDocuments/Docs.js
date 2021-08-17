@@ -62,34 +62,36 @@ export default function Docs(props, {navigation}) {
   const [item, setItem] = useState('');
 
   const [name, setName] = useState('');
+  const [spinner, setSpinner] = useState(false);
+
+  const getUserData = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    if (userData) {
+      setName(JSON.parse(userData).username);
+    }
+  };
 
   useEffect(() => {
-    const getUserData = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      if (userData) {
-        setName(JSON.parse(userData).username);
-      }
-    };
     getUserData();
   }, []);
 
-  useEffect(() => {
-    const showUploadedDocuments = async () => {
-      const documentsUploaded = await getDocuments();
-      documentsUploaded.forEach((document) => {
-        const id = Number(document.document_type);
-        console.log(document.filename);
-        try {
-          dispatch(
-            showUploadedFiles(Number(document.document_type), document.id),
-          );
-          //console.log('here', fileProgress)
-        } catch (error) {
-          console.log('error', error);
-        }
-      });
-    };
+  const showUploadedDocuments = async () => {
+    const documentsUploaded = await getDocuments();
+    documentsUploaded.forEach((document) => {
+      const id = Number(document.document_type);
+      console.log(document.filename);
+      try {
+        dispatch(
+          showUploadedFiles(Number(document.document_type), document.id),
+        );
+        console.log('here', document.document_type, document.id);
+      } catch (error) {
+        console.log('error', error);
+      }
+    });
+  };
 
+  useEffect(() => {
     // console.log('df',documents)
     //   documentsUploaded.forEach(document => {
     //   console.log(document, 'working')
@@ -121,6 +123,8 @@ export default function Docs(props, {navigation}) {
   };
 
   const deleteFile = async (item) => {
+    console.log('ITEM: ', item);
+    setSpinner(true);
     const token = await getToken();
     try {
       const response = await axios.delete(
@@ -135,12 +139,27 @@ export default function Docs(props, {navigation}) {
           },
         },
       );
-      console.log(response);
-      console.log(item.id);
-      await dispatch(deleteUploadedFile(item.id));
-      console.log('here', fileProgress);
+      // console.log('del res: ', response);
+      // console.log(item.id);
+      // dispatch(deleteUploadedFile(item.id));
+      // dispatch(showUploadedFiles(item.id));
+      console.log('here', Object.values(fileProgress));
+      // getUserData();
+      // showUploadedDocuments();
+      Object.values(fileProgress).forEach((el) => {
+        if (el.id == item.id) {
+          el.isUploaded = false;
+          // showUploadedDocuments();
+          // console.log('here', Object.values(fileProgress));
+          dispatch(deleteUploadedFile(el.id));
+          setSpinner(false);
+          // dispatch(showUploadedFiles(item.documentID, item.id));
+          // console.log('The element:', el.isUploaded);
+        }
+      });
     } catch (error) {
       console.log(error);
+      setSpinner(false);
     }
   };
 
@@ -308,6 +327,8 @@ export default function Docs(props, {navigation}) {
           </View>
         </View>
       </Modal>
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

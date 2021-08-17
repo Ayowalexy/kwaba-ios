@@ -24,9 +24,10 @@ import {unFormatNumber} from '../../../util/numberFormatter';
 import moment from 'moment';
 import {savings} from '../../../util/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export default function SubsequentModal(props) {
-  const {onRequestClose, visible, goToDashboard} = props;
+  const {onRequestClose, visible, goToDashboard, savingsData} = props;
   const [subsequent, setSubsequent] = useState('');
   const subsequentOptions = ['Yes', 'No'];
 
@@ -34,165 +35,70 @@ export default function SubsequentModal(props) {
   const [userID, setUserID] = useState(null);
   const store = useSelector((state) => state.soloSavingReducer);
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   // const handleTransactions = async () => {
-  //   try {
-  //     if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
-  //       console.log('Instant Saving');
-  //     } else {
-  //       console.log('Not saving now');
-  //     }
-  //   } catch (error) {
-  //     console.log('error:', error);
-  //   }
+  //   await createUserSavings();
   // };
 
-  useEffect(() => {
-    const getUserID = async () => {
-      const userData = JSON.parse(await AsyncStorage.getItem('userData'));
-      console.log('User ID: ', userData.user.id);
-      setUserID(userData.user.id);
-    };
-    getUserID();
-  }, []);
-
-  const handleTransactions = async () => {
-    console.log('******************************');
-    // close modal
-    onRequestClose();
+  const verifyPayment = async (data) => {
+    const token = await getToken();
+    const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
     try {
-      if (store.instant_saved_amount && store.instant_saved_amount.length > 0) {
-        setSpinner(true);
-        const response = await makeOneOffPayment();
-        console.log('RESPONSE:', response.data.data);
-        if (response.status === 200) {
-          setSpinner(false);
-          const result = await openInAppBrowser(
-            response.data.data.authorization_url,
-          );
-          console.log(result.type);
-          if (result.type === 'cancel') {
-            let data = {reference: response.data.data.reference};
-            // setVerificationSpinner(true);
-            const verify = await verifyPayment(data);
-            console.log('Verify', verify.data);
-            // console.log('Verify: ', verify);
-            if (verify.data.status == 'success') {
-              console.log('createPlan');
-              // setVerificationSpinner(false);
-              await createPlan();
-            } else {
-              // setVerificationSpinner(false);
-              Alert.alert(
-                'Payment Unverified',
-                'Your payment was not verified. Please retry.',
-              );
-            }
-          }
-        }
-      } else {
-        await createPlan();
-      }
-    } catch (error) {
-      // setSpinner(false);
-      console.log('error', error);
-    }
-  };
-
-  const createPlan = async () => {
-    console.log('Creating...');
-    const data = {
-      savings_amount: Number(store.savings_amount),
-      // savings_target_amount: Number(store.savings_target_amount),
-      savings_frequency: store.savings_frequency.toLowerCase(),
-      // savings_account_number: '0094552107',
-      // savings_account_name: 'JOSHUA UDO NWOSU',
-      // savings_bank_code: '063',
-      savings_account_number: '',
-      savings_account_name: '',
-      savings_bank_code: '',
-      savings_tenure: Number(store.savings_tenure[0]),
-      savings_title: store.savings_title,
-      // savings_start_date: store.savings_start_date,
-      // savings_end_date: store.savings_end_date,
-      savings_start_date: '2021-07-27',
-      savings_end_date: '2021-07-27',
-      locked: store.locked,
-      user_id: userID,
-    };
-
-    try {
-      setSpinner(true);
-      const response = await createSavingsPlan(data);
-      if (response.status === 201) {
-        //On successfully creating savings plan, create a subscription
-        const sub = await subscribeToSavingsPlan();
-
-        console.log('SUB: ', sub);
-
-        if (sub.status === 200) {
-          setSpinner(false);
-
-          //Open InAppBrowser for paystack transaction
-          const result = await openInAppBrowser(
-            sub.data.data.authorization_url,
-          );
-
-          if (result.type === 'cancel') {
-            let verifyData = {reference: sub.data.data.reference};
-            console.log('The Verify Data: ', verifyData);
-            // setVerificationSpinner(true);
-            const verify = await verifyPayment(verifyData);
-            if (verify.data.status == 'success') {
-              // setVerificationSpinner(false);
-              setSuccessModal(true);
-              console.log('Payment verified');
-
-              goToDashboard();
-            } else {
-              // setVerificationSpinner(false);
-              // Alert.alert(
-              //   'Payment Unverified',
-              //   'Your payment was not verified. Please retry.',
-              // );
-              console.log(
-                'Payment Unverified',
-                'Your payment was not verified. Please retry.',
-              );
-            }
-          }
-        } else {
-          setSpinner(false);
-          // Alert.alert('Request Failed - Subscribe', sub);
-          console.log('Request Failed - Subscribe', sub);
-        }
-      } else {
-        setSpinner(false);
-        // Alert.alert('Request Failed - Create Plan', response);
-        console.log('Request Failed - Create Plan', response);
-      }
-    } catch (error) {
-      setSpinner(false);
-      // Alert.alert('Error', 'An error occurred, please retry');
-      console.log('catch error', error.response);
-    }
-  };
-
-  const makeOneOffPayment = async () => {
-    const data = {
-      instant_saved_amount: Number(unFormatNumber(store.instant_saved_amount)),
-      savings_tenure: Number(store.savings_tenure[0]),
-      locked: store.locked,
-    };
-
-    console.log('DATA:', data);
-
-    try {
-      const response = await oneOffPayment(data);
+      const response = await axios.post(url, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
       return response;
     } catch (error) {
-      setSpinner(false);
-      console.log('catch error', error);
-      Alert.alert('Error', 'An error occurred, please retry');
+      return error.message;
+    }
+  };
+
+  const handleTransactions = async () => {
+    const url = 'http://67.207.86.39:8000/api/v1/user_create_savings';
+    const data = savingsData;
+    try {
+      setSpinner(true);
+      const token = await getToken();
+      const response = await axios.post(url, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+
+      if (response.status == 200) {
+        // console.log('Response', response.data.data);
+        const result = await openInAppBrowser(
+          response.data.data.authorization_url,
+        );
+        setSpinner(false);
+        onRequestClose();
+
+        if (result.type == 'cancel') {
+          let data = {reference: response.data.data.reference};
+          const verify = await verifyPayment(data);
+
+          if (verify?.data?.statusMsg == 'Savings payment verify successful') {
+            // console.log('createPlan');
+            goToDashboard();
+          } else {
+            Alert.alert(
+              'Payment Unverified',
+              'Your payment was not verified. Please retry.',
+            );
+          }
+        }
+      }
+    } catch (error) {
+      console.log('Error: ', error);
     }
   };
 

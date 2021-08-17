@@ -17,7 +17,7 @@ import {soloSaving} from '../../../redux/actions/savingsActions';
 import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 import CardAndBankModal from './CardAndBankModal';
 
-export default function Screen3({navigation}) {
+export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
   const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -28,8 +28,6 @@ export default function Screen3({navigation}) {
     'MMM D, YYYY',
   );
   const savings_end_date = moment(store.savings_end_date).format('MMM D, YYYY');
-  // const savings_start_date = moment(store.savings_start_date, 'YYYY-MM-DD');
-  // const savings_end_date = moment(store.savings_end_date, 'YYYY-MM-DD');
   const toggleSwitch = () => {
     setLocked((previousState) => !previousState);
   };
@@ -39,57 +37,41 @@ export default function Screen3({navigation}) {
   const [modal, setModal] = useState(false);
   const [addCardModal, setAddCardModal] = useState(false);
 
+  const [savingsTitle, setSavingsTitle] = useState('');
+  const [savingsAmount, setSavingsAmount] = useState(0);
+  const [savingsTarget, setSavingsTarget] = useState(0);
+  const [frequency, setFrequency] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const [storeData, setStoreData] = useState(null);
+
   const addCardAndBankModal = () => {
     setModal(true);
-    // console.log(store);
   };
 
   useEffect(() => {
-    dispatch(soloSaving({locked: locked}));
-    // console.log(store.savings_target_amount);
-  }, [locked]);
+    const data = route.params;
+
+    setSavingsTitle(data.name);
+    setSavingsAmount(data.savings_amount);
+    setSavingsTarget(data.target_amount);
+    setFrequency(data.frequency);
+    setStartDate(data.start_date);
+
+    let end_date = moment(data.start_date)
+      .add(Number(data.how_long[0]), data.how_long[1].toUpperCase())
+      .format('YYYY-MM-DD');
+
+    setEndDate(end_date);
+
+    setStoreData({...data, locked: locked, bvn: '1234567890'});
+    // console.log('Console:', {...data, locked: locked, bvn: '1234567890'});
+  }, []);
 
   useEffect(() => {
-    const frequency = store.savings_frequency;
-    const targetAmount = store.savings_amount;
-    const tenure = store.savings_tenure;
-    const locked_interest_rate = 0.08;
-    const unlock_interest_rate = 0.07;
-    const numberOfDaysInAMonth = 30;
-    const numberOfWeeksInAMonth = 4;
-    // console.log('Freq:', frequency);
-    // console.log('Tenure:', tenure);
-    // console.log('Store:', store);
-    if (frequency == 'Daily') {
-      if (tenure.toLowerCase() == '1 year') {
-        let amount_to_save = targetAmount / (numberOfDaysInAMonth * 12);
-
-        setAmountToSave(amount_to_save);
-      } else {
-        let amount_to_save = targetAmount / (numberOfDaysInAMonth * tenure[0]);
-
-        setAmountToSave(amount_to_save);
-      }
-    } else if (frequency == 'Weekly') {
-      if (tenure.toLowerCase() == '1 year') {
-        let amount_to_save = targetAmount / (numberOfWeeksInAMonth * 12);
-
-        setAmountToSave(amount_to_save);
-      } else {
-        let amount_to_save = targetAmount / (numberOfWeeksInAMonth * tenure[0]);
-
-        setAmountToSave(amount_to_save);
-      }
-    } else if (frequency == 'Monthly') {
-      if (tenure.toLowerCase() == '1 year') {
-        let amount_to_save = targetAmount / 12;
-        setAmountToSave(amount_to_save);
-      } else {
-        let amount_to_save = targetAmount / tenure[0];
-        setAmountToSave(amount_to_save);
-      }
-    }
-  }, []);
+    dispatch(soloSaving({locked: locked}));
+  }, [locked]);
 
   return (
     <View style={designs.container}>
@@ -119,13 +101,13 @@ export default function Screen3({navigation}) {
               </Text>
               <Text
                 style={{
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: 'bold',
                   color: '#2A286A',
                   lineHeight: 23,
                   fontFamily: 'Circular Std',
                 }}>
-                {store.savings_title}
+                {savingsTitle}
               </Text>
             </View>
             <Image
@@ -145,31 +127,30 @@ export default function Screen3({navigation}) {
             }}>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>
-                Amount To Save {store.savings_frequency}
+                {/* Amount To Save {store.savings_frequency} */}
+                Amount To Save
               </Text>
               <Text style={designs.value}>
-                ₦{numberWithCommas(Number(amountToSave).toFixed(2)) || ' 0.00'}
+                ₦{numberWithCommas(Number(savingsAmount).toFixed(0)) || ' 0.00'}
               </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>
-                ₦
-                {numberWithCommas(Number(store.savings_amount).toFixed(2)) ||
-                  ' 0.00'}
+                ₦{numberWithCommas(Number(savingsTarget).toFixed(0)) || ' 0.00'}
               </Text>
             </View>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>Frequency</Text>
-              <Text style={designs.value}>{store.savings_frequency}</Text>
+              <Text style={designs.value}>{frequency}</Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Start Date</Text>
-              <Text style={designs.value}>{savings_start_date}</Text>
+              <Text style={designs.value}>{startDate}</Text>
             </View>
             <View style={designs.dataInfo}>
               <Text style={designs.key}>End Date</Text>
-              <Text style={designs.value}>{savings_end_date}</Text>
+              <Text style={designs.value}>{endDate}</Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Interest Rate</Text>
@@ -212,6 +193,7 @@ export default function Screen3({navigation}) {
               borderRadius: 13,
               backgroundColor: '#00000022',
               padding: 2,
+              paddingVertical: 5,
               // paddingHorizontal: 5,
               // marginRight: 'auto',
               // marginLeft: 'auto',
@@ -228,7 +210,7 @@ export default function Screen3({navigation}) {
                 textAlign: 'center',
               }}>
               {locked
-                ? ' Keep your rent savings locked to earn higher interest. However, if you withdraw your rent before the end date, you will attract a breaking fee.'
+                ? ' Keep your rent savings locked to earn higher interest.'
                 : 'You will get a lower interest rate if you unlock your rent savings. However, you can withdraw your funds anytime for free'}
             </Text>
           </View>
@@ -260,9 +242,6 @@ export default function Screen3({navigation}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
-          // onPress={() => navigation.navigate('SoloSavingDashBoard')}
-          // onPress={() => navigation.navigate('SetUpPaymentPlan')}
-          // onPress={() => navigation.navigate('SoloSaving4')}
           onPress={addCardAndBankModal}
           style={[
             designs.button,
@@ -290,6 +269,7 @@ export default function Screen3({navigation}) {
         visible={modal}
         store={store}
         navigation={navigation}
+        storeData={storeData}
       />
     </View>
   );

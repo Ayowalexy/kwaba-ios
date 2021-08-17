@@ -1,9 +1,17 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {COLORS, icons} from '../util';
 
 export default function CustomModal(props) {
-  const {onRequestClose, visible, onSave} = props;
+  const {onRequestClose, visible, goHome, email} = props;
   return (
     // <View style={styles.centeredView}>
     <Modal
@@ -33,8 +41,23 @@ export default function CustomModal(props) {
               fontWeight: 'bold',
               fontSize: 16,
             }}>
-            Confirm
+            Please confirm your email
           </Text>
+          <View
+            style={{
+              width: '100%',
+              padding: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Image
+              source={icons.emailSent}
+              style={{
+                width: 100,
+                height: 100,
+              }}
+            />
+          </View>
           <View
             style={{
               marginTop: 10,
@@ -44,14 +67,27 @@ export default function CustomModal(props) {
             <Text
               style={{
                 fontFamily: 'CircularStd',
-                color: '#465969',
-                fontWeight: '600',
+                color: COLORS.grey,
+                fontSize: 13,
+                // fontWeight: 'bold',
+                textAlign: 'center',
+                paddingHorizontal: 20,
+                lineHeight: 20,
               }}>
-              You are about to save your profile details
+              Follow the link in the email we will send to{' '}
+              <Text
+                style={{
+                  color: COLORS.secondary,
+                  fontWeight: 'bold',
+                  fontSize: 12,
+                }}>
+                {email}
+              </Text>{' '}
+              to verify your mail address and help secure your account
             </Text>
             <TouchableOpacity
-              onPress={onSave}
-              style={[styles.btn, {backgroundColor: '#00DC99'}]}>
+              onPress={goHome}
+              style={[styles.btn, {backgroundColor: '#00DC99', marginTop: 20}]}>
               <Text
                 style={{
                   color: 'white',
@@ -59,10 +95,10 @@ export default function CustomModal(props) {
                   fontWeight: 'bold',
                   lineHeight: 25,
                 }}>
-                YES, SAVE IT
+                GOT IT!
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={onRequestClose} style={[styles.btn]}>
+            {/* <TouchableOpacity onPress={onRequestClose} style={[styles.btn]}>
               <Text
                 style={{
                   color: '#BFBFBF',
@@ -72,7 +108,7 @@ export default function CustomModal(props) {
                 }}>
                 NO, NOT NOW
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
@@ -84,38 +120,25 @@ export default function CustomModal(props) {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     // borderColor: '#f00',
     // borderWidth: 1,
+    padding: 20,
   },
   modalView: {
     width: '100%',
-    // margin: 20,
-    // top: 50,
-    // bottom: 0,
-    // position: 'absolute',
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    borderRadius: 20,
     paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
     alignItems: 'center',
-
-    // alignItems: 'center',
-    // shadowColor: '#BFBFBF',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 4,
-    // elevation: 6,
-
-    // borderWidth: 1,
+    // backgroundColor: 'red',
   },
   btn: {
     width: '100%',

@@ -95,7 +95,7 @@ const CustomInput = (props) => {
 const LoginValidationSchema = yup.object().shape({
   email: yup
     .string()
-    .email('Please enter a valid email')
+    // .email('Please enter a valid email')
     .required('Email is required'),
   password: yup
     .string()

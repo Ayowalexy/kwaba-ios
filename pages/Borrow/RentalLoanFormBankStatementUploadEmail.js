@@ -14,18 +14,45 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import SelectBankModal from '../../components/SelectBankModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import email from 'react-native-email';
+// import email from 'react-native-email';
+import {sendEmail} from 'react-native-email-action';
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+import {verifyBankAccount} from '../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
+
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+
+const bankRequestSchema = yup.object().shape({
+  full_name: yup.string().required('Full is required'),
+  email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Email address is required'),
+  phone_number: yup
+    .string()
+    .matches(phoneRegExp, 'Phone number is not valid')
+    .required('Phone number is required'),
+  bank: yup.string().required('Please select your bank'),
+  account_number: yup
+    .string()
+    .min(10, ({min}) => `Account number must be ${min} characters`)
+    .required('Account number is required'),
+  // account_name: yup.string().required('Account name is required'),
+});
 
 export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
   const [selectedBank, setSelectedBank] = useState('');
   const [showSelectBankModal, setShowSelectBankModal] = useState(false);
   const [bankData, setBankData] = useState([]);
-  const [oneBank, setOneBank] = useState([]);
+  const [
+    selectedBankForVerification,
+    setSelectedBankForVerification,
+  ] = useState('');
+  const [spinner, setSpinner] = useState(false);
+  const [accountName, setAccountName] = useState('');
+  const [showAccountNameField, setShowAccountNameField] = useState(false);
 
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
   useEffect(() => {
     (async () => {
       try {
@@ -35,22 +62,9 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
         });
         const data = response.data;
 
-        const userData = await AsyncStorage.getItem('userData');
-        const parsedUserData = JSON.parse(userData);
-
-        // console.log('Response: ', response.data.banks);
-
         if (response.status == 200) {
-          // console.log('JOSHUA: ', data);
-
-          // data.banks.forEach((bank) => {
-          //   console.log('Bank Name:', bank);
-          //   setBankData(...bank);
-          // });
-
           setBankData(data.banks);
-          console.log(bankData);
-          // console.log('USER: ', parsedUserData.user);
+          // console.log(bankData);
         }
       } catch (error) {
         console.log(error);
@@ -58,165 +72,271 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
     })();
   }, []);
 
-  const sendMail = () => {
-    console.log('Hello');
+  useEffect(() => {
+    bankData.forEach((bank) => {
+      if (bank.name == selectedBank) {
+        let data = {
+          code: bank.code.toString().length == 2 ? '0' + bank.code : bank.code,
+          name: bank.name,
+          email: bank.contact_email,
+        };
 
-    const to = 'bankemail@email.com'; // string or array of email addresses
-    email(to, {
-      // Optional additional arguments
-      cc: ['bazzy@moo.com', 'doooo@daaa.com'], // string or array of email addresses
-      bcc: 'mee@mee.com', // string or array of email addresses
-      subject: 'Request for a copy of my bank statement',
-      body: 'Hello, I need the copy of my bank statement',
-    }).catch(console.error);
+        setSelectedBankForVerification(data);
+      }
+    });
+  }, [selectedBank]);
+
+  const handleSubmit = async (values) => {
+    console.log(values);
+    sendEmail({
+      to: `${selectedBankForVerification.email}`,
+      subject: 'REQUEST FOR LATEST SIX (6) MONTHS BANK STATEMENT',
+      body: `
+        I hereby request for my latest six (6) months bank statement for the account(s) listed below;\n
+        Account name: ${accountName}\n
+        Account number: ${values.account_number}\n
+        Kindly reply to this email with my statement and put hello@kwaba.ng in copy while sending it.\n
+        Thanks.`,
+    }).then((res) => console.log('Email response: ', res));
+  };
+
+  const verifyBank = async (val) => {
+    setSpinner(true);
+    setShowAccountNameField(false);
+
+    let data = {
+      account_number: val.account_number,
+      bank_code: selectedBankForVerification.code,
+    };
+
+    try {
+      const res = await verifyBankAccount(data);
+      if (res.data.accountStatus) {
+        console.log(res.data.data);
+        setAccountName(res.data.data.account_name);
+        setShowAccountNameField(true);
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log(error);
+      setSpinner(false);
+    }
+  };
+
+  const CustomInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched, values},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <TextInput
+            style={{
+              width: '100%',
+              // paddingLeft: 50,
+              paddingHorizontal: 16,
+              paddingVertical: 16,
+            }}
+            // style={designs.textInput}
+            keyboardType="default"
+            value={value}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+
+              if (name == 'account_number' && value.toString().length == 10) {
+                verifyBank(values);
+                // console.log(props.form.values);
+              }
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
+
+  const SelectBank = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+    return (
+      <>
+        <TouchableOpacity
+          style={[styles.customInput, {padding: 20}]}
+          onPress={() => {
+            setShowSelectBankModal(!showSelectBankModal);
+          }}>
+          {selectedBank != '' ? (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              {selectedBank}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#aaa',
+              }}>
+              Bank
+            </Text>
+          )}
+
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={25}
-        style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
-        color={COLORS.primary}
-      />
-      <ScrollView>
-        <View style={styles.content}>
-          <Text
-            style={{fontSize: 20, fontWeight: 'bold', color: COLORS.primary}}>
-            Request Bank State
-          </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              lineHeight: 20,
-              marginBottom: 20,
-              marginTop: 10,
-              color: COLORS.grey,
-            }}>
-            The email used to request for your bank amount should be the one you
-            receive notification with your bank
-          </Text>
-          <View>
-            <TextInput
-              style={[styles.textField]}
-              placeholder="Full Name"
-              keyboardType="default"
-              // placeholderTextColor="#BFBFBF"
-              // value={value}
-              // onChangeText={(text) => onChange(name)(text)}
+    <Formik
+      validationSchema={bankRequestSchema}
+      initialValues={{
+        full_name: '',
+        email: '',
+        phone_number: '',
+        bank: '',
+        account_number: '',
+        account_name: '',
+      }}
+      onSubmit={(values) => {
+        handleSubmit(values);
+      }}>
+      {({handleSubmit, isValid, values, setValues}) => (
+        <>
+          <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+            <Icon
+              onPress={() => navigation.goBack()}
+              name="arrow-back-outline"
+              size={25}
+              style={{
+                fontWeight: '900',
+                paddingVertical: 20,
+                paddingHorizontal: 10,
+              }}
+              color={COLORS.primary}
             />
-            <TextInput
-              style={[styles.textField]}
-              placeholder="Email"
-              keyboardType="email-address"
-              // placeholderTextColor="#BFBFBF"
-              // value={value}
-              // onChangeText={(text) => onChange(name)(text)}
-            />
-            <TextInput
-              style={[styles.textField]}
-              placeholder="Phone Number"
-              keyboardType="phone-pad"
-              // placeholderTextColor="#BFBFBF"
-              // value={value}
-              // onChangeText={(text) => onChange(name)(text)}
-            />
-            <TextInput
-              style={[styles.textField]}
-              placeholder="Account Name"
-              keyboardType="default"
-              // placeholderTextColor="#BFBFBF"
-              // value={value}
-              // onChangeText={(text) => onChange(name)(text)}
-            />
-            <TextInput
-              style={[styles.textField]}
-              placeholder="Account Number"
-              keyboardType="number-pad"
-              // placeholderTextColor="#BFBFBF"
-              // value={value}
-              // onChangeText={(text) => onChange(name)(text)}
-            />
-            <TouchableOpacity
-              style={styles.customInput}
-              onPress={() => {
-                setShowSelectBankModal(!showSelectBankModal);
-              }}>
-              {selectedBank != '' ? (
+            <ScrollView>
+              <View style={styles.content}>
                 <Text
                   style={{
-                    // fontWeight: 'bold',
+                    fontSize: 20,
+                    fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {selectedBank}
+                  Request Bank State
                 </Text>
-              ) : (
                 <Text
                   style={{
-                    // fontWeight: 'bold',
-                    color: '#aaa',
+                    fontSize: 13,
+                    lineHeight: 20,
+                    marginBottom: 20,
+                    marginTop: 10,
+                    color: COLORS.dark,
                   }}>
-                  Bank
+                  The email used to request for your bank amount should be the
+                  one you receive notification with your bank
                 </Text>
-              )}
+                <Field
+                  component={CustomInput}
+                  name="full_name"
+                  placeholder="Full Name"
+                />
+                <Field
+                  component={CustomInput}
+                  name="email"
+                  placeholder="Email"
+                />
+                <Field
+                  component={CustomInput}
+                  name="phone_number"
+                  placeholder="Phone Number"
+                />
+                <Field component={SelectBank} name="bank" />
+                {values.bank != '' && (
+                  <Field
+                    component={CustomInput}
+                    name="account_number"
+                    placeholder="Account Number"
+                  />
+                )}
+                {showAccountNameField && (
+                  <TextInput
+                    style={[styles.textField]}
+                    placeholder="Account Name"
+                    editable={false}
+                    value={accountName}
+                  />
+                )}
 
-              <Icon
-                name="chevron-down-outline"
-                size={20}
-                style={{fontWeight: 'bold'}}
-                color="#BABABA"
-              />
-            </TouchableOpacity>
-
-            {/* <TextInput
-              style={[styles.textField]}
-              placeholder="Bank Email"
-              keyboardType="number-pad"
-            /> */}
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={[
+                    designs.button,
+                    {
+                      backgroundColor: COLORS.secondary,
+                      marginTop: 20,
+                      marginBottom: 0,
+                    },
+                  ]}>
+                  <Text
+                    style={[
+                      designs.buttonText,
+                      {
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
+                    ]}>
+                    CREATE EMAIL
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </ScrollView>
           </View>
-        </View>
-      </ScrollView>
 
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          width: '100%',
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          // backgroundColor: 'red',
-        }}>
-        <TouchableOpacity
-          onPress={sendMail}
-          // disabled={isError()}
-          style={[
-            designs.button,
-            {backgroundColor: COLORS.secondary, marginTop: 0, marginBottom: 0},
-          ]}>
-          <Text
-            style={[
-              designs.buttonText,
-              {
-                color: COLORS.white,
-                textAlign: 'center',
-                fontWeight: 'bold',
-                fontSize: 12,
-              },
-            ]}>
-            CREATE EMAIL
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <SelectBankModal
+            onRequestClose={() => setShowSelectBankModal(!showSelectBankModal)}
+            visible={showSelectBankModal}
+            onClick={(value) => {
+              setSelectedBank(value);
+              setValues({...values, bank: value});
+            }}
+            banks={bankData}
+            selectedBank={selectedBank}
+          />
 
-      <SelectBankModal
-        onRequestClose={() => setShowSelectBankModal(!showSelectBankModal)}
-        visible={showSelectBankModal}
-        onClick={(value) => setSelectedBank(value)}
-        banks={bankData}
-        selectedBank={selectedBank}
-      />
-    </View>
+          <Spinner visible={spinner} size="large" />
+        </>
+      )}
+    </Formik>
   );
 }
 
@@ -278,7 +398,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 20,
   },
 
   textField: {
@@ -291,39 +410,17 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
   },
+  label: {
+    color: COLORS.dark,
+    marginTop: 8,
+    fontSize: 14,
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
 });
-
-// const styles = StyleSheet.create({
-
-//   amount: {
-//     width: '32%',
-//     padding: 15,
-//     // paddingHorizontal: 10,
-//     backgroundColor: '#9D98EC',
-//     backgroundColor: '#EDECFC',
-//     borderRadius: 5,
-//     marginTop: 10,
-//     borderColor: '#ADADAD50',
-//     borderWidth: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   amountText: {
-//     color: COLORS.primary,
-//     fontSize: 13,
-//     fontWeight: 'bold',
-//   },
-
-//   btn: {
-//     padding: 15,
-//     borderRadius: 10,
-//     // marginTop: 20,
-//     fontSize: 14,
-//     fontFamily: 'CircularStd-Medium',
-//     fontWeight: '600',
-//     display: 'flex',
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     elevation: 1,
-//   },
-// });

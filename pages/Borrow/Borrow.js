@@ -64,54 +64,71 @@ const Borrow = ({navigation}) => {
   };
 
   const handleRentalLoanClick = async () => {
-    // if (existingApplication !== '') {
-      const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-      const steps = JSON.parse(borrwSteps);
+    await AsyncStorage.removeItem('rentalSteps');
 
-    // let stepsdata={
-    //   documentdone:'',
-    //   propertydetail:'',
-    //   landlorddetail:'',
-    //   refree:'',
-    //   offeraccepted:'',
-    //   addressverification:'',
-    //   debitmandate:'',
-    //   awaitingdisbursment:'',
-    // };
+    // const token = await getToken();
 
-    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const steps = JSON.parse(rentalSteps);
 
-    // console.log('steps here', steps);
+    // console.log(steps);
+    if (steps != null) {
+      if (steps == null) {
+        navigation.navigate('RentalLoanForm1');
+      } else if (steps.congratulation == '') {
+        navigation.navigate('RentalLoanFormCongratulation');
+      } else if (steps.bank_statement_upload == '') {
+        navigation.navigate('RentalLoanFormBankStatementUpload');
+      } else if (steps.all_documents == '') {
+        navigation.navigate('NewAllDocuments');
+      } else if ((steps.verifying_documents = '')) {
+        navigation.navigate('VerifyingDocuments');
+      } else if (steps.offer_breakdown == '') {
+        navigation.navigate('OfferApprovalBreakDown');
+      } else if (steps.property_detail == '') {
+        navigation.navigate('PostPaymentForm1');
+      } else if (steps.landlord_detail == '') {
+        navigation.navigate('PostPaymentForm2');
+      } else if (steps.referee_detail == '') {
+        navigation.navigate('PostPaymentForm3');
+      } else if (steps.offer_letter == '') {
+        // navigation.navigate('OfferLetter');
+        // const applicationIDCallRes = await axios.get(
+        //   'http://67.207.86.39:8000/api/v1/application/one',
+        //   {
+        //     headers: {'Content-Type': 'application/json', Authorization: token},
+        //   },
+        // );
+        // if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
+        //   navigation.navigate('AcceptanceLetterKwaba');
+        // } else {
+        //   navigation.navigate('AcceptanceLetterAddosser');
+        // }
+        navigation.navigate('AddosserLetter');
+      } else if (steps.address_verification == '') {
+        // navigation.navigate('AddressVerification');
+        navigation.navigate('AddressVerificationPayment');
+      } else if (steps.debitmandate == '') {
+        // navigation.navigate('DebitMandate');
+        navigation.navigate('OkraDebitMandate');
+      } else if (steps.awaiting_disbursement) {
+        navigation.navigate('AwaitingDisbursement');
+      }
+    } else {
+      navigation.navigate('RentNowPayLaterOnboarding');
+    }
 
-    //   if (steps == null) {
-    //     navigation.navigate('UploadDocuments');
-    //   } else if (steps.documentdone == '') {
-    //     navigation.navigate('UploadDocuments');
-    //   } else if (steps.propertydetail == '') {
-    //     navigation.navigate('PostPaymentForm1');
-    //   } else if (steps.landlorddetail == '') {
-    //     navigation.navigate('PostPaymentForm2');
-    //   } else if (steps.refree == '') {
-    //     navigation.navigate('PostPaymentForm3');
-    //   } else if (steps.offeraccepted == '') {
-    //     navigation.navigate('RentalLoanOfferTest'); //PrintOfferLetter  RentalLoanOfferTest
-    //   } else if (steps.addressverification == '') {
-    //     navigation.navigate('AddressVerificationPayment');
-    //   } else if (steps.debitmandate == '') {
-    //     navigation.navigate('OkraDebitMandate');
-    //   } else if (steps.awaitingdisbursment == '') {
-    //     navigation.navigate('AwaitingDisbursement');
-    //   }
-    // } else {
-    //   navigation.navigate('RentalLoanForm1');
-
-    //   //navigation.navigate('EmergencyLoanRequestDashBoard');
-
-    //   return token;
-    // }
-
-    // navigation.navigate('EmploymentStatus');
-    navigation.navigate('RentNowPayLaterOnboarding');
+    // //QUICK NAVIGATIONS
+    // navigation.navigate('OkraDebitMandate');
+    // navigation.navigate('OfferApprovalBreakDown');
+    // navigation.navigate('AwaitingDisbursement');
+    // navigation.navigate('AcceptanceLetterAddosser');
+    // navigation.navigate('AddosserLetter');
+    // navigation.navigate('PostPaymentForm3');
+    // navigation.navigate('OfferLetter');
+    // navigation.navigate('VerifyingDocuments');
+    // navigation.navigate('RentalLoanFormBankStatementUpload');
+    // navigation.navigate('NewAllDocuments');
   };
 
   // const handleRentalLoanClick=()=> {

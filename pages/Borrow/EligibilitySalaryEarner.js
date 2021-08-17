@@ -82,7 +82,8 @@ export default function EligibilitySalaryEarner({navigation}) {
     //   navigation.navigate('AwaitingDisbursement');
     // }
 
-    navigation.navigate('AddressVerificationPayment');
+    // navigation.navigate('AddressVerificationPayment');
+    navigation.navigate('RentalLoanForm1');
 
     //   let stepsdata={
     //   documentdone:'',

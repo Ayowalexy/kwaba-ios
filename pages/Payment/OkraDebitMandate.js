@@ -165,25 +165,34 @@ export default function OkraDebitMandate({navigation}) {
           }}>
           <Text
             style={[
-              FONTS.h1FontStyling,
+              // FONTS.h1FontStyling,
               {
-                color: '#2A286A',
+                color: COLORS.primary,
+                fontSize: 18,
                 textAlign: 'left',
                 fontWeight: 'bold',
-                marginBottom: 130,
+                marginLeft: 10,
               },
             ]}>
-            Rental Loan
+            Rent Now, Pay Later
           </Text>
           <Image
             source={images.paymentMethodPNG}
-            style={designs.paymentMethodImage}
+            style={{
+              width: '100%',
+              height: 100,
+              justifyContent: 'center',
+              marginBottom: 50,
+              marginTop: 100,
+            }}
+            resizeMode="contain"
           />
           <Text
             style={[
-              FONTS.h1FontStyling,
+              // FONTS.h1FontStyling,
               {
-                color: '#2A286A',
+                color: COLORS.primary,
+                fontSize: 20,
                 textAlign: 'center',
                 fontWeight: 'bold',
                 marginBottom: 10,
@@ -194,7 +203,7 @@ export default function OkraDebitMandate({navigation}) {
           <Text
             style={[
               FONTS.body2FontStyling,
-              {color: '#ADADAD', textAlign: 'center', marginBottom: 26},
+              {color: COLORS.dark, textAlign: 'center', fontSize: 14},
             ]}>
             This will make repayment easy
           </Text>
@@ -202,21 +211,24 @@ export default function OkraDebitMandate({navigation}) {
           <TouchableOpacity
             onPress={() => navigation.navigate('OkraDebitMandate2')}
             style={[
-              designs.button,
               {
                 backgroundColor: COLORS.secondary,
-                width: widthtouse * 0.85,
-                height: 70,
-                marginTop: 80,
+                width: '100%',
+                // height: 70,
+                marginTop: 30,
+                borderRadius: 10,
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 20,
               },
             ]}>
             <Text
               style={[
-                designs.buttonText,
                 {
                   color: COLORS.white,
                   textAlign: 'center',
-                  fontWeight: 'normal',
+                  fontWeight: 'bold',
+                  fontSize: 12,
                 },
               ]}>
               SET UP REPAYMENT

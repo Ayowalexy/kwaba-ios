@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -25,12 +25,17 @@ const buddySavingFormSchema = yup.object().shape({
   // saving,
 });
 
-export default function Screen1({navigation}) {
+export default function Screen1(props) {
+  const {navigation} = props;
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  useEffect(() => {
+    console.log('Props: ', props);
+  }, []);
 
   const HowLongSelection = (props) => {
     const howLongList = ['3 Months', '6 Months', '1 Year'];
@@ -225,8 +230,9 @@ export default function Screen1({navigation}) {
 
   const handleSubmit = async (values) => {
     console.log(values);
+    console.log('Hello herererrerer');
 
-    navigation.navigate('BuddySaving3');
+    props.navigation.navigate('BuddySaving3');
   };
 
   return (

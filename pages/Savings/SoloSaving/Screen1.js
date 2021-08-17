@@ -28,18 +28,26 @@ export default function Screen1({navigation}) {
   const dispatch = useDispatch();
 
   const handleSubmit = (values) => {
-    const data = {
-      savings_title: values.savingTitle,
-      savings_activeOption: values.savingOption,
-      savings_amount: Number(unFormatNumber(values.targetAmount)),
-      savings_frequency: values.savingFrequency,
-    };
+    // const data = {
+    //   savings_title: values.savingTitle,
+    //   savings_activeOption: values.savingOption,
+    //   savings_amount: Number(unFormatNumber(values.targetAmount)),
+    //   savings_frequency: values.savingFrequency,
+    // };
     // console.log(data);
-    try {
-      dispatch(soloSaving(data));
+    // try {
+    //   dispatch(soloSaving(data));
 
-      return navigation.navigate('SoloSaving2');
-    } catch (error) {}
+    //   return navigation.navigate('SoloSaving2');
+    // } catch (error) {}
+    const data = {
+      name: values.savingTitle,
+      auto_save: values.savingOption == 'auto' ? true : false,
+      target_amount: Number(unFormatNumber(values.targetAmount)),
+      frequency: values.savingFrequency,
+    };
+    console.log('SOLO SAVING DATA: ', data);
+    navigation.navigate('SoloSaving2', data);
   };
 
   const NumberInput = (props) => {

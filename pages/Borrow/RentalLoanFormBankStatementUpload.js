@@ -61,8 +61,6 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
     },
   };
 
- 
-
   const handleNavigation = () => {
     navigation.navigate('PostPaymentForm1');
   };
@@ -82,7 +80,8 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
       />
       <ScrollView>
         <View style={styles.content}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+          <Text
+            style={{fontSize: 20, fontWeight: 'bold', color: COLORS.primary}}>
             Bank Statement Upload
           </Text>
 
@@ -125,7 +124,6 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
         // onClick={(value) => setSelectedPayMethod(value)}
         onClick={(value) => {
           //setSelectedPayMethod(value)
-          
         }}
       />
     </View>

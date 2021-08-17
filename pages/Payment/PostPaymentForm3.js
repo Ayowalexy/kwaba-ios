@@ -161,12 +161,13 @@ const PostPaymentForm1 = ({navigation}) => {
       console.log(applicationIDCallRes.data.data.assigned_to);
 
       if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
-        navigation.navigate('AcceptanceLetterKwaba');
-
+        // navigation.navigate('AcceptanceLetterKwaba');
         // navigation.navigate('AcceptanceletterAddosser');
+        navigation.navigate('AddosserLetter');
       } else {
-        navigation.navigate('AcceptanceLetterKwaba');
+        // navigation.navigate('AcceptanceLetterKwaba');
         // navigation.navigate('AcceptanceletterAddosser');
+        navigation.navigate('AddosserLetter');
       }
 
       // navigation.navigate('OfferLetter');

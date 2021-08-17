@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -15,6 +16,7 @@ import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const VerifyingDocuments = ({navigation, route}) => {
   const response = route.params;
@@ -23,6 +25,7 @@ const VerifyingDocuments = ({navigation, route}) => {
   const [salaryAmount, setSalaryAmount] = useState('');
   const [existingApplication, setExistingApplication] = useState('');
   const [finalApproval, setfinalApproval] = useState('');
+  const [spinner, setSpinner] = useState(false);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -30,48 +33,24 @@ const VerifyingDocuments = ({navigation, route}) => {
     return token;
   };
 
-  useEffect(() => {
-    const getApplicationData = async () => {
-      const token = await getToken();
+  const getApplicationData = async () => {
+    const token = await getToken();
+    setSpinner(true);
 
-      try {
-        const applicationIDCallRes = await axios.get(
-          'http://67.207.86.39:8000/api/v1/application/one',
-          {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          },
-        );
-        const applicationId = applicationIDCallRes.data.data.id;
+    try {
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      const applicationStatus = applicationIDCallRes.data.data.status;
 
-        setExistingApplication(applicationId);
-        console.log('here', applicationIDCallRes.data.data.approvedamount);
+      setExistingApplication(applicationId);
+      // console.log('here', applicationIDCallRes.data.data.approvedamount);
 
-        if (applicationId >= 3) {
-          // const rentalSteps = await AsyncStorage.getItem('rentalSteps');
-          // const steps = JSON.parse(rentalSteps);
-          // let stepsData = {
-          //   application_form: 'done',
-          //   congratulation: 'done',
-          //   bank_statement_upload: 'done',
-          //   all_documents: 'done',
-          //   verifying_documents: 'done',
-          //   offer_breakdown: '',
-          //   property_detail: '',
-          //   landlord_detail: '',
-          //   referee_detail: '',
-          //   offer_letter: '',
-          //   address_verification: '',
-          //   debitmandate: '',
-          //   awaiting_disbursement: '',
-          // };
-          // await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
-          // console.log('STEPS: ', steps);
-          //navigation.navigate('OfferApprovalBreakDown');
-        }
-
-        const rentalSteps = await AsyncStorage.getItem('rentalSteps');
-        const steps = JSON.parse(rentalSteps);
-
+      if (applicationStatus >= 3) {
+        setSpinner(false);
         let stepsData = {
           application_form: 'done',
           congratulation: 'done',
@@ -89,18 +68,21 @@ const VerifyingDocuments = ({navigation, route}) => {
         };
 
         await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
-
-        console.log('STEPS: ', steps);
-
         navigation.navigate('OfferApprovalBreakDown');
-      } catch (error) {
-        console.log(error.response.data);
+      } else {
+        setSpinner(false);
+        console.log('Nah ');
+        Alert.alert('Verifying Documents', 'Documents under verification');
       }
-    };
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
 
+  useEffect(() => {
     getApplicationData();
     //getDocuments();
-  });
+  }, []);
 
   const handleNavigation = () => {
     if (finalApproval > 0) {
@@ -174,8 +156,10 @@ const VerifyingDocuments = ({navigation, route}) => {
         />
         <Text
           style={[
-            FONTS.h1FontStyling,
+            // FONTS.h1FontStyling,
             {
+              marginTop: 10,
+              fontSize: 20,
               color: '#2A286A',
               textAlign: 'center',
               fontWeight: 'bold',
@@ -186,12 +170,41 @@ const VerifyingDocuments = ({navigation, route}) => {
         </Text>
         <Text
           style={[
-            FONTS.body2FontStyling,
-            {color: '#ADADAD', textAlign: 'center', marginBottom: 26},
+            // FONTS.body2FontStyling,
+            {
+              color: COLORS.dark,
+              textAlign: 'center',
+              marginBottom: 26,
+              lineHeight: 25,
+              paddingHorizontal: 20,
+            },
           ]}>
           We are verifying your documents you will be able to Proceed when we
           are done verifying.
         </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            getApplicationData();
+          }}
+          style={{
+            width: '100%',
+            backgroundColor: COLORS.secondary,
+            padding: 20,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              color: COLORS.white,
+            }}>
+            Confirm verification
+          </Text>
+        </TouchableOpacity>
 
         {/* <TouchableOpacity
             onPress={() => navigation.navigate('AllDocuments', response)}
@@ -204,6 +217,8 @@ const VerifyingDocuments = ({navigation, route}) => {
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>Check Status</Text>
           </TouchableOpacity> */}
+
+        <Spinner visible={spinner} size="large" />
       </View>
     </View>
   );

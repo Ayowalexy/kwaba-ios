@@ -18,6 +18,9 @@ import * as yup from 'yup';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {me} from '../../services/network';
+import axios from 'axios';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
@@ -28,6 +31,7 @@ const Screen5 = (props) => {
   const {navigation, route} = props;
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
+  const [spinner, setSpinner] = useState(false);
 
   const NumberInput = (props) => {
     const {
@@ -134,13 +138,54 @@ const Screen5 = (props) => {
     );
   };
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const getUserData = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const data = JSON.parse(userData);
+    return data;
+  };
+
+  const completeProfile = async (data) => {
+    let updateData = {
+      bvn: data.bvn,
+      dob: data.dob,
+      how_much_is_your_rent: unFormatNumber(data.how_much_is_your_rent),
+      when_is_your_next_rent_due: data.when_is_your_next_rent_due,
+    };
+    console.log('update data: ', updateData);
+    const token = await getToken();
+    try {
+      setSpinner(true);
+      const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
+      const response = await axios.put(url, JSON.stringify(updateData), {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      if (response.status == 200) {
+        setSpinner(false);
+        // setModal(true);
+        navigation.navigate('CompleteProfile6');
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log(error);
+    }
+
+    // console.log('The Data: ', data);
+  };
+
   const handleSubmit = async (values) => {
     const complete_profile = await AsyncStorage.getItem('complete_profile');
-    await AsyncStorage.setItem(
-      'complete_profile',
-      JSON.stringify({...JSON.parse(complete_profile), ...values}),
-    );
-    navigation.navigate('CompleteProfile6');
+
+    let data = {
+      ...JSON.parse(complete_profile),
+      ...values,
+    };
+    completeProfile(data);
   };
 
   return (
@@ -221,6 +266,8 @@ const Screen5 = (props) => {
           </Formik>
         </View>
       </ScrollView>
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 };

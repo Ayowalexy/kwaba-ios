@@ -6634,6 +6634,11 @@ react-native-dropdown-picker@^4.0.2:
   dependencies:
     react-native-vector-icons "^7.0.0"
 
+react-native-email-action@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-native-email-action/-/react-native-email-action-1.0.6.tgz#ae6c31ff0c36c2fc1424ae36b31b0f4db0da9afd"
+  integrity sha512-uF4fMvMGBOJw67I1hpGjz2t9pO08QqHM6XS3ruif3yb9wzv1uSeionFF1p1KSZL7IQb3UznEQrEYCNrv2e6XUQ==
+
 react-native-email@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-native-email/-/react-native-email-1.1.0.tgz#b41ddd3d67476fb6d703d65f250f0cc9eff747a8"

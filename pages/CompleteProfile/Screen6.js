@@ -19,6 +19,9 @@ import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
 import Modal from '../../components/modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {me} from '../../services/network';
+import axios from 'axios';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const completeProfileSchema = yup.object().shape({
   email: yup
@@ -31,6 +34,55 @@ const Screen5 = (props) => {
   const {navigation, route} = props;
   const [modalVisible, setModalVisible] = useState(false);
   const [completeProfileData, setCompleteProfileData] = useState([]);
+  const [spinner, setSpinner] = useState(false);
+  const [email, setEmail] = useState('');
+
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  useEffect(() => {
+    (async () => {
+      console.log('Done...');
+
+      try {
+        const res = await me();
+        console.log('ME:  ', res);
+      } catch (error) {
+        console.log('Error: ', error);
+      }
+    })();
+  }, []);
+
+  const verifyEmail = async (data) => {
+    setSpinner(true);
+    try {
+      const url = 'http://67.207.86.39:8000/api/v1/user/sendmaillink';
+      const token = await getToken();
+      const response = await axios.post(url, JSON.stringify(data), {
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: token,
+        },
+      });
+
+      if (response.status == 201) {
+        console.log('Verify Email Res:', response);
+        setModalVisible(true);
+        setSpinner(false);
+      }
+    } catch (error) {
+      let res = error.response.data;
+      if (res.status == 409) {
+        Alert.alert('Error', res.statusMsg);
+        navigation.navigate('Home');
+        console.log(res.statusMsg);
+      }
+      setSpinner(false);
+    }
+  };
 
   const CustomInput = (props) => {
     const {
@@ -73,34 +125,8 @@ const Screen5 = (props) => {
   };
 
   const handleSubmit = async (values) => {
-    const complete_profile = await AsyncStorage.getItem('complete_profile');
-    await AsyncStorage.setItem(
-      'complete_profile',
-      JSON.stringify({...JSON.parse(complete_profile), ...values}),
-    );
-
-    setModalVisible(true);
-  };
-
-  const HandleCompleteProfile = async () => {
-    const complete_profile = await AsyncStorage.getItem('complete_profile');
-    const parseData = JSON.parse(complete_profile);
-
-    let {
-      bvn,
-      dob,
-      how_much_is_your_rent,
-      when_is_your_next_rent_due,
-    } = parseData;
-
-    console.log(
-      bvn,
-      moment(dob).format('MMM-DD-YYYY'),
-      unFormatNumber(how_much_is_your_rent),
-      moment(when_is_your_next_rent_due).format('YYYY-MM-DD'),
-    );
-    setModalVisible(false);
-    navigation.navigate('Home');
+    verifyEmail(values);
+    setEmail(values.email);
   };
 
   return (
@@ -180,8 +206,11 @@ const Screen5 = (props) => {
       <Modal
         onRequestClose={() => setModalVisible(!modalVisible)}
         visible={modalVisible}
-        onSave={() => HandleCompleteProfile()}
+        email={email}
+        goHome={() => navigation.navigate('Home')}
       />
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   ScrollView,
@@ -15,9 +15,7 @@ import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const AwaitingDisbursement = ({navigation, route}) => {
-
   const response = route.params;
 
   const [accommodationStatus, setAccommodationStatus] = useState('');
@@ -30,59 +28,54 @@ const AwaitingDisbursement = ({navigation, route}) => {
     return token;
   };
 
-  useEffect(()=>{
-
-    const getApplicationData =async ()=> {
-    
+  useEffect(() => {
+    const getApplicationData = async () => {
       const token = await getToken();
 
-      
-      try{
-      
-          const applicationIDCallRes = await axios.get('http://67.207.86.39:8000/api/v1/application/one', {
-              headers: {'Content-Type': 'application/json', Authorization: token},
-            });
-           // console.log(applicationIDCallRes.data.data.id);
+      try {
+        const applicationIDCallRes = await axios.get(
+          'http://67.207.86.39:8000/api/v1/application/one',
+          {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          },
+        );
+        // console.log(applicationIDCallRes.data.data.id);
 
-             const applicationId = applicationIDCallRes.data.data.id;
-      
-            setExistingApplication(applicationId);
-            console.log('here', applicationIDCallRes.data.data.approvedamount );
-            //setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
-            const approved_repayment_plan=applicationIDCallRes.data.data.approved_repayment_plan;
-            const repayment_start_date=applicationIDCallRes.data.data.remita_repayment_date;
-            const repayment_end_date=moment(repayment_start_date).add(Number(approved_repayment_plan)-1,'months').format("YYYY-MM-DD");
-            // setStartDate(repayment_start_date);
-            // setEndDate(repayment_end_date);
+        const applicationId = applicationIDCallRes.data.data.id;
 
-            console.log('here2', monthlyRepayment);
+        setExistingApplication(applicationId);
+        console.log('here', applicationIDCallRes.data.data.approvedamount);
+        //setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
+        const approved_repayment_plan =
+          applicationIDCallRes.data.data.approved_repayment_plan;
+        const repayment_start_date =
+          applicationIDCallRes.data.data.remita_repayment_date;
+        const repayment_end_date = moment(repayment_start_date)
+          .add(Number(approved_repayment_plan) - 1, 'months')
+          .format('YYYY-MM-DD');
+        // setStartDate(repayment_start_date);
+        // setEndDate(repayment_end_date);
 
-            console.log('repayment_start_date', repayment_start_date);
-            console.log('repayment_end_date', repayment_end_date);
+        console.log('here2', monthlyRepayment);
 
-            if(applicationId==7){
-              navigation.navigate('RentalLoanActiveDashBoard');
-            }
-    
+        console.log('repayment_start_date', repayment_start_date);
+        console.log('repayment_end_date', repayment_end_date);
+
+        if (applicationId == 7) {
+          navigation.navigate('RentalLoanActiveDashBoard');
+        }
+      } catch (error) {
+        console.log(error.response.data);
       }
-      catch(error) {
-        console.log(error.response.data)
-      }
-
-  
-
-      
     };
 
     getApplicationData();
-
-
-  })
+  });
 
   const handleNavigation = () => {
     const data = {
-    accommodationStatus: accommodationStatus,
-    salaryAmount: salaryAmount,
+      accommodationStatus: accommodationStatus,
+      salaryAmount: salaryAmount,
     };
     // try {
     //   dispatch(soloSaving(data));
@@ -91,7 +84,6 @@ const AwaitingDisbursement = ({navigation, route}) => {
     // } catch (error) {}
   };
 
-
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
@@ -99,56 +91,97 @@ const AwaitingDisbursement = ({navigation, route}) => {
         name="arrow-back-outline"
         size={25}
         style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
-        color= {COLORS.primary}
+        color={COLORS.primary}
       />
-        <View
+      <View
+        style={{
+          marginVertical: 11,
+          marginHorizontal: 16,
+        }}>
+        <Text
+          style={[
+            // FONTS.h1FontStyling,
+            {
+              color: '#2A286A',
+              textAlign: 'left',
+              fontWeight: 'bold',
+              fontSize: 18,
+              marginBottom: 130,
+              marginLeft: 15,
+            },
+          ]}>
+          Rent Now, Pay Later
+        </Text>
+        {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
+        <Image
+          source={images.group3693}
+          style={{height: 190, width: 190, alignSelf: 'center'}}
+        />
+        <Text
+          style={[
+            FONTS.h1FontStyling,
+            {
+              color: '#2A286A',
+              textAlign: 'center',
+              fontWeight: 'bold',
+              marginBottom: 10,
+            },
+          ]}>
+          Awaiting disbursement
+        </Text>
+        <Text
+          style={[
+            FONTS.body2FontStyling,
+            {
+              color: '#ADADAD',
+              color: COLORS.dark,
+              textAlign: 'center',
+              marginBottom: 30,
+              fontSize: 14,
+              lineHeight: 25,
+              paddingHorizontal: 10,
+            },
+          ]}>
+          We are just dotting the i's and crossing the t's. Your rent will be
+          paid within the next 24 hours.
+        </Text>
+
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('RentNowPayLaterDashboard');
+          }}
           style={{
-            marginVertical: 11,
-            marginHorizontal: 16,
+            width: '100%',
+            backgroundColor: COLORS.secondary,
+            padding: 20,
+            borderRadius: 10,
+            justifyContent: 'center',
+            alignItems: 'center',
           }}>
           <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                marginBottom: 134
-              },
-            ]}>
-            Rental Loan
+            style={{
+              fontSize: 12,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              color: COLORS.white,
+            }}>
+            Go to dashboard
           </Text>
-          {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
-          <Image source={images.group3693} style={{height:190,width:190,alignSelf:'center'}}/> 
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                marginBottom: 10
-              },
-            ]}>
-            Awaiting disbursement
-          </Text>
-          <Text style={[FONTS.body2FontStyling, {color: '#ADADAD', textAlign: 'center', marginBottom: 26}]}>We are just dotting the i's and crossing the t's. Your rent will be paid within the next 24 hours.</Text>
-         
-          
-          {/* <TouchableOpacity
+        </TouchableOpacity>
+
+        {/* <TouchableOpacity
             onPress={() => navigation.navigate('AllDocuments', response)}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>UPLOAD DOCUMENTS</Text>
           </TouchableOpacity> */}
 
-          {/* <TouchableOpacity
+        {/* <TouchableOpacity
             onPress={() => {navigation.navigate('Borrow')}}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>Check Status</Text>
           </TouchableOpacity> */}
-        </View>
-        
-   </View>
+      </View>
+    </View>
   );
 };
 
