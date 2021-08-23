@@ -48,6 +48,7 @@ export default function TabThree(props) {
       // auto fill input fields
       setEmail(email);
       setPhoneNumber(telephone);
+      setBvn(bvn);
       // setBvn(gender);
     })();
   }, []);
@@ -111,7 +112,7 @@ export default function TabThree(props) {
           <TextInput
             style={[designs.textField]}
             placeholder="Email"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             keyboardType="default"
             value={email}
             onChangeText={(text) => setEmail(text)}
@@ -119,7 +120,7 @@ export default function TabThree(props) {
           <TextInput
             style={[designs.textField]}
             placeholder="Phone Number"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             keyboardType="default"
             value={phoneNumber}
             onChangeText={(text) => setPhoneNumber(text)}
@@ -127,7 +128,7 @@ export default function TabThree(props) {
           <TextInput
             style={[designs.textField]}
             placeholder="Bank Verification Number(BVN)"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             keyboardType="default"
             value={bvn}
             onChangeText={(text) => setBvn(text)}

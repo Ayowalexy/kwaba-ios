@@ -50,16 +50,26 @@ export default function Home({navigation}) {
 
   const [quickSaveModal, setQuickSaveModal] = useState(false);
 
+  // useEffect(() => {
+  //   console.log('User: ', login);
+  // }, []);
+
   useEffect(() => {
     if (login) setName(login.username);
 
-    if (login.isProfileCompleted == 0) {
+    // profile completetd
+    // if (login.isProfileCompleted == 0) {
+    //   setIsProfileComplete(false);
+    // } else {
+    //   setIsProfileComplete(true);
+    // }
+
+    // email verified
+    if (login.user.emailVerified == 0) {
       setIsProfileComplete(false);
     } else {
       setIsProfileComplete(true);
     }
-
-    // console.log('isProfile completed: ', login.isProfileCompleted);
   }, [login]);
 
   useEffect(() => {
@@ -67,29 +77,17 @@ export default function Home({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings = store.data?.reduce(
-      (acc, saving) => acc + Number(saving.amount),
-      0,
-    );
-    setSavings(totalSoloSavings || 0);
-  }, [store]);
+    // const totalSoloSavings = store.data?.reduce(
+    //   (acc, saving) => acc + Number(saving.amount),
+    //   0,
+    // );
+    // setSavings(totalSoloSavings || 0);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const token = await getToken();
-  //     try {
-  //       const response = await axios.get('http://67.207.86.39:8000/api/v1/me', {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           Authorization: token,
-  //         },
-  //       });
-  //       console.log('ME: ', response.data.user);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   })();
-  // }, []);
+    if (store && store.data) {
+      const amount_saved = Number(store.data[0].amount_save);
+      setSavings(amount_saved || 0);
+    }
+  }, [store]);
 
   const topCards = [
     {
@@ -106,6 +104,7 @@ export default function Home({navigation}) {
       subtitle: 'Next payment amount',
       amount: `₦${currencyFormat(rentalFinance)}`,
       image: images.rentalFinanceCard,
+      // onClick: navigation.navigate('RentNowPayLaterDashboard')
     },
     {
       id: 3,
@@ -114,6 +113,7 @@ export default function Home({navigation}) {
       subtitle: 'Repayment amount',
       amount: `₦${currencyFormat(instantLoan)}`,
       image: images.instantLoanCard,
+      route: () => navigation.navigate('EmergencyLoanDashBoard'),
     },
   ];
 
@@ -167,7 +167,7 @@ export default function Home({navigation}) {
   return (
     <View style={designs.container}>
       {/* <StatusBar translucent backgroundColor="#00000050" /> */}
-      <StatusBar backgroundColor={COLORS.primary} />
+      {/* <StatusBar backgroundColor={COLORS.primary} /> */}
       <View style={designs.topBar}>
         <View style={designs.user}>
           {/* <Image
@@ -265,7 +265,10 @@ export default function Home({navigation}) {
             onChangeIndex={(e) => setCurrentIndex(e.index)}
             data={topCards}
             renderItem={({item}) => (
-              <View style={designs.item}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={designs.item}
+                onPress={item.route}>
                 <View style={designs.bgImage}>
                   <LinearGradient
                     style={designs.linearGradient}
@@ -310,7 +313,14 @@ export default function Home({navigation}) {
                       {item.id == 1 ? (
                         <TouchableOpacity
                           // onPress={() => setIndex(1)}
-                          onPress={() => setQuickSaveModal(true)}
+                          onPress={() => {
+                            if (savings > 0) {
+                              setQuickSaveModal(true);
+                              console.log('Item Amount: ', item.amount);
+                            } else {
+                              navigation.navigate('SavingsHome');
+                            }
+                          }}
                           style={{
                             // width: 60,
                             // height: 60,
@@ -373,7 +383,7 @@ export default function Home({navigation}) {
                     />
                   </LinearGradient>
                 </View>
-              </View>
+              </TouchableOpacity>
             )}
           />
           <ScrollIndicator

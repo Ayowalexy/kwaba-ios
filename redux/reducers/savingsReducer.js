@@ -15,18 +15,6 @@ const initialState = {
   locked: false,
 };
 
-// export const soloSavingReducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case types.SOLO_SAVING:
-//       return {
-//         ...state,
-//         ...action.payload,
-//       };
-//     default:
-//       return state;
-//   }
-// };
-
 export const soloSavingReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.SOLO_SAVING:

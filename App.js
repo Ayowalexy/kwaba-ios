@@ -154,10 +154,13 @@ import {
 // Offer Letters
 import {KwabaLetter, AddosserLetter} from './pages/OfferLetters';
 
+// Disbursement
+import Disbursement from './components/disbursement';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import {View, Text, RefreshControl} from 'react-native';
+import {View, Text, RefreshControl, StatusBar} from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
 
@@ -243,14 +246,14 @@ const App = () => {
     any_custom_type: () => {},
   };
 
-  useEffect(() => {
-    console.log('****************************');
-    console.log('Store 2: ', store2);
-    (async () => {
-      let data = AsyncStorage.getItem('userData');
-      console.log('User Data: ', data);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   console.log('****************************');
+  //   console.log('Store 2: ', store2);
+  //   (async () => {
+  //     let data = AsyncStorage.getItem('userData');
+  //     console.log('User Data: ', data);
+  //   })();
+  // }, []);
 
   const [test, setTest] = useState('');
 
@@ -279,16 +282,30 @@ const App = () => {
         </View>
       )}
       <NavigationContainer>
+        {/* <StatusBar
+          animated={true}
+          backgroundColor="transparent"
+          barStyle={'default'}
+          translucent={true}
+        /> */}
+        {/* <StatusBar backgroundColor="red" /> */}
+        <StatusBar
+          backgroundColor={COLORS.primary}
+          // backgroundColor={'#00000080'}
+          barStyle={'light-content'}
+          // translucent={true}
+        />
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
+
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
           // initialRouteName={'KwabaLetter'}
         >
           {/* {test != '' ? ( */}
-          {!store2.isLoggedIn && store2.token == '' ? (
+          {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
               <Stack.Screen
@@ -622,6 +639,8 @@ const App = () => {
 
               <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
               <Stack.Screen name="AddosserLetter" component={AddosserLetter} />
+
+              <Stack.Screen name="Disbursement" component={Disbursement} />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

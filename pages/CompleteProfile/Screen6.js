@@ -43,18 +43,33 @@ const Screen5 = (props) => {
     return token;
   };
 
+  // useEffect(() => {
+  //   (async () => {
+  //     console.log('Done...');
+
+  //     try {
+  //       const res = await me();
+  //       console.log('ME:  ', res);
+  //     } catch (error) {
+  //       console.log('Error: ', error);
+  //     }
+  //   })();
+  // }, []);
+
   useEffect(() => {
     (async () => {
-      console.log('Done...');
-
-      try {
-        const res = await me();
-        console.log('ME:  ', res);
-      } catch (error) {
-        console.log('Error: ', error);
-      }
+      // const userData = await AsyncStorage.removeItem('userData');
+      const userData = await AsyncStorage.getItem('userData');
+      const parseData = JSON.parse(userData);
+      // console.log('THATS ME: ', parseData.user.email);
+      setEmail(parseData.user.email);
+      // console.log('Email: ', parseData.user.email);
     })();
   }, []);
+
+  const populateEmail = (field) => {
+    field('email', email);
+  };
 
   const verifyEmail = async (data) => {
     setSpinner(true);
@@ -76,7 +91,7 @@ const Screen5 = (props) => {
     } catch (error) {
       let res = error.response.data;
       if (res.status == 409) {
-        Alert.alert('Error', res.statusMsg);
+        // Alert.alert('Error', res.statusMsg);
         navigation.navigate('Home');
         console.log(res.statusMsg);
       }
@@ -87,15 +102,31 @@ const Screen5 = (props) => {
   const CustomInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      form: {errors, touched, setFieldTouched, setFieldValue},
       ...inputProps
     } = props;
 
     const hasError = errors[name] && touched[name];
 
+    // console.log('The props: ', props.form);
+
+    // populateEmail(setFieldValue)
+    // setFieldValue('email', 'joshuanwosu007@gmail.com');
+
     return (
       <>
         <Text style={styles.label}>Verify email address</Text>
+        <Text
+          style={[
+            styles.label,
+            {
+              marginTop: 5,
+              fontSize: 12,
+              fontWeight: 'normal',
+            },
+          ]}>
+          Confirm email - <Text style={{fontWeight: 'bold'}}>{email}</Text>
+        </Text>
         <View
           style={[
             styles.customInput,
@@ -171,7 +202,7 @@ const Screen5 = (props) => {
           <Formik
             validationSchema={completeProfileSchema}
             initialValues={{
-              email: '',
+              email: email,
             }}
             onSubmit={(values) => {
               handleSubmit(values);

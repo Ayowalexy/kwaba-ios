@@ -15,7 +15,7 @@ import {BlurView, VibrancyView} from '@react-native-community/blur';
 const width = Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../../util/index';
-import {currencyFormat} from '../../../util/numberFormatter';
+import {currencyFormat, formatNumber} from '../../../util/numberFormatter';
 import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
@@ -77,10 +77,10 @@ export default function Start({navigation}) {
     // );
     // setSoloSaving(totalSoloSavings || 0);
 
-    const totalSoloSavings = store.data?.reduce(
-      (acc, saving) => acc + Number(saving.amount),
-      0,
-    );
+    // const totalSoloSavings = store.data?.reduce(
+    //   (acc, saving) => acc + Number(saving.amount),
+    //   0,
+    // );
 
     // Ineterst should be calculated after 24 hours
     //! TODO
@@ -89,20 +89,38 @@ export default function Start({navigation}) {
     //   0,
     // );
 
-    const soloInterestTotal = 0;
+    // const soloInterestTotal = 0;
 
     // interest
     // const balance = totalSoloSavings + soloInterestTotal;
 
     // without interest
-    const balance = totalSoloSavings;
+    // const balance = totalSoloSavings;
 
-    setTotalBalance(balance || 0);
-    setTotalSaving(totalSoloSavings || 0);
-    setTotalInterest(soloInterestTotal || 0);
-    setSoloSaving(totalSoloSavings || 0);
+    // setTotalBalance(balance || 0);
+    // setTotalSaving(totalSoloSavings || 0);
+    // setTotalInterest(soloInterestTotal || 0);
+    // setSoloSaving(totalSoloSavings || 0);
 
-    console.log('Store: ', balance);
+    // console.log('Store: ', balance);
+    // console.log('Amount Save: ', store?.data[0].amount_save);
+    // console.log('Savings: ', store.data[0]);
+
+    if (store && store.data) {
+      const amount_saved = Number(store.data[0].amount_save);
+      // setSavings(amount_saved || 0);
+      setTotalBalance(amount_saved || 0);
+      setTotalSaving(amount_saved || 0);
+      setSoloSaving(amount_saved || 0);
+      setTotalInterest(0);
+    }
+
+    // let amount_saved = Number(store?.data[0]?.amount_save);
+
+    // setTotalBalance(amount_saved || 0);
+    // setTotalSaving(amount_saved || 0);
+    // setSoloSaving(amount_saved || 0);
+    // setTotalInterest(0);
   }, [store]);
 
   const savingsCard = [
@@ -201,7 +219,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦{currencyFormat(totalBalance)}
+                ₦{formatNumber(totalBalance)}
               </Text>
             </View>
 
@@ -232,7 +250,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦{currencyFormat(totalSaving)}
+                ₦{formatNumber(totalSaving)}
               </Text>
               {/* </BlurView> */}
             </View>

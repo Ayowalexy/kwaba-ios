@@ -42,12 +42,18 @@ export default function EmergencyLoanHome({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings =
-      store?.data?.length > 0
-        ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
-        : 0;
-    setSavings(totalSoloSavings);
-    const maxLoanAmount = 0.4 * Number(totalSoloSavings);
+    // const totalSoloSavings =
+    //   store?.data?.length > 0
+    //     ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
+    //     : 0;
+    // setSavings(totalSoloSavings);
+    // const maxLoanAmount = 0.4 * Number(totalSoloSavings);
+    // setMaximumLoanAmount(maxLoanAmount);
+
+    const amount_saved = Number(store?.data[0].amount_save);
+    setSavings(amount_saved || 0);
+
+    const maxLoanAmount = 0.4 * Number(amount_saved);
     setMaximumLoanAmount(maxLoanAmount);
   }, []);
 

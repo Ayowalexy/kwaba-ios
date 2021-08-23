@@ -26,11 +26,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+import TransactionsTab from './TransactionTabs';
+import {
+  getOneUserSavings,
+  getSavingsHistory,
+  getUserSavings,
+} from '../../../services/network';
+
 export default function SoloSavingDashBoard({navigation}) {
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   const soloSaving = useSelector((state) => state.soloSavingReducer);
   const currentUser = useSelector((state) => state.getUserReducer);
+
   // useSelector((state) => console.log('State:', state));
   const [activeTab, setActiveTab] = useState(0);
   const [today, setToday] = useState('');
@@ -60,10 +68,10 @@ export default function SoloSavingDashBoard({navigation}) {
 
   useEffect(() => {
     console.log('Loading....');
-    getUserSavings();
+    _getUserSavings();
   }, []);
 
-  const getUserSavings = async () => {
+  const _getUserSavings = async () => {
     setSpinner(true);
     const token = await getToken();
     const url = 'http://67.207.86.39:8000/api/v1/get_user_savings';
@@ -80,7 +88,7 @@ export default function SoloSavingDashBoard({navigation}) {
 
       setLocked(resData.locked);
       setSavingTitle(resData.name);
-      setTotalSaving(resData.amount_save);
+      // setTotalSaving(resData.amount_save);
       setSavingsTarget(resData.target_amount);
       setPercentAchieved(
         (
@@ -88,6 +96,7 @@ export default function SoloSavingDashBoard({navigation}) {
           100
         ).toFixed(0),
       );
+
       setSpinner(false);
     } catch (error) {
       setSpinner(false);
@@ -95,8 +104,51 @@ export default function SoloSavingDashBoard({navigation}) {
     }
   };
 
+  useEffect(() => {
+    const amount_saved = Number(getSoloSaving?.data[0].amount_save);
+    console.log('THE THE AMOUNT: ', amount_saved);
+    setTotalSaving(amount_saved || 0);
+    // setSavings(amount_saved || 0);
+    // getSavings();
+    // getTransactions();
+  }, []);
+
+  const getSavings = async () => {
+    try {
+      const response = await getUserSavings();
+
+      if (response.status == 200) {
+        const savings_id = response.data.data[0].id;
+
+        const one_savings = await getOneUserSavings(savings_id);
+
+        console.log('One Savings Here: ', one_savings.data.data);
+      }
+
+      // console.log('The User Savings: ', response.data.data);
+      // console.log('The User Savings ID: ', savings_id);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+
   const getTransactions = async () => {
-    const url = '/api/v1/get_savings_history/:savings_id';
+    try {
+      const response = await getUserSavings();
+
+      if (response.status == 200) {
+        const savings_id = response.data.data[0].id;
+
+        const history = await getSavingsHistory(savings_id);
+
+        if (history.status == 200) {
+          // console.log('ID: ', savings_id);
+          console.log('History: ', history.data.data);
+        }
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   };
 
   return (
@@ -415,9 +467,11 @@ export default function SoloSavingDashBoard({navigation}) {
           </View>
         </View>
 
+        <TransactionsTab />
+
         {/*  */}
 
-        <View
+        {/* <View
           style={{
             backgroundColor: '#fff',
             flex: 1,
@@ -426,8 +480,6 @@ export default function SoloSavingDashBoard({navigation}) {
             borderTopRightRadius: 20,
             borderTopLeftRadius: 20,
             elevation: 10,
-            // borderWidth: 1,
-            // width: '100%',
           }}>
           <View style={{padding: 20}}>
             <Text
@@ -460,7 +512,6 @@ export default function SoloSavingDashBoard({navigation}) {
                     backgroundColor:
                       activeTab == index ? COLORS.light : 'transparent',
                   }}>
-                  {/* <View> */}
                   <Text
                     style={{
                       fontSize: 11,
@@ -468,12 +519,10 @@ export default function SoloSavingDashBoard({navigation}) {
                     }}>
                     {value}
                   </Text>
-                  {/* </View> */}
                 </TouchableOpacity>
               ))}
             </View>
 
-            {/* Transactions */}
             <View style={{flex: 1}}>
               <View style={{flex: 1}}>
                 {getSoloSaving.data.map((el, index) => {
@@ -501,26 +550,17 @@ export default function SoloSavingDashBoard({navigation}) {
                           flexDirection: 'row',
                           justifyContent: 'space-between',
                           alignItems: 'center',
-                          // borderWidth: 1,
+                          
                         }}>
                         <View>
                           <Text
                             style={{
                               fontSize: 14,
-                              // fontWeight: 'bold',
+                              
                               color: COLORS.dark,
                             }}>
                             {savingTitle}
                           </Text>
-                          {/* <Text
-                            style={{
-                              fontSize: 10,
-                              // fontWeight: 'bold',
-                              color: COLORS.dark,
-                              opacity: 0.5,
-                            }}>
-                            {el.reference}
-                          </Text> */}
                         </View>
 
                         <View
@@ -551,7 +591,7 @@ export default function SoloSavingDashBoard({navigation}) {
                 })}
               </View>
             </View>
-          </View>
+          </View> 
 
           <View
             style={{
@@ -560,7 +600,7 @@ export default function SoloSavingDashBoard({navigation}) {
               backgroundColor: '#F7F8FD',
             }}
           />
-        </View>
+        </View>*/}
       </ScrollView>
 
       <QuickSaveModal

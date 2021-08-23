@@ -136,6 +136,7 @@ export default function Login({navigation}) {
           username: res.data.authData.user.firstname,
           isLoggedIn: true,
           isProfileCompleted: res.data.authData.user.profile_complete,
+          emailVerified: res.data.authData.user.email_verified,
         });
         dispatch(
           setLoginState({
@@ -143,6 +144,7 @@ export default function Login({navigation}) {
             username: res.data.authData.user.firstname,
             isLoggedIn: true,
             isProfileCompleted: res.data.authData.user.profile_complete,
+            emailVerified: res.data.authData.user.email_verified,
           }),
         );
         navigation.navigate('Home');

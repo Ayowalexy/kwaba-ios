@@ -48,12 +48,14 @@ export default function Withdraw({navigation}) {
   }, []);
 
   useEffect(() => {
-    const totalSoloSavings =
-      store?.data?.length > 0
-        ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
-        : 0;
-    setSavings(totalSoloSavings);
-    console.log('Total: ', totalSoloSavings);
+    // const totalSoloSavings =
+    //   store?.data?.length > 0
+    //     ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
+    //     : 0;
+    // setSavings(totalSoloSavings);
+    // console.log('Total: ', totalSoloSavings);
+    const amount_saved = Number(store?.data[0].amount_save);
+    setSavings(amount_saved || 0);
   }, [store]);
 
   const handleSubmit = async (values) => {

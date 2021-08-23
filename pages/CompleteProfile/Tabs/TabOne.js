@@ -295,7 +295,7 @@ export default function TabOne(props) {
               onChange={handleDateSelect}
               mode="date"
               is24Hour={true}
-              display="default"
+              display="spinner"
               //   minimumDate={moment().toDate()}
             />
           )}

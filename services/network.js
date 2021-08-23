@@ -436,7 +436,72 @@ const createBuddySavings = async (data) => {
       headers: {Authorization: token},
     });
     return response;
-  } catch (erro) {
+  } catch (error) {
+    return error;
+  }
+};
+
+const getUserSavings = async () => {
+  const url = apiUrl + '/api/v1/get_user_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const getOneUserSavings = async (id) => {
+  const url = apiUrl + `/api/v1/get_one_savings/${id}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const getSavingsHistory = async (id) => {
+  const url = apiUrl + `/api/v1/get_savings_history/${id}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const addFundsToSavings = async (data) => {
+  const url = apiUrl + '/api/v1/add_funds_to_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const verifySavingsPayment = async (data) => {
+  const url = apiUrl + '/api/v1/verify_savings_payment';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {Authorization: token},
+    });
+    return response;
+  } catch (error) {
     return error;
   }
 };
@@ -472,4 +537,9 @@ export {
   referralDetails,
   me,
   createBuddySavings,
+  getUserSavings,
+  getOneUserSavings,
+  getSavingsHistory,
+  addFundsToSavings,
+  verifySavingsPayment,
 };

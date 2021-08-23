@@ -207,7 +207,7 @@ const Screen6 = ({navigation}) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => navigation.navigate('BuddySaving6')}
+            onPress={() => navigation.navigate('BuddySavingDashBoard')}
             style={[designs.button]}>
             <Text
               style={{

@@ -21,14 +21,13 @@ import moment from 'moment';
 const buddySavingFormSchema = yup.object().shape({
   savingDuration: yup.string().required('Please select saving duration'),
   savingStartDate: yup.string().required('Required'),
-  savingEndDate: yup.string().required('Required'),
+  // savingEndDate: yup.string().required('Required'),
   // saving,
 });
 
 export default function Screen1(props) {
   const {navigation} = props;
   const [showStartDate, setShowStartDate] = useState(false);
-  const [showEndDate, setShowEndDate] = useState(false);
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -36,6 +35,12 @@ export default function Screen1(props) {
   useEffect(() => {
     console.log('Props: ', props);
   }, []);
+
+  // const calculateEndDate = () => {
+  //   let end_date = moment(data.start_date)
+  //     .add(Number(data.how_long[0]), data.how_long[1].toUpperCase())
+  //     .format('YYYY-MM-DD');
+  // }
 
   const HowLongSelection = (props) => {
     const howLongList = ['3 Months', '6 Months', '1 Year'];
@@ -164,63 +169,7 @@ export default function Screen1(props) {
             onChange={handleStartDateSelect}
             mode="date"
             is24Hour={true}
-            display="default"
-            minimumDate={moment().toDate()}
-          />
-        )}
-      </View>
-    );
-  };
-
-  const EndDate = (props) => {
-    const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched, setFieldValue},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-
-    const handleEndDateSelect = (event, selectedDate) => {
-      const currentDate = selectedDate || endDate;
-      setShowEndDate(Platform.OS === 'ios');
-      setEndDate(currentDate);
-      setFieldValue('savingEndDate', currentDate);
-    };
-
-    return (
-      <View style={[styles.dateBtnWrapper]}>
-        <TouchableOpacity
-          style={[styles.dateBtn]}
-          onPress={() => {
-            setShowEndDate(true);
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: '600',
-              color: '#465969',
-              lineHeight: 19,
-            }}>
-            {endDate != '' ? moment(endDate).format('YYYY-MM-DD') : 'End date'}
-          </Text>
-          <IconFA
-            name="calendar-alt"
-            size={18}
-            style={{marginLeft: 10}}
-            color="#2A286A"
-          />
-        </TouchableOpacity>
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-
-        {showEndDate && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={endDate || new Date(Date.now())}
-            onChange={handleEndDateSelect}
-            mode="date"
-            is24Hour={true}
-            display="default"
+            display="spinner"
             minimumDate={moment().toDate()}
           />
         )}
@@ -241,7 +190,6 @@ export default function Screen1(props) {
       initialValues={{
         savingDuration: '',
         savingStartDate: '',
-        savingEndDate: '',
       }}
       onSubmit={(values) => {
         handleSubmit(values);
@@ -283,7 +231,33 @@ export default function Screen1(props) {
                   <Text style={{paddingHorizontal: 10, color: COLORS.dark}}>
                     to
                   </Text>
-                  <Field component={EndDate} name="savingEndDate" />
+                  {/* <Field component={EndDate} name="savingEndDate" /> */}
+                  <View style={[styles.dateBtnWrapper]}>
+                    <TouchableOpacity style={[styles.dateBtn]}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: '600',
+                          color: '#465969',
+                          lineHeight: 19,
+                        }}>
+                        {values.savingStartDate && values.savingDuration
+                          ? moment(values.savingStartDate)
+                              .add(
+                                Number(values.savingDuration[0]),
+                                values.savingDuration[2].toUpperCase(),
+                              )
+                              .format('YYYY-MM-DD')
+                          : 'End date'}
+                      </Text>
+                      <IconFA
+                        name="calendar-alt"
+                        size={18}
+                        style={{marginLeft: 10}}
+                        color="#2A286A"
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </>
 
@@ -320,8 +294,16 @@ export default function Screen1(props) {
                       fontSize: 12,
                       lineHeight: 30,
                     }}>
-                    {endDate != ''
+                    {/* {endDate != ''
                       ? moment(endDate).format('DD MMMM YYYY')
+                      : 'withdrawal date'} */}
+                    {values.savingStartDate && values.savingDuration
+                      ? moment(values.savingStartDate)
+                          .add(
+                            Number(values.savingDuration[0]),
+                            values.savingDuration[2].toUpperCase(),
+                          )
+                          .format('DD MMMM YYYY')
                       : 'withdrawal date'}
                   </Text>
                 </TouchableOpacity>

@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import TabOne from './Tabs/TabOne';
 import TabTwo from './Tabs/TabTwo';
 import TabThree from './Tabs/TabThree';
+import TabFour from './Tabs/TabFour';
 
 const renderTabBar = (props) => (
   <TabBar
@@ -36,7 +37,7 @@ const renderTabBar = (props) => (
       <Text
         style={{
           color: focused ? 'white' : COLORS.grey,
-          fontSize: 12,
+          fontSize: 10,
         }}>
         {route.title}
       </Text>
@@ -52,12 +53,14 @@ export default function Profile({navigation}) {
     {key: 'first', title: 'Personal'},
     {key: 'second', title: 'Employment'},
     {key: 'third', title: 'Security'},
+    {key: 'fourth', title: 'Rent'},
   ]);
 
   const renderScene = SceneMap({
     first: TabOne,
     second: TabTwo,
     third: TabThree,
+    fourth: TabFour,
   });
 
   return (

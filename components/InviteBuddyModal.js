@@ -122,6 +122,7 @@ export default function InviteBuddyModal(props) {
                 placeholderTextColor="#777"
                 value={fullname}
                 onChangeText={(text) => setFullname(text)}
+                keyboardType="default"
               />
               <TextInput
                 style={[styles.textInput]}
@@ -129,6 +130,7 @@ export default function InviteBuddyModal(props) {
                 placeholderTextColor="#777"
                 value={email}
                 onChangeText={(text) => setEmail(text)}
+                keyboardType="email-address"
               />
               <TextInput
                 style={[styles.textInput]}
@@ -136,6 +138,7 @@ export default function InviteBuddyModal(props) {
                 placeholderTextColor="#777"
                 value={phone}
                 onChangeText={(text) => setPhone(text)}
+                keyboardType="phone-pad"
               />
 
               <View

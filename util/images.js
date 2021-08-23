@@ -103,6 +103,10 @@ const declineImage = require('../assets/images/declineImage.png');
 
 const addosserLogo = require('../assets/images/addosser_logo.png');
 
+const Group3950 = require('../assets/images/Group3950.png');
+
+const frame = require('../assets/images/frame01.png');
+
 export {
   logo,
   applicationReview,
@@ -202,4 +206,6 @@ export {
   guarantorImage,
   declineImage,
   addosserLogo,
+  Group3950,
+  frame,
 };

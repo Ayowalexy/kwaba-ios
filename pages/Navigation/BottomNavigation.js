@@ -13,6 +13,7 @@ import Borrow from '../Borrow/Borrow';
 import screen1 from '../CompleteProfile/Screen1';
 import {COLORS, FONTS, images, icons} from '../../util/index';
 import Home from '../Home/Home';
+import NewHome from '../Home/NewHome';
 import EmergencyLoanRequestDashBoard from '../Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
 import Account from '../UserAccount/Account';
 import AccountPage from '../UserAccount/AccountPage';
@@ -34,12 +35,12 @@ const tabItems = [
   },
   {
     title: 'Home',
-    screen: Home,
+    screen: NewHome,
   },
   {
     title: 'Bills',
     icon: 'receipt',
-    screen: BillsHome,
+    screen: Home,
   },
 
   {

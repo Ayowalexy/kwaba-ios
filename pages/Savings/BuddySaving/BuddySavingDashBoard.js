@@ -12,7 +12,11 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../../util/index';
-import {currencyFormat, numberWithCommas} from '../../../util/numberFormatter';
+import {
+  currencyFormat,
+  formatNumber,
+  numberWithCommas,
+} from '../../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
@@ -187,7 +191,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     fontWeight: 'bold',
                     color: COLORS.white,
                   }}>
-                  ₦{currencyFormat(Number(1645978))}
+                  ₦{currencyFormat(Number(3645978))}
                 </Text>
                 <Icon
                   name="lock-closed"
@@ -288,7 +292,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦{currencyFormat(Number(2000000))}
+                  ₦{formatNumber(Number(4000000))}
                 </Text>
               </View>
             </View>
@@ -385,7 +389,7 @@ export default function SoloSavingDashBoard({navigation}) {
               </Text>
               <Text
                 style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
-                ₦645,000
+                ₦{formatNumber(Number(645978))}
               </Text>
             </View>
 

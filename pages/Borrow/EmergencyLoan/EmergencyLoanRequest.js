@@ -122,8 +122,8 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   ];
 
   const handleSubmit = async () => {
-    setSpinner(true);
-    setVisible(false);
+    // setSpinner(true);
+    // setVisible(false);
     // setting this manually
     // setBankAccountName('Joshua Udo Nwosu');
     // setBankAccountNumber('0094552107');
@@ -132,21 +132,28 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     const data = {
       loan_amount: loanAmount,
       loan_purpose: loanPurpose,
-      disbursement_account_name: bankAccountName,
-      disbursement_account_number: bankAccountNumber,
-      disbursement_account_bank: bankName,
+      // disbursement_account_name: bankAccountName,
+      // disbursement_account_number: bankAccountNumber,
+      // disbursement_account_bank: bankName,
+      disbursement_account_name: 'JOSHUA UDO NWOSU',
+      disbursement_account_number: '0094552107',
+      disbursement_account_bank: 'Access Bank',
     };
 
+    console.log('DATA: ', data);
+
     try {
+      setSpinner(false);
       const response = await applyForEmergencyLoan(data);
-      if ((response.status = 201)) {
-        setSpinner(false);
-        setSuccessModal(true);
-        console.log('Success');
-      } else {
-        setSpinner(false);
-        console.log(response.data.statusMsg);
-      }
+      console.log('RESPONSE: ', response);
+      // if ((response.status = 201)) {
+      //   setSpinner(false);
+      //   setSuccessModal(true);
+      //   console.log('Success');
+      // } else {
+      //   setSpinner(false);
+      //   console.log(response.data.statusMsg);
+      // }
     } catch (error) {
       setSpinner(false);
       console.log(error);
@@ -219,14 +226,14 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                 Disbursement Account
               </Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('CardAndBankDetails')}>
+                onPress={() => navigation.navigate('Disbursement')}>
                 <Text
                   style={{
                     fontSize: 12,
                     color: COLORS.secondary,
                     fontWeight: 'bold',
                   }}>
-                  Change
+                  Add Account
                 </Text>
               </TouchableOpacity>
             </View>

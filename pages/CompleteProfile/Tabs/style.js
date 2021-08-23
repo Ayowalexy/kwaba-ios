@@ -11,7 +11,7 @@ const designs = StyleSheet.create({
     padding: 15,
     paddingLeft: 20,
     paddingRight: 20,
-    color: '#777',
+    color: '#555',
     // fontWeight: 'bold',
   },
   customInput: {

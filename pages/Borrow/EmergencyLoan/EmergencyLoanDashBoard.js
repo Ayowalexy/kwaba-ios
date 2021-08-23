@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   FlatList,
   Alert,
+  StyleSheet,
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../../util/index';
@@ -24,7 +25,12 @@ import {currencyFormat} from '../../../util/numberFormatter';
 import moment from 'moment';
 import SuccessModal from '../../../components/SuccessModal';
 
-const EmergencyLoanDashBoard = ({navigation}) => {
+import RNPaystack from 'react-native-paystack';
+RNPaystack.init({
+  publicKey: 'sk_test_bc0f8a2e9c28d0291156739430fd631e6a867ba9',
+});
+
+export default function EmergencyLoanDashBoard({navigation}) {
   const [spinner, setSpinner] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [verificationSpinner, setVerificationSpinner] = useState(false);
@@ -63,6 +69,26 @@ const EmergencyLoanDashBoard = ({navigation}) => {
       // console.log(activeLoan);
     })();
   }, []);
+
+  const chargeCard = async () => {
+    RNPaystack.chargeCard({
+      cardNumber: '4123450131001381',
+      expiryMonth: '10',
+      expiryYear: '22',
+      cvc: '883',
+      email: 'chargeIOS@master.dev',
+      amountInKobo: 150000,
+      subAccount: 'ACCT_pz61jjjsslnx1d9',
+    })
+      .then((response) => {
+        console.log(response); // card charged successfully, get reference here
+      })
+      .catch((error) => {
+        console.log(error); // error is a javascript Error object
+        console.log(error.message);
+        console.log(error.code);
+      });
+  };
 
   const handlePayment = async () => {
     const data = {loanId: loanId};
@@ -140,356 +166,191 @@ const EmergencyLoanDashBoard = ({navigation}) => {
       <Icon
         onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"
-        size={20}
-        style={{padding: 20, fontWeight: '900'}}
+        size={25}
+        style={{padding: 15, fontWeight: '900'}}
         color={COLORS.primary}
       />
       <View style={{flex: 1, paddingHorizontal: 20}}>
         <Text
           style={[
-            FONTS.h1FontStyling,
             {
               color: '#2A286A',
               textAlign: 'left',
               fontWeight: 'bold',
+              fontSize: 20,
               marginBottom: 17,
+              // borderWidth: 1,
               // marginLeft: 16,
             },
           ]}>
           Emergency Fund
         </Text>
-        <Text
-          style={[
-            FONTS.body3FontStyling,
-            {
-              fontSize: 10,
-              lineHeight: 13,
-              color: COLORS.light,
-              backgroundColor: '#EDECFC',
-              borderRadius: 5,
-              paddingVertical: 10,
-              paddingLeft: 10,
-              paddingRight: 50,
-              // marginHorizontal: 16,
-              marginBottom: 22,
-            },
-          ]}>
-          {/* We hope this loan was helpful. Please ensure to make repayment on
-          time. */}
-          Your fund will land into your account and your dashboard will be
-          updated soonest.
-        </Text>
-
         <View
-          style={[
-            designs.activeLoanDashboard,
-            {
-              // marginHorizontal: 16,
-              // elevation: 20,
-              backgroundColor: COLORS.white,
-            },
-          ]}>
-          <View
+          style={{
+            // backgroundColor: COLORS.light,
+            backgroundColor: '#9D98EC50',
+            paddingVertical: 8,
+            paddingHorizontal: 15,
+            borderRadius: 5,
+          }}>
+          <Text
             style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: 12,
+              fontSize: 12,
+              color: COLORS.dark,
+              fontWeight: 'normal',
+              lineHeight: 18,
             }}>
-            <View>
-              <Text
-                style={{
-                  fontSize: 14,
-                  lineHeight: 19,
-                  color: COLORS.primary,
-                  marginTop: 19,
-                  marginLeft: 6,
-                  marginBottom: 10,
-                }}>
-                Loan Repayment Amount
-              </Text>
-              <Text
-                style={{
-                  fontSize: 24,
-                  lineHeight: 38,
-                  color: COLORS.primary,
-                  fontWeight: 'bold',
-                  marginLeft: 6,
-                }}>
-                {/* ₦{currencyFormat(Number(repaymentAmount))} */}₦
-                {currencyFormat(Number(0))}
-              </Text>
-            </View>
-            <Image
-              style={{width: 60, height: 60, alignSelf: 'flex-end', right: -10}}
-              source={images.maskGroup31}
-            />
-          </View>
-          <View
-            style={{
-              backgroundColor: '#46448d',
-              borderRadius: 5,
-              padding: 10,
-              marginBottom: 12,
-            }}>
+            Your fund will land into your account and your dashboard will be
+            updated soonest.
+          </Text>
+        </View>
+
+        <View style={[styles.dashboard]}>
+          <View style={[styles.box1]}>
             <View
               style={{
-                padding: 6,
-                flexDirection: 'row',
                 justifyContent: 'space-between',
+                flexDirection: 'row',
                 alignItems: 'center',
               }}>
               <View>
+                <Text style={{fontSize: 10, color: COLORS.dark}}>
+                  Loan Repayment Amount
+                </Text>
                 <Text
-                  style={[
-                    FONTS.body1FontStyling,
-                    {color: COLORS.white, fontSize: 12},
-                  ]}>
+                  style={{
+                    fontSize: 18,
+                    color: COLORS.dark,
+                    fontWeight: 'bold',
+                  }}>
+                  ₦200,000.00
+                </Text>
+              </View>
+              <Image
+                style={{
+                  width: 50,
+                  height: 50,
+                  alignSelf: 'flex-end',
+                  // right: -10,
+                }}
+                source={images.Group3950}
+                resizeMode="contain"
+              />
+            </View>
+          </View>
+          <View style={[styles.box2]}>
+            <View
+              style={{
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <View>
+                <Text style={{fontSize: 10, color: COLORS.white}}>
                   Loan Amount
                 </Text>
                 <Text
-                  style={[
-                    FONTS.body1FontStyling,
-                    {color: COLORS.white, fontSize: 16, fontWeight: 'bold'},
-                  ]}>
-                  {/* ₦{currencyFormat(Number(loanAmount))} */}₦
-                  {currencyFormat(Number(0))}
+                  style={{
+                    fontSize: 14,
+                    color: COLORS.white,
+                    fontWeight: 'bold',
+                  }}>
+                  ₦200,000.00
                 </Text>
               </View>
-              <View>
-                <TouchableOpacity
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      color: COLORS.secondary,
-                      lineHeight: 20,
-                    }}>
-                    {' '}
-                    View Details{' '}
-                  </Text>
-                  <Icon
-                    name="chevron-forward-outline"
-                    size={8}
-                    color={COLORS.secondary}
-                  />
-                </TouchableOpacity>
-              </View>
+              <TouchableOpacity>
+                <Text style={{color: COLORS.secondary, fontSize: 12}}>
+                  View details
+                </Text>
+              </TouchableOpacity>
             </View>
+
             <View
               style={{
-                padding: 6,
-                flexDirection: 'row',
                 justifyContent: 'space-between',
+                flexDirection: 'row',
                 alignItems: 'center',
-                // marginTop: 15,
+                marginTop: 30,
               }}>
               <View>
-                <Text
-                  style={[
-                    FONTS.body1FontStyling,
-                    {color: COLORS.white, fontSize: 12},
-                  ]}>
+                <Text style={{fontSize: 10, color: COLORS.white}}>
                   Due Date
                 </Text>
                 <Text
-                  style={[
-                    FONTS.body1FontStyling,
-                    {color: COLORS.white, fontSize: 16, fontWeight: 'bold'},
-                  ]}>
-                  {dueDate != '' ? dueDate : '---'}
+                  style={{
+                    fontSize: 14,
+                    color: COLORS.white,
+                    fontWeight: 'bold',
+                  }}>
+                  17, Feb 2021
                 </Text>
               </View>
-              {/* <TouchableOpacity
+              <TouchableOpacity
+                onPress={chargeCard}
                 style={{
                   backgroundColor: COLORS.light,
-                  // padding: 10,
-                  borderRadius: 20,
-                  justifyContent: 'center',
-                }}
-                onPress={handlePayment}>
-                <View style={{flexDirection: 'row'}}>
-                  <Text
-                    style={{
-                      color: COLORS.white,
-                      fontSize: 12,
-                      // paddingHorizontal: 3,
-                    }}>
-                    Pay now
-                  </Text>
-                  <Icon
-                    name="chevron-forward-outline"
-                    size={12}
-                    style={{
-                      color: COLORS.white,
-                      marginLeft: 2,
-                      alignSelf: 'center',
-                    }}
-                  />
-                </View>
-              </TouchableOpacity> */}
-              {/* <TouchableOpacity
-                style={{
-                  backgroundColor: COLORS.light,
-                  borderRadius: 10,
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  padding: 10,
                   paddingHorizontal: 15,
-                  paddingVertical: 10,
-                }}
-                onPress={handlePayment}>
-                <Text
-                  style={{
-                    color: COLORS.white,
-                  }}>
-                  Pay now
-                </Text>
-                <Icon
-                  name="chevron-forward-outline"
-                  size={12}
-                  style={{
-                    color: COLORS.white,
-                    marginLeft: 5,
-                  }}
-                />
-              </TouchableOpacity> */}
+                  borderRadius: 5,
+                }}>
+                <Text style={{color: COLORS.white, fontSize: 12}}>Pay now</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
-        <Spinner
-          visible={spinner}
-          textContent={'Initializing transactions...'}
-          animation="fade"
-          textStyle={{
-            color: 'white',
-            fontSize: 20,
-            fontWeight: 'bold',
-            lineHeight: 30,
-          }}
-          size="large"
-        />
-        <Spinner
-          visible={verificationSpinner}
-          textContent={'Verifying transactions...'}
-          animation="fade"
-          textStyle={{
-            color: 'white',
-            fontSize: 20,
-            fontWeight: 'bold',
-            lineHeight: 30,
-          }}
-          size="large"
-        />
-        <SuccessModal
-          successModal={successModal}
-          setSuccessModal={setSuccessModal}
-          handlePress={() => setSuccessModal(!successModal)}
-          successHeading="Transaction Successful"
-          successText="Your payment has been verified"
-        />
 
-        {/* <View
-          style={{
-            flex: 1,
-            borderTopLeftRadius: 20,
-            borderTopRightRadius: 20,
-            backgroundColor: COLORS.white,
-            paddingVertical: 13,
-            paddingHorizontal: 16,
-            marginTop: 19,
-          }}>
-          <Text
-            style={[
-              FONTS.h3FontStyling,
-              {
-                color: COLORS.primary,
-                paddingBottom: 12,
-                fontWeight: 'bold',
-                borderBottomWidth: 1,
-                borderBottomColor: '#BFBFBF',
-              },
-            ]}>
-            Repayments
-          </Text>
-          <View>
-            {repaidLoans && repaidLoans.length > 0 && (
-              <FlatList
-                data={repaidLoans}
-                renderItem={({item}) => (
-                  <View style={{marginTop: 12}}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginBottom: 4,
-                      }}>
-                      <View style={designs.flexRow}>
-                        <Text
-                          style={[
-                            designs.smallText,
-                            {fontSize: 8, color: COLORS.grey},
-                          ]}>
-                          {'\u2B24'} {''}
-                        </Text>
-                        <Text
-                          style={{
-                            color: COLORS.primary,
-                            fontSize: 12,
-                            lineHeight: 15,
-                          }}>
-                          {item.loan_purpose != ''
-                            ? item.loan_purpose
-                            : 'Untitled'}
-                        </Text>
-                      </View>
-                      <Text
-                        style={{
-                          color: COLORS.primary,
-                          fontSize: 12,
-                          lineHeight: 15,
-                        }}>
-                        ₦{currencyFormat(Number(item.repayment_amount))}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                      }}>
-                      <Text
-                        style={{
-                          color: COLORS.grey,
-                          fontSize: 10,
-                          lineHeight: 13,
-                        }}>
-                        {moment(item.updated_at).format('DD, MMM YYYY')}
-                      </Text>
-                      <Text
-                        style={{
-                          color: COLORS.grey,
-                          fontSize: 10,
-                          lineHeight: 13,
-                        }}>
-                        {item.repayment_status == 1
-                          ? 'PAID'
-                          : 'PAYMENT UNVERIFIED'}
-                      </Text>
-                    </View>
-                  </View>
-                )}
-                keyExtractor={(item) => item.id.toString()}
-              />
-            )}
+        <View style={[styles.transaction]}>
+          <View
+            style={{
+              padding: 10,
+              borderBottomWidth: 1,
+              borderBottomColor: '#BFBFBF50',
+            }}>
+            <Text
+              style={{fontSize: 16, fontWeight: 'bold', color: COLORS.dark}}>
+              Repayments
+            </Text>
           </View>
-        </View> */}
+        </View>
       </View>
     </View>
   );
-};
+}
 
-export default EmergencyLoanDashBoard;
+const styles = StyleSheet.create({
+  dashboard: {
+    width: '100%',
+    minHeight: 100,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: '#BFBFBF20',
+    borderRadius: 10,
+    marginTop: 10,
+    padding: 10,
+    // elevation: 0.2,
+  },
+  box1: {
+    width: '100%',
+    paddingVertical: 20,
+    paddingHorizontal: 5,
+  },
+  box2: {
+    backgroundColor: COLORS.primary,
+    width: '100%',
+    borderRadius: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+
+  transaction: {
+    backgroundColor: COLORS.white,
+    width: '100%',
+    padding: 10,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    marginTop: 10,
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#BFBFBF20',
+  },
+});

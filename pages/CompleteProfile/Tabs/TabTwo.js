@@ -156,7 +156,7 @@ export default function TabTwo(props) {
           <TextInput
             style={[designs.textField]}
             placeholder="Name of Company"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             keyboardType="default"
             value={companyName}
             onChangeText={(text) => setCompanyName(text)}
@@ -164,7 +164,7 @@ export default function TabTwo(props) {
           <TextInput
             style={[designs.textField]}
             placeholder="Location"
-            placeholderTextColor="#999"
+            placeholderTextColor="#555"
             keyboardType="default"
             value={location}
             onChangeText={(text) => setLocation(text)}

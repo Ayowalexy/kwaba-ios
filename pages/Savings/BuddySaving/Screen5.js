@@ -15,7 +15,11 @@ import {COLORS, icons, images} from '../../../util/index';
 import moment from 'moment';
 // import {useDispatch, useSelector} from 'react-redux';
 // import {soloSaving} from '../../../redux/actions/savingsActions';
-import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
+import {
+  unFormatNumber,
+  numberWithCommas,
+  formatNumber,
+} from '../../../util/numberFormatter';
 import InviteBuddyModal from '../../../components/InviteBuddyModal';
 
 export default function Screen5({navigation}) {
@@ -36,6 +40,12 @@ export default function Screen5({navigation}) {
       allocatedAmount: 1000000,
       monthlySaving: 330000,
     },
+    {
+      fullname: 'Adebis Joseph',
+      email: 'adebisijoseph@gmail.com',
+      allocatedAmount: 1000000,
+      monthlySaving: 330000,
+    },
   ]);
 
   const toggleSwitch = () => {
@@ -47,14 +57,119 @@ export default function Screen5({navigation}) {
     navigation.navigate('BuddySaving6');
   };
 
-  const CreateBuddiesTemplate = () => {
-    return (
-      <View style={{width: '100%', borderWidth: 1}}>
-        <View></View>
-        <View></View>
-      </View>
-    );
-  };
+  const CreateBuddiesTemplate = () =>
+    buddies.map((buddy, index) => {
+      return (
+        <View
+          key={index}
+          style={{
+            width: '100%',
+            // borderWidth: 1,
+            backgroundColor: COLORS.white,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            borderRadius: 10,
+            marginBottom: 10,
+            // elevation: 0.2,
+          }}>
+          <Icon
+            name="close-circle-outline"
+            size={20}
+            style={{
+              position: 'absolute',
+              right: 5,
+              top: 5,
+              color: COLORS.grey,
+              padding: 5,
+            }}
+          />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}>
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                backgroundColor: COLORS.light,
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 50,
+                marginRight: 10,
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: COLORS.white,
+                }}>
+                {buddy.fullname.toString().charAt(0).toUpperCase()}
+              </Text>
+            </View>
+            <View>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                }}>
+                {buddy.fullname}
+              </Text>
+              <Text style={{fontSize: 10, color: COLORS.grey}}>
+                {buddy.email}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              marginTop: 20,
+              // paddingHorizontal: 10,
+              // justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            <View style={{width: '50%'}}>
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                  color: COLORS.grey,
+                }}>
+                Allocated Amount
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                }}>
+                ₦{formatNumber(buddy.allocatedAmount)}
+              </Text>
+            </View>
+
+            <View style={{width: '50%'}}>
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                  color: COLORS.grey,
+                }}>
+                Monthly Saving
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                }}>
+                ₦{formatNumber(buddy.monthlySaving)}
+              </Text>
+            </View>
+          </View>
+        </View>
+      );
+    });
 
   return (
     <View style={designs.container}>
@@ -245,7 +360,9 @@ export default function Screen5({navigation}) {
 
         <View style={[styles.buddyInvites]}>
           {/* Buddies of 1 of how many buddies to invite */}
-          <Text style={[styles.buddyInvitesCount]}>Buddies(0 of 4) </Text>
+          <Text style={[styles.buddyInvitesCount]}>
+            Buddies({buddies.length} of 4){' '}
+          </Text>
 
           {!buddies.length ? (
             <View style={[styles.noBuddy]}>
@@ -395,8 +512,6 @@ const styles = StyleSheet.create({
 
   // buddies container
   buddiesContainer: {
-    borderWidth: 1,
-    borderColor: 'red',
     paddingVertical: 10,
   },
 });
