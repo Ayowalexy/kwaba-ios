@@ -66,6 +66,7 @@ export default function PasswordChangeModal(props) {
               placeholderTextColor="#ADADAD"
               value={oldpassword}
               onChangeText={(text) => setoldpassword(text)}
+              secureTextEntry
             />
 
             <TextInput
@@ -74,6 +75,7 @@ export default function PasswordChangeModal(props) {
               placeholderTextColor="#ADADAD"
               value={newpassword}
               onChangeText={(text) => setnewpassword(text)}
+              secureTextEntry
             />
 
             <TextInput
@@ -82,6 +84,7 @@ export default function PasswordChangeModal(props) {
               placeholderTextColor="#ADADAD"
               value={confirmnewpassword}
               onChangeText={(text) => setconfirmnewpassword(text)}
+              secureTextEntry
             />
 
             <TouchableOpacity

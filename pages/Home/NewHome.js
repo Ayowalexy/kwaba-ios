@@ -26,6 +26,7 @@ import ComingSoon from '../../components/ComingSoon';
 import QuickSaveModal from '../../components/QuickSaveModal';
 import axios from 'axios';
 import Carousel from 'react-native-snap-carousel';
+import CompleteProfileModal from './CompleteProfileModal';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -41,46 +42,106 @@ export default function NewHome({navigation}) {
   const [instantLoan, setInstantLoan] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
+  const [completeProfileModal, setCompleteProfileModal] = useState(false);
 
   const layout = useWindowDimensions();
 
   useEffect(() => {
-    console.log('Layout size: ', layout);
+    if (login) setName(login.username);
+
+    // email verified
+    if (login.user.emailVerified == 0) {
+      setIsProfileComplete(false);
+    } else {
+      setIsProfileComplete(false);
+    }
+  }, [login]);
+
+  useEffect(() => {
+    dispatch(getTotalSoloSavings());
   }, []);
 
-  const [slides, setSlides] = useState([
+  useEffect(() => {
+    if (store && store.data) {
+      const amount_saved = Number(store.data[0].amount_save);
+      setSavings(amount_saved || 0);
+    }
+  }, [store]);
+
+  const slides = [
     {
-      name: 'Joshua',
-      amount: 5400000,
-      color: COLORS.light,
+      title: 'Emergency Fund',
+      subtitle: 'Repayment amount',
+      amount: currencyFormat(instantLoan),
+      color: '#222',
+      actionText: 'Pay Now',
+      // route: () => setQuickSaveModal(true),
     },
     {
-      name: 'Jerry',
-      amount: 4200000,
+      title: 'Rent Now Pay Later',
+      subtitle: 'Next payment amount',
+      amount: currencyFormat(rentalFinance),
       color: COLORS.dark,
+      actionText: 'Pay Now',
+      // route: () => setQuickSaveModal(true),
     },
     {
-      name: 'Janet',
-      amount: 3500000,
+      title: 'Total Savings',
+      subtitle: 'Great job on your rent savings',
+      amount: currencyFormat(savings),
       color: COLORS.primary,
+      actionText: 'Deposit',
+      route: () =>
+        isProfileComplete
+          ? setQuickSaveModal(true)
+          : setCompleteProfileModal(true),
     },
-  ]);
+  ];
 
   const quickActions = [
     {
-      name: 'Emergency funds',
-      image: icons.quicksave,
-      route: () => navigation.navigate('EmergencyFundOnboarding'),
+      name: 'Emergency\nfunds',
+      image: icons.ic3,
+      route: () =>
+        isProfileComplete
+          ? navigation.navigate('EmergencyFundOnboarding')
+          : setCompleteProfileModal(true),
     },
     {
       name: 'Buy Airtime',
-      image: icons.buyairtime,
+      image: icons.ic1,
       route: () => navigation.navigate('AirtimeHome'),
     },
     {
       name: 'Pay Bills',
-      image: icons.paybills,
+      image: icons.ic2,
       route: () => navigation.navigate('BillsHome'),
+    },
+    // {
+    //   name: 'Buy now pay\nlater',
+    //   image: icons.ic4,
+    //   route: () => navigation.navigate('BillsHome'),
+    // },
+  ];
+
+  const bottomCards = [
+    {
+      title: 'Savings',
+      body:
+        'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
+      img: images.maskGroup30,
+    },
+    {
+      title: 'Loans',
+      body:
+        'Get loans to pay your rent, buy a house or cater to unexpected expenses.',
+      img: images.maskGroup29,
+    },
+    {
+      title: 'Refer and Earn',
+      body:
+        'Invite your friends and family to use  Kwaba and earn from every referral ',
+      img: images.giftPackage,
     },
   ];
 
@@ -89,8 +150,8 @@ export default function NewHome({navigation}) {
     return (
       <View
         style={{
-          //   backgroundColor: item.color,
-          backgroundColor: COLORS.primary,
+          backgroundColor: item.color,
+          //   backgroundColor: COLORS.primary,
           width: '100%',
           height: 180,
           padding: 30,
@@ -121,7 +182,8 @@ export default function NewHome({navigation}) {
               alignItems: 'center',
             }}>
             <Text style={{fontSize: 14, color: COLORS.white}}>
-              Current Savings
+              {/* Current Savings */}
+              {item.title}
             </Text>
             <View
               style={{
@@ -131,9 +193,12 @@ export default function NewHome({navigation}) {
               }}>
               <Text
                 style={{fontSize: 12, color: COLORS.white, marginRight: 10}}>
-                Deposit
+                {item.actionText}
               </Text>
               <TouchableOpacity
+                // onPress={() => navigation.navigate('PaymentForm')}
+                // onPress={() => setShowModal(true)}
+                onPress={item.route}
                 style={{
                   width: 25,
                   height: 25,
@@ -157,7 +222,7 @@ export default function NewHome({navigation}) {
               }}>
               <Text
                 style={{fontSize: 12, color: COLORS.white, marginRight: 20}}>
-                Greate job on your rent savings
+                {item.subtitle}
               </Text>
               <View
                 style={{
@@ -210,7 +275,7 @@ export default function NewHome({navigation}) {
             }}>
             <Text
               style={{fontWeight: 'bold', fontSize: 15, color: COLORS.white}}>
-              J
+              {name.charAt(0)}
             </Text>
           </View>
           <Text
@@ -221,65 +286,233 @@ export default function NewHome({navigation}) {
               //   fontWeight: 'bold',
               lineHeight: 19,
             }}>
-            Hey Mark, Goodevening
+            Hey {name}, Goodevening
           </Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
       </View>
-      <Carousel
-        ref={(c) => {
-          console.log('C: ', c);
-        }}
-        data={slides}
-        renderItem={_renderItem}
-        sliderWidth={layout.width}
-        itemWidth={layout.width - 40}
-        layout={'tinder'}
-        layoutCardOffset={16}
-        firstItem={2}
-        // loop={true}
-        containerCustomStyle={{
-          borderWidth: 1,
-          borderColor: COLORS.secondary,
-          flex: 1,
-          padding: 0,
-          margin: 0,
-        }}
-        slideStyle={{overflow: 'hidden', borderRadius: 10}}
-      />
-
-      <View style={{width: '100%', flex: 1}}>
+      {!isProfileComplete && (
+        <View style={designs.secondBar}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{width: 25, marginRight: 11}}
+              source={icons.profile}
+              resizeMode="contain"
+            />
+            <Text
+              style={{
+                fontFamily: 'CircularStd',
+                fontSize: 10,
+                lineHeight: 12,
+                color: '#FB8B24',
+                fontWeight: 'bold',
+              }}>
+              Complete your profile{' '}
+              <Text style={{color: COLORS.dark}}>
+                and get access to{'\n'}Emergency funds and Rent now pay later
+              </Text>
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('CompleteProfile2')}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                  lineHeight: 13,
+                  color: '#00DC99',
+                }}>
+                Complete Profile
+              </Text>
+              <Icon name="chevron-forward" color="#00DC99" size={15} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingVertical: 10,
+            position: 'relative',
+            flex: 1,
+            marginBottom: 20,
+            marginTop: 10,
+            //   height: 200,
+            //   backgroundColor: 'red',
           }}>
-          {quickActions.map((item, index) => {
-            return (
-              <TouchableOpacity key={index} onPress={item.route}>
-                <Image
-                  resizeMode="contain"
-                  source={item.image}
-                  style={{width: 90, height: 90}}
-                />
-                <Text
-                  style={{
-                    color: COLORS.dark,
-                    fontSize: 10,
-                    textAlign: 'center',
-                    marginTop: -25,
-                  }}>
-                  {item.name}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+          <Carousel
+            //   ref={(c) => {
+            //     console.log('C: ', c);
+            //   }}
+            data={slides}
+            renderItem={_renderItem}
+            sliderWidth={layout.width}
+            itemWidth={layout.width - 40}
+            //   sliderHeight={layout.width}
+            //   itemHeight={layout.width}
+            layout={'tinder'}
+            layoutCardOffset={16}
+            firstItem={2}
+            // loop={true}
+            containerCustomStyle={{
+              //   borderWidth: 1,
+              //   borderColor: COLORS.secondary,
+              flex: 1,
+              padding: 0,
+              margin: 0,
+              height: 220,
+            }}
+            slideStyle={{overflow: 'hidden', borderRadius: 10}}
+            indicatorStyle={{width: 10, backgroundColor: 'blue'}}
+          />
+          <ScrollIndicator currentIndex={0} setCurrentIndex={0} />
         </View>
-      </View>
+
+        <View style={{width: '100%', flex: 1}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              paddingVertical: 10,
+              marginBottom: 10,
+            }}>
+            {quickActions.map((item, index) => {
+              return (
+                <View
+                  key={index}
+                  style={{
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    //   marginHorizontal: 10,
+                    width: 80,
+                    //   justifyContent: 'flex-start',
+                    //   borderWidth: 1,
+                  }}>
+                  <TouchableOpacity
+                    onPress={item.route}
+                    style={{
+                      width: 50,
+                      height: 50,
+                      backgroundColor: '#EDECFC',
+                      padding: 10,
+                      borderRadius: 10,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Image
+                      resizeMode="contain"
+                      source={item.image}
+                      style={{width: 25, height: 25}}
+                    />
+                  </TouchableOpacity>
+                  <Text
+                    style={{
+                      color: COLORS.dark,
+                      fontSize: 10,
+                      //   fontWeight: 'bold',
+                      textAlign: 'center',
+                      marginTop: 5,
+                    }}>
+                    {item.name}
+                  </Text>
+                </View>
+              );
+            })}
+          </View>
+
+          <View
+            style={{
+              paddingHorizontal: 10,
+              overflow: 'hidden',
+            }}>
+            {bottomCards.map((item, index) => {
+              return (
+                <View
+                  key={index}
+                  style={{
+                    backgroundColor:
+                      index == 0 ? '#EDECFC' : index == 1 ? 'white' : '#01A573',
+                    marginBottom: 10,
+                    borderRadius: 10,
+                    elevation: 0.5,
+                    borderWidth: 1,
+                    borderColor: '#EDECFC',
+                  }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setCompleteProfileModal(true);
+                    }}
+                    style={{overflow: 'hidden', borderRadius: 10}}>
+                    <View style={{padding: 20}}>
+                      <Text
+                        style={{
+                          color: index == 2 ? 'white' : COLORS.dark,
+                          fontFamily: 'CircularStd',
+                          fontSize: 14,
+                          lineHeight: 23,
+                          fontWeight: 'bold',
+                        }}>
+                        {item.title}
+                      </Text>
+                      <Text
+                        style={{
+                          width: '75%',
+                          marginTop: 9,
+                          color: index == 2 ? 'white' : COLORS.dark,
+                          fontFamily: 'CircularStd',
+                          fontSize: 12,
+                          lineHeight: 20,
+                          fontWeight: '600',
+                        }}>
+                        {item.body}
+                      </Text>
+                    </View>
+
+                    <Image
+                      style={{
+                        width: '40%',
+                        height: 100,
+                        position: 'absolute',
+                        right: -40,
+                        bottom: -8,
+                      }}
+                      source={item.img}
+                      resizeMode="contain"
+                    />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </ScrollView>
+
+      <QuickSaveModal
+        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+        visible={quickSaveModal}
+      />
+
+      <CompleteProfileModal
+        onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
+        visible={completeProfileModal}
+        navigation={navigation}
+      />
     </View>
   );
 }
@@ -288,6 +521,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     fontFamily: 'CircularStd',
-    backgroundColor: '#E5E5E5',
+    backgroundColor: 'white',
   },
 });

@@ -98,6 +98,11 @@ const onboardingLoader3 = require('../assets/shapes/onboardingLoader3.png');
 
 const emailSent = require('../assets/icons/email_sent.png');
 
+const ic1 = require('../assets/icons/quick/ic1.png');
+const ic2 = require('../assets/icons/quick/ic2.png');
+const ic3 = require('../assets/icons/quick/ic3.png');
+const ic4 = require('../assets/icons/quick/ic4.png');
+
 export {
   instagram,
   accountCircle,
@@ -188,4 +193,8 @@ export {
   cardAndBank,
   passwordResetSuccess,
   emailSent,
+  ic1,
+  ic2,
+  ic3,
+  ic4,
 };

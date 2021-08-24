@@ -17,13 +17,11 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {addFundsToSavings, getUserSavings} from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {InAppBrowser} from 'react-native-inappbrowser-reborn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import {useSelector, useDispatch} from 'react-redux';
-
-import RNPaystack from 'react-native-paystack';
-import CreditCardModal from './CreditCard/CreditCardModal';
-RNPaystack.init({
-  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
-});
+import {getTotalSoloSavings} from '../redux/actions/savingsActions';
 
 const amountSchema = yup.object().shape({
   amount: yup.string().required('Please provide amount'),
@@ -34,8 +32,6 @@ export default function QuickSaveModal(props) {
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
-  const [modal, setModal] = useState(false);
-  const [resDataObj, setResDataObj] = useState('');
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
@@ -44,9 +40,70 @@ export default function QuickSaveModal(props) {
     onRequestClose();
   };
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   useEffect(() => {
     getUserSavings();
   }, []);
+
+  const verifyPayment = async (data) => {
+    const token = await getToken();
+    const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+    try {
+      const response = await axios.post(url, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error.message;
+    }
+  };
+
+  const openInAppBrowser = async (url) => {
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        const result = await InAppBrowser.open(url, {
+          // iOS Properties
+          dismissButtonStyle: 'done',
+          preferredBarTintColor: '#453AA4',
+          preferredControlTintColor: 'white',
+          readerMode: false,
+          animated: true,
+          modalPresentationStyle: 'fullScreen',
+          modalTransitionStyle: 'coverVertical',
+          modalEnabled: true,
+          enableBarCollapsing: false,
+          // Android Properties
+          showTitle: true,
+          toolbarColor: '#2A286A',
+          secondaryToolbarColor: 'black',
+          enableUrlBarHiding: true,
+          enableDefaultShare: true,
+          forceCloseOnRedirection: false,
+          hasBackButton: true,
+          // Specify full animation resource identifier(package:anim/name)
+          // or only resource name(in case of animation bundled with app).
+          animations: {
+            startEnter: 'slide_in_right',
+            startExit: 'slide_out_left',
+            endEnter: 'slide_in_left',
+            endExit: 'slide_out_right',
+          },
+        });
+
+        return result;
+      } else Linking.openURL(url);
+    } catch (error) {
+      return error.message;
+    }
+  };
 
   const handleSubmit = async (values) => {
     try {
@@ -65,15 +122,33 @@ export default function QuickSaveModal(props) {
 
         if (res.status == 200) {
           setSpinner(false);
-          setShowAmountField(false);
-          setModal(true);
-          const resData = res.data.data;
+          const result = await openInAppBrowser(
+            res.data.data.authorization_url,
+          );
 
-          // we can use redux to dispatch this data
-          // but for now let's use useState by send
-          // the data as props
-          setResDataObj(resData);
+          if (result.type == 'cancel') {
+            let data = {reference: res.data.data.reference};
+            const verify = await verifyPayment(data);
+
+            onRequestClose();
+            if (verify.status == 200) {
+              // navigation.navigate('SoloSavingDashboard');
+              Alert.alert('Successful', 'Payment was successful');
+
+              getUserSavings();
+              dispatch(getTotalSoloSavings());
+            }
+
+            // console.log('Payment verified: ', verify);
+            // console.log('dataa: ', data);
+          }
+          // console.log(res.data.data.authorization_url);
         }
+
+        // const
+
+        // console.log('Data: ', data);
+        // console.log('Res: ', res.status);
       }
     } catch (error) {
       console.log(error);
@@ -336,6 +411,28 @@ export default function QuickSaveModal(props) {
         onRequestClose={onRequestClose}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            {/* {visible && ( */}
+            {/* <>
+              {!showPaymentType ? (
+                <Animatable.View
+                  duration={300}
+                  delay={100}
+                  easing="ease-in-out"
+                  animation={'slideInLeft'}>
+                  <SavingsType />
+                </Animatable.View>
+              ) : (
+                <Animatable.View
+                  duration={300}
+                  delay={100}
+                  easing="ease-in-out"
+                  animation="slideInLeft">
+                  <PaymentType />
+                </Animatable.View>
+              )}
+            </> */}
+            {/* )} */}
+
             {showAmountField ? (
               <Formik
                 validationSchema={amountSchema}
@@ -410,14 +507,6 @@ export default function QuickSaveModal(props) {
           </View>
         </View>
       </Modal>
-
-      <CreditCardModal
-        onRequestClose={() => {
-          setModal(!modal);
-        }}
-        visible={modal}
-        info={resDataObj}
-      />
 
       <Spinner visible={spinner} size="large" />
     </View>

@@ -1,4 +1,5 @@
 import {StyleSheet, Dimensions} from 'react-native';
+import {COLORS} from '../../util';
 const {width} = Dimensions.get('window');
 
 const designs = StyleSheet.create({
@@ -19,6 +20,8 @@ const designs = StyleSheet.create({
     paddingLeft: 16,
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderBottomColor: '#BFBFBF50',
+    borderBottomWidth: 1,
 
     // borderWidth: 1,
     // borderColor: 'red',
@@ -30,7 +33,7 @@ const designs = StyleSheet.create({
     justifyContent: 'center',
   },
   secondBar: {
-    backgroundColor: '#47448A',
+    // backgroundColor: '#47448A',
     height: 42,
     // borderColor: '#ADADAD',
     // borderWidth: 0.5,
@@ -40,6 +43,8 @@ const designs = StyleSheet.create({
     justifyContent: 'space-between',
     paddingRight: 16,
     paddingLeft: 16,
+    borderBottomColor: '#BFBFBF50',
+    borderBottomWidth: 1,
     // marginTop: 8,
     // elevation: 10,
   },

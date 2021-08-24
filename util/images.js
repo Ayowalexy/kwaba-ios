@@ -107,6 +107,11 @@ const Group3950 = require('../assets/images/Group3950.png');
 
 const frame = require('../assets/images/frame01.png');
 
+const visacardIcon = require('../assets/images/icons/visa.png');
+const mastercardIcon = require('../assets/images/icons/mastercard.png');
+const discovercardIcon = require('../assets/images/icons/discover.png');
+const amexcardIcon = require('../assets/images/icons/amex.png');
+
 export {
   logo,
   applicationReview,
@@ -208,4 +213,8 @@ export {
   addosserLogo,
   Group3950,
   frame,
+  visacardIcon,
+  mastercardIcon,
+  discovercardIcon,
+  amexcardIcon,
 };

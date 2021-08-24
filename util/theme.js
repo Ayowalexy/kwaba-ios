@@ -10,6 +10,7 @@ export const COLORS = {
   dark: '#465969',
   yellow: '#FFE700',
   red: 'rgb(255,99,71)',
+  orange: '#FB8B24',
 };
 
 export const SIZES = {

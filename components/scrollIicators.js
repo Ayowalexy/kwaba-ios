@@ -8,33 +8,36 @@ export default function ScrollIicators(props) {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        marginTop: 15,
+        // marginTop: 15,
         marginLeft: 'auto',
         marginRight: 'auto',
       }}>
       <Text
         onPress={() => setCurrentIndex((currentIndex) => currentIndex + 1)}
         style={{
-          backgroundColor: currentIndex == 0 ? 'white' : '#9D98EC',
-          width: currentIndex == 0 ? 19 : 4,
+          backgroundColor: currentIndex == 0 ? '#BFBFBF' : '#BFBFBF60',
+          width: currentIndex == 0 ? 10 : 4,
           height: 4,
           marginRight: 4,
+          borderRadius: 4,
         }}></Text>
       <Text
         onPress={() => setCurrentIndex((currentIndex) => currentIndex + 1)}
         style={{
-          backgroundColor: currentIndex == 1 ? 'white' : '#9D98EC',
-          width: currentIndex == 1 ? 19 : 4,
+          backgroundColor: currentIndex == 1 ? '#BFBFBF' : '#BFBFBF60',
+          width: currentIndex == 1 ? 10 : 4,
           height: 4,
           marginRight: 4,
+          borderRadius: 4,
         }}></Text>
       <Text
         onPress={() => setCurrentIndex((currentIndex) => currentIndex + 1)}
         style={{
-          backgroundColor: currentIndex == 2 ? 'white' : '#9D98EC',
-          width: currentIndex == 2 ? 19 : 4,
+          backgroundColor: currentIndex == 2 ? '#BFBFBF' : '#BFBFBF60',
+          width: currentIndex == 2 ? 10 : 4,
           height: 4,
           marginRight: 4,
+          borderRadius: 4,
         }}></Text>
     </View>
   );

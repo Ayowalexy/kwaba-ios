@@ -70,6 +70,14 @@ const Referral = ({navigation}) => {
         styles.container,
         {flex: 1, backgroundColor: '#F7F8FD', backgroundColor: '#9D98EC'},
       ]}>
+      <Icon
+        onPress={() => navigation.navigate('Home')}
+        name="arrow-back-outline"
+        size={25}
+        style={{padding: 15, fontWeight: '900'}}
+        color={COLORS.primary}
+      />
+
       <View
         style={{
           flex: 1,
@@ -87,8 +95,8 @@ const Referral = ({navigation}) => {
           source={images.referhomeimage}
           style={{
             width: '100%',
-            height: 300,
-            marginTop: 45,
+            height: 200,
+            // marginTop: 45,
             resizeMode: 'contain',
             alignSelf: 'center',
           }}
@@ -114,7 +122,8 @@ const Referral = ({navigation}) => {
               paddingHorizontal: 40,
             },
           ]}>
-          Earn money and discount when your friends and family join Kwaba
+          Earn N1,000 per referral when your friends and family save for their
+          rent with Kwaba
         </Text>
         <View
           style={{
@@ -128,7 +137,7 @@ const Referral = ({navigation}) => {
           <Text
             // numberOfLines={1}
             style={[
-              FONTS.body1FontStyling,
+              // FONTS.body1FontStyling,
               {
                 color: '#FFE700',
                 fontSize: 12,
@@ -137,7 +146,7 @@ const Referral = ({navigation}) => {
                 paddingHorizontal: 10,
               },
             ]}>
-            For every 5 signups you get 1% discount on your rent.
+            Your friends also get N1,000 when they make their first savings
           </Text>
         </View>
         <Text

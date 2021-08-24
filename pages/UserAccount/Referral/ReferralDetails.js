@@ -11,8 +11,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import apiUrl from '../../../services/api';
 import {referralDetails} from '../../../services/network';
+import QuickSaveModal from '../../../components/QuickSaveModal';
 
 export default function ReferralDetails({navigation}) {
+  const [quickSaveModal, setQuickSaveModal] = useState(false);
   useEffect(() => {
     const getReferralDetails = async () => {
       const referral = await referralDetails();
@@ -50,7 +52,7 @@ export default function ReferralDetails({navigation}) {
                 }}>
                 ₦0.00
               </Text>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={[styles.btn]}
                 onPress={() => navigation.navigate('SavingsHome')}>
                 <Text style={{fontSize: 12, color: COLORS.white}}>
@@ -62,7 +64,7 @@ export default function ReferralDetails({navigation}) {
                   style={{marginTop: 2, marginLeft: 10}}
                   color={COLORS.white}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
             </View>
 
             <View
@@ -72,10 +74,43 @@ export default function ReferralDetails({navigation}) {
                 padding: 10,
                 paddingLeft: 20,
               }}>
-              <Text style={{fontSize: 12, color: COLORS.primary}}>
+              {/* <Text style={{fontSize: 12, color: COLORS.primary}}>
                 Rent Discount
               </Text>
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>0%</Text>
+              <Text style={{fontWeight: 'bold', fontSize: 20}}>0%</Text> */}
+              <TouchableOpacity
+                style={[styles.btn]}
+                onPress={() => setQuickSaveModal(true)}
+                // onPress={() => navigation.navigate('SavingsHome')}
+              >
+                <Text style={{fontSize: 12, color: COLORS.white}}>
+                  Add a saving
+                </Text>
+                <Icon
+                  name="chevron-forward-outline"
+                  size={15}
+                  style={{marginTop: 2, marginLeft: 10}}
+                  color={COLORS.white}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.btn,
+                  {
+                    backgroundColor: 'white',
+                    borderWidth: 1,
+                    borderColor: COLORS.grey,
+                  },
+                ]}
+                onPress={() => navigation.navigate('Withdraw')}>
+                <Text style={{fontSize: 12, color: COLORS.dark}}>Withdraw</Text>
+                <Icon
+                  name="chevron-forward-outline"
+                  size={15}
+                  style={{marginTop: 2, marginLeft: 10}}
+                  color={COLORS.dark}
+                />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -99,6 +134,11 @@ export default function ReferralDetails({navigation}) {
           </View>
         </View>
       </ScrollView>
+
+      <QuickSaveModal
+        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+        visible={quickSaveModal}
+      />
     </View>
   );
 }
@@ -135,6 +175,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: 10,
     borderRadius: 20,
   },

@@ -18,6 +18,7 @@ import {
   getEmergencyLoans,
   loanRepayment,
   loanPaymentVerification,
+  verifySavingsPayment,
 } from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
@@ -26,8 +27,10 @@ import moment from 'moment';
 import SuccessModal from '../../../components/SuccessModal';
 
 import RNPaystack from 'react-native-paystack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 RNPaystack.init({
-  publicKey: 'sk_test_bc0f8a2e9c28d0291156739430fd631e6a867ba9',
+  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
 export default function EmergencyLoanDashBoard({navigation}) {
@@ -70,24 +73,81 @@ export default function EmergencyLoanDashBoard({navigation}) {
     })();
   }, []);
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   const chargeCard = async () => {
-    RNPaystack.chargeCard({
-      cardNumber: '4123450131001381',
-      expiryMonth: '10',
-      expiryYear: '22',
-      cvc: '883',
-      email: 'chargeIOS@master.dev',
-      amountInKobo: 150000,
-      subAccount: 'ACCT_pz61jjjsslnx1d9',
-    })
-      .then((response) => {
-        console.log(response); // card charged successfully, get reference here
-      })
-      .catch((error) => {
-        console.log(error); // error is a javascript Error object
-        console.log(error.message);
-        console.log(error.code);
+    console.log('Loading...');
+    const url = 'http://67.207.86.39:8000/api/v1/user_create_savings';
+    let data = {
+      savings_amount: 50000,
+      target_amount: 200000,
+      auto_save: true,
+      frequency: 'Monthly',
+      start_date: '2021-08-16T11:03:24+01:00',
+      name: 'my first savings',
+      how_long: '3months',
+      locked: true,
+      bvn: '1234567890',
+    };
+
+    try {
+      const token = await getToken();
+      const response = await axios.post(url, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
       });
+      const responseData = response.data.data;
+      console.log('Response: ', responseData);
+      if (response.status == 200) {
+        // const payCode = await RNPaystack.chargeCardWithAccessCode({
+        //   cardNumber: '4123450131001381',
+        //   expiryMonth: '03',
+        //   expiryYear: '24',
+        //   cvc: '883',
+        //   accessCode: responseData.access_code,
+        // });
+        const pay = await RNPaystack.chargeCard({
+          cardNumber: '4123450131001381',
+          expiryMonth: '10',
+          expiryYear: '22',
+          cvc: '883',
+          email: 'joshuanwosu078@gmail.com',
+          amountInKobo: responseData.amount * 100,
+          reference: responseData.reference,
+        });
+        console.log('The Pay: ', pay.reference);
+        const verify = await verifySavingsPayment(pay);
+        console.log('Verify: ', verify);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+
+    // try {
+    //   const pay = await RNPaystack.chargeCard({
+    //     cardNumber: '4123450131001381',
+    //     expiryMonth: '10',
+    //     expiryYear: '22',
+    //     cvc: '883',
+    //     email: 'chargeIOS@master.dev',
+    //     amountInKobo: 150000,
+    //     // subAccount: 'ACCT_pz61jjjsslnx1d9',
+    // reference
+    //   });
+    //   // console.log('Pay: ', pay);
+    // const verify = await verifySavingsPayment(pay);
+    //   console.log('Verify: ', verify);
+    // } catch (error) {
+    //   console.log(error); // error is a javascript Error object
+    //   console.log(error.message);
+    //   console.log(error.code);
+    // }
   };
 
   const handlePayment = async () => {
@@ -223,7 +283,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     color: COLORS.dark,
                     fontWeight: 'bold',
                   }}>
-                  ₦200,000.00
+                  {/* ₦200,000.00 */}
+                  ₦0.00
                 </Text>
               </View>
               <Image
@@ -255,7 +316,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦200,000.00
+                  ₦0.00
                 </Text>
               </View>
               <TouchableOpacity>
@@ -282,7 +343,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  17, Feb 2021
+                  {/* 17, Feb 2021 */}
+                  --
                 </Text>
               </View>
               <TouchableOpacity
