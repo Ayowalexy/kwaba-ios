@@ -40,7 +40,7 @@ const tabItems = [
   },
 
   {
-    title: 'Bills',
+    title: 'Mortgages',
     icon: 'receipt',
     screen: BillsHome,
   },

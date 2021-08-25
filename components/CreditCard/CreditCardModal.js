@@ -11,7 +11,14 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import CreditCardForm from './CreditCardForm';
 export default function CreditCardModal(props) {
-  const {onRequestClose, visible, info, onConfirm} = props;
+  const {
+    onRequestClose,
+    visible,
+    info,
+    navigation,
+    redirectTo,
+    onConfirm,
+  } = props;
 
   //   useEffect(() => {
   //     console.log('The Card Info on Modal: ', cardInfo);
@@ -53,7 +60,12 @@ export default function CreditCardModal(props) {
             </View>
             <ScrollView contentContainerStyle={styles.content}>
               <View style={{flex: 1}}>
-                <CreditCardForm ResInfo={info} />
+                <CreditCardForm
+                  ResInfo={info}
+                  navigation={navigation}
+                  onRequestClose={onRequestClose}
+                  redirectTo={redirectTo}
+                />
               </View>
             </ScrollView>
           </View>

@@ -66,10 +66,10 @@ export default function SoloSavingDashBoard({navigation}) {
     dispatch(getTotalSoloSavings());
   }, []);
 
-  useEffect(() => {
-    console.log('Loading....');
-    _getUserSavings();
-  }, []);
+  // useEffect(() => {
+  //   console.log('Loading....');
+  //   _getUserSavings();
+  // }, []);
 
   const _getUserSavings = async () => {
     setSpinner(true);
@@ -88,7 +88,7 @@ export default function SoloSavingDashBoard({navigation}) {
 
       setLocked(resData.locked);
       setSavingTitle(resData.name);
-      // setTotalSaving(resData.amount_save);
+      setTotalSaving(resData.amount_save);
       setSavingsTarget(resData.target_amount);
       setPercentAchieved(
         (
@@ -105,51 +105,23 @@ export default function SoloSavingDashBoard({navigation}) {
   };
 
   useEffect(() => {
-    const amount_saved = Number(getSoloSaving?.data[0].amount_save);
-    console.log('THE THE AMOUNT: ', amount_saved);
-    setTotalSaving(amount_saved || 0);
-    // setSavings(amount_saved || 0);
-    // getSavings();
-    // getTransactions();
-  }, []);
+    if (getSoloSaving?.data?.length) {
+      const data = getSoloSaving?.data[0];
+      const amount_saved = Number(getSoloSaving?.data[0].amount_save);
 
-  const getSavings = async () => {
-    try {
-      const response = await getUserSavings();
-
-      if (response.status == 200) {
-        const savings_id = response.data.data[0].id;
-
-        const one_savings = await getOneUserSavings(savings_id);
-
-        console.log('One Savings Here: ', one_savings.data.data);
-      }
-
-      // console.log('The User Savings: ', response.data.data);
-      // console.log('The User Savings ID: ', savings_id);
-    } catch (error) {
-      console.log('Error: ', error);
+      setLocked(data.locked);
+      setSavingTitle(data.name);
+      // setTotalSaving(data.amount_save);
+      setSavingsTarget(data.target_amount);
+      setPercentAchieved(
+        ((Number(data.amount_save) / Number(data.target_amount)) * 100).toFixed(
+          0,
+        ),
+      );
+      console.log('THE THE AMOUNT: ', amount_saved);
+      setTotalSaving(amount_saved || 0);
     }
-  };
-
-  const getTransactions = async () => {
-    try {
-      const response = await getUserSavings();
-
-      if (response.status == 200) {
-        const savings_id = response.data.data[0].id;
-
-        const history = await getSavingsHistory(savings_id);
-
-        if (history.status == 200) {
-          // console.log('ID: ', savings_id);
-          console.log('History: ', history.data.data);
-        }
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-    }
-  };
+  }, [getSoloSaving]);
 
   return (
     <View style={styles.container}>
@@ -606,6 +578,8 @@ export default function SoloSavingDashBoard({navigation}) {
       <QuickSaveModal
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
+        navigation={navigation}
+        redirectTo="SoloSavingDashBoard"
       />
 
       <Spinner visible={spinner} size="large" />

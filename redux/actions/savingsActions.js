@@ -35,6 +35,7 @@ export const getTotalSoloSavings = () => {
     const token = await getToken();
     // console.log('token', token);
     const url = apiUrl + '/api/v1/savings';
+    // const url = apiUrl + '/api/v1/get_user_savings';
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},

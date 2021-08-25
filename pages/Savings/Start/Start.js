@@ -106,7 +106,7 @@ export default function Start({navigation}) {
     // console.log('Amount Save: ', store?.data[0].amount_save);
     // console.log('Savings: ', store.data[0]);
 
-    if (store && store.data) {
+    if (store?.data?.length) {
       const amount_saved = Number(store.data[0].amount_save);
       // setSavings(amount_saved || 0);
       setTotalBalance(amount_saved || 0);

@@ -30,7 +30,13 @@ const amountSchema = yup.object().shape({
 });
 
 export default function QuickSaveModal(props) {
-  const {onRequestClose, visible, openSuccessModal} = props;
+  const {
+    onRequestClose,
+    visible,
+    navigation,
+    redirectTo,
+    openSuccessModal,
+  } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -73,6 +79,7 @@ export default function QuickSaveModal(props) {
           // but for now let's use useState by send
           // the data as props
           setResDataObj(resData);
+          onRequestClose();
         }
       }
     } catch (error) {
@@ -417,6 +424,8 @@ export default function QuickSaveModal(props) {
         }}
         visible={modal}
         info={resDataObj}
+        navigation={navigation}
+        redirectTo={redirectTo}
       />
 
       <Spinner visible={spinner} size="large" />

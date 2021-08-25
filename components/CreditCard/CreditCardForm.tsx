@@ -17,6 +17,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNPaystack from 'react-native-paystack';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
+
+import {useSelector, useDispatch} from 'react-redux';
+import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
+
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
@@ -60,6 +64,8 @@ const CreditCardForm: React.FC = (props: any) => {
 
   const [responseInfo, setResponseInfo] = useState('');
   const [spinner, setSpinner] = useState(false);
+
+  const dispatch = useDispatch();
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -114,6 +120,16 @@ const CreditCardForm: React.FC = (props: any) => {
         console.log('Payment verified');
         console.log('Verify: ', verify);
         setSpinner(false);
+        // display success modal
+        // navigate to dashboard / homepage
+
+        //dispatch
+        dispatch(getTotalSoloSavings());
+
+        props.navigation.navigate('PaymentSuccessful', {
+          name: props.redirectTo,
+        });
+        props.onRequestClose();
       }
     } catch (error) {
       console.log('The Error: ', error);

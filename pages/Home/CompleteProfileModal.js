@@ -1,6 +1,13 @@
 import React, {useState} from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {COLORS} from '../../util';
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+} from 'react-native';
+import {COLORS, icons} from '../../util';
 
 export default function CompleteProfileModal(props) {
   const {onRequestClose, visible, navigation, openSuccessModal} = props;
@@ -16,6 +23,11 @@ export default function CompleteProfileModal(props) {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <View style={{alignItems: 'center'}}>
+            <Image
+              style={{width: 50, height: 50, marginBottom: 5}}
+              source={icons.profile}
+              resizeMode="contain"
+            />
             <Text
               style={{color: COLORS.orange, fontWeight: 'bold', fontSize: 20}}>
               Complete Profile
@@ -28,8 +40,18 @@ export default function CompleteProfileModal(props) {
                 marginTop: 10,
                 textAlign: 'center',
               }}>
-              Complete your profile to access rental finance and other amazing
-              features.
+              Complete your profile to access{' '}
+              <Text
+                style={
+                  {
+                    // fontWeight: 'bold',
+                    // fontSize: 13,
+                    // color: COLORS.primary,
+                  }
+                }>
+                Rent Now Pay Later
+              </Text>{' '}
+              and other amazing features.
             </Text>
 
             <TouchableOpacity

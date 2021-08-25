@@ -160,6 +160,9 @@ import Disbursement from './components/disbursement';
 // payment form screen
 import PaymentForm from './pages/Home/PaymentForm';
 
+// payment successful screen
+import PaymentSuccessful from './pages/Home/PaymentSuccessful';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -304,7 +307,7 @@ const App = () => {
           }}
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
-          // initialRouteName={'PaymentForm'}
+          // initialRouteName={'PaymentSuccessful'}
         >
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
@@ -645,6 +648,11 @@ const App = () => {
               <Stack.Screen name="Disbursement" component={Disbursement} />
 
               <Stack.Screen name="PaymentForm" component={PaymentForm} />
+
+              <Stack.Screen
+                name="PaymentSuccessful"
+                component={PaymentSuccessful}
+              />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

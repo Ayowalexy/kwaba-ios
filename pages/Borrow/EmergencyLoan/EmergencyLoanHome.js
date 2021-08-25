@@ -50,11 +50,13 @@ export default function EmergencyLoanHome({navigation}) {
     // const maxLoanAmount = 0.4 * Number(totalSoloSavings);
     // setMaximumLoanAmount(maxLoanAmount);
 
-    const amount_saved = Number(store?.data[0].amount_save);
-    setSavings(amount_saved || 0);
+    if (store?.data?.length) {
+      const amount_saved = Number(store?.data[0].amount_save);
+      setSavings(amount_saved || 0);
 
-    const maxLoanAmount = 0.4 * Number(amount_saved);
-    setMaximumLoanAmount(maxLoanAmount);
+      const maxLoanAmount = 0.4 * Number(amount_saved);
+      setMaximumLoanAmount(maxLoanAmount);
+    }
   }, []);
 
   const calculateRepayment = (amount) => {

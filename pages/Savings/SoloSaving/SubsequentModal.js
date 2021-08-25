@@ -25,15 +25,25 @@ import moment from 'moment';
 import {savings} from '../../../util/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import CreditCardModal from '../../../components/CreditCard/CreditCardModal';
 
 export default function SubsequentModal(props) {
-  const {onRequestClose, visible, goToDashboard, savingsData} = props;
+  const {
+    onRequestClose,
+    visible,
+    goToDashboard,
+    savingsData,
+    navigation,
+  } = props;
   const [subsequent, setSubsequent] = useState('');
   const subsequentOptions = ['Yes', 'No'];
 
   const [spinner, setSpinner] = useState(false);
   const [userID, setUserID] = useState(null);
   const store = useSelector((state) => state.soloSavingReducer);
+
+  const [modal, setModal] = useState(false);
+  const [resDataObj, setResDataObj] = useState('');
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -75,69 +85,17 @@ export default function SubsequentModal(props) {
       });
 
       if (response.status == 200) {
-        // console.log('Response', response.data.data);
-        const result = await openInAppBrowser(
-          response.data.data.authorization_url,
-        );
         setSpinner(false);
         onRequestClose();
+        setModal(true);
 
-        if (result.type == 'cancel') {
-          let data = {reference: response.data.data.reference};
-          const verify = await verifyPayment(data);
+        const resData = response.data.data;
+        setResDataObj(resData);
 
-          if (verify?.data?.statusMsg == 'Savings payment verify successful') {
-            // console.log('createPlan');
-            goToDashboard();
-          } else {
-            Alert.alert(
-              'Payment Unverified',
-              'Your payment was not verified. Please retry.',
-            );
-          }
-        }
+        console.log('Response', response.data.data);
       }
     } catch (error) {
       console.log('Error: ', error);
-    }
-  };
-
-  const openInAppBrowser = async (url) => {
-    try {
-      if (await InAppBrowser.isAvailable()) {
-        const result = await InAppBrowser.open(url, {
-          // iOS Properties
-          dismissButtonStyle: 'done',
-          preferredBarTintColor: '#453AA4',
-          preferredControlTintColor: 'white',
-          readerMode: false,
-          animated: true,
-          modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'coverVertical',
-          modalEnabled: true,
-          enableBarCollapsing: false,
-          // Android Properties
-          showTitle: true,
-          toolbarColor: '#2A286A',
-          secondaryToolbarColor: 'black',
-          enableUrlBarHiding: true,
-          enableDefaultShare: true,
-          forceCloseOnRedirection: false,
-          hasBackButton: true,
-          // Specify full animation resource identifier(package:anim/name)
-          // or only resource name(in case of animation bundled with app).
-          animations: {
-            startEnter: 'slide_in_right',
-            startExit: 'slide_out_left',
-            endEnter: 'slide_in_left',
-            endExit: 'slide_out_right',
-          },
-        });
-
-        return result;
-      } else Linking.openURL(url);
-    } catch (error) {
-      return error.message;
     }
   };
 
@@ -204,6 +162,16 @@ export default function SubsequentModal(props) {
         </View>
       </Modal>
       <Spinner visible={spinner} animation="fade" size="large" />
+
+      <CreditCardModal
+        onRequestClose={() => {
+          setModal(!modal);
+        }}
+        visible={modal}
+        info={resDataObj}
+        navigation={navigation}
+        redirectTo="SoloSavingDashBoard"
+      />
     </>
   );
 }

@@ -44,17 +44,36 @@ export default function NewHome({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
 
+  const [greeting, setGreeting] = useState('');
+
   const layout = useWindowDimensions();
+
+  useEffect(() => {
+    const d = new Date();
+    const time = d.getHours();
+
+    if (time < 12) {
+      setGreeting('Goodmorning');
+    }
+    if (time > 12) {
+      setGreeting('Goodafternoon');
+    }
+    if (time == 12) {
+      setGreeting('Goodmorning');
+    }
+  }, []);
 
   useEffect(() => {
     if (login) setName(login.username);
 
     // email verified
-    if (login.user.emailVerified == 0) {
+    if (login.user.email_verified == 0) {
       setIsProfileComplete(false);
     } else {
-      setIsProfileComplete(false);
+      setIsProfileComplete(true);
     }
+
+    console.log('Login: ', login);
   }, [login]);
 
   useEffect(() => {
@@ -62,8 +81,9 @@ export default function NewHome({navigation}) {
   }, []);
 
   useEffect(() => {
-    if (store && store.data) {
-      const amount_saved = Number(store.data[0].amount_save);
+    setSavings(0);
+    if (store?.data?.length) {
+      const amount_saved = Number(store?.data[0].amount_save);
       setSavings(amount_saved || 0);
     }
   }, [store]);
@@ -126,22 +146,34 @@ export default function NewHome({navigation}) {
 
   const bottomCards = [
     {
-      title: 'Savings',
+      title: 'Rent Savings',
       body:
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
+      route: () =>
+        isProfileComplete
+          ? navigation.navigate('SavingsHome')
+          : setCompleteProfileModal(true),
     },
     {
       title: 'Loans',
       body:
         'Get loans to pay your rent, buy a house or cater to unexpected expenses.',
       img: images.maskGroup29,
+      route: () =>
+        isProfileComplete
+          ? navigation.navigate('SavingsHome')
+          : setCompleteProfileModal(true),
     },
     {
       title: 'Refer and Earn',
       body:
         'Invite your friends and family to use  Kwaba and earn from every referral ',
       img: images.giftPackage,
+      route: () =>
+        isProfileComplete
+          ? navigation.navigate('Referral')
+          : setCompleteProfileModal(true),
     },
   ];
 
@@ -286,7 +318,7 @@ export default function NewHome({navigation}) {
               //   fontWeight: 'bold',
               lineHeight: 19,
             }}>
-            Hey {name}, Goodevening
+            Hey {name}, {greeting}
           </Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
@@ -455,9 +487,14 @@ export default function NewHome({navigation}) {
                     borderColor: '#EDECFC',
                   }}>
                   <TouchableOpacity
-                    onPress={() => {
-                      setCompleteProfileModal(true);
-                    }}
+                    onPress={item.route}
+                    // onPress={() => {
+                    //   if (item.route) {
+                    //     item.route();
+                    //   } else {
+                    //     setCompleteProfileModal(true);
+                    //   }
+                    // }}
                     style={{overflow: 'hidden', borderRadius: 10}}>
                     <View style={{padding: 20}}>
                       <Text
@@ -506,6 +543,8 @@ export default function NewHome({navigation}) {
       <QuickSaveModal
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
+        navigation={navigation}
+        redirectTo="Home"
       />
 
       <CompleteProfileModal

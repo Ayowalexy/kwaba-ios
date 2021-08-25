@@ -83,7 +83,7 @@ export default function Home({navigation}) {
     // );
     // setSavings(totalSoloSavings || 0);
 
-    if (store && store.data) {
+    if (store?.data?.length) {
       const amount_saved = Number(store.data[0].amount_save);
       setSavings(amount_saved || 0);
     }

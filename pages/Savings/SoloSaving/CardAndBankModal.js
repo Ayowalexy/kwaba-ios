@@ -189,6 +189,7 @@ export default function CardAndBankModal(props) {
           navigation.navigate('SoloSavingDashBoard');
         }}
         savingsData={storeData}
+        navigation={navigation}
       />
     </>
   );
