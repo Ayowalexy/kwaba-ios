@@ -122,7 +122,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   ];
 
   const handleSubmit = async () => {
-    // setSpinner(true);
+    setSpinner(true);
     // setVisible(false);
     // setting this manually
     // setBankAccountName('Joshua Udo Nwosu');
@@ -146,14 +146,14 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       setSpinner(false);
       const response = await applyForEmergencyLoan(data);
       console.log('RESPONSE: ', response);
-      // if ((response.status = 201)) {
-      //   setSpinner(false);
-      //   setSuccessModal(true);
-      //   console.log('Success');
-      // } else {
-      //   setSpinner(false);
-      //   console.log(response.data.statusMsg);
-      // }
+      if (response.status == 201) {
+        setSpinner(false);
+        setSuccessModal(false);
+        console.log('Success');
+      } else {
+        setSpinner(false);
+        console.log(response.data.statusMsg);
+      }
     } catch (error) {
       setSpinner(false);
       console.log(error);

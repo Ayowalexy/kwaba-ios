@@ -43,7 +43,7 @@ export default function SoloSavingDashBoard(props) {
 
   useEffect(() => {
     getOne();
-  }, []);
+  }, [getSoloSaving]);
 
   const getOne = async () => {
     try {
@@ -389,7 +389,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        <TransactionsTab />
+        <TransactionsTab ID={route.params.id} />
       </ScrollView>
 
       <QuickSaveModal
@@ -397,6 +397,7 @@ export default function SoloSavingDashBoard(props) {
         visible={quickSaveModal}
         navigation={navigation}
         redirectTo="SoloSavingDashBoard"
+        ID={route.params.id}
       />
 
       <Spinner visible={spinner} size="large" />

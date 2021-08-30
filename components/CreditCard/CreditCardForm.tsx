@@ -130,24 +130,62 @@ const CreditCardForm: React.FC = (props: any) => {
         reference: responseInfo?.reference,
       });
 
-      const verify = await verifyPayment(pay);
+      if (props.redirectTo == 'OkraDebitMandate') {
+        const verify = await addressVerification(pay);
+
+        if (verify?.status == 200) {
+          console.log('Payment verified');
+          console.log('Verify: ', verify);
+          setSpinner(false);
+          // display success modal
+          // navigate to dashboard / homepage
+
+          //dispatch
+          dispatch(getTotalSoloSavings());
+
+          props.navigation.navigate('PaymentSuccessful', {
+            name: props.redirectTo,
+          });
+          props.onRequestClose();
+        }
+      } else {
+        const verify = await verifyPayment(pay);
+
+        if (verify?.status == 200) {
+          console.log('Payment verified');
+          console.log('Verify: ', verify);
+          setSpinner(false);
+          // display success modal
+          // navigate to dashboard / homepage
+
+          //dispatch
+          dispatch(getTotalSoloSavings());
+
+          props.navigation.navigate('PaymentSuccessful', {
+            name: props.redirectTo,
+          });
+          props.onRequestClose();
+        }
+      }
+
+      // const verify = await verifyPayment(pay);
       // const verify = await addressVerification(pay);
 
-      if (verify.status == 200) {
-        console.log('Payment verified');
-        console.log('Verify: ', verify);
-        setSpinner(false);
-        // display success modal
-        // navigate to dashboard / homepage
+      // if (verify?.status == 200) {
+      //   console.log('Payment verified');
+      //   console.log('Verify: ', verify);
+      //   setSpinner(false);
+      //   // display success modal
+      //   // navigate to dashboard / homepage
 
-        //dispatch
-        dispatch(getTotalSoloSavings());
+      //   //dispatch
+      //   dispatch(getTotalSoloSavings());
 
-        props.navigation.navigate('PaymentSuccessful', {
-          name: props.redirectTo,
-        });
-        props.onRequestClose();
-      }
+      //   props.navigation.navigate('PaymentSuccessful', {
+      //     name: props.redirectTo,
+      //   });
+      //   props.onRequestClose();
+      // }
     } catch (error) {
       console.log('The Error: ', error);
       setSpinner(false);

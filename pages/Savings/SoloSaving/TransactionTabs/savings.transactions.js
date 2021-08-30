@@ -14,6 +14,7 @@ export default function SavingsTransactions(props) {
 
   useEffect(() => {
     console.log('solo: ', getSoloSaving);
+    console.log('props : ', props);
     setSavingTitle(props.savingTitle);
   }, []);
 
@@ -23,22 +24,34 @@ export default function SavingsTransactions(props) {
 
   const getTransactions = async () => {
     try {
-      const response = await getUserSavings();
+      const savings_id = props.ID;
+      const history = await getSavingsHistory(savings_id);
 
-      if (response.status == 200) {
-        const savings_id = response.data.data[0].id;
-
-        const history = await getSavingsHistory(savings_id);
-
-        if (history.status == 200) {
-          // console.log('ID: ', savings_id);
-          console.log('History--: ', history.data.data);
-          setTransactions(history.data.data);
-        }
+      if (history.status == 200) {
+        setTransactions(history.data.data);
       }
     } catch (error) {
       console.log('Error: ', error);
     }
+
+    // try {
+    //   const response = await getUserSavings();
+
+    //   if (response.status == 200) {
+    //     // const savings_id = response.data.data[0].id;
+    //     const savings_id = props.ID
+
+    //     const history = await getSavingsHistory(savings_id);
+
+    //     if (history.status == 200) {
+    //       // console.log('ID: ', savings_id);
+    //       // console.log('History--: ', history.data.data);
+    //       setTransactions(history.data.data);
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log('Error: ', error);
+    // }
   };
 
   return (

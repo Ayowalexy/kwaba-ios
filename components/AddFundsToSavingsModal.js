@@ -24,7 +24,7 @@ export default function AddFundsToSavingsModal(props) {
     dispatch(getMaxLoanCap());
   }, []);
 
-  const {onRequestClose, visible} = props;
+  const {onRequestClose, visible, onClick} = props;
   return (
     <Modal
       animationType="slide"
@@ -57,10 +57,7 @@ export default function AddFundsToSavingsModal(props) {
                     <TouchableOpacity
                       key={index}
                       style={[styles.card]}
-                      // onPress={() =>
-                      //   navigation.navigate('SoloSavingDashBoard', {id: item.id})
-                      // }
-                    >
+                      onPress={() => onClick(item.id)}>
                       <View style={[styles.cardFlex]}>
                         <View style={[styles.progressContainer]}>
                           <AnimatedCircularProgress

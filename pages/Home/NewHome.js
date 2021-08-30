@@ -24,6 +24,7 @@ import {
   getMaxLoanCap,
   getTotalSoloSavings,
 } from '../../redux/actions/savingsActions';
+import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat, formatNumber} from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
@@ -34,6 +35,7 @@ import CompleteProfileModal from './CompleteProfileModal';
 import {me} from '../../services/network';
 import {setLoginState} from '../../redux/actions/userActions';
 import AddFundsToSavingsModal from '../../components/AddFundsToSavingsModal';
+import EmailVerificationModal from '../../components/EmailVerificationModal';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -42,6 +44,7 @@ export default function NewHome({navigation}) {
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [name, setName] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [index, setIndex] = useState(0);
@@ -52,6 +55,8 @@ export default function NewHome({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
   const [addFundsToSavingsModal, setAddFundsToSavingsModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
+  const [emailVerificationModal, setEmailVerificationModal] = useState(false);
+  const [clickedID, setClickedID] = useState('');
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -64,6 +69,11 @@ export default function NewHome({navigation}) {
     const data = JSON.parse(userData);
     return data;
   };
+
+  useEffect(() => {
+    // console.log('Login: ', login);
+    onRefresh();
+  }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -102,22 +112,40 @@ export default function NewHome({navigation}) {
     if (time > 12) {
       setGreeting('Good Afternoon');
     }
-    // if (time == 12) {
-    //   setGreeting('Good Evening');
-    // }
+    if (time == 12) {
+      setGreeting('Good Afternoon');
+    }
   }, []);
 
   useEffect(() => {
-    if (login) setName(login.username);
+    const getUserData = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const data = JSON.parse(userData);
+      // return data;
+      console.log('Na the data: ', data);
+    };
 
-    // email verified
-    if (login.user.email_verified == 0) {
+    getUserData();
+  }, []);
+
+  useEffect(() => {
+    console.log('Login: ', login);
+    if (login) setName(login.username);
+    // complete profile
+    if (
+      login.user.profile_complete == 0 ||
+      login.user.profile_complete == null
+    ) {
       setIsProfileComplete(false);
     } else {
       setIsProfileComplete(true);
     }
-
-    // console.log('Login: ', login);
+    // email verified
+    if (login.user.email_verified == 0 || login.user.email_verified == null) {
+      setIsEmailVerified(false);
+    } else {
+      setIsEmailVerified(true);
+    }
   }, [login]);
 
   useEffect(() => {
@@ -421,6 +449,58 @@ export default function NewHome({navigation}) {
           </TouchableOpacity>
         </View>
       )}
+      {!isEmailVerified && (
+        <View style={designs.secondBar}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Icon
+              name="md-mail-unread"
+              size={26}
+              color={COLORS.orange}
+              style={{marginRight: 11}}
+            />
+            <Text
+              style={{
+                fontFamily: 'CircularStd',
+                fontSize: 10,
+                lineHeight: 12,
+                color: '#FB8B24',
+                fontWeight: 'bold',
+              }}>
+              Verify your E-mail{' '}
+              <Text style={{color: COLORS.dark}}>
+                to better secure{'\n'}your account.
+              </Text>
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => setEmailVerificationModal(true)}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                  lineHeight: 13,
+                  color: '#00DC99',
+                }}>
+                Verify Email
+              </Text>
+              <Icon name="chevron-forward" color="#00DC99" size={15} />
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
       <ScrollView
         scrollEnabled
         showsVerticalScrollIndicator={false}
@@ -651,6 +731,7 @@ export default function NewHome({navigation}) {
         visible={quickSaveModal}
         navigation={navigation}
         redirectTo="Home"
+        ID={clickedID}
       />
 
       <AddFundsToSavingsModal
@@ -658,6 +739,21 @@ export default function NewHome({navigation}) {
           setAddFundsToSavingsModal(!addFundsToSavingsModal)
         }
         visible={addFundsToSavingsModal}
+        onClick={(id) => {
+          setClickedID(id);
+          setAddFundsToSavingsModal(false);
+          setQuickSaveModal(true);
+
+          // console.log(id)
+        }}
+      />
+
+      <EmailVerificationModal
+        onRequestClose={() =>
+          setEmailVerificationModal(!emailVerificationModal)
+        }
+        visible={emailVerificationModal}
+        email={login?.user?.email}
       />
 
       <CompleteProfileModal

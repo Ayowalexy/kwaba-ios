@@ -21,6 +21,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {me} from '../../services/network';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
+import ConfirmModal from '../../components/modal';
+
+import {getCurrentUser} from '../../redux/actions/userActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {setLoginState} from '../../redux/actions/userActions';
 
 const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
@@ -28,10 +33,25 @@ const completeProfileSchema = yup.object().shape({
 });
 
 const Screen5 = (props) => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.getUserReducer);
   const {navigation, route} = props;
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
   const [spinner, setSpinner] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    dispatch(getCurrentUser());
+  }, []);
+
+  useEffect(() => {
+    console.log('User: ', user);
+  }, [user]);
+
+  const handleGoHome = () => {
+    navigation.navigate('Home');
+  };
 
   const NumberInput = (props) => {
     const {
@@ -156,6 +176,7 @@ const Screen5 = (props) => {
       dob: data.dob,
       how_much_is_your_rent: unFormatNumber(data.how_much_is_your_rent),
       when_is_your_next_rent_due: data.when_is_your_next_rent_due,
+      profile_complete: 1,
     };
     console.log('update data: ', updateData);
     const token = await getToken();
@@ -166,9 +187,26 @@ const Screen5 = (props) => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       if (response.status == 200) {
+        const res = await me();
         setSpinner(false);
-        // setModal(true);
-        navigation.navigate('CompleteProfile6');
+        setModalVisible(true);
+        const userData = await getUserData();
+
+        console.log('USERDATA: ', userData);
+        console.log('RESPONSE DATA: ', res.user);
+
+        dispatch(
+          setLoginState({
+            ...userData,
+            user: res.user,
+            username: res.user.firstname,
+          }),
+        );
+
+        // dispatch(getCurrentUser());
+        // navigation.navigate('CompleteProfile6');
+
+        // console.log('Response: ', response.data);
       }
     } catch (error) {
       setSpinner(false);
@@ -266,6 +304,12 @@ const Screen5 = (props) => {
           </Formik>
         </View>
       </ScrollView>
+
+      <ConfirmModal
+        onRequestClose={() => setModalVisible(!modalVisible)}
+        visible={modalVisible}
+        goHome={handleGoHome}
+      />
 
       <Spinner visible={spinner} size="large" />
     </View>

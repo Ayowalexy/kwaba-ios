@@ -15,7 +15,11 @@ import * as Animatable from 'react-native-animatable';
 import {formatNumber, unFormatNumber} from '../util/numberFormatter';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
-import {addFundsToSavings, getUserSavings} from '../services/network';
+import {
+  addFundsToSavings,
+  getOneUserSavings,
+  getUserSavings,
+} from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector, useDispatch} from 'react-redux';
 
@@ -36,6 +40,7 @@ export default function QuickSaveModal(props) {
     navigation,
     redirectTo,
     openSuccessModal,
+    ID,
   } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
@@ -52,13 +57,16 @@ export default function QuickSaveModal(props) {
 
   useEffect(() => {
     getUserSavings();
+    console.log('The ID: ', ID);
   }, []);
 
   const handleSubmit = async (values) => {
     try {
       setSpinner(true);
-      const res = await getUserSavings();
-      const ID = res.data.data[0].id;
+      // const res = await getUserSavings();
+      // const ID = res.data.data[0].id;
+
+      const res = await getOneUserSavings(ID);
 
       if (res.status == 200) {
         let data = {

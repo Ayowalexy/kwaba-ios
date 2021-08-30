@@ -39,14 +39,20 @@ const renderTabBar = (props) => (
   />
 );
 
-const renderScene = SceneMap({
-  first: () => <AllTransactions savingTitle="My rent savings" />,
-  second: () => <SavingsTransactions savingTitle="My rent savings" />,
-  third: () => <WithdrawalTransactions savingTitle="My rent savings" />,
-});
-
-export default function TransactionsTab() {
+export default function TransactionsTab(props) {
   const layout = useWindowDimensions();
+
+  const renderScene = SceneMap({
+    first: () => (
+      <AllTransactions ID={props.ID} savingTitle="My rent savings" />
+    ),
+    second: () => (
+      <SavingsTransactions ID={props.ID} savingTitle="My rent savings" />
+    ),
+    third: () => (
+      <WithdrawalTransactions ID={props.ID} savingTitle="My rent savings" />
+    ),
+  });
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -57,6 +63,7 @@ export default function TransactionsTab() {
 
   useEffect(() => {
     console.log({Index: index, Routes: routes});
+    console.log('ID: ', props.ID);
   }, [index]);
 
   return (

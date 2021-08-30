@@ -53,6 +53,8 @@ export default function RentNowPayLaterDashboard({navigation}) {
       //   headers: {'Content-Type': 'application/json', Authorization: token},
       // });
 
+      console.log('Loan: ', loanId);
+
       //approved_repayment_plan
       setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
 
@@ -78,7 +80,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
   useEffect(() => {
     getDashboardData();
-  }, [nextPaymentDueDate]);
+  }, []);
 
   if (nextPaymentDueDate != null) {
     return (
@@ -240,8 +242,13 @@ export default function RentNowPayLaterDashboard({navigation}) {
                 size={90}
                 width={10}
                 rotation={0}
-                style={[styles.circularProgress]}
-                fill={percentAchieved}
+                style={{
+                  width: 97,
+                  height: 97,
+                  zIndex: 9,
+                  position: 'relative',
+                }}
+                fill={75}
                 tintColor={COLORS.secondary}
                 backgroundColor="#9D98EC20">
                 {(fill) => (
@@ -347,12 +354,12 @@ const styles = StyleSheet.create({
     elevation: 10,
     overflow: 'hidden',
   },
-  circularProgress: {
-    width: 97,
-    height: 97,
-    zIndex: 9,
-    position: 'relative',
-  },
+  // circularProgress: {
+  //   width: 97,
+  //   height: 97,
+  //   zIndex: 9,
+  //   position: 'relative',
+  // },
   paymentDetail: {
     // borderWidth: 1,
     flexDirection: 'row',

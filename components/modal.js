@@ -10,8 +10,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, icons} from '../util';
 
-export default function CustomModal(props) {
-  const {onRequestClose, visible, goHome, email} = props;
+export default function ConfirmModal(props) {
+  const {onRequestClose, visible, goHome} = props;
   return (
     // <View style={styles.centeredView}>
     <Modal
@@ -41,7 +41,7 @@ export default function CustomModal(props) {
               fontWeight: 'bold',
               fontSize: 16,
             }}>
-            Please confirm your email
+            Your profile has be completed
           </Text>
           <View
             style={{
@@ -51,7 +51,7 @@ export default function CustomModal(props) {
               alignItems: 'center',
             }}>
             <Image
-              source={icons.emailSent}
+              source={icons.passwordResetSuccess}
               style={{
                 width: 100,
                 height: 100,
@@ -74,16 +74,7 @@ export default function CustomModal(props) {
                 paddingHorizontal: 20,
                 lineHeight: 20,
               }}>
-              Follow the link in the email we will send to{' '}
-              <Text
-                style={{
-                  color: COLORS.secondary,
-                  fontWeight: 'bold',
-                  fontSize: 12,
-                }}>
-                {email}
-              </Text>{' '}
-              to verify your mail address and help secure your account
+              Now you can access savings and other amazing features!!!
             </Text>
             <TouchableOpacity
               onPress={goHome}
@@ -95,20 +86,9 @@ export default function CustomModal(props) {
                   fontWeight: 'bold',
                   lineHeight: 25,
                 }}>
-                GOT IT!
+                Okay!
               </Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity onPress={onRequestClose} style={[styles.btn]}>
-              <Text
-                style={{
-                  color: '#BFBFBF',
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                  lineHeight: 25,
-                }}>
-                NO, NOT NOW
-              </Text>
-            </TouchableOpacity> */}
           </View>
         </View>
       </View>
