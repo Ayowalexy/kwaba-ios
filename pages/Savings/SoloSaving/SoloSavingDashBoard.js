@@ -3,125 +3,75 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ImageBackground,
   Image,
   ScrollView,
-  Modal,
   StyleSheet,
 } from 'react-native';
-import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../../util/index';
-import {currencyFormat, numberWithCommas} from '../../../util/numberFormatter';
+import {currencyFormat} from '../../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useSelector, useDispatch} from 'react-redux';
-import {getCurrentUser} from '../../../redux/actions/userActions';
 import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
 
 import QuickSaveModal from '../../../components/QuickSaveModal';
 import moment from 'moment';
 
-import LinearGradient from 'react-native-linear-gradient';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import TransactionsTab from './TransactionTabs';
-import {
-  getOneUserSavings,
-  getSavingsHistory,
-  getUserSavings,
-} from '../../../services/network';
+import {getOneUserSavings} from '../../../services/network';
 
-export default function SoloSavingDashBoard({navigation}) {
+export default function SoloSavingDashBoard(props) {
+  const {navigation, route} = props;
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  const soloSaving = useSelector((state) => state.soloSavingReducer);
-  const currentUser = useSelector((state) => state.getUserReducer);
 
-  // useSelector((state) => console.log('State:', state));
-  const [activeTab, setActiveTab] = useState(0);
-  const [today, setToday] = useState('');
-  // const [openQuickSave, setOpenQuickSave] = useState(false);
-  const [successModal, setSuccessModal] = useState(false);
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [savingsTarget, setSavingsTarget] = useState(0);
   const [percentAchieved, setPercentAchieved] = useState(0);
   const [savingTitle, setSavingTitle] = useState('');
-  const [transactions, setTransactions] = useState([]);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
   const [locked, setLocked] = useState(true);
 
   const [spinner, setSpinner] = useState(false);
 
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
-  };
-
   useEffect(() => {
-    console.log('Down....');
     dispatch(getTotalSoloSavings());
   }, []);
 
-  // useEffect(() => {
-  //   console.log('Loading....');
-  //   _getUserSavings();
-  // }, []);
+  useEffect(() => {
+    getOne();
+  }, []);
 
-  const _getUserSavings = async () => {
-    setSpinner(true);
-    const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/get_user_savings';
+  const getOne = async () => {
     try {
-      const response = await axios.get(url, {
-        headers: {
-          'Content-type': 'application/json',
-          Authorization: token,
-        },
-      });
-      // console.log('RES: ', response.data.data[0]);
+      setSpinner(true);
+      const res = await getOneUserSavings(route.params.id);
+      if (res.status == 200) {
+        setSpinner(false);
+        console.log('The saving response: ', res.data.data[0]);
 
-      let resData = response.data.data[0];
+        const data = res.data.data[0];
+        const amount_saved = Number(data.amount_save);
 
-      setLocked(resData.locked);
-      setSavingTitle(resData.name);
-      setTotalSaving(resData.amount_save);
-      setSavingsTarget(resData.target_amount);
-      setPercentAchieved(
-        (
-          (Number(resData.amount_save) / Number(resData.target_amount)) *
-          100
-        ).toFixed(0),
-      );
-
-      setSpinner(false);
+        setLocked(data.locked);
+        setSavingTitle(data.name);
+        setSavingsTarget(data.target_amount);
+        setPercentAchieved(
+          (
+            (Number(data.amount_save) / Number(data.target_amount)) *
+            100
+          ).toFixed(0),
+        );
+        setTotalSaving(amount_saved || 0);
+      }
     } catch (error) {
-      setSpinner(false);
       console.log('Error: ', error);
+      setSpinner(false);
     }
   };
-
-  useEffect(() => {
-    if (getSoloSaving?.data?.length) {
-      const data = getSoloSaving?.data[0];
-      const amount_saved = Number(getSoloSaving?.data[0].amount_save);
-
-      setLocked(data.locked);
-      setSavingTitle(data.name);
-      // setTotalSaving(data.amount_save);
-      setSavingsTarget(data.target_amount);
-      setPercentAchieved(
-        ((Number(data.amount_save) / Number(data.target_amount)) * 100).toFixed(
-          0,
-        ),
-      );
-      console.log('THE THE AMOUNT: ', amount_saved);
-      setTotalSaving(amount_saved || 0);
-    }
-  }, [getSoloSaving]);
 
   return (
     <View style={styles.container}>
@@ -440,139 +390,6 @@ export default function SoloSavingDashBoard({navigation}) {
         </View>
 
         <TransactionsTab />
-
-        {/*  */}
-
-        {/* <View
-          style={{
-            backgroundColor: '#fff',
-            flex: 1,
-            minHeight: 200,
-            marginTop: 10,
-            borderTopRightRadius: 20,
-            borderTopLeftRadius: 20,
-            elevation: 10,
-          }}>
-          <View style={{padding: 20}}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: 16,
-                color: COLORS.primary,
-              }}>
-              My Transactions
-            </Text>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                backgroundColor: '#F7F8FD',
-                borderRadius: 10,
-                overflow: 'hidden',
-                marginTop: 10,
-              }}>
-              {['All', 'Savings', 'Withdrawals'].map((value, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setActiveTab(index)}
-                  style={{
-                    flex: 1,
-                    padding: 12,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor:
-                      activeTab == index ? COLORS.light : 'transparent',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      color: activeTab == index ? COLORS.white : '#BFBFBF',
-                    }}>
-                    {value}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <View style={{flex: 1}}>
-              <View style={{flex: 1}}>
-                {getSoloSaving.data.map((el, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingVertical: 10,
-                        marginTop: 10,
-                      }}>
-                      <View
-                        style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: 20,
-                          backgroundColor: COLORS.secondary,
-                          marginRight: 10,
-                        }}
-                      />
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          
-                        }}>
-                        <View>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              
-                              color: COLORS.dark,
-                            }}>
-                            {savingTitle}
-                          </Text>
-                        </View>
-
-                        <View
-                          style={{
-                            alignItems: 'flex-end',
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                            }}>
-                            ₦{currencyFormat(Number(el.amount))}
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                              opacity: 0.5,
-                            }}>
-                            {el.created_at}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-          </View> 
-
-          <View
-            style={{
-              width: '100%',
-              height: 1,
-              backgroundColor: '#F7F8FD',
-            }}
-          />
-        </View>*/}
       </ScrollView>
 
       <QuickSaveModal
@@ -619,8 +436,5 @@ const styles = StyleSheet.create({
     height: 97,
     zIndex: 9,
     position: 'relative',
-    // top: -50,
-    // left: 50,
-    // transform: [{translateX: 50}],
   },
 });

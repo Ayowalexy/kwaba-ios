@@ -38,3 +38,15 @@ export const getSoloSavingsReducer = (state = [], action) => {
       return state;
   }
 };
+
+export const getMaxLoanCapReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_MAX_LOAN_CAP:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};

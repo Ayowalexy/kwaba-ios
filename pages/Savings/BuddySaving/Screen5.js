@@ -22,10 +22,8 @@ import {
 } from '../../../util/numberFormatter';
 import InviteBuddyModal from '../../../components/InviteBuddyModal';
 
-export default function Screen5({navigation}) {
-  const [locked, setLocked] = useState(true);
-
-  const [showInviteBuddyModal, setShowInviteBuddyModal] = useState(false);
+export default function Screen5(props) {
+  const {navigation, route} = props;
 
   const [buddies, setBuddies] = useState([
     // {
@@ -34,19 +32,32 @@ export default function Screen5({navigation}) {
     //   allocatedAmount: 1000000,
     //   monthlySaving: 330000,
     // },
-    // {
-    //   fullname: 'Tobi Odenjimi',
-    //   email: 'tobiodenjimi@gmail.com',
-    //   allocatedAmount: 1000000,
-    //   monthlySaving: 330000,
-    // },
-    // {
-    //   fullname: 'Adebis Joseph',
-    //   email: 'adebisijoseph@gmail.com',
-    //   allocatedAmount: 1000000,
-    //   monthlySaving: 330000,
-    // },
   ]);
+
+  const [showInviteBuddyModal, setShowInviteBuddyModal] = useState(false);
+  const [targetAmount, setTargetAmount] = useState(0);
+  const [numberOfBuddies, setNumberOfBuddies] = useState(0);
+  const [frequency, setFrequency] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [yourTarget, setYourTarget] = useState(0);
+  const [buddiesTarget, setBuddiesTarget] = useState(0);
+
+  const [locked, setLocked] = useState(true);
+
+  useEffect(() => {
+    const data = route.params;
+    console.log('Data: ', data);
+
+    // set fields;
+    setTargetAmount(data.target_amount);
+    setNumberOfBuddies(data.number_of_buddies);
+    setFrequency(data.savings_frequency);
+    setStartDate(data.date_starting);
+    setEndDate(data.date_ending);
+    setYourTarget(data.savings_amount);
+    setBuddiesTarget(Number(data.target_amount) - Number(data.savings_amount));
+  }, []);
 
   const toggleSwitch = () => {
     setLocked((previousState) => !previousState);
@@ -200,7 +211,9 @@ export default function Screen5({navigation}) {
           {/* Top */}
           <View style={[styles.summaryBoxTop]}>
             <Text style={[styles.summaryBoxTopTitle]}>Target Amount</Text>
-            <Text style={[styles.summaryBoxTopAmount]}>₦2,500,000</Text>
+            <Text style={[styles.summaryBoxTopAmount]}>
+              ₦{formatNumber(targetAmount)}
+            </Text>
             <View style={[styles.summaryBoxTopLabel]}>
               <Text
                 style={{
@@ -210,7 +223,9 @@ export default function Screen5({navigation}) {
                   marginTop: -2,
                 }}>
                 You are saving with{' '}
-                <Text style={{color: COLORS.secondary}}>3 buddies</Text>
+                <Text style={{color: COLORS.secondary}}>
+                  {numberOfBuddies} buddies
+                </Text>
               </Text>
             </View>
           </View>
@@ -223,7 +238,7 @@ export default function Screen5({navigation}) {
                   Your target:{' '}
                   <Text style={[styles.summaryBoxTargetCalValueTextBold]}>
                     {' '}
-                    ₦625,000
+                    ₦{formatNumber(yourTarget)}
                   </Text>
                 </Text>
               </View>
@@ -232,7 +247,7 @@ export default function Screen5({navigation}) {
                   Other buddies target:{' '}
                   <Text style={[styles.summaryBoxTargetCalValueTextBold]}>
                     {' '}
-                    ₦1,875,000
+                    ₦{formatNumber(buddiesTarget)}
                   </Text>
                 </Text>
               </View>
@@ -254,11 +269,11 @@ export default function Screen5({navigation}) {
             }}>
             <View style={styles.dataInfo}>
               <Text style={styles.key}>Frequency</Text>
-              <Text style={styles.value}>Monthly</Text>
+              <Text style={styles.value}>{frequency}</Text>
             </View>
             <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={styles.key}>Start Date</Text>
-              <Text style={styles.value}>Dec 22, 2020</Text>
+              <Text style={styles.value}>{startDate}</Text>
             </View>
           </View>
 
@@ -273,7 +288,7 @@ export default function Screen5({navigation}) {
             }}>
             <View style={styles.dataInfo}>
               <Text style={styles.key}>End Date</Text>
-              <Text style={styles.value}>Dec 22, 2021</Text>
+              <Text style={styles.value}>{endDate}</Text>
             </View>
             <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={styles.key}>Interest Rate</Text>
@@ -361,7 +376,7 @@ export default function Screen5({navigation}) {
         <View style={[styles.buddyInvites]}>
           {/* Buddies of 1 of how many buddies to invite */}
           <Text style={[styles.buddyInvitesCount]}>
-            Buddies({buddies.length} of 4){' '}
+            Buddies({buddies.length} of {numberOfBuddies}){' '}
           </Text>
 
           {!buddies.length ? (
@@ -405,6 +420,7 @@ export default function Screen5({navigation}) {
       <InviteBuddyModal
         onRequestClose={() => setShowInviteBuddyModal(!showInviteBuddyModal)}
         visible={showInviteBuddyModal}
+        data={route.params}
       />
     </View>
   );

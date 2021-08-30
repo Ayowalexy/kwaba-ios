@@ -441,12 +441,25 @@ const createBuddySavings = async (data) => {
   }
 };
 
+const InviteBuddy = async () => {
+  const url = apiUrl + '/api/v1/invite_buddy';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 const getUserSavings = async () => {
   const url = apiUrl + '/api/v1/get_user_savings';
   const token = await getToken();
   try {
     const response = await axios.get(url, {
-      headers: {Authorization: token},
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
@@ -459,7 +472,7 @@ const getOneUserSavings = async (id) => {
   const token = await getToken();
   try {
     const response = await axios.get(url, {
-      headers: {Authorization: token},
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
@@ -506,6 +519,34 @@ const verifySavingsPayment = async (data) => {
   }
 };
 
+// Accept Offer
+const acceptOffer = async (data) => {
+  const url = apiUrl + '/api/v1/application/accept_offer';
+  const token = await getToken();
+  try {
+    const response = await axios.put(url, data, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Reject Offer
+const rejectOffer = async (data) => {
+  const url = apiUrl + '/api/v1/application/reject';
+  const token = await getToken();
+  try {
+    const response = await axios.put(url, data, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -537,9 +578,12 @@ export {
   referralDetails,
   me,
   createBuddySavings,
+  InviteBuddy,
   getUserSavings,
   getOneUserSavings,
   getSavingsHistory,
   addFundsToSavings,
   verifySavingsPayment,
+  acceptOffer,
+  rejectOffer,
 };

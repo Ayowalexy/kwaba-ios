@@ -208,7 +208,7 @@ export default function Screen1({navigation}) {
     const data = {
       title: values.savingTitle,
       number_of_buddies: values.savingNumberOfBuddies[0],
-      target_amount: unFormatNumber(values.savingTargetAmount),
+      target_amount: unFormatNumber(values.savingTargetAmount) || 0,
     };
 
     navigation.navigate('BuddySaving2', data);

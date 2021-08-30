@@ -37,35 +37,13 @@ export default function RentalLoanFormCongratulation({navigation}) {
   };
 
   const handleNavigation = async () => {
-    // const token = await getToken();
-    // // console.log(token);
-    // const application = await axios.get(
-    //   'http://67.207.86.39:8000/api/v1/application/one',
-    //   {
-    //     headers: {'Content-Type': 'application/json', Authorization: token},
-    //   },
-    // );
-
-    // console.log(application.data);
-
-    // if (application.data.data.verified) {
-    //   Alert.alert('Application approval');
-    //   setTimeout(() => {
-    //     navigation.navigate('RentalLoanFormBankStatementUpload');
-    //   }, 1000);
-    // } else {
-    //   Alert.alert('Awating approval');
-    //   // navigation.navigate('RentalLoanFormBankStatementUpload');
-    // }
-
-    // console.log(application.data.data.id);
     const rentalSteps = await AsyncStorage.getItem('rentalSteps');
     const steps = JSON.parse(rentalSteps);
 
     let stepsData = {
       application_form: 'done',
       congratulation: 'done',
-      bank_statement_upload: '',
+      // bank_statement_upload: '',
       all_documents: '',
       verifying_documents: '',
       offer_breakdown: '',
@@ -80,9 +58,10 @@ export default function RentalLoanFormCongratulation({navigation}) {
 
     await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
 
-    console.log('STEPS: ', steps);
+    // console.log('STEPS: ', steps);
 
-    navigation.navigate('RentalLoanFormBankStatementUpload');
+    // navigation.navigate('RentalLoanFormBankStatementUpload');
+    navigation.navigate('NewAllDocuments');
   };
 
   return (
@@ -94,14 +73,17 @@ export default function RentalLoanFormCongratulation({navigation}) {
         style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
         color={COLORS.primary}
       />
-      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
-        <View style={{paddingHorizontal: 20, marginBottom: 100}}>
+      <ScrollView
+        contentContainerStyle={{flex: 1}}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled>
+        <View style={{flex: 1, paddingHorizontal: 20, marginBottom: 100}}>
           <View style={[styles.card]}>
             <Image
               source={images.congratulation}
               style={{
                 width: '100%',
-                height: 200,
+                height: 100,
                 resizeMode: 'contain',
                 // borderWidth: 2,
                 // marginTop: 20,
@@ -121,11 +103,11 @@ export default function RentalLoanFormCongratulation({navigation}) {
                 }}>
                 Congratulations
               </Text>
-              <Text style={[styles.text]}>
+              <Text style={[styles.text, {marginTop: 10}]}>
                 Your rent payment request of{' '}
                 {/* <Text style={{color: COLORS.primary}}>₦500,000</Text> has {'\n'}{' '} */}
-                <Text style={{color: COLORS.primary}}>
-                  ₦{numberWithCommas(requestAmount)}
+                <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+                  ₦{numberWithCommas(requestAmount || 0)}
                 </Text>{' '}
                 has {'\n'} been pre-approved
               </Text>
@@ -140,10 +122,23 @@ export default function RentalLoanFormCongratulation({navigation}) {
               }}
             />
 
-            <View>
+            <View
+              style={{
+                paddingHorizontal: 20,
+                // borderWidth: 1,
+                flex: 1,
+                // alignItems: 'center',
+                // justifyContent: 'center',
+              }}>
               <Text style={[styles.text]}>
-                To get your rent paid faster, upload your {'\n'} latest 6 months
-                bank statement.
+                {/* To get your rent paid faster, upload your {'\n'} latest 6 months
+                bank statement. */}
+                {/* Upload your documents to get your rent paid faster. If you don't
+                have all documents now, no problem, just upload your latest 6
+                months bank statement at least to proceed. */}
+                Upload your documents to get your rent paid faster. If you don't
+                have all the documents now, no problem, just upload your latest
+                6 months bank statement at least to proceed.
               </Text>
             </View>
           </View>
@@ -167,7 +162,8 @@ export default function RentalLoanFormCongratulation({navigation}) {
                 fontSize: 12,
               },
             ]}>
-            UPLOAD STATEMENT
+            {/* UPLOAD STATEMENT */}
+            UPLOAD DOCUMENTS
           </Text>
         </TouchableOpacity>
       </View>
@@ -177,18 +173,21 @@ export default function RentalLoanFormCongratulation({navigation}) {
 
 const styles = StyleSheet.create({
   card: {
+    flex: 1,
+    height: '100%',
     backgroundColor: COLORS.white,
     borderRadius: 20,
     paddingVertical: 30,
   },
 
   text: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '200',
+    fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 0,
     color: COLORS.dark,
-    lineHeight: 20,
+    lineHeight: 25,
   },
 
   btnContainer: {

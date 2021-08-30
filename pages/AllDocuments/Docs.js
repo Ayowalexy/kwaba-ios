@@ -226,7 +226,7 @@ export default function Docs(props, {navigation}) {
                       {!item.isUploaded && !item.isUploading && (
                         <Text style={{color: '#ADADAD'}}>No file uploaded</Text>
                       )}
-                      {item.isUploading && (
+                      {/* {item.isUploading && (
                         <View style={{flex: 1, marginRight: 20}}>
                           <View
                             style={[
@@ -253,31 +253,9 @@ export default function Docs(props, {navigation}) {
                             width={null}
                           />
                         </View>
-                      )}
+                      )} */}
                     </View>
                   </View>
-                  {/* <TouchableOpacity
-                    onPress={() => {
-                      // if (item.title == 'Bank Statement') {
-                      //   // console.log('redirect to upload bank statment page');
-                      //   // navigation.navigate('UploadBankStatement');
-                      //   navigation.navigate('RentalLoanFormBankStatementUpload');
-                      // } else {
-                      //   selectOneFile(item);
-                      // }
-                      selectOneFile(item);
-                    }}>
-                    <Image
-                      source={images.group3745}
-                      style={{
-                        width: 30,
-                        height: 30,
-                        alignSelf: 'flex-end',
-                        marginTop: 'auto',
-                        marginBottom: 'auto',
-                      }}
-                    />
-                  </TouchableOpacity> */}
                   {!item.isUploading && (
                     <Image
                       source={

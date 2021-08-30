@@ -24,53 +24,55 @@ export default function OkraDebitMandate2({navigation}) {
   };
 
   useEffect(() => {
-    const getApplicationData = async () => {
-      const token = await getToken();
-
-      try {
-        const applicationIDCallRes = await axios.get(
-          'http://67.207.86.39:8000/api/v1/application/one',
-          {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          },
-        );
-        // console.log(applicationIDCallRes.data.data.id);
-
-        const applicationId = applicationIDCallRes.data.data.id;
-
-        setExistingApplication(applicationId);
-        console.log('here', applicationIDCallRes.data.data.approvedamount);
-        setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
-        const approved_repayment_plan =
-          applicationIDCallRes.data.data.approved_repayment_plan;
-        const repayment_start_date =
-          applicationIDCallRes.data.data.remita_repayment_date;
-        const repayment_end_date = moment(repayment_start_date)
-          .add(Number(approved_repayment_plan) - 1, 'months')
-          .format('YYYY-MM-DD');
-        setStartDate(repayment_start_date);
-        setEndDate(repayment_end_date);
-
-        console.log('here2', monthlyRepayment);
-
-        console.log('repayment_start_date', repayment_start_date);
-        console.log('repayment_end_date', repayment_end_date);
-      } catch (error) {
-        console.log(error.response.data);
-      }
-    };
-
     getApplicationData();
   }, [monthlyRepayment]);
 
+  const getApplicationData = async () => {
+    const token = await getToken();
+
+    try {
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      // console.log(applicationIDCallRes.data.data.id);
+
+      const applicationId = applicationIDCallRes.data.data.id;
+
+      setExistingApplication(applicationId);
+      console.log('here', applicationIDCallRes.data.data.approvedamount);
+      setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
+      const approved_repayment_plan =
+        applicationIDCallRes.data.data.approved_repayment_plan;
+      const repayment_start_date =
+        applicationIDCallRes.data.data.remita_repayment_date;
+      const repayment_end_date = moment(repayment_start_date)
+        .add(Number(approved_repayment_plan) - 1, 'months')
+        .format('YYYY-MM-DD');
+      setStartDate(repayment_start_date);
+      setEndDate(repayment_end_date);
+
+      console.log('here2', monthlyRepayment);
+
+      console.log('repayment_start_date', repayment_start_date);
+      console.log('repayment_end_date', repayment_end_date);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
   let okraOptions = {
-    callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
+    // callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
+    callback_url: 'http://67.207.86.39:8000/api/v1/webhook',
     clientName: 'Kwaba',
     color: COLORS.secondary,
     connectMessage: 'Which account do you want to connect with?',
     currency: 'NGN',
     env: 'production-sandbox', // for sandbox use production-sandbox
-    exp: '2020-08-06',
+    // exp: '2020-08-06',
+    exp: endDate,
     filter: {
       banks: [],
       industry_type: 'all',
@@ -178,7 +180,7 @@ export default function OkraDebitMandate2({navigation}) {
             console.log('on close');
             //navigation.navigate('PostPaymentForm4')
             // navigation.goBack();
-            navigation.navigate('AwaitingDisbursement');
+            // navigation.navigate('AwaitingDisbursement');
             // console.log('on success we go ' + monthlyRepayment);
             // console.log('The RESPONSE: ', response);
           }}

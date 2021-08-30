@@ -12,7 +12,10 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import Tooltip from 'rn-tooltip';
 import {useDispatch, useSelector} from 'react-redux';
-import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
+import {
+  getTotalSoloSavings,
+  getMaxLoanCap,
+} from '../../../redux/actions/savingsActions';
 import {COLORS, FONTS, images} from '../../../util/index';
 import designs from './style';
 import {
@@ -31,32 +34,22 @@ const emergencyFundFormSchema = yup.object().shape({
 export default function EmergencyLoanHome({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
   const [maximumLoanAmount, setMaximumLoanAmount] = useState(0);
-  const [loanAmount, setLoanAmount] = useState('');
   const [repaymentAmount, setRepaymentAmount] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     dispatch(getTotalSoloSavings());
+    dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
-    // const totalSoloSavings =
-    //   store?.data?.length > 0
-    //     ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
-    //     : 0;
-    // setSavings(totalSoloSavings);
-    // const maxLoanAmount = 0.4 * Number(totalSoloSavings);
-    // setMaximumLoanAmount(maxLoanAmount);
+    const data = getMaxLoanCap1.data;
 
-    if (store?.data?.length) {
-      const amount_saved = Number(store?.data[0].amount_save);
-      setSavings(amount_saved || 0);
-
-      const maxLoanAmount = 0.4 * Number(amount_saved);
-      setMaximumLoanAmount(maxLoanAmount);
-    }
+    setSavings(data.you_have_save);
+    setMaximumLoanAmount(data.max_loan_amount);
   }, []);
 
   const calculateRepayment = (amount) => {
@@ -66,31 +59,6 @@ export default function EmergencyLoanHome({navigation}) {
   };
 
   const handleSubmit = (values) => {
-    // console.log(values, repaymentAmount);
-    // if (loanAmount == '') {
-    //   return Alert.alert('', 'Please set a loan amount');
-    // } else
-
-    // console.log(unFormatNumber(values.requestAmount));
-
-    // if (Number(unFormatNumber(values.requestAmount)) > maximumLoanAmount) {
-    //   // setStatus(
-    //   //   'Set a loan amount less than or equal to your maximum loan amount',
-    //   // );
-
-    //   setErrorMsg(
-    //     'Set a loan amount less than or equal to your maximum loan amount',
-    //   );
-    // }
-
-    //   else {
-    //     navigation.navigate('EmergencyLoanRequest', {
-    //       loan_amount: unFormatNumber(values.requestAmount),
-    //       repayment_amount: repaymentAmount,
-    //     });
-    // }
-    // console.log(values);
-
     if (errorMsg == '')
       navigation.navigate('EmergencyLoanRequest', {
         loan_amount: unFormatNumber(values.requestAmount),

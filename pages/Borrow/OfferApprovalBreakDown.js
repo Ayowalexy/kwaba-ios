@@ -26,7 +26,10 @@ import RNFS from 'react-native-fs';
 import {color} from 'react-native-reanimated';
 import PrintOfferLetter from '../Payment/PrintOfferLetter';
 
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import {formatNumber} from '../../util/numberFormatter';
+import {acceptOffer, rejectOffer} from '../../services/network';
 
 const RentalLoanOfferTest = ({navigation}) => {
   const [modalVisible, setVisible] = useState(false);
@@ -36,6 +39,7 @@ const RentalLoanOfferTest = ({navigation}) => {
   const [approvedAmount, setApprovedAmount] = useState('');
   const [monthlyPayment, setMonthlyPayment] = useState('');
   const [duration, setDuration] = useState('');
+  const [spinner, setSpinner] = useState(false);
 
   const [rentInsuranceCal, setRentInsuranceCal] = useState(0);
 
@@ -58,15 +62,14 @@ const RentalLoanOfferTest = ({navigation}) => {
       );
 
       // setApprovedAmount(applicationIDCallRes.data.data.approvedAmount);
-      setApprovedAmount(applicationIDCallRes.data.data.loanable_amount);
-      setMonthlyPayment(applicationIDCallRes.data.data.monthly_repayment);
-      setDuration(applicationIDCallRes.data.data.repayment_plan);
+      setApprovedAmount(applicationIDCallRes.data.data.approvedamount);
+      setMonthlyPayment(applicationIDCallRes.data.data.approvedrepayment);
+      setDuration(applicationIDCallRes.data.data.approved_repayment_plan);
 
       console.log('HHH:', applicationIDCallRes.data.data.loanable_amount);
+      console.log('DATA FROM BASE:', applicationIDCallRes.data.data);
 
-      setRentInsuranceCal(
-        0.05 * applicationIDCallRes.data.data.loanable_amount,
-      ); // Rent Insurance Calculation
+      setRentInsuranceCal(0.05 * applicationIDCallRes.data.data.approvedamount); // Rent Insurance Calculation
     };
 
     setLoanOffer();
@@ -157,28 +160,91 @@ const RentalLoanOfferTest = ({navigation}) => {
     setESignatureModal(true);
   };
 
-  const acceptOffer = async () => {
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
-    const steps = JSON.parse(rentalSteps);
-    let stepsData = {
-      application_form: 'done',
-      congratulation: 'done',
-      bank_statement_upload: 'done',
-      all_documents: 'done',
-      verifying_documents: 'done',
-      offer_breakdown: 'done',
-      property_detail: '',
-      landlord_detail: '',
-      referee_detail: '',
-      offer_letter: '',
-      address_verification: '',
-      debitmandate: '',
-      awaiting_disbursement: '',
-    };
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
-    console.log('STEPS: ', steps);
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
 
-    navigation.navigate('PostPaymentForm1');
+  const accept_offer = async () => {
+    setSpinner(true);
+    const token = await getToken();
+    try {
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+
+      if (applicationIDCallRes.status == 200) {
+        const data = {
+          applicationId: applicationIDCallRes.data.data.id,
+          signature: 'user signature',
+        };
+        const res = await acceptOffer(data);
+        if (res.status == 200) {
+          setSpinner(false);
+          console.log('RES ACCEPT OFFER: ', res.data.data);
+
+          const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+          const steps = JSON.parse(rentalSteps);
+          let stepsData = {
+            application_form: 'done',
+            congratulation: 'done',
+            bank_statement_upload: 'done',
+            all_documents: 'done',
+            verifying_documents: 'done',
+            offer_breakdown: 'done',
+            property_detail: '',
+            landlord_detail: '',
+            referee_detail: '',
+            offer_letter: '',
+            address_verification: '',
+            debitmandate: '',
+            awaiting_disbursement: '',
+          };
+          await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+          console.log('STEPS: ', steps);
+
+          navigation.navigate('PostPaymentForm1');
+        }
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error', 'error not found');
+    }
+  };
+
+  // TODO
+  const reject_offer = async () => {
+    setSpinner(true);
+    const token = await getToken();
+    try {
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+
+      if (applicationIDCallRes.status == 200) {
+        const data = {
+          applicationId: applicationIDCallRes.data.data.id,
+          signature: 'user signature',
+        };
+        const res = await rejectOffer(data);
+        if (res.status == 200) {
+          setSpinner(false);
+          console.log('RES REJECT OFFER: ', res.data.data);
+
+          navigation.navigate('Reject');
+        }
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error', 'error not found');
+    }
   };
 
   const handleRejectOffer = () => {
@@ -296,7 +362,7 @@ const RentalLoanOfferTest = ({navigation}) => {
             <View style={[styles.flexContent]}>
               <Text style={styles.flexText}>Duration</Text>
               <Text style={[styles.flexText, {fontWeight: 'bold'}]}>
-                {duration}
+                {duration} Months
               </Text>
             </View>
             <View
@@ -394,7 +460,7 @@ const RentalLoanOfferTest = ({navigation}) => {
           }}>
           <TouchableOpacity
             // onPress={handleRejectOffer}
-            onPress={() => navigation.navigate('Decline')}
+            onPress={reject_offer}
             style={[
               designs.button,
               {backgroundColor: COLORS.white, elevation: 1, width: '43%'},
@@ -415,7 +481,7 @@ const RentalLoanOfferTest = ({navigation}) => {
           <TouchableOpacity
             // onPress={() => setVisible(true)}
             // onPress={() => navigation.navigate('PostPaymentForm1')}
-            onPress={acceptOffer}
+            onPress={accept_offer}
             style={[
               designs.button,
               {backgroundColor: COLORS.secondary, elevation: 1, width: '43%'},
@@ -576,6 +642,8 @@ const RentalLoanOfferTest = ({navigation}) => {
           <Text></Text>
         </Modal>
       </View>
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 };
@@ -594,7 +662,7 @@ const styles = StyleSheet.create({
   },
 
   flexText: {
-    fontSize: 12,
+    fontSize: 14,
     // lineHeight: 15,
     color: COLORS.primary,
   },

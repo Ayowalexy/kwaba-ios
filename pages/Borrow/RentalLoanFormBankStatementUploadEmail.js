@@ -260,8 +260,8 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
                     marginTop: 10,
                     color: COLORS.dark,
                   }}>
-                  The email used to request for your bank amount should be the
-                  one you receive notification with your bank
+                  The email used to request for your bank statement should be
+                  the one you receive notification with your bank
                 </Text>
                 <Field
                   component={CustomInput}

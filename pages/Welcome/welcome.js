@@ -98,7 +98,7 @@ const Welcome = ({navigation}) => {
               fontSize: 14,
               // fontWeight: 'bold',
             }}>
-            The future of rent.
+            The future of home payment
           </Text>
         </View>
 

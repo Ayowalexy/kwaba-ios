@@ -18,6 +18,7 @@ import EmergencyLoanRequestDashBoard from '../Borrow/EmergencyLoan/EmergencyLoan
 import Account from '../UserAccount/Account';
 import AccountPage from '../UserAccount/AccountPage';
 import BillsHome from '../Bills/BillsHome';
+import Mortgages from '../Mortgages/Mortgage';
 import {TabBar} from 'react-native-tab-view';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
 
@@ -35,19 +36,19 @@ const tabItems = [
   // },
   {
     title: 'Rent',
-    icon: 'home',
+    icon: 'home-outline',
     screen: Borrow,
   },
 
   {
     title: 'Mortgages',
-    icon: 'receipt',
-    screen: BillsHome,
+    icon: 'receipt-outline',
+    screen: Mortgages,
   },
 
   {
     title: 'Account',
-    icon: 'person',
+    icon: 'person-outline',
     screen: AccountPage,
   },
 ];
@@ -63,13 +64,14 @@ const BottomNavigator = ({navigation}) => {
             elevation: 50,
             borderWidth: 0,
             bottom: 0,
-            borderTopWidth: 0,
+            // borderTopWidth: 0,
             borderLeftWidth: 0,
             borderWidth: 0,
-            height: 70,
+            height: 60,
             // paddingLeft: 10,
             // paddingRight: 10,
             overflow: 'hidden',
+            // paddingTop: 5,
           },
           showLabel: false,
           activeTintColor: COLORS.primary,
@@ -129,6 +131,14 @@ const BottomNavigator = ({navigation}) => {
                           />
                         )}
                       </>
+                      {/* <Text
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          color: focused ? '#465969' : '#BFBFBF',
+                        }}>
+                        {title}
+                      </Text> */}
                     </View>
                   ) : (
                     <View
@@ -162,11 +172,9 @@ const BottomNavigator = ({navigation}) => {
 
                       <Text
                         style={{
-                          // marginTop: 0,
-                          fontSize: 10,
-                          // fontWeight: 'bold',
-                          // color: '#465969',
-                          // color: focused ? '#9D98EC' : '#BFBFBF',
+                          // marginTop: 5,
+                          fontSize: 12,
+                          fontWeight: 'bold',
                           color: focused ? '#465969' : '#BFBFBF',
                         }}>
                         {title}

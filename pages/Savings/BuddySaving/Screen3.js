@@ -28,7 +28,8 @@ const soloSavingFormSchema = yup.object().shape({
   savingStartOption: yup.string().required('Field is required'),
 });
 
-export default function Screen1({navigation}) {
+export default function Screen1(props) {
+  const {navigation, route} = props;
   const dispatch = useDispatch();
   const [showDate, setShowDate] = useState(false);
   const [date, setDate] = useState(new Date(Date.now()));
@@ -42,18 +43,15 @@ export default function Screen1({navigation}) {
 
   const handleSubmit = (values) => {
     const data = {
-      savings_activeOption: values.savingOption,
+      ...route.params,
+      savings_method: values.savingOption,
       savings_amount: Number(unFormatNumber(values.targetAmount)),
       savings_frequency: values.savingFrequency,
-      savings_startOption: values.savingsStartOption,
+      // savings_startOption: values.savingsStartOption,
     };
-    navigation.navigate('BuddySaving4');
-    // console.log(data);
-    // try {
-    //   dispatch(soloSaving(data));
+    // console.log('Screen 3: ', data);
 
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
+    navigation.navigate('BuddySaving4', data);
   };
 
   const NumberInput = (props) => {

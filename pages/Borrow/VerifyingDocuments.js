@@ -44,10 +44,13 @@ const VerifyingDocuments = ({navigation, route}) => {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
+      console.log('APp status: ', applicationIDCallRes.data.data.status);
+
       const applicationStatus = applicationIDCallRes.data.data.status;
 
-      setExistingApplication(applicationId);
+      // setExistingApplication(applicationId);
       // console.log('here', applicationIDCallRes.data.data.approvedamount);
+      // setSpinner(false);
 
       if (applicationStatus >= 3) {
         setSpinner(false);
@@ -57,7 +60,7 @@ const VerifyingDocuments = ({navigation, route}) => {
           bank_statement_upload: 'done',
           all_documents: 'done',
           verifying_documents: 'done',
-          offer_breakdown: 'done',
+          offer_breakdown: '',
           property_detail: '',
           landlord_detail: '',
           referee_detail: '',
@@ -72,9 +75,13 @@ const VerifyingDocuments = ({navigation, route}) => {
       } else {
         setSpinner(false);
         console.log('Nah ');
-        Alert.alert('Verifying Documents', 'Documents under verification');
+        Alert.alert(
+          'Document Verification',
+          'We are still verifiying your documents, please check back later.',
+        );
       }
     } catch (error) {
+      setSpinner(false);
       console.log(error.response.data);
     }
   };
@@ -84,57 +91,58 @@ const VerifyingDocuments = ({navigation, route}) => {
     //getDocuments();
   }, []);
 
-  const handleNavigation = () => {
-    if (finalApproval > 0) {
-      // navigation.navigate('SoloSaving2');
-      navigation.navigate('OkraDebitMandate');
-    }
-  };
+  // const handleNavigation = () => {
+  //   if (finalApproval > 0) {
+  //     // navigation.navigate('SoloSaving2');
+  //     navigation.navigate('OkraDebitMandate');
+  //   }
+  // };
 
-  const countDocuments = async () => {
-    const token = await getToken();
-    try {
-      const resp = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/documents',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      // console.log(uploadedDocumentsRes)
+  // const countDocuments = async () => {
+  //   const token = await getToken();
+  //   try {
+  //     const resp = await axios.get(
+  //       'http://67.207.86.39:8000/api/v1/application/documents',
+  //       {
+  //         headers: {'Content-Type': 'application/json', Authorization: token},
+  //       },
+  //     );
+  //     // console.log(uploadedDocumentsRes)
 
-      let ress = Object.keys(resp.data.data).map((title) => ({
-        title,
-        content: resp.data[title],
-      }));
+  //     let ress = Object.keys(resp.data.data).map((title) => ({
+  //       title,
+  //       content: resp.data[title],
+  //     }));
 
-      var count = 0;
+  //     var count = 0;
 
-      ress.forEach((v, i) => {
-        if (v.content.length == 0) {
-          count += 1;
-        }
-      });
+  //     ress.forEach((v, i) => {
+  //       if (v.content.length == 0) {
+  //         count += 1;
+  //       }
+  //     });
 
-      console.log('ress', ress);
-      return count;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     console.log('ress', ress);
+  //     return count;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-      <Icon
+      {/* <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
         style={{padding: 15, paddingVertical: 15, fontWeight: '900'}}
         color={COLORS.primary}
-      />
+      /> */}
       <View
         style={{
           // marginVertical: 11,
           marginHorizontal: 16,
+          marginTop: 20,
         }}>
         <Text
           style={[
@@ -152,7 +160,7 @@ const VerifyingDocuments = ({navigation, route}) => {
         {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
         <Image
           source={images.group3693}
-          style={{height: 190, width: 190, alignSelf: 'center'}}
+          style={{height: 100, width: 100, alignSelf: 'center'}}
         />
         <Text
           style={[
@@ -179,19 +187,17 @@ const VerifyingDocuments = ({navigation, route}) => {
               paddingHorizontal: 20,
             },
           ]}>
-          We are verifying your documents you will be able to Proceed when we
-          are done verifying.
+          We are verifying your documents. Once we are done, you will be able to
+          proceed.
         </Text>
 
         <TouchableOpacity
-          onPress={() => {
-            getApplicationData();
-          }}
+          onPress={getApplicationData}
           style={{
             width: '100%',
             backgroundColor: COLORS.secondary,
             padding: 20,
-            borderRadius: 10,
+            borderRadius: 5,
             justifyContent: 'center',
             alignItems: 'center',
           }}>
@@ -202,7 +208,30 @@ const VerifyingDocuments = ({navigation, route}) => {
               textTransform: 'uppercase',
               color: COLORS.white,
             }}>
-            Confirm verification
+            Check Verification Status
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('NewAllDocuments')}
+          style={{
+            width: '100%',
+            backgroundColor: COLORS.white,
+            padding: 20,
+            borderRadius: 5,
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 10,
+            elevation: 1,
+          }}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              color: COLORS.dark,
+            }}>
+            Edit Documents
           </Text>
         </TouchableOpacity>
 

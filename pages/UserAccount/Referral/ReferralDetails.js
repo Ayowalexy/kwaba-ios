@@ -24,122 +24,107 @@ export default function ReferralDetails({navigation}) {
   }, []);
 
   return (
-    <View style={[styles.container]}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={25}
-        style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
-        }}
-        color={COLORS.primary}
-      />
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        <Text style={[styles.heading]}>Referral details</Text>
-        <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
-          <View style={[styles.topCard]}>
-            <View style={{padding: 10, paddingHorizontal: 20}}>
-              <Text style={{fontSize: 12, color: COLORS.primary}}>
-                Your earning
-              </Text>
-              <Text
+    <>
+      <View style={[styles.container]}>
+        <Icon
+          onPress={() => navigation.goBack()}
+          name="arrow-back-outline"
+          size={25}
+          style={{
+            paddingVertical: 15,
+            paddingHorizontal: 15,
+          }}
+          color={COLORS.primary}
+        />
+        <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+          <Text style={[styles.heading]}>Referral details</Text>
+          <View style={{paddingHorizontal: 20, paddingVertical: 10}}>
+            <View style={[styles.topCard]}>
+              <View style={{padding: 10, paddingHorizontal: 20}}>
+                <Text style={{fontSize: 12, color: COLORS.primary}}>
+                  Your earning
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    marginVertical: 5,
+                    marginLeft: 5,
+                  }}>
+                  ₦0.00
+                </Text>
+              </View>
+
+              <View
                 style={{
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  marginVertical: 5,
-                  marginLeft: 5,
+                  borderLeftWidth: 1,
+                  borderLeftColor: COLORS.grey,
+                  padding: 10,
+                  paddingLeft: 20,
                 }}>
-                ₦0.00
-              </Text>
-              {/* <TouchableOpacity
-                style={[styles.btn]}
-                onPress={() => navigation.navigate('SavingsHome')}>
-                <Text style={{fontSize: 12, color: COLORS.white}}>
-                  Add a saving
-                </Text>
-                <Icon
-                  name="chevron-forward-outline"
-                  size={15}
-                  style={{marginTop: 2, marginLeft: 10}}
-                  color={COLORS.white}
-                />
-              </TouchableOpacity> */}
+                <TouchableOpacity
+                  style={[styles.btn]}
+                  onPress={() => setQuickSaveModal(true)}>
+                  <Text style={{fontSize: 12, color: COLORS.white}}>
+                    Add a saving
+                  </Text>
+                  <Icon
+                    name="chevron-forward-outline"
+                    size={15}
+                    style={{marginTop: 2, marginLeft: 10}}
+                    color={COLORS.white}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.btn,
+                    {
+                      backgroundColor: 'white',
+                      borderWidth: 1,
+                      borderColor: COLORS.grey,
+                    },
+                  ]}
+                  onPress={() => navigation.navigate('Withdraw')}>
+                  <Text style={{fontSize: 12, color: COLORS.dark}}>
+                    Withdraw
+                  </Text>
+                  <Icon
+                    name="chevron-forward-outline"
+                    size={15}
+                    style={{marginTop: 2, marginLeft: 10}}
+                    color={COLORS.dark}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
 
-            <View
-              style={{
-                borderLeftWidth: 1,
-                borderLeftColor: COLORS.grey,
-                padding: 10,
-                paddingLeft: 20,
-              }}>
-              {/* <Text style={{fontSize: 12, color: COLORS.primary}}>
-                Rent Discount
-              </Text>
-              <Text style={{fontWeight: 'bold', fontSize: 20}}>0%</Text> */}
-              <TouchableOpacity
-                style={[styles.btn]}
-                onPress={() => setQuickSaveModal(true)}
-                // onPress={() => navigation.navigate('SavingsHome')}
-              >
-                <Text style={{fontSize: 12, color: COLORS.white}}>
-                  Add a saving
-                </Text>
-                <Icon
-                  name="chevron-forward-outline"
-                  size={15}
-                  style={{marginTop: 2, marginLeft: 10}}
-                  color={COLORS.white}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[
-                  styles.btn,
-                  {
-                    backgroundColor: 'white',
-                    borderWidth: 1,
-                    borderColor: COLORS.grey,
-                  },
-                ]}
-                onPress={() => navigation.navigate('Withdraw')}>
-                <Text style={{fontSize: 12, color: COLORS.dark}}>Withdraw</Text>
-                <Icon
-                  name="chevron-forward-outline"
-                  size={15}
-                  style={{marginTop: 2, marginLeft: 10}}
-                  color={COLORS.dark}
-                />
-              </TouchableOpacity>
+            <View style={[styles.bottomCard]}>
+              <View style={[styles.flexItem]}>
+                <Text style={[styles.text]}>Unpaid earning</Text>
+                <Text style={[styles.value]}>₦0.00</Text>
+              </View>
+              <View style={[styles.flexItem]}>
+                <Text style={[styles.text]}>Signups</Text>
+                <Text style={[styles.value]}>0</Text>
+              </View>
+              <View style={[styles.flexItem]}>
+                <Text style={[styles.text]}>Earnings per referral</Text>
+                <Text style={[styles.value]}>₦0.00</Text>
+              </View>
+              <View style={[styles.flexItem]}>
+                <Text style={[styles.text]}>Referred users</Text>
+                <Text style={[styles.value]}>0</Text>
+              </View>
             </View>
           </View>
+        </ScrollView>
 
-          <View style={[styles.bottomCard]}>
-            <View style={[styles.flexItem]}>
-              <Text style={[styles.text]}>Unpaid earning</Text>
-              <Text style={[styles.value]}>₦0.00</Text>
-            </View>
-            <View style={[styles.flexItem]}>
-              <Text style={[styles.text]}>Signups</Text>
-              <Text style={[styles.value]}>0</Text>
-            </View>
-            <View style={[styles.flexItem]}>
-              <Text style={[styles.text]}>Earnings per referral</Text>
-              <Text style={[styles.value]}>₦0.00</Text>
-            </View>
-            <View style={[styles.flexItem]}>
-              <Text style={[styles.text]}>Referred users</Text>
-              <Text style={[styles.value]}>0</Text>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-
-      <QuickSaveModal
-        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
-        visible={quickSaveModal}
-      />
-    </View>
+        <QuickSaveModal
+          onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+          visible={quickSaveModal}
+        />
+      </View>
+    </>
   );
 }
 

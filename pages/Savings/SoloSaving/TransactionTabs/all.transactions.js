@@ -13,7 +13,7 @@ export default function AllTransactions(props) {
   const [transactions, setTransactions] = useState(null);
 
   useEffect(() => {
-    console.log('solo: ', getSoloSaving);
+    // console.log('solo: ', getSoloSaving);
     setSavingTitle(props.savingTitle);
   }, []);
 
@@ -32,7 +32,7 @@ export default function AllTransactions(props) {
 
         if (history.status == 200) {
           // console.log('ID: ', savings_id);
-          console.log('History--: ', history.data.data);
+          // console.log('History--: ', history.data.data);
           setTransactions(history.data.data);
         }
       }

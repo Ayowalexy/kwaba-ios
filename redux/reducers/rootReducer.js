@@ -1,8 +1,12 @@
 import {combineReducers} from 'redux';
 import {loginReducer, getUserReducer} from './userReducers';
-import {soloSavingReducer, getSoloSavingsReducer} from './savingsReducer';
+import {
+  soloSavingReducer,
+  getSoloSavingsReducer,
+  getMaxLoanCapReducer,
+} from './savingsReducer';
 import fileUploadReducer from './documentUploadReducers';
-import { applyForEmergencyLoanReducer } from './emergencyLoanReducer';
+import {applyForEmergencyLoanReducer} from './emergencyLoanReducer';
 
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
@@ -11,4 +15,5 @@ export const rootReducer = combineReducers({
   getUserReducer: getUserReducer,
   fileUploadReducer: fileUploadReducer,
   applyForEmergencyLoanReducer: applyForEmergencyLoanReducer,
+  getMaxLoanCapReducer: getMaxLoanCapReducer,
 });

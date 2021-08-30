@@ -17,6 +17,9 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {COLORS} from '../util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {InviteBuddy} from '../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {formatNumber} from '../util/numberFormatter';
 
 export default function InviteBuddyModal(props) {
   const [fullname, setFullname] = useState('');
@@ -26,7 +29,8 @@ export default function InviteBuddyModal(props) {
   const [savingAmount, setSavingAmount] = useState('');
   const [referralCode, setReferralCode] = useState('');
   const [userName, setUserName] = useState('');
-  const {onRequestClose, visible, onConfirm} = props;
+  const [spinner, setSpinner] = useState(false);
+  const {onRequestClose, visible, data} = props;
 
   const getReferralCode = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -75,6 +79,28 @@ export default function InviteBuddyModal(props) {
       }
     } catch (error) {
       alert(error.message);
+    }
+  };
+
+  useEffect(() => {
+    const calc = Number(data.target_amount / Number(data.number_of_buddies));
+    setBuddyTarget(calc);
+
+    const saving_amount = (calc / Number(data.duration)).toFixed(0);
+    setSavingAmount(saving_amount);
+  }, []);
+
+  const sendInvite = async () => {
+    setSpinner(true);
+    try {
+      const res = await InviteBuddy();
+      if (res.status == 200) {
+        setSpinner(false);
+        console.log('Send Invite Res: ', res);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error: ', error);
     }
   };
 
@@ -161,20 +187,8 @@ export default function InviteBuddyModal(props) {
                           color: COLORS.dark,
                           marginLeft: 10,
                         }}>
-                        ₦
+                        ₦{formatNumber(buddyTarget)}
                       </Text>
-                      <TextInput
-                        style={{
-                          width: '100%',
-                          //   borderWidth: 1,
-                          paddingVertical: 0,
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                        }}
-                        placeholderTextColor="#777"
-                        value={buddyTarget}
-                        onChangeText={(text) => setBuddyTarget(text)}
-                      />
                     </View>
                   </View>
                 </View>
@@ -195,20 +209,8 @@ export default function InviteBuddyModal(props) {
                           color: COLORS.dark,
                           marginLeft: 10,
                         }}>
-                        ₦
+                        ₦{formatNumber(savingAmount)}
                       </Text>
-                      <TextInput
-                        style={{
-                          width: '100%',
-                          //   borderWidth: 1,
-                          paddingVertical: 0,
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                        }}
-                        placeholderTextColor="#777"
-                        value={savingAmount}
-                        onChangeText={(text) => setSavingAmount(text)}
-                      />
                     </View>
                   </View>
                 </View>
@@ -216,7 +218,7 @@ export default function InviteBuddyModal(props) {
             </View>
 
             <TouchableOpacity
-              onPress={onConfirm}
+              onPress={sendInvite}
               style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
               <Text style={{color: 'white', fontSize: 12, fontWeight: 'bold'}}>
                 INVITE
@@ -257,6 +259,8 @@ export default function InviteBuddyModal(props) {
           </ScrollView>
         </View>
       </View>
+
+      <Spinner visible={spinner} size="large" />
     </Modal>
     //  </KeyboardAvoidingView>
   );
@@ -269,14 +273,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    // borderColor: '#f00',
-    // borderWidth: 1,
   },
   modalView: {
+    flex: 1,
     width: '100%',
     backgroundColor: 'white',
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
     overflow: 'hidden',
     padding: 25,
     paddingHorizontal: 15,

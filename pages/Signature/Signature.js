@@ -84,9 +84,30 @@ export default function Signature({navigation}) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      // console.log('Res: ', response);
-      // navigation.navigate('AddressVerificationPayment', response);
-      navigation.navigate('AddressVerificationPayment');
+
+      if (response.status == 200) {
+        const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+        const steps = JSON.parse(rentalSteps);
+        let stepsData = {
+          application_form: 'done',
+          congratulation: 'done',
+          bank_statement_upload: 'done',
+          all_documents: 'done',
+          verifying_documents: 'done',
+          offer_breakdown: 'done',
+          property_detail: 'done',
+          landlord_detail: 'done',
+          referee_detail: 'done',
+          offer_letter: 'done',
+          address_verification: '',
+          debitmandate: '',
+          awaiting_disbursement: '',
+        };
+        await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+        console.log('STEPS: ', steps);
+
+        navigation.navigate('AddressVerificationPayment');
+      }
     } catch (error) {
       console.log(error.response.data);
     }

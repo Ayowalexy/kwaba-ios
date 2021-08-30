@@ -66,7 +66,7 @@ const deleteFile = async (item) => {
 export default function ManualUploadModal(props) {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadFilename, setUploadFilename] = useState('');
+  const [uploadFilename, setUploadFilename] = useState('5212.jpg');
   const [startUpload, setStartUpload] = useState(false);
   const [uploadedFileInfo, setUploadedFileInfo] = useState([]);
 
@@ -293,24 +293,22 @@ export default function ManualUploadModal(props) {
                 }}
               />
 
-              {fileUploaded && <Text>{uploadFilename}</Text>}
-              {/* <Text>{fileProgress}%</Text> */}
-
               <Progress.Bar
                 progress={fileProgress / 100}
                 width={200}
                 height={10}
                 color={COLORS.secondary}
-                borderColor="transparent"
+                borderColor={COLORS.secondary}
+                borderWidth={1}
+                style={{marginTop: 5}}
               />
 
-              <Text
-                style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
-                {/* {uploadFilename} */}
-                {/* {uploadedFileInfo.length != 0 &&
-                  'File: ' + uploadedFileInfo.original_filename} */}
-                {/* Bankstatement.pdf */}
-              </Text>
+              {fileUploaded && (
+                <Text
+                  style={{marginVertical: 5, fontSize: 12, color: COLORS.dark}}>
+                  {uploadFilename}
+                </Text>
+              )}
 
               <TouchableOpacity
                 onPress={uploadBankStatementFile}
@@ -318,7 +316,7 @@ export default function ManualUploadModal(props) {
                   styles.btn,
                   {
                     backgroundColor: COLORS.secondary,
-                    marginTop: 10,
+                    marginTop: 5,
                     backgroundColor: COLORS.dark,
                   },
                 ]}>

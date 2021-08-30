@@ -33,9 +33,7 @@ export const setTotalSoloSavings = (data) => {
 export const getTotalSoloSavings = () => {
   return async (dispatch) => {
     const token = await getToken();
-    // console.log('token', token);
-    const url = apiUrl + '/api/v1/savings';
-    // const url = apiUrl + '/api/v1/get_user_savings';
+    const url = apiUrl + '/api/v1/get_user_savings';
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
@@ -48,33 +46,25 @@ export const getTotalSoloSavings = () => {
   };
 };
 
-// export const userSavings = (savingInputs) => {
-//   return (dispatch) => {
-//     dispatch(setGetUserSoloSavings(savingInputs))
-//   }
-// }
+export const setMaxLoanCap = (data) => {
+  return {
+    type: types.GET_MAX_LOAN_CAP,
+    payload: data,
+  };
+};
 
-// export const setGetUserSoloSavings = (data) => {
-//   return {
-//     type: types.GET_USER_SOLO_SAVINGS,
-//     payload: data
-//   }
-// }
-
-// export const getUserSoloSavings = () => {
-//   return async (dispatch) => {
-//     try {
-//       const response = await getUserSavings();
-//       if (response.status == 200) {
-//         const savings_id = response.data.data[0].id;
-//         const one_savings = await getOneUserSavings(savings_id);
-
-//         console.log('One Savings Here: ', one_savings.data.data);
-//         dispatch(setGetUserSoloSavings(one_savings.data.data));
-//         return one_savings.data.data;
-//       }
-//     } catch (error) {
-//       console.log('Error: ', error);
-//     }
-//   };
-// };
+export const getMaxLoanCap = () => {
+  return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + '/api/v1/get_max_loan_cap';
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      dispatch(setMaxLoanCap(response.data.data));
+      return response.data.data;
+    } catch (error) {
+      return error.message;
+    }
+  };
+};

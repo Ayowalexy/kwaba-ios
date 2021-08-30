@@ -137,7 +137,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       // disbursement_account_bank: bankName,
       disbursement_account_name: 'JOSHUA UDO NWOSU',
       disbursement_account_number: '0094552107',
-      disbursement_account_bank: 'Access Bank',
+      disbursement_account_bank: 'Access Bank(Diamond)',
     };
 
     console.log('DATA: ', data);
@@ -238,7 +238,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
               </TouchableOpacity>
             </View>
 
-            {userSelectedBankAccount.length > 0 && (
+            {!userSelectedBankAccount.length > 0 && (
               <View style={{marginTop: 20, alignItems: 'center'}}>
                 <TouchableOpacity activeOpacity={0.9} style={[styles.bankCard]}>
                   <View>
@@ -248,18 +248,18 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         fontWeight: 'bold',
                         color: COLORS.white,
                       }}>
-                      {userSelectedBankAccount &&
-                        userSelectedBankAccount.user_bank_name}
-                      {/* JOSHUA NWOSU */}
+                      {/* {userSelectedBankAccount &&
+                        userSelectedBankAccount.user_bank_name} */}
+                      JOSHUA UDO NWOSU
                     </Text>
                     <Text
                       style={{
                         fontSize: 12,
                         color: COLORS.light,
                       }}>
-                      {userSelectedBankAccount &&
-                        userSelectedBankAccount.bank_name}
-                      {/* Access Bank */}
+                      {/* {userSelectedBankAccount &&
+                        userSelectedBankAccount.bank_name} */}
+                      Access Bank(DIAMOND)
                     </Text>
                     <Text
                       style={{
@@ -268,9 +268,9 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         color: COLORS.white,
                         opacity: 0.8,
                       }}>
-                      {userSelectedBankAccount &&
-                        userSelectedBankAccount.bank_account_number}
-                      {/* 0094552107 */}
+                      {/* {userSelectedBankAccount &&
+                        userSelectedBankAccount.bank_account_number} */}
+                      0094552107
                     </Text>
 
                     <Image

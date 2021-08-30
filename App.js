@@ -31,6 +31,7 @@ import {
   SoloSaving2,
   SoloSaving3,
   SoloSaving4,
+  SavingLists,
   SoloSavingDashBoard,
   BuddySaving1,
   BuddySaving2,
@@ -163,6 +164,9 @@ import PaymentForm from './pages/Home/PaymentForm';
 // payment successful screen
 import PaymentSuccessful from './pages/Home/PaymentSuccessful';
 
+// Mortgages screen
+import Mortgages from './pages/Mortgages/Mortgage';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -269,7 +273,7 @@ const App = () => {
 
   return (
     <>
-      {isOffline && (
+      {/* {isOffline && (
         <View
           style={{
             padding: 5,
@@ -286,7 +290,7 @@ const App = () => {
             No Internet Connection
           </Text>
         </View>
-      )}
+      )} */}
       <NavigationContainer>
         {/* <StatusBar
           animated={true}
@@ -367,6 +371,9 @@ const App = () => {
               <Stack.Screen
                 name="SoloSaving4"
                 component={SoloSaving4}></Stack.Screen>
+              <Stack.Screen
+                name="SavingLists"
+                component={SavingLists}></Stack.Screen>
               <Stack.Screen
                 name="SoloSavingDashBoard"
                 component={SoloSavingDashBoard}></Stack.Screen>
@@ -653,6 +660,8 @@ const App = () => {
                 name="PaymentSuccessful"
                 component={PaymentSuccessful}
               />
+
+              <Stack.Screen name="Mortgages" component={Mortgages} />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

@@ -5,136 +5,41 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-  ImageBackground,
-  Dimensions,
   StyleSheet,
 } from 'react-native';
 
-import {BlurView, VibrancyView} from '@react-native-community/blur';
-
-const width = Dimensions.get('window').width;
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../../util/index';
 import {currencyFormat, formatNumber} from '../../../util/numberFormatter';
 import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
-import {getCurrentUser} from '../../../redux/actions/userActions';
-import moment from 'moment';
+import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import ComingSoon from '../../../components/ComingSoon';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const getToken = async () => {
-  const userData = await AsyncStorage.getItem('userData');
-  const token = JSON.parse(userData).token;
-  return token;
-};
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
-  const currentUser = useSelector((state) => state.getUserReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [totalBalance, setTotalBalance] = useState(0);
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [soloSaving, setSoloSaving] = useState(0);
   const [buddySaving, setBuddySaving] = useState(0);
   const [savingTenure, setSavingTenure] = useState(0);
-
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    dispatch(getCurrentUser());
+    dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
-    // const totalSoloSavings = store.data?.reduce(
-    //   (saving, acc) => Number(saving.amount) + Number(acc.amount),
-    //   0,
-    // );
+    const data = getMaxLoanCap1.data;
 
-    // const soloInterestTotal = store.data?.reduce(
-    //   (saving, acc) => Number(saving.interest) + Number(acc.interest),
-    //   0,
-    // );
-
-    //   const balance =
-    //   totalSoloSavings +
-    //   soloInterestTotal / Number(currentUser.data?.savings_tenure || 0);
-    // setTotalBalance(balance || 0);
-    // setTotalSaving(totalSoloSavings || 0);
-    // setTotalInterest(
-    //   soloInterestTotal?.toFixed(2) /
-    //     Number(currentUser.data?.savings_tenure) || 0,
-    // );
-    // setSoloSaving(totalSoloSavings || 0);
-
-    // setTotalBalance(balance || 0);
-    // setTotalSaving(totalSoloSavings || 0);
-    // setTotalInterest(
-    //   soloInterestTotal?.toFixed(2) /
-    //     Number(currentUser.data?.savings_tenure) || 0,
-    // );
-    // setSoloSaving(totalSoloSavings || 0);
-
-    // const totalSoloSavings = store.data?.reduce(
-    //   (acc, saving) => acc + Number(saving.amount),
-    //   0,
-    // );
-
-    // Ineterst should be calculated after 24 hours
-    //! TODO
-    // const soloInterestTotal = store.data?.reduce(
-    //   (acc, saving) => acc + Number(saving.interest),
-    //   0,
-    // );
-
-    // const soloInterestTotal = 0;
-
-    // interest
-    // const balance = totalSoloSavings + soloInterestTotal;
-
-    // without interest
-    // const balance = totalSoloSavings;
-
-    // setTotalBalance(balance || 0);
-    // setTotalSaving(totalSoloSavings || 0);
-    // setTotalInterest(soloInterestTotal || 0);
-    // setSoloSaving(totalSoloSavings || 0);
-
-    // console.log('Store: ', balance);
-    // console.log('Amount Save: ', store?.data[0].amount_save);
-    // console.log('Savings: ', store.data[0]);
-
-    if (store?.data?.length) {
-      const amount_saved = Number(store.data[0].amount_save);
-      // setSavings(amount_saved || 0);
-      setTotalBalance(amount_saved || 0);
-      setTotalSaving(amount_saved || 0);
-      setSoloSaving(amount_saved || 0);
-      setTotalInterest(0);
-    }
-
-    // let amount_saved = Number(store?.data[0]?.amount_save);
-
-    // setTotalBalance(amount_saved || 0);
-    // setTotalSaving(amount_saved || 0);
-    // setSoloSaving(amount_saved || 0);
-    // setTotalInterest(0);
+    setTotalBalance(data.you_have_save);
+    setTotalSaving(data.you_have_save);
+    setSoloSaving(data.total_solo_savings);
+    setBuddySaving(data.total_buddy_savings);
   }, [store]);
-
-  const savingsCard = [
-    {
-      title: 'Solo Saving',
-      content: 'Save towards your next rent alone',
-      image: images.maskGroup15,
-    },
-    {
-      title: 'Buddy Saving',
-      content: 'Save towards your next rent with your flatmates or spouse',
-      image: images.maskGroup14,
-    },
-  ];
 
   return (
     <View style={[designs.container]}>
@@ -157,33 +62,41 @@ export default function Start({navigation}) {
           position: 'absolute',
           top: 0,
           right: 0,
+          opacity: 0.3,
         }}
         resizeMode="cover"
       />
-      <ScrollView>
+      <ScrollView
+        scrollEnabled
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+        }}>
         {/* <ImageBackground style={designs.backgroundImg} source={images.group4585}> */}
 
-        <View style={{padding: 10}}>
+        <View style={{paddingVertical: 10}}>
           <Text
             style={{
               fontFamily: 'CircularStd',
               fontSize: 25,
               fontWeight: 'bold',
               color: '#00DC99',
-              marginTop: 50,
+              marginTop: 20,
               lineHeight: 32,
+              paddingLeft: 10,
             }}>
             Savings
           </Text>
           <Text
             style={{
-              width: '70%',
+              width: '80%',
               fontFamily: 'CircularStd',
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: '600',
               color: 'white',
               marginTop: 4,
               lineHeight: 20,
+              paddingLeft: 10,
             }}>
             {/* Save towards your next rent with your flatmates, friends or family and
           earn interest on every deposit. */}
@@ -288,67 +201,19 @@ export default function Start({navigation}) {
             flexDirection: 'column',
             justifyContent: 'center',
             // marginTop: 20,
-            padding: 10,
+            paddingVertical: 10,
           }}>
-          {/* {savingsCard.map(({title, content, image}, index) => (
-          <View key={index} style={designs.card}>
-            <View style={{width: '60%'}}>
-              <Text style={designs.cardHeader}>{title}</Text>
-              <Text style={designs.bodyText}>{content}</Text>
-              <TouchableOpacity
-                // onPress={navigation.navigate('')}
-                style={{
-                  marginTop: 15,
-                  flexDirection: 'row',
-                  marginTop: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 27,
-                  borderRadius: 21,
-                  backgroundColor: '#F7F8FD',
-                  width: 131,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: '#9D98EC',
-                    fontWeight: '600',
-                  }}>
-                  Start saving
-                </Text>
-                <Icon
-                  name="arrow-forward"
-                  color="#9D98EC"
-                  size={15}
-                  style={{marginTop: 2, marginLeft: 10}}
-                />
-              </TouchableOpacity>
-            </View>
-            <Image
-              style={{
-                width: 300,
-                height: '100%',
-                position: 'absolute',
-                right: -70,
-                bottom: 0,
-                alignItems: 'flex-end',
-              }}
-              source={image}
-              resizeMode="contain"
-            />
-          </View>
-        ))} */}
           <View style={designs.card}>
             <View style={designs.cardFlex}>
               <View>
                 <Text style={designs.cardHeader}>Solo{'\n'}Saving</Text>
                 <Text style={designs.bodyText}>
-                  Save towards your{'\n'}next rent alone
+                  Save towards your next{'\n'}rent alone
                 </Text>
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate(
-                      soloSaving == 0 ? 'SoloSaving1' : 'SoloSavingDashBoard',
+                      soloSaving == 0 ? 'SoloSaving1' : 'SavingLists',
                     )
                   }
                   style={[
@@ -358,7 +223,7 @@ export default function Start({navigation}) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       // height: 27,
-                      borderRadius: 21,
+                      // borderRadius: 10,
                       backgroundColor: '#F7F8FD',
                       // width: 131,
                       padding: 5,
@@ -371,9 +236,9 @@ export default function Start({navigation}) {
                         designs.bodyText,
                         {
                           marginTop: 0,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: '#9D98EC',
-                          fontWeight: '600',
+                          fontWeight: 'bold',
                           marginRight: 8,
                         },
                       ]}>
@@ -385,7 +250,7 @@ export default function Start({navigation}) {
                         designs.bodyText,
                         {
                           marginTop: 0,
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: 'bold',
                           color: '#9D98EC',
                           marginRight: 8,
@@ -399,12 +264,12 @@ export default function Start({navigation}) {
               </View>
               <Image
                 style={{
-                  width: 130,
-                  height: 130,
+                  width: 120,
+                  height: 120,
                   resizeMode: 'contain',
                   position: 'absolute',
-                  right: -20,
-                  bottom: -25,
+                  right: -30,
+                  bottom: -20,
                 }}
                 source={images.maskGroup15}
               />
@@ -435,7 +300,7 @@ export default function Start({navigation}) {
                       alignItems: 'center',
                       justifyContent: 'center',
                       // height: 27,
-                      borderRadius: 21,
+                      // borderRadius: 10,
                       backgroundColor: '#F7F8FD',
                       width: 131,
                       padding: 5,
@@ -447,9 +312,9 @@ export default function Start({navigation}) {
                         designs.bodyText,
                         {
                           marginTop: 0,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: '#9D98EC',
-                          fontWeight: '600',
+                          fontWeight: 'bold',
                           marginRight: 8,
                         },
                       ]}>
@@ -461,9 +326,9 @@ export default function Start({navigation}) {
                         designs.bodyText,
                         {
                           marginTop: 0,
-                          fontSize: 16,
+                          fontSize: 14,
                           color: '#9D98EC',
-                          fontWeight: '600',
+                          fontWeight: 'bold',
                           marginRight: 8,
                         },
                       ]}>
@@ -475,12 +340,12 @@ export default function Start({navigation}) {
               </View>
               <Image
                 style={{
-                  width: 130,
-                  height: 130,
+                  width: 120,
+                  height: 120,
                   resizeMode: 'contain',
                   position: 'absolute',
-                  right: -20,
-                  bottom: -25,
+                  right: -30,
+                  bottom: -20,
                 }}
                 source={images.maskGroup14}
               />

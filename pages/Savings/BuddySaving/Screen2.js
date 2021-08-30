@@ -32,16 +32,6 @@ export default function Screen1(props) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  useEffect(() => {
-    console.log('Props: ', props);
-  }, []);
-
-  // const calculateEndDate = () => {
-  //   let end_date = moment(data.start_date)
-  //     .add(Number(data.how_long[0]), data.how_long[1].toUpperCase())
-  //     .format('YYYY-MM-DD');
-  // }
-
   const HowLongSelection = (props) => {
     const howLongList = ['3 Months', '6 Months', '1 Year'];
 
@@ -150,7 +140,7 @@ export default function Screen1(props) {
               lineHeight: 19,
             }}>
             {startDate != ''
-              ? moment(startDate).format('YYYY-MM-DD')
+              ? moment(startDate).format('DD-MM-YYYY')
               : 'Start date'}
           </Text>
           <IconFA
@@ -177,11 +167,25 @@ export default function Screen1(props) {
     );
   };
 
-  const handleSubmit = async (values) => {
-    console.log(values);
-    console.log('Hello herererrerer');
+  useEffect(() => {
+    console.log('Props: ', props.route.params);
+  }, []);
 
-    props.navigation.navigate('BuddySaving3');
+  const handleSubmit = async (values) => {
+    const data = {
+      ...props.route.params,
+      duration: values.savingDuration[0],
+      date_starting: moment(values.savingStartDate).format('DD-MM-YYYY'),
+      date_ending: moment(values.savingStartDate)
+        .add(
+          Number(values.savingDuration[0]),
+          values.savingDuration[2].toUpperCase(),
+        )
+        .format('DD-MM-YYYY'),
+    };
+    // console.log('The Data: ', data);
+
+    props.navigation.navigate('BuddySaving3', data);
   };
 
   return (
@@ -247,7 +251,7 @@ export default function Screen1(props) {
                                 Number(values.savingDuration[0]),
                                 values.savingDuration[2].toUpperCase(),
                               )
-                              .format('YYYY-MM-DD')
+                              .format('DD-MM-YYYY')
                           : 'End date'}
                       </Text>
                       <IconFA
@@ -261,7 +265,13 @@ export default function Screen1(props) {
                 </View>
               </>
 
-              <>
+              <View
+                style={{
+                  display:
+                    values.savingStartDate && values.savingDuration
+                      ? 'flex'
+                      : 'none',
+                }}>
                 <Text style={[designs.boldText, {marginTop: 40}]}>
                   Withdrawal date will be
                 </Text>
@@ -294,9 +304,6 @@ export default function Screen1(props) {
                       fontSize: 12,
                       lineHeight: 30,
                     }}>
-                    {/* {endDate != ''
-                      ? moment(endDate).format('DD MMMM YYYY')
-                      : 'withdrawal date'} */}
                     {values.savingStartDate && values.savingDuration
                       ? moment(values.savingStartDate)
                           .add(
@@ -307,7 +314,7 @@ export default function Screen1(props) {
                       : 'withdrawal date'}
                   </Text>
                 </TouchableOpacity>
-              </>
+              </View>
 
               <TouchableOpacity
                 onPress={handleSubmit}

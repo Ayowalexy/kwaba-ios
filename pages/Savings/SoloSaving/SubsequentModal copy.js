@@ -74,7 +74,7 @@ export default function SubsequentModal(props) {
             let data = {reference: response.data.data.reference};
             // setVerificationSpinner(true);
             const verify = await verifyPayment(data);
-            console.log('Verify', verify.data);
+            // console.log('Verify', verify.data);
             // console.log('Verify: ', verify);
             if (verify.data.status == 'success') {
               console.log('createPlan');

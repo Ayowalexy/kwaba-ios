@@ -23,7 +23,7 @@ import SelectSavingsOptionModal from '../../components/SelectSavingsOptionModal'
 import LoandPurposeModal from '../../components/LoanPurposeModal';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
+import {getMaxLoanCap} from '../../redux/actions/savingsActions';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -33,30 +33,22 @@ const withdrawalFormSchema = yup.object().shape({
 
 export default function Withdraw({navigation}) {
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.getSoloSavingsReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
   const [amountValue, setAmountValue] = useState('');
   const [showSavingsOptionModal, setShowSavingsOptionModal] = useState(false);
-
   const [selectedAmountIndex, setSelectedAmountIndex] = useState(1);
-
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
   const [loanPurpose, setLoanPurpose] = useState('');
 
   useEffect(() => {
-    dispatch(getTotalSoloSavings());
+    dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
-    // const totalSoloSavings =
-    //   store?.data?.length > 0
-    //     ? store.data.reduce((acc, saving) => acc + Number(saving.amount), 0)
-    //     : 0;
-    // setSavings(totalSoloSavings);
-    // console.log('Total: ', totalSoloSavings);
-    const amount_saved = Number(store?.data[0].amount_save);
-    setSavings(amount_saved || 0);
-  }, [store]);
+    const data = getMaxLoanCap1.data;
+    setSavings(data.you_have_save);
+  }, []);
 
   const handleSubmit = async (values) => {
     console.log(values);

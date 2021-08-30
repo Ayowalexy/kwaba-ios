@@ -22,7 +22,8 @@ const buddySavingFormSchema = yup.object().shape({
     .required('Please select relationship option'),
 });
 
-export default function Screen4({navigation}) {
+export default function Screen4(props) {
+  const {navigation, route} = props;
   const [
     showSelectBuddyRelationshipModal,
     setShowSelectBuddyRelationshipModal,
@@ -30,10 +31,13 @@ export default function Screen4({navigation}) {
 
   const handleSubmit = (values) => {
     const data = {
-      relationship: values.relationshipWithBuddy,
+      ...route.params,
+      buddy_relationship: values.relationshipWithBuddy,
     };
-    navigation.navigate('BuddySaving5');
-    // console.log(data);
+
+    // console.log('Screen 4: ', data);
+
+    navigation.navigate('BuddySaving5', data);
   };
 
   const SelectBuddyRelationship = (props) => {

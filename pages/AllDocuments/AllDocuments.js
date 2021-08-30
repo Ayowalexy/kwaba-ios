@@ -62,6 +62,7 @@ export default function AllDocuments({navigation}) {
   const [item, setItem] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [count, setCount] = useState(0);
+  const [isBankStatement, setIsBankStatement] = useState(false);
 
   const dispatch = useDispatch();
   const fileProgress = useSelector(
@@ -70,7 +71,7 @@ export default function AllDocuments({navigation}) {
 
   useEffect(() => {
     console.log('file: ', fileProgress);
-  }, []);
+  }, [fileProgress]);
 
   useEffect(() => {
     let a = [
@@ -106,41 +107,20 @@ export default function AllDocuments({navigation}) {
   };
 
   useEffect(() => {
-    console.log('Counting: ', count);
-    // console.log(fileProgress);
-    // const countDocuments = async () => {
-    //   const token = await getToken();
-    //   try {
-    //     const resp = await axios.get(
-    //       'http://67.207.86.39:8000/api/v1/application/documents',
-    //       {
-    //         headers: {'Content-Type': 'application/json', Authorization: token},
-    //       },
-    //     );
-    //     // console.log(uploadedDocumentsRes)
-    //     let ress = Object.keys(resp.data.data).map((title) => ({
-    //       title,
-    //       content: resp.data[title],
-    //     }));
-    //     var count = 0;
-    //     ress.forEach((v, i) => {
-    //       if (v.content.length == 0) {
-    //         count += 1;
-    //       }
-    //     });
-    //     console.log('ress', ress);
-    //     return count;
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    // console.log('**************************');
-    // console.log('Counts: ', countDocuments());
-
-    // console.log(fileProgress);
-
+    // console.log('Counting: ', count);
+    Object.values(fileProgress).map((item) => {
+      if (item.isUploaded && item.title == 'Bank Statement') {
+        console.log('The ITEM: ', item);
+        setIsBankStatement(true);
+      }
+    });
     countDocuments();
   }, [fileProgress]);
+
+  useEffect(() => {
+    console.log('Count: ', count);
+    countDocuments();
+  }, []);
 
   const countDocuments = async () => {
     const token = await getToken();
@@ -180,7 +160,7 @@ export default function AllDocuments({navigation}) {
       };
       setSpinner(true);
 
-      console.log(blob);
+      // console.log(blob);
 
       const token = await getToken();
       const applicationIDCallRes = await axios.get(
@@ -189,7 +169,7 @@ export default function AllDocuments({navigation}) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      console.log(applicationIDCallRes.data.data.id);
+      // console.log(applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
 
       const formdata = new FormData();
@@ -209,7 +189,7 @@ export default function AllDocuments({navigation}) {
         filename: item.title,
       };
 
-      console.log(data);
+      // console.log(data);
 
       try {
         dispatch(uploadFile(token, item, data));
@@ -254,7 +234,7 @@ export default function AllDocuments({navigation}) {
 
     await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
 
-    console.log('STEPS: ', steps);
+    // console.log('STEPS: ', steps);
     navigation.navigate('VerifyingDocuments');
   };
 
@@ -273,60 +253,11 @@ export default function AllDocuments({navigation}) {
         />
         <Text style={[styles.heading]}>All Documents</Text>
 
-        {/* {!documentUploads.length ? (
-          <View style={[styles.content]}>
-            <View
-              style={{
-                width: '100%',
-                borderWidth: 2,
-                borderStyle: 'dashed',
-                borderColor: COLORS.grey,
-
-                borderWidth: 1.5,
-                borderStyle: 'dashed',
-                borderColor: '#9D98EC',
-                borderRadius: 10,
-                // padding: 20,
-                paddingHorizontal: 20,
-                paddingVertical: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={images.uploadDocument}
-                style={{
-                  width: 100,
-                  height: 100,
-                  resizeMode: 'contain',
-                  marginTop: 20,
-                }}
-              />
-              <Text
-                style={{
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  color: COLORS.primary,
-                  marginTop: 20,
-                }}>
-                Add any document
-              </Text>
-            </View>
-          </View>
-        ) : ( */}
         <Docs />
-        {/* )} */}
 
         {count >= 5 ? (
           <View style={{paddingHorizontal: 20}}>
-            <TouchableOpacity
-              // onPress={() => {
-              //   // setShowSelectDocumentsModal(true);
-              //   // navigation.navigate('OfferApprovalBreakDown');
-              //   navigation.navigate('VerifyingDocuments');
-              //   // console.log(count);
-              // }}
-              onPress={handleProceed}
-              style={[styles.btn, {}]}>
+            <TouchableOpacity onPress={handleProceed} style={[styles.btn, {}]}>
               <Text
                 style={[
                   {
@@ -399,7 +330,14 @@ export default function AllDocuments({navigation}) {
                   item.id && (
                     <TouchableOpacity
                       onPress={() => {
-                        handleDocumentType(item);
+                        if (item.title == 'Bank Statement') {
+                          setShowSelectDocumentsModal(false);
+                          navigation.navigate(
+                            'RentalLoanFormBankStatementUpload',
+                          );
+                        } else {
+                          handleDocumentType(item);
+                        }
                       }}
                       key={index}
                       style={[

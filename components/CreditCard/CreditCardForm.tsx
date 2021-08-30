@@ -94,6 +94,22 @@ const CreditCardForm: React.FC = (props: any) => {
     }
   };
 
+  const addressVerification = async (data) => {
+    const token = await getToken();
+    const url = 'http://67.207.86.39:8000/api/v1/application/payment/verify';
+    try {
+      const response = await axios.put(url, JSON.stringify(data), {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  };
+
   useEffect(() => {
     setResponseInfo(props.ResInfo);
   }, [props]);
@@ -115,6 +131,7 @@ const CreditCardForm: React.FC = (props: any) => {
       });
 
       const verify = await verifyPayment(pay);
+      // const verify = await addressVerification(pay);
 
       if (verify.status == 200) {
         console.log('Payment verified');

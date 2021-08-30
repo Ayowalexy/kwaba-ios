@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
   StatusBar,
   StyleSheet,
   useWindowDimensions,
+  RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -19,7 +20,10 @@ import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollIndicator from '../../components/scrollIicators';
 import {useDispatch, useSelector} from 'react-redux';
-import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
+import {
+  getMaxLoanCap,
+  getTotalSoloSavings,
+} from '../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat, formatNumber} from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
@@ -27,12 +31,16 @@ import QuickSaveModal from '../../components/QuickSaveModal';
 import axios from 'axios';
 import Carousel from 'react-native-snap-carousel';
 import CompleteProfileModal from './CompleteProfileModal';
+import {me} from '../../services/network';
+import {setLoginState} from '../../redux/actions/userActions';
+import AddFundsToSavingsModal from '../../components/AddFundsToSavingsModal';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
   const user = useSelector((state) => state.getUserReducer);
   const login = useSelector((state) => state.loginReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [name, setName] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -42,25 +50,61 @@ export default function NewHome({navigation}) {
   const [instantLoan, setInstantLoan] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
+  const [addFundsToSavingsModal, setAddFundsToSavingsModal] = useState(false);
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const [greeting, setGreeting] = useState('');
 
   const layout = useWindowDimensions();
+
+  const getUserData = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const data = JSON.parse(userData);
+    return data;
+  };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      const res = await me();
+      if (res?.user) {
+        const userData = await getUserData();
+        dispatch(getTotalSoloSavings());
+        dispatch(getMaxLoanCap());
+
+        dispatch(
+          setLoginState({
+            ...userData,
+            user: res.user,
+            username: res.user.firstname,
+          }),
+        );
+
+        if (store) {
+          setRefreshing(false);
+        }
+      }
+    } catch (error) {
+      setRefreshing(false);
+      console.log('Error: ', error);
+    }
+  }, [refreshing]);
 
   useEffect(() => {
     const d = new Date();
     const time = d.getHours();
 
     if (time < 12) {
-      setGreeting('Goodmorning');
+      setGreeting('Good Morning');
     }
     if (time > 12) {
-      setGreeting('Goodafternoon');
+      setGreeting('Good Afternoon');
     }
-    if (time == 12) {
-      setGreeting('Goodmorning');
-    }
+    // if (time == 12) {
+    //   setGreeting('Good Evening');
+    // }
   }, []);
 
   useEffect(() => {
@@ -73,20 +117,19 @@ export default function NewHome({navigation}) {
       setIsProfileComplete(true);
     }
 
-    console.log('Login: ', login);
+    // console.log('Login: ', login);
   }, [login]);
 
   useEffect(() => {
     dispatch(getTotalSoloSavings());
+    dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
-    setSavings(0);
-    if (store?.data?.length) {
-      const amount_saved = Number(store?.data[0].amount_save);
-      setSavings(amount_saved || 0);
+    if (getMaxLoanCap1?.data) {
+      setSavings(getMaxLoanCap1.data.you_have_save);
     }
-  }, [store]);
+  }, [getMaxLoanCap1]);
 
   const slides = [
     {
@@ -113,7 +156,8 @@ export default function NewHome({navigation}) {
       actionText: 'Deposit',
       route: () =>
         isProfileComplete
-          ? setQuickSaveModal(true)
+          ? // ? setQuickSaveModal(true)
+            setAddFundsToSavingsModal(true)
           : setCompleteProfileModal(true),
     },
   ];
@@ -150,10 +194,10 @@ export default function NewHome({navigation}) {
       body:
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
-      route: () =>
-        isProfileComplete
-          ? navigation.navigate('SavingsHome')
-          : setCompleteProfileModal(true),
+      // route: () =>
+      //   isProfileComplete
+      //     ? navigation.navigate('SavingsHome')
+      //     : setCompleteProfileModal(true),
     },
     {
       title: 'Loans',
@@ -162,7 +206,7 @@ export default function NewHome({navigation}) {
       img: images.maskGroup29,
       route: () =>
         isProfileComplete
-          ? navigation.navigate('SavingsHome')
+          ? navigation.navigate('Borrow')
           : setCompleteProfileModal(true),
     },
     {
@@ -377,7 +421,16 @@ export default function NewHome({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+      <ScrollView
+        scrollEnabled
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            colors={[COLORS.primary, COLORS.secondary]}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }>
         <View
           style={{
             position: 'relative',
@@ -519,6 +572,59 @@ export default function NewHome({navigation}) {
                         }}>
                         {item.body}
                       </Text>
+                      {index == 0 && (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginTop: 20,
+                          }}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              isProfileComplete
+                                ? navigation.navigate('SavingsHome')
+                                : setCompleteProfileModal(true)
+                            }
+                            style={{
+                              backgroundColor: COLORS.primary,
+                              borderRadius: 10,
+                              paddingVertical: 15,
+                              paddingHorizontal: 25,
+                              marginRight: 10,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                color: COLORS.white,
+                              }}>
+                              Solo Saving
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              isProfileComplete
+                                ? navigation.navigate('SavingsHome')
+                                : setCompleteProfileModal(true)
+                            }
+                            style={{
+                              backgroundColor: COLORS.white,
+                              borderRadius: 10,
+                              paddingVertical: 15,
+                              paddingHorizontal: 25,
+                              marginRight: 10,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                color: COLORS.dark,
+                              }}>
+                              Buddy Saving
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
                     </View>
 
                     <Image
@@ -545,6 +651,13 @@ export default function NewHome({navigation}) {
         visible={quickSaveModal}
         navigation={navigation}
         redirectTo="Home"
+      />
+
+      <AddFundsToSavingsModal
+        onRequestClose={() =>
+          setAddFundsToSavingsModal(!addFundsToSavingsModal)
+        }
+        visible={addFundsToSavingsModal}
       />
 
       <CompleteProfileModal

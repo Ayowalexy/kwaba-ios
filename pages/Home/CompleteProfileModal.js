@@ -32,7 +32,7 @@ export default function CompleteProfileModal(props) {
               style={{color: COLORS.orange, fontWeight: 'bold', fontSize: 20}}>
               Complete Profile
             </Text>
-            <Text
+            {/* <Text
               style={{
                 fontSize: 14,
                 color: COLORS.dark,
@@ -52,6 +52,16 @@ export default function CompleteProfileModal(props) {
                 Rent Now Pay Later
               </Text>{' '}
               and other amazing features.
+            </Text> */}
+            <Text
+              style={{
+                fontSize: 14,
+                color: COLORS.dark,
+                lineHeight: 25,
+                marginTop: 10,
+                textAlign: 'center',
+              }}>
+              Complete your profile to unleash the power of Kwaba.
             </Text>
 
             <TouchableOpacity
