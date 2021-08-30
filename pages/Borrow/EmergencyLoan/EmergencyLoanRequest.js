@@ -132,23 +132,30 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     const data = {
       loan_amount: loanAmount,
       loan_purpose: loanPurpose,
+
       // disbursement_account_name: bankAccountName,
       // disbursement_account_number: bankAccountNumber,
       // disbursement_account_bank: bankName,
-      disbursement_account_name: 'JOSHUA UDO NWOSU',
-      disbursement_account_number: '0094552107',
-      disbursement_account_bank: 'Access Bank(Diamond)',
+
+      // disbursement_account_name: 'JOSHUA UDO NWOSU',
+      // disbursement_account_number: '0094552107',
+      // disbursement_account_bank: 'Access Bank(Diamond)',
+
+      disbursement_account_name: '',
+      disbursement_account_number: '',
+      disbursement_account_bank: '',
     };
 
     console.log('DATA: ', data);
 
     try {
-      setSpinner(false);
+      // setSpinner(false);
       const response = await applyForEmergencyLoan(data);
       console.log('RESPONSE: ', response);
       if (response.status == 201) {
         setSpinner(false);
-        setSuccessModal(false);
+        setSuccessModal(true);
+        setVisible(false);
         console.log('Success');
       } else {
         setSpinner(false);
@@ -156,6 +163,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       }
     } catch (error) {
       setSpinner(false);
+      setVisible(false);
       console.log(error);
     }
   };
@@ -238,7 +246,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
               </TouchableOpacity>
             </View>
 
-            {!userSelectedBankAccount.length > 0 && (
+            {!userSelectedBankAccount && (
               <View style={{marginTop: 20, alignItems: 'center'}}>
                 <TouchableOpacity activeOpacity={0.9} style={[styles.bankCard]}>
                   <View>
