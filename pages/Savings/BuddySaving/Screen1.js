@@ -19,7 +19,7 @@ import SelectBuddiesModal from '../../../components/SelectBuddiesModal';
 const buddySavingFormSchema = yup.object().shape({
   savingTitle: yup.string().required('Please provide saving title'),
   savingNumberOfBuddies: yup.string().required('Please select saving option'),
-  savingTargetAmount: yup.string().required('Please provide saving amount'),
+  // savingTargetAmount: yup.string().required('Please provide saving amount'),
   yesOrNo: yup.string().required('Please pick and option'),
 });
 
@@ -70,9 +70,11 @@ export default function Screen1({navigation}) {
   const NumberInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      form: {errors, touched, setFieldTouched, values},
       ...inputProps
     } = props;
+
+    // console.log('The Form: ', values.yesOrNo.toLowerCase() == 'yes');
 
     const hasError = errors[name] && touched[name];
 
@@ -101,7 +103,9 @@ export default function Screen1({navigation}) {
               paddingVertical: 16,
             }}
             keyboardType="number-pad"
-            value={formatNumber(value)}
+            value={
+              values.yesOrNo.toLowerCase() == 'yes' ? formatNumber(value) : '0'
+            }
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
@@ -208,8 +212,13 @@ export default function Screen1({navigation}) {
     const data = {
       title: values.savingTitle,
       number_of_buddies: values.savingNumberOfBuddies[0],
-      target_amount: unFormatNumber(values.savingTargetAmount) || 0,
+      target_amount:
+        values.yesOrNo.toLowerCase() == 'no'
+          ? 0
+          : unFormatNumber(values.savingTargetAmount) || 0,
     };
+
+    // console.log('DATA: ', data);
 
     navigation.navigate('BuddySaving2', data);
   };
@@ -314,11 +323,26 @@ export default function Screen1({navigation}) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={isValid ? false : true}
+                // disabled={isValid ? false : true}
+                disabled={
+                  values.yesOrNo.toLowerCase() == 'yes' &&
+                  values.savingTargetAmount != ''
+                    ? false
+                    : values.yesOrNo.toLowerCase() == 'no'
+                    ? false
+                    : true
+                }
                 style={[
                   designs.button,
                   {
-                    backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    // backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    backgroundColor:
+                      values.yesOrNo.toLowerCase() == 'yes' &&
+                      values.savingTargetAmount != ''
+                        ? '#00DC99'
+                        : values.yesOrNo.toLowerCase() == 'no'
+                        ? '#00DC99'
+                        : '#00DC9950',
                   },
                 ]}>
                 <Text

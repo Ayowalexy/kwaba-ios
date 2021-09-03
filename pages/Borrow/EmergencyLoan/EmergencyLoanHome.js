@@ -257,7 +257,8 @@ export default function EmergencyLoanHome({navigation}) {
                         fontSize: 14,
                         fontWeight: 'bold',
                       }}>
-                      Maximum Loan Amount
+                      {/* Maximum Loan Amount */}
+                      Available Loanable Amount
                     </Text>
                     <Tooltip
                       backgroundColor="#00DC99"
@@ -345,9 +346,13 @@ export default function EmergencyLoanHome({navigation}) {
                 </View>
               </View>
               <TouchableOpacity
+                disabled={errorMsg != '' ? true : false}
                 style={[
                   designs.buttonStyleB,
-                  {backgroundColor: '#00DC99', width: '100%'},
+                  {
+                    backgroundColor: errorMsg != '' ? '#00DC9950' : '#00DC99',
+                    width: '100%',
+                  },
                 ]}
                 onPress={handleSubmit}>
                 <Text

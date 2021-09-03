@@ -57,7 +57,7 @@ export default function QuickSaveModal(props) {
 
   useEffect(() => {
     getUserSavings();
-    console.log('The ID: ', ID);
+    // console.log('The ID: ', ID);
   }, []);
 
   const handleSubmit = async (values) => {

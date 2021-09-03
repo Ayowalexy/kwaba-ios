@@ -39,7 +39,9 @@ import {
   BuddySaving4,
   BuddySaving5,
   BuddySaving6,
+  BuddyLists,
   BuddySavingDashBoard,
+  BuddyPaymentScreen,
 } from './pages/Savings/index';
 import Borrow from './pages/Borrow/Borrow';
 import RentNowPayLaterOnboarding from './pages/Borrow/RentNowPayLaterOnboarding';
@@ -153,7 +155,7 @@ import {
 } from './pages/Borrow/Business/RentalFormBusiness/index';
 
 // Offer Letters
-import {KwabaLetter, AddosserLetter} from './pages/OfferLetters';
+import {KwabaLetter, AddosserLetter, PTMFB} from './pages/OfferLetters';
 
 // Disbursement
 import Disbursement from './components/disbursement';
@@ -311,7 +313,7 @@ const App = () => {
           }}
           // initialRouteName={'RentNowPayLaterDashboard'}
           // initialRouteName={'NewAllDocuments'}
-          // initialRouteName={'PaymentSuccessful'}
+          // initialRouteName={'PTMFB'}
         >
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
@@ -396,8 +398,14 @@ const App = () => {
                 name="BuddySaving6"
                 component={BuddySaving6}></Stack.Screen>
               <Stack.Screen
+                name="BuddyLists"
+                component={BuddyLists}></Stack.Screen>
+              <Stack.Screen
                 name="BuddySavingDashBoard"
                 component={BuddySavingDashBoard}></Stack.Screen>
+              <Stack.Screen
+                name="BuddyPaymentScreen"
+                component={BuddyPaymentScreen}></Stack.Screen>
 
               <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
               <Stack.Screen
@@ -651,6 +659,7 @@ const App = () => {
 
               <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
               <Stack.Screen name="AddosserLetter" component={AddosserLetter} />
+              <Stack.Screen name="PTMFB" component={PTMFB} />
 
               <Stack.Screen name="Disbursement" component={Disbursement} />
 

@@ -45,7 +45,7 @@ const TextField: React.FC<Props> = (props) => {
     }).start();
   }, [focusAnim, isFocused, value]);
 
-  let color = isFocused ? '#080F9C' : '#B9C4CA';
+  let color = isFocused ? COLORS.primary : '#BFBFBF70';
   if (errorText) {
     color = '#B00020';
   }
@@ -55,7 +55,13 @@ const TextField: React.FC<Props> = (props) => {
       <Icon
         name={icon}
         size={25}
-        style={{position: 'absolute', top: 18, left: 10, color: COLORS.grey}}
+        style={{
+          position: 'absolute',
+          top: 18,
+          left: 10,
+          color: COLORS.grey,
+          opacity: 0.5,
+        }}
       />
       <TextInput
         style={[

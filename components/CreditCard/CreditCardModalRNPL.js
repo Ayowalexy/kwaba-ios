@@ -11,7 +11,8 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
 import CreditCardForm from './CreditCardForm';
-export default function CreditCardModal(props) {
+
+export default function CreditCardModalRNPL(props) {
   const {
     onRequestClose,
     visible,
@@ -20,10 +21,6 @@ export default function CreditCardModal(props) {
     redirectTo,
     onConfirm,
   } = props;
-
-  //   useEffect(() => {
-  //     console.log('The Card Info on Modal: ', cardInfo);
-  //   }, [info]);
 
   return (
     <View>

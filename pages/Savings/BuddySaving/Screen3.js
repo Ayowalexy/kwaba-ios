@@ -24,7 +24,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const soloSavingFormSchema = yup.object().shape({
   savingOption: yup.string().required('Please select saving option'),
   savingFrequency: yup.string().required('Please select saving frequency'),
-  targetAmount: yup.string().required('Please provide saving amount'),
+  // targetAmount: yup.string().required('Please provide saving amount'),
   savingStartOption: yup.string().required('Field is required'),
 });
 
@@ -45,11 +45,12 @@ export default function Screen1(props) {
     const data = {
       ...route.params,
       savings_method: values.savingOption,
-      savings_amount: Number(unFormatNumber(values.targetAmount)),
+      // savings_amount: Number(unFormatNumber(values.targetAmount)),
+      savings_amount: Number(unFormatNumber(instantSaving)),
       savings_frequency: values.savingFrequency,
       // savings_startOption: values.savingsStartOption,
     };
-    // console.log('Screen 3: ', data);
+    // console.log('Screen 3: ', Number(unFormatNumber(instantSaving)));
 
     navigation.navigate('BuddySaving4', data);
   };
@@ -65,9 +66,6 @@ export default function Screen1(props) {
 
     return (
       <>
-        <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much do you want to save?
-        </Text>
         <View
           style={[
             styles.customInput,
@@ -299,7 +297,7 @@ export default function Screen1(props) {
       initialValues={{
         savingOption: '',
         savingFrequency: '',
-        targetAmount: '',
+        // targetAmount: '',
         savingStartOption: '',
       }}
       onSubmit={(values) => {
@@ -318,18 +316,33 @@ export default function Screen1(props) {
             <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
               <Field component={ActiveOptionSelection} name="savingOption" />
 
-              <Field component={FrequencySelection} name="savingFrequency" />
+              {values.savingOption != '' && (
+                <Field component={FrequencySelection} name="savingFrequency" />
+              )}
 
-              <Field
-                component={NumberInput}
-                name="targetAmount"
-                placeholder="Amount"
-              />
+              {/* {values.savingFrequency != '' && (
+                <>
+                  <Text style={[designs.boldText, {marginTop: 18}]}>
+                    How much do you want to save (
+                    <Text style={{fontSize: 14, color: COLORS.grey}}>
+                      {values.savingFrequency}
+                    </Text>
+                    ) ?
+                  </Text>
+                  <Field
+                    component={NumberInput}
+                    name="targetAmount"
+                    placeholder="Amount"
+                  />
+                </>
+              )} */}
 
-              <Field
-                component={StartOptionSelection}
-                name="savingStartOption"
-              />
+              {values.savingFrequency != '' && (
+                <Field
+                  component={StartOptionSelection}
+                  name="savingStartOption"
+                />
+              )}
 
               <Text
                 style={{

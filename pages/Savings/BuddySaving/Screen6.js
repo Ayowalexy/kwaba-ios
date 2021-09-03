@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -13,11 +13,16 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
 import {COLORS, images} from '../../../util/index';
 
-const Screen6 = ({navigation}) => {
+const Screen6 = (props) => {
+  const {navigation, route} = props;
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [locked, setLocked] = useState(false);
 
   const toggleSwitch = () => setLocked((previousState) => !previousState);
+
+  useEffect(() => {
+    console.log('Props Data: ', route.params);
+  }, []);
 
   return (
     <View style={designs.container}>

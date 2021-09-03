@@ -23,6 +23,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   getMaxLoanCap,
   getTotalSoloSavings,
+  getTotalBuddySavings,
 } from '../../redux/actions/savingsActions';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -70,10 +71,10 @@ export default function NewHome({navigation}) {
     return data;
   };
 
-  useEffect(() => {
-    // console.log('Login: ', login);
-    onRefresh();
-  }, []);
+  // useEffect(() => {
+  //   // console.log('Login: ', login);
+  //   // onRefresh();
+  // }, []);
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -83,6 +84,7 @@ export default function NewHome({navigation}) {
         const userData = await getUserData();
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
+        dispatch(getTotalBuddySavings());
 
         dispatch(
           setLoginState({
@@ -117,19 +119,19 @@ export default function NewHome({navigation}) {
     }
   }, []);
 
-  useEffect(() => {
-    const getUserData = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const data = JSON.parse(userData);
-      // return data;
-      console.log('Na the data: ', data);
-    };
+  // useEffect(() => {
+  //   const getUserData = async () => {
+  //     const userData = await AsyncStorage.getItem('userData');
+  //     const data = JSON.parse(userData);
+  //     // return data;
+  //     // console.log('Na the data: ', data);
+  //   };
 
-    getUserData();
-  }, []);
+  //   getUserData();
+  // }, []);
 
   useEffect(() => {
-    console.log('Login: ', login);
+    // console.log('Login: ', login);
     if (login) setName(login.username);
     // complete profile
     if (
@@ -151,11 +153,13 @@ export default function NewHome({navigation}) {
   useEffect(() => {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
+    dispatch(getTotalBuddySavings());
   }, []);
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
       setSavings(getMaxLoanCap1.data.you_have_save);
+      setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
     }
   }, [getMaxLoanCap1]);
 
@@ -163,15 +167,16 @@ export default function NewHome({navigation}) {
     {
       title: 'Emergency Fund',
       subtitle: 'Repayment amount',
-      amount: currencyFormat(instantLoan),
+      amount: formatNumber(instantLoan),
       color: '#222',
       actionText: 'Pay Now',
+      cardClick: () => navigation.navigate('EmergencyLoanDashBoard'),
       // route: () => setQuickSaveModal(true),
     },
     {
       title: 'Rent Now Pay Later',
       subtitle: 'Next payment amount',
-      amount: currencyFormat(rentalFinance),
+      amount: formatNumber(rentalFinance),
       color: COLORS.dark,
       actionText: 'Pay Now',
       // route: () => setQuickSaveModal(true),
@@ -179,7 +184,7 @@ export default function NewHome({navigation}) {
     {
       title: 'Total Savings',
       subtitle: 'Great job on your rent savings',
-      amount: currencyFormat(savings),
+      amount: formatNumber(savings),
       color: COLORS.primary,
       actionText: 'Deposit',
       route: () =>
@@ -252,7 +257,9 @@ export default function NewHome({navigation}) {
   const _renderItem = ({item, index}) => {
     // console.log('Name: ', item.name);
     return (
-      <View
+      <TouchableOpacity
+        activeOpacity={0.9}
+        onPress={item.cardClick}
         style={{
           backgroundColor: item.color,
           //   backgroundColor: COLORS.primary,
@@ -328,7 +335,7 @@ export default function NewHome({navigation}) {
                 style={{fontSize: 12, color: COLORS.white, marginRight: 20}}>
                 {item.subtitle}
               </Text>
-              <View
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -347,19 +354,19 @@ export default function NewHome({navigation}) {
                   }}>
                   50%
                 </Text>
-              </View>
+              </View> */}
             </View>
           </View>
 
           <View style={{marginTop: 10}}>
             <Text
               style={{fontSize: 20, fontWeight: 'bold', color: COLORS.white}}>
-              ₦{formatNumber(item.amount)}
+              ₦{formatNumber(item.amount) || '0.00'}
             </Text>
           </View>
         </View>
         {/* <Text>{item.name}</Text> */}
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -421,7 +428,7 @@ export default function NewHome({navigation}) {
               }}>
               Complete your profile{' '}
               <Text style={{color: COLORS.dark}}>
-                and get access to{'\n'}Emergency funds and Rent now pay later
+                to unlock the full {'\n'}power of Kwaba.
               </Text>
             </Text>
           </View>
@@ -660,11 +667,7 @@ export default function NewHome({navigation}) {
                             marginTop: 20,
                           }}>
                           <TouchableOpacity
-                            onPress={() =>
-                              isProfileComplete
-                                ? navigation.navigate('SavingsHome')
-                                : setCompleteProfileModal(true)
-                            }
+                            onPress={() => navigation.navigate('SavingsHome')}
                             style={{
                               backgroundColor: COLORS.primary,
                               borderRadius: 10,
@@ -682,11 +685,7 @@ export default function NewHome({navigation}) {
                             </Text>
                           </TouchableOpacity>
                           <TouchableOpacity
-                            onPress={() =>
-                              isProfileComplete
-                                ? navigation.navigate('SavingsHome')
-                                : setCompleteProfileModal(true)
-                            }
+                            onPress={() => navigation.navigate('SavingsHome')}
                             style={{
                               backgroundColor: COLORS.white,
                               borderRadius: 10,
@@ -726,13 +725,15 @@ export default function NewHome({navigation}) {
         </View>
       </ScrollView>
 
-      <QuickSaveModal
-        onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
-        visible={quickSaveModal}
-        navigation={navigation}
-        redirectTo="Home"
-        ID={clickedID}
-      />
+      {quickSaveModal && (
+        <QuickSaveModal
+          onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+          visible={quickSaveModal}
+          navigation={navigation}
+          redirectTo="Home"
+          ID={clickedID}
+        />
+      )}
 
       <AddFundsToSavingsModal
         onRequestClose={() =>

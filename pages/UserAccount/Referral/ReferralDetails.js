@@ -66,7 +66,7 @@ export default function ReferralDetails({navigation}) {
                   style={[styles.btn]}
                   onPress={() => setQuickSaveModal(true)}>
                   <Text style={{fontSize: 12, color: COLORS.white}}>
-                    Add a saving
+                    Add to saving
                   </Text>
                   <Icon
                     name="chevron-forward-outline"

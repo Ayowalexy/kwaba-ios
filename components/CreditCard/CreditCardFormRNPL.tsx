@@ -1,9 +1,14 @@
 import React, {useRef, useState, useEffect} from 'react';
 import {
+  // @ts-ignore
   View,
+  // @ts-ignore
   Text,
+  // @ts-ignore
   StyleSheet,
+  // @ts-ignore
   TextInput,
+  // @ts-ignore
   TouchableOpacity,
 } from 'react-native';
 import {COLORS} from '../../util/index';
@@ -19,10 +24,7 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  getTotalSoloSavings,
-  getMaxLoanCap,
-} from '../../redux/actions/savingsActions';
+import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
@@ -42,7 +44,7 @@ enum CardFields {
   CVV,
 }
 
-const CreditCardForm: React.FC = (props: any) => {
+const CreditCardFormRNPL: React.FC = (props: any) => {
   const formMethods = useForm<FormModel>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -147,7 +149,6 @@ const CreditCardForm: React.FC = (props: any) => {
 
           //dispatch
           dispatch(getTotalSoloSavings());
-          dispatch(getMaxLoanCap());
 
           props.navigation.navigate('PaymentSuccessful', {
             name: props.redirectTo,
@@ -166,7 +167,6 @@ const CreditCardForm: React.FC = (props: any) => {
 
           //dispatch
           dispatch(getTotalSoloSavings());
-          dispatch(getMaxLoanCap());
 
           props.navigation.navigate('PaymentSuccessful', {
             name: props.redirectTo,
@@ -336,4 +336,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default CreditCardForm;
+export default CreditCardFormRNPL;

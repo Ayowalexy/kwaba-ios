@@ -28,8 +28,11 @@ import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {getOneUserBuddySavings} from '../../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function SoloSavingDashBoard({navigation}) {
+export default function SoloSavingDashBoard(props) {
+  const {navigation, route} = props;
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   const soloSaving = useSelector((state) => state.soloSavingReducer);
@@ -46,85 +49,58 @@ export default function SoloSavingDashBoard({navigation}) {
   const [savingTitle, setSavingTitle] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+  const [yourSavings, setYourSavings] = useState(0);
+  const [buddies, setBuddies] = useState([]);
 
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
-  };
-
-  useEffect(() => {
-    dispatch(getCurrentUser());
-    dispatch(getTotalSoloSavings());
-  }, [getTotalSoloSavings]);
+  const [dashboardID, setDashboardID] = useState('');
 
   useEffect(() => {
-    const totalSoloSavings =
-      getSoloSaving?.data?.length > 0
-        ? getSoloSaving.data.reduce(
-            (acc, saving) => acc + Number(saving.amount),
-            0,
-          )
-        : 0;
-
-    setTotalSaving(totalSoloSavings);
-
-    const totalSoloSavingsInterest =
-      getSoloSaving?.data?.length > 0
-        ? getSoloSaving.data.reduce(
-            (acc, saving) => acc + Number(saving.interest),
-            0,
-          )
-        : 0;
-
-    // console.log('Tot:', totalsolo)
-
-    setTotalInterest(totalSoloSavingsInterest);
-
-    // setSavingsTarget(soloSaving.savings_amount || 150000);
-
-    setSavingTitle(soloSaving.savings_title);
-
-    setPercentAchieved(
-      ((Number(totalSoloSavings) / Number(savingsTarget)) * 100).toFixed(0),
-    );
-
-    // console.log('TOT: ', totalSoloSavings, savingsTarget);
-
-    // console.log(getSoloSaving);
-    getSavingsPlan();
-  }, [savingsTarget]);
+    console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route.params);
+    // setDashboardID(route.params.id);
+  }, []);
 
   useEffect(() => {
-    getSavingsPlan();
-  }, [getSoloSaving]);
+    (async () => {
+      await getOne();
+    })();
+  }, []);
 
-  const getSavingsPlan = async () => {
-    const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/savings_plan';
-
-    // console.log('Token: ', token);
-
+  const getOne = async () => {
+    setSpinner(true);
     try {
-      const response = await axios.post(
-        url,
-        {},
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      console.log('Fetch savings plan: ', response.data.data);
-      let resData = response.data.data;
-      setSavingsTarget(resData.amount || 150000);
+      const res = await getOneUserBuddySavings(route.params.id);
+      if (res.status == 201) {
+        setSpinner(false);
+
+        const data = res.data.buddy_saving;
+
+        setSavingsTarget(data.target_amount);
+        setSavingTitle(data.name);
+        setTotalSaving(data.amount_save);
+        setYourSavings(data.amount);
+        setPercentAchieved(
+          (
+            (Number(data.amount_save) / Number(data.target_amount)) *
+            100
+          ).toFixed(0),
+        );
+        setBuddies(res.data.buddies);
+
+        setTransactions(res.data.transactions);
+
+        console.log('Res: ', res.data);
+      }
     } catch (error) {
-      console.log('Error: ', error.response.data);
+      setSpinner(false);
+      console.log('Error: ', error);
     }
   };
 
   return (
     <View style={styles.container}>
       <Icon
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('BuddyLists')}
         name="arrow-back-outline"
         size={25}
         style={{padding: 18, paddingHorizontal: 10}}
@@ -176,7 +152,7 @@ export default function SoloSavingDashBoard({navigation}) {
                 />
               </TouchableOpacity>
 
-              <Text style={{color: COLORS.white}}>Buddy Saving Balance</Text>
+              <Text style={{color: COLORS.white}}>Total Buddy Savings</Text>
               <View
                 style={{
                   flexDirection: 'row',
@@ -191,7 +167,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     fontWeight: 'bold',
                     color: COLORS.white,
                   }}>
-                  ₦{currencyFormat(Number(3645978))}
+                  ₦{currencyFormat(Number(totalSaving))}
                 </Text>
                 <Icon
                   name="lock-closed"
@@ -230,13 +206,13 @@ export default function SoloSavingDashBoard({navigation}) {
                       marginTop: -2,
                       color: COLORS.primary,
                     }}>
-                    You are doing great
+                    You guys are doing great
                   </Text>
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text style={{fontSize: 10, color: COLORS.white}}>
-                    View saving details
+                    View savings history
                   </Text>
                   <Icon
                     name="chevron-forward-outline"
@@ -270,8 +246,8 @@ export default function SoloSavingDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  {/* ₦{currencyFormat(totalInterest)} */}
-                  ₦0.00
+                  {/* ₦{currencyFormat(totalInterest)} */}₦
+                  {formatNumber(Number(0)) || '0.00'}
                 </Text>
               </View>
 
@@ -292,7 +268,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦{formatNumber(Number(4000000))}
+                  ₦{formatNumber(Number(savingsTarget)) || '0.00'}
                 </Text>
               </View>
             </View>
@@ -311,7 +287,7 @@ export default function SoloSavingDashBoard({navigation}) {
               width={10}
               rotation={0}
               style={styles.circularProgress}
-              fill={Number(70) || 0}
+              fill={Number(percentAchieved) || 0}
               tintColor={COLORS.yellow}
               backgroundColor="#2A286A90">
               {(fill) => (
@@ -346,7 +322,7 @@ export default function SoloSavingDashBoard({navigation}) {
                       // lineHeight: 27,
                       textAlign: 'center',
                     }}>
-                    {70 || 0}%
+                    {fill || 0}%
                   </Text>
                   <Text
                     style={{
@@ -368,7 +344,7 @@ export default function SoloSavingDashBoard({navigation}) {
           <View
             style={{
               backgroundColor: '#9D98EC50',
-              width: '95%',
+              width: '85%',
               minHeight: 50,
               marginLeft: 'auto',
               marginRight: 'auto',
@@ -377,7 +353,8 @@ export default function SoloSavingDashBoard({navigation}) {
               borderTopRightRadius: 0,
               borderTopLeftRadius: 0,
               // paddingVertical: 5,
-              paddingHorizontal: 15,
+              paddingLeft: 15,
+              paddingRight: 15,
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -389,11 +366,45 @@ export default function SoloSavingDashBoard({navigation}) {
               </Text>
               <Text
                 style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
-                ₦{formatNumber(Number(645978))}
+                ₦{formatNumber(Number(yourSavings)) || '0.00'}
               </Text>
             </View>
 
-            <View></View>
+            <View
+              style={{
+                // borderWidth: 1,
+                flexDirection: 'row',
+                justifyContent: 'flex-end',
+                // alignItems: '',
+                width: 120,
+                height: 30,
+                alignItems: 'center',
+              }}>
+              {buddies?.length > 0 &&
+                buddies.map((item, index) => {
+                  return (
+                    <View
+                      key={index}
+                      style={{
+                        backgroundColor: '#CFCFCF',
+                        width: 25,
+                        height: 25,
+                        marginLeft: 5,
+                        borderRadius: 20,
+                        borderWidth: 2,
+                        borderColor: COLORS.white,
+                        position: 'absolute',
+                        // right: 60,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Text style={{fontWeight: 'bold', color: COLORS.dark}}>
+                        {item.fullname.toString().charAt(0).toUpperCase()}
+                      </Text>
+                    </View>
+                  );
+                })}
+            </View>
           </View>
 
           {/*  */}
@@ -436,7 +447,7 @@ export default function SoloSavingDashBoard({navigation}) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate('EmergencyFundOnboarding')}
+              onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -452,7 +463,7 @@ export default function SoloSavingDashBoard({navigation}) {
                   source={icons.topUp}
                 />
                 <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
-                  Top up
+                  Rent Now Pay {'\n'}Later
                 </Text>
                 <Text
                   style={{
@@ -461,7 +472,7 @@ export default function SoloSavingDashBoard({navigation}) {
                     color: '#ADADAD',
                     lineHeight: 20,
                   }}>
-                  Let your family, friends assist you with your rent
+                  Can't meet up with your rent target? Let Kwaba pay for you.
                 </Text>
               </View>
             </TouchableOpacity>
@@ -489,119 +500,6 @@ export default function SoloSavingDashBoard({navigation}) {
               }}>
               My Transactions
             </Text>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                backgroundColor: '#F7F8FD',
-                borderRadius: 10,
-                overflow: 'hidden',
-                marginTop: 10,
-              }}>
-              {['All', 'Savings', 'Withdrawals'].map((value, index) => (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => setActiveTab(index)}
-                  style={{
-                    flex: 1,
-                    padding: 12,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor:
-                      activeTab == index ? COLORS.light : 'transparent',
-                  }}>
-                  {/* <View> */}
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      color: activeTab == index ? COLORS.white : '#BFBFBF',
-                    }}>
-                    {value}
-                  </Text>
-                  {/* </View> */}
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Transactions */}
-            <View style={{flex: 1}}>
-              <View style={{flex: 1}}>
-                {getSoloSaving?.data?.map((el, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingVertical: 10,
-                        marginTop: 10,
-                      }}>
-                      <View
-                        style={{
-                          width: 8,
-                          height: 8,
-                          borderRadius: 20,
-                          backgroundColor: COLORS.secondary,
-                          marginRight: 10,
-                        }}
-                      />
-                      <View
-                        style={{
-                          flex: 1,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          // borderWidth: 1,
-                        }}>
-                        <View>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              // fontWeight: 'bold',
-                              color: COLORS.dark,
-                            }}>
-                            My Rent Savings
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 10,
-                              // fontWeight: 'bold',
-                              color: COLORS.dark,
-                              opacity: 0.5,
-                            }}>
-                            {el.reference}
-                          </Text>
-                        </View>
-
-                        <View
-                          style={{
-                            alignItems: 'flex-end',
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                            }}>
-                            ₦{currencyFormat(Number(el.amount))}
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                              opacity: 0.5,
-                            }}>
-                            {el.created_at}
-                          </Text>
-                        </View>
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
           </View>
 
           <View
@@ -611,6 +509,67 @@ export default function SoloSavingDashBoard({navigation}) {
               backgroundColor: '#F7F8FD',
             }}
           />
+
+          <View style={{borderWidth: 0}}>
+            {transactions?.length > 0 &&
+              transactions.map((item, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      paddingHorizontal: 20,
+                      paddingVertical: 10,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      borderBottomWidth: 1,
+                      borderBottomColor: '#BFBFBF20',
+                    }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <View
+                        style={{
+                          width: 8,
+                          height: 8,
+                          backgroundColor:
+                            item.status == 1 ? COLORS.secondary : COLORS.red,
+                          borderRadius: 8,
+                          marginRight: 10,
+                        }}
+                      />
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.dark,
+                          }}>
+                          {savingTitle}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 'normal',
+                            color: COLORS.dark,
+                            marginLeft: 2,
+                          }}>
+                          ₦{formatNumber(Number(item.amount)) || '0.00'}
+                        </Text>
+                      </View>
+                    </View>
+
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          fontWeight: 'bold',
+                          color: COLORS.dark,
+                        }}>
+                        {item.created_at}
+                      </Text>
+                    </View>
+                  </View>
+                );
+              })}
+          </View>
         </View>
       </ScrollView>
 
@@ -618,6 +577,8 @@ export default function SoloSavingDashBoard({navigation}) {
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
       />
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 }

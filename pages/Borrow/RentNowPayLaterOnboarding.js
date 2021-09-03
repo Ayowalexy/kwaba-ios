@@ -13,13 +13,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default RentNowPayLaterOnboarding = ({navigation}) => {
-
   const handleRentalLoanClick = async () => {
-    
-      const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-      const steps = JSON.parse(borrwSteps);
+    const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+    const steps = JSON.parse(borrwSteps);
 
-      // let stepsdata={
+    // let stepsdata={
     //   documentdone:'',
     //   propertydetail:'',
     //   landlorddetail:'',
@@ -32,50 +30,29 @@ export default RentNowPayLaterOnboarding = ({navigation}) => {
 
     // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
-      if (steps == null) {
-
-        navigation.navigate('RentalLoanForm1');
-
-      } else if (steps.documentdone == '') {
-
-        navigation.navigate('UploadDocuments');
-
-      } else if (steps.propertydetail == '') {
-
-        navigation.navigate('PostPaymentForm1');
-
-      } else if (steps.landlorddetail == '') {
-
-        navigation.navigate('PostPaymentForm2');
-
-      } else if (steps.refree == '') {
-
-        navigation.navigate('PostPaymentForm3');
-
-      } else if (steps.offeraccepted == '') {
-
-        navigation.navigate('RentalLoanOfferTest'); 
-
-      } else if (steps.addressverification == '') {
-
-        navigation.navigate('AddressVerificationPayment');
-
-      } else if (steps.debitmandate == '') {
-
-        navigation.navigate('OkraDebitMandate');
-
-      } else if (steps.awaitingdisbursment == '') {
-
-        navigation.navigate('AwaitingDisbursement');
-
-      }else {
-
+    if (steps == null) {
+      navigation.navigate('RentalLoanForm1');
+    } else if (steps.documentdone == '') {
+      navigation.navigate('UploadDocuments');
+    } else if (steps.propertydetail == '') {
+      navigation.navigate('PostPaymentForm1');
+    } else if (steps.landlorddetail == '') {
+      navigation.navigate('PostPaymentForm2');
+    } else if (steps.refree == '') {
+      navigation.navigate('PostPaymentForm3');
+    } else if (steps.offeraccepted == '') {
+      navigation.navigate('RentalLoanOfferTest');
+    } else if (steps.addressverification == '') {
+      navigation.navigate('AddressVerificationPayment');
+    } else if (steps.debitmandate == '') {
+      navigation.navigate('OkraDebitMandate');
+    } else if (steps.awaitingdisbursment == '') {
+      navigation.navigate('AwaitingDisbursement');
+    } else {
       navigation.navigate('RentalLoanForm1');
       //navigation.navigate('EmergencyLoanRequestDashBoard');
     }
-
   };
-
 
   return (
     <View style={styles.container}>
@@ -103,8 +80,10 @@ export default RentNowPayLaterOnboarding = ({navigation}) => {
           <View style={styles.textWrapper}>
             <Text style={styles.heading}>Rent Now Pay Later</Text>
             <Text style={styles.content}>
-              Having problem completing your rent? You can get help from your
-              family, friends assist you with your rent or Kwaba can help.
+              {/* Having problem completing your rent? You can get help from your
+              family, friends assist you with your rent or Kwaba can help. */}
+              Whether you are looking to renew your rent or pay for a new place,
+              we can pay your bulk rent so you pay back in easy monthly payments
             </Text>
           </View>
 

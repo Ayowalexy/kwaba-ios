@@ -99,64 +99,59 @@ export default function InviteBuddyModal(props) {
 
     setBuddyTarget(calc);
 
-    const duration = Number(data.duration) == 1 ? 12 : Number(data.duration);
-
-    const saving_amount = (calc / duration).toFixed(0);
+    const saving_amount = (calc / Number(data.duration)).toFixed(0);
     setSavingAmount(saving_amount);
   }, []);
 
-  // const sendInvite = async () => {
-  //   const inviteTemplate = {
-  //     fullname: fullname,
-  //     email: email,
-  //     allocatedAmount: buddyTarget,
-  //     monthlySaving: savingAmount,
-  //   };
-
-  //   setBuddyInvite(inviteTemplate);
-  //   onRequestClose();
-  // };
-
   const sendInvite = async () => {
-    setSpinner(true);
-    const data = {
-      loan_id: resData.buddy_savings.id,
+    const inviteTemplate = {
       fullname: fullname,
       email: email,
-      phonenumber: phone,
-      target_amount: buddyTarget,
-      amount_to_save_monthly: savingAmount,
-      buddy_name: userName,
+      allocatedAmount: buddyTarget,
+      monthlySaving: savingAmount,
     };
 
-    console.log('The Invite: ', data);
-    try {
-      const res = await InviteBuddy(data);
-
-      if (res.status == 200) {
-        setSpinner(false);
-
-        const inviteTemplate = {
-          fullname: fullname,
-          email: email,
-          allocatedAmount: buddyTarget,
-          monthlySaving: savingAmount,
-          id: res.data.buddy.id,
-        };
-
-        setBuddyInvite(inviteTemplate);
-        onRequestClose();
-
-        // console.log('Send Invite Res: ', res);
-      } else {
-        setSpinner(false);
-        console.log('Error new: ', res);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error 2: ', error);
-    }
+    setBuddyInvite(inviteTemplate);
+    onRequestClose();
   };
+
+  // const sendInvite = async () => {
+  //   setSpinner(true);
+  //   const data = {
+  //     loan_id: resData.buddy_savings.id,
+  //     fullname: fullname,
+  //     email: email,
+  //     phonenumber: phone,
+  //     target_amount: buddyTarget,
+  //     amount_to_save_monthly: savingAmount,
+  //     buddy_name: 'Joshua',
+  //   };
+  //   try {
+  //     const res = await InviteBuddy(data);
+
+  //     if (res.status == 201) {
+  //       setSpinner(false);
+
+  //       const inviteTemplate = {
+  //         fullname: fullname,
+  //         email: email,
+  //         allocatedAmount: buddyTarget,
+  //         monthlySaving: savingAmount,
+  //       };
+
+  //       setBuddyInvite(inviteTemplate);
+  //       onRequestClose();
+
+  //       console.log('Send Invite Res: ', res.data);
+  //     } else {
+  //       setSpinner(false);
+  //       console.log('Error: ', res);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     console.log('Error: ', error);
+  //   }
+  // };
 
   return (
     // <KeyboardAvoidingView
@@ -279,7 +274,7 @@ export default function InviteBuddyModal(props) {
               onPress={sendInvite}
               style={[styles.btn, {backgroundColor: COLORS.secondary}]}>
               <Text style={{color: 'white', fontSize: 12, fontWeight: 'bold'}}>
-                ADD
+                INVITE
               </Text>
             </TouchableOpacity>
 
@@ -351,7 +346,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
-    flex: 1,
+    // flex: 1,
     width: '100%',
     maxHeight: '100%',
     backgroundColor: 'white',

@@ -68,3 +68,28 @@ export const getMaxLoanCap = () => {
     }
   };
 };
+
+// Buddy Savings
+
+export const setTotalBuddySavings = (data) => {
+  return {
+    type: types.GET_BUDDY_SAVINGS,
+    payload: data,
+  };
+};
+
+export const getTotalBuddySavings = () => {
+  return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + '/api/v1/fetch_buddy_savings';
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      dispatch(setTotalBuddySavings(response.data.data));
+      return response.data.data;
+    } catch (error) {
+      return error;
+    }
+  };
+};

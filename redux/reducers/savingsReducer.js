@@ -50,3 +50,15 @@ export const getMaxLoanCapReducer = (state = [], action) => {
       return state;
   }
 };
+
+export const getBuddySavingsReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_BUDDY_SAVINGS:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};

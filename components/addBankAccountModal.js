@@ -41,32 +41,62 @@ export default function AddBankAccountModal(props) {
     return token;
   };
 
-  // fetch banks
   useEffect(() => {
     (async () => {
-      try {
-        const url = 'http://67.207.86.39:8000/api/v1/bank_email';
-        const response = await axios.get(url, {
-          headers: {'Content-Type': 'application/json'},
-        });
-        const data = response.data;
+      const res = await paystackBanks();
 
-        const userData = await AsyncStorage.getItem('userData');
-        const parsedUserData = JSON.parse(userData);
-
-        if (response.status == 200) {
-          // console.log(data.banks);
-          setBankData(data.banks);
-        }
-      } catch (error) {
-        console.log(error);
+      if (res.data.status) {
+        setBankData(res.data.data);
       }
+
+      // console.log('RES BANK: ', res.data);
     })();
 
     return () => {
       setBankData('');
     };
   }, []);
+
+  // fetch banks via paystak
+  const paystackBanks = async () => {
+    const url = 'https://api.paystack.co/bank';
+    try {
+      const banks = axios.get(url, {
+        headers: {'Content-Type': 'application/json'},
+      });
+      // console.log('Paystack Banks: ', banks);
+      return banks;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  // fetch banks
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const url = 'http://67.207.86.39:8000/api/v1/bank_email';
+  //       const response = await axios.get(url, {
+  //         headers: {'Content-Type': 'application/json'},
+  //       });
+  //       const data = response.data;
+
+  //       const userData = await AsyncStorage.getItem('userData');
+  //       const parsedUserData = JSON.parse(userData);
+
+  //       if (response.status == 200) {
+  //         // console.log(data.banks);
+  //         setBankData(data.banks);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+
+  //   return () => {
+  //     setBankData('');
+  //   };
+  // }, []);
 
   const addAccount = async () => {
     setSpinner(true);
@@ -77,7 +107,9 @@ export default function AddBankAccountModal(props) {
         bankCode.toString().length == 2 ? '0' + bankCode : bankCode,
     };
 
-    verifyBankAccount(data.bank_account_number, data.bank_short_code);
+    // console.log('The Bank Account: ', data);
+
+    await verifyBankAccount(data.bank_account_number, data.bank_short_code);
   };
 
   const verifyBankAccount = async (account_number, bank_code) => {
@@ -94,7 +126,9 @@ export default function AddBankAccountModal(props) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      if (response.data.accountStatus == true) {
+      // console.log('The response: ', response.data);
+      if (response.status == 200) {
+        // if (response.data.accountStatus == true) {
         setSpinner(false);
 
         const {account_name, account_number} = response.data.data;
@@ -105,8 +139,8 @@ export default function AddBankAccountModal(props) {
           bank_short_code: bank_code,
           type: 'savings',
         };
+        console.log('Bank Account Verified: ', userAccountDetails);
         await createBankAccount(userAccountDetails);
-        // getBankAccounts();
       } else {
         setSpinner(false);
         console.log('Account not verified');
@@ -114,6 +148,9 @@ export default function AddBankAccountModal(props) {
     } catch (error) {
       setSpinner(false);
       console.log('The Error:', error.response);
+      if (error.response.status == 500) {
+        console.log('Error Bank Account not found...');
+      }
     }
   };
 
@@ -124,18 +161,24 @@ export default function AddBankAccountModal(props) {
       updated_at: '',
     };
 
+    console.log('Create Bank: ', d);
+
     const url = 'http://67.207.86.39:8000/api/v1/createbankaccount';
     const token = await getToken();
     try {
       const response = await axios.post(url, JSON.stringify(d), {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
+      console.log('Na the res: ', res);
       if (response.status == 200) {
         onRequestClose();
         setUserBankAccounts([...userBankAccounts, response.data.userBanks]);
       }
     } catch (error) {
-      console.log('Another Error:', error);
+      console.log('Another Error:', error.response);
+      if (error.response.status == 400) {
+        console.log('Error Bank Already Exists...');
+      }
     }
   };
 
@@ -274,7 +317,7 @@ export default function AddBankAccountModal(props) {
         selectedAccountType={selectedAccountType}
       /> */}
 
-      <Spinner visible={spinner} size="large" />
+      <Spinner visible={spinner} size="large" cancelable={true} />
     </>
   );
 }

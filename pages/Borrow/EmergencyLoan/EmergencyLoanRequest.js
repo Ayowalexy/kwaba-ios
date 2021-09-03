@@ -137,13 +137,13 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       // disbursement_account_number: bankAccountNumber,
       // disbursement_account_bank: bankName,
 
-      // disbursement_account_name: 'JOSHUA UDO NWOSU',
-      // disbursement_account_number: '0094552107',
-      // disbursement_account_bank: 'Access Bank(Diamond)',
+      disbursement_account_name: 'JOSHUA UDO NWOSU',
+      disbursement_account_number: '0094552107',
+      disbursement_account_bank: 'Access Bank(Diamond)',
 
-      disbursement_account_name: '',
-      disbursement_account_number: '',
-      disbursement_account_bank: '',
+      // disbursement_account_name: '',
+      // disbursement_account_number: '',
+      // disbursement_account_bank: '',
     };
 
     console.log('DATA: ', data);
@@ -234,7 +234,8 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                 Disbursement Account
               </Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Disbursement')}>
+                // onPress={() => navigation.navigate('Disbursement')}
+                onPress={() => navigation.navigate('CardAndBankDetails')}>
                 <Text
                   style={{
                     fontSize: 12,
@@ -256,8 +257,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         fontWeight: 'bold',
                         color: COLORS.white,
                       }}>
-                      {/* {userSelectedBankAccount &&
-                        userSelectedBankAccount.user_bank_name} */}
                       JOSHUA UDO NWOSU
                     </Text>
                     <Text
@@ -265,8 +264,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         fontSize: 12,
                         color: COLORS.light,
                       }}>
-                      {/* {userSelectedBankAccount &&
-                        userSelectedBankAccount.bank_name} */}
                       Access Bank(DIAMOND)
                     </Text>
                     <Text
@@ -276,8 +273,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         color: COLORS.white,
                         opacity: 0.8,
                       }}>
-                      {/* {userSelectedBankAccount &&
-                        userSelectedBankAccount.bank_account_number} */}
                       0094552107
                     </Text>
 

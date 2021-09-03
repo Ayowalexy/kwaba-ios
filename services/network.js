@@ -433,7 +433,7 @@ const createBuddySavings = async (data) => {
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
-      headers: {Authorization: token},
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
@@ -441,12 +441,29 @@ const createBuddySavings = async (data) => {
   }
 };
 
-const InviteBuddy = async () => {
+const InviteBuddy = async (data) => {
   const url = apiUrl + '/api/v1/invite_buddy';
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
+    const response = await axios.post(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// SOLO SAVINGS
+const userCreateSavings = async (data) => {
+  const url = apiUrl + '/api/v1/user_create_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
     });
     return response;
   } catch (error) {
@@ -547,6 +564,48 @@ const rejectOffer = async (data) => {
   }
 };
 
+// Delete Buddy Savings Invite
+const deleteBuddySavingsInvite = async (id) => {
+  const url = apiUrl + `/api/v1/buddy/deleteInvite/${id}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Send Buddy Savings Bulk Invite
+const sendBuddySavingsInvites = async (data) => {
+  const url = apiUrl + '/api/v1/buddy/sendinvites';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// get one buddy savings
+const getOneUserBuddySavings = async (id) => {
+  const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -579,6 +638,7 @@ export {
   me,
   createBuddySavings,
   InviteBuddy,
+  userCreateSavings,
   getUserSavings,
   getOneUserSavings,
   getSavingsHistory,
@@ -586,4 +646,7 @@ export {
   verifySavingsPayment,
   acceptOffer,
   rejectOffer,
+  sendBuddySavingsInvites,
+  deleteBuddySavingsInvite,
+  getOneUserBuddySavings,
 };

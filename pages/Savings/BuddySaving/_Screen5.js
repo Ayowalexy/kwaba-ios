@@ -8,7 +8,6 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
-  Modal,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -23,14 +22,9 @@ import {
   formatNumber,
 } from '../../../util/numberFormatter';
 import InviteBuddyModal from '../../../components/InviteBuddyModal';
-import {
-  createBuddySavings,
-  deleteBuddySavingsInvite,
-  sendBuddySavingsInvites,
-} from '../../../services/network';
+import {createBuddySavings} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModalBuddy from '../../../components/CreditCard/CreditCardModalBuddy';
-import InviteSentModal from './InviteSentModal';
 
 export default function Screen5(props) {
   const {navigation, route} = props;
@@ -54,8 +48,6 @@ export default function Screen5(props) {
   const [spinner, setSpinner] = useState(false);
 
   const [showCardModal, setShowCardModal] = useState(false);
-
-  const [showInviteSentModal, setShowInviteSentModal] = useState(false);
 
   useEffect(() => {
     const data = route.params;
@@ -114,46 +106,15 @@ export default function Screen5(props) {
     setShowCardModal(true);
   };
 
-  // const handleSubmit = async () => {
-  //   let data = {
-  //     ...route.params,
-  //     locked: locked,
-  //     savings_tenure: route.params.duration,
-  //   };
-
-  //   // console.log('Props Data: ', data);
-  //   // navigation.navigate('BuddySaving6');
-  //   setSpinner(true);
-
-  //   try {
-  //     const res = await createBuddySavings(data);
-  //     // console.log('Res: ', res.data);
-
-  //     if (res.status == 201) {
-  //       setSavingsCreated(true);
-  //       console.log('Res: ', res.data.payment.amount);
-  //       setResData(res.data);
-  //       setSpinner(false);
-
-  //       // show buddy invite modal
-  //       setShowInviteBuddyModal(true);
-  //     }
-  //   } catch (error) {
-  //     console.log('Error: ', error);
-  //     setSavingsCreated(false);
-  //     setSpinner(false);
-  //   }
-  // };
-
-  const handleAddBuddy = async () => {
+  const handleSubmit = async () => {
     let data = {
       ...route.params,
       locked: locked,
       savings_tenure: route.params.duration,
     };
 
-    // console.log('Data: ', data);
-
+    // console.log('Props Data: ', data);
+    // navigation.navigate('BuddySaving6');
     setSpinner(true);
 
     try {
@@ -168,60 +129,11 @@ export default function Screen5(props) {
 
         // show buddy invite modal
         setShowInviteBuddyModal(true);
-      } else {
-        setSpinner(false);
-        setSavingsCreated(false);
       }
     } catch (error) {
       console.log('Error: ', error);
       setSavingsCreated(false);
       setSpinner(false);
-    }
-  };
-
-  const displayInviteModal = () => {
-    setShowInviteBuddyModal(true);
-  };
-
-  const handleSendInvite = async () => {
-    setSpinner(true);
-    const data = {
-      id: resData.buddy_savings.id, // loan_id
-    };
-
-    try {
-      const response = await sendBuddySavingsInvites(data);
-      if (response.status == 200) {
-        setSpinner(false);
-        console.log('Invite sent: ', response.data);
-        setShowInviteSentModal(true); // show success modal
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
-    }
-  };
-
-  const removeBuddy = async (id) => {
-    setSpinner(true);
-
-    const response = await deleteBuddySavingsInvite(id);
-    console.log('Delete Invite Response: ', response);
-
-    try {
-      if (response.status == 200) {
-        setSpinner(false);
-
-        const remainBuddies = buddies.filter((item) => item.id != id);
-
-        console.log('The remaining buddies: ', remainBuddies);
-
-        // append remain buddies
-        setBuddies(remainBuddies);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
     }
   };
 
@@ -236,16 +148,22 @@ export default function Screen5(props) {
             borderColor: '#BFBFBF20',
             backgroundColor: COLORS.white,
             paddingVertical: 15,
-            paddingHorizontal: 20,
+            paddingHorizontal: 30,
             borderRadius: 10,
             marginBottom: 5,
             // elevation: 0.5,
           }}>
-          <TouchableOpacity
-            onPress={() => removeBuddy(buddy.id)}
-            style={{position: 'absolute', right: 5, top: 5, padding: 5}}>
-            <Icon name="close" size={20} color={COLORS.grey} />
-          </TouchableOpacity>
+          <Icon
+            name="close-circle-outline"
+            size={20}
+            style={{
+              position: 'absolute',
+              right: 5,
+              top: 5,
+              color: COLORS.grey,
+              padding: 5,
+            }}
+          />
           <View
             style={{
               flexDirection: 'row',
@@ -342,7 +260,7 @@ export default function Screen5(props) {
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900', paddingBottom: 10}}
+        style={{fontWeight: '900'}}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
@@ -354,7 +272,7 @@ export default function Screen5(props) {
             color: '#ADADAD',
             fontSize: 12,
             fontWeight: '600',
-            lineHeight: 16,
+            lineHeight: 18,
             marginTop: 8,
             marginLeft: 10,
           }}>
@@ -369,7 +287,7 @@ export default function Screen5(props) {
               style={[
                 styles.summaryBoxTopAmount,
                 {
-                  fontSize: Number(targetAmount) == 0 ? 16 : 26,
+                  fontSize: Number(targetAmount) == 0 && 16,
                   textTransform: 'uppercase',
                 },
               ]}>
@@ -520,65 +438,65 @@ export default function Screen5(props) {
           )}
         </View>
 
-        {/* {savingsCreated && ( */}
-        <>
-          <TouchableOpacity
-            disabled={buddies.length == numberOfBuddies}
-            onPress={savingsCreated ? displayInviteModal : handleAddBuddy}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingVertical: 20,
-              opacity: buddies.length == numberOfBuddies && 0.5,
-            }}>
-            <Icon
-              name="ios-person-add-outline"
-              style={{color: COLORS.secondary, fontSize: 20}}
-            />
-            <Text
+        {savingsCreated && (
+          <>
+            <TouchableOpacity
+              disabled={buddies.length == numberOfBuddies}
+              onPress={() => setShowInviteBuddyModal(!showInviteBuddyModal)}
               style={{
-                color: '#00DC99',
-                fontSize: 12,
-                fontWeight: '700',
-                marginLeft: 12,
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingVertical: 20,
+                opacity: buddies.length == numberOfBuddies && 0.5,
               }}>
-              Add a buddy
-            </Text>
-          </TouchableOpacity>
+              <Icon
+                name="ios-person-add-outline"
+                style={{color: COLORS.secondary, fontSize: 20}}
+              />
+              <Text
+                style={{
+                  color: '#00DC99',
+                  fontSize: 12,
+                  fontWeight: '700',
+                  marginLeft: 12,
+                }}>
+                Invite a buddy
+              </Text>
+            </TouchableOpacity>
 
-          <View style={[styles.buddyInvites]}>
-            {/* Buddies of 1 of how many buddies to invite */}
-            <Text style={[styles.buddyInvitesCount]}>
-              Buddies({buddies.length} of {numberOfBuddies}){' '}
-            </Text>
+            <View style={[styles.buddyInvites]}>
+              {/* Buddies of 1 of how many buddies to invite */}
+              <Text style={[styles.buddyInvitesCount]}>
+                Buddies({buddies.length} of {numberOfBuddies}){' '}
+              </Text>
 
-            {!buddies.length ? (
-              <View style={[styles.noBuddy]}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: COLORS.grey,
-                    fontWeight: '700',
-                  }}>
-                  No Buddy Invite yet
-                </Text>
-              </View>
-            ) : (
-              <View style={[styles.buddiesContainer]}>
-                <CreateBuddiesTemplate />
-              </View>
-            )}
-          </View>
-        </>
-        {/* )} */}
+              {!buddies.length ? (
+                <View style={[styles.noBuddy]}>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: COLORS.grey,
+                      fontWeight: '700',
+                    }}>
+                    No Buddy Invite yet
+                  </Text>
+                </View>
+              ) : (
+                <View style={[styles.buddiesContainer]}>
+                  <CreateBuddiesTemplate />
+                </View>
+              )}
+            </View>
+          </>
+        )}
       </ScrollView>
 
       <View style={{paddingVertical: 10}}>
-        {buddies.length != numberOfBuddies ? (
+        {buddies.length < numberOfBuddies ? (
           <TouchableOpacity
-            onPress={savingsCreated ? displayInviteModal : handleAddBuddy}
+            onPress={savingsCreated ? handleNext : handleSubmit}
             style={[
               designs.button,
               {
@@ -595,12 +513,12 @@ export default function Screen5(props) {
                 fontSize: 12,
                 lineHeight: 30,
               }}>
-              ADD A BUDDY
+              {savingsCreated ? 'INVITE BUDDY' : 'INVITE BUDDY'}
             </Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={handleSendInvite}
+            onPress={handlePayment}
             style={[
               designs.button,
               {
@@ -617,7 +535,7 @@ export default function Screen5(props) {
                 fontSize: 12,
                 lineHeight: 30,
               }}>
-              SEND INVITE
+              PAY NOW {'  '} ₦{formatNumber(instantSaving)}
             </Text>
           </TouchableOpacity>
         )}
@@ -646,17 +564,6 @@ export default function Screen5(props) {
       )}
 
       <Spinner visible={spinner} size="large" />
-
-      {showInviteSentModal && (
-        <InviteSentModal
-          onRequestClose={() => {
-            setShowInviteSentModal(!showInviteSentModal);
-            navigation.navigate('BuddyPaymentScreen', {data: resData});
-          }}
-          visible={showInviteSentModal}
-          navigation={navigation}
-        />
-      )}
     </View>
   );
 }
@@ -744,13 +651,13 @@ const styles = StyleSheet.create({
   },
 
   buddyInvites: {
-    borderTopColor: '#BFBFBF20',
+    borderTopColor: '#BFBFBF50',
     borderTopWidth: 1,
   },
   buddyInvitesCount: {
     fontSize: 12,
     fontWeight: 'bold',
-    color: COLORS.dark,
+    color: COLORS.grey,
     paddingVertical: 10,
     marginLeft: 10,
   },

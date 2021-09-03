@@ -71,7 +71,6 @@ const Borrow = ({navigation}) => {
     const rentalSteps = await AsyncStorage.getItem('rentalSteps');
     const steps = JSON.parse(rentalSteps);
 
-    // console.log(steps);
     if (steps != null) {
       if (steps == null) {
         navigation.navigate('RentalLoanForm1');
@@ -102,12 +101,12 @@ const Borrow = ({navigation}) => {
         // } else {
         //   navigation.navigate('AcceptanceLetterAddosser');
         // }
-        navigation.navigate('AddosserLetter');
+        // navigation.navigate('AddosserLetter');
+        navigation.navigate('PTMFB');
       } else if (steps.address_verification == '') {
         // navigation.navigate('AddressVerification');
         navigation.navigate('AddressVerificationPayment');
       } else if (steps.debitmandate == '') {
-        // navigation.navigate('DebitMandate');
         navigation.navigate('OkraDebitMandate');
       } else if (steps.awaiting_disbursement) {
         navigation.navigate('AwaitingDisbursement');
@@ -173,11 +172,14 @@ const Borrow = ({navigation}) => {
         <View style={designs.contentView}>
           <View style={designs.textView}>
             <Text style={[FONTS.largeTitleFontStyling, designs.bigText]}>
-              We can help you with some extra money
+              {/* We can help you with some extra money */}
+              Let's help you pay your rent conveniently.
             </Text>
             <Text style={[FONTS.body2FontStyling, designs.smallHeaderText]}>
-              Whether you need extra money to balance your rent or a quick loan
-              to sort out personal stuff, we gat you!
+              {/* Whether you need extra money to balance your rent or a quick loan
+              to sort out personal stuff, we gat you! */}
+              Whether you are struggling to pay your rent, or looking to save
+              towards your next rent, we've got you covered.
             </Text>
           </View>
         </View>
@@ -207,10 +209,10 @@ const Borrow = ({navigation}) => {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('EmergencyFundOnboarding')}
+            onPress={() => navigation.navigate('SavingsHome')}
             style={designs.button}>
             <View style={designs.buttonInnerView}>
-              <Text style={designs.buttonText}>Emergency Funds</Text>
+              <Text style={designs.buttonText}>Rent Savings</Text>
               <Icon
                 name="arrow-forward-outline"
                 size={20}

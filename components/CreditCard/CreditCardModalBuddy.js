@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
-import CreditCardForm from './CreditCardForm';
-export default function CreditCardModal(props) {
+import CreditCardFormBuddy from './CreditCardFormBuddy';
+
+export default function CreditCardModalBuddy(props) {
   const {
     onRequestClose,
     visible,
@@ -20,10 +21,6 @@ export default function CreditCardModal(props) {
     redirectTo,
     onConfirm,
   } = props;
-
-  //   useEffect(() => {
-  //     console.log('The Card Info on Modal: ', cardInfo);
-  //   }, [info]);
 
   return (
     <View>
@@ -61,7 +58,7 @@ export default function CreditCardModal(props) {
             </View>
             <ScrollView contentContainerStyle={styles.content}>
               <View style={{flex: 1}}>
-                <CreditCardForm
+                <CreditCardFormBuddy
                   ResInfo={info}
                   navigation={navigation}
                   onRequestClose={onRequestClose}
@@ -102,8 +99,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    // borderColor: '#f00',
-    // borderWidth: 1,
   },
   modalView: {
     width: '100%',

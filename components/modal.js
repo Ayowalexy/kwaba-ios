@@ -41,7 +41,7 @@ export default function ConfirmModal(props) {
               fontWeight: 'bold',
               fontSize: 16,
             }}>
-            Your profile has be completed
+            Your profile has been completed
           </Text>
           <View
             style={{
@@ -74,7 +74,7 @@ export default function ConfirmModal(props) {
                 paddingHorizontal: 20,
                 lineHeight: 20,
               }}>
-              Now you can access savings and other amazing features!!!
+              Now you can access Kwaba's amazing features!!!
             </Text>
             <TouchableOpacity
               onPress={goHome}
@@ -86,7 +86,7 @@ export default function ConfirmModal(props) {
                   fontWeight: 'bold',
                   lineHeight: 25,
                 }}>
-                Okay!
+                Proceed
               </Text>
             </TouchableOpacity>
           </View>

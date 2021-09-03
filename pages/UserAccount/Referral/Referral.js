@@ -22,6 +22,7 @@ import {icons, images, COLORS, FONTS, designs} from '../../../util/index';
 const widthtouse = Dimensions.get('window').width;
 
 const Referral = ({navigation}) => {
+  const referral_msg = `I use Kwaba to save and pay for my rent. Join with my link to get N1,000 towards your rent savings`;
   const [referralCode, setReferralCode] = useState('');
 
   const fetchReferralCode = async () => {
@@ -49,7 +50,7 @@ const Referral = ({navigation}) => {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: `Kwaba |  The easy way to save and pay for your rent. Kwaba helps you save towards your rent, get rent top-ups and instant loans. Kwaba has your privacy at heart. Join using the referral code below| ${referralCode}`,
+        message: `${referral_msg}  | ${referralCode}`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

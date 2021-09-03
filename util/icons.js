@@ -103,6 +103,9 @@ const ic2 = require('../assets/icons/quick/ic2.png');
 const ic3 = require('../assets/icons/quick/ic3.png');
 const ic4 = require('../assets/icons/quick/ic4.png');
 
+const mortageInactive = require('../assets/icons/mortgage-inactive.png');
+const mortageActive = require('../assets/icons/mortgage-active.png');
+
 export {
   instagram,
   accountCircle,
@@ -197,4 +200,6 @@ export {
   ic2,
   ic3,
   ic4,
+  mortageInactive,
+  mortageActive,
 };

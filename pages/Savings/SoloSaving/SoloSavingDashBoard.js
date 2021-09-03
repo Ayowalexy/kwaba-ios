@@ -12,7 +12,10 @@ import {icons, images, COLORS} from '../../../util/index';
 import {currencyFormat} from '../../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useSelector, useDispatch} from 'react-redux';
-import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
+import {
+  getTotalSoloSavings,
+  getMaxLoanCap,
+} from '../../../redux/actions/savingsActions';
 
 import QuickSaveModal from '../../../components/QuickSaveModal';
 import moment from 'moment';
@@ -26,7 +29,7 @@ export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [savingsTarget, setSavingsTarget] = useState(0);
@@ -38,20 +41,25 @@ export default function SoloSavingDashBoard(props) {
   const [spinner, setSpinner] = useState(false);
 
   useEffect(() => {
-    dispatch(getTotalSoloSavings());
+    // dispatch(getTotalSoloSavings());
+    dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
+    console.log('The ID: ', route.params.id);
+    // (async () => {
     getOne();
-  }, [getSoloSaving]);
+    // })();
+  }, [getMaxLoanCap1]);
 
   const getOne = async () => {
     try {
       setSpinner(true);
-      const res = await getOneUserSavings(route.params.id);
+      const res = await getOneUserSavings(route.params.id || 334);
+      console.log('The res: ', res);
       if (res.status == 200) {
         setSpinner(false);
-        console.log('The saving response: ', res.data.data[0]);
+        // console.log('The saving response: ', res.data.data[0]);
 
         const data = res.data.data[0];
         const amount_saved = Number(data.amount_save);
@@ -66,6 +74,7 @@ export default function SoloSavingDashBoard(props) {
           ).toFixed(0),
         );
         setTotalSaving(amount_saved || 0);
+        console.log('Amount Saved: ', amount_saved);
       }
     } catch (error) {
       console.log('Error: ', error);
@@ -76,7 +85,7 @@ export default function SoloSavingDashBoard(props) {
   return (
     <View style={styles.container}>
       <Icon
-        onPress={() => navigation.navigate('Home')}
+        onPress={() => navigation.navigate('SavingLists')}
         name="arrow-back-outline"
         size={25}
         style={{padding: 18, paddingHorizontal: 10}}
@@ -188,7 +197,7 @@ export default function SoloSavingDashBoard(props) {
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text style={{fontSize: 10, color: COLORS.white}}>
-                    View saving details
+                    View savings history
                   </Text>
                   <Icon
                     name="chevron-forward-outline"
@@ -351,7 +360,7 @@ export default function SoloSavingDashBoard(props) {
                     color: '#ADADAD',
                     lineHeight: 20,
                   }}>
-                  Let your family, friends assist you with your rent
+                  Can't meet up with your rent target? Let Kwaba pay for you.
                 </Text>
               </View>
             </TouchableOpacity>
@@ -373,7 +382,7 @@ export default function SoloSavingDashBoard(props) {
                   source={icons.instantLoan}
                 />
                 <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
-                  Emergency {'\n'}Fund
+                  Emergency {'\n'}Funds
                 </Text>
                 <Text
                   style={{
@@ -382,7 +391,7 @@ export default function SoloSavingDashBoard(props) {
                     color: '#ADADAD',
                     lineHeight: 20,
                   }}>
-                  Access emerygency funds against your rent saving
+                  Access instant loans to help sort out life’s emergencies.
                 </Text>
               </View>
             </TouchableOpacity>

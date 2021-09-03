@@ -33,12 +33,12 @@ export default function Start({navigation}) {
   }, []);
 
   useEffect(() => {
-    const data = getMaxLoanCap1.data;
+    const data = getMaxLoanCap1?.data;
 
-    setTotalBalance(data.you_have_save);
-    setTotalSaving(data.you_have_save);
-    setSoloSaving(data.total_solo_savings);
-    setBuddySaving(data.total_buddy_savings);
+    setTotalBalance(data?.you_have_save);
+    setTotalSaving(data?.you_have_save);
+    setSoloSaving(data?.total_solo_savings);
+    setBuddySaving(data?.total_buddy_savings || 0);
   }, [store]);
 
   return (
@@ -132,7 +132,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦{formatNumber(totalBalance)}
+                ₦{formatNumber(totalBalance) || '0.00'}
               </Text>
             </View>
 
@@ -163,7 +163,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦{formatNumber(totalSaving)}
+                ₦{formatNumber(totalSaving) || '0.00'}
               </Text>
               {/* </BlurView> */}
             </View>
@@ -188,7 +188,7 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦{currencyFormat(totalInterest)}
+                ₦{currencyFormat(totalInterest) || '0.00'}
               </Text>
             </View>
             {/* </BlurView> */}
@@ -221,7 +221,7 @@ export default function Start({navigation}) {
                     {
                       marginTop: 16,
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      // justifyContent: 'center',
                       // height: 27,
                       // borderRadius: 10,
                       backgroundColor: '#F7F8FD',
@@ -256,7 +256,7 @@ export default function Start({navigation}) {
                           marginRight: 8,
                         },
                       ]}>
-                      ₦{currencyFormat(soloSaving)}
+                      ₦{formatNumber(soloSaving)}
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />
@@ -287,9 +287,7 @@ export default function Start({navigation}) {
                   onPress={() => {
                     // console.log('Hello')
                     navigation.navigate(
-                      buddySaving == 0
-                        ? 'BuddySaving1'
-                        : 'BuddySavingDashBoard',
+                      buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
                     );
                     // setShowModal(!showModal)
                   }}
@@ -298,7 +296,7 @@ export default function Start({navigation}) {
                     {
                       marginTop: 16,
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      // justifyContent: 'center',
                       // height: 27,
                       // borderRadius: 10,
                       backgroundColor: '#F7F8FD',
@@ -332,7 +330,7 @@ export default function Start({navigation}) {
                           marginRight: 8,
                         },
                       ]}>
-                      ₦{currencyFormat(soloSaving)}
+                      ₦{formatNumber(buddySaving)}
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />

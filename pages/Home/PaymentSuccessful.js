@@ -11,8 +11,16 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, icons, images} from '../../util';
+import {
+  getMaxLoanCap,
+  getTotalSoloSavings,
+} from '../../redux/actions/savingsActions';
+import {useDispatch, useSelector} from 'react-redux';
 
 export default function PaymentSuccessful(props) {
+  const dispatch = useDispatch();
+  const store = useSelector((state) => state.getSoloSavingsReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   useEffect(() => {
     const backAction = () => {
       //   Alert.alert('Hold on!', 'Are you sure you want to go back?', [
@@ -35,8 +43,13 @@ export default function PaymentSuccessful(props) {
   }, []);
 
   const handlePress = () => {
+    dispatch(getTotalSoloSavings());
+    dispatch(getMaxLoanCap());
+
     if (props?.route?.params?.name) {
-      props.navigation.navigate(props?.route?.params?.name);
+      props.navigation.navigate(props?.route?.params?.name, {
+        id: props?.route?.params?.id,
+      });
     } else {
       //   props.navigation.goBack();
       props.navigation.navigate('Home');

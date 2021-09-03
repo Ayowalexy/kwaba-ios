@@ -8,14 +8,19 @@ import {
   ScrollView,
   Modal,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../util/index';
-import {currencyFormat} from '../../util/numberFormatter';
+import {currencyFormat, formatNumber} from '../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+import Spinner from 'react-native-loading-spinner-overlay';
+import CreditCardModalRNPL from '../../components/CreditCard/CreditCardModalRNPL';
 
 export default function RentNowPayLaterDashboard({navigation}) {
   const [percentAchieved, setPercentAchieved] = useState(75);
@@ -25,6 +30,21 @@ export default function RentNowPayLaterDashboard({navigation}) {
   const [monthlyRepayment, setmonthlyRepayment] = useState();
   const [repaymentPlan, setrepaymentPlan] = useState();
   const [repaymentPlanCount, setrepaymentPlanCount] = useState();
+
+  const [loanID, setLoanID] = useState('');
+
+  // modal
+  const [showPaymentType, setShowPaymentType] = useState(false);
+  const [showAmountField, setShowAmountField] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+  const [modal, setModal] = useState(false);
+  const [resDataObj, setResDataObj] = useState('');
+
+  const [visible, setVisible] = useState(false);
+
+  const amountSchema = yup.object().shape({
+    amount: yup.string().required('Please provide amount'),
+  });
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -53,6 +73,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
       //   headers: {'Content-Type': 'application/json', Authorization: token},
       // });
 
+      setLoanID(loanId);
       console.log('Loan: ', loanId);
 
       //approved_repayment_plan
@@ -81,6 +102,112 @@ export default function RentNowPayLaterDashboard({navigation}) {
   useEffect(() => {
     getDashboardData();
   }, []);
+
+  const handleRepayment = async () => {
+    setVisible(true);
+  };
+
+  const payment = async (data) => {
+    const url = 'http://67.207.86.39:8000/api/v1/application/rentrepayment/pay';
+    const token = await getToken();
+    try {
+      const response = await axios.post(url, data, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const verifyPayment = async (data) => {
+    const url =
+      'http://67.207.86.39:8000/api/v1/application/rentrepayment/verify';
+    const token = await getToken();
+    try {
+      const response = await axios.post(url, data, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const handleSubmit = async (values) => {
+    console.log('The Values: ', values.amount);
+    const data = {
+      amount: values.amount,
+    };
+    try {
+      setSpinner(true);
+      const res = await payment(data);
+      if (res.status == 200) {
+        const verifyPaymentData = {
+          reference: res.data.data.reference,
+          applicationId: loanID,
+        };
+
+        console.log('verify payment data: ', verifyPaymentData);
+        console.log('Res: ', res.data.data);
+        setSpinner(false);
+        setModal(true);
+      }
+    } catch (error) {
+      console.log('The error: ', error);
+      setSpinner(false);
+    }
+  };
+
+  const NumberInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <Text style={[styles.boldText, {marginTop: 18}]}>How much?</Text>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingLeft: 50,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={formatNumber(value)}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
 
   if (nextPaymentDueDate != null) {
     return (
@@ -180,7 +307,6 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
               <View
                 style={{
-                  // backgroundColor: '#ffffff20',
                   flex: 1,
                   paddingHorizontal: 20,
                   paddingVertical: 20,
@@ -199,10 +325,82 @@ export default function RentNowPayLaterDashboard({navigation}) {
                   </Text>
                 </View>
 
-                <View />
+                <View
+                  style={{
+                    // borderWidth: 1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 100,
+                    elevation: 10,
+                  }}>
+                  <AnimatedCircularProgress
+                    size={90}
+                    width={10}
+                    rotation={0}
+                    style={{
+                      width: 97,
+                      height: 97,
+                      zIndex: 9,
+                      position: 'relative',
+                    }}
+                    fill={0}
+                    tintColor={COLORS.secondary}
+                    backgroundColor="#9D98EC20">
+                    {(fill) => (
+                      <View
+                        style={{
+                          backgroundColor: '#2A286A',
+                          height: 100,
+                          width: 100,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderWidth: 1,
+                        }}>
+                        <Image
+                          source={images.darkPurpleCircle}
+                          style={{
+                            width: '100%',
+                            height: '100%',
+                            resizeMode: 'stretch',
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            left: 0,
+                          }}
+                        />
+                        <Text
+                          style={{
+                            fontFamily: 'CircularStd',
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: 'white',
+                            // lineHeight: 27,
+                            textAlign: 'center',
+                          }}>
+                          {percentAchieved}%
+                        </Text>
+                        <Text
+                          style={{
+                            fontFamily: 'CircularStd',
+                            fontSize: 10,
+                            fontWeight: '600',
+                            color: 'white',
+                            // lineHeight: 14,
+                            textAlign: 'center',
+                            marginTop: -5,
+                          }}>
+                          achieved
+                        </Text>
+                      </View>
+                    )}
+                  </AnimatedCircularProgress>
+                </View>
 
                 <View style={{alignItems: 'flex-end'}}>
                   <TouchableOpacity
+                    onPress={handleRepayment}
                     style={{
                       backgroundColor: COLORS.light,
                       paddingVertical: 5,
@@ -229,79 +427,6 @@ export default function RentNowPayLaterDashboard({navigation}) {
                 </View>
               </View>
             </View>
-
-            <View
-              style={{
-                // borderWidth: 1,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginTop: -50,
-                elevation: 10,
-              }}>
-              <AnimatedCircularProgress
-                size={90}
-                width={10}
-                rotation={0}
-                style={{
-                  width: 97,
-                  height: 97,
-                  zIndex: 9,
-                  position: 'relative',
-                }}
-                fill={75}
-                tintColor={COLORS.secondary}
-                backgroundColor="#9D98EC20">
-                {(fill) => (
-                  <View
-                    style={{
-                      backgroundColor: '#2A286A',
-                      height: 100,
-                      width: 100,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      borderWidth: 1,
-                    }}>
-                    <Image
-                      source={images.darkPurpleCircle}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        resizeMode: 'stretch',
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        bottom: 0,
-                        left: 0,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontFamily: 'CircularStd',
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                        color: 'white',
-                        // lineHeight: 27,
-                        textAlign: 'center',
-                      }}>
-                      {percentAchieved}%
-                    </Text>
-                    <Text
-                      style={{
-                        fontFamily: 'CircularStd',
-                        fontSize: 10,
-                        fontWeight: '600',
-                        color: 'white',
-                        // lineHeight: 14,
-                        textAlign: 'center',
-                        marginTop: -5,
-                      }}>
-                      achieved
-                    </Text>
-                  </View>
-                )}
-              </AnimatedCircularProgress>
-            </View>
           </View>
 
           <View
@@ -313,8 +438,98 @@ export default function RentNowPayLaterDashboard({navigation}) {
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               elevation: 50,
-            }}></View>
+            }}>
+            <View
+              style={{
+                paddingVertical: 15,
+                paddingHorizontal: 20,
+                borderBottomColor: '#BFBFBF50',
+                borderBottomWidth: 1,
+              }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: COLORS.primary,
+                }}>
+                Repayments
+              </Text>
+            </View>
+          </View>
         </ScrollView>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={visible}
+          onRequestClose={() => setVisible(false)}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Formik
+                validationSchema={amountSchema}
+                initialValues={{
+                  amount: '',
+                }}
+                onSubmit={(values) => {
+                  handleSubmit(values);
+                }}>
+                {({handleSubmit, isValid, values, setValues}) => (
+                  <>
+                    <Icon
+                      onPress={() => {
+                        // setShowAmountField(false);
+                        // setShowPaymentType(true);
+                        setVisible(false);
+                      }}
+                      name="close"
+                      size={25}
+                      style={{
+                        right: 25,
+                        top: 15,
+                        position: 'absolute',
+                        zIndex: 2,
+                        color: COLORS.grey,
+                        padding: 10,
+                      }}
+                    />
+                    <Field
+                      component={NumberInput}
+                      name="amount"
+                      placeholder="Amount"
+                    />
+
+                    <TouchableOpacity
+                      onPress={handleSubmit}
+                      disabled={isValid ? false : true}
+                      style={[styles.button]}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          lineHeight: 30,
+                        }}>
+                        PROCEED
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </Formik>
+            </View>
+          </View>
+        </Modal>
+
+        <CreditCardModalRNPL
+          onRequestClose={() => {
+            setModal(!modal);
+          }}
+          visible={modal}
+          info={resDataObj}
+          navigation={navigation}
+          redirectTo="RentNowPayLaterDashboard"
+        />
+
+        <Spinner visible={spinner} size="large" />
       </View>
     );
   } else {
@@ -352,7 +567,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     borderRadius: 20,
     elevation: 10,
-    overflow: 'hidden',
+    // overflow: 'hidden',
   },
   // circularProgress: {
   //   width: 97,
@@ -381,5 +596,82 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: COLORS.white,
+  },
+
+  // modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    fontFamily: 'CircularStd',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    overflow: 'hidden',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  textInput: {
+    width: '100%',
+    height: 70,
+    borderRadius: 10,
+    padding: 16,
+    fontSize: 18,
+    fontFamily: 'CircularStd-Medium',
+    fontWeight: '600',
+    borderColor: '#ADADAD',
+    borderWidth: 1,
+    marginTop: 15,
+  },
+  boldText: {
+    fontSize: 18,
+    lineHeight: 23,
+    color: '#2A286A',
+    fontFamily: 'CircularStd',
+    fontWeight: 'bold',
+  },
+
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 10,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    color: COLORS.dark,
+    marginTop: 8,
+    fontSize: 14,
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
+  },
+  button: {
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    opacity: 1,
+    backgroundColor: COLORS.primary,
+    marginTop: 20,
+    // marginBottom: 20,
+
+    width: '100%',
+    paddingVertical: 15,
   },
 });

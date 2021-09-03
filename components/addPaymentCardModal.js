@@ -75,29 +75,30 @@ export default function AddPaymentCardModal(props) {
 
     try {
       const res = await tokenizePayment(data);
-      // console.log('RES: ', res.data.data);
-      if (res.status == 200) {
-        setSpinner(false);
-        const result = await openInAppBrowser(res.data.data.authorization_url);
-        if (result.type == 'cancel') {
-          setSpinner(false);
-          let data = {reference: res.data.data.reference};
-          const verify = await verifyPayment(data);
+      console.log('RES: ', res);
+      setSpinner(false);
+      // if (res.status == 200) {
+      //   setSpinner(false);
+      //   const result = await openInAppBrowser(res.data.data.authorization_url);
+      //   if (result.type == 'cancel') {
+      //     setSpinner(false);
+      //     let data = {reference: res.data.data.reference};
+      //     const verify = await verifyPayment(data);
 
-          if (verify.status == 200) {
-            setSpinner(false);
-            const card = await tokenizeCard(data);
+      //     if (verify.status == 200) {
+      //       setSpinner(false);
+      //       const card = await tokenizeCard(data);
 
-            if (card.data.status == 'success') {
-              setSpinner(false);
-              setPaymentCards([...paymentCards, card.data.card]);
-            }
-          } else {
-            setSpinner(false);
-            console.log('Your payment was not verified. Please retry.');
-          }
-        }
-      }
+      //       if (card.data.status == 'success') {
+      //         setSpinner(false);
+      //         setPaymentCards([...paymentCards, card.data.card]);
+      //       }
+      //     } else {
+      //       setSpinner(false);
+      //       console.log('Your payment was not verified. Please retry.');
+      //     }
+      //   }
+      // }
     } catch (error) {
       setSpinner(false);
       console.log(error);

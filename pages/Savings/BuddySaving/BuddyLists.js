@@ -12,21 +12,25 @@ import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS, images} from '../../../util';
 import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
+import {
+  getMaxLoanCap,
+  getTotalBuddySavings,
+} from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
 
-export default function SavingLists({navigation}) {
+export default function BuddyLists({navigation}) {
   const dispatch = useDispatch();
-  const allSavings = useSelector((state) => state.getSoloSavingsReducer);
+  const allSavings = useSelector((state) => state.getBuddySavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
-  // useEffect(() => {
-  //   console.log('From the store Max Loan Cap: ', getMaxLoanCap1);
-  // }, []);
+  useEffect(() => {
+    console.log('From the store Max Loan Cap: ', allSavings);
+  }, []);
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
+    // dispatch(getTotalBuddySavings());
   }, []);
 
   return (
@@ -60,7 +64,7 @@ export default function SavingLists({navigation}) {
               textTransform: 'uppercase',
               color: COLORS.white,
             }}>
-            Solo Savings
+            Buddy Savings
           </Text>
         </View>
         <View
@@ -83,7 +87,7 @@ export default function SavingLists({navigation}) {
             <Text style={{fontSize: 14, color: COLORS.light}}>₦{'  '}</Text>
             <Text>
               {formatNumber(
-                Number(getMaxLoanCap1.data.total_solo_savings).toFixed(2),
+                Number(getMaxLoanCap1.data.total_buddy_savings).toFixed(2),
               )}
             </Text>
           </Text>
@@ -108,81 +112,78 @@ export default function SavingLists({navigation}) {
           }}
           scrollEnabled
           showsVerticalScrollIndicator={false}>
-          {allSavings?.data.map((item, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                style={[styles.card]}
-                onPress={() =>
-                  navigation.navigate('SoloSavingDashBoard', {id: item.id})
-                }>
-                <View style={[styles.cardFlex]}>
-                  <View style={[styles.progressContainer]}>
-                    <AnimatedCircularProgress
-                      size={60}
-                      width={5}
-                      rotation={0}
-                      style={{zIndex: 9, position: 'relative'}}
-                      fill={
-                        (Number(item.amount_save) /
-                          Number(item.target_amount)) *
-                        100
-                      }
-                      tintColor={COLORS.light}
-                      backgroundColor="#2A286A10">
-                      {(fill) => (
-                        <View
-                          style={{
-                            backgroundColor: COLORS.white,
-                            height: 40,
-                            width: 40,
-                            borderRadius: 50,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            // elevation: 2,
-                          }}>
-                          <Text
+          {allSavings?.data.length &&
+            allSavings?.data.map((item, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.card]}
+                  onPress={() =>
+                    navigation.navigate('BuddySavingDashBoard', {id: item.id})
+                  }>
+                  <View style={[styles.cardFlex]}>
+                    <View style={[styles.progressContainer]}>
+                      <AnimatedCircularProgress
+                        size={60}
+                        width={5}
+                        rotation={0}
+                        style={{zIndex: 9, position: 'relative'}}
+                        fill={
+                          (Number(item.amount_save) /
+                            Number(item.target_amount)) *
+                          100
+                        }
+                        tintColor={COLORS.light}
+                        backgroundColor="#2A286A10">
+                        {(fill) => (
+                          <View
                             style={{
-                              fontFamily: 'CircularStd',
-                              fontSize: 14,
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                              textAlign: 'center',
+                              backgroundColor: COLORS.white,
+                              height: 40,
+                              width: 40,
+                              borderRadius: 50,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              // elevation: 2,
                             }}>
-                            {fill.toFixed(0)}%
-                          </Text>
-                        </View>
-                      )}
-                    </AnimatedCircularProgress>
-                  </View>
-                  <View style={[styles.cardText]}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={[styles.cardTitle]}>{item.name}</Text>
-                      {/* <Icon
-                        name={item.locked ? 'lock-closed' : 'lock-open'}
-                        size={12}
-                        color={COLORS.light}
-                      /> */}
+                            <Text
+                              style={{
+                                fontFamily: 'CircularStd',
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: COLORS.dark,
+                                textAlign: 'center',
+                              }}>
+                              {fill.toFixed(0)}%
+                            </Text>
+                          </View>
+                        )}
+                      </AnimatedCircularProgress>
                     </View>
+                    <View style={[styles.cardText]}>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.cardTitle]}>{item.name}</Text>
+                      </View>
 
-                    <View style={[styles.cardAmount]}>
-                      <Text style={[styles.amountText]}>
-                        ₦{formatNumber(item.amount_save) || '0.00'}
-                      </Text>
-                      <Text style={[styles.amountText, {opacity: 0.5}]}>
-                        ₦{formatNumber(item.target_amount)}
-                      </Text>
+                      <View style={[styles.cardAmount]}>
+                        <Text style={[styles.amountText]}>
+                          ₦{formatNumber(item.amount_save) || '0.00'}
+                        </Text>
+                        <Text style={[styles.amountText, {opacity: 0.5}]}>
+                          ₦{formatNumber(item.target_amount)}
+                        </Text>
+                      </View>
                     </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
+                </TouchableOpacity>
+              );
+            })}
         </ScrollView>
       </View>
       <TouchableOpacity
-        onPress={() => navigation.navigate('SoloSaving1')}
+        onPress={() => navigation.navigate('BuddySaving1')}
         style={{
           backgroundColor: COLORS.primary,
           width: 60,

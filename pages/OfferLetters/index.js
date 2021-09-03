@@ -1,4 +1,5 @@
 import KwabaLetter from './Kwaba';
 import AddosserLetter from './Addosser';
+import PTMFB from './PTMFB';
 
-export {KwabaLetter, AddosserLetter};
+export {KwabaLetter, AddosserLetter, PTMFB};

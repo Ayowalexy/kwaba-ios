@@ -103,42 +103,34 @@ const BottomNavigator = ({navigation}) => {
                       style={{
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: '#EAEAEA80',
+                        // backgroundColor: '#EAEAEA80',
                         width: 50,
                         height: 50,
-                        borderRadius: 50,
+                        // borderRadius: 50,
                       }}>
                       <>
-                        {focused ? (
-                          <Image
-                            source={icons.kwabalogocol}
-                            style={{
-                              width: 25,
-                              height: 25,
-                              alignSelf: 'center',
-                            }}
-                            resizeMode="contain"
-                          />
-                        ) : (
-                          <Image
-                            source={icons.kwabalogonocol}
-                            style={{
-                              width: 25,
-                              height: 25,
-                              alignSelf: 'center',
-                            }}
-                            resizeMode="contain"
-                          />
-                        )}
+                        <Image
+                          source={
+                            focused ? icons.kwabalogocol : icons.kwabalogonocol
+                          }
+                          style={{
+                            width: 20,
+                            height: 28,
+                            alignSelf: 'center',
+                            marginTop: 2,
+                          }}
+                          resizeMode="contain"
+                        />
                       </>
-                      {/* <Text
+                      <Text
                         style={{
-                          fontSize: 12,
+                          fontSize: 10,
                           fontWeight: 'bold',
-                          color: focused ? '#465969' : '#BFBFBF',
+                          color: focused ? COLORS.dark : COLORS.grey,
+                          textTransform: 'uppercase',
                         }}>
                         {title}
-                      </Text> */}
+                      </Text>
                     </View>
                   ) : (
                     <View
@@ -152,10 +144,24 @@ const BottomNavigator = ({navigation}) => {
                           name={icon}
                           style={{
                             fontSize: 25,
-                            color: '#465969',
+                            color: COLORS.dark,
                             // color: focused ? '#9D98EC' : '#BFBFBF',
-                            color: focused ? '#465969' : '#BFBFBF',
+                            color: focused ? COLORS.dark : COLORS.grey,
                           }}
+                        />
+                      ) : title == 'Mortgages' ? (
+                        <Image
+                          source={
+                            focused
+                              ? icons.mortageActive
+                              : icons.mortageInactive
+                          }
+                          style={{
+                            width: 28,
+                            height: 28,
+                            alignSelf: 'center',
+                          }}
+                          resizeMode="contain"
                         />
                       ) : (
                         <Icon
@@ -163,19 +169,20 @@ const BottomNavigator = ({navigation}) => {
                           name={icon}
                           style={{
                             fontSize: 25,
-                            color: '#465969',
+                            color: COLORS.dark,
                             // color: focused ? '#9D98EC' : '#BFBFBF',
-                            color: focused ? '#465969' : '#BFBFBF',
+                            color: focused ? COLORS.dark : COLORS.grey,
                           }}
                         />
                       )}
 
                       <Text
                         style={{
-                          // marginTop: 5,
-                          fontSize: 12,
+                          marginTop: 2,
+                          fontSize: 10,
                           fontWeight: 'bold',
-                          color: focused ? '#465969' : '#BFBFBF',
+                          color: focused ? COLORS.dark : COLORS.grey,
+                          textTransform: 'uppercase',
                         }}>
                         {title}
                       </Text>

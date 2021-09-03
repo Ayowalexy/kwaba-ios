@@ -36,7 +36,7 @@ const screens = [
     id: 3,
     title: 'Rent Now Pay Later',
     content:
-      'Whether you are looking to renew \n your rent or pay for a new place, we \n can pay your bulk rent so you can \n pay back in easy monthly payments',
+      'Whether you are looking to renew \n your rent or pay for a new place, we \n can pay your bulk rent so you \n pay back in easy monthly payments',
     image: icons.onboardingImage3,
     loader: icons.onboardingLoader3,
   },
