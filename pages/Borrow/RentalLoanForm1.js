@@ -35,25 +35,6 @@ const RentalLoanForm1 = ({navigation}) => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [progress, setProgress] = useState(33);
 
-  // const handleNavigation = async () => {
-  //   const data = {
-  //     accomodationstatus: accommodationStatus,
-  //     salary_amount: salaryAmount,
-  //     request_amount: requestAmount,
-  //     selected_month: selectedMonth,
-  //   };
-
-  //   const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-
-  //   // console.log(loanFormData);
-  //   await AsyncStorage.setItem(
-  //     'rentalLoanForm',
-  //     JSON.stringify({...JSON.parse(loanFormData), ...data}),
-  //   );
-
-  //   navigation.navigate('RentalLoanFormDoc');
-  // };
-
   const handleSubmit = async (values) => {
     const data = {
       accomodationstatus: values.accommodationStatus,
@@ -61,10 +42,6 @@ const RentalLoanForm1 = ({navigation}) => {
       amount_needed_from_kwaba: unFormatNumber(values.requestAmount),
       repayment_plan: values.monthlyPaymentPlan,
     };
-
-    // console.log('VALUES:', data);
-
-    // await AsyncStorage.removeItem('rentalLoanForm');
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     console.log(loanFormData);
@@ -74,7 +51,6 @@ const RentalLoanForm1 = ({navigation}) => {
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
 
-    // console.log('DATA:', data)
     navigation.navigate('RentalLoanFormDoc');
   };
 

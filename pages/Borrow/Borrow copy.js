@@ -1,69 +1,74 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  TouchableOpacity,
+  Dimensions,
+  ScrollView,
+} from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+const width = Dimensions.get('window').width;
+
 const Borrow = ({navigation}) => {
   const [existingApplication, setExistingApplication] = useState('');
 
   useEffect(() => {
+    const getApplicationData = async () => {
+      const getToken = async () => {
+        const userData = await AsyncStorage.getItem('userData');
+        const token = JSON.parse(userData).token;
+        return token;
+      };
+      const token = await getToken();
+
+      const borrwSteps = await AsyncStorage.getItem('borrwsteps');
+      const steps = JSON.parse(borrwSteps);
+
+      console.log('steps here' + steps);
+      try {
+        const applicationIDCallRes = await axios.get(
+          'http://67.207.86.39:8000/api/v1/application/one',
+          {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          },
+        );
+        console.log(applicationIDCallRes.data.data.id);
+        console.log(applicationIDCallRes.data.data);
+        const applicationId = applicationIDCallRes.data.data.id;
+        const status = applicationIDCallRes.data.data.status;
+        const statement = applicationIDCallRes.data.data.statement;
+        if (status !== 4) {
+          setExistingApplication(applicationId);
+          console.log('here', existingApplication);
+        }
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    };
+    // console.log(error.response.data)
     getApplicationData();
   }, []);
-
-  const getApplicationData = async () => {
-    const getToken = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const token = JSON.parse(userData).token;
-      return token;
-    };
-    const token = await getToken();
-
-    const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-    const steps = JSON.parse(borrwSteps);
-
-    console.log('steps here' + steps);
-    try {
-      const applicationIDCallRes = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      console.log(applicationIDCallRes.data.data.id);
-      console.log(applicationIDCallRes.data.data);
-      const applicationId = applicationIDCallRes.data.data.id;
-      const status = applicationIDCallRes.data.data.status;
-      const statement = applicationIDCallRes.data.data.statement;
-      if (status !== 4) {
-        setExistingApplication(applicationId);
-        console.log('here', applicationId);
-      }
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const token = JSON.parse(userData).token;
+
     return token;
   };
 
-  const getUser = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const user = JSON.parse(userData).user;
-    return user;
-  };
-
   const handleRentalLoanClick = async () => {
-    const user = await getUser();
+    await AsyncStorage.removeItem('rentalSteps');
 
-    // await AsyncStorage.removeItem(`rentalSteps-${user.id}`);
+    // const token = await getToken();
 
-    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
+    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
     const steps = JSON.parse(rentalSteps);
 
     if (steps != null) {
@@ -84,22 +89,46 @@ const Borrow = ({navigation}) => {
       } else if (steps.referee_detail == '') {
         navigation.navigate('PostPaymentForm3');
       } else if (steps.offer_letter == '') {
+        // navigation.navigate('OfferLetter');
+        // const applicationIDCallRes = await axios.get(
+        //   'http://67.207.86.39:8000/api/v1/application/one',
+        //   {
+        //     headers: {'Content-Type': 'application/json', Authorization: token},
+        //   },
+        // );
+        // if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
+        //   navigation.navigate('AcceptanceLetterKwaba');
+        // } else {
+        //   navigation.navigate('AcceptanceLetterAddosser');
+        // }
+        // navigation.navigate('AddosserLetter');
         navigation.navigate('PTMFB');
       } else if (steps.address_verification == '') {
         navigation.navigate('AddressVerificationPayment');
       } else if (steps.debitmandate == '') {
         navigation.navigate('OkraDebitMandate');
-      } else if (steps.awaiting_disbursement == '') {
+      } else if (steps.awaiting_disbursement) {
         navigation.navigate('AwaitingDisbursement');
-      } else if (steps.dashboard == '') {
-        navigation.navigate('RentNowPayLaterDashboard');
       }
     } else {
       navigation.navigate('RentNowPayLaterOnboarding');
     }
 
     // //QUICK NAVIGATIONS
+    // navigation.navigate('OkraDebitMandate');
+    // navigation.navigate('OfferApprovalBreakDown');
+    // navigation.navigate('AwaitingDisbursement');
+    // navigation.navigate('AcceptanceLetterAddosser');
+    // navigation.navigate('AddosserLetter');
+    // navigation.navigate('PostPaymentForm3');
+    // navigation.navigate('OfferLetter');
+    // navigation.navigate('VerifyingDocuments');
+    // navigation.navigate('RentalLoanFormBankStatementUpload');
     // navigation.navigate('NewAllDocuments');
+    // navigation.navigate('AddressVerificationPayment');
+    // navigation.navigate('RentalLoanFormCongratulation');
+    // navigation.navigate('RentalLoanForm1');
+    // navigation.navigate('RentNowPayLaterDashboard');
   };
 
   return (
@@ -142,9 +171,12 @@ const Borrow = ({navigation}) => {
         <View style={designs.contentView}>
           <View style={designs.textView}>
             <Text style={[FONTS.largeTitleFontStyling, designs.bigText]}>
+              {/* We can help you with some extra money */}
               Let's help you pay your rent conveniently.
             </Text>
             <Text style={[FONTS.body2FontStyling, designs.smallHeaderText]}>
+              {/* Whether you need extra money to balance your rent or a quick loan
+              to sort out personal stuff, we gat you! */}
               Whether you are struggling to pay your rent, or looking to save
               towards your next rent, we've got you covered.
             </Text>
@@ -154,6 +186,10 @@ const Borrow = ({navigation}) => {
         <View
           style={{
             width: '100%',
+            // height: 54,
+            // flex: 1,
+            // flexDirection: 'column',
+            // justifyContent: 'center',
             padding: 20,
           }}>
           <TouchableOpacity
@@ -185,6 +221,7 @@ const Borrow = ({navigation}) => {
             </View>
           </TouchableOpacity>
         </View>
+        {/* </ImageBackground> */}
       </ScrollView>
     </View>
   );

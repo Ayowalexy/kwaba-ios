@@ -59,11 +59,6 @@ const RentalLoanForm2 = ({navigation}) => {
       // employer_address: `${companyAddressNumberAndStreet} ${companyAddressCity} ${companyAddressState} ${companyAddressCountry} `,
       employer_address: `${values.company_street_name} ${values.company_city_name} ${values.company_state_name} ${values.company_country_name}`,
     };
-    // if (isError()) {
-    //   return Alert.alert('Missing inputs', 'Please Fill out all fields', [
-    //     {text: 'Close'},
-    //   ]);
-    // }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
     await AsyncStorage.setItem(
@@ -73,14 +68,7 @@ const RentalLoanForm2 = ({navigation}) => {
 
     console.log(loanFormData);
 
-    // console.log(data);
-
     navigation.navigate('RentalLoanForm3');
-    // try {
-    //   dispatch(soloSaving(data));
-
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
   };
 
   const CustomInput = (props) => {

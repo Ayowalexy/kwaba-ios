@@ -66,6 +66,12 @@ const RentalLoanForm3 = ({navigation}) => {
     return token;
   };
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const dummyData = {
     accomodationstatus: '',
     amount: '',
@@ -147,6 +153,8 @@ const RentalLoanForm3 = ({navigation}) => {
 
     console.log(data);
 
+    const user = await getUser();
+
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
 
     await AsyncStorage.setItem(
@@ -156,13 +164,12 @@ const RentalLoanForm3 = ({navigation}) => {
 
     setVisible(true);
 
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
     const steps = JSON.parse(rentalSteps);
 
     let stepsData = {
       application_form: 'done',
       congratulation: '',
-      bank_statement_upload: '',
       all_documents: '',
       verifying_documents: '',
       offer_breakdown: '',
@@ -173,11 +180,13 @@ const RentalLoanForm3 = ({navigation}) => {
       address_verification: '',
       debitmandate: '',
       awaiting_disbursement: '',
+      dashboard: '',
     };
 
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
-
-    console.log('STEPS: ', steps);
+    await AsyncStorage.setItem(
+      `rentalSteps-${user.id}`,
+      JSON.stringify(stepsData),
+    );
   };
 
   const handlePostSubmit = async () => {

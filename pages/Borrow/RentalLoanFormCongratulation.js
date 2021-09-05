@@ -36,14 +36,21 @@ export default function RentalLoanFormCongratulation({navigation}) {
     return token;
   };
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const handleNavigation = async () => {
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const user = await getUser();
+
+    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
     const steps = JSON.parse(rentalSteps);
 
     let stepsData = {
       application_form: 'done',
       congratulation: 'done',
-      // bank_statement_upload: '',
       all_documents: '',
       verifying_documents: '',
       offer_breakdown: '',
@@ -54,13 +61,14 @@ export default function RentalLoanFormCongratulation({navigation}) {
       address_verification: '',
       debitmandate: '',
       awaiting_disbursement: '',
+      dashboard: '',
     };
 
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+    await AsyncStorage.setItem(
+      `rentalSteps-${user.id}`,
+      JSON.stringify(stepsData),
+    );
 
-    // console.log('STEPS: ', steps);
-
-    // navigation.navigate('RentalLoanFormBankStatementUpload');
     navigation.navigate('NewAllDocuments');
   };
 

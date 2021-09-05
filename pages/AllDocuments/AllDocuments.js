@@ -32,9 +32,14 @@ import {useDispatch, useSelector} from 'react-redux';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
-
   const token = JSON.parse(userData).token;
   return token;
+};
+
+const getUser = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const user = JSON.parse(userData).user;
+  return user;
 };
 
 const getDocuments = async () => {
@@ -213,13 +218,14 @@ export default function AllDocuments({navigation}) {
   };
 
   const handleProceed = async () => {
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const user = await getUser();
+
+    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
     const steps = JSON.parse(rentalSteps);
 
     let stepsData = {
       application_form: 'done',
       congratulation: 'done',
-      bank_statement_upload: 'done',
       all_documents: 'done',
       verifying_documents: '',
       offer_breakdown: '',
@@ -230,11 +236,14 @@ export default function AllDocuments({navigation}) {
       address_verification: '',
       debitmandate: '',
       awaiting_disbursement: '',
+      dashboard: '',
     };
 
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+    await AsyncStorage.setItem(
+      `rentalSteps-${user.id}`,
+      JSON.stringify(stepsData),
+    );
 
-    // console.log('STEPS: ', steps);
     navigation.navigate('VerifyingDocuments');
   };
 
@@ -253,7 +262,31 @@ export default function AllDocuments({navigation}) {
         />
         <Text style={[styles.heading]}>All Documents</Text>
 
-        <Docs />
+        {count == 0 ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              source={images.uploadDocument}
+              style={{
+                width: 100,
+                height: 100,
+              }}
+              resizeMode="contain"
+            />
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: COLORS.dark,
+                opacity: 0.5,
+                marginTop: 10,
+              }}>
+              UPLOAD YOUR DOCUMENTS
+            </Text>
+          </View>
+        ) : (
+          <Docs />
+        )}
 
         {count >= 5 ? (
           <View style={{paddingHorizontal: 20}}>
