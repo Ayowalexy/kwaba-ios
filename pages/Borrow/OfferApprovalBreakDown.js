@@ -45,6 +45,12 @@ const RentalLoanOfferTest = ({navigation}) => {
 
   const ref = useRef();
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   useEffect(() => {
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
@@ -169,6 +175,7 @@ const RentalLoanOfferTest = ({navigation}) => {
   const accept_offer = async () => {
     setSpinner(true);
     const token = await getToken();
+    const user = await getUser();
     try {
       const applicationIDCallRes = await axios.get(
         'http://67.207.86.39:8000/api/v1/application/one',
@@ -187,12 +194,13 @@ const RentalLoanOfferTest = ({navigation}) => {
           setSpinner(false);
           console.log('RES ACCEPT OFFER: ', res.data.data);
 
-          const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+          const rentalSteps = await AsyncStorage.getItem(
+            `rentalSteps-${user.id}`,
+          );
           const steps = JSON.parse(rentalSteps);
           let stepsData = {
             application_form: 'done',
             congratulation: 'done',
-            bank_statement_upload: 'done',
             all_documents: 'done',
             verifying_documents: 'done',
             offer_breakdown: 'done',
@@ -203,8 +211,12 @@ const RentalLoanOfferTest = ({navigation}) => {
             address_verification: '',
             debitmandate: '',
             awaiting_disbursement: '',
+            dashboard: '',
           };
-          await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+          await AsyncStorage.setItem(
+            `rentalSteps-${user.id}`,
+            JSON.stringify(stepsData),
+          );
           console.log('STEPS: ', steps);
 
           navigation.navigate('PostPaymentForm1');

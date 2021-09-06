@@ -157,8 +157,8 @@ export default function AddBankAccountModal(props) {
   const createBankAccount = async (data) => {
     let d = {
       ...data,
-      created_at: '',
-      updated_at: '',
+      // created_at: '',
+      // updated_at: '',
     };
 
     console.log('Create Bank: ', d);
@@ -169,15 +169,15 @@ export default function AddBankAccountModal(props) {
       const response = await axios.post(url, JSON.stringify(d), {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      console.log('Na the res: ', res);
+      // console.log('Na the res: ', response);
       if (response.status == 200) {
         onRequestClose();
         setUserBankAccounts([...userBankAccounts, response.data.userBanks]);
       }
     } catch (error) {
-      console.log('Another Error:', error.response);
+      console.log('Another Error:', error);
       if (error.response.status == 400) {
-        console.log('Error Bank Already Exists...');
+        console.log('Error Account Already Exists...');
       }
     }
   };

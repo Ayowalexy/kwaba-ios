@@ -41,25 +41,20 @@ export default function SoloSavingDashBoard(props) {
   const [spinner, setSpinner] = useState(false);
 
   useEffect(() => {
-    // dispatch(getTotalSoloSavings());
+    console.log('THIS IS THE ID FROM SOLO SAVINGS DASHBOARD: ', route.params);
     dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
-    console.log('The ID: ', route.params.id);
-    // (async () => {
     getOne();
-    // })();
-  }, [getMaxLoanCap1]);
+  }, []);
 
   const getOne = async () => {
     try {
       setSpinner(true);
       const res = await getOneUserSavings(route.params.id || 334);
-      console.log('The res: ', res);
       if (res.status == 200) {
         setSpinner(false);
-        // console.log('The saving response: ', res.data.data[0]);
 
         const data = res.data.data[0];
         const amount_saved = Number(data.amount_save);
@@ -74,7 +69,6 @@ export default function SoloSavingDashBoard(props) {
           ).toFixed(0),
         );
         setTotalSaving(amount_saved || 0);
-        console.log('Amount Saved: ', amount_saved);
       }
     } catch (error) {
       console.log('Error: ', error);
@@ -398,7 +392,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        <TransactionsTab ID={route.params.id} />
+        {/* <TransactionsTab ID={route.params.id} /> */}
       </ScrollView>
 
       <QuickSaveModal

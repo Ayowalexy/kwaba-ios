@@ -46,6 +46,12 @@ const PostPaymentForm1 = ({navigation}) => {
     return token;
   };
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const handleSubmit = async (values) => {
     // const data = {
     //   refereeFirstName: values.refereeFirstName,
@@ -67,6 +73,8 @@ const PostPaymentForm1 = ({navigation}) => {
       'http://67.207.86.39:8000/api/v1/application/update/referee';
 
     const token = await getToken();
+
+    const user = await getUser();
 
     const refereedata = {
       referee_address:
@@ -131,7 +139,7 @@ const PostPaymentForm1 = ({navigation}) => {
       // };
       // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
-      const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+      const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
       const steps = JSON.parse(rentalSteps);
       let stepsData = {
         application_form: 'done',
@@ -148,7 +156,10 @@ const PostPaymentForm1 = ({navigation}) => {
         debitmandate: '',
         awaiting_disbursement: '',
       };
-      await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+      await AsyncStorage.setItem(
+        `rentalSteps-${user.id}`,
+        JSON.stringify(stepsData),
+      );
       console.log('STEPS: ', steps);
 
       const applicationIDCallRes = await axios.get(

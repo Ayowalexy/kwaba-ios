@@ -148,6 +148,26 @@ export default function NewHome({navigation}) {
     } else {
       setIsEmailVerified(true);
     }
+  }, []);
+
+  useEffect(() => {
+    // console.log('Login: ', login);
+    if (login) setName(login.username);
+    // complete profile
+    if (
+      login.user.profile_complete == 0 ||
+      login.user.profile_complete == null
+    ) {
+      setIsProfileComplete(false);
+    } else {
+      setIsProfileComplete(true);
+    }
+    // email verified
+    if (login.user.email_verified == 0 || login.user.email_verified == null) {
+      setIsEmailVerified(false);
+    } else {
+      setIsEmailVerified(true);
+    }
   }, [login]);
 
   useEffect(() => {

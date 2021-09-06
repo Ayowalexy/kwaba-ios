@@ -93,6 +93,8 @@ const Borrow = ({navigation}) => {
         navigation.navigate('AwaitingDisbursement');
       } else if (steps.dashboard == '') {
         navigation.navigate('RentNowPayLaterDashboard');
+      } else {
+        navigation.navigate('RentNowPayLaterDashboard');
       }
     } else {
       navigation.navigate('RentNowPayLaterOnboarding');

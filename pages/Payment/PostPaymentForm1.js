@@ -38,6 +38,12 @@ const PostPaymentForm1 = ({navigation}) => {
     false,
   );
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const handleSubmit = async (values) => {
     const data = {
       propertyStreet: values.propertyStreet,
@@ -65,13 +71,13 @@ const PostPaymentForm1 = ({navigation}) => {
     //   awaitingdisbursment: '',
     // };
     // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
+    const user = await getUser();
 
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
     const steps = JSON.parse(rentalSteps);
     let stepsData = {
       application_form: 'done',
       congratulation: 'done',
-      bank_statement_upload: 'done',
       all_documents: 'done',
       verifying_documents: 'done',
       offer_breakdown: 'done',
@@ -82,8 +88,12 @@ const PostPaymentForm1 = ({navigation}) => {
       address_verification: '',
       debitmandate: '',
       awaiting_disbursement: '',
+      dashboard: '',
     };
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+    await AsyncStorage.setItem(
+      `rentalSteps-${user.id}`,
+      JSON.stringify(stepsData),
+    );
     console.log('STEPS: ', steps);
 
     navigation.navigate('PostPaymentForm2');

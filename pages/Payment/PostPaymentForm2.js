@@ -34,6 +34,12 @@ const PostPaymentForm1 = ({navigation}) => {
   const [showSelectBankModal, setShowSelectBankModal] = useState(false);
   const [bankData, setBankData] = useState([]);
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -64,6 +70,8 @@ const PostPaymentForm1 = ({navigation}) => {
       landLordBank: values.landLordBank,
     };
 
+    const user = await getUser();
+
     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
     await AsyncStorage.setItem(
       'postPaymentForm',
@@ -82,7 +90,7 @@ const PostPaymentForm1 = ({navigation}) => {
     // };
     // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
 
-    const rentalSteps = await AsyncStorage.getItem('rentalSteps');
+    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
     const steps = JSON.parse(rentalSteps);
     let stepsData = {
       application_form: 'done',
@@ -99,7 +107,10 @@ const PostPaymentForm1 = ({navigation}) => {
       debitmandate: '',
       awaiting_disbursement: '',
     };
-    await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+    await AsyncStorage.setItem(
+      `rentalSteps-${user.id}`,
+      JSON.stringify(stepsData),
+    );
     console.log('STEPS: ', steps);
 
     navigation.navigate('PostPaymentForm3');

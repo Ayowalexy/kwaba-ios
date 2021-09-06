@@ -20,7 +20,10 @@ import {
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {useSelector, useDispatch} from 'react-redux';
 import {getCurrentUser} from '../../../redux/actions/userActions';
-import {getTotalSoloSavings} from '../../../redux/actions/savingsActions';
+import {
+  getTotalSoloSavings,
+  getOneBuddySavings,
+} from '../../../redux/actions/savingsActions';
 
 import QuickSaveModal from '../../../components/QuickSaveModal';
 import moment from 'moment';
@@ -34,12 +37,14 @@ import Spinner from 'react-native-loading-spinner-overlay';
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
-  const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  const soloSaving = useSelector((state) => state.soloSavingReducer);
-  const currentUser = useSelector((state) => state.getUserReducer);
+  const getOneSavings = useSelector((state) => state.getOneBuddySavingsReducer);
+
+  // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+  // const soloSaving = useSelector((state) => state.soloSavingReducer);
+  // const currentUser = useSelector((state) => state.getUserReducer);
   // useSelector((state) => console.log('State:', state));
-  const [activeTab, setActiveTab] = useState(0);
-  const [today, setToday] = useState('');
+  // const [activeTab, setActiveTab] = useState(0);
+  // const [today, setToday] = useState('');
   // const [openQuickSave, setOpenQuickSave] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [totalSaving, setTotalSaving] = useState(0);
@@ -53,47 +58,30 @@ export default function SoloSavingDashBoard(props) {
   const [yourSavings, setYourSavings] = useState(0);
   const [buddies, setBuddies] = useState([]);
 
-  const [dashboardID, setDashboardID] = useState('');
-
   useEffect(() => {
     console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route.params);
-    // setDashboardID(route.params.id);
+    // pass the id
+    dispatch(getOneBuddySavings(route.params.id));
   }, []);
 
   useEffect(() => {
-    (async () => {
-      await getOne();
-    })();
-  }, []);
+    setDashboardData();
+  }, [getOneSavings]);
 
-  const getOne = async () => {
-    setSpinner(true);
-    try {
-      const res = await getOneUserBuddySavings(route.params.id);
-      if (res.status == 201) {
-        setSpinner(false);
+  const setDashboardData = () => {
+    if (getOneSavings && getOneSavings?.data?.length) {
+      console.log('The Result From Dashboard: ', getOneSavings?.data);
+      const data = getOneSavings?.data?.buddy_saving;
 
-        const data = res.data.buddy_saving;
-
-        setSavingsTarget(data.target_amount);
-        setSavingTitle(data.name);
-        setTotalSaving(data.amount_save);
-        setYourSavings(data.amount);
-        setPercentAchieved(
-          (
-            (Number(data.amount_save) / Number(data.target_amount)) *
-            100
-          ).toFixed(0),
-        );
-        setBuddies(res.data.buddies);
-
-        setTransactions(res.data.transactions);
-
-        console.log('Res: ', res.data);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
+      setSavingsTarget(data.target_amount);
+      setSavingTitle(data.name);
+      setTotalSaving(data.amount_save);
+      setYourSavings(data.amount);
+      setPercentAchieved(
+        Math.round((data.amount_save / data.target_amount) * 100),
+      );
+      setBuddies(getOneSavings.data.buddies);
+      setTransactions(getOneSavings.data.transactions);
     }
   };
 
@@ -287,7 +275,7 @@ export default function SoloSavingDashBoard(props) {
               width={10}
               rotation={0}
               style={styles.circularProgress}
-              fill={Number(percentAchieved) || 0}
+              fill={percentAchieved || 0}
               tintColor={COLORS.yellow}
               backgroundColor="#2A286A90">
               {(fill) => (

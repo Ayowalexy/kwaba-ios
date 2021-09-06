@@ -93,3 +93,26 @@ export const getTotalBuddySavings = () => {
     }
   };
 };
+
+export const setOneBuddySavings = (data) => {
+  return {
+    type: types.GET_ONE_BUDDY_SAVINGS,
+    payload: data,
+  };
+};
+
+export const getOneBuddySavings = (id) => {
+  return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      dispatch(setOneBuddySavings(response.data));
+      return response.data;
+    } catch (error) {
+      return error;
+    }
+  };
+};

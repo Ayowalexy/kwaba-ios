@@ -33,9 +33,17 @@ const VerifyingDocuments = ({navigation, route}) => {
     return token;
   };
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const getApplicationData = async () => {
     const token = await getToken();
     setSpinner(true);
+
+    const user = await getUser();
 
     try {
       const applicationIDCallRes = await axios.get(
@@ -57,7 +65,6 @@ const VerifyingDocuments = ({navigation, route}) => {
         let stepsData = {
           application_form: 'done',
           congratulation: 'done',
-          bank_statement_upload: 'done',
           all_documents: 'done',
           verifying_documents: 'done',
           offer_breakdown: '',
@@ -68,9 +75,13 @@ const VerifyingDocuments = ({navigation, route}) => {
           address_verification: '',
           debitmandate: '',
           awaiting_disbursement: '',
+          dashboard: '',
         };
 
-        await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+        await AsyncStorage.setItem(
+          `rentalSteps-${user.id}`,
+          JSON.stringify(stepsData),
+        );
         navigation.navigate('OfferApprovalBreakDown');
       } else {
         setSpinner(false);

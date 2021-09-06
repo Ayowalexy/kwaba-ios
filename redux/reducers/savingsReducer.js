@@ -62,3 +62,15 @@ export const getBuddySavingsReducer = (state = [], action) => {
       return state;
   }
 };
+
+export const getOneBuddySavingsReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_ONE_BUDDY_SAVINGS:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
