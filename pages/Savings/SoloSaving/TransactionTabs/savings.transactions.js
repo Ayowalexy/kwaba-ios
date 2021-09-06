@@ -1,58 +1,14 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
-// import {ScrollView} from 'react-native-gesture-handler';
-import {useSelector} from 'react-redux';
-import {getSavingsHistory, getUserSavings} from '../../../../services/network';
+import {useSelector, useDispatch} from 'react-redux';
 import {COLORS} from '../../../../util';
 import {formatNumber} from '../../../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function SavingsTransactions(props) {
-  const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  const [savingTitle, setSavingTitle] = useState('');
-  const [transactions, setTransactions] = useState(null);
-
   useEffect(() => {
-    console.log('solo: ', getSoloSaving);
-    console.log('props : ', props);
-    setSavingTitle(props.savingTitle);
+    console.log('Props: ', props.savingsTransactions);
   }, []);
-
-  useEffect(() => {
-    getTransactions();
-  }, []);
-
-  const getTransactions = async () => {
-    try {
-      const savings_id = props.ID;
-      const history = await getSavingsHistory(savings_id);
-
-      if (history.status == 200) {
-        setTransactions(history.data.data);
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-    }
-
-    // try {
-    //   const response = await getUserSavings();
-
-    //   if (response.status == 200) {
-    //     // const savings_id = response.data.data[0].id;
-    //     const savings_id = props.ID
-
-    //     const history = await getSavingsHistory(savings_id);
-
-    //     if (history.status == 200) {
-    //       // console.log('ID: ', savings_id);
-    //       // console.log('History--: ', history.data.data);
-    //       setTransactions(history.data.data);
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log('Error: ', error);
-    // }
-  };
 
   return (
     // <ScrollView
@@ -74,13 +30,9 @@ export default function SavingsTransactions(props) {
         scrollEnabled={true}
         showsVerticalScrollIndicator={false}
         style={{
-          // borderColor: 'blue',
-          // borderWidth: 2,
-          // flex: 1,
-          // height: 500,
           zIndex: 900,
         }}>
-        {transactions?.map((el, index) => {
+        {props?.savingsTransactions?.map((el, index) => {
           return (
             <TouchableOpacity
               key={index}
@@ -88,8 +40,9 @@ export default function SavingsTransactions(props) {
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingVertical: 8,
-                // marginTop: 10,
-                // backgroundColor: 'red',
+                paddingHorizontal: 20,
+                borderBottomWidth: 1,
+                borderBottomColor: '#BFBFBF20',
               }}>
               <Icon
                 name={
@@ -116,7 +69,7 @@ export default function SavingsTransactions(props) {
                       fontSize: 12,
                       color: COLORS.dark,
                     }}>
-                    {savingTitle}
+                    My rent
                   </Text>
                 </View>
 

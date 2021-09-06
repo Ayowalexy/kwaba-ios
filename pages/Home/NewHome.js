@@ -37,6 +37,9 @@ import {me} from '../../services/network';
 import {setLoginState} from '../../redux/actions/userActions';
 import AddFundsToSavingsModal from '../../components/AddFundsToSavingsModal';
 import EmailVerificationModal from '../../components/EmailVerificationModal';
+import SavingsOptionModal from '../../components/savingsOptionModal';
+import PaymentTypeModal from '../../components/paymentTypeModal';
+import AmountModal from '../../components/amountModal';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -62,6 +65,10 @@ export default function NewHome({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
 
   const [greeting, setGreeting] = useState('');
+
+  const [showPaymentType, setShowPaymentType] = useState(false);
+
+  const [showAmountModal, setShowAmountModal] = useState(false);
 
   const layout = useWindowDimensions();
 
@@ -755,7 +762,7 @@ export default function NewHome({navigation}) {
         />
       )}
 
-      <AddFundsToSavingsModal
+      {/* <AddFundsToSavingsModal
         onRequestClose={() =>
           setAddFundsToSavingsModal(!addFundsToSavingsModal)
         }
@@ -767,7 +774,7 @@ export default function NewHome({navigation}) {
 
           // console.log(id)
         }}
-      />
+      /> */}
 
       <EmailVerificationModal
         onRequestClose={() =>
@@ -781,6 +788,27 @@ export default function NewHome({navigation}) {
         onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
         visible={completeProfileModal}
         navigation={navigation}
+      />
+
+      <SavingsOptionModal
+        onRequestClose={() =>
+          setAddFundsToSavingsModal(!addFundsToSavingsModal)
+        }
+        visible={addFundsToSavingsModal}
+        setShowPaymentType={(bol) => setShowPaymentType(bol)}
+      />
+
+      <PaymentTypeModal
+        onRequestClose={() => setShowPaymentType(!showPaymentType)}
+        visible={showPaymentType}
+        setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
+        setShowAmountModal={(bol) => setShowAmountModal(bol)}
+      />
+
+      <AmountModal
+        onRequestClose={() => setShowAmountModal(!showAmountModal)}
+        visible={showAmountModal}
+        // setShowPaymentType={(bol) => setShowPaymentType(bol)}
       />
     </View>
   );

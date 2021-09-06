@@ -33,6 +33,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {getOneUserBuddySavings} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
+import TransactionsTab from '../SoloSaving/TransactionTabs';
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
@@ -69,7 +70,7 @@ export default function SoloSavingDashBoard(props) {
   }, [getOneSavings]);
 
   const setDashboardData = () => {
-    if (getOneSavings && getOneSavings?.data?.length) {
+    if (getOneSavings?.data) {
       console.log('The Result From Dashboard: ', getOneSavings?.data);
       const data = getOneSavings?.data?.buddy_saving;
 
@@ -77,9 +78,7 @@ export default function SoloSavingDashBoard(props) {
       setSavingTitle(data.name);
       setTotalSaving(data.amount_save);
       setYourSavings(data.amount);
-      setPercentAchieved(
-        Math.round((data.amount_save / data.target_amount) * 100),
-      );
+      setPercentAchieved((data.amount_save / data.target_amount) * 100);
       setBuddies(getOneSavings.data.buddies);
       setTransactions(getOneSavings.data.transactions);
     }
@@ -310,7 +309,7 @@ export default function SoloSavingDashBoard(props) {
                       // lineHeight: 27,
                       textAlign: 'center',
                     }}>
-                    {fill || 0}%
+                    {Math.round(fill) || 0}%
                   </Text>
                   <Text
                     style={{
@@ -467,98 +466,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        {/*  */}
-
-        <View
-          style={{
-            backgroundColor: '#fff',
-            flex: 1,
-            minHeight: 200,
-            marginTop: 10,
-            borderTopRightRadius: 20,
-            borderTopLeftRadius: 20,
-            elevation: 10,
-          }}>
-          <View style={{padding: 20}}>
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: 16,
-                color: COLORS.primary,
-              }}>
-              My Transactions
-            </Text>
-          </View>
-
-          <View
-            style={{
-              width: '100%',
-              height: 1,
-              backgroundColor: '#F7F8FD',
-            }}
-          />
-
-          <View style={{borderWidth: 0}}>
-            {transactions?.length > 0 &&
-              transactions.map((item, index) => {
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      paddingHorizontal: 20,
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      borderBottomWidth: 1,
-                      borderBottomColor: '#BFBFBF20',
-                    }}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <View
-                        style={{
-                          width: 8,
-                          height: 8,
-                          backgroundColor:
-                            item.status == 1 ? COLORS.secondary : COLORS.red,
-                          borderRadius: 8,
-                          marginRight: 10,
-                        }}
-                      />
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
-                          }}>
-                          {savingTitle}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            fontWeight: 'normal',
-                            color: COLORS.dark,
-                            marginLeft: 2,
-                          }}>
-                          ₦{formatNumber(Number(item.amount)) || '0.00'}
-                        </Text>
-                      </View>
-                    </View>
-
-                    <View>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                          color: COLORS.dark,
-                        }}>
-                        {item.created_at}
-                      </Text>
-                    </View>
-                  </View>
-                );
-              })}
-          </View>
-        </View>
+        <TransactionsTab transactions={transactions} />
       </ScrollView>
 
       <QuickSaveModal

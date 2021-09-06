@@ -12,35 +12,6 @@ export default function AllTransactions(props) {
   const [savingTitle, setSavingTitle] = useState('');
   const [transactions, setTransactions] = useState(null);
 
-  useEffect(() => {
-    // console.log('solo: ', getSoloSaving);
-    setSavingTitle(props.savingTitle);
-  }, []);
-
-  useEffect(() => {
-    getTransactions();
-  }, []);
-
-  const getTransactions = async () => {
-    try {
-      const response = await getUserSavings();
-
-      if (response.status == 200) {
-        const savings_id = response.data.data[0].id;
-
-        const history = await getSavingsHistory(savings_id);
-
-        if (history.status == 200) {
-          // console.log('ID: ', savings_id);
-          // console.log('History--: ', history.data.data);
-          setTransactions(history.data.data);
-        }
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-    }
-  };
-
   return (
     // <ScrollView
     //   scrollEnabled={true}
@@ -67,7 +38,7 @@ export default function AllTransactions(props) {
           // height: 500,
           zIndex: 900,
         }}>
-        {transactions?.map((el, index) => {
+        {/* {transactions?.map((el, index) => {
           return (
             <TouchableOpacity
               key={index}
@@ -132,7 +103,7 @@ export default function AllTransactions(props) {
               </View>
             </TouchableOpacity>
           );
-        })}
+        })} */}
       </ScrollView>
     </View>
     // </ScrollView>

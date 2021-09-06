@@ -6,6 +6,8 @@ import {
   getMaxLoanCapReducer,
   getBuddySavingsReducer,
   getOneBuddySavingsReducer,
+  getOneSoloSavingsReducer,
+  getOneSoloSavingsTransactionReducer,
 } from './savingsReducer';
 import fileUploadReducer from './documentUploadReducers';
 import {applyForEmergencyLoanReducer} from './emergencyLoanReducer';
@@ -20,4 +22,6 @@ export const rootReducer = combineReducers({
   getMaxLoanCapReducer: getMaxLoanCapReducer,
   getBuddySavingsReducer: getBuddySavingsReducer,
   getOneBuddySavingsReducer: getOneBuddySavingsReducer,
+  getOneSoloSavingsReducer: getOneSoloSavingsReducer,
+  getOneSoloSavingsTransactionReducer: getOneSoloSavingsTransactionReducer,
 });

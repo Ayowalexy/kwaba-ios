@@ -74,3 +74,27 @@ export const getOneBuddySavingsReducer = (state = [], action) => {
       return state;
   }
 };
+
+export const getOneSoloSavingsReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_ONE_SOLO_SAVINGS:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
+export const getOneSoloSavingsTransactionReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_ONE_SOLO_SAVINGS_TRANSACTION:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};

@@ -16,14 +16,11 @@ const renderTabBar = (props) => (
     style={{
       backgroundColor: COLORS.white,
       elevation: 0,
-      //   width: '100%',
-      //   height: 40,
       marginLeft: 20,
       marginRight: 20,
       borderRadius: 10,
       overflow: 'hidden',
       backgroundColor: '#F7F8FD',
-      //   borderWidth: 1,
     }}
     tabStyle={{height: '100%', flex: 1}}
     renderLabel={({route, focused, color}) => (
@@ -35,23 +32,22 @@ const renderTabBar = (props) => (
         {route.title}
       </Text>
     )}
-    // labelStyle={{borderWidth: 1, backgroundColor: 'red'}}
   />
 );
 
 export default function TransactionsTab(props) {
   const layout = useWindowDimensions();
 
+  useEffect(() => {
+    console.log('Hist: ', props);
+  }, []);
+
   const renderScene = SceneMap({
-    first: () => (
-      <AllTransactions ID={props.ID} savingTitle="My rent savings" />
-    ),
+    first: () => <AllTransactions />,
     second: () => (
-      <SavingsTransactions ID={props.ID} savingTitle="My rent savings" />
+      <SavingsTransactions savingsTransactions={props.transactions} />
     ),
-    third: () => (
-      <WithdrawalTransactions ID={props.ID} savingTitle="My rent savings" />
-    ),
+    third: () => <WithdrawalTransactions />,
   });
 
   const [index, setIndex] = useState(0);
@@ -60,11 +56,6 @@ export default function TransactionsTab(props) {
     {key: 'second', title: 'Savings'},
     {key: 'third', title: 'Withdrawal'},
   ]);
-
-  useEffect(() => {
-    console.log({Index: index, Routes: routes});
-    console.log('ID: ', props.ID);
-  }, [index]);
 
   return (
     <View
@@ -78,7 +69,6 @@ export default function TransactionsTab(props) {
         elevation: 10,
         maxHeight: '100%',
         height: '100%',
-        // backgroundColor: 'blue',
       }}>
       <View style={{flex: 1, height: '100%'}}>
         <Text

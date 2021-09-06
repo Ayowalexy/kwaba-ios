@@ -17,8 +17,6 @@ import RadioButtonRN from 'radio-buttons-react-native';
 
 import {PayWithFlutterwave} from 'flutterwave-react-native';
 
-const widthtouse = Dimensions.get('window').width;
-
 export default function ConfirmModal(props) {
   const {
     onRequestClose,
@@ -26,9 +24,10 @@ export default function ConfirmModal(props) {
     selectedNetwork,
     selectedAmount,
     selectedPhoneNumber,
+    onClickBuyAirtime,
   } = props;
 
-  console.log('This, props:', props);
+  // console.log('This, props:', props);
   return (
     <View>
       <Modal
@@ -94,9 +93,7 @@ export default function ConfirmModal(props) {
             </View>
 
             <TouchableOpacity
-              onPress={() => {
-                console.log('Successfull, Your airtime has been purchased');
-              }}
+              onPress={onClickBuyAirtime}
               // disabled={!isError()}
               style={[
                 styles.btn,

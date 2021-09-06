@@ -17,6 +17,8 @@ import {
 import ChooseNetworkModal from './chooseNetworkModal';
 import ConfirmModal from './ConfirmModal';
 import NumberFormat from '../../components/NumberFormat';
+import {BuyPurchaseAirtime} from '../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 // function numberWithCommas(x) {
 //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -28,12 +30,35 @@ const PurchaseAirtime = ({navigation, route}) => {
   const [amount, setAmount] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setName] = useState(route.params.name);
+  const [spinner, setSpinner] = useState(false);
 
   // let name = route.params.name;
 
-  useEffect(() => {
-    console.log(amount);
-  }, [amount]);
+  // useEffect(() => {
+  //   console.log(amount);
+  // }, [amount]);
+
+  const buyAirtimeHandler = async () => {
+    setSpinner(true);
+    const data = {
+      serviceID: name.toLowerCase(), // e.g mtn, airtel, glo, 9mobile
+      amount: amount, // e.g 100
+      recepient: phoneNumber, // e.g 08011111111
+    };
+
+    // console.log('Buy Airtime: ', data);
+
+    try {
+      const res = await BuyPurchaseAirtime(data);
+      if (res.status == 200) {
+        setSpinner(false);
+        console.log('Buy Res: ', res.data.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error: ', error);
+    }
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -174,13 +199,18 @@ const PurchaseAirtime = ({navigation, route}) => {
         onClick={(value) => setName(value.name)}
       />
 
-      <ConfirmModal
-        visible={confirmModalVisible}
-        onRequestClose={() => setConfirmModalVisible(!confirmModalVisible)}
-        selectedNetwork={name}
-        selectedPhoneNumber={phoneNumber}
-        selectedAmount={formatNumber(amount)}
-      />
+      {confirmModalVisible && (
+        <ConfirmModal
+          visible={confirmModalVisible}
+          onRequestClose={() => setConfirmModalVisible(!confirmModalVisible)}
+          selectedNetwork={name}
+          selectedPhoneNumber={phoneNumber}
+          selectedAmount={formatNumber(amount)}
+          onClickBuyAirtime={buyAirtimeHandler}
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 };

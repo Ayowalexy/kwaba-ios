@@ -94,6 +94,7 @@ export const getTotalBuddySavings = () => {
   };
 };
 
+// ONE BUDDY SAVINGS
 export const setOneBuddySavings = (data) => {
   return {
     type: types.GET_ONE_BUDDY_SAVINGS,
@@ -111,6 +112,70 @@ export const getOneBuddySavings = (id) => {
       });
       dispatch(setOneBuddySavings(response.data));
       return response.data;
+    } catch (error) {
+      return error;
+    }
+  };
+};
+
+// ONE SOLO SAVINGS
+export const setOneSoloSavings = (data) => {
+  return {
+    type: types.GET_ONE_SOLO_SAVINGS,
+    payload: data,
+  };
+};
+
+export const getOneSoloSavings = (id) => {
+  return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + `/api/v1/get_one_savings/${id}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      dispatch(setOneSoloSavings(response.data.data));
+      return response.data.data;
+    } catch (error) {
+      return error;
+    }
+  };
+};
+
+// GET ALL SOLO SAVINGS TRANSACTION
+// export const getAllSoloSavingsTransaction = (id) => {
+//   return async (dispatch) => {
+//     const token = await getToken();
+//     const url = apiUrl + `/api/v1/get_one_savings/${id}`;
+//     try {
+//       const response = await axios.get(url, {
+//         headers: {'Content-Type': 'application/json', Authorization: token},
+//       });
+//       dispatch(setOneSoloSavings(response.data.data));
+//       return response.data.data;
+//     } catch (error) {
+//       return error;
+//     }
+//   };
+// };
+
+// GET ONE SOLO SAVINGS TRANSACTION
+export const setOneSoloSavingsTransaction = (data) => {
+  return {
+    type: types.GET_ONE_SOLO_SAVINGS_TRANSACTION,
+    payload: data,
+  };
+};
+export const getOneSoloSavingsTransaction = (id) => {
+  return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + `/api/v1/get_savings_history/${id}`;
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      dispatch(setOneSoloSavingsTransaction(response.data.data));
+      return response.data.data;
     } catch (error) {
       return error;
     }

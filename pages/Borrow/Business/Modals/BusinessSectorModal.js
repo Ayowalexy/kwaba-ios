@@ -21,6 +21,23 @@ export default function RegistrationModal(props) {
     'Banking',
     'Construction/Real Estate',
     'Consumer Goods',
+    'Education',
+    'Entertainment',
+    'Fashion',
+    'Finance and Insurance',
+    'Healthcare',
+    'Hospitality/Tourism',
+    'ICT (Information and Communications Technology)',
+    'Industrial Goods',
+    'Manufacturing',
+    'Natural Resources',
+    'Oil and Gas',
+    'Real Estate',
+    'Science and Technology',
+    'Services',
+    'Telecommunications',
+    'Transportation',
+    'Utilities',
   ];
 
   return (

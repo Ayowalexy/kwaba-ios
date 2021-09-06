@@ -606,6 +606,20 @@ const getOneUserBuddySavings = async (id) => {
   }
 };
 
+// Buy Airtime
+const BuyPurchaseAirtime = async (data) => {
+  const url = apiUrl + '/api/v1/buy_aitime';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -649,4 +663,5 @@ export {
   sendBuddySavingsInvites,
   deleteBuddySavingsInvite,
   getOneUserBuddySavings,
+  BuyPurchaseAirtime,
 };

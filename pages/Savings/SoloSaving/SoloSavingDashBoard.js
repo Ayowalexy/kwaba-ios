@@ -15,6 +15,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {
   getTotalSoloSavings,
   getMaxLoanCap,
+  getOneSoloSavings,
+  getOneSoloSavingsTransaction,
 } from '../../../redux/actions/savingsActions';
 
 import QuickSaveModal from '../../../components/QuickSaveModal';
@@ -28,8 +30,13 @@ import {getOneUserSavings} from '../../../services/network';
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
-  const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+  // const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
+  const getOneTransaction = useSelector(
+    (state) => state.getOneSoloSavingsTransactionReducer,
+  );
+
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
   const [savingsTarget, setSavingsTarget] = useState(0);
@@ -42,38 +49,30 @@ export default function SoloSavingDashBoard(props) {
 
   useEffect(() => {
     console.log('THIS IS THE ID FROM SOLO SAVINGS DASHBOARD: ', route.params);
-    dispatch(getMaxLoanCap());
+    // dispatch(getMaxLoanCap());
+    dispatch(getOneSoloSavings(route.params.id));
+    dispatch(getOneSoloSavingsTransaction(route.params.id));
   }, []);
 
   useEffect(() => {
-    getOne();
-  }, []);
+    setDashboardData();
+  }, [getOneSavings?.data]);
 
-  const getOne = async () => {
-    try {
-      setSpinner(true);
-      const res = await getOneUserSavings(route.params.id || 334);
-      if (res.status == 200) {
-        setSpinner(false);
+  const setDashboardData = () => {
+    console.log('The Result From Dashboard: ', getOneSavings);
 
-        const data = res.data.data[0];
-        const amount_saved = Number(data.amount_save);
+    const data = getOneSavings.data[0];
+    const amount_saved = Number(data.amount_save);
 
-        setLocked(data.locked);
-        setSavingTitle(data.name);
-        setSavingsTarget(data.target_amount);
-        setPercentAchieved(
-          (
-            (Number(data.amount_save) / Number(data.target_amount)) *
-            100
-          ).toFixed(0),
-        );
-        setTotalSaving(amount_saved || 0);
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-      setSpinner(false);
-    }
+    setLocked(data.locked);
+    setSavingTitle(data.name);
+    setSavingsTarget(data.target_amount);
+    setPercentAchieved(
+      ((Number(data.amount_save) / Number(data.target_amount)) * 100).toFixed(
+        0,
+      ),
+    );
+    setTotalSaving(amount_saved || 0);
   };
 
   return (
@@ -301,7 +300,7 @@ export default function SoloSavingDashBoard(props) {
                       // lineHeight: 27,
                       textAlign: 'center',
                     }}>
-                    {percentAchieved || 0}%
+                    {Math.round(fill) || 0}%
                   </Text>
                   <Text
                     style={{
@@ -392,7 +391,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        {/* <TransactionsTab ID={route.params.id} /> */}
+        <TransactionsTab transactions={getOneTransaction?.data} />
       </ScrollView>
 
       <QuickSaveModal
