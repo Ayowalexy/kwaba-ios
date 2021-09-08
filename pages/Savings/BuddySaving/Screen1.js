@@ -253,7 +253,7 @@ export default function Screen1({navigation}) {
               lineHeight: 13,
               marginTop: 1,
             }}>
-            Save towards your next rent alone
+            Save with family and friends for your next rent
           </Text>
         </View>
 

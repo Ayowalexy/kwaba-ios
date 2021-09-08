@@ -1,43 +1,42 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   Image,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AirtimeHistory from '../../components/AirtimeHistory';
+import {getBillsCategory} from '../../services/network';
 import {COLORS, FONTS, images, icons} from '../../util/index';
 
-const screenheight = Dimensions.get('window').height;
-const screenwidth = Dimensions.get('window').width;
-const headerHeight = screenheight / 4;
-const width = Dimensions.get('window').width;
 const AirtimeHome = ({navigation}) => {
-  const airtimeData = [
-    {
-      image: images.airtime1,
-      cardTitle: 'MTN',
-      onClickFunction: function openCardAndBank() {},
-    },
-    {
-      image: images.airtime2,
-      cardTitle: 'Airtel',
-      onClickFunction: function openCardAndBank() {},
-    },
-    {
-      image: images.airtime3,
-      cardTitle: 'Glo',
-      onClickFunction: function openCardAndBank() {},
-    },
-    {
-      image: images.airtime4,
-      cardTitle: '9mobile',
-      onClickFunction: function openCardAndBank() {},
-    },
-  ];
+  const [airtimeData, setAirtimeData] = useState([]);
+  const [showAirtimeHistoryModal, setShowAirtimeHistoryModal] = useState(false);
+
+  const handleClick = (value) => {
+    navigation.navigate('PurchaseAirtime', {
+      name: value.name,
+      data: airtimeData,
+    });
+  };
+
+  useEffect(() => {
+    getAirtime();
+  }, []);
+
+  const getAirtime = async () => {
+    try {
+      const res = await getBillsCategory('airtime');
+      console.log('Res: ', res.data.data.content);
+      setAirtimeData(res.data.data.content);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -68,9 +67,9 @@ const AirtimeHome = ({navigation}) => {
           flex: 1,
           flexDirection: 'column',
           alignSelf: 'center',
-          borderRadius: 10,
-          width: width * 0.9,
+          width: '100%',
           marginTop: 20,
+          paddingHorizontal: 20,
         }}>
         {airtimeData.map((value, index) => {
           return (
@@ -87,23 +86,19 @@ const AirtimeHome = ({navigation}) => {
                 paddingHorizontal: 10,
                 alignItems: 'center',
                 borderWidth: 1,
-                borderColor: '#EAEAEA',
+                borderColor: '#EAEAEA50',
               }}
               key={index}
-              onPress={() => {
-                // value.cardTitle.toLocaleLowerCase() === 'mtn'
-                //   ? console.log('True')
-                //   : console.log('False');
-                navigation.navigate('PurchaseAirtime', {name: value.cardTitle});
-              }}>
+              onPress={() => handleClick(value)}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <Image
                   style={{
                     width: 50,
                     height: 50,
                     marginRight: 20,
+                    borderRadius: 10,
                   }}
-                  source={value.image}
+                  source={{uri: value.image}}
                   resizeMode="contain"
                 />
                 <View
@@ -114,10 +109,14 @@ const AirtimeHome = ({navigation}) => {
                   }}>
                   <Text
                     style={[
-                      FONTS.h3FontStyling,
-                      {color: COLORS.primary, fontWeight: 'bold', fontSize: 14},
+                      // FONTS.h3FontStyling,
+                      {
+                        color: COLORS.primary,
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      },
                     ]}>
-                    {value.cardTitle}
+                    {value.name}
                   </Text>
                 </View>
               </View>
@@ -128,15 +127,32 @@ const AirtimeHome = ({navigation}) => {
                   size={20}
                   style={{
                     fontWeight: '900',
-                    fontSize: 25,
+                    marginRight: 10,
                   }}
-                  color={COLORS.primary}
+                  color={COLORS.dark}
                 />
               </View>
             </TouchableOpacity>
           );
         })}
+
+        <View style={[styles.transactionHistory]}>
+          <TouchableOpacity onPress={() => setShowAirtimeHistoryModal(true)}>
+            <Text style={[styles.transactionHistoryText]}>
+              View transactions history
+            </Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
+
+      {showAirtimeHistoryModal && (
+        <AirtimeHistory
+          onRequestClose={() =>
+            setShowAirtimeHistoryModal(!showAirtimeHistoryModal)
+          }
+          visible={showAirtimeHistoryModal}
+        />
+      )}
     </View>
   );
 };
@@ -188,5 +204,16 @@ const styles = StyleSheet.create({
     width: 200,
     resizeMode: 'contain',
     // backgroundColor: 'red',
+  },
+
+  transactionHistory: {
+    marginTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  transactionHistoryText: {
+    color: COLORS.secondary,
+    fontSize: 13,
+    fontWeight: 'bold',
   },
 });

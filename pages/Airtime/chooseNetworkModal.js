@@ -18,31 +18,13 @@ import RadioButtonRN from 'radio-buttons-react-native';
 const widthtouse = Dimensions.get('window').width;
 
 export default function chooseNetworkModal(props) {
-  //   const [visible, setVisible] = useState(false);
-  const chooseNetwork = [
-    {
-      image: images.airtime1,
-      name: 'MTN',
-      onClickFunction: function openCardAndBank() {},
-    },
-    {
-      image: images.airtime2,
-      name: 'Airtel',
-      onClickFunction: function openCardAndBank() {},
-    },
-    {
-      image: images.airtime3,
-      name: 'Glo',
-      onClickFunction: function openCardAndBank() {},
-    },
-    {
-      image: images.airtime4,
-      name: '9mobile',
-      onClickFunction: function openCardAndBank() {},
-    },
-  ];
-
-  const {onRequestClose, visible, selectedNetwork, onClick} = props;
+  const {
+    onRequestClose,
+    visible,
+    selectedNetwork,
+    onClick,
+    chooseNetwork,
+  } = props;
 
   // console.log('This, props:', props);
   return (
@@ -84,7 +66,7 @@ export default function chooseNetworkModal(props) {
                 }}
               />
             </View>
-            <View style={[styles.customInput, {padding: 0}]}>
+            {/* <View style={[styles.customInput, {padding: 0}]}>
               <Icon
                 onPress={() => navigation.goBack()}
                 name="search"
@@ -107,7 +89,7 @@ export default function chooseNetworkModal(props) {
                 placeholderTextColor="#BFBFBF"
                 keyboardType="default"
               />
-            </View>
+            </View> */}
             {chooseNetwork.map((value, index) => (
               <TouchableOpacity
                 key={index}
@@ -131,10 +113,14 @@ export default function chooseNetworkModal(props) {
                   style={{
                     fontWeight: 'bold',
                     color: COLORS.dark,
+                    fontSize: 12,
                   }}>
                   {value.name}
                 </Text>
-                <Image source={value.image} style={{width: 40, height: 40}} />
+                <Image
+                  source={{uri: value.image}}
+                  style={{width: 40, height: 40}}
+                />
               </TouchableOpacity>
             ))}
           </View>

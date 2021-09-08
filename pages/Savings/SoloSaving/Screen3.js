@@ -43,6 +43,7 @@ export default function Screen3({navigation, route}) {
   const [frequency, setFrequency] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [amountToSaveNow, setAmountToSaveNow] = useState(0);
 
   const [storeData, setStoreData] = useState(null);
 
@@ -54,7 +55,6 @@ export default function Screen3({navigation, route}) {
     const data = route.params;
 
     setSavingsTitle(data.name);
-    setSavingsAmount(data.savings_amount);
     setSavingsTarget(data.target_amount);
     setFrequency(data.frequency);
     setStartDate(data.start_date);
@@ -65,8 +65,23 @@ export default function Screen3({navigation, route}) {
 
     setEndDate(end_date);
 
-    setStoreData({...data, locked: locked, bvn: '1234567890'});
-    // console.log('Console:', {...data, locked: locked, bvn: '1234567890'});
+    setStoreData({...data, locked: locked, bvn: ''});
+
+    let start = moment(data.start_date);
+    let end = moment(end_date);
+
+    console.log(start, end, data.start_date);
+
+    let diff = end.diff(
+      start,
+      data.frequency.toLowerCase() == 'daily'
+        ? 'days'
+        : data.frequency.substring(0, data.frequency.length - 2).toLowerCase() +
+            's',
+    );
+    console.log('Calc: ', diff);
+    setSavingsAmount((data.target_amount - data.savings_amount) / diff);
+    setAmountToSaveNow(data.savings_amount);
   }, []);
 
   useEffect(() => {
@@ -128,7 +143,7 @@ export default function Screen3({navigation, route}) {
             <View style={designs.dataInfo}>
               <Text style={designs.key}>
                 {/* Amount To Save {store.savings_frequency} */}
-                Amount To Save
+                Amount To Save {frequency}
               </Text>
               <Text style={designs.value}>
                 ₦{numberWithCommas(Number(savingsAmount).toFixed(0)) || ' 0.00'}
@@ -141,8 +156,12 @@ export default function Screen3({navigation, route}) {
               </Text>
             </View>
             <View style={designs.dataInfo}>
-              <Text style={designs.key}>Frequency</Text>
-              <Text style={designs.value}>{frequency}</Text>
+              <Text style={designs.key}>Amount To Save Now </Text>
+              <Text style={designs.value}>
+                ₦
+                {numberWithCommas(Number(amountToSaveNow).toFixed(0)) ||
+                  ' 0.00'}
+              </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Start Date</Text>

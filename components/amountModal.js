@@ -24,7 +24,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector, useDispatch} from 'react-redux';
 
 import RNPaystack from 'react-native-paystack';
-import CreditCardModal from './CreditCard/CreditCardModal';
+
+import CreditCardModalSavings from './CreditCard/CreditCardModalSavings';
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
@@ -37,10 +38,12 @@ export default function AmountModal(props) {
   const {
     onRequestClose,
     visible,
+    // setShowCardModal,
+    channel,
     navigation,
     redirectTo,
-    openSuccessModal,
     ID,
+    openSuccessModal,
   } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
@@ -52,40 +55,44 @@ export default function AmountModal(props) {
 
   const handleClose = () => {
     // setShowPaymentType(false);
+    // setShowCardModal(true);
     onRequestClose();
     // console.log('Hello');
   };
 
   const handleSubmit = async (values) => {
+    let data = {
+      savings_id: ID,
+      amount: Number(unFormatNumber(values.amount)),
+      channel: channel,
+    };
+
+    // console.log('The DATATAATA: ', data);
+
     try {
       setSpinner(true);
-      // const res = await getUserSavings();
-      // const ID = res.data.data[0].id;
 
-      const res = await getOneUserSavings(ID);
+      const res = await addFundsToSavings(data);
+
+      console.log('The Res: ', res);
 
       if (res.status == 200) {
-        let data = {
-          savings_id: ID,
-          amount: Number(unFormatNumber(values.amount)),
-          channel: 'paystacks',
-        };
+        setSpinner(false);
+        // setShowAmountField(false);
 
-        const res = await addFundsToSavings(data);
+        const resData = res.data.data;
 
-        if (res.status == 200) {
-          setSpinner(false);
-          setShowAmountField(false);
-          setModal(true);
-          const resData = res.data.data;
-
-          // we can use redux to dispatch this data
-          // but for now let's use useState by send
-          // the data as props
-          setResDataObj(resData);
-          onRequestClose();
-        }
+        // we can use redux to dispatch this data
+        // but for now let's use useState by sending
+        // the data as props
+        setResDataObj(resData);
+        setModal(true);
+        // console.log('The ResData: ', resData);
+        // onRequestClose();
+      } else {
+        setSpinner(false);
       }
+      // }
     } catch (error) {
       console.log(error);
       setSpinner(false);
@@ -209,6 +216,18 @@ export default function AmountModal(props) {
           </View>
         </Modal>
       </View>
+      <Spinner visible={spinner} size="large" />
+
+      {modal && (
+        <CreditCardModalSavings
+          onRequestClose={() => setModal(!modal)}
+          visible={modal}
+          navigation={navigation}
+          redirectTo={redirectTo}
+          info={resDataObj}
+          ID={ID}
+        />
+      )}
     </>
   );
 }

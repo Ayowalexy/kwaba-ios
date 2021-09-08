@@ -24,6 +24,18 @@ const Mortgages = ({navigation}) => {
         scrollEnabled
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flex: 1}}>
+        <Icon
+          onPress={() => navigation.goBack()}
+          name="arrow-back"
+          size={25}
+          color={COLORS.dark}
+          style={{
+            padding: 10,
+            position: 'absolute',
+            top: 10,
+            left: 10,
+          }}
+        />
         <Image
           style={{
             width: 50,
@@ -123,8 +135,8 @@ const Mortgages = ({navigation}) => {
               lineHeight: 25,
               paddingHorizontal: 20,
             }}>
-            Get your dream home with the help of Kwaba. Begin your homeownership
-            journey with a mortgage. Start your home journey here
+            Get your dream home with the help of Kwaba. Save towards your down
+            payment or access a mortgage easily. We’ve got you covered.
           </Text>
         </View>
         <View style={{paddingHorizontal: 20, marginBottom: 10}}>

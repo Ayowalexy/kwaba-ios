@@ -358,8 +358,8 @@ export default function Screen5(props) {
             marginTop: 8,
             marginLeft: 10,
           }}>
-          An invite will be sent to any of your buddy{'\n'}you add to this
-          saving plan.
+          An invite will be sent to all the buddies{'\n'}you add to this saving
+          plan.
         </Text>
         <View style={[styles.summaryBox]}>
           {/* Top */}
@@ -387,7 +387,7 @@ export default function Screen5(props) {
                 }}>
                 You are saving with{' '}
                 <Text style={{color: COLORS.secondary}}>
-                  {numberOfBuddies} buddies
+                  {numberOfBuddies} {numberOfBuddies > 1 ? 'buddies' : 'buddy'}
                 </Text>
               </Text>
             </View>
@@ -629,6 +629,8 @@ export default function Screen5(props) {
           visible={showInviteBuddyModal}
           data={route.params}
           resData={resData}
+          startDate={moment(startDate).format('YYYY-MM-DD')}
+          endDate={moment(endDate).format('YYYY-MM-DD')}
           setBuddyInvite={(newElement) => {
             setBuddies((oldArray) => [newElement, ...oldArray]);
           }}

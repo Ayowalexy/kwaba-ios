@@ -1,9 +1,113 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, ScrollView, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import {COLORS, FONTS, images} from '../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useSelector, useDispatch} from 'react-redux';
+import {FlatList} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {setBankFromStorage} from '../redux/actions/bankActions';
 
 export default function Disbursement({navigation}) {
+  const dispatch = useDispatch();
+  const theBank = useSelector((state) => state.getBankAccountsReducer);
+  const [clickedID, setClickedID] = useState('');
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  // useEffect(() => {
+  //   console.log('The Bank: ', theBank.data);
+  // }, [theBank]);
+
+  const handlePress = async (item) => {
+    setClickedID(item.id);
+    const user = await getUser();
+    await AsyncStorage.setItem(`storeBank-${user.id}`, JSON.stringify(item));
+
+    dispatch(setBankFromStorage(item));
+  };
+
+  const renderBankAccounts = ({item}) => (
+    <TouchableOpacity
+      activeOpacity={0.9}
+      style={[
+        styles.bankCard,
+        {
+          borderWidth: item.id == clickedID ? 2 : 0,
+          borderColor: item.id == clickedID ? COLORS.secondary : 'none',
+        },
+      ]}
+      onPress={() => {
+        handlePress(item);
+      }}>
+      <View>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: 'bold',
+            color: COLORS.white,
+          }}>
+          {/* {item.bankAccountName} */}
+          {item.user_bank_name}
+        </Text>
+        <Text
+          style={{
+            fontSize: 12,
+            color: COLORS.light,
+          }}>
+          {/* {item.bankName} */}
+          {item.bank_name}
+        </Text>
+        <Text
+          style={{
+            marginTop: 40,
+            fontSize: 14,
+            color: COLORS.white,
+            opacity: 0.8,
+          }}>
+          {/* {item.bankAccountNumber} */}
+          {item.bank_account_number}
+        </Text>
+
+        <Image
+          style={{
+            width: 71,
+            height: 110,
+            position: 'absolute',
+            resizeMode: 'contain',
+            right: -21,
+            bottom: -20,
+            borderWidth: 1,
+          }}
+          source={images.maskGroup24}
+        />
+
+        {item.defaultbank == 1 && (
+          <Icon
+            name="checkbox"
+            size={20}
+            color={COLORS.secondary}
+            style={{
+              position: 'absolute',
+              top: -10,
+              right: -10,
+            }}
+          />
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+
   return (
     <View>
       <Icon
@@ -19,7 +123,24 @@ export default function Disbursement({navigation}) {
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
         <View style={styles.content}>
-          <Text style={styles.heading}>Add/Change Account</Text>
+          <Text style={styles.heading}>Change Account</Text>
+        </View>
+
+        <View style={{marginTop: 20}}>
+          <FlatList
+            data={theBank?.data}
+            renderItem={renderBankAccounts}
+            keyExtractor={(item) => item.id.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            style={{
+              marginLeft: 10,
+            }}
+            contentContainerStyle={{
+              paddingVertical: 5,
+            }}
+          />
         </View>
       </ScrollView>
     </View>
@@ -34,5 +155,68 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.primary,
+  },
+
+  container: {
+    flex: 1,
+    backgroundColor: '#F7F8FD',
+  },
+  // heading: {
+  //   paddingHorizontal: 20,
+  //   fontSize: 20,
+  //   fontWeight: 'bold',
+  //   color: COLORS.primary,
+  // },
+  contentTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  contentView: {
+    marginTop: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    // paddingVertical: 10,
+  },
+  addButton: {
+    height: 40,
+    width: 40,
+    borderRadius: 40,
+    backgroundColor: COLORS.secondary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonEmpty: {
+    width: 40,
+    height: 40,
+    borderRadius: 40,
+    // backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderStyle: 'dashed',
+    borderWidth: 2,
+    borderColor: COLORS.grey,
+  },
+  paymentCard: {
+    width: 150,
+    height: 200,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 20,
+    elevation: 1,
+    overflow: 'hidden',
+  },
+  bankCard: {
+    width: 250,
+    height: 140,
+    backgroundColor: COLORS.primary,
+    borderRadius: 20,
+    marginLeft: 5,
+    marginRight: 5,
+    padding: 20,
+    elevation: 1,
+    overflow: 'hidden',
   },
 });

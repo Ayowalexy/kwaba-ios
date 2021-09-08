@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {InviteBuddy} from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {formatNumber} from '../util/numberFormatter';
+import moment from 'moment';
 
 export default function InviteBuddyModal(props) {
   const [fullname, setFullname] = useState('');
@@ -30,7 +31,15 @@ export default function InviteBuddyModal(props) {
   const [referralCode, setReferralCode] = useState('');
   const [userName, setUserName] = useState('');
   const [spinner, setSpinner] = useState(false);
-  const {onRequestClose, visible, data, resData, setBuddyInvite} = props;
+  const {
+    onRequestClose,
+    visible,
+    data,
+    resData,
+    setBuddyInvite,
+    startDate,
+    endDate,
+  } = props;
 
   const getReferralCode = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -51,8 +60,9 @@ export default function InviteBuddyModal(props) {
     getUserName();
     // console.log('Ref code: ', referralCode);
     // console.log('user name: ', userName);
-    console.log('Param: ', resData.buddy_savings.id);
-    console.log('API: ', resData.buddylink);
+    // console.log('Param: ', resData.buddy_savings.id);
+    // console.log('API: ', resData.buddylink);
+    console.log('The Props: ', resData.buddy_savings.frequency);
   }, []);
 
   const copyToClipboard = async () => {
@@ -85,24 +95,51 @@ export default function InviteBuddyModal(props) {
   };
 
   useEffect(() => {
-    const numberOfBuddiesAndMe = Number(data.number_of_buddies) + 1;
-    const numberOfBuddies = Number(data.number_of_buddies);
+    console.log('The ResData: ', resData);
+    console.log('The Data: ', data);
 
-    const buddies_target = Math.round(
-      Number(data.target_amount) -
-        Number(data.target_amount) / numberOfBuddiesAndMe,
-    );
+    // const numberOfBuddiesAndMe = Number(data.number_of_buddies) + 1;
+    // const numberOfBuddies = Number(data.number_of_buddies);
 
-    console.log(data.target_amount);
+    // const buddies_target = Math.round(
+    //   Number(data.target_amount) -
+    //     Number(data.target_amount) / numberOfBuddiesAndMe,
+    // );
 
-    const calc = buddies_target / numberOfBuddies;
+    // console.log(data.target_amount);
 
-    setBuddyTarget(calc);
+    // const calc = buddies_target / numberOfBuddies;
 
-    const duration = Number(data.duration) == 1 ? 12 : Number(data.duration);
+    // let start = moment(data.date_starting).format('DD/MM/YYYY');
+    // let end = moment(data.date_ending);
 
-    const saving_amount = (calc / duration).toFixed(0);
-    setSavingAmount(saving_amount);
+    // let s = data.date_starting;
+    // let e = data.date_ending;
+
+    let start = moment(startDate);
+    let end = moment(endDate);
+
+    // let diff = end.diff(
+    //   start,
+    //   data.savings_frequency.toLowerCase() == 'daily'
+    //     ? 'days'
+    //     : data.savings_frequency
+    //         .substring(0, data.savings_frequency.length - 2)
+    //         .toLowerCase() + 's',
+    // );
+    // console.log('Calc: ', diff);
+
+    console.log('The New Value: ', start, end);
+    // console.log('THE S,E', s, e);
+
+    // console.log('The Data: ', start, end);
+
+    // setBuddyTarget(calc);
+
+    // // const duration = Number(data.duration) == 1 ? 12 : Number(data.duration);
+
+    // const saving_amount = (calc / 4).toFixed(0);
+    // setSavingAmount(saving_amount);
   }, []);
 
   // const sendInvite = async () => {
@@ -251,7 +288,8 @@ export default function InviteBuddyModal(props) {
 
                   <View style={[styles.amountBox]}>
                     <Text style={[styles.amountBoxTitle]}>
-                      Amount to save monthly
+                      Amount to save{' '}
+                      {resData.buddy_savings.frequency.toLowerCase()}
                     </Text>
                     <View style={[styles.amountBoxInput]}>
                       <Text style={[styles.amountBoxInputText]}>

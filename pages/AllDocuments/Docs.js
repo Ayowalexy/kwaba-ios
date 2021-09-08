@@ -181,91 +181,75 @@ export default function Docs(props, {navigation}) {
                       paddingVertical: 25,
                       elevation: 0.5,
                       marginBottom: 10,
-                      // borderWidth: 1,
-                      // borderColor: '#EEEEEE',
+                      borderWidth: 1,
+                      borderColor: '#EEEEEE',
                     },
                   ]}>
-                  <View style={{flex: 1}}>
-                    <View
-                      style={[
-                        styles.flexRow,
-                        {marginBottom: 0, alignItems: 'center'},
-                      ]}>
-                      <Image
-                        source={icons.featherFileText}
-                        style={{width: 17, height: 21, marginRight: 8}}
+                  <View
+                    style={{
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <View style={{marginRight: 10}}>
+                      <Icon
+                        name="md-document-text-sharp"
+                        size={25}
+                        color={COLORS.grey}
                       />
-                      <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-                        {item.title}
-                      </Text>
                     </View>
-                    <View style={styles.flexRow}>
-                      {item.isUploaded && (
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}>
+                      <View>
                         <Text
-                          style={{
-                            color: COLORS.secondary,
-                            borderBottomWidth: 1,
-                            borderBottomColor: COLORS.secondary,
-                            marginTop: 5,
-                          }}>
-                          {name + '-'}
+                          style={{color: COLORS.primary, fontWeight: 'bold'}}>
                           {item.title}
                         </Text>
-                      )}
-                      {item.isUploaded && (
-                        <TouchableOpacity
-                          style={{marginLeft: 10, top: 5, alignSelf: 'center'}}
-                          onPress={() => deleteFile(item)}>
+
+                        {item.isUploaded && (
+                          <Text
+                            style={{
+                              color: COLORS.secondary,
+                              marginTop: 0,
+                              fontSize: 12,
+                            }}>
+                            {name + '-'}
+                            {item.title}
+                          </Text>
+                        )}
+                      </View>
+
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        {!item.isUploading && (
                           <Icon
-                            name="trash-outline"
-                            size={14}
-                            style={{color: COLORS.grey, width: 14, height: 14}}
-                          />
-                        </TouchableOpacity>
-                      )}
-                      {!item.isUploaded && !item.isUploading && (
-                        <Text style={{color: '#ADADAD'}}>No file uploaded</Text>
-                      )}
-                      {/* {item.isUploading && (
-                        <View style={{flex: 1, marginRight: 20}}>
-                          <View
-                            style={[
-                              styles.flexRow,
-                              {
-                                justifyContent: 'space-between',
-                                paddingHorizontal: 3,
-                              },
-                            ]}>
-                            <Text style={{color: COLORS.grey}}>
-                              {name}
-                              {item.title}
-                            </Text>
-                            <Text
-                              style={{
-                                fontWeight: 'bold',
-                              }}>{`${item.progress}%`}</Text>
-                          </View>
-                          <ProgressBar
-                            style={{borderColor: 'transparent', height: 5}}
-                            progress={item.progress}
+                            name="ios-checkmark-done"
+                            size={20}
                             color={COLORS.secondary}
-                            unfilledColor={COLORS.grey}
-                            width={null}
                           />
-                        </View>
-                      )} */}
+                        )}
+                        {item.isUploaded && (
+                          <TouchableOpacity
+                            style={{
+                              marginLeft: 20,
+                              alignSelf: 'center',
+                            }}
+                            onPress={() => deleteFile(item)}>
+                            <Icon
+                              name="trash-outline"
+                              size={20}
+                              color={COLORS.grey}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </View>
                     </View>
                   </View>
-                  {!item.isUploading && (
-                    <Image
-                      source={
-                        item.isUploaded == true
-                          ? icons.group2116
-                          : icons.group3743
-                      }
-                      style={{width: 18, height: 18, marginRight: 0, top: 15}}
-                    />
-                  )}
                 </View>
               ),
           )}

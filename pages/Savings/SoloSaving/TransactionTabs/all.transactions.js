@@ -8,10 +8,6 @@ import {formatNumber} from '../../../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function AllTransactions(props) {
-  const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  const [savingTitle, setSavingTitle] = useState('');
-  const [transactions, setTransactions] = useState(null);
-
   return (
     // <ScrollView
     //   scrollEnabled={true}
@@ -32,13 +28,9 @@ export default function AllTransactions(props) {
         scrollEnabled={true}
         showsVerticalScrollIndicator={false}
         style={{
-          // borderColor: 'blue',
-          // borderWidth: 2,
-          // flex: 1,
-          // height: 500,
           zIndex: 900,
         }}>
-        {/* {transactions?.map((el, index) => {
+        {props?.savingsTransactions?.map((el, index) => {
           return (
             <TouchableOpacity
               key={index}
@@ -46,8 +38,9 @@ export default function AllTransactions(props) {
                 flexDirection: 'row',
                 alignItems: 'center',
                 paddingVertical: 8,
-                // marginTop: 10,
-                // backgroundColor: 'red',
+                paddingHorizontal: 20,
+                borderBottomWidth: 1,
+                borderBottomColor: '#BFBFBF20',
               }}>
               <Icon
                 name={
@@ -74,7 +67,7 @@ export default function AllTransactions(props) {
                       fontSize: 12,
                       color: COLORS.dark,
                     }}>
-                    {savingTitle}
+                    My rent
                   </Text>
                 </View>
 
@@ -103,7 +96,7 @@ export default function AllTransactions(props) {
               </View>
             </TouchableOpacity>
           );
-        })} */}
+        })}
       </ScrollView>
     </View>
     // </ScrollView>

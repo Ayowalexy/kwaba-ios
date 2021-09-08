@@ -26,6 +26,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import TransactionsTab from './TransactionTabs';
 import {getOneUserSavings} from '../../../services/network';
+import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
+import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
+import AmountModal from '../../../components/amountModal';
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
@@ -44,25 +47,28 @@ export default function SoloSavingDashBoard(props) {
   const [savingTitle, setSavingTitle] = useState('');
   const [quickSaveModal, setQuickSaveModal] = useState(false);
   const [locked, setLocked] = useState(true);
+  const [showPaymentType, setShowPaymentType] = useState(false);
+  const [showCardModal, setShowCardModal] = useState(false);
+  const [showAmountModal, setShowAmountModal] = useState(false);
+  const [channel, setChannel] = useState('');
 
   const [spinner, setSpinner] = useState(false);
 
   useEffect(() => {
-    console.log('THIS IS THE ID FROM SOLO SAVINGS DASHBOARD: ', route.params);
-    // dispatch(getMaxLoanCap());
-    dispatch(getOneSoloSavings(route.params.id));
     dispatch(getOneSoloSavingsTransaction(route.params.id));
   }, []);
 
   useEffect(() => {
-    setDashboardData();
-  }, [getOneSavings?.data]);
+    if (getOneSavings?.data?.length > 0) {
+      setDashboardData();
+    }
+  }, [getOneSavings]);
 
   const setDashboardData = () => {
-    console.log('The Result From Dashboard: ', getOneSavings);
-
     const data = getOneSavings.data[0];
     const amount_saved = Number(data.amount_save);
+
+    console.log('Data: ', data);
 
     setLocked(data.locked);
     setSavingTitle(data.name);
@@ -75,10 +81,18 @@ export default function SoloSavingDashBoard(props) {
     setTotalSaving(amount_saved || 0);
   };
 
+  const goback = () => {
+    navigation.navigate('SavingLists');
+    setSavingTitle('');
+    setSavingsTarget(0);
+    setPercentAchieved(0);
+    setTotalSaving(0);
+  };
+
   return (
     <View style={styles.container}>
       <Icon
-        onPress={() => navigation.navigate('SavingLists')}
+        onPress={goback}
         name="arrow-back-outline"
         size={25}
         style={{padding: 18, paddingHorizontal: 10}}
@@ -120,7 +134,9 @@ export default function SoloSavingDashBoard(props) {
                   top: 0,
                   zIndex: 5,
                 }}
-                onPress={() => setQuickSaveModal(true)}>
+                onPress={() => setShowPaymentType(true)}
+                // onPress={() => setQuickSaveModal(true)}
+              >
                 <Image
                   style={{
                     width: 50,
@@ -394,13 +410,44 @@ export default function SoloSavingDashBoard(props) {
         <TransactionsTab transactions={getOneTransaction?.data} />
       </ScrollView>
 
-      <QuickSaveModal
+      {/* <QuickSaveModal
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
         navigation={navigation}
         redirectTo="SoloSavingDashBoard"
         ID={route.params.id}
-      />
+      /> */}
+
+      {showPaymentType && (
+        <PaymentTypeModalForSavings
+          onRequestClose={() => setShowPaymentType(!showPaymentType)}
+          visible={showPaymentType}
+          setShowAmountModal={(bol) => setShowAmountModal(bol)}
+          setChannel={(value) => setChannel(value)}
+        />
+      )}
+
+      {showAmountModal && (
+        <AmountModal
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          // setShowCardModal={(bol) => setShowCardModal(bol)}
+          navigation={navigation}
+          channel={channel}
+          ID={route.params.id}
+          redirectTo="SoloSavingDashBoard"
+        />
+      )}
+
+      {/* {showCardModal && (
+        <CreditCardFormSavings
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          navigation={navigation}
+          redirectTo="SoloSavingDashBoard"
+          ID={route.params.id}
+        />
+      )} */}
 
       <Spinner visible={spinner} size="large" />
     </View>

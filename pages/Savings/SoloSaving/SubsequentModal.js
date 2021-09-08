@@ -163,15 +163,15 @@ export default function SubsequentModal(props) {
       </Modal>
       <Spinner visible={spinner} animation="fade" size="large" />
 
-      <CreditCardModal
-        onRequestClose={() => {
-          setModal(!modal);
-        }}
-        visible={modal}
-        info={resDataObj}
-        navigation={navigation}
-        redirectTo="SoloSavingDashBoard"
-      />
+      {modal && (
+        <CreditCardModal
+          onRequestClose={() => setModal(!modal)}
+          visible={modal}
+          info={resDataObj}
+          navigation={navigation}
+          redirectTo="SoloSavingDashBoard"
+        />
+      )}
     </>
   );
 }

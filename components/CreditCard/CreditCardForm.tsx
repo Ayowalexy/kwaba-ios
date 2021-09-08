@@ -98,23 +98,6 @@ const CreditCardForm: React.FC = (props: any) => {
     }
   };
 
-  // For Address Verification RNPL
-  const addressVerification = async (data) => {
-    const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/application/payment/verify';
-    try {
-      const response = await axios.put(url, JSON.stringify(data), {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-      });
-      return response;
-    } catch (error) {
-      return error;
-    }
-  };
-
   useEffect(() => {
     setResponseInfo(props.ResInfo);
   }, [props]);
@@ -135,64 +118,25 @@ const CreditCardForm: React.FC = (props: any) => {
         reference: responseInfo?.reference,
       });
 
-      if (props.redirectTo == 'OkraDebitMandate') {
-        const verify = await addressVerification(pay);
+      const verify = await verifyPayment(pay);
 
-        if (verify?.status == 200) {
-          console.log('Payment verified');
-          console.log('Verify: ', verify);
-          setSpinner(false);
-          // display success modal
-          // navigate to dashboard / homepage
+      if (verify?.status == 200) {
+        console.log('Payment verified');
+        console.log('Verify: ', verify);
+        setSpinner(false);
+        // display success modal
+        // navigate to dashboard / homepage
 
-          //dispatch
-          dispatch(getTotalSoloSavings());
-          dispatch(getMaxLoanCap());
+        //dispatch
+        dispatch(getTotalSoloSavings());
+        // dispatch(getMaxLoanCap());
 
-          props.navigation.navigate('PaymentSuccessful', {
-            name: props.redirectTo,
-          });
-          props.onRequestClose();
-        }
-      } else {
-        const verify = await verifyPayment(pay);
-
-        if (verify?.status == 200) {
-          console.log('Payment verified');
-          console.log('Verify: ', verify);
-          setSpinner(false);
-          // display success modal
-          // navigate to dashboard / homepage
-
-          //dispatch
-          dispatch(getTotalSoloSavings());
-          dispatch(getMaxLoanCap());
-
-          props.navigation.navigate('PaymentSuccessful', {
-            name: props.redirectTo,
-          });
-          props.onRequestClose();
-        }
+        props.navigation.navigate('PaymentSuccessful', {
+          name: props.redirectTo,
+          id: props.ResInfo.id,
+        });
+        props.onRequestClose();
       }
-
-      // const verify = await verifyPayment(pay);
-      // const verify = await addressVerification(pay);
-
-      // if (verify?.status == 200) {
-      //   console.log('Payment verified');
-      //   console.log('Verify: ', verify);
-      //   setSpinner(false);
-      //   // display success modal
-      //   // navigate to dashboard / homepage
-
-      //   //dispatch
-      //   dispatch(getTotalSoloSavings());
-
-      //   props.navigation.navigate('PaymentSuccessful', {
-      //     name: props.redirectTo,
-      //   });
-      //   props.onRequestClose();
-      // }
     } catch (error) {
       console.log('The Error: ', error);
       setSpinner(false);

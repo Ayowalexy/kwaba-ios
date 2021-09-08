@@ -70,7 +70,7 @@ export default function Screen4(props) {
                 // fontWeight: 'bold',
                 color: '#BABABA',
               }}>
-              Who is your buddy to you?
+              Who are your buddies to you?
             </Text>
           )}
 

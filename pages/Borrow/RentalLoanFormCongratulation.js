@@ -75,7 +75,7 @@ export default function RentalLoanFormCongratulation({navigation}) {
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Borrow')}
         name="arrow-back-outline"
         size={25}
         style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}

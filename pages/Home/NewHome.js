@@ -55,6 +55,7 @@ export default function NewHome({navigation}) {
   const [savings, setSavings] = useState(0);
   const [rentalFinance, setRentalFinance] = useState(0);
   const [instantLoan, setInstantLoan] = useState(0);
+  const [wallet, setWallet] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [quickSaveModal, setQuickSaveModal] = useState(false);
   const [addFundsToSavingsModal, setAddFundsToSavingsModal] = useState(false);
@@ -118,11 +119,13 @@ export default function NewHome({navigation}) {
     if (time < 12) {
       setGreeting('Good Morning');
     }
-    if (time > 12) {
+
+    if (time > 12 && time < 16) {
       setGreeting('Good Afternoon');
     }
-    if (time == 12) {
-      setGreeting('Good Afternoon');
+
+    if (time > 16) {
+      setGreeting('Good Evening');
     }
   }, []);
 
@@ -192,33 +195,64 @@ export default function NewHome({navigation}) {
 
   const slides = [
     {
+      title: 'Wallets',
+      subtitle:
+        wallet == 0
+          ? 'Fund your wallet to transact on Kwaba'
+          : 'Save and pay bills from yout wallet',
+      amount: formatNumber(wallet),
+      color: COLORS.dark,
+      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+      actionClick: () =>
+        wallet == 0 ? console.log('Add Funds') : console.log('Deposit Now'),
+      cardClick: () => console.log('Wallet clicked'),
+    },
+    {
       title: 'Emergency Fund',
-      subtitle: 'Repayment amount',
+      subtitle: instantLoan == 0 ? 'Access instant loans' : 'Repayment amount',
       amount: formatNumber(instantLoan),
       color: '#222',
-      actionText: 'Pay Now',
-      cardClick: () => navigation.navigate('EmergencyLoanDashBoard'),
-      // route: () => setQuickSaveModal(true),
+      actionText: wallet == 0 ? 'Apply Now' : 'Pay Now',
+      actionClick: () =>
+        wallet == 0 ? console.log('Apply Now') : console.log('Pay Now'),
+      // cardClick: () =>
+      //   instantLoan == 0
+      //     ? console.log('Instant Loan')
+      //     : navigation.navigate('EmergencyLoanDashBoard'),
+
+      cardClick: () => {
+        navigation.navigate('EmergencyLoanDashBoard');
+      },
     },
     {
       title: 'Rent Now Pay Later',
-      subtitle: 'Next payment amount',
+      subtitle:
+        rentalFinance == 0
+          ? "Let's help you pay your rent"
+          : 'Next payment amount',
       amount: formatNumber(rentalFinance),
       color: COLORS.dark,
-      actionText: 'Pay Now',
-      // route: () => setQuickSaveModal(true),
+      actionText: wallet == 0 ? 'Apply Now' : 'Pay Now',
+      actionClick: () =>
+        wallet == 0 ? console.log('Apply Now') : console.log('Pay Now'),
+      cardClick: () => console.log('Rent Now Pay Later'),
     },
     {
       title: 'Total Savings',
-      subtitle: 'Great job on your rent savings',
+      subtitle:
+        savings > 0
+          ? 'Save now to make your rent\nwork for you'
+          : 'Great job on your rent savings',
       amount: formatNumber(savings),
       color: COLORS.primary,
-      actionText: 'Deposit',
-      route: () =>
-        isProfileComplete
-          ? // ? setQuickSaveModal(true)
-            setAddFundsToSavingsModal(true)
+      actionText: savings == 0 ? 'Save Now' : 'Deposit',
+      actionClick: () =>
+        savings == 0
+          ? console.log('Save Now')
+          : isProfileComplete
+          ? setAddFundsToSavingsModal(true)
           : setCompleteProfileModal(true),
+      cardClick: () => console.log('Total Savings'),
     },
   ];
 
@@ -250,7 +284,7 @@ export default function NewHome({navigation}) {
 
   const bottomCards = [
     {
-      title: 'Rent Savings',
+      title: 'Savings',
       body:
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
@@ -260,13 +294,13 @@ export default function NewHome({navigation}) {
       //     : setCompleteProfileModal(true),
     },
     {
-      title: 'Loans',
+      title: 'Home Loans',
       body:
-        'Get loans to pay your rent, buy a house or cater to unexpected expenses.',
+        'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
       img: images.maskGroup29,
       route: () =>
         isProfileComplete
-          ? navigation.navigate('Borrow')
+          ? navigation.navigate('LoanScreen1')
           : setCompleteProfileModal(true),
     },
     {
@@ -280,6 +314,13 @@ export default function NewHome({navigation}) {
           : setCompleteProfileModal(true),
     },
   ];
+
+  // const cards = [
+  //   { title: "Movie 1", posterUrl: require("./images/tenent.jpg") },
+  //   { title: "Movie 2", posterUrl: require("./images/1917.jpg") },
+  //   { title: "Movie 3", posterUrl: require("./images/spiderman.jpg") },
+  //   { title: "Movie 4", posterUrl: require("./images/mando.jpg") },
+  // ]
 
   const _renderItem = ({item, index}) => {
     // console.log('Name: ', item.name);
@@ -323,6 +364,7 @@ export default function NewHome({navigation}) {
               {/* Current Savings */}
               {item.title}
             </Text>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -334,9 +376,7 @@ export default function NewHome({navigation}) {
                 {item.actionText}
               </Text>
               <TouchableOpacity
-                // onPress={() => navigation.navigate('PaymentForm')}
-                // onPress={() => setShowModal(true)}
-                onPress={item.route}
+                onPress={item.actionClick}
                 style={{
                   width: 25,
                   height: 25,
@@ -351,7 +391,7 @@ export default function NewHome({navigation}) {
             </View>
           </View>
 
-          <View style={{marginTop: 30}}>
+          <View style={{marginTop: 20}}>
             <View
               style={{
                 flexDirection: 'row',
@@ -566,7 +606,7 @@ export default function NewHome({navigation}) {
             //   itemHeight={layout.width}
             layout={'tinder'}
             layoutCardOffset={16}
-            firstItem={2}
+            firstItem={3}
             // loop={true}
             containerCustomStyle={{
               //   borderWidth: 1,
@@ -708,11 +748,11 @@ export default function NewHome({navigation}) {
                                 fontWeight: 'bold',
                                 color: COLORS.white,
                               }}>
-                              Solo Saving
+                              Rent Savings
                             </Text>
                           </TouchableOpacity>
                           <TouchableOpacity
-                            onPress={() => navigation.navigate('SavingsHome')}
+                            onPress={() => navigation.navigate('SaveToOwn')}
                             style={{
                               backgroundColor: COLORS.white,
                               borderRadius: 10,
@@ -726,7 +766,7 @@ export default function NewHome({navigation}) {
                                 fontWeight: 'bold',
                                 color: COLORS.dark,
                               }}>
-                              Buddy Saving
+                              Save to own
                             </Text>
                           </TouchableOpacity>
                         </View>

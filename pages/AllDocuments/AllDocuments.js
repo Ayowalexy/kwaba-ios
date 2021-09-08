@@ -332,7 +332,8 @@ export default function AllDocuments({navigation}) {
       <Modal
         isVisible={showSelectDocumentsModal}
         onBackButtonPress={() => setShowSelectDocumentsModal(false)}
-        onBackdropPress={() => setShowSelectDocumentsModal(false)}>
+        onBackdropPress={() => setShowSelectDocumentsModal(false)}
+        style={{paddingHorizontal: 20}}>
         <View
           style={{
             backgroundColor: 'white',
@@ -351,11 +352,26 @@ export default function AllDocuments({navigation}) {
             }}
             color={COLORS.primary}
           />
-          <View style={{marginTop: 30}}>
-            <Text
-              style={{color: COLORS.primary, fontSize: 16, fontWeight: 'bold'}}>
-              Select a document to upload
-            </Text>
+          {/* <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 's',
+              alignItems: 'center',
+              marginTop: 40,
+            }}> */}
+          <Text
+            style={{
+              color: COLORS.primary,
+              fontSize: 14,
+              fontWeight: 'bold',
+              // textTransform: 'uppercase',
+              textAlign: 'center',
+              marginTop: 50,
+            }}>
+            Select a document to upload
+          </Text>
+          {/* </View> */}
+          <View style={{marginTop: 10}}>
             <View>
               {Object.values(fileProgress).map(
                 (item, index) =>
@@ -444,7 +460,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    // borderWidth: 1,
   },
   heading: {
     paddingHorizontal: 20,
@@ -457,7 +472,6 @@ const styles = StyleSheet.create({
   },
   btn: {
     width: '100%',
-    // paddingVertical: 20,
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
@@ -473,8 +487,7 @@ const styles = StyleSheet.create({
 
   selectBtn: {
     paddingVertical: 20,
-    paddingHorizontal: 20,
-    // borderBottomColor: '#fff',
+    paddingHorizontal: 10,
     borderBottomWidth: 1,
   },
 });

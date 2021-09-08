@@ -168,6 +168,10 @@ import PaymentSuccessful from './pages/Home/PaymentSuccessful';
 
 // Mortgages screen
 import Mortgages from './pages/Mortgages/Mortgage';
+import SaveToOwn from './pages/Mortgages/SaveToOwn';
+
+// Loans
+import {LoanScreen1} from './pages/Loans';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -671,6 +675,9 @@ const App = () => {
               />
 
               <Stack.Screen name="Mortgages" component={Mortgages} />
+              <Stack.Screen name="SaveToOwn" component={SaveToOwn} />
+
+              <Stack.Screen name="LoanScreen1" component={LoanScreen1} />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

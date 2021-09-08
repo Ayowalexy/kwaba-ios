@@ -14,7 +14,7 @@ import {COLORS} from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {getBankAccounts} from '../services/network';
+import {getAllBanks, getBankAccounts} from '../services/network';
 
 export default function AddBankAccountModal(props) {
   const {onRequestClose, visible, onConfirm, setDisplayAllBankAccounts} = props;
@@ -71,6 +71,24 @@ export default function AddBankAccountModal(props) {
     }
   };
 
+  // useEffect(() => {
+  //   // console.log('The banks: ', );
+  //   getBanks();
+  // }, []);
+
+  // // fetch banks via nip
+  // const getBanks = async () => {
+  //   try {
+  //     const response = await getAllBanks();
+  //     if (response.status == 200) {
+  //       // console.log('The bank nip: ', response.data.data.banks);
+  //       setBankData(response.data.data.banks);
+  //     }
+  //   } catch (error) {
+  //     console.log('Error: ', error);
+  //   }
+  // };
+
   // fetch banks
   // useEffect(() => {
   //   (async () => {
@@ -113,6 +131,7 @@ export default function AddBankAccountModal(props) {
   };
 
   const verifyBankAccount = async (account_number, bank_code) => {
+    // console.log({account_number, bank_code});
     const url = 'http://67.207.86.39:8000/api/v1/user/bank_details';
     try {
       const token = await getToken();

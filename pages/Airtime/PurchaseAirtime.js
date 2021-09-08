@@ -19,10 +19,11 @@ import ConfirmModal from './ConfirmModal';
 import NumberFormat from '../../components/NumberFormat';
 import {BuyPurchaseAirtime} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
+import PaymentTypeModalForBills from '../../components/paymentTypeModalForBills';
 
-// function numberWithCommas(x) {
-//   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-// }
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -31,18 +32,30 @@ const PurchaseAirtime = ({navigation, route}) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [name, setName] = useState(route.params.name);
   const [spinner, setSpinner] = useState(false);
+  const [showPaymentType, setShowPaymentType] = useState(false);
+  const [showCardModal, setShowCardModal] = useState(false);
+  const [resData, setResData] = useState('');
 
-  // let name = route.params.name;
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
-  // useEffect(() => {
-  //   console.log(amount);
-  // }, [amount]);
+  const airtimeSchema = yup.object().shape({
+    phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
+    amount: yup.string().required('Please provide saving amount'),
+  });
+
+  useEffect(() => {
+    console.log('Params: ', route.params);
+    const val = route.params.data.filter(
+      (item) => item.name == route.params.name,
+    );
+    console.log('The Value: ', val);
+  }, [name]);
 
   const buyAirtimeHandler = async () => {
     setSpinner(true);
     const data = {
       serviceID: name.toLowerCase(), // e.g mtn, airtel, glo, 9mobile
-      amount: amount, // e.g 100
+      amount: unFormatNumber(amount), // e.g 100
       recepient: phoneNumber, // e.g 08011111111
     };
 
@@ -53,6 +66,9 @@ const PurchaseAirtime = ({navigation, route}) => {
       if (res.status == 200) {
         setSpinner(false);
         console.log('Buy Res: ', res.data.data);
+        setResData(res.data.data);
+        setConfirmModalVisible(false);
+        setShowPaymentType(true);
       }
     } catch (error) {
       setSpinner(false);
@@ -61,12 +77,12 @@ const PurchaseAirtime = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: '#EFEFEF'}}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900', paddingHorizontal: 10, paddingVertical: 20}}
+        style={{fontWeight: '900', paddingHorizontal: 20, paddingVertical: 20}}
         color={COLORS.primary}
       />
 
@@ -74,11 +90,11 @@ const PurchaseAirtime = ({navigation, route}) => {
         <Text
           style={{
             fontWeight: 'bold',
-            fontSize: 18,
+            fontSize: 14,
             color: COLORS.primary,
             marginLeft: 5,
           }}>
-          Airtime - {name}
+          Airtime Purchase
         </Text>
 
         <TouchableOpacity
@@ -122,14 +138,13 @@ const PurchaseAirtime = ({navigation, route}) => {
         <View style={{marginTop: 20}}>
           <Text
             style={{
-              fontSize: 12,
+              fontSize: 14,
               fontWeight: 'bold',
-              textAlign: 'center',
-              // marginLeft: 5,
               marginBottom: 10,
-              color: COLORS.primary,
+              marginLeft: 2,
+              color: COLORS.dark,
             }}>
-            Select Amount
+            Select amount
           </Text>
           <View
             style={{
@@ -161,10 +176,40 @@ const PurchaseAirtime = ({navigation, route}) => {
           </View>
         </View>
 
-        <NumberFormat value={amount} onChangeText={(text) => setAmount(text)} />
-      </ScrollView>
+        <View
+          style={{
+            width: '100%',
+            height: 1,
+            backgroundColor: '#BFBFBF50',
+            marginVertical: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              backgroundColor: '#EFEFEF',
+              width: 40,
+              height: 40,
+              borderRadius: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: '#BFBFBF50',
+            }}>
+            <Text
+              style={{
+                color: COLORS.dark,
+                fontSize: 12,
+                fontWeight: 'bold',
+              }}>
+              OR
+            </Text>
+          </View>
+        </View>
 
-      <View style={styles.btnContainer}>
+        <NumberFormat value={amount} onChangeText={(text) => setAmount(text)} />
+
+        {/* <View style={styles.btnContainer}> */}
         <TouchableOpacity
           onPress={() => {
             setConfirmModalVisible(!confirmModalVisible);
@@ -176,7 +221,7 @@ const PurchaseAirtime = ({navigation, route}) => {
               backgroundColor: '#00DC99',
               width: '100%',
               borderRadius: 10,
-              // marginTop: 20,
+              marginTop: 20,
               // opacity: isError() ? 0 : 1,
             },
           ]}>
@@ -190,13 +235,15 @@ const PurchaseAirtime = ({navigation, route}) => {
             NEXT
           </Text>
         </TouchableOpacity>
-      </View>
+        {/* </View> */}
+      </ScrollView>
 
       <ChooseNetworkModal
         visible={visible}
         onRequestClose={() => setVisible(!visible)}
         selectedNetwork={name}
         onClick={(value) => setName(value.name)}
+        chooseNetwork={route.params.data}
       />
 
       {confirmModalVisible && (
@@ -207,6 +254,24 @@ const PurchaseAirtime = ({navigation, route}) => {
           selectedPhoneNumber={phoneNumber}
           selectedAmount={formatNumber(amount)}
           onClickBuyAirtime={buyAirtimeHandler}
+        />
+      )}
+
+      {showPaymentType && (
+        <PaymentTypeModalForBills
+          onRequestClose={() => setShowPaymentType(!showPaymentType)}
+          visible={showPaymentType}
+          setShowCardModal={(bol) => setShowCardModal(bol)}
+        />
+      )}
+
+      {showCardModal && (
+        <CreditCardModalBills
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          info={resData}
+          navigation={navigation}
+          redirectTo="Home"
         />
       )}
 

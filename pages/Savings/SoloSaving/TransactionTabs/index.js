@@ -39,11 +39,11 @@ export default function TransactionsTab(props) {
   const layout = useWindowDimensions();
 
   useEffect(() => {
-    console.log('Hist: ', props);
+    // console.log('Hist: ', props);
   }, []);
 
   const renderScene = SceneMap({
-    first: () => <AllTransactions />,
+    first: () => <AllTransactions savingsTransactions={props.transactions} />,
     second: () => (
       <SavingsTransactions savingsTransactions={props.transactions} />
     ),

@@ -620,6 +620,35 @@ const BuyPurchaseAirtime = async (data) => {
   }
 };
 
+// GET ALL BANKS NIP
+const getAllBanks = async () => {
+  const url = apiUrl + '/api/v1/get_all_banks_nip';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Airtime
+
+const getBillsCategory = async (serviceID) => {
+  const url = apiUrl + `/api/v1/get_bills_category/${serviceID}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -664,4 +693,6 @@ export {
   deleteBuddySavingsInvite,
   getOneUserBuddySavings,
   BuyPurchaseAirtime,
+  getAllBanks,
+  getBillsCategory,
 };

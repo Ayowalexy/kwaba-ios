@@ -61,7 +61,7 @@ export default function CompleteProfileModal(props) {
                 marginTop: 10,
                 textAlign: 'center',
               }}>
-              Complete your profile to unleash the power of Kwaba.
+              Complete your profile to unleash{'\n'}the power of Kwaba.
             </Text>
 
             <TouchableOpacity

@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function SavingsTransactions(props) {
   useEffect(() => {
-    console.log('Props: ', props.savingsTransactions);
+    // console.log('Props: ', props.savingsTransactions);
   }, []);
 
   return (

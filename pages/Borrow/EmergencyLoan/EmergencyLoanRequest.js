@@ -28,8 +28,15 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import LoanPurposeModal from '../../../components/LoanPurposeModal';
 import ConfirmModal from './ConfirmModal';
 import SuccessModal from './SuccessModal';
+import {getBankAccounts} from '../../../redux/actions/bankActions';
+import {useDispatch, useSelector} from 'react-redux';
+import {getBankFromStorageReducer} from '../../../redux/reducers/bankReducer';
 
 const EmergencyLoanRequest = ({route, navigation}) => {
+  const dispatch = useDispatch();
+  const theStoredAccount = useSelector(
+    (state) => state.getBankFromStorageReducer,
+  );
   const [spinner, setSpinner] = useState(false);
   const [modalVisible, setVisible] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
@@ -46,6 +53,29 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   const [successModal, setSuccessModal] = useState(false);
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
   const [userSelectedBankAccount, setUserSelectedBankAccount] = useState([]);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+      console.log('The Account From Local Storage: ', storeBank);
+    })();
+  }, []);
+
+  useEffect(() => {
+    dispatch(getBankAccounts());
+  }, []);
+
+  useEffect(() => {
+    console.log('From Redux Store Man: ', theStoredAccount);
+    setUserSelectedBankAccount(theStoredAccount.data);
+  }, [theStoredAccount]);
 
   useEffect(() => {
     (async () => {
@@ -122,7 +152,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   ];
 
   const handleSubmit = async () => {
-    setSpinner(true);
     // setVisible(false);
     // setting this manually
     // setBankAccountName('Joshua Udo Nwosu');
@@ -137,19 +166,23 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       // disbursement_account_number: bankAccountNumber,
       // disbursement_account_bank: bankName,
 
-      disbursement_account_name: 'JOSHUA UDO NWOSU',
-      disbursement_account_number: '0094552107',
-      disbursement_account_bank: 'Access Bank(Diamond)',
+      // disbursement_account_name: 'JOSHUA UDO NWOSU',
+      // disbursement_account_number: '0094552107',
+      // disbursement_account_bank: 'Access Bank(Diamond)',
 
       // disbursement_account_name: '',
       // disbursement_account_number: '',
       // disbursement_account_bank: '',
+
+      disbursement_account_name: userSelectedBankAccount.user_bank_name,
+      disbursement_account_number: userSelectedBankAccount.bank_account_number,
+      disbursement_account_bank: userSelectedBankAccount.bank_name,
     };
 
     console.log('DATA: ', data);
 
     try {
-      // setSpinner(false);
+      setSpinner(true);
       const response = await applyForEmergencyLoan(data);
       console.log('RESPONSE: ', response);
       if (response.status == 201) {
@@ -234,21 +267,22 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                 Disbursement Account
               </Text>
               <TouchableOpacity
-                // onPress={() => navigation.navigate('Disbursement')}
-                onPress={() => navigation.navigate('CardAndBankDetails')}>
+                onPress={() => navigation.navigate('Disbursement')}
+                // onPress={() => navigation.navigate('CardAndBankDetails')}
+              >
                 <Text
                   style={{
                     fontSize: 12,
                     color: COLORS.secondary,
                     fontWeight: 'bold',
                   }}>
-                  Add Account
+                  {userSelectedBankAccount ? 'Change Account' : 'Add Account'}
                 </Text>
               </TouchableOpacity>
             </View>
 
-            {!userSelectedBankAccount && (
-              <View style={{marginTop: 20, alignItems: 'center'}}>
+            {userSelectedBankAccount && (
+              <View style={{marginTop: 20}}>
                 <TouchableOpacity activeOpacity={0.9} style={[styles.bankCard]}>
                   <View>
                     <Text
@@ -257,23 +291,26 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         fontWeight: 'bold',
                         color: COLORS.white,
                       }}>
-                      JOSHUA UDO NWOSU
+                      {/* JOSHUA UDO NWOSU */}
+                      {userSelectedBankAccount?.user_bank_name}
                     </Text>
                     <Text
                       style={{
-                        fontSize: 12,
+                        fontSize: 10,
                         color: COLORS.light,
                       }}>
-                      Access Bank(DIAMOND)
+                      {/* Access Bank(DIAMOND) */}
+                      {userSelectedBankAccount?.bank_name}
                     </Text>
                     <Text
                       style={{
-                        marginTop: 40,
+                        marginTop: 20,
                         fontSize: 14,
                         color: COLORS.white,
                         opacity: 0.8,
                       }}>
-                      0094552107
+                      {/* 0094552107 */}
+                      {userSelectedBankAccount?.bank_account_number}
                     </Text>
 
                     <Image
@@ -381,7 +418,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#46596920',
     paddingVertical: 20,
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
   },
 
   itemTitle: {
@@ -394,12 +431,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   bankCard: {
-    width: 250,
-    height: 140,
+    width: 270,
+    height: 120,
     backgroundColor: COLORS.primary,
     borderRadius: 20,
-    marginLeft: 5,
-    marginRight: 5,
     padding: 20,
     elevation: 1,
     overflow: 'hidden',

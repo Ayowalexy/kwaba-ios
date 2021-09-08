@@ -5,9 +5,11 @@ import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import CompleteProfileModal from '../Home/CompleteProfileModal';
 
 const Borrow = ({navigation}) => {
   const [existingApplication, setExistingApplication] = useState('');
+  const [completeProfileModal, setCompleteProfileModal] = useState(false);
 
   useEffect(() => {
     getApplicationData();
@@ -60,48 +62,55 @@ const Borrow = ({navigation}) => {
 
   const handleRentalLoanClick = async () => {
     const user = await getUser();
-
-    // await AsyncStorage.removeItem(`rentalSteps-${user.id}`);
-
-    const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
-    const steps = JSON.parse(rentalSteps);
-
-    if (steps != null) {
-      if (steps == null) {
-        navigation.navigate('RentalLoanForm1');
-      } else if (steps.congratulation == '') {
-        navigation.navigate('RentalLoanFormCongratulation');
-      } else if (steps.all_documents == '') {
-        navigation.navigate('NewAllDocuments');
-      } else if (steps.verifying_documents == '') {
-        navigation.navigate('VerifyingDocuments');
-      } else if (steps.offer_breakdown == '') {
-        navigation.navigate('OfferApprovalBreakDown');
-      } else if (steps.property_detail == '') {
-        navigation.navigate('PostPaymentForm1');
-      } else if (steps.landlord_detail == '') {
-        navigation.navigate('PostPaymentForm2');
-      } else if (steps.referee_detail == '') {
-        navigation.navigate('PostPaymentForm3');
-      } else if (steps.offer_letter == '') {
-        navigation.navigate('PTMFB');
-      } else if (steps.address_verification == '') {
-        navigation.navigate('AddressVerificationPayment');
-      } else if (steps.debitmandate == '') {
-        navigation.navigate('OkraDebitMandate');
-      } else if (steps.awaiting_disbursement == '') {
-        navigation.navigate('AwaitingDisbursement');
-      } else if (steps.dashboard == '') {
-        navigation.navigate('RentNowPayLaterDashboard');
-      } else {
-        navigation.navigate('RentNowPayLaterDashboard');
-      }
+    if (user.profile_complete == 0) {
+      setCompleteProfileModal(true);
     } else {
-      navigation.navigate('RentNowPayLaterOnboarding');
-    }
+      // await AsyncStorage.removeItem(`rentalSteps-${user.id}`);
 
-    // //QUICK NAVIGATIONS
-    // navigation.navigate('NewAllDocuments');
+      const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
+      const steps = JSON.parse(rentalSteps);
+
+      if (steps != null) {
+        if (steps == null) {
+          navigation.navigate('RentalLoanForm1');
+        } else if (steps.congratulation == '') {
+          navigation.navigate('RentalLoanFormCongratulation');
+        } else if (steps.all_documents == '') {
+          navigation.navigate('NewAllDocuments');
+        } else if (steps.verifying_documents == '') {
+          navigation.navigate('VerifyingDocuments');
+        } else if (steps.offer_breakdown == '') {
+          navigation.navigate('OfferApprovalBreakDown');
+        } else if (steps.property_detail == '') {
+          navigation.navigate('PostPaymentForm1');
+        } else if (steps.landlord_detail == '') {
+          navigation.navigate('PostPaymentForm2');
+        } else if (steps.referee_detail == '') {
+          navigation.navigate('PostPaymentForm3');
+        } else if (steps.offer_letter == '') {
+          navigation.navigate('PTMFB');
+        } else if (steps.address_verification == '') {
+          navigation.navigate('AddressVerificationPayment');
+        } else if (steps.debitmandate == '') {
+          navigation.navigate('OkraDebitMandate');
+        } else if (steps.awaiting_disbursement == '') {
+          navigation.navigate('AwaitingDisbursement');
+        } else if (steps.dashboard == '') {
+          navigation.navigate('RentNowPayLaterDashboard');
+        } else {
+          navigation.navigate('RentNowPayLaterDashboard');
+        }
+      } else {
+        navigation.navigate('RentNowPayLaterOnboarding');
+      }
+
+      // //QUICK NAVIGATIONS
+      // navigation.navigate('NewAllDocuments');
+    }
+  };
+
+  const handleSavingClick = async () => {
+    navigation.navigate('SavingsHome');
   };
 
   return (
@@ -173,9 +182,7 @@ const Borrow = ({navigation}) => {
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('SavingsHome')}
-            style={designs.button}>
+          <TouchableOpacity onPress={handleSavingClick} style={designs.button}>
             <View style={designs.buttonInnerView}>
               <Text style={designs.buttonText}>Rent Savings</Text>
               <Icon
@@ -188,6 +195,12 @@ const Borrow = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <CompleteProfileModal
+        onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
+        visible={completeProfileModal}
+        navigation={navigation}
+      />
     </View>
   );
 };

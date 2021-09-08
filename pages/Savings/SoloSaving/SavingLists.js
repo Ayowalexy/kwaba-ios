@@ -12,7 +12,10 @@ import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS, images} from '../../../util';
 import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
+import {
+  getMaxLoanCap,
+  getOneSoloSavings,
+} from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
 
@@ -113,9 +116,10 @@ export default function SavingLists({navigation}) {
               <TouchableOpacity
                 key={index}
                 style={[styles.card]}
-                onPress={() =>
-                  navigation.navigate('SoloSavingDashBoard', {id: item.id})
-                }>
+                onPress={() => {
+                  dispatch(getOneSoloSavings(item.id));
+                  navigation.navigate('SoloSavingDashBoard', {id: item.id});
+                }}>
                 <View style={[styles.cardFlex]}>
                   <View style={[styles.progressContainer]}>
                     <AnimatedCircularProgress
