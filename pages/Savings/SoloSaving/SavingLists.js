@@ -225,6 +225,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: -5,
     marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#BFBFBF50',
   },
   cardFlex: {
     flexDirection: 'row',

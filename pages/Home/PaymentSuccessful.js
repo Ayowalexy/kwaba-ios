@@ -14,6 +14,7 @@ import {COLORS, icons, images} from '../../util';
 import {
   getMaxLoanCap,
   getTotalSoloSavings,
+  getOneSoloSavings,
 } from '../../redux/actions/savingsActions';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -42,9 +43,14 @@ export default function PaymentSuccessful(props) {
     return () => backHandler.remove();
   }, []);
 
+  useEffect(() => {}, []);
+
   const handlePress = () => {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
+    dispatch(getOneSoloSavings(props?.route?.params?.id));
+
+    console.log('Payment ID: ', props?.route?.params?.id);
 
     if (props?.route?.params?.name) {
       props.navigation.navigate(props?.route?.params?.name, {

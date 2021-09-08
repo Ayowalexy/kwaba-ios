@@ -135,7 +135,7 @@ const CreditCardFormSavings: React.FC = (props: any) => {
 
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,
-          id: props.ResInfo.id,
+          id: props.ID,
         });
         props.onRequestClose();
       }

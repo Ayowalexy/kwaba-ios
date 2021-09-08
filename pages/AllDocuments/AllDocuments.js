@@ -247,6 +247,11 @@ export default function AllDocuments({navigation}) {
     navigation.navigate('VerifyingDocuments');
   };
 
+  const handleBankStatementUpload = () => {
+    setShowSelectDocumentsModal(false);
+    navigation.navigate('RentalLoanFormBankStatementUpload');
+  };
+
   return (
     <>
       <View style={[styles.container]}>
@@ -380,10 +385,7 @@ export default function AllDocuments({navigation}) {
                     <TouchableOpacity
                       onPress={() => {
                         if (item.title == 'Bank Statement') {
-                          setShowSelectDocumentsModal(false);
-                          navigation.navigate(
-                            'RentalLoanFormBankStatementUpload',
-                          );
+                          handleBankStatementUpload();
                         } else {
                           handleDocumentType(item);
                         }

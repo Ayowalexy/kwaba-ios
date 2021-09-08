@@ -13,7 +13,7 @@ import {COLORS} from '../../util';
 import CreditCardFormSavings from './CreditCardFormSavings';
 
 export default function CreditCardModalSavings(props) {
-  const {onRequestClose, visible, info, navigation, redirectTo} = props;
+  const {onRequestClose, visible, info, navigation, redirectTo, ID} = props;
 
   return (
     <View>
@@ -56,6 +56,7 @@ export default function CreditCardModalSavings(props) {
                   navigation={navigation}
                   onRequestClose={onRequestClose}
                   redirectTo={redirectTo}
+                  ID={ID}
                 />
                 <View
                   style={{

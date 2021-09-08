@@ -79,6 +79,7 @@ export default function AmountModal(props) {
       if (res.status == 200) {
         setSpinner(false);
         // setShowAmountField(false);
+        // onRequestClose();
 
         const resData = res.data.data;
 
@@ -88,7 +89,6 @@ export default function AmountModal(props) {
         setResDataObj(resData);
         setModal(true);
         // console.log('The ResData: ', resData);
-        // onRequestClose();
       } else {
         setSpinner(false);
       }
@@ -218,16 +218,19 @@ export default function AmountModal(props) {
       </View>
       <Spinner visible={spinner} size="large" />
 
-      {modal && (
-        <CreditCardModalSavings
-          onRequestClose={() => setModal(!modal)}
-          visible={modal}
-          navigation={navigation}
-          redirectTo={redirectTo}
-          info={resDataObj}
-          ID={ID}
-        />
-      )}
+      {/* {modal && ( */}
+      <CreditCardModalSavings
+        onRequestClose={() => {
+          setModal(!modal);
+          onRequestClose();
+        }}
+        visible={modal}
+        navigation={navigation}
+        redirectTo={redirectTo}
+        info={resDataObj}
+        ID={ID}
+      />
+      {/* )} */}
     </>
   );
 }

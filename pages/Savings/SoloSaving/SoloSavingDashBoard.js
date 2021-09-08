@@ -56,29 +56,35 @@ export default function SoloSavingDashBoard(props) {
 
   useEffect(() => {
     dispatch(getOneSoloSavingsTransaction(route.params.id));
+    console.log('The ID: ', route.params.id);
   }, []);
 
   useEffect(() => {
-    if (getOneSavings?.data?.length > 0) {
-      setDashboardData();
-    }
+    // console.log('Hello world.....');
+    // if (getOneSavings?.data?.length > 0) {
+    setDashboardData();
+    // console.log('Hello world Inner.....');
+    // }
   }, [getOneSavings]);
 
   const setDashboardData = () => {
-    const data = getOneSavings.data[0];
-    const amount_saved = Number(data.amount_save);
+    if (getOneSavings && getOneSavings.data != undefined) {
+      const data = getOneSavings.data[0];
+      const amount_saved = Number(data?.amount_save);
 
-    console.log('Data: ', data);
+      console.log('Data: ', data);
 
-    setLocked(data.locked);
-    setSavingTitle(data.name);
-    setSavingsTarget(data.target_amount);
-    setPercentAchieved(
-      ((Number(data.amount_save) / Number(data.target_amount)) * 100).toFixed(
-        0,
-      ),
-    );
-    setTotalSaving(amount_saved || 0);
+      setLocked(data?.locked);
+      setSavingTitle(data?.name);
+      setSavingsTarget(data?.target_amount);
+      setPercentAchieved(
+        (
+          (Number(data?.amount_save) / Number(data?.target_amount)) *
+          100
+        ).toFixed(0),
+      );
+      setTotalSaving(amount_saved || 0);
+    }
   };
 
   const goback = () => {
