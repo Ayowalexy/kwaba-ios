@@ -24,6 +24,7 @@ import LoandPurposeModal from '../../components/LoanPurposeModal';
 
 import {useDispatch, useSelector} from 'react-redux';
 import {getMaxLoanCap} from '../../redux/actions/savingsActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -33,6 +34,9 @@ const withdrawalFormSchema = yup.object().shape({
 
 export default function Withdraw({navigation}) {
   const dispatch = useDispatch();
+  const theStoredAccount = useSelector(
+    (state) => state.getBankFromStorageReducer,
+  );
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
   const [amountValue, setAmountValue] = useState('');
@@ -40,6 +44,21 @@ export default function Withdraw({navigation}) {
   const [selectedAmountIndex, setSelectedAmountIndex] = useState(1);
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
   const [loanPurpose, setLoanPurpose] = useState('');
+  const [userSelectedBankAccount, setUserSelectedBankAccount] = useState([]);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+      console.log('The Account From Local Storage: ', storeBank);
+    })();
+  }, []);
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
@@ -49,6 +68,11 @@ export default function Withdraw({navigation}) {
     const data = getMaxLoanCap1.data;
     setSavings(data.you_have_save);
   }, []);
+
+  useEffect(() => {
+    console.log('From Redux Store Man: ', theStoredAccount);
+    setUserSelectedBankAccount(theStoredAccount.data);
+  }, [theStoredAccount]);
 
   const handleSubmit = async (values) => {
     console.log(values);
@@ -363,80 +387,91 @@ export default function Withdraw({navigation}) {
                       Bank Account
                     </Text>
                     <TouchableOpacity
-                      onPress={() => navigation.navigate('CardAndBankDetails')}>
+                      onPress={() => navigation.navigate('Disbursement')}>
                       <Text
                         style={{
                           fontSize: 12,
                           color: COLORS.secondary,
                           fontWeight: 'bold',
                         }}>
-                        Change
+                        {userSelectedBankAccount
+                          ? 'Change Account'
+                          : 'Add Account'}
                       </Text>
                     </TouchableOpacity>
                   </View>
 
-                  <View style={{marginVertical: 30, alignItems: 'center'}}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('CardAndBankDetails')}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: COLORS.primary,
-                          textAlign: 'center',
-                        }}>
-                        No account? Click to select bank account
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  {/* <View style={{marginTop: 20, alignItems: 'center'}}>
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      style={[styles.bankCard]}>
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                            color: COLORS.white,
-                          }}>
-                          JOSHUA UDO NWOSU
-                        </Text>
+                  {!userSelectedBankAccount && (
+                    <View style={{marginVertical: 30, alignItems: 'center'}}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('CardAndBankDetails')
+                        }>
                         <Text
                           style={{
                             fontSize: 12,
-                            color: COLORS.light,
+                            color: COLORS.primary,
+                            textAlign: 'center',
                           }}>
-                          Access Bank
+                          No account? Click to select bank account
                         </Text>
-                        <Text
-                          style={{
-                            top: 70,
-                            fontSize: 14,
-                            color: COLORS.white,
-                            opacity: 0.8,
-                          }}>
-                          0094552107
-                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
 
-                        <Image
-                          style={{
-                            width: 71,
-                            height: 100,
-                            position: 'absolute',
-                            resizeMode: 'contain',
-                            right: -21,
-                            bottom: -100,
-                            borderWidth: 1,
-                          }}
-                          source={images.maskGroup24}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </View> */}
+                  {userSelectedBankAccount && (
+                    <View style={{marginTop: 20}}>
+                      <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={[styles.bankCard]}>
+                        <View>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 'bold',
+                              color: COLORS.white,
+                            }}>
+                            {/* JOSHUA UDO NWOSU */}
+                            {userSelectedBankAccount?.user_bank_name}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: COLORS.light,
+                            }}>
+                            {/* Access Bank(DIAMOND) */}
+                            {userSelectedBankAccount?.bank_name}
+                          </Text>
+                          <Text
+                            style={{
+                              marginTop: 20,
+                              fontSize: 14,
+                              color: COLORS.white,
+                              opacity: 0.8,
+                            }}>
+                            {/* 0094552107 */}
+                            {userSelectedBankAccount?.bank_account_number}
+                          </Text>
+
+                          <Image
+                            style={{
+                              width: 71,
+                              height: 110,
+                              position: 'absolute',
+                              resizeMode: 'contain',
+                              right: -21,
+                              bottom: -20,
+                              borderWidth: 1,
+                            }}
+                            source={images.maskGroup24}
+                          />
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  )}
 
                   <TouchableOpacity
                     style={[styles.button]}
-                    // onPress={() => navigation.navigate('SavingsHome')}
                     onPress={handleSubmit}>
                     <Text
                       style={{
@@ -552,13 +587,10 @@ const styles = StyleSheet.create({
   },
 
   bankCard: {
-    width: 300,
-    maxWidth: '100%',
-    height: 170,
+    width: 270,
+    height: 120,
     backgroundColor: COLORS.primary,
     borderRadius: 20,
-    marginLeft: 5,
-    marginRight: 5,
     padding: 20,
     elevation: 1,
     overflow: 'hidden',

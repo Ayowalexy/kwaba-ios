@@ -24,7 +24,10 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
+import {
+  getTotalSoloSavings,
+  getMaxLoanCap,
+} from '../../redux/actions/savingsActions';
 
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
@@ -69,6 +72,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
 
   const [responseInfo, setResponseInfo] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [appID, setAppID] = useState('');
 
   const dispatch = useDispatch();
 
@@ -83,10 +87,12 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
     return JSON.parse(userData).user;
   };
 
-  // For Solo Savings
-  const verifyPayment = async (data) => {
+  // RNPL REPAYMENT VERIFICATION
+  const verifyPayment = async (data: any) => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+    const url =
+      'http://67.207.86.39:8000/api/v1/application/rentrepayment/verify';
+
     try {
       const response = await axios.post(url, data, {
         headers: {
@@ -100,20 +106,24 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
     }
   };
 
-  // For Address Verification RNPL
-  const addressVerification = async (data) => {
+  useEffect(() => {
+    application();
+  }, []);
+
+  const application = async () => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/application/payment/verify';
     try {
-      const response = await axios.put(url, JSON.stringify(data), {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
         },
-      });
-      return response;
+      );
+      const id = applicationIDCallRes.data.data.id;
+      console.log('App ID: ', id);
+      setAppID(id);
     } catch (error) {
-      return error;
+      console.log('Error: ', error);
     }
   };
 
@@ -122,6 +132,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   }, [props]);
 
   const onSubmit = async (model: FormModel) => {
+    // console.log('The props: ', props);
     setSpinner(true);
     console.log('form submitted: ', model);
     const user = await userData();
@@ -137,62 +148,38 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
         reference: responseInfo?.reference,
       });
 
-      if (props.redirectTo == 'OkraDebitMandate') {
-        const verify = await addressVerification(pay);
+      const data = {
+        reference: pay.reference,
+        applicationId: appID,
+      };
 
-        if (verify?.status == 200) {
-          console.log('Payment verified');
-          console.log('Verify: ', verify);
-          setSpinner(false);
-          // display success modal
-          // navigate to dashboard / homepage
+      // console.log('The Pay: ', data);
+      // setSpinner(false);
 
-          //dispatch
-          dispatch(getTotalSoloSavings());
+      const verify = await verifyPayment(data);
 
-          props.navigation.navigate('PaymentSuccessful', {
-            name: props.redirectTo,
-          });
-          props.onRequestClose();
-        }
+      console.log('Verify Response: ', verify);
+      setSpinner(false);
+
+      if (verify?.status == 200) {
+        console.log('Payment verified');
+        console.log('Verify: ', verify);
+        setSpinner(false);
+        // display success modal
+        // navigate to dashboard / homepage
+
+        //dispatch
+        dispatch(getTotalSoloSavings());
+        // dispatch(getMaxLoanCap());
+
+        props.navigation.navigate('PaymentSuccessful', {
+          name: props.redirectTo,
+          // id: props.ResInfo.id,
+        });
+        props.onRequestClose();
       } else {
-        const verify = await verifyPayment(pay);
-
-        if (verify?.status == 200) {
-          console.log('Payment verified');
-          console.log('Verify: ', verify);
-          setSpinner(false);
-          // display success modal
-          // navigate to dashboard / homepage
-
-          //dispatch
-          dispatch(getTotalSoloSavings());
-
-          props.navigation.navigate('PaymentSuccessful', {
-            name: props.redirectTo,
-          });
-          props.onRequestClose();
-        }
+        setSpinner(false);
       }
-
-      // const verify = await verifyPayment(pay);
-      // const verify = await addressVerification(pay);
-
-      // if (verify?.status == 200) {
-      //   console.log('Payment verified');
-      //   console.log('Verify: ', verify);
-      //   setSpinner(false);
-      //   // display success modal
-      //   // navigate to dashboard / homepage
-
-      //   //dispatch
-      //   dispatch(getTotalSoloSavings());
-
-      //   props.navigation.navigate('PaymentSuccessful', {
-      //     name: props.redirectTo,
-      //   });
-      //   props.onRequestClose();
-      // }
     } catch (error) {
       console.log('The Error: ', error);
       setSpinner(false);

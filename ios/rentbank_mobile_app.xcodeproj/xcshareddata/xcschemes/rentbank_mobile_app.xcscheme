@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "rentbank_mobile_app.app"
-               BlueprintName = "rentbank_mobile_app"
-               ReferencedContainer = "container:rentbank_mobile_app.xcodeproj">
+               BuildableName = "Kwaba_mobile_app.app"
+               BlueprintName = "Kwaba_mobile_app"
+               ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "rentbank_mobile_appTests.xctest"
-               BlueprintName = "rentbank_mobile_appTests"
-               ReferencedContainer = "container:rentbank_mobile_app.xcodeproj">
+               BuildableName = "Kwaba_mobile_appTests.xctest"
+               BlueprintName = "Kwaba_mobile_appTests"
+               ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rentbank_mobile_app.app"
-            BlueprintName = "rentbank_mobile_app"
-            ReferencedContainer = "container:rentbank_mobile_app.xcodeproj">
+            BuildableName = "Kwaba_mobile_app.app"
+            BlueprintName = "Kwaba_mobile_app"
+            ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "rentbank_mobile_app.app"
-            BlueprintName = "rentbank_mobile_app"
-            ReferencedContainer = "container:rentbank_mobile_app.xcodeproj">
+            BuildableName = "Kwaba_mobile_app.app"
+            BlueprintName = "Kwaba_mobile_app"
+            ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -9,15 +9,18 @@ import {
 } from 'react-native';
 import {COLORS, FONTS, images} from '../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import {useSelector, useDispatch} from 'react-redux';
 import {FlatList} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {setBankFromStorage} from '../redux/actions/bankActions';
+import BankAccount from '../pages/UserAccount/CardAndBank/BankAccount';
 
 export default function Disbursement({navigation}) {
   const dispatch = useDispatch();
   const theBank = useSelector((state) => state.getBankAccountsReducer);
   const [clickedID, setClickedID] = useState('');
+  const [userBankAccounts, setUserBankAccounts] = useState([]);
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -25,91 +28,18 @@ export default function Disbursement({navigation}) {
     return user;
   };
 
-  // useEffect(() => {
-  //   console.log('The Bank: ', theBank.data);
-  // }, [theBank]);
-
-  const handlePress = async (item) => {
-    setClickedID(item.id);
-    const user = await getUser();
-    await AsyncStorage.setItem(`storeBank-${user.id}`, JSON.stringify(item));
-
-    dispatch(setBankFromStorage(item));
-  };
-
-  const renderBankAccounts = ({item}) => (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      style={[
-        styles.bankCard,
-        {
-          borderWidth: item.id == clickedID ? 2 : 0,
-          borderColor: item.id == clickedID ? COLORS.secondary : 'none',
-        },
-      ]}
-      onPress={() => {
-        handlePress(item);
-      }}>
-      <View>
-        <Text
-          style={{
-            fontSize: 14,
-            fontWeight: 'bold',
-            color: COLORS.white,
-          }}>
-          {/* {item.bankAccountName} */}
-          {item.user_bank_name}
-        </Text>
-        <Text
-          style={{
-            fontSize: 12,
-            color: COLORS.light,
-          }}>
-          {/* {item.bankName} */}
-          {item.bank_name}
-        </Text>
-        <Text
-          style={{
-            marginTop: 40,
-            fontSize: 14,
-            color: COLORS.white,
-            opacity: 0.8,
-          }}>
-          {/* {item.bankAccountNumber} */}
-          {item.bank_account_number}
-        </Text>
-
-        <Image
-          style={{
-            width: 71,
-            height: 110,
-            position: 'absolute',
-            resizeMode: 'contain',
-            right: -21,
-            bottom: -20,
-            borderWidth: 1,
-          }}
-          source={images.maskGroup24}
-        />
-
-        {item.defaultbank == 1 && (
-          <Icon
-            name="checkbox"
-            size={20}
-            color={COLORS.secondary}
-            style={{
-              position: 'absolute',
-              top: -10,
-              right: -10,
-            }}
-          />
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+      const parsedData = JSON.parse(storeBank);
+      console.log('STORE: BANK: ', parsedData);
+      setClickedID(parsedData.id);
+    })();
+  }, []);
 
   return (
-    <View>
+    <View style={[styles.container]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
@@ -121,25 +51,12 @@ export default function Disbursement({navigation}) {
         }}
         color={COLORS.primary}
       />
+      <Text style={[styles.heading]}>Disbursement Account</Text>
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
-        <View style={styles.content}>
-          <Text style={styles.heading}>Change Account</Text>
-        </View>
-
-        <View style={{marginTop: 20}}>
-          <FlatList
-            data={theBank?.data}
-            renderItem={renderBankAccounts}
-            keyExtractor={(item) => item.id.toString()}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-            style={{
-              marginLeft: 10,
-            }}
-            contentContainerStyle={{
-              paddingVertical: 5,
-            }}
+        <View style={[styles.content]}>
+          <BankAccount
+            userBankAccounts={userBankAccounts}
+            allBanks={(value) => setUserBankAccounts(value)}
           />
         </View>
       </ScrollView>
@@ -149,10 +66,12 @@ export default function Disbursement({navigation}) {
 
 const styles = StyleSheet.create({
   content: {
-    paddingHorizontal: 15,
+    paddingLeft: 10,
+    paddingVertical: 10,
   },
   heading: {
-    fontSize: 18,
+    paddingHorizontal: 20,
+    fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.primary,
   },

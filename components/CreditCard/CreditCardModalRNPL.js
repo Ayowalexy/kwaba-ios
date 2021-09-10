@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
-import CreditCardForm from './CreditCardForm';
+import CreditCardFormRNPL from './CreditCardFormRNPL';
 
 export default function CreditCardModalRNPL(props) {
   const {
@@ -21,6 +21,12 @@ export default function CreditCardModalRNPL(props) {
     redirectTo,
     onConfirm,
   } = props;
+
+  useEffect(() => {
+    console.log('The Info: ', info);
+    console.log('The navigation: ', navigation);
+    console.log('The redirect: ', redirectTo);
+  }, []);
 
   return (
     <View>
@@ -58,7 +64,7 @@ export default function CreditCardModalRNPL(props) {
             </View>
             <ScrollView contentContainerStyle={styles.content}>
               <View style={{flex: 1}}>
-                <CreditCardForm
+                <CreditCardFormRNPL
                   ResInfo={info}
                   navigation={navigation}
                   onRequestClose={onRequestClose}

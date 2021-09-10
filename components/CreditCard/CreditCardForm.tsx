@@ -1,9 +1,14 @@
 import React, {useRef, useState, useEffect} from 'react';
 import {
+  // @ts-ignore
   View,
+  // @ts-ignore
   Text,
+  // @ts-ignore
   StyleSheet,
+  // @ts-ignore
   TextInput,
+  // @ts-ignore
   TouchableOpacity,
 } from 'react-native';
 import {COLORS} from '../../util/index';
@@ -67,6 +72,7 @@ const CreditCardForm: React.FC = (props: any) => {
 
   const [responseInfo, setResponseInfo] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [appID, setAppID] = useState('');
 
   const dispatch = useDispatch();
 
@@ -82,11 +88,13 @@ const CreditCardForm: React.FC = (props: any) => {
   };
 
   // For Solo Savings
-  const verifyPayment = async (data) => {
+  const verifyPayment = async (data: any) => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+    // const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+    const url = 'http://67.207.86.39:8000/api/v1/application/payment/verify';
+
     try {
-      const response = await axios.post(url, data, {
+      const response = await axios.put(url, data, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: token,
@@ -95,6 +103,27 @@ const CreditCardForm: React.FC = (props: any) => {
       return response;
     } catch (error) {
       return error.message;
+    }
+  };
+
+  useEffect(() => {
+    application();
+  }, []);
+
+  const application = async () => {
+    const token = await getToken();
+    try {
+      const applicationIDCallRes = await axios.get(
+        'http://67.207.86.39:8000/api/v1/application/one',
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      const id = applicationIDCallRes.data.data.id;
+      console.log('App ID: ', id);
+      setAppID(id);
+    } catch (error) {
+      console.log('Error: ', error);
     }
   };
 
@@ -118,7 +147,17 @@ const CreditCardForm: React.FC = (props: any) => {
         reference: responseInfo?.reference,
       });
 
-      const verify = await verifyPayment(pay);
+      const data = {
+        reference: pay.reference,
+        applicationId: appID,
+      };
+
+      // console.log('The Pay: ', data);
+      // setSpinner(false);
+
+      const verify = await verifyPayment(data);
+
+      console.log('Verify Response: ', verify);
 
       if (verify?.status == 200) {
         console.log('Payment verified');
@@ -133,9 +172,11 @@ const CreditCardForm: React.FC = (props: any) => {
 
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,
-          id: props.ResInfo.id,
+          // id: props.ResInfo.id,
         });
         props.onRequestClose();
+      } else {
+        setSpinner(false);
       }
     } catch (error) {
       console.log('The Error: ', error);

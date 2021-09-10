@@ -21,6 +21,7 @@ import {verifyPayment} from '../../services/network';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModal from '../../components/CreditCard/CreditCardModal';
+import {formatNumber} from '../../util/numberFormatter';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -77,7 +78,7 @@ const AddressVerificationPayment = ({navigation}) => {
           landlord_detail: 'done',
           referee_detail: 'done',
           offer_letter: 'done',
-          address_verification: 'done',
+          address_verification: 'done-add',
           debitmandate: '',
           awaiting_disbursement: '',
           dashboard: '',
@@ -97,7 +98,7 @@ const AddressVerificationPayment = ({navigation}) => {
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Borrow')}
         name="arrow-back-outline"
         size={25}
         style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
@@ -148,24 +149,40 @@ const AddressVerificationPayment = ({navigation}) => {
               paddingHorizontal: 10,
             },
           ]}>
-          You’re almost done. We just need to verify your address to proceed
-          with your rent payment.
+          You’re almost done. We just need to verify your address to make your
+          rent payment.
         </Text>
         <TouchableOpacity
           onPress={handleNavigation}
-          style={[designs.button, {backgroundColor: COLORS.secondary}]}>
+          style={[
+            designs.button,
+            {
+              backgroundColor: COLORS.secondary,
+              flexDirection: 'row',
+              justifyContent: 'center',
+            },
+          ]}>
           <Text
-            style={[
-              designs.buttonText,
-              {
-                color: COLORS.white,
-                textAlign: 'center',
-                fontWeight: 'normal',
-                fontSize: 12,
-                fontWeight: 'bold',
-              },
-            ]}>
-            ADDRESS VERIFICATION
+            style={{
+              color: COLORS.white,
+              textAlign: 'center',
+              fontWeight: 'normal',
+              fontSize: 12,
+              fontWeight: 'bold',
+              marginRight: 5,
+            }}>
+            PAY
+          </Text>
+          <Text
+            style={{
+              color: COLORS.white,
+              textAlign: 'center',
+              fontWeight: 'normal',
+              fontSize: 12,
+              fontWeight: 'bold',
+            }}>
+            {' '}
+            ₦{formatNumber(2500)}
           </Text>
         </TouchableOpacity>
         <Spinner visible={spinner} animation="fade" size="large" />

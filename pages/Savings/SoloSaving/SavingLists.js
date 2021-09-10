@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {
   getMaxLoanCap,
   getOneSoloSavings,
+  getOneSoloSavingsTransaction,
 } from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
@@ -44,7 +45,7 @@ export default function SavingLists({navigation}) {
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate('SavingsHome')}
             style={{
               backgroundColor: '#46596950',
               width: 40,
@@ -118,6 +119,7 @@ export default function SavingLists({navigation}) {
                 style={[styles.card]}
                 onPress={() => {
                   dispatch(getOneSoloSavings(item.id));
+                  dispatch(getOneSoloSavingsTransaction(item.id));
                   navigation.navigate('SoloSavingDashBoard', {id: item.id});
                 }}>
                 <View style={[styles.cardFlex]}>

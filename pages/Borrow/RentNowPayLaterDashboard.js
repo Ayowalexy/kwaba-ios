@@ -13,7 +13,11 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../util/index';
-import {currencyFormat, formatNumber} from '../../util/numberFormatter';
+import {
+  currencyFormat,
+  formatNumber,
+  unFormatNumber,
+} from '../../util/numberFormatter';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -51,6 +55,39 @@ export default function RentNowPayLaterDashboard({navigation}) {
     const token = JSON.parse(userData).token;
     return token;
   };
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+
+      let stepsData = {
+        application_form: 'done',
+        congratulation: 'done',
+        all_documents: 'done',
+        verifying_documents: 'done',
+        offer_breakdown: 'done',
+        property_detail: 'done',
+        landlord_detail: 'done',
+        referee_detail: 'done',
+        offer_letter: 'done',
+        address_verification: 'done',
+        debitmandate: 'done',
+        awaiting_disbursement: 'done',
+        dashboard: 'done',
+      };
+
+      await AsyncStorage.setItem(
+        `rentalSteps-${user.id}`,
+        JSON.stringify(stepsData),
+      );
+    })();
+  }, []);
 
   const getDashboardData = async () => {
     const token = await getToken();
@@ -137,12 +174,14 @@ export default function RentNowPayLaterDashboard({navigation}) {
   const handleSubmit = async (values) => {
     console.log('The Values: ', values.amount);
     const data = {
-      amount: values.amount,
+      amount: unFormatNumber(values.amount),
     };
     try {
       setSpinner(true);
       const res = await payment(data);
       if (res.status == 200) {
+        // USE THIS DATA LATER FOR PAYMENT
+        // VERIFICATION
         const verifyPaymentData = {
           reference: res.data.data.reference,
           applicationId: loanID,
@@ -150,6 +189,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
         console.log('verify payment data: ', verifyPaymentData);
         console.log('Res: ', res.data.data);
+        setResDataObj(res.data.data);
         setSpinner(false);
         setModal(true);
       }
@@ -519,15 +559,17 @@ export default function RentNowPayLaterDashboard({navigation}) {
           </View>
         </Modal>
 
-        <CreditCardModalRNPL
-          onRequestClose={() => {
-            setModal(!modal);
-          }}
-          visible={modal}
-          info={resDataObj}
-          navigation={navigation}
-          redirectTo="RentNowPayLaterDashboard"
-        />
+        {modal && (
+          <CreditCardModalRNPL
+            onRequestClose={() => {
+              setModal(!modal);
+            }}
+            visible={modal}
+            info={resDataObj}
+            navigation={navigation}
+            redirectTo="RentNowPayLaterDashboard"
+          />
+        )}
 
         <Spinner visible={spinner} size="large" />
       </View>

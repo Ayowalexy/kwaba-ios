@@ -31,9 +31,16 @@ const AwaitingDisbursement = ({navigation, route}) => {
     return token;
   };
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const getApplicationData = async () => {
     setSpinner(true);
     const token = await getToken();
+    const user = await getUser();
     const url = 'http://67.207.86.39:8000/api/v1/application/one';
 
     try {
@@ -65,6 +72,28 @@ const AwaitingDisbursement = ({navigation, route}) => {
       if (applicationId == 7) {
         setSpinner(false);
         // navigation.navigate('RentalLoanActiveDashBoard');
+
+        let stepsData = {
+          application_form: 'done',
+          congratulation: 'done',
+          all_documents: 'done',
+          verifying_documents: 'done',
+          offer_breakdown: 'done',
+          property_detail: 'done',
+          landlord_detail: 'done',
+          referee_detail: 'done',
+          offer_letter: 'done',
+          address_verification: 'done',
+          debitmandate: 'done',
+          awaiting_disbursement: 'done',
+          dashboard: '',
+        };
+
+        await AsyncStorage.setItem(
+          `rentalSteps-${user.id}`,
+          JSON.stringify(stepsData),
+        );
+
         navigation.navigate('RentNowPayLaterDashboard');
       } else {
         setSpinner(false);

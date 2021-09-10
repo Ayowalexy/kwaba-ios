@@ -29,8 +29,8 @@ const pigIcon = require('../assets/icons/pig-icon.png');
 const plus_1 = require('../assets/icons/plus_1.svg');
 const profile = require('../assets/icons/profile.png');
 const progressCircle = require('../assets/icons/progress-circle.svg');
-const rentBankGreyIcon = require('../assets/icons/rentbank-grey-icon.svg');
-const rentBankLogoColoredBackground = require('../assets/icons/rentbank-logo-colored-bg.svg');
+// const KwabaGreyIcon = require('../assets/icons/Kwaba-grey-icon.svg');
+// const KwabaLogoColoredBackground = require('../assets/icons/Kwaba-logo-colored-bg.svg');
 const shareAlt = require('../assets/icons/share-alt.svg');
 const shareIcon = require('../assets/icons/share-icon.svg');
 const signIn = require('../assets/icons/sign-in-alt.svg');
@@ -141,8 +141,8 @@ export {
   plus_1,
   profile,
   progressCircle,
-  rentBankGreyIcon,
-  rentBankLogoColoredBackground,
+  // KwabaGreyIcon,
+  // KwabaLogoColoredBackground,
   shareAlt,
   shareIcon,
   signIn,
@@ -181,7 +181,6 @@ export {
   cancelIcon,
   kwabalogocol,
   kwabalogonocol,
-  // bottom  navigation icons
   borrowIcon,
   welcomeShape1,
   welcomeShape2,

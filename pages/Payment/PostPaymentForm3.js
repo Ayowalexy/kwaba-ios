@@ -144,7 +144,6 @@ const PostPaymentForm1 = ({navigation}) => {
       let stepsData = {
         application_form: 'done',
         congratulation: 'done',
-        bank_statement_upload: 'done',
         all_documents: 'done',
         verifying_documents: 'done',
         offer_breakdown: 'done',
@@ -155,6 +154,7 @@ const PostPaymentForm1 = ({navigation}) => {
         address_verification: '',
         debitmandate: '',
         awaiting_disbursement: '',
+        dashboard: '',
       };
       await AsyncStorage.setItem(
         `rentalSteps-${user.id}`,
@@ -174,11 +174,13 @@ const PostPaymentForm1 = ({navigation}) => {
       if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
         // navigation.navigate('AcceptanceLetterKwaba');
         // navigation.navigate('AcceptanceletterAddosser');
-        navigation.navigate('AddosserLetter');
+        // navigation.navigate('AddosserLetter');
+        navigation.navigate('PTMFB');
       } else {
         // navigation.navigate('AcceptanceLetterKwaba');
         // navigation.navigate('AcceptanceletterAddosser');
-        navigation.navigate('AddosserLetter');
+        // navigation.navigate('AddosserLetter');
+        navigation.navigate('PTMFB');
       }
 
       // navigation.navigate('OfferLetter');

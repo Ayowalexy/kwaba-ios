@@ -31,6 +31,7 @@ import SuccessModal from './SuccessModal';
 import {getBankAccounts} from '../../../redux/actions/bankActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getBankFromStorageReducer} from '../../../redux/reducers/bankReducer';
+import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 
 const EmergencyLoanRequest = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -204,7 +205,11 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navigation.goBack();
+          dispatch(getBankAccounts());
+          dispatch(getMaxLoanCap());
+        }}
         name="arrow-back-outline"
         size={25}
         style={{

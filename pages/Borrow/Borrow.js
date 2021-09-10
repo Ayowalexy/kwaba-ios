@@ -26,7 +26,7 @@ const Borrow = ({navigation}) => {
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
-    console.log('steps here' + steps);
+    // console.log('steps here' + steps);
     try {
       const applicationIDCallRes = await axios.get(
         'http://67.207.86.39:8000/api/v1/application/one',
@@ -34,14 +34,14 @@ const Borrow = ({navigation}) => {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      console.log(applicationIDCallRes.data.data.id);
-      console.log(applicationIDCallRes.data.data);
+      // console.log(applicationIDCallRes.data.data.id);
+      // console.log(applicationIDCallRes.data.data);
       const applicationId = applicationIDCallRes.data.data.id;
       const status = applicationIDCallRes.data.data.status;
       const statement = applicationIDCallRes.data.data.statement;
       if (status !== 4) {
         setExistingApplication(applicationId);
-        console.log('here', applicationId);
+        // console.log('here', applicationId);
       }
     } catch (error) {
       console.log(error.response.data);
@@ -60,6 +60,15 @@ const Borrow = ({navigation}) => {
     return user;
   };
 
+  // useEffect(() => {
+  //   (async () => {
+  //     const user = await getUser();
+  //     const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
+  //     const steps = JSON.parse(rentalSteps);
+  //     console.log('The stepp:', steps);
+  //   })();
+  // }, []);
+
   const handleRentalLoanClick = async () => {
     const user = await getUser();
     if (user.profile_complete == 0) {
@@ -69,6 +78,11 @@ const Borrow = ({navigation}) => {
 
       const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
       const steps = JSON.parse(rentalSteps);
+      console.log('The stepp:', steps);
+
+      // TODO function check if payment disbusrsed,
+      // TODO function check if payment address payment,
+      // TODO function check if payment document verification,
 
       if (steps != null) {
         if (steps == null) {
@@ -133,7 +147,7 @@ const Borrow = ({navigation}) => {
           zIndex: 1,
           padding: 20,
         }}
-        onPress={() => navigation.goBack()}>
+        onPress={() => navigation.navigate('Home')}>
         <Icon
           name="arrow-back-outline"
           size={25}

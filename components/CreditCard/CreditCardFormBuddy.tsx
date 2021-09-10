@@ -84,7 +84,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   };
 
   // For Buddy Savings
-  const verifyPayment = async (data) => {
+  const verifyPayment = async (data: any) => {
     const token = await getToken();
     const url = 'http://67.207.86.39:8000/api/v1/buddy/verifypayment';
     try {
@@ -105,7 +105,8 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   }, [props]);
 
   const onSubmit = async (model: FormModel) => {
-    console.log({id: props.ResInfo.buddy_savings.id});
+    // console.log({id: props.ResInfo.buddy_savings.id});
+    // console.log(props.ResInfo.payment.user_id);
 
     setSpinner(true);
     console.log('form submitted: ', model);
@@ -138,7 +139,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
 
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,
-          id: props.ResInfo.buddy_savings.id,
+          id: props.ResInfo.payment.savings_id,
         });
         props.onRequestClose();
       }

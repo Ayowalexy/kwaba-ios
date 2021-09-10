@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface rentbank_mobile_appTests : XCTestCase
+@interface Kwaba_mobile_appTests : XCTestCase
 
 @end
 
-@implementation rentbank_mobile_appTests
+@implementation Kwaba_mobile_appTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL(^)(UIView *view))test
 {

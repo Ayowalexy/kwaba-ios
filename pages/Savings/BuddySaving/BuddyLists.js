@@ -45,7 +45,7 @@ export default function BuddyLists({navigation}) {
         }}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate('SavingsHome')}
             style={{
               backgroundColor: '#46596950',
               width: 40,
@@ -118,9 +118,10 @@ export default function BuddyLists({navigation}) {
                 <TouchableOpacity
                   key={index}
                   style={[styles.card]}
-                  onPress={() =>
-                    navigation.navigate('BuddySavingDashBoard', {id: item.id})
-                  }>
+                  onPress={() => {
+                    navigation.navigate('BuddySavingDashBoard', {id: item.id});
+                    // console.log(item.id);
+                  }}>
                   <View style={[styles.cardFlex]}>
                     <View style={[styles.progressContainer]}>
                       <AnimatedCircularProgress

@@ -16,7 +16,7 @@ export default function BuddyPaymentScreen(props) {
   const handlePayment = async () => {
     const resData = route.params.data;
 
-    console.log('ID: ', resData);
+    console.log('IDDDDDD: ', resData);
 
     const buddyRes = resData.buddy_savings;
     const paymentRes = resData.payment;

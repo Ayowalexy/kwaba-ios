@@ -175,13 +175,11 @@ export default function Screen1(props) {
     const data = {
       ...props.route.params,
       duration: values.savingDuration[0],
-      date_starting: moment(values.savingStartDate).format('DD-MM-YYYY'),
-      date_ending: moment(values.savingStartDate)
-        .add(
-          Number(values.savingDuration[0]),
-          values.savingDuration[2].toUpperCase(),
-        )
-        .format('DD-MM-YYYY'),
+      date_starting: moment(values.savingStartDate),
+      date_ending: moment(values.savingStartDate).add(
+        Number(values.savingDuration[0]),
+        values.savingDuration[2].toUpperCase(),
+      ),
     };
     // console.log('The Data: ', data);
 

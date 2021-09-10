@@ -34,6 +34,8 @@ import axios from 'axios';
 import {getOneUserBuddySavings} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import TransactionsTab from '../SoloSaving/TransactionTabs';
+import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
+import AmountModal from '../../../components/amountModal';
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
@@ -58,6 +60,10 @@ export default function SoloSavingDashBoard(props) {
   const [spinner, setSpinner] = useState(false);
   const [yourSavings, setYourSavings] = useState(0);
   const [buddies, setBuddies] = useState([]);
+
+  const [showPaymentType, setShowPaymentType] = useState(false);
+  const [showAmountModal, setShowAmountModal] = useState(false);
+  const [channel, setChannel] = useState('');
 
   useEffect(() => {
     console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route.params);
@@ -129,7 +135,7 @@ export default function SoloSavingDashBoard(props) {
                   top: 0,
                   zIndex: 5,
                 }}
-                onPress={() => setQuickSaveModal(true)}>
+                onPress={() => setShowPaymentType(true)}>
                 <Image
                   style={{
                     width: 50,
@@ -469,10 +475,31 @@ export default function SoloSavingDashBoard(props) {
         <TransactionsTab transactions={transactions} />
       </ScrollView>
 
-      <QuickSaveModal
+      {/* <QuickSaveModal
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
-      />
+      /> */}
+
+      {showPaymentType && (
+        <PaymentTypeModalForSavings
+          onRequestClose={() => setShowPaymentType(!showPaymentType)}
+          visible={showPaymentType}
+          setShowAmountModal={(bol) => setShowAmountModal(bol)}
+          setChannel={(value) => setChannel(value)}
+        />
+      )}
+
+      {showAmountModal && (
+        <AmountModal
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          navigation={navigation}
+          channel={channel}
+          ID={route.params.id}
+          redirectTo="BuddySavingsDashBoard"
+          from="buddy"
+        />
+      )}
 
       <Spinner visible={spinner} size="large" />
     </View>

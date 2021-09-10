@@ -12,13 +12,24 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {getSingleLoan} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {formatNumber} from '../../../util/numberFormatter';
+import moment from 'moment';
 
 export default function ActiveLoanModal(props) {
   const {visible, onRequestClose, loanID, loanData} = props;
   const [spinner, setSpinner] = useState(false);
 
+  const [dataValue, setDataValue] = useState({
+    status: '',
+    loan_purpose: '',
+    loan_amount: '',
+    repayment_date: '',
+    account_name: '',
+    account_number: '',
+    account_bank: '',
+  });
+
   useEffect(() => {
-    console.log('Loan Data: ', loanData);
+    // console.log('Loan Data: ', loanData);
     getOne();
   }, []);
 
@@ -29,7 +40,17 @@ export default function ActiveLoanModal(props) {
     try {
       const resp = await getSingleLoan(data);
       if (resp.status == 200) {
-        console.log('response get one loan: ', resp.data.data);
+        // console.log('response get one loan: ', resp.data.data);
+        const d = resp.data.data;
+        setDataValue({
+          status: d.status,
+          loan_purpose: d.loan_purpose,
+          loan_amount: d.loan_amount,
+          repayment_date: d.repayment_date,
+          account_name: d.disbursement_account_name,
+          account_number: d.disbursement_account_number,
+          account_bank: d.disbursement_account_bank,
+        });
       }
     } catch (error) {
       console.log('Error: ', error);
@@ -38,32 +59,38 @@ export default function ActiveLoanModal(props) {
 
   return (
     <>
-      <StatusBar
-        animated={true}
-        // backgroundColor={loanData.status == 1 ? COLORS.primary : COLORS.orange}
-        backgroundColor={COLORS.primary}
-        barStyle="default"
-      />
       <Modal
         visible={visible}
         onRequestClose={onRequestClose}
-        animationType="fade"
+        animationType="slide"
         transparent={true}>
         <View style={styles.centeredModalWrapper}>
           <View style={[styles.bg]}>
             <View
               style={{
-                // backgroundColor:
-                //   loanData.status == 1 ? COLORS.primary : COLORS.orange,
                 backgroundColor: COLORS.primary,
                 width: '100%',
                 height: 100,
-              }}
-            />
+              }}>
+              <Icon
+                onPress={onRequestClose}
+                name="arrow-back-outline"
+                size={25}
+                style={{
+                  padding: 15,
+                  fontWeight: '900',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  zIndex: 2,
+                }}
+                color={COLORS.white}
+              />
+            </View>
             <View
               style={{
                 paddingHorizontal: 20,
-                marginTop: -50,
+                marginTop: -40,
               }}>
               <View
                 style={{
@@ -71,7 +98,6 @@ export default function ActiveLoanModal(props) {
                   width: '100%',
                   minHeight: 50,
                   elevation: 1,
-                  // padding: 20,
                   paddingHorizontal: 30,
                   paddingVertical: 20,
                   borderRadius: 5,
@@ -99,15 +125,12 @@ export default function ActiveLoanModal(props) {
                         marginLeft: 2,
                         color: COLORS.dark,
                       }}>
-                      ₦{formatNumber(20000)}
+                      ₦{formatNumber(dataValue.loan_amount)}
                     </Text>
                   </View>
 
                   <TouchableOpacity
                     style={{
-                      // backgroundColor:
-                      //   loanData.status == 1 ? COLORS.primary : COLORS.orange,
-                      // padding: 20,
                       backgroundColor: COLORS.primary,
                       paddingVertical: 10,
                       paddingHorizontal: 20,
@@ -120,7 +143,7 @@ export default function ActiveLoanModal(props) {
                         fontSize: 10,
                         fontStyle: 'italic',
                       }}>
-                      {loanData.status == 1 ? 'PAY NOW' : 'PENDING'}
+                      {dataValue.status != 'pending' ? 'PAY NOW' : 'PENDING'}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -129,26 +152,11 @@ export default function ActiveLoanModal(props) {
               <View
                 style={{
                   width: '100%',
-                  // minHeight: 200,
-                  // flex: 1,
                   backgroundColor: COLORS.white,
                   marginTop: 10,
                   borderRadius: 5,
-                  // elevation: 100,
                   elevation: 1,
                 }}>
-                <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Account Name</Text>
-                  <Text style={[styles.tableValue]}>JOSHUA UDO NWOSU</Text>
-                </View>
-                <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Account Number</Text>
-                  <Text style={[styles.tableValue]}>0094552107</Text>
-                </View>
-                <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Bank</Text>
-                  <Text style={[styles.tableValue]}>Access Bank(Diamond)</Text>
-                </View>
                 <View style={[styles.table]}>
                   <Text style={[styles.tableLabel]}>Status</Text>
                   <Text
@@ -156,7 +164,47 @@ export default function ActiveLoanModal(props) {
                       styles.tableValue,
                       {fontStyle: 'italic', fontWeight: 'bold'},
                     ]}>
-                    {loanData.status == 1 ? 'PAID' : 'PENDING'}
+                    {dataValue.status != 'pending' ? 'PAID' : 'PENDING'}
+                  </Text>
+                </View>
+
+                <Text style={[styles.tableHeader]}>Loan Details</Text>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Loan Purpose</Text>
+                  <Text style={[styles.tableValue]}>
+                    {dataValue.loan_purpose}
+                  </Text>
+                </View>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Loan Amount</Text>
+                  <Text style={[styles.tableValue]}>
+                    ₦{formatNumber(dataValue.loan_amount)}
+                  </Text>
+                </View>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Repayment Date</Text>
+                  <Text style={[styles.tableValue]}>
+                    {moment(dataValue.repayment_date).format('MMM DD YYYY')}
+                  </Text>
+                </View>
+
+                <Text style={[styles.tableHeader]}>Disbursement Account</Text>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Account Name</Text>
+                  <Text style={[styles.tableValue]}>
+                    {dataValue.account_name}
+                  </Text>
+                </View>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Account Number</Text>
+                  <Text style={[styles.tableValue]}>
+                    {dataValue.account_number}
+                  </Text>
+                </View>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Bank</Text>
+                  <Text style={[styles.tableValue]}>
+                    {dataValue.account_bank}
                   </Text>
                 </View>
               </View>
@@ -212,8 +260,17 @@ const styles = StyleSheet.create({
     color: COLORS.dark,
   },
   tableValue: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: 'normal',
+    fontStyle: 'italic',
     color: COLORS.dark,
+  },
+  tableHeader: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: COLORS.dark,
+    paddingVertical: 20,
+    textAlign: 'center',
+    textTransform: 'uppercase',
   },
 });

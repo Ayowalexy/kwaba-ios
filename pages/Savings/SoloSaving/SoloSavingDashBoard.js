@@ -442,6 +442,7 @@ export default function SoloSavingDashBoard(props) {
           channel={channel}
           ID={route.params.id}
           redirectTo="SoloSavingDashBoard"
+          from="solo"
         />
       )}
 

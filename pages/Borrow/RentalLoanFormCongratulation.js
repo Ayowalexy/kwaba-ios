@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  BackHandler,
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
@@ -28,6 +29,20 @@ export default function RentalLoanFormCongratulation({navigation}) {
 
       setRequestAmount(data.loanable_amount);
     })();
+  }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      navigation.navigate('Borrow');
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
   }, []);
 
   const getToken = async () => {

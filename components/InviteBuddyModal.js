@@ -52,6 +52,7 @@ export default function InviteBuddyModal(props) {
     const userData = await AsyncStorage.getItem('userData');
     const username = JSON.parse(userData).username;
     console.log('USRENAME: ', username);
+    console.log('ID: ', JSON.parse(userData));
     setUserName(username);
   };
 
@@ -95,64 +96,36 @@ export default function InviteBuddyModal(props) {
   };
 
   useEffect(() => {
-    console.log('The ResData: ', resData);
-    console.log('The Data: ', data);
+    const numberOfBuddiesAndMe = Number(data.number_of_buddies) + 1;
+    const numberOfBuddies = Number(data.number_of_buddies);
 
-    // const numberOfBuddiesAndMe = Number(data.number_of_buddies) + 1;
-    // const numberOfBuddies = Number(data.number_of_buddies);
-
-    // const buddies_target = Math.round(
-    //   Number(data.target_amount) -
-    //     Number(data.target_amount) / numberOfBuddiesAndMe,
-    // );
+    const buddies_target = Math.round(
+      Number(data.target_amount) -
+        Number(data.target_amount) / numberOfBuddiesAndMe,
+    );
 
     // console.log(data.target_amount);
 
-    // const calc = buddies_target / numberOfBuddies;
+    const calc = (buddies_target / numberOfBuddies).toFixed(0);
 
-    // let start = moment(data.date_starting).format('DD/MM/YYYY');
-    // let end = moment(data.date_ending);
+    let start = moment(data.date_starting);
+    let end = moment(data.date_ending);
 
-    // let s = data.date_starting;
-    // let e = data.date_ending;
+    let diff = end.diff(
+      start,
+      data.savings_frequency.toLowerCase() == 'daily'
+        ? 'days'
+        : data.savings_frequency
+            .substring(0, data.savings_frequency.length - 2)
+            .toLowerCase() + 's',
+    );
+    console.log('Calc: ', diff);
 
-    let start = moment(startDate);
-    let end = moment(endDate);
+    setBuddyTarget(calc);
 
-    // let diff = end.diff(
-    //   start,
-    //   data.savings_frequency.toLowerCase() == 'daily'
-    //     ? 'days'
-    //     : data.savings_frequency
-    //         .substring(0, data.savings_frequency.length - 2)
-    //         .toLowerCase() + 's',
-    // );
-    // console.log('Calc: ', diff);
-
-    console.log('The New Value: ', start, end);
-    // console.log('THE S,E', s, e);
-
-    // console.log('The Data: ', start, end);
-
-    // setBuddyTarget(calc);
-
-    // // const duration = Number(data.duration) == 1 ? 12 : Number(data.duration);
-
-    // const saving_amount = (calc / 4).toFixed(0);
-    // setSavingAmount(saving_amount);
+    const saving_amount = (calc / diff).toFixed(0);
+    setSavingAmount(saving_amount);
   }, []);
-
-  // const sendInvite = async () => {
-  //   const inviteTemplate = {
-  //     fullname: fullname,
-  //     email: email,
-  //     allocatedAmount: buddyTarget,
-  //     monthlySaving: savingAmount,
-  //   };
-
-  //   setBuddyInvite(inviteTemplate);
-  //   onRequestClose();
-  // };
 
   const sendInvite = async () => {
     setSpinner(true);
@@ -177,7 +150,7 @@ export default function InviteBuddyModal(props) {
           fullname: fullname,
           email: email,
           allocatedAmount: buddyTarget,
-          monthlySaving: savingAmount,
+          savingAmount: savingAmount,
           id: res.data.buddy.id,
         };
 

@@ -16,6 +16,7 @@ import {formatNumber, unFormatNumber} from '../util/numberFormatter';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {
+  addFundsToBuddySavings,
   addFundsToSavings,
   getOneUserSavings,
   getUserSavings,
@@ -43,6 +44,7 @@ export default function AmountModal(props) {
     navigation,
     redirectTo,
     ID,
+    from,
     openSuccessModal,
   } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
@@ -68,34 +70,41 @@ export default function AmountModal(props) {
     };
 
     // console.log('The DATATAATA: ', data);
+    // console.log('From: ', from);
 
-    try {
-      setSpinner(true);
+    if (from == 'solo') {
+      try {
+        setSpinner(true);
 
-      const res = await addFundsToSavings(data);
+        const res = await addFundsToSavings(data);
+        // console.log('The Res: ', res);
 
-      console.log('The Res: ', res);
+        if (res.status == 200) {
+          setSpinner(false);
+          const resData = res.data.data;
 
-      if (res.status == 200) {
-        setSpinner(false);
-        // setShowAmountField(false);
-        // onRequestClose();
-
-        const resData = res.data.data;
-
-        // we can use redux to dispatch this data
-        // but for now let's use useState by sending
-        // the data as props
-        setResDataObj(resData);
-        setModal(true);
-        // console.log('The ResData: ', resData);
-      } else {
+          // we can use redux to dispatch this data
+          // but for now let's use useState by sending
+          // the data as props
+          setResDataObj(resData);
+          setModal(true);
+        } else {
+          setSpinner(false);
+        }
+      } catch (error) {
+        console.log(error);
         setSpinner(false);
       }
-      // }
-    } catch (error) {
-      console.log(error);
-      setSpinner(false);
+    } else {
+      // console.log('Setup');
+      try {
+        // setSpinner(true);
+        const res = await addFundsToBuddySavings(data);
+        console.log('The Res: ', res);
+      } catch (error) {
+        console.log(error);
+        setSpinner(false);
+      }
     }
   };
 

@@ -24,7 +24,7 @@ const screens = [
     id: 2,
     title: 'Rent Discount',
     content:
-      'Pay your rent in advance via RentBank, you get discounts on your rent payment',
+      'Pay your rent in advance via Kwaba, you get discounts on your rent payment',
     image: images.rentDiscountOnboardingImage,
   },
   {

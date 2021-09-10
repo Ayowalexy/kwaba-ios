@@ -18,7 +18,6 @@ const INITIAL_STATE = {
       isUploaded: false,
       documentID: '',
     },
-
     3: {
       id: 3,
       title: 'Work Identity ',
@@ -38,6 +37,14 @@ const INITIAL_STATE = {
     5: {
       id: 5,
       title: 'Employment Letter',
+      isUploading: false,
+      progress: 0,
+      isUploaded: false,
+      documentID: '',
+    },
+    6: {
+      id: 6,
+      title: 'Utility Bill',
       isUploading: false,
       progress: 0,
       isUploaded: false,

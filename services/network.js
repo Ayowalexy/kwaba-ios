@@ -536,6 +536,19 @@ const verifySavingsPayment = async (data) => {
   }
 };
 
+const addFundsToBuddySavings = async (data) => {
+  const url = apiUrl + '/api/v1/add_fund_tobuddy_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 // Accept Offer
 const acceptOffer = async (data) => {
   const url = apiUrl + '/api/v1/application/accept_offer';
@@ -695,4 +708,5 @@ export {
   BuyPurchaseAirtime,
   getAllBanks,
   getBillsCategory,
+  addFundsToBuddySavings,
 };

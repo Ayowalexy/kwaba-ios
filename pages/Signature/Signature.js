@@ -62,9 +62,17 @@ export default function Signature({navigation}) {
       return token;
     };
 
+    const getUser = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const user = JSON.parse(userData).user;
+      return user;
+    };
+
     const path = RNFS.CachesDirectoryPath + 'sign.png';
 
     const token = await getToken();
+    const user = await getUser();
+
     const applicationIDCallRes = await axios.get(
       'http://67.207.86.39:8000/api/v1/application/one',
       {
@@ -91,7 +99,6 @@ export default function Signature({navigation}) {
         let stepsData = {
           application_form: 'done',
           congratulation: 'done',
-          bank_statement_upload: 'done',
           all_documents: 'done',
           verifying_documents: 'done',
           offer_breakdown: 'done',
@@ -102,8 +109,12 @@ export default function Signature({navigation}) {
           address_verification: '',
           debitmandate: '',
           awaiting_disbursement: '',
+          dashboard: '',
         };
-        await AsyncStorage.setItem('rentalSteps', JSON.stringify(stepsData));
+        await AsyncStorage.setItem(
+          `rentalSteps-${user.id}`,
+          JSON.stringify(stepsData),
+        );
         console.log('STEPS: ', steps);
 
         navigation.navigate('AddressVerificationPayment');
@@ -165,7 +176,7 @@ export default function Signature({navigation}) {
   return (
     <View style={[styles.container]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Borrow')}
         name="arrow-back-outline"
         size={25}
         style={{

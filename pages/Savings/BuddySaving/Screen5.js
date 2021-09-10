@@ -189,11 +189,14 @@ export default function Screen5(props) {
       id: resData.buddy_savings.id, // loan_id
     };
 
+    // console.log('The Data: ', resData);
+
     try {
       const response = await sendBuddySavingsInvites(data);
       if (response.status == 200) {
         setSpinner(false);
-        console.log('Invite sent: ', response.data);
+        // console.log('Invite sent: ', response.data);
+        // console.log('Res Data: ', resData);
         setShowInviteSentModal(true); // show success modal
       }
     } catch (error) {
@@ -319,7 +322,7 @@ export default function Screen5(props) {
                     fontWeight: 'bold',
                     color: COLORS.grey,
                   }}>
-                  Monthly Saving
+                  {frequency} Saving
                 </Text>
                 <Text
                   style={{
@@ -327,7 +330,7 @@ export default function Screen5(props) {
                     fontWeight: 'bold',
                     color: COLORS.dark,
                   }}>
-                  ₦{formatNumber(buddy.monthlySaving)}
+                  ₦{formatNumber(buddy.savingAmount)}
                 </Text>
               </View>
             </View>
@@ -440,7 +443,9 @@ export default function Screen5(props) {
             </View>
             <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={styles.key}>Start Date</Text>
-              <Text style={styles.value}>{startDate}</Text>
+              <Text style={styles.value}>
+                {moment(startDate).format('DD-MM-YYYY')}
+              </Text>
             </View>
           </View>
 
@@ -455,7 +460,9 @@ export default function Screen5(props) {
             }}>
             <View style={styles.dataInfo}>
               <Text style={styles.key}>End Date</Text>
-              <Text style={styles.value}>{endDate}</Text>
+              <Text style={styles.value}>
+                {moment(endDate).format('DD-MM-YYYY')}
+              </Text>
             </View>
             <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={styles.key}>Interest Rate</Text>
@@ -629,8 +636,6 @@ export default function Screen5(props) {
           visible={showInviteBuddyModal}
           data={route.params}
           resData={resData}
-          startDate={moment(startDate).format('YYYY-MM-DD')}
-          endDate={moment(endDate).format('YYYY-MM-DD')}
           setBuddyInvite={(newElement) => {
             setBuddies((oldArray) => [newElement, ...oldArray]);
           }}

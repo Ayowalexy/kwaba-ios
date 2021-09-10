@@ -244,7 +244,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   useEffect(() => {
     handleFetchLoans();
-  }, [getMaxLoanCap1]);
+  }, []);
 
   const getAllLoans = async () => {
     const token = await getToken();
@@ -266,11 +266,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
       const loans = await getAllLoans();
       if (loans.status == 200) {
         setSpinner(false);
-        // console.log('The Loan: ', loans.data.data);
+        console.log('The Loan: ', loans.data.data);
         setRepaymentLists(loans.data.data);
       }
     } catch (error) {
       setSpinner(false);
+      console.log('Error: ', error);
     }
   };
 
@@ -286,6 +287,9 @@ export default function EmergencyLoanDashBoard({navigation}) {
                 backgroundColor: COLORS.white,
                 borderRadius: 10,
                 elevation: 0.5,
+                // borderWidth: 1,
+                // borderColor: '#2A286A10',
+                overflow: 'hidden',
               }}
               key={index}
               onPress={() => {
@@ -365,6 +369,29 @@ export default function EmergencyLoanDashBoard({navigation}) {
                   </Text>
                 </View>
               </View>
+
+              {item.status != 'pending' && (
+                <View style={{marginTop: -5}}>
+                  <TouchableOpacity
+                    onPress={() => console.log('Pay Now', item)}
+                    style={{
+                      backgroundColor: COLORS.primary,
+                      paddingVertical: 10,
+                      paddingHorizontal: 10,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        color: COLORS.white,
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        textAlign: 'center',
+                      }}>
+                      Pay Now
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
             </TouchableOpacity>
           );
         })}
@@ -403,7 +430,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
           <TouchableOpacity onPress={handleFetchLoans} style={{marginTop: -20}}>
             <Icon
               name="ios-reload-circle"
-              size={35}
+              size={25}
               style={{fontWeight: '900'}}
               color={COLORS.primary}
             />
@@ -419,7 +446,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
                 alignItems: 'center',
               }}>
               <View>
-                <Text style={{fontSize: 10, color: COLORS.white}}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    color: COLORS.white,
+                  }}>
                   Loan Paid
                 </Text>
                 <Text
@@ -433,7 +465,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
                 </Text>
               </View>
               <View style={{alignItems: 'flex-end'}}>
-                <Text style={{fontSize: 10, color: COLORS.white}}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    color: COLORS.white,
+                  }}>
                   Total Loan Repayment
                 </Text>
                 <Text
@@ -448,36 +485,40 @@ export default function EmergencyLoanDashBoard({navigation}) {
               </View>
             </View>
 
-            <TouchableOpacity
-              onPress={() => setTransactionModal(true)}
+            <View
               style={{
-                marginTop: 30,
-                alignItems: 'center',
+                // paddingHorizontal: 20,
+                // paddingTop: 10,
+                // paddingBottom: 10,
                 flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginTop: 20,
               }}>
-              <Text style={{color: COLORS.secondary, fontSize: 12}}>
-                View loan history
-              </Text>
-              <Icon
-                name="arrow-forward"
-                size={15}
-                style={{marginTop: 5, marginLeft: 10}}
-                color={COLORS.secondary}
-              />
-            </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setTransactionModal(true)}
+                style={{
+                  // marginTop: 20,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                <Text style={{color: COLORS.secondary, fontSize: 12}}>
+                  View loan history
+                </Text>
+                <Icon
+                  name="arrow-forward"
+                  size={15}
+                  style={{marginTop: 5, marginLeft: 10}}
+                  color={COLORS.secondary}
+                />
+              </TouchableOpacity>
 
-            <Image
-              style={{
-                width: 50,
-                height: 50,
-                alignSelf: 'flex-end',
-                position: 'absolute',
-                right: -20,
-                bottom: 0,
-              }}
-              source={images.Group3950}
-              resizeMode="contain"
-            />
+              <TouchableOpacity
+                style={[styles.requestBtn]}
+                onPress={() => navigation.navigate('EmergencyLoanHome')}>
+                <Text style={[styles.requestText]}>Request loan</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
@@ -490,7 +531,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
             }}>
             <Text
               style={{fontSize: 14, fontWeight: 'bold', color: COLORS.dark}}>
-              Active Loans
+              All Loans
             </Text>
           </View>
           <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
@@ -588,5 +629,20 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.grey,
     borderRadius: 10,
     marginRight: 10,
+  },
+
+  requestBtn: {
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    elevation: 10,
+  },
+
+  requestText: {
+    color: COLORS.dark,
+    textTransform: 'uppercase',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });

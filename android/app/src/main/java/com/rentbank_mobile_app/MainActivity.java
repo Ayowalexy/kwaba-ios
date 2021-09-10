@@ -1,4 +1,4 @@
-package com.rentbank_mobile_app;
+package com.Kwaba_mobile_app;
 
 import android.os.Bundle;
 
@@ -20,6 +20,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "rentbank_mobile_app";
+    return "Kwaba_mobile_app";
   }
 }

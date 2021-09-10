@@ -3,16 +3,58 @@ import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import {images, icons, COLORS} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DeleteModal from './DeleteModal';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {setBankFromStorage} from '../../../redux/actions/bankActions';
 
 export default function ActionModal(props) {
-  const {visible, onRequestClose, type, clickedItem, setDeleteResponse} = props;
+  const dispatch = useDispatch();
+  // const dispatchBank = useSelector((state) => state.getBankAccountsReducer);
+  const {
+    visible,
+    onRequestClose,
+    type,
+    clickedItem,
+    setDeleteResponse,
+    navigation,
+  } = props;
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const [defaultcard, setDefaultcard] = useState(false);
   const [defaultbank, setDefaultbank] = useState(false);
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   const handleDelete = () => {
     setShowDeleteModal(!showDeleteModal);
+  };
+
+  const handleDefaultBank = async (item) => {
+    const data = {
+      id: clickedItem.id,
+      defaultbank: 1,
+    };
+
+    // console.log('The Data: ', data);
+
+    const token = await getToken();
+
+    try {
+      const url = 'http://67.207.86.39:8000/api/v1/updateuserbankaccount';
+      const res = await axios.put(url, data, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      dispatch(setBankFromStorage(clickedItem)); // dispatch bank for now
+      console.log('The res: ', res);
+      props.navigation.navigate('EmergencyLoanRequest');
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   };
 
   const setDefaultCard = async (item) => {
@@ -152,7 +194,8 @@ export default function ActionModal(props) {
         <TouchableOpacity
           // onPress={() => setDefaultCard(item)}
           onPress={() => {
-            setDefaultCard(item);
+            // setDefaultCard(item);
+            handleDefaultBank(item);
             console.log(item);
           }}
           key={index}

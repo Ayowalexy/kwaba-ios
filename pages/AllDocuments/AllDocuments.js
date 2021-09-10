@@ -85,6 +85,7 @@ export default function AllDocuments({navigation}) {
       {id: 3, isloading: false},
       {id: 4, isloading: false},
       {id: 5, isloading: false},
+      {id: 6, isloading: false},
     ];
 
     a.some((x) => {
@@ -293,7 +294,7 @@ export default function AllDocuments({navigation}) {
           <Docs />
         )}
 
-        {count >= 5 ? (
+        {count >= 6 ? (
           <View style={{paddingHorizontal: 20}}>
             <TouchableOpacity onPress={handleProceed} style={[styles.btn, {}]}>
               <Text
@@ -383,12 +384,15 @@ export default function AllDocuments({navigation}) {
                   item.isUploaded == false &&
                   item.id && (
                     <TouchableOpacity
+                      // onPress={() => {
+                      //   if (item.title == 'Bank Statement') {
+                      //     handleBankStatementUpload();
+                      //   } else {
+                      //     handleDocumentType(item);
+                      //   }
+                      // }}
                       onPress={() => {
-                        if (item.title == 'Bank Statement') {
-                          handleBankStatementUpload();
-                        } else {
-                          handleDocumentType(item);
-                        }
+                        handleDocumentType(item);
                       }}
                       key={index}
                       style={[
@@ -409,13 +413,14 @@ export default function AllDocuments({navigation}) {
       <Modal
         isVisible={showChooseFileModal}
         onBackButtonPress={() => setShowChooseFileModal(false)}
-        onBackdropPress={() => setShowChooseFileModal(false)}>
+        onBackdropPress={() => setShowChooseFileModal(false)}
+        style={{paddingHorizontal: 20}}>
         <View
           style={{
             backgroundColor: 'white',
             padding: 20,
             borderRadius: 5,
-            paddingBottom: 50,
+            paddingBottom: 0,
           }}>
           <Icon
             onPress={() => setShowChooseFileModal(false)}
@@ -465,6 +470,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     paddingHorizontal: 20,
+    paddingBottom: 10,
     fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.primary,

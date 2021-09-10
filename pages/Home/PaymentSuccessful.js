@@ -15,6 +15,7 @@ import {
   getMaxLoanCap,
   getTotalSoloSavings,
   getOneSoloSavings,
+  getOneSoloSavingsTransaction,
 } from '../../redux/actions/savingsActions';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -49,6 +50,7 @@ export default function PaymentSuccessful(props) {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
     dispatch(getOneSoloSavings(props?.route?.params?.id));
+    dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
 
     console.log('Payment ID: ', props?.route?.params?.id);
 

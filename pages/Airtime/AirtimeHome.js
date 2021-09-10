@@ -30,8 +30,8 @@ const AirtimeHome = ({navigation}) => {
   const getAirtime = async () => {
     try {
       const res = await getBillsCategory('airtime');
-      console.log('Res: ', res.data.data.content);
-      setAirtimeData(res.data.data.content);
+      console.log('Res: ', res?.data?.data?.content);
+      setAirtimeData(res?.data?.data?.content);
     } catch (error) {
       console.log('Error: ', error);
     }
@@ -71,7 +71,7 @@ const AirtimeHome = ({navigation}) => {
           marginTop: 20,
           paddingHorizontal: 20,
         }}>
-        {airtimeData.map((value, index) => {
+        {airtimeData?.map((value, index) => {
           return (
             <TouchableOpacity
               style={{

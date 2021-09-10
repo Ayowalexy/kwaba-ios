@@ -47,8 +47,8 @@ const profile = require('../assets/images/profile.svg');
 const purseWithCoins = require('../assets/images/purse-with-coins.svg');
 const referAndEarn = require('../assets/images/refer-and-earn.svg');
 const rentDiscountOnboardingImage = require('../assets/images/rent-discount-onboarding-image.png');
-const rentBankLogoWithName = require('../assets/images/rentbank-logo-name.png');
-const rentBankLogo = require('../assets/images/rentbank-logo.png');
+// const KwabaLogoWithName = require('../assets/images/Kwaba-logo-name.png');
+// const KwabaLogo = require('../assets/images/Kwaba-logo.png');
 const skyBlueBall = require('../assets/images/sky-blue-ball.svg');
 const soloSavingsCard = require('../assets/images/solo-savings-card.png');
 const topupCard = require('../assets/images/topup-card.svg');
@@ -162,8 +162,8 @@ export {
   profile,
   purseWithCoins,
   referAndEarn,
-  rentBankLogo,
-  rentBankLogoWithName,
+  // KwabaLogo,
+  // KwabaLogoWithName,
   rentDiscountOnboardingImage,
   skyBlueBall,
   soloSavingsCard,

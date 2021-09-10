@@ -212,9 +212,9 @@ export default function NewHome({navigation}) {
       subtitle: instantLoan == 0 ? 'Access instant loans' : 'Repayment amount',
       amount: formatNumber(instantLoan),
       color: '#222',
-      actionText: wallet == 0 ? 'Apply Now' : 'Pay Now',
+      actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
-        wallet == 0 ? console.log('Apply Now') : console.log('Pay Now'),
+        instantLoan == 0 ? console.log('Apply Now') : console.log('Pay Now'),
       // cardClick: () =>
       //   instantLoan == 0
       //     ? console.log('Instant Loan')

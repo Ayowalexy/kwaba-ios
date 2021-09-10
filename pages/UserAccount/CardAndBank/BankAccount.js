@@ -59,7 +59,6 @@ export default function BankAccount(props, {navigation}) {
             fontWeight: 'bold',
             color: COLORS.white,
           }}>
-          {/* {item.bankAccountName} */}
           {item.user_bank_name}
         </Text>
         <Text
@@ -67,7 +66,6 @@ export default function BankAccount(props, {navigation}) {
             fontSize: 12,
             color: COLORS.light,
           }}>
-          {/* {item.bankName} */}
           {item.bank_name}
         </Text>
         <Text
@@ -77,7 +75,6 @@ export default function BankAccount(props, {navigation}) {
             color: COLORS.white,
             opacity: 0.8,
           }}>
-          {/* {item.bankAccountNumber} */}
           {item.bank_account_number}
         </Text>
 
@@ -114,7 +111,9 @@ export default function BankAccount(props, {navigation}) {
     <>
       <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
         <View style={[styles.content]}>
-          <Text style={[styles.contentTitle]}>Bank Account</Text>
+          <Text style={[styles.contentTitle]}>
+            {userBankAccounts.length > 1 ? 'Bank Accounts' : 'Bank Account'}
+          </Text>
           <View style={[styles.contentView]}>
             {!userBankAccounts.length ? (
               <>
@@ -199,6 +198,7 @@ export default function BankAccount(props, {navigation}) {
           allBanks(data.cards);
           console.log('DATA ATAD:  ', data);
         }}
+        navigation={navigation}
       />
     </>
   );

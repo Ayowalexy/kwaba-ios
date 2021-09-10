@@ -205,7 +205,9 @@ export default function OkraDebitMandate({navigation}) {
               FONTS.body2FontStyling,
               {color: COLORS.dark, textAlign: 'center', fontSize: 14},
             ]}>
-            This will make repayment easy
+            {/* This will make repayment easy */}
+            We need to connect to your account securely, {'\n'}for your monthly
+            repayment
           </Text>
 
           <TouchableOpacity

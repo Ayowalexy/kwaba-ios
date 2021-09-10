@@ -95,7 +95,6 @@ const PostPaymentForm1 = ({navigation}) => {
     let stepsData = {
       application_form: 'done',
       congratulation: 'done',
-      bank_statement_upload: 'done',
       all_documents: 'done',
       verifying_documents: 'done',
       offer_breakdown: 'done',
@@ -106,6 +105,7 @@ const PostPaymentForm1 = ({navigation}) => {
       address_verification: '',
       debitmandate: '',
       awaiting_disbursement: '',
+      dashboard: '',
     };
     await AsyncStorage.setItem(
       `rentalSteps-${user.id}`,
