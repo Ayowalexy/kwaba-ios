@@ -173,6 +173,9 @@ import SaveToOwn from './pages/Mortgages/SaveToOwn';
 // Loans
 import {LoanScreen1} from './pages/Loans';
 
+// Wallet
+import Wallet from './pages/Wallet/Wallet';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -678,6 +681,8 @@ const App = () => {
               <Stack.Screen name="SaveToOwn" component={SaveToOwn} />
 
               <Stack.Screen name="LoanScreen1" component={LoanScreen1} />
+
+              <Stack.Screen name="Wallet" component={Wallet} />
 
               {/* <Stack.Screen name="UploadBankStatementForProfile" component={UploadBankStatementForProfile}></Stack.Screen> */}
 

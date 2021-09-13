@@ -69,6 +69,9 @@ const CustomInput = (props) => {
           onChangeText={(text) => onChange(name)(text)}
           {...inputProps}
           secureTextEntry={name.toLowerCase() == 'password' && secureTextEntry}
+          keyboardType={
+            name.toLowerCase() == 'password' ? 'default' : 'email-address'
+          }
         />
         {name.toLowerCase() == 'password' && (
           <Icon

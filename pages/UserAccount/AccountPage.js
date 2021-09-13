@@ -206,7 +206,7 @@ const AccountPage = ({navigation}) => {
   useEffect(() => {
     const getUserData = async () => {
       const userData = await AsyncStorage.getItem('userData');
-      // console.log(userData);
+      console.log(userData);
 
       if (userData) {
         let {firstname, lastname} = JSON.parse(userData).user;

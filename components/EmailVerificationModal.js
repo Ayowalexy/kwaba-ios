@@ -8,15 +8,28 @@ import {
   TouchableOpacity,
   View,
   Image,
+  TextInput,
 } from 'react-native';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconFA from 'react-native-vector-icons/FontAwesome';
 import {COLORS, icons} from '../util';
+import {Formik, Field} from 'formik';
+import * as yup from 'yup';
+
+const formSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email('Please enter a valid email')
+    .required('Email is required'),
+  password: yup.string().required('Password is required'),
+});
 
 export default function EmailVerificationModal(props) {
   const {onRequestClose, visible, goHome, email} = props;
   const [spinner, setSpinner] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [changeEmail, setChangeEmail] = useState(false);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -59,9 +72,68 @@ export default function EmailVerificationModal(props) {
     }
   };
 
+  const handleChangeEmail = async () => {
+    console.log('Change Email Address');
+    setChangeEmail(true);
+  };
+
   const closeEmail = () => {
     onRequestClose();
     setEmailSent(false);
+    setChangeEmail(false);
+  };
+
+  const handleGoBack = () => {
+    console.log('Going Back...');
+    setChangeEmail(false);
+    setEmailSent(false);
+  };
+
+  const handleSubmit = (values) => {
+    console.log('Values: ', values);
+  };
+
+  const CustomInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+              fontSize: 12,
+            }}
+            keyboardType={
+              name.toLowerCase() == 'password' ? 'default' : 'email-address'
+            }
+            value={value}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            secureTextEntry={name.toLowerCase() == 'password'}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
   };
 
   return (
@@ -78,15 +150,25 @@ export default function EmailVerificationModal(props) {
       visible={visible}
       onRequestClose={onRequestClose}>
       <View style={styles.centeredView}>
-        {!emailSent ? (
+        {changeEmail ? (
           <View style={styles.modalView}>
-            <Icon
-              onPress={onRequestClose}
-              style={{alignSelf: 'flex-end'}}
-              name="close-outline"
-              size={30}
-              color="#D6D6D6"
-            />
+            <TouchableOpacity
+              onPress={handleGoBack}
+              style={{
+                position: 'absolute',
+                top: 20,
+                left: 20,
+                width: 30,
+                height: 30,
+                borderRadius: 15,
+                borderColor: COLORS.grey,
+                borderWidth: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <IconFA name="angle-left" size={20} color={COLORS.dark} />
+            </TouchableOpacity>
+            {/* <View style={{marginTop: 20}}> */}
             <View
               style={{
                 width: '100%',
@@ -104,119 +186,243 @@ export default function EmailVerificationModal(props) {
             </View>
             <Text
               style={{
-                color: '#2A286A',
+                color: COLORS.dark,
                 fontFamily: 'CircularStd',
                 fontWeight: 'bold',
                 fontSize: 16,
                 textAlign: 'center',
               }}>
-              We still need to confirm{'\n'}your email
+              Update email address
             </Text>
 
-            <View
-              style={{
-                marginTop: 10,
-                width: '100%',
-                alignItems: 'center',
+            <Formik
+              validationSchema={formSchema}
+              initialValues={{
+                email: '',
+                password: '',
+              }}
+              onSubmit={(values) => {
+                handleSubmit(values);
               }}>
-              <Text
-                style={{
-                  fontFamily: 'CircularStd',
-                  color: COLORS.grey,
-                  fontSize: 13,
-                  // fontWeight: 'bold',
-                  textAlign: 'center',
-                  paddingHorizontal: 20,
-                  lineHeight: 20,
-                }}>
-                Should we send the confirmation to{'\n'}
-                <Text
+              {({handleSubmit, isValid, values, setValues}) => (
+                <>
+                  <View style={{justifyContent: 'flex-start', marginTop: 10}}>
+                    <View style={{marginTop: 10}}>
+                      <Text style={[styles.label]}>
+                        Which email would you like to use with Kwaba?
+                      </Text>
+                      <Field
+                        component={CustomInput}
+                        name="email"
+                        placeholder="Enter the email you'd like to login with"
+                      />
+                    </View>
+                    <View style={{marginTop: 10}}>
+                      <Text style={[styles.label]}>
+                        Confirm your current password
+                      </Text>
+                      <Field
+                        component={CustomInput}
+                        name="password"
+                        placeholder="Password"
+                      />
+                    </View>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={handleSubmit}
+                    style={[
+                      styles.btn,
+                      {backgroundColor: COLORS.secondary, marginTop: 20},
+                    ]}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      }}>
+                      Use this email address
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </Formik>
+          </View>
+        ) : (
+          // </View>
+          <>
+            {!emailSent ? (
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  onPress={closeEmail}
                   style={{
-                    color: COLORS.secondary,
-                    fontWeight: 'bold',
-                    fontSize: 12,
+                    position: 'absolute',
+                    top: 20,
+                    right: 20,
+                    width: 30,
+                    height: 30,
+                    borderRadius: 15,
+                    borderColor: COLORS.grey,
+                    borderWidth: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  {email}
-                </Text>
-                ?
-              </Text>
-              <TouchableOpacity
-                onPress={verifyEmail}
-                style={[
-                  styles.btn,
-                  {backgroundColor: COLORS.secondary, marginTop: 20},
-                ]}>
-                <Text
+                  <Icon name="close-outline" size={20} color={COLORS.dark} />
+                </TouchableOpacity>
+                <View
                   style={{
-                    color: 'white',
-                    fontSize: 12,
-                    fontWeight: 'bold',
+                    width: '100%',
+                    padding: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
                   }}>
-                  Yes, that's my email
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={closeEmail}
-                style={[styles.btn, {backgroundColor: COLORS.white}]}>
+                  <Image
+                    source={icons.emailSent}
+                    style={{
+                      width: 100,
+                      height: 100,
+                    }}
+                  />
+                </View>
                 <Text
                   style={{
                     color: COLORS.dark,
-                    fontSize: 12,
+                    fontFamily: 'CircularStd',
                     fontWeight: 'bold',
+                    fontSize: 16,
+                    textAlign: 'center',
                   }}>
-                  No, change my email
+                  We still need to confirm{'\n'}your email
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.modalView}>
-            <Icon
-              onPress={closeEmail}
-              style={{alignSelf: 'flex-end'}}
-              name="close-outline"
-              size={30}
-              color="#D6D6D6"
-            />
-            <View
-              style={{
-                width: '100%',
-                padding: 20,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={icons.emailSent}
-                style={{
-                  width: 100,
-                  height: 100,
-                }}
-              />
-            </View>
-            <Text
-              style={{
-                color: '#2A286A',
-                fontFamily: 'CircularStd',
-                fontWeight: 'bold',
-                fontSize: 16,
-                textAlign: 'center',
-              }}>
-              Please check your email {'\n'}to confirm
-            </Text>
-            <TouchableOpacity
-              onPress={closeEmail}
-              style={[styles.btn, {backgroundColor: COLORS.white}]}>
-              <Text
-                style={{
-                  color: COLORS.dark,
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                  textDecorationLine: 'underline',
-                }}>
-                Okay!
-              </Text>
-            </TouchableOpacity>
-          </View>
+
+                <View
+                  style={{
+                    marginTop: 10,
+                    width: '100%',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'CircularStd',
+                      color: COLORS.grey,
+                      fontSize: 12,
+                      // fontWeight: 'bold',
+                      textAlign: 'center',
+                      paddingHorizontal: 20,
+                      lineHeight: 20,
+                    }}>
+                    Should we send the confirmation to{'\n'}
+                    <Text
+                      style={{
+                        color: COLORS.secondary,
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                      }}>
+                      {email}
+                    </Text>
+                    ?
+                  </Text>
+                  <TouchableOpacity
+                    onPress={verifyEmail}
+                    style={[
+                      styles.btn,
+                      {backgroundColor: COLORS.secondary, marginTop: 20},
+                    ]}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      }}>
+                      Yes, that's my email
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={handleChangeEmail}
+                    style={[styles.btn, {backgroundColor: '#F5F5F5'}]}>
+                    <Text
+                      style={{
+                        color: COLORS.dark,
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                      }}>
+                      No, change my email
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={closeEmail}
+                    style={[styles.btn, {backgroundColor: COLORS.white}]}>
+                    <Text
+                      style={{
+                        color: COLORS.dark,
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        textDecorationLine: 'underline',
+                      }}>
+                      Remind me later
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ) : (
+              <View style={styles.modalView}>
+                <TouchableOpacity
+                  onPress={closeEmail}
+                  style={{
+                    position: 'absolute',
+                    top: 20,
+                    right: 20,
+                    width: 30,
+                    height: 30,
+                    borderRadius: 15,
+                    borderColor: COLORS.grey,
+                    borderWidth: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Icon name="close-outline" size={20} color={COLORS.dark} />
+                </TouchableOpacity>
+                <View
+                  style={{
+                    width: '100%',
+                    padding: 20,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Image
+                    source={icons.emailSent}
+                    style={{
+                      width: 100,
+                      height: 100,
+                    }}
+                  />
+                </View>
+                <Text
+                  style={{
+                    color: '#2A286A',
+                    fontFamily: 'CircularStd',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    textAlign: 'center',
+                  }}>
+                  Please check your email {'\n'}to confirm
+                </Text>
+                <TouchableOpacity
+                  onPress={closeEmail}
+                  style={[styles.btn, {backgroundColor: COLORS.white}]}>
+                  <Text
+                    style={{
+                      color: COLORS.dark,
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      textDecorationLine: 'underline',
+                    }}>
+                    Okay!
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </>
         )}
       </View>
 
@@ -242,7 +448,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'white',
     borderRadius: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingTop: 10,
     paddingBottom: 20,
     alignItems: 'center',
@@ -251,9 +457,9 @@ const styles = StyleSheet.create({
   btn: {
     width: '100%',
     // height: 70,
-    padding: 15,
-    borderRadius: 10,
-    marginTop: 5,
+    padding: 12,
+    borderRadius: 5,
+    marginTop: 10,
     fontSize: 14,
     fontFamily: 'CircularStd-Medium',
     fontWeight: '600',
@@ -269,5 +475,32 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
+  },
+
+  customInput: {
+    borderRadius: 5,
+    backgroundColor: '#FFFFFF',
+    borderColor: '#ADADAD50',
+    borderWidth: 1,
+    marginTop: 5,
+    width: '100%',
+    position: 'relative',
+
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  label: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: COLORS.dark,
+  },
+  errorText: {
+    fontSize: 10,
+    color: '#f00000',
+    marginLeft: 5,
+  },
+  errorInput: {
+    borderColor: '#f0000050',
   },
 });

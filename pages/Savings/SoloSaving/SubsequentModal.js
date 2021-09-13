@@ -26,6 +26,7 @@ import {savings} from '../../../util/icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CreditCardModal from '../../../components/CreditCard/CreditCardModal';
+import CreditCardModalSavings from '../../../components/CreditCard/CreditCardModalSavings';
 
 export default function SubsequentModal(props) {
   const {
@@ -164,12 +165,13 @@ export default function SubsequentModal(props) {
       <Spinner visible={spinner} animation="fade" size="large" />
 
       {modal && (
-        <CreditCardModal
+        <CreditCardModalSavings
           onRequestClose={() => setModal(!modal)}
           visible={modal}
           info={resDataObj}
           navigation={navigation}
           redirectTo="SoloSavingDashBoard"
+          ID={resDataObj?.id}
         />
       )}
     </>

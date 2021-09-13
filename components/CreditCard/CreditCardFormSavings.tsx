@@ -106,9 +106,11 @@ const CreditCardFormSavings: React.FC = (props: any) => {
 
   const onSubmit = async (model: FormModel) => {
     setSpinner(true);
-    console.log('form submitted: ', model);
+    // console.log('form submitted: ', model);
     const user = await userData();
+    console.log('ID: ', props.ResInfo.id);
     try {
+      // console.log('The props: ', props);
       const pay = await RNPaystack.chargeCard({
         cardNumber: '4123450131001381',
         expiryMonth: '10',
@@ -119,20 +121,16 @@ const CreditCardFormSavings: React.FC = (props: any) => {
         amountInKobo: responseInfo?.amount * 100, //@ts-ignore
         reference: responseInfo?.reference,
       });
-
       const verify = await verifyPayment(pay);
-
       if (verify?.status == 200) {
         console.log('Payment verified');
         console.log('Verify: ', verify);
         setSpinner(false);
         // display success modal
         // navigate to dashboard / homepage
-
         //dispatch
         dispatch(getTotalSoloSavings());
         // dispatch(getMaxLoanCap());
-
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,
           id: props.ID,

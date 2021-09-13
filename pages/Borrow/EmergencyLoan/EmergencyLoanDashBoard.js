@@ -405,12 +405,13 @@ export default function EmergencyLoanDashBoard({navigation}) {
         onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"
         size={25}
-        style={{padding: 15, fontWeight: '900'}}
+        style={{paddingHorizontal: 15, paddingTop: 15}}
         color={COLORS.primary}
       />
       <View style={{flex: 1, paddingHorizontal: 20, marginTop: 0}}>
         <View
           style={{
+            padding: 10,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -421,16 +422,24 @@ export default function EmergencyLoanDashBoard({navigation}) {
                 color: '#2A286A',
                 textAlign: 'left',
                 fontWeight: 'bold',
-                fontSize: 18,
-                marginBottom: 17,
+                fontSize: 16,
               },
             ]}>
             Emergency Fund
           </Text>
-          <TouchableOpacity onPress={handleFetchLoans} style={{marginTop: -20}}>
+          <TouchableOpacity
+            onPress={handleFetchLoans}
+            style={{
+              backgroundColor: COLORS.white,
+              width: 30,
+              height: 30,
+              borderRadius: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
             <Icon
-              name="ios-reload-circle"
-              size={25}
+              name="reload-outline"
+              size={15}
               style={{fontWeight: '900'}}
               color={COLORS.primary}
             />
@@ -526,13 +535,31 @@ export default function EmergencyLoanDashBoard({navigation}) {
           <View
             style={{
               padding: 10,
-              // borderBottomWidth: 1,
-              // borderBottomColor: '#BFBFBF50',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
             }}>
             <Text
               style={{fontSize: 14, fontWeight: 'bold', color: COLORS.dark}}>
               All Loans
             </Text>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: COLORS.white,
+                width: 30,
+                height: 30,
+                borderRadius: 30,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Icon
+                name="filter"
+                size={15}
+                style={{fontWeight: '900'}}
+                color={COLORS.primary}
+              />
+            </TouchableOpacity>
           </View>
           <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
             <RepaymaneHistory />
@@ -567,7 +594,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#BFBFBF20',
     borderRadius: 10,
-    marginTop: 10,
+    // marginTop: 10,
     padding: 10,
     // elevation: 10,
     // elevation: 0.2,
@@ -588,10 +615,10 @@ const styles = StyleSheet.create({
   transaction: {
     // backgroundColor: COLORS.white,
     width: '100%',
-    padding: 10,
+    // padding: 10,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    marginTop: 10,
+    // marginTop: 10,
     flex: 1,
     // borderWidth: 1,
     // borderColor: '#BFBFBF20',

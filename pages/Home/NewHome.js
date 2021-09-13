@@ -11,6 +11,7 @@ import {
   StyleSheet,
   useWindowDimensions,
   RefreshControl,
+  Animated,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -195,17 +196,23 @@ export default function NewHome({navigation}) {
 
   const slides = [
     {
-      title: 'Wallets',
+      title: 'Total Savings',
       subtitle:
-        wallet == 0
-          ? 'Fund your wallet to transact on Kwaba'
-          : 'Save and pay bills from yout wallet',
-      amount: formatNumber(wallet),
-      color: COLORS.dark,
-      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+        savings > 0
+          ? 'Save now to make your rent\nwork for you'
+          : 'Great job on your rent savings',
+      amount: formatNumber(savings),
+      color: COLORS.primary,
+      actionText: savings == 0 ? 'Save Now' : 'Deposit',
       actionClick: () =>
-        wallet == 0 ? console.log('Add Funds') : console.log('Deposit Now'),
-      cardClick: () => console.log('Wallet clicked'),
+        savings == 0
+          ? console.log('Save Now')
+          : isProfileComplete
+          ? setAddFundsToSavingsModal(true)
+          : setCompleteProfileModal(true),
+      cardClick: () => {
+        navigation.navigate('SavingsHome');
+      },
     },
     {
       title: 'Emergency Fund',
@@ -225,40 +232,39 @@ export default function NewHome({navigation}) {
       },
     },
     {
+      title: 'Wallets',
+      subtitle:
+        wallet == 0
+          ? 'Fund your wallet to transact on Kwaba'
+          : 'Save and pay bills from yout wallet',
+      amount: formatNumber(wallet),
+      color: COLORS.dark,
+      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+      actionClick: () =>
+        wallet == 0 ? console.log('Add Funds') : console.log('Deposit Now'),
+      cardClick: () => {
+        navigation.navigate('Wallet');
+      },
+    },
+    {
       title: 'Rent Now Pay Later',
       subtitle:
         rentalFinance == 0
           ? "Let's help you pay your rent"
           : 'Next payment amount',
       amount: formatNumber(rentalFinance),
-      color: COLORS.dark,
+      color: '#000',
       actionText: wallet == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
         wallet == 0 ? console.log('Apply Now') : console.log('Pay Now'),
       cardClick: () => console.log('Rent Now Pay Later'),
     },
-    {
-      title: 'Total Savings',
-      subtitle:
-        savings > 0
-          ? 'Save now to make your rent\nwork for you'
-          : 'Great job on your rent savings',
-      amount: formatNumber(savings),
-      color: COLORS.primary,
-      actionText: savings == 0 ? 'Save Now' : 'Deposit',
-      actionClick: () =>
-        savings == 0
-          ? console.log('Save Now')
-          : isProfileComplete
-          ? setAddFundsToSavingsModal(true)
-          : setCompleteProfileModal(true),
-      cardClick: () => console.log('Total Savings'),
-    },
   ];
 
   const quickActions = [
     {
-      name: 'Emergency\nfunds',
+      // name: 'Emergency\nfunds',
+      name: 'Emergency',
       image: icons.ic3,
       route: () =>
         isProfileComplete
@@ -275,11 +281,12 @@ export default function NewHome({navigation}) {
       image: icons.ic2,
       route: () => navigation.navigate('BillsHome'),
     },
-    // {
-    //   name: 'Buy now pay\nlater',
-    //   image: icons.ic4,
-    //   route: () => navigation.navigate('BillsHome'),
-    // },
+    {
+      // name: 'Buy now pay\nlater',
+      name: 'Wallets',
+      image: icons.ic4,
+      route: () => navigation.navigate('Wallet'),
+    },
   ];
 
   const bottomCards = [
@@ -315,12 +322,10 @@ export default function NewHome({navigation}) {
     },
   ];
 
-  // const cards = [
-  //   { title: "Movie 1", posterUrl: require("./images/tenent.jpg") },
-  //   { title: "Movie 2", posterUrl: require("./images/1917.jpg") },
-  //   { title: "Movie 3", posterUrl: require("./images/spiderman.jpg") },
-  //   { title: "Movie 4", posterUrl: require("./images/mando.jpg") },
-  // ]
+  const OFFSET = 30;
+  const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 2;
+  const ITEM_HEIGHT = 180;
+  const scrollX = React.useRef(new Animated.Value(0)).current;
 
   const _renderItem = ({item, index}) => {
     // console.log('Name: ', item.name);
@@ -585,7 +590,7 @@ export default function NewHome({navigation}) {
             onRefresh={onRefresh}
           />
         }>
-        <View
+        {/* <View
           style={{
             position: 'relative',
             flex: 1,
@@ -604,7 +609,7 @@ export default function NewHome({navigation}) {
             itemWidth={layout.width - 40}
             //   sliderHeight={layout.width}
             //   itemHeight={layout.width}
-            layout={'tinder'}
+            layout={'default'}
             layoutCardOffset={16}
             firstItem={3}
             // loop={true}
@@ -620,6 +625,174 @@ export default function NewHome({navigation}) {
             indicatorStyle={{width: 10, backgroundColor: 'blue'}}
           />
           <ScrollIndicator currentIndex={0} setCurrentIndex={0} />
+        </View> */}
+
+        <View style={{width: '100%', marginVertical: 10}}>
+          <ScrollView
+            horizontal={true}
+            decelerationRate={'normal'}
+            snapToInterval={ITEM_WIDTH}
+            style={{paddingHorizontal: 0}}
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            disableIntervalMomentum
+            onScroll={Animated.event(
+              [{nativeEvent: {contentOffset: {x: scrollX}}}],
+              {useNativeDriver: false},
+            )}
+            scrollEventThrottle={12}>
+            {slides.map((item, idx) => {
+              const inputRange = [
+                (idx - 1) * ITEM_WIDTH,
+                idx * ITEM_WIDTH,
+                (idx + 1) * ITEM_WIDTH,
+              ];
+              const translate = scrollX.interpolate({
+                inputRange,
+                outputRange: [0.95, 1, 0.95],
+              });
+              const opacity = scrollX.interpolate({
+                inputRange,
+                outputRange: [0.9, 1, 0.9],
+              });
+              return (
+                <Animated.View
+                  key={idx}
+                  style={{
+                    width: ITEM_WIDTH,
+                    height: ITEM_HEIGHT,
+                    marginLeft: idx === 0 ? OFFSET : undefined,
+                    marginRight: idx === slides.length - 1 ? OFFSET : undefined,
+                    opacity: opacity,
+                    transform: [{scale: translate}],
+                  }}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    onPress={item.cardClick}
+                    style={{
+                      backgroundColor: item.color,
+                      width: '100%',
+                      height: ITEM_HEIGHT,
+                      padding: 30,
+                      borderRadius: 10,
+                      overflow: 'hidden',
+                      borderColor: '#9D98EC',
+                      borderWidth: 1,
+                      elevation: 5,
+                    }}>
+                    <Image
+                      source={images.frame}
+                      style={{
+                        width: 200,
+                        height: 180,
+                        position: 'absolute',
+                        right: -5,
+                        top: 0,
+                      }}
+                      resizeMode="contain"
+                    />
+                    <View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <Text style={{fontSize: 14, color: COLORS.white}}>
+                          {item.title}
+                        </Text>
+
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'flex-end',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: COLORS.white,
+                              marginRight: 10,
+                            }}>
+                            {item.actionText}
+                          </Text>
+                          <TouchableOpacity
+                            onPress={item.actionClick}
+                            style={{
+                              width: 25,
+                              height: 25,
+                              backgroundColor: COLORS.white,
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: 30,
+                              elevation: 1,
+                            }}>
+                            <IconFA5
+                              name="plus"
+                              size={10}
+                              style={{color: COLORS.grey}}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+
+                      <View style={{marginTop: 20}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: COLORS.white,
+                              marginRight: 20,
+                            }}>
+                            {item.subtitle}
+                          </Text>
+                        </View>
+                      </View>
+
+                      <View style={{marginTop: 10}}>
+                        <Text
+                          style={{
+                            fontSize: 20,
+                            fontWeight: 'bold',
+                            color: COLORS.white,
+                          }}>
+                          ₦{formatNumber(item.amount) || '0.00'}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </Animated.View>
+              );
+            })}
+          </ScrollView>
+          <View
+            style={{
+              flex: 1,
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              marginVertical: 10,
+            }}>
+            {slides.map((item, idx) => {
+              return (
+                <View
+                  key={idx}
+                  style={{
+                    width: 8,
+                    height: 4,
+                    marginHorizontal: 2,
+                    borderRadius: 2,
+                    backgroundColor: COLORS.grey,
+                  }}
+                />
+              );
+            })}
+          </View>
         </View>
 
         <View style={{width: '100%', flex: 1}}>
@@ -628,8 +801,8 @@ export default function NewHome({navigation}) {
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'flex-start',
-              paddingVertical: 10,
-              marginBottom: 10,
+              // paddingVertical: 10,
+              marginBottom: 20,
             }}>
             {quickActions.map((item, index) => {
               return (
@@ -654,11 +827,15 @@ export default function NewHome({navigation}) {
                       justifyContent: 'center',
                       alignItems: 'center',
                     }}>
-                    <Image
-                      resizeMode="contain"
-                      source={item.image}
-                      style={{width: 25, height: 25}}
-                    />
+                    {item.name == 'Wallets' ? (
+                      <Icon name="wallet" size={25} color={COLORS.light} />
+                    ) : (
+                      <Image
+                        resizeMode="contain"
+                        source={item.image}
+                        style={{width: 25, height: 25}}
+                      />
+                    )}
                   </TouchableOpacity>
                   <Text
                     style={{

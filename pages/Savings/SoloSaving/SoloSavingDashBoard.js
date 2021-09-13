@@ -74,6 +74,7 @@ export default function SoloSavingDashBoard(props) {
 
       console.log('Data: ', data);
 
+      setTotalInterest(data?.interest);
       setLocked(data?.locked);
       setSavingTitle(data?.name);
       setSavingsTarget(data?.target_amount);
@@ -246,8 +247,7 @@ export default function SoloSavingDashBoard(props) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  {/* ₦{currencyFormat(totalInterest)} */}
-                  ₦0.00
+                  ₦{currencyFormat(Number(totalInterest))}
                 </Text>
               </View>
 
@@ -268,7 +268,7 @@ export default function SoloSavingDashBoard(props) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦{currencyFormat(Number(savingsTarget))}
+                  ₦{currencyFormat(Number(savingsTarget)) || '0.00'}
                 </Text>
               </View>
             </View>

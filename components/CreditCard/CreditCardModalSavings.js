@@ -15,6 +15,15 @@ import CreditCardFormSavings from './CreditCardFormSavings';
 export default function CreditCardModalSavings(props) {
   const {onRequestClose, visible, info, navigation, redirectTo, ID} = props;
 
+  // useEffect(() => {
+  //   console.log('Data: ', info);
+  //   console.log('Seq ID: ', ID);
+  // }, []);
+
+  const refresh = () => {
+    console.log(info, ID);
+  };
+
   return (
     <View>
       <Modal
@@ -25,6 +34,9 @@ export default function CreditCardModalSavings(props) {
         style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <TouchableOpacity onPress={refresh}>
+              <Text>refresh</Text>
+            </TouchableOpacity>
             <View
               style={{
                 display: 'flex',

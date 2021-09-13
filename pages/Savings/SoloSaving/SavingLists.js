@@ -121,6 +121,7 @@ export default function SavingLists({navigation}) {
                   dispatch(getOneSoloSavings(item.id));
                   dispatch(getOneSoloSavingsTransaction(item.id));
                   navigation.navigate('SoloSavingDashBoard', {id: item.id});
+                  console.log('The ID: ', item.id);
                 }}>
                 <View style={[styles.cardFlex]}>
                   <View style={[styles.progressContainer]}>
