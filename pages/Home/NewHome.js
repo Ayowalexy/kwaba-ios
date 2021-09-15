@@ -26,6 +26,10 @@ import {
   getTotalSoloSavings,
   getTotalBuddySavings,
 } from '../../redux/actions/savingsActions';
+import {
+  getBillServices,
+  getBillsCategory,
+} from '../../redux/actions/billsAction';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat, formatNumber} from '../../util/numberFormatter';
@@ -48,6 +52,7 @@ export default function NewHome({navigation}) {
   const user = useSelector((state) => state.getUserReducer);
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [name, setName] = useState('');
@@ -130,16 +135,39 @@ export default function NewHome({navigation}) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const getUserData = async () => {
-  //     const userData = await AsyncStorage.getItem('userData');
-  //     const data = JSON.parse(userData);
-  //     // return data;
-  //     // console.log('Na the data: ', data);
-  //   };
-
-  //   getUserData();
-  // }, []);
+  useEffect(() => {
+    // console.log('The User: ', login);
+    // if (login) setName(login.username);
+    // complete profile
+    // if (
+    //   user?.data?.profile_complete == 0 ||
+    //   user?.data?.profile_complete == null
+    // ) {
+    //   setIsProfileComplete(false);
+    // } else {
+    //   setIsProfileComplete(true);
+    // }
+    // // email verified
+    // if (user?.data?.email_verified == 0 || user?.data?.email_verified == null) {
+    //   setIsEmailVerified(false);
+    // } else {
+    //   setIsEmailVerified(true);
+    // }
+    //     if (
+    //   login.user.profile_complete == 0 ||
+    //   login.user.profile_complete == null
+    // ) {
+    //   setIsProfileComplete(false);
+    // } else {
+    //   setIsProfileComplete(true);
+    // }
+    // // email verified
+    // if (login.user.email_verified == 0 || login.user.email_verified == null) {
+    //   setIsEmailVerified(false);
+    // } else {
+    //   setIsEmailVerified(true);
+    // }
+  }, []);
 
   useEffect(() => {
     // console.log('Login: ', login);
@@ -161,30 +189,13 @@ export default function NewHome({navigation}) {
     }
   }, []);
 
-  useEffect(() => {
-    // console.log('Login: ', login);
-    if (login) setName(login.username);
-    // complete profile
-    if (
-      login.user.profile_complete == 0 ||
-      login.user.profile_complete == null
-    ) {
-      setIsProfileComplete(false);
-    } else {
-      setIsProfileComplete(true);
-    }
-    // email verified
-    if (login.user.email_verified == 0 || login.user.email_verified == null) {
-      setIsEmailVerified(false);
-    } else {
-      setIsEmailVerified(true);
-    }
-  }, [login]);
-
+  // dispatch events here
   useEffect(() => {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
     dispatch(getTotalBuddySavings());
+    dispatch(getBillServices());
+    dispatch(getBillsCategory('Airtime'));
   }, []);
 
   useEffect(() => {
@@ -276,17 +287,17 @@ export default function NewHome({navigation}) {
       image: icons.ic1,
       route: () => navigation.navigate('AirtimeHome'),
     },
-    {
-      name: 'Pay Bills',
-      image: icons.ic2,
-      route: () => navigation.navigate('BillsHome'),
-    },
-    {
-      // name: 'Buy now pay\nlater',
-      name: 'Wallets',
-      image: icons.ic4,
-      route: () => navigation.navigate('Wallet'),
-    },
+    // {
+    //   name: 'Pay Bills',
+    //   image: icons.ic2,
+    //   route: () => navigation.navigate('BillsHome'),
+    // },
+    // {
+    //   // name: 'Buy now pay\nlater',
+    //   name: 'Wallets',
+    //   image: icons.ic4,
+    //   route: () => navigation.navigate('Wallet'),
+    // },
   ];
 
   const bottomCards = [
@@ -327,121 +338,6 @@ export default function NewHome({navigation}) {
   const ITEM_HEIGHT = 180;
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
-  const _renderItem = ({item, index}) => {
-    // console.log('Name: ', item.name);
-    return (
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={item.cardClick}
-        style={{
-          backgroundColor: item.color,
-          //   backgroundColor: COLORS.primary,
-          width: '100%',
-          height: 180,
-          padding: 30,
-          borderRadius: 10,
-          //   marginTop: 10,
-          overflow: 'hidden',
-          borderColor: '#9D98EC50',
-          borderWidth: 1,
-          elevation: 5,
-        }}>
-        <Image
-          source={images.frame}
-          style={{
-            width: 200,
-            height: 180,
-            position: 'absolute',
-            right: -5,
-            top: 0,
-            // transform: [{scale: 1.05}],
-          }}
-          resizeMode="contain"
-        />
-        <View>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text style={{fontSize: 14, color: COLORS.white}}>
-              {/* Current Savings */}
-              {item.title}
-            </Text>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-end',
-              }}>
-              <Text
-                style={{fontSize: 12, color: COLORS.white, marginRight: 10}}>
-                {item.actionText}
-              </Text>
-              <TouchableOpacity
-                onPress={item.actionClick}
-                style={{
-                  width: 25,
-                  height: 25,
-                  backgroundColor: COLORS.white,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 30,
-                  elevation: 1,
-                }}>
-                <IconFA5 name="plus" size={10} style={{color: COLORS.grey}} />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={{marginTop: 20}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-              }}>
-              <Text
-                style={{fontSize: 12, color: COLORS.white, marginRight: 20}}>
-                {item.subtitle}
-              </Text>
-              {/* <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'flex-start',
-                }}>
-                <Icon
-                  name="arrow-up"
-                  size={10}
-                  style={{color: COLORS.secondary}}
-                />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: COLORS.secondary,
-                    fontWeight: 'bold',
-                  }}>
-                  50%
-                </Text>
-              </View> */}
-            </View>
-          </View>
-
-          <View style={{marginTop: 10}}>
-            <Text
-              style={{fontSize: 20, fontWeight: 'bold', color: COLORS.white}}>
-              ₦{formatNumber(item.amount) || '0.00'}
-            </Text>
-          </View>
-        </View>
-        {/* <Text>{item.name}</Text> */}
-      </TouchableOpacity>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <View style={designs.topBar}>
@@ -466,10 +362,11 @@ export default function NewHome({navigation}) {
             style={{
               color: COLORS.dark,
               fontSize: 14,
-              //   fontWeight: 'bold',
+              fontWeight: 'bold',
               lineHeight: 19,
             }}>
-            Hey {name}, {greeting}
+            {/* Hi {name}, {greeting} */}
+            Hi {name}
           </Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
@@ -590,43 +487,6 @@ export default function NewHome({navigation}) {
             onRefresh={onRefresh}
           />
         }>
-        {/* <View
-          style={{
-            position: 'relative',
-            flex: 1,
-            marginBottom: 20,
-            marginTop: 10,
-            //   height: 200,
-            //   backgroundColor: 'red',
-          }}>
-          <Carousel
-            //   ref={(c) => {
-            //     console.log('C: ', c);
-            //   }}
-            data={slides}
-            renderItem={_renderItem}
-            sliderWidth={layout.width}
-            itemWidth={layout.width - 40}
-            //   sliderHeight={layout.width}
-            //   itemHeight={layout.width}
-            layout={'default'}
-            layoutCardOffset={16}
-            firstItem={3}
-            // loop={true}
-            containerCustomStyle={{
-              //   borderWidth: 1,
-              //   borderColor: COLORS.secondary,
-              flex: 1,
-              padding: 0,
-              margin: 0,
-              height: 220,
-            }}
-            slideStyle={{overflow: 'hidden', borderRadius: 10}}
-            indicatorStyle={{width: 10, backgroundColor: 'blue'}}
-          />
-          <ScrollIndicator currentIndex={0} setCurrentIndex={0} />
-        </View> */}
-
         <View style={{width: '100%', marginVertical: 10}}>
           <ScrollView
             horizontal={true}

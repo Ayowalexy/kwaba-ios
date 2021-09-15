@@ -1,17 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Modal,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  ScrollView,
-} from 'react-native';
+import {Modal, StyleSheet, Text, View, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
 import CreditCardFormBills from './CreditCardFormBills';
-import CreditCardFormBuddy from './CreditCardFormBuddy';
 
 export default function CreditCardModalBills(props) {
   const {onRequestClose, visible, info, navigation, redirectTo} = props;

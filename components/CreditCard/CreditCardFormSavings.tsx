@@ -27,7 +27,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 
 RNPaystack.init({
-  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
+  publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
 });
 
 interface FormModel {
@@ -112,10 +112,10 @@ const CreditCardFormSavings: React.FC = (props: any) => {
     try {
       // console.log('The props: ', props);
       const pay = await RNPaystack.chargeCard({
-        cardNumber: '4123450131001381',
-        expiryMonth: '10',
-        expiryYear: '22',
-        cvc: '883',
+        cardNumber: model.cardNumber,
+        expiryMonth: model.expiration.slice(0, 2),
+        expiryYear: model.expiration.slice(-2),
+        cvc: model.cvv,
         email: user.email,
         //@ts-ignore
         amountInKobo: responseInfo?.amount * 100, //@ts-ignore

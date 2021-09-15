@@ -41,13 +41,19 @@ const Screen5 = (props) => {
   const [spinner, setSpinner] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
+  const saveLoginToStorage = async (data) => {
+    try {
+      await AsyncStorage.setItem('userData', JSON.stringify(data));
+    } catch (error) {}
+  };
+
   useEffect(() => {
     dispatch(getCurrentUser());
   }, []);
 
-  useEffect(() => {
-    console.log('User: ', user);
-  }, [user]);
+  // useEffect(() => {
+  //   console.log('User: ', user);
+  // }, [user]);
 
   const handleGoHome = () => {
     navigation.navigate('Home');
@@ -195,6 +201,18 @@ const Screen5 = (props) => {
         console.log('USERDATA: ', userData);
         console.log('RESPONSE DATA: ', res.user);
 
+        console.log('Logged Data:', {
+          ...userData,
+          user: res.user,
+          username: res.user.firstname,
+        });
+
+        saveLoginToStorage({
+          ...userData,
+          user: res.user,
+          username: res.user.firstname,
+        });
+
         dispatch(
           setLoginState({
             ...userData,
@@ -207,6 +225,8 @@ const Screen5 = (props) => {
         // navigation.navigate('CompleteProfile6');
 
         // console.log('Response: ', response.data);
+      } else {
+        console.log('Complete');
       }
     } catch (error) {
       setSpinner(false);

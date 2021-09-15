@@ -33,6 +33,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Transactions from './Transactions';
 import ActiveLoanModal from './ActiveLoanModal';
+import AmountModalFunds from '../../../components/amountModalFunds';
+import CreditCardFormFunds from '../../../components/CreditCard/CreditCardFormFunds';
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
@@ -50,6 +52,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
   const [dueDate, setDueDate] = useState('');
   const [loanId, setLoanId] = useState('');
   const [repaidLoans, setRepaidLoans] = useState([]);
+  const [showAmountModal, setShowAmountModal] = useState(false);
+  const [loanRepaymentData, setLoanRepaymentData] = useState([]);
 
   const [loanPaid, setLoanPiad] = useState(0);
 
@@ -79,7 +83,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
       );
       setLoanId(activeLoan != undefined ? activeLoan.id : '');
 
-      // console.log(activeLoan);
+      console.log('The active loan: ', activeLoan);
     })();
   }, []);
 
@@ -100,146 +104,41 @@ export default function EmergencyLoanDashBoard({navigation}) {
     }
   }, [getMaxLoanCap1]);
 
-  const chargeCard = async () => {
-    console.log('Loading...');
-    const url = 'http://67.207.86.39:8000/api/v1/user_create_savings';
-    let data = {
-      savings_amount: 50000,
-      target_amount: 200000,
-      auto_save: true,
-      frequency: 'Monthly',
-      start_date: '2021-08-16T11:03:24+01:00',
-      name: 'my first savings',
-      how_long: '3months',
-      locked: true,
-      bvn: '1234567890',
-    };
+  // const handlePayment = async () => {
+  //   const data = {loanId: loanId};
+  //   setSpinner(true);
+  //   try {
+  //     const response = await loanRepayment(data);
 
-    try {
-      const token = await getToken();
-      const response = await axios.post(url, JSON.stringify(data), {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-      });
-      const responseData = response.data.data;
-      console.log('Response: ', responseData);
-      if (response.status == 200) {
-        // const payCode = await RNPaystack.chargeCardWithAccessCode({
-        //   cardNumber: '4123450131001381',
-        //   expiryMonth: '03',
-        //   expiryYear: '24',
-        //   cvc: '883',
-        //   accessCode: responseData.access_code,
-        // });
-        const pay = await RNPaystack.chargeCard({
-          cardNumber: '4123450131001381',
-          expiryMonth: '10',
-          expiryYear: '22',
-          cvc: '883',
-          email: 'joshuanwosu078@gmail.com',
-          amountInKobo: responseData.amount * 100,
-          reference: responseData.reference,
-        });
-        console.log('The Pay: ', pay.reference);
-        const verify = await verifySavingsPayment(pay);
-        console.log('Verify: ', verify);
-      }
-    } catch (error) {
-      console.log('Error: ', error);
-    }
+  //     if (response.status == 200) {
+  //       setSpinner(false);
+  //       const url = response.data.data.authorization_url;
+  //       const result = await openInAppBrowser(url);
+  //       if (result.type === 'cancel') {
+  //         let data = {reference: response.data.data.reference, loanId: loanId};
+  //         setVerificationSpinner(true);
+  //         const verify = await loanPaymentVerification(data);
+  //         if (verify.data.status == 'success') {
+  //           setVerificationSpinner(false);
+  //           setSuccessModal(true);
+  //         } else {
+  //           setVerificationSpinner(false);
+  //           Alert.alert(
+  //             'Payment Unverified',
+  //             'Your payment was not verified. Please retry.',
+  //           );
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     Alert.alert('Error', error.message);
+  //   }
+  // };
 
-    // try {
-    //   const pay = await RNPaystack.chargeCard({
-    //     cardNumber: '4123450131001381',
-    //     expiryMonth: '10',
-    //     expiryYear: '22',
-    //     cvc: '883',
-    //     email: 'chargeIOS@master.dev',
-    //     amountInKobo: 150000,
-    //     // subAccount: 'ACCT_pz61jjjsslnx1d9',
-    // reference
-    //   });
-    //   // console.log('Pay: ', pay);
-    // const verify = await verifySavingsPayment(pay);
-    //   console.log('Verify: ', verify);
-    // } catch (error) {
-    //   console.log(error); // error is a javascript Error object
-    //   console.log(error.message);
-    //   console.log(error.code);
-    // }
-  };
-
-  const handlePayment = async () => {
-    const data = {loanId: loanId};
-    setSpinner(true);
-    try {
-      const response = await loanRepayment(data);
-
-      if (response.status == 200) {
-        setSpinner(false);
-        const url = response.data.data.authorization_url;
-        const result = await openInAppBrowser(url);
-        if (result.type === 'cancel') {
-          let data = {reference: response.data.data.reference, loanId: loanId};
-          setVerificationSpinner(true);
-          const verify = await loanPaymentVerification(data);
-          if (verify.data.status == 'success') {
-            setVerificationSpinner(false);
-            setSuccessModal(true);
-          } else {
-            setVerificationSpinner(false);
-            Alert.alert(
-              'Payment Unverified',
-              'Your payment was not verified. Please retry.',
-            );
-          }
-        }
-      }
-    } catch (error) {
-      setSpinner(false);
-      Alert.alert('Error', error.message);
-    }
-  };
-
-  const openInAppBrowser = async (url) => {
-    try {
-      if (await InAppBrowser.isAvailable()) {
-        const result = await InAppBrowser.open(url, {
-          // iOS Properties
-          dismissButtonStyle: 'done',
-          preferredBarTintColor: '#453AA4',
-          preferredControlTintColor: 'white',
-          readerMode: false,
-          animated: true,
-          modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'coverVertical',
-          modalEnabled: true,
-          enableBarCollapsing: false,
-          // Android Properties
-          showTitle: true,
-          toolbarColor: '#2A286A',
-          secondaryToolbarColor: 'black',
-          enableUrlBarHiding: true,
-          enableDefaultShare: true,
-          forceCloseOnRedirection: false,
-          hasBackButton: true,
-          // Specify full animation resource identifier(package:anim/name)
-          // or only resource name(in case of animation bundled with app).
-          animations: {
-            startEnter: 'slide_in_right',
-            startExit: 'slide_out_left',
-            endEnter: 'slide_in_left',
-            endExit: 'slide_out_right',
-          },
-        });
-
-        return result;
-      } else Linking.openURL(url);
-    } catch (error) {
-      return error.message;
-    }
+  const handlePayNow = async (item) => {
+    setShowAmountModal(true);
+    setLoanRepaymentData(item); // repayment loan data
   };
 
   useEffect(() => {
@@ -266,7 +165,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
       const loans = await getAllLoans();
       if (loans.status == 200) {
         setSpinner(false);
-        console.log('The Loan: ', loans.data.data);
+        console.log('The Loannnnnnn: ', loans.data.data);
         setRepaymentLists(loans.data.data);
       }
     } catch (error) {
@@ -274,6 +173,13 @@ export default function EmergencyLoanDashBoard({navigation}) {
       console.log('Error: ', error);
     }
   };
+
+  const requestLoan = async () => {
+    navigation.navigate('EmergencyLoanHome');
+    dispatch(getMaxLoanCap());
+  };
+
+  // ENUM('Pending', 'Active', 'Running', 'Cancelled', 'Unpaid', 'Paid')
 
   // returned lists of repayments;
   const RepaymaneHistory = () => {
@@ -304,10 +210,10 @@ export default function EmergencyLoanDashBoard({navigation}) {
                       styles.repaymentStatus,
                       {
                         backgroundColor:
-                          item.status == 'approved' || item.status == 'paid'
+                          item.status == 'Active' || item.status == 'Paid'
                             ? COLORS.secondary
-                            : item.status == 'pending' ||
-                              item.status == 'running'
+                            : item.status == 'Pending' ||
+                              item.status == 'Running'
                             ? COLORS.orange
                             : COLORS.red,
                       },
@@ -370,28 +276,31 @@ export default function EmergencyLoanDashBoard({navigation}) {
                 </View>
               </View>
 
-              {item.status != 'pending' && (
-                <View style={{marginTop: -5}}>
-                  <TouchableOpacity
-                    onPress={() => console.log('Pay Now', item)}
-                    style={{
-                      backgroundColor: COLORS.primary,
-                      paddingVertical: 10,
-                      paddingHorizontal: 10,
-                    }}>
-                    <Text
+              {item.status != 'Pending' &&
+                item.status != 'Cancel' &&
+                item.status != 'Unpaid' &&
+                item.status != 'Running' && (
+                  <View style={{marginTop: -5}}>
+                    <TouchableOpacity
+                      onPress={() => handlePayNow(item)}
                       style={{
-                        fontSize: 10,
-                        color: COLORS.white,
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        textAlign: 'center',
+                        backgroundColor: COLORS.primary,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
                       }}>
-                      Pay Now
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: COLORS.white,
+                          fontWeight: 'bold',
+                          textTransform: 'uppercase',
+                          textAlign: 'center',
+                        }}>
+                        Pay Now
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
             </TouchableOpacity>
           );
         })}
@@ -408,10 +317,38 @@ export default function EmergencyLoanDashBoard({navigation}) {
         style={{paddingHorizontal: 15, paddingTop: 15}}
         color={COLORS.primary}
       />
+      <View style={[styles.banner]}>
+        <View style={{flexDirection: 'row', width: '80%'}}>
+          <Icon name="alert-circle" size={25} color={COLORS.dark} />
+
+          <Text style={[styles.bannerText]}>
+            Your loan is currently being processed. Hang tight, you will receive
+            the funds shortly.
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          onPress={handleFetchLoans}
+          style={{
+            backgroundColor: '#FFFFFF50',
+            width: 30,
+            height: 30,
+            borderRadius: 30,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Icon
+            onPress={handleFetchLoans}
+            name="reload"
+            size={20}
+            color={COLORS.dark}
+          />
+        </TouchableOpacity>
+      </View>
       <View style={{flex: 1, paddingHorizontal: 20, marginTop: 0}}>
         <View
           style={{
-            padding: 10,
+            paddingVertical: 10,
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
@@ -427,23 +364,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
             ]}>
             Emergency Fund
           </Text>
-          <TouchableOpacity
-            onPress={handleFetchLoans}
-            style={{
-              backgroundColor: COLORS.white,
-              width: 30,
-              height: 30,
-              borderRadius: 30,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Icon
-              name="reload-outline"
-              size={15}
-              style={{fontWeight: '900'}}
-              color={COLORS.primary}
-            />
-          </TouchableOpacity>
         </View>
 
         <View style={[styles.dashboard]}>
@@ -524,7 +444,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
               <TouchableOpacity
                 style={[styles.requestBtn]}
-                onPress={() => navigation.navigate('EmergencyLoanHome')}>
+                onPress={requestLoan}>
                 <Text style={[styles.requestText]}>Request loan</Text>
               </TouchableOpacity>
             </View>
@@ -578,6 +498,16 @@ export default function EmergencyLoanDashBoard({navigation}) {
           visible={activeLoanModal}
           loanID={loanID}
           loanData={loanData}
+        />
+      )}
+
+      {showAmountModal && (
+        <AmountModalFunds
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          navigation={navigation}
+          data={loanRepaymentData}
+          redirectTo="EmergencyLoanDashBoard"
         />
       )}
 
@@ -671,5 +601,25 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     fontSize: 10,
     fontWeight: 'bold',
+  },
+
+  banner: {
+    width: '100%',
+    backgroundColor: '#9D98EC40',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
+  bannerText: {
+    flex: 1,
+    fontSize: 10,
+    fontWeight: 'bold',
+    lineHeight: 16,
+    color: COLORS.dark,
+    paddingLeft: 10,
   },
 });

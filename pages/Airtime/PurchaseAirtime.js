@@ -35,6 +35,7 @@ const PurchaseAirtime = ({navigation, route}) => {
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showCardModal, setShowCardModal] = useState(false);
   const [resData, setResData] = useState('');
+  const [airtimeData, setAirtimeData] = useState('');
 
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -44,22 +45,21 @@ const PurchaseAirtime = ({navigation, route}) => {
   });
 
   useEffect(() => {
-    console.log('Params: ', route.params);
-    const val = route.params.data.filter(
-      (item) => item.name == route.params.name,
-    );
-    console.log('The Value: ', val);
+    // console.log('Params: ', route.params);
+    const val = route.params.data.filter((item) => item.name == name);
+    // console.log('The Value: ', name);
+    setAirtimeData(val);
   }, [name]);
 
   const buyAirtimeHandler = async () => {
     setSpinner(true);
+
     const data = {
-      serviceID: name.toLowerCase(), // e.g mtn, airtel, glo, 9mobile
+      serviceID: airtimeData[0].serviceID, // e.g mtn, airtel, glo, 9mobile
       amount: unFormatNumber(amount), // e.g 100
       recepient: phoneNumber, // e.g 08011111111
     };
-
-    // console.log('Buy Airtime: ', data);
+    // console.log('Data: ', data);
 
     try {
       const res = await BuyPurchaseAirtime(data);
@@ -214,11 +214,14 @@ const PurchaseAirtime = ({navigation, route}) => {
           onPress={() => {
             setConfirmModalVisible(!confirmModalVisible);
           }}
-          // disabled={!isError()}
+          disabled={amount == ''}
           style={[
             styles.btn,
             {
-              backgroundColor: '#00DC99',
+              backgroundColor:
+                phoneNumber.length < 10 || amount == ''
+                  ? '#00DC9950'
+                  : '#00DC99',
               width: '100%',
               borderRadius: 10,
               marginTop: 20,
@@ -271,7 +274,7 @@ const PurchaseAirtime = ({navigation, route}) => {
           visible={showCardModal}
           info={resData}
           navigation={navigation}
-          redirectTo="Home"
+          redirectTo="AirtimeHome"
         />
       )}
 
@@ -333,6 +336,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 1,
+    // elevation: 1,
   },
 });

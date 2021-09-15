@@ -87,7 +87,7 @@ const CreditCardForm: React.FC = (props: any) => {
     return JSON.parse(userData).user;
   };
 
-  // For Solo Savings
+  // Address Verification RNPL
   const verifyPayment = async (data: any) => {
     const token = await getToken();
     // const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';

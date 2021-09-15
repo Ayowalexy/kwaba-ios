@@ -183,7 +183,7 @@ export default function EmergencyLoanHome({navigation}) {
             setStatus,
           }) => (
             <>
-              <View style={{textAlign: 'left'}}>
+              <View style={{textAlign: 'left', paddingLeft: 10}}>
                 <Text
                   style={[
                     {color: COLORS.primary, fontSize: 18, fontWeight: 'bold'},
@@ -200,8 +200,10 @@ export default function EmergencyLoanHome({navigation}) {
                       paddingRight: 50,
                     },
                   ]}>
-                  Based on your savings activities below the loan amount you can
-                  get against you savings
+                  {/* Based on your savings activities below the loan amount you can
+                  get against you savings */}
+                  Based on your saving activity, below is{'\n'}
+                  how much you can get.
                 </Text>
               </View>
               <View style={designs.rlDisplay}>

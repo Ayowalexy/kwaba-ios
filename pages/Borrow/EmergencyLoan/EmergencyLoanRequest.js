@@ -88,7 +88,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       setBankAccountNumber(accountNumber != null ? accountNumber : '');
       setBankCode(code != null ? code : '');
 
-      console.log(accountNumber, accountName, code, JSON.parse(userData).user);
+      // console.log(accountNumber, accountName, code, JSON.parse(userData).user);
     })();
   }, []);
 
@@ -162,10 +162,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     const data = {
       loan_amount: loanAmount,
       loan_purpose: loanPurpose,
-
-      // disbursement_account_name: bankAccountName,
-      // disbursement_account_number: bankAccountNumber,
-      // disbursement_account_bank: bankName,
 
       // disbursement_account_name: 'JOSHUA UDO NWOSU',
       // disbursement_account_number: '0094552107',

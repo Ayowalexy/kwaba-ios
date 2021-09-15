@@ -10,15 +10,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
-import CreditCardFormSavings from './CreditCardFormSavings';
-
-export default function CreditCardModalSavings(props) {
+import CreditCardFormFunds from './CreditCardFormFunds';
+export default function CreditCardModalFunds(props) {
   const {onRequestClose, visible, info, navigation, redirectTo, ID} = props;
 
   // useEffect(() => {
-  //   console.log('Data: ', info);
-  //   console.log('Seq ID: ', ID);
-  // }, []);
+  //   console.log('The Card Info on Modal: ', info, ID);
+  // }, [info]);
 
   return (
     <View>
@@ -56,7 +54,7 @@ export default function CreditCardModalSavings(props) {
             </View>
             <ScrollView contentContainerStyle={styles.content}>
               <View style={{flex: 1}}>
-                <CreditCardFormSavings
+                <CreditCardFormFunds
                   ResInfo={info}
                   navigation={navigation}
                   onRequestClose={onRequestClose}
@@ -98,6 +96,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: 'CircularStd',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    // borderColor: '#f00',
+    // borderWidth: 1,
   },
   modalView: {
     width: '100%',

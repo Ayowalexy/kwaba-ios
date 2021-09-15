@@ -8,11 +8,17 @@ import {
   ScrollView,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useDispatch, useSelector} from 'react-redux';
 import AirtimeHistory from '../../components/AirtimeHistory';
-import {getBillsCategory} from '../../services/network';
 import {COLORS, FONTS, images, icons} from '../../util/index';
+import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
 
 const AirtimeHome = ({navigation}) => {
+  const dispatch = useDispatch();
+  const getBillsCategoryLists = useSelector(
+    (state) => state.getBillCategoryReducer,
+  );
+
   const [airtimeData, setAirtimeData] = useState([]);
   const [showAirtimeHistoryModal, setShowAirtimeHistoryModal] = useState(false);
 
@@ -24,18 +30,9 @@ const AirtimeHome = ({navigation}) => {
   };
 
   useEffect(() => {
-    getAirtime();
+    dispatch(getAirtimeBillTrans());
+    setAirtimeData(getBillsCategoryLists?.data?.content);
   }, []);
-
-  const getAirtime = async () => {
-    try {
-      const res = await getBillsCategory('airtime');
-      console.log('Res: ', res?.data?.data?.content);
-      setAirtimeData(res?.data?.data?.content);
-    } catch (error) {
-      console.log('Error: ', error);
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -49,7 +46,7 @@ const AirtimeHome = ({navigation}) => {
         />
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{flexDirection: 'column'}}>
+          <View style={{flexDirection: 'column', marginLeft: 10}}>
             <Text style={styles.headerMainText}>Buy Airtime</Text>
             <Text style={styles.headertext}>
               Recharge any network easily and fast
@@ -71,7 +68,7 @@ const AirtimeHome = ({navigation}) => {
           marginTop: 20,
           paddingHorizontal: 20,
         }}>
-        {airtimeData?.map((value, index) => {
+        {getBillsCategoryLists?.data?.content?.map((value, index) => {
           return (
             <TouchableOpacity
               style={{
@@ -208,6 +205,7 @@ const styles = StyleSheet.create({
 
   transactionHistory: {
     marginTop: 20,
+    marginBottom: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },

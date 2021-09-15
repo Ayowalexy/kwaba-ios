@@ -12,6 +12,11 @@ import {
 import fileUploadReducer from './documentUploadReducers';
 import {applyForEmergencyLoanReducer} from './emergencyLoanReducer';
 import {getBankAccountsReducer, getBankFromStorageReducer} from './bankReducer';
+import {
+  getBillServicesReducer,
+  getBillCategoryReducer,
+  getAirtimeBillTransReducer,
+} from './billReducer';
 
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
@@ -27,4 +32,7 @@ export const rootReducer = combineReducers({
   getOneSoloSavingsTransactionReducer: getOneSoloSavingsTransactionReducer,
   getBankAccountsReducer: getBankAccountsReducer,
   getBankFromStorageReducer: getBankFromStorageReducer,
+  getBillServicesReducer: getBillServicesReducer,
+  getBillCategoryReducer: getBillCategoryReducer,
+  getAirtimeBillTransReducer: getAirtimeBillTransReducer,
 });

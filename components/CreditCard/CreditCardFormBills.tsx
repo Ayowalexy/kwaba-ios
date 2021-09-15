@@ -27,7 +27,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 
 RNPaystack.init({
-  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
+  publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
 });
 
 interface FormModel {
@@ -86,7 +86,7 @@ const CreditCardFormBills: React.FC = (props: any) => {
   // For Bills Payment
   const verifyPayment = async (data: any) => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/buddy/verifypayment';
+    const url = 'http://67.207.86.39:8000/api/v1/verify_bills_transactions';
     try {
       const response = await axios.post(url, data, {
         headers: {
@@ -96,7 +96,7 @@ const CreditCardFormBills: React.FC = (props: any) => {
       });
       return response;
     } catch (error) {
-      return error.message;
+      return error;
     }
   };
 
@@ -105,28 +105,42 @@ const CreditCardFormBills: React.FC = (props: any) => {
   }, [props]);
 
   const onSubmit = async (model: FormModel) => {
-    setSpinner(true);
-    console.log('form submitted: ', model);
+    // console.log('form submitted: ', model);
+    // let card = {
+    //   cardNumber: model.cardNumber,
+    //   expiryMonth: model.expiration.slice(0, 2),
+    //   expiryYear: model.expiration.slice(-2),
+    //   cvc: model.cvv,
+    // };
+    // console.log('The Card: ', card);
     const user = await userData();
     try {
+      setSpinner(true);
+
       const pay = await RNPaystack.chargeCard({
-        cardNumber: '4123450131001381',
-        expiryMonth: '10',
-        expiryYear: '22',
-        cvc: '883',
+        cardNumber: model.cardNumber,
+        expiryMonth: model.expiration.slice(0, 2),
+        expiryYear: model.expiration.slice(-2),
+        cvc: model.cvv,
         email: user.email,
         //@ts-ignore
         amountInKobo: responseInfo?.amount * 100, //@ts-ignore
         reference: responseInfo?.reference,
       });
 
-      console.log('The Pay: ', pay);
+      const data = {
+        reference: pay.reference,
+        channel: 'paystack',
+      };
 
-      const verify = await verifyPayment(pay);
+      console.log('Verify Payment Data: ', data);
+
+      const verify = await verifyPayment(data);
+
+      console.log('Verify: ', verify);
 
       if (verify?.status == 200) {
         console.log('Payment verified');
-        console.log('Verify: ', verify);
         setSpinner(false);
         // display success modal
         // navigate to dashboard / homepage
@@ -138,6 +152,8 @@ const CreditCardFormBills: React.FC = (props: any) => {
           name: props.redirectTo,
         });
         props.onRequestClose();
+      } else {
+        setSpinner(false);
       }
     } catch (error) {
       console.log('The Error: ', error);

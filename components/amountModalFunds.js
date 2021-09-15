@@ -19,12 +19,16 @@ import {
   addFundsToSavings,
   getOneUserSavings,
   getUserSavings,
+  loanPaymentVerification,
+  loanRepayment,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector, useDispatch} from 'react-redux';
 
 import RNPaystack from 'react-native-paystack';
 import CreditCardModal from './CreditCard/CreditCardModal';
+import CreditCardFormFunds from './CreditCard/CreditCardFormFunds';
+import CreditCardModalFunds from './CreditCard/CreditCardModalFunds';
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
@@ -33,20 +37,15 @@ const amountSchema = yup.object().shape({
   amount: yup.string().required('Please provide amount'),
 });
 
-export default function AmountModal(props) {
-  const {
-    onRequestClose,
-    visible,
-    navigation,
-    redirectTo,
-    openSuccessModal,
-    ID,
-  } = props;
+export default function AmountModalFunds(props) {
+  const {onRequestClose, visible, data, navigation, redirectTo} = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [modal, setModal] = useState(false);
   const [resDataObj, setResDataObj] = useState('');
+  const [resData, setResData] = useState('');
+  const [ID, setID] = useState('');
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
@@ -56,39 +55,62 @@ export default function AmountModal(props) {
     // console.log('Hello');
   };
 
+  // const handleSubmit = async (values) => {
+  //   try {
+  //     setSpinner(true);
+  //     // const res = await getUserSavings();
+  //     // const ID = res.data.data[0].id;
+
+  //     const res = await getOneUserSavings(ID);
+
+  //     if (res.status == 200) {
+  //       let data = {
+  //         savings_id: ID,
+  //         amount: Number(unFormatNumber(values.amount)),
+  //         channel: 'paystacks',
+  //       };
+
+  //       const res = await addFundsToSavings(data);
+
+  //       if (res.status == 200) {
+  //         setSpinner(false);
+  //         setShowAmountField(false);
+  //         setModal(true);
+  //         const resData = res.data.data;
+
+  //         // we can use redux to dispatch this data
+  //         // but for now let's use useState by send
+  //         // the data as props
+  //         setResDataObj(resData);
+  //         onRequestClose();
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     setSpinner(false);
+  //   }
+  // };
+
   const handleSubmit = async (values) => {
+    // console.log('Emeregency funds: ', data);
+
+    const repaymentData = {loanId: data.id, amount: values.amount};
+    console.log('Pay Now', repaymentData);
+
+    setSpinner(true);
     try {
-      setSpinner(true);
-      // const res = await getUserSavings();
-      // const ID = res.data.data[0].id;
-
-      const res = await getOneUserSavings(ID);
-
-      if (res.status == 200) {
-        let data = {
-          savings_id: ID,
-          amount: Number(unFormatNumber(values.amount)),
-          channel: 'paystacks',
-        };
-
-        const res = await addFundsToSavings(data);
-
-        if (res.status == 200) {
-          setSpinner(false);
-          setShowAmountField(false);
-          setModal(true);
-          const resData = res.data.data;
-
-          // we can use redux to dispatch this data
-          // but for now let's use useState by send
-          // the data as props
-          setResDataObj(resData);
-          onRequestClose();
-        }
+      const response = await loanRepayment(repaymentData);
+      if (response.status == 200) {
+        setSpinner(false);
+        setResData(response.data.data);
+        setID(repaymentData.loanId);
+        setModal(true);
+      } else {
+        setSpinner(false);
       }
     } catch (error) {
-      console.log(error);
       setSpinner(false);
+      console.log('The Error: ', error);
     }
   };
 
@@ -209,6 +231,19 @@ export default function AmountModal(props) {
           </View>
         </Modal>
       </View>
+
+      {modal && (
+        <CreditCardModalFunds
+          onRequestClose={() => setModal(!modal)}
+          visible={modal}
+          info={resData}
+          navigation={navigation}
+          redirectTo={redirectTo}
+          ID={ID}
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

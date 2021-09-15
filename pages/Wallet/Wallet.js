@@ -22,7 +22,7 @@ export default function Wallet({navigation}) {
           position: 'absolute',
           //   alignItems: 'center',
           //   justifyContent: 'center',
-          opacity: 0.05,
+          opacity: 0.1,
         }}>
         <Icon
           name="wallet"
@@ -62,7 +62,7 @@ export default function Wallet({navigation}) {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={{
-              backgroundColor: '#46596950',
+              backgroundColor: '#ffffff20',
               width: 40,
               height: 40,
               justifyContent: 'center',
@@ -72,20 +72,21 @@ export default function Wallet({navigation}) {
             <Icon name="arrow-back" size={20} color={COLORS.white} />
           </TouchableOpacity>
 
-          <Text style={{fontSize: 16, fontWeight: 'bold', color: COLORS.white}}>
-            My wallet
+          <Text
+            style={{fontSize: 16, fontWeight: 'normal', color: COLORS.white}}>
+            My Wallet
           </Text>
 
           <TouchableOpacity
             style={{
-              backgroundColor: '#46596950',
+              backgroundColor: '#ffffff20',
               width: 40,
               height: 40,
               justifyContent: 'center',
               alignItems: 'center',
               borderRadius: 50,
             }}>
-            <Icon name="grid-outline" size={20} color={COLORS.white} />
+            <Icon name="wallet-outline" size={20} color={COLORS.white} />
           </TouchableOpacity>
         </View>
         <View
@@ -93,7 +94,7 @@ export default function Wallet({navigation}) {
             width: '100%',
             //   borderWidth: 1,
             padding: 20,
-            minHeight: 200,
+            minHeight: 150,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
@@ -104,9 +105,7 @@ export default function Wallet({navigation}) {
           <Text style={{fontSize: 30, fontWeight: 'bold', color: COLORS.white}}>
             <Text style={{fontSize: 15}}> ₦</Text>
             {/* {formatNumber(7680000)} */}
-            {formatNumber(
-              Number(getMaxLoanCap1?.data?.you_have_save).toFixed(2),
-            ) || '0.00'}
+            {formatNumber(Number(0).toFixed(2)) || '0.00'}
           </Text>
         </View>
       </View>
@@ -115,8 +114,8 @@ export default function Wallet({navigation}) {
         style={{
           flex: 1,
           backgroundColor: COLORS.white,
-          borderTopLeftRadius: 30,
-          borderTopRightRadius: 30,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
           elevation: 100,
           padding: 20,
           alignItems: 'center',

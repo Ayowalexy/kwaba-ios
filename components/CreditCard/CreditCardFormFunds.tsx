@@ -24,7 +24,11 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
+import {
+  getTotalSoloSavings,
+  getMaxLoanCap,
+} from '../../redux/actions/savingsActions';
+import {loanPaymentVerification} from '../../services/network';
 
 RNPaystack.init({
   publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
@@ -44,7 +48,7 @@ enum CardFields {
   CVV,
 }
 
-const CreditCardFormRNPL: React.FC = (props: any) => {
+const CreditCardFormFunds: React.FC = (props: any) => {
   const formMethods = useForm<FormModel>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -69,48 +73,33 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
 
   const [responseInfo, setResponseInfo] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [appID, setAppID] = useState('');
 
   const dispatch = useDispatch();
-
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
-  };
 
   const userData = async () => {
     const userData = await AsyncStorage.getItem('userData');
     return JSON.parse(userData).user;
   };
 
-  // For Buddy Savings
-  const verifyPayment = async (data: any) => {
-    const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/buddy/verifypayment';
-    try {
-      const response = await axios.post(url, data, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-      });
-      return response;
-    } catch (error) {
-      return error.message;
-    }
-  };
-
   useEffect(() => {
-    setResponseInfo(props.ResInfo.payment);
+    setResponseInfo(props.ResInfo);
   }, [props]);
 
   const onSubmit = async (model: FormModel) => {
-    // console.log({id: props.ResInfo.buddy_savings.id});
-    // console.log(props.ResInfo.payment.user_id);
-
     setSpinner(true);
     console.log('form submitted: ', model);
     const user = await userData();
+    console.log({
+      cardNumber: model.cardNumber,
+      expiryMonth: model.expiration.slice(0, 2),
+      expiryYear: model.expiration.slice(-2),
+      cvc: model.cvv,
+      email: user.email,
+      //@ts-ignore
+      amountInKobo: responseInfo?.amount * 100, //@ts-ignore
+      reference: responseInfo?.reference,
+    });
     try {
       const pay = await RNPaystack.chargeCard({
         cardNumber: model.cardNumber,
@@ -123,9 +112,17 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
         reference: responseInfo?.reference,
       });
 
-      console.log('The Pay: ', pay);
+      const data = {
+        reference: pay.reference,
+        applicationId: props.ID,
+      };
 
-      const verify = await verifyPayment(pay);
+      console.log('The Pay Emergency: ', data);
+      // setSpinner(false);
+
+      const verify = await loanPaymentVerification(data);
+
+      console.log('Verify Response: ', verify);
 
       if (verify?.status == 200) {
         console.log('Payment verified');
@@ -139,9 +136,10 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
 
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,
-          id: props.ResInfo.payment.savings_id,
         });
         props.onRequestClose();
+      } else {
+        setSpinner(false);
       }
     } catch (error) {
       console.log('The Error: ', error);
@@ -286,4 +284,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default CreditCardFormRNPL;
+export default CreditCardFormFunds;
