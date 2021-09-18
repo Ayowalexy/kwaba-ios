@@ -45,6 +45,7 @@ import EmailVerificationModal from '../../components/EmailVerificationModal';
 import SavingsOptionModal from '../../components/savingsOptionModal';
 import PaymentTypeModal from '../../components/paymentTypeModal';
 import AmountModal from '../../components/amountModal';
+import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -76,6 +77,8 @@ export default function NewHome({navigation}) {
   const [showPaymentType, setShowPaymentType] = useState(false);
 
   const [showAmountModal, setShowAmountModal] = useState(false);
+
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
   const layout = useWindowDimensions();
 
@@ -233,11 +236,6 @@ export default function NewHome({navigation}) {
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
         instantLoan == 0 ? console.log('Apply Now') : console.log('Pay Now'),
-      // cardClick: () =>
-      //   instantLoan == 0
-      //     ? console.log('Instant Loan')
-      //     : navigation.navigate('EmergencyLoanDashBoard'),
-
       cardClick: () => {
         navigation.navigate('EmergencyLoanDashBoard');
       },
@@ -252,7 +250,7 @@ export default function NewHome({navigation}) {
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () =>
-        wallet == 0 ? console.log('Add Funds') : console.log('Deposit Now'),
+        wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
       cardClick: () => {
         navigation.navigate('Wallet');
       },
@@ -274,8 +272,8 @@ export default function NewHome({navigation}) {
 
   const quickActions = [
     {
-      // name: 'Emergency\nfunds',
-      name: 'Emergency',
+      name: 'Emergency\nfunds',
+      // name: 'Emergency',
       image: icons.ic3,
       route: () =>
         isProfileComplete
@@ -287,17 +285,17 @@ export default function NewHome({navigation}) {
       image: icons.ic1,
       route: () => navigation.navigate('AirtimeHome'),
     },
-    // {
-    //   name: 'Pay Bills',
-    //   image: icons.ic2,
-    //   route: () => navigation.navigate('BillsHome'),
-    // },
-    // {
-    //   // name: 'Buy now pay\nlater',
-    //   name: 'Wallets',
-    //   image: icons.ic4,
-    //   route: () => navigation.navigate('Wallet'),
-    // },
+    {
+      name: 'Pay Bills',
+      image: icons.ic2,
+      route: () => navigation.navigate('BillsHome'),
+    },
+    {
+      // name: 'Buy now pay\nlater',
+      name: 'Wallets',
+      image: icons.ic4,
+      route: () => navigation.navigate('Wallet'),
+    },
   ];
 
   const bottomCards = [
@@ -562,7 +560,8 @@ export default function NewHome({navigation}) {
                           {item.title}
                         </Text>
 
-                        <View
+                        <TouchableOpacity
+                          onPress={item.actionClick}
                           style={{
                             flexDirection: 'row',
                             alignItems: 'center',
@@ -576,8 +575,8 @@ export default function NewHome({navigation}) {
                             }}>
                             {item.actionText}
                           </Text>
-                          <TouchableOpacity
-                            onPress={item.actionClick}
+
+                          <View
                             style={{
                               width: 25,
                               height: 25,
@@ -592,8 +591,8 @@ export default function NewHome({navigation}) {
                               size={10}
                               style={{color: COLORS.grey}}
                             />
-                          </TouchableOpacity>
-                        </View>
+                          </View>
+                        </TouchableOpacity>
                       </View>
 
                       <View style={{marginTop: 20}}>
@@ -887,6 +886,13 @@ export default function NewHome({navigation}) {
         visible={showAmountModal}
         // setShowPaymentType={(bol) => setShowPaymentType(bol)}
       />
+
+      {showWalletModal && (
+        <WalletPaymentModal
+          onRequestClose={() => setShowWalletModal(!showWalletModal)}
+          visible={showWalletModal}
+        />
+      )}
     </View>
   );
 }

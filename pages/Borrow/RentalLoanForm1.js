@@ -175,7 +175,7 @@ const RentalLoanForm1 = ({navigation}) => {
                 // fontWeight: 'bold',
                 color: COLORS.primary,
               }}>
-              {value}
+              {value} {value <= 1 ? 'Month' : 'Months'}
             </Text>
           ) : (
             <Text

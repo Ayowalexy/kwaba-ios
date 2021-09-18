@@ -60,14 +60,14 @@ const Borrow = ({navigation}) => {
     return user;
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const user = await getUser();
-  //     const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
-  //     const steps = JSON.parse(rentalSteps);
-  //     console.log('The stepp:', steps);
-  //   })();
-  // }, []);
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
+      const steps = JSON.parse(rentalSteps);
+      console.log('The stepp:', steps);
+    })();
+  }, []);
 
   const handleRentalLoanClick = async () => {
     const user = await getUser();

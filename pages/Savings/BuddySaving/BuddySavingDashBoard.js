@@ -66,9 +66,9 @@ export default function SoloSavingDashBoard(props) {
   const [channel, setChannel] = useState('');
 
   useEffect(() => {
-    console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route.params);
+    console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route?.params);
     // pass the id
-    dispatch(getOneBuddySavings(route.params.id));
+    dispatch(getOneBuddySavings(route?.params?.id));
   }, []);
 
   useEffect(() => {

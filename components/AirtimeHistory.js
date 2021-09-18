@@ -42,7 +42,7 @@ export default function AirtimeHistory(props) {
 
   const handleShowDetails = (item) => {
     // console.log('Details...', item);
-    // setShowHistoryDetail(true);
+    setShowHistoryDetail(true);
   };
 
   // this gives an object with dates as keys

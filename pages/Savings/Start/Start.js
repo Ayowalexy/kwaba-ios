@@ -44,7 +44,7 @@ export default function Start({navigation}) {
   return (
     <View style={[designs.container]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"
         size={25}
         style={{

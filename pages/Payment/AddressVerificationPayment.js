@@ -78,7 +78,7 @@ const AddressVerificationPayment = ({navigation}) => {
           landlord_detail: 'done',
           referee_detail: 'done',
           offer_letter: 'done',
-          address_verification: 'done-add',
+          address_verification: 'done',
           debitmandate: '',
           awaiting_disbursement: '',
           dashboard: '',

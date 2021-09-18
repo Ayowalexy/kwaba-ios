@@ -5,14 +5,10 @@ import {formatNumber} from '../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getMaxLoanCap} from '../../redux/actions/savingsActions';
 import {useDispatch, useSelector} from 'react-redux';
-import {plus_1} from '../../util/icons';
 
 export default function Wallet({navigation}) {
   const dispatch = useDispatch();
-  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
-  useEffect(() => {
-    dispatch(getMaxLoanCap());
-  }, []);
+
   return (
     <View style={[styles.container]}>
       <View

@@ -15,6 +15,7 @@ import QuickSaveModal from '../../../components/QuickSaveModal';
 
 export default function ReferralDetails({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
+
   useEffect(() => {
     const getReferralDetails = async () => {
       const referral = await referralDetails();

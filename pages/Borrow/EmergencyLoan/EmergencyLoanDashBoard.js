@@ -310,13 +310,40 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   return (
     <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-      <Icon
-        onPress={() => navigation.navigate('Home')}
-        name="arrow-back-outline"
-        size={25}
-        style={{paddingHorizontal: 15, paddingTop: 15}}
-        color={COLORS.primary}
-      />
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingVertical: 10,
+          paddingLeft: 20,
+        }}>
+        <Icon
+          onPress={() => navigation.navigate('Home')}
+          name="arrow-back-outline"
+          size={25}
+          color={COLORS.primary}
+        />
+        {/* <View
+          style={{
+            marginLeft: 20,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}> */}
+        <Text
+          style={[
+            {
+              color: '#2A286A',
+              textAlign: 'left',
+              fontWeight: 'bold',
+              fontSize: 14,
+              marginLeft: 20,
+            },
+          ]}>
+          Emergency Fund
+        </Text>
+        {/* </View> */}
+      </View>
       <View style={[styles.banner]}>
         <View style={{flexDirection: 'row', width: '80%'}}>
           <Icon name="alert-circle" size={25} color={COLORS.dark} />
@@ -345,27 +372,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
           />
         </TouchableOpacity>
       </View>
-      <View style={{flex: 1, paddingHorizontal: 20, marginTop: 0}}>
-        <View
-          style={{
-            paddingVertical: 10,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={[
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                fontSize: 16,
-              },
-            ]}>
-            Emergency Fund
-          </Text>
-        </View>
-
+      <View style={{flex: 1, paddingHorizontal: 20, marginTop: 10}}>
         <View style={[styles.dashboard]}>
           <View style={[styles.box1]}>
             <View
@@ -608,10 +615,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#9D98EC40',
     paddingVertical: 10,
     paddingHorizontal: 20,
-    marginTop: 10,
+    // marginTop: 10,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    borderLeftWidth: 5,
+    borderLeftColor: COLORS.dark,
   },
 
   bannerText: {

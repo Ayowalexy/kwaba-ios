@@ -42,6 +42,7 @@ import {
   BuddyLists,
   BuddySavingDashBoard,
   BuddyPaymentScreen,
+  AcceptInvite,
 } from './pages/Savings/index';
 import Borrow from './pages/Borrow/Borrow';
 import RentNowPayLaterOnboarding from './pages/Borrow/RentNowPayLaterOnboarding';
@@ -179,7 +180,7 @@ import Wallet from './pages/Wallet/Wallet';
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import {View, Text, RefreshControl, StatusBar} from 'react-native';
+import {View, Text, RefreshControl, StatusBar, Linking} from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
 
@@ -190,6 +191,18 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Instabug from 'instabug-reactnative';
 
 const Stack = createStackNavigator();
+
+const linking = {
+  prefixes: ['https://kwaba.ng', 'kwaba://'],
+  config: {
+    screens: {
+      AcceptInvite: 'AcceptInvite',
+      BuddyLists: 'BuddyLists',
+      SavingLists: 'SavingLists',
+      AirtimeHome: 'AirtimeHome',
+    },
+  },
+};
 
 const App = () => {
   const dispatch = useDispatch();
@@ -300,7 +313,7 @@ const App = () => {
           </Text>
         </View>
       )} */}
-      <NavigationContainer>
+      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
         {/* <StatusBar
           animated={true}
           backgroundColor="transparent"
@@ -413,6 +426,10 @@ const App = () => {
               <Stack.Screen
                 name="BuddyPaymentScreen"
                 component={BuddyPaymentScreen}></Stack.Screen>
+
+              <Stack.Screen
+                name="AcceptInvite"
+                component={AcceptInvite}></Stack.Screen>
 
               <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
               <Stack.Screen

@@ -15,6 +15,7 @@ import BuddySaving7 from './BuddySaving/Screen7';
 import BuddyLists from './BuddySaving/BuddyLists';
 import BuddySavingDashBoard from './BuddySaving/BuddySavingDashBoard';
 import BuddyPaymentScreen from './BuddySaving/BuddyPaymentScreen';
+import AcceptInvite from './BuddySaving/AcceptInvite';
 
 export {
   SavingsHome,
@@ -34,4 +35,5 @@ export {
   BuddyLists,
   BuddySavingDashBoard,
   BuddyPaymentScreen,
+  AcceptInvite,
 };

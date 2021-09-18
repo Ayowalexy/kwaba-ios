@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     width: '70%',
     color: COLORS.white,
     fontFamily: 'CircularStd-bold,Book',
-    textAlign: 'justify',
+    // textAlign: '',
     lineHeight: 20,
     // marginLeft: 16,
   },

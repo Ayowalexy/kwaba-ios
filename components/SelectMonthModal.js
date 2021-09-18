@@ -16,18 +16,18 @@ export default function SelectMonthModal(props) {
   const {onRequestClose, visible, onClick, selectedMonth} = props;
   // const months = new Array(12).fill();
   const months = [
-    '1 Month',
-    '2 Months',
-    '3 Months',
-    '4 Months',
-    '5 Months',
-    '6 Months',
-    '7 Months',
-    '8 Months',
-    '9 Months',
-    '10 Months',
-    '11 Months',
-    '12 Months',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
   ];
   useEffect(() => {
     // console.log(months);
@@ -66,7 +66,7 @@ export default function SelectMonthModal(props) {
               {months.map((month, index) => (
                 <TouchableOpacity
                   onPress={() => {
-                    onClick(month);
+                    onClick(index + 1);
                     onRequestClose();
                   }}
                   key={index}
@@ -88,7 +88,7 @@ export default function SelectMonthModal(props) {
                         month == selectedMonth ? COLORS.white : COLORS.primary,
                     }}>
                     {/* {index + 1} {index + 1 <= 1 ? 'month' : 'months'} */}
-                    {month}
+                    {month} {index + 1 <= 1 ? 'Month' : 'Months'}
                   </Text>
                 </TouchableOpacity>
               ))}

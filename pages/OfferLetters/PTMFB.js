@@ -304,7 +304,7 @@ export default function PTMFB(props) {
           alignItems: 'center',
         }}>
         <Icon
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Borrow')}
           name="arrow-back-outline"
           size={20}
           style={{

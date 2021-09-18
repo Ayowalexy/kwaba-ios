@@ -50,7 +50,7 @@ const RentalLoanFormDoc = ({navigation}) => {
       setSelectedMonth(data.repayment_plan);
       await monthly_payment(
         data.amount_needed_from_kwaba,
-        Number(data.repayment_plan[0]),
+        Number(data.repayment_plan),
       );
     }
 
@@ -257,7 +257,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {selectedMonth}
+                  {selectedMonth} {selectedMonth <= 1 ? 'Month' : 'Months'}
                 </Text>
               ) : (
                 <Text
@@ -327,7 +327,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                 }}>
                 <Text>Tenure</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
-                  {selectedMonth}
+                  {selectedMonth} {selectedMonth <= 1 ? 'Month' : 'Months'}
                 </Text>
               </View>
             </View>
@@ -361,7 +361,7 @@ const RentalLoanFormDoc = ({navigation}) => {
         // selectedMonth={selectedMonth}
         onClick={(value) => {
           setSelectedMonth(value);
-          monthly_payment(unFormatNumber(requestAmount), Number(value[0]));
+          monthly_payment(unFormatNumber(requestAmount), Number(value));
         }}
         selectedMonth={selectedMonth}
       />
