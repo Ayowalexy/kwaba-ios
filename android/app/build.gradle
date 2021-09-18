@@ -135,7 +135,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.Kwaba_mobile_app"
+        applicationId "com.kwaba_mobile_app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

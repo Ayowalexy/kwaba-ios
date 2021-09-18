@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "Kwaba_mobile_app-tvOS.app"
-               BlueprintName = "Kwaba_mobile_app-tvOS"
-               ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
+               BuildableName = "kwaba_mobile_app-tvOS.app"
+               BlueprintName = "kwaba_mobile_app-tvOS"
+               ReferencedContainer = "container:kwaba_mobile_app.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "Kwaba_mobile_app-tvOSTests.xctest"
-               BlueprintName = "Kwaba_mobile_app-tvOSTests"
-               ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
+               BuildableName = "kwaba_mobile_app-tvOSTests.xctest"
+               BlueprintName = "kwaba_mobile_app-tvOSTests"
+               ReferencedContainer = "container:kwaba_mobile_app.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "Kwaba_mobile_app-tvOS.app"
-            BlueprintName = "Kwaba_mobile_app-tvOS"
-            ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
+            BuildableName = "kwaba_mobile_app-tvOS.app"
+            BlueprintName = "kwaba_mobile_app-tvOS"
+            ReferencedContainer = "container:kwaba_mobile_app.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "Kwaba_mobile_app-tvOS.app"
-            BlueprintName = "Kwaba_mobile_app-tvOS"
-            ReferencedContainer = "container:Kwaba_mobile_app.xcodeproj">
+            BuildableName = "kwaba_mobile_app-tvOS.app"
+            BlueprintName = "kwaba_mobile_app-tvOS"
+            ReferencedContainer = "container:kwaba_mobile_app.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

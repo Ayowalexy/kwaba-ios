@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '10.0'
 
-target 'Kwaba_mobile_app' do
+target 'kwaba_mobile_app' do
   config = use_native_modules!
 
   use_react_native!(:path => config["reactNativePath"])
@@ -39,10 +39,10 @@ target 'Kwaba_mobile_app' do
   end
 end
 
-target 'Kwaba_mobile_app-tvOS' do
-  # Pods for Kwaba_mobile_app-tvOS
+target 'kwaba_mobile_app-tvOS' do
+  # Pods for kwaba_mobile_app-tvOS
 
-  target 'Kwaba_mobile_app-tvOSTests' do
+  target 'kwaba_mobile_app-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
   end
