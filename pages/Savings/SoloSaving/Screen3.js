@@ -81,7 +81,9 @@ export default function Screen3({navigation, route}) {
     );
     console.log('Calc: ', diff);
     setSavingsAmount((data.target_amount - data.savings_amount) / diff);
-    setAmountToSaveNow(data.savings_amount);
+    setAmountToSaveNow(
+      moment().format('YYYY-MM-DD') == data.start_date && data.savings_amount,
+    );
   }, []);
 
   useEffect(() => {
@@ -158,9 +160,7 @@ export default function Screen3({navigation, route}) {
             <View style={designs.dataInfo}>
               <Text style={designs.key}>Amount To Save Now </Text>
               <Text style={designs.value}>
-                ₦
-                {numberWithCommas(Number(amountToSaveNow).toFixed(0)) ||
-                  ' 0.00'}
+                ₦{numberWithCommas(Number(amountToSaveNow).toFixed(2))}
               </Text>
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>

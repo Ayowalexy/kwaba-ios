@@ -87,7 +87,7 @@ export default function TabOne(props) {
       setLastName(lastname);
       setGender(gender);
       if (homeaddress != null) setHomeAddress(homeaddress);
-      if (dob != null) setDateOfBirth(dob);
+      if (dob != null) setDateOfBirth(moment(dob).format('MMM DD YYYY'));
     })();
   }, []);
 

@@ -190,7 +190,7 @@ export default function NewHome({navigation}) {
     } else {
       setIsEmailVerified(true);
     }
-  }, []);
+  }, [login]);
 
   // dispatch events here
   useEffect(() => {
@@ -285,11 +285,11 @@ export default function NewHome({navigation}) {
       image: icons.ic1,
       route: () => navigation.navigate('AirtimeHome'),
     },
-    // {
-    //   name: 'Pay Bills',
-    //   image: icons.ic2,
-    //   route: () => navigation.navigate('BillsHome'),
-    // },
+    {
+      name: 'Pay Bills',
+      image: icons.ic2,
+      route: () => navigation.navigate('BillsHome'),
+    },
     {
       // name: 'Buy now pay\nlater',
       name: 'Wallets',

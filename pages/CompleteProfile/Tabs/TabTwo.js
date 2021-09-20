@@ -114,19 +114,9 @@ export default function TabTwo(props) {
         style={{marginBottom: 80}}>
         <View style={{marginTop: 20}} />
         <View>
-          {/* <TextInput
-            style={[designs.textField]}
-            placeholder="Employment Status"
-            placeholderTextColor="#999"
-            keyboardType="default"
-            value={employmentStatus}
-            onChangeText={(text) => setEmplpoymentStatus(text)}
-          /> */}
-
           <TouchableOpacity
             style={[designs.customInput, {padding: 20}]}
             onPress={() => {
-              // setShowSelectGenderModal(!showSelectGenderModal);
               setEmploymentStatusModal(!employmentStatusModal);
             }}>
             {employmentStatus != null ? (
@@ -170,7 +160,9 @@ export default function TabTwo(props) {
             onChangeText={(text) => setLocation(text)}
           />
         </View>
+        <View style={{marginTop: 20}} />
       </ScrollView>
+
       <View
         style={{
           position: 'absolute',
@@ -183,8 +175,6 @@ export default function TabTwo(props) {
             {
               padding: 15,
               borderRadius: 10,
-              marginTop: 20,
-              marginBottom: 20,
               fontSize: 14,
               fontFamily: 'CircularStd-Medium',
               fontWeight: '600',

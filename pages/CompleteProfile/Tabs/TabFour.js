@@ -18,6 +18,8 @@ import Modal from 'react-native-modal';
 import {useDispatch} from 'react-redux';
 import {me} from '../../../services/network';
 import {setLoginState} from '../../../redux/actions/userActions';
+import {formatNumber} from '../../../util/numberFormatter';
+import moment from 'moment';
 
 export default function TabFour(props) {
   const dispatch = useDispatch();
@@ -44,11 +46,17 @@ export default function TabFour(props) {
   useEffect(() => {
     (async () => {
       const data = await getUserData();
-      const {employment_status, work_place} = data.user;
+      const {how_much_is_your_rent, when_is_your_next_rent_due} = data.user;
+
+      console.log(
+        'From the local: ',
+        how_much_is_your_rent,
+        when_is_your_next_rent_due,
+      );
 
       // auto fill input fields
-      setCompanyName(work_place);
-      // setLocation();
+      setRentAmount(formatNumber(how_much_is_your_rent));
+      setRentDate(moment(when_is_your_next_rent_due).format('DD/MM/YYYY'));
     })();
   }, []);
 
@@ -117,7 +125,7 @@ export default function TabFour(props) {
           />
           <TextInput
             style={[designs.textField]}
-            placeholder="Whenis your next rent due"
+            placeholder="When is your next rent due"
             placeholderTextColor="#555"
             keyboardType="default"
             value={rentDate}
@@ -125,6 +133,7 @@ export default function TabFour(props) {
           />
         </View>
       </ScrollView>
+
       <View
         style={{
           position: 'absolute',
@@ -137,8 +146,6 @@ export default function TabFour(props) {
             {
               padding: 15,
               borderRadius: 10,
-              marginTop: 20,
-              marginBottom: 20,
               fontSize: 14,
               fontFamily: 'CircularStd-Medium',
               fontWeight: '600',

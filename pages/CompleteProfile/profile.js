@@ -29,14 +29,14 @@ const renderTabBar = (props) => (
       width: '100%',
       marginLeft: 'auto',
       marginRight: 'auto',
-      borderRadius: 10,
+      borderRadius: 5,
       overflow: 'hidden',
       backgroundColor: '#F7F8FD',
     }}
     renderLabel={({route, focused, color}) => (
       <Text
         style={{
-          color: focused ? 'white' : COLORS.grey,
+          color: focused ? 'white' : '#444',
           fontSize: 10,
         }}>
         {route.title}

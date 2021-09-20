@@ -1280,11 +1280,6 @@
     color "^3.1.3"
     react-native-iphone-x-helper "^1.3.0"
 
-"@segment/analytics-react-native@^1.4.8":
-  version "1.4.9"
-  resolved "https://registry.yarnpkg.com/@segment/analytics-react-native/-/analytics-react-native-1.4.9.tgz#42351efd41849b61e421b3076b31cc5662651931"
-  integrity sha512-i2IAJr62YO8Z2DT3rVAvorHAmlZWxPrLXfe5mBkuRjvAnO0kRCTJJI/2r1yIArjPi42jS1S0EG6jNk2ZB7gT8g==
-
 "@sinonjs/commons@^1.7.0":
   version "1.8.2"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.2.tgz#858f5c4b48d80778fde4b9d541f27edc0d56488b"
@@ -6766,10 +6761,10 @@ react-native-okra@0.0.2:
   resolved "https://registry.yarnpkg.com/react-native-okra/-/react-native-okra-0.0.2.tgz#910fc924a04709e02551933fc712f59110248934"
   integrity sha512-K/vyA9EoychC45KuWOkx1uLYvmITtij1ma8/WlqL/eoM5bDrMaMSCNG1xBCCQaZqvFAKWBuLOkAtrcw9gea46Q==
 
-react-native-pager-view@^5.1.5:
-  version "5.1.7"
-  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.1.7.tgz#9ca5807e39801fc1135709ef6d495773eafa784e"
-  integrity sha512-mb7xa0XnMlNXrIE422vWKPBVlt0GBP21744zT8yEv6Xe/0aAM/dsDugD3dy9z4vybyp2yszAzw9XP0bIsfS6LA==
+react-native-pager-view@^5.4.4:
+  version "5.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.4.4.tgz#83a873a82748440696ca0e0fd07a77477b854a78"
+  integrity sha512-5zyol+FZ9X4N4OEz92IyaFFROR3KtgAgTmgqlUvG59Eigf+f6aWs5fvcbWwzuz/AlLZbrxIDrnLmSpMUOK57ww==
 
 react-native-paystack@^3.4.0:
   version "3.4.0"

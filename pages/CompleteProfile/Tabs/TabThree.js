@@ -134,7 +134,9 @@ export default function TabThree(props) {
             onChangeText={(text) => setBvn(text)}
           />
         </View>
+        <View style={{marginTop: 20}} />
       </ScrollView>
+
       <View
         style={{
           position: 'absolute',
@@ -147,8 +149,6 @@ export default function TabThree(props) {
             {
               padding: 15,
               borderRadius: 10,
-              marginTop: 20,
-              marginBottom: 20,
               fontSize: 14,
               fontFamily: 'CircularStd-Medium',
               fontWeight: '600',
