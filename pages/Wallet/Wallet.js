@@ -1,13 +1,33 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {COLORS} from '../../util';
 import {formatNumber} from '../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getMaxLoanCap} from '../../redux/actions/savingsActions';
 import {useDispatch, useSelector} from 'react-redux';
+import {SwipeablePanel} from 'rn-swipeable-panel';
 
 export default function Wallet({navigation}) {
   const dispatch = useDispatch();
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    openPanel();
+  }, []);
+
+  const openPanel = () => {
+    setActive(true);
+  };
+
+  const closePanel = () => {
+    setActive(false);
+  };
 
   return (
     <View style={[styles.container]}>
@@ -74,6 +94,7 @@ export default function Wallet({navigation}) {
           </Text>
 
           <TouchableOpacity
+            onPress={openPanel}
             style={{
               backgroundColor: '#ffffff20',
               width: 40,
@@ -106,7 +127,7 @@ export default function Wallet({navigation}) {
         </View>
       </View>
 
-      <View
+      {/* <View
         style={{
           flex: 1,
           backgroundColor: COLORS.white,
@@ -117,7 +138,22 @@ export default function Wallet({navigation}) {
           alignItems: 'center',
         }}>
         <View style={{width: 50, height: 5, backgroundColor: '#BFBFBF50'}} />
-      </View>
+      </View> */}
+      <SwipeablePanel
+        fullWidth
+        isActive={active}
+        onClose={closePanel}
+        noBackgroundOpacity={true}
+        closeOnTouchOutside={true}
+        onPressCloseButton={closePanel}>
+        <ScrollView contentContainerStyle={{padding: 20}}>
+          {[...Array(50)].map((_, index) => (
+            <View key={`${index}`} style={styles.listItem}>
+              <Text>{`List Item ${index + 1}`}</Text>
+            </View>
+          ))}
+        </ScrollView>
+      </SwipeablePanel>
     </View>
   );
 }

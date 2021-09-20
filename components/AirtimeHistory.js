@@ -21,12 +21,14 @@ import AirtimeHistoryDetail from './AirtimeHistoryDetail';
 import {formatNumber} from '../util/numberFormatter';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+import {SwipeablePanel} from 'rn-swipeable-panel';
 
 export default function AirtimeHistory(props) {
   const {onRequestClose, visible} = props;
   const [spinner, setSpinner] = useState(false);
   const [filterHistory, setFilterHistory] = useState('');
   const [showHistoryDetail, setShowHistoryDetail] = useState(false);
+  const [active, setActive] = useState(false);
 
   const getAirtimeBillTransReducer = useSelector(
     (state) => state.getAirtimeBillTransReducer,
@@ -46,7 +48,7 @@ export default function AirtimeHistory(props) {
   };
 
   // this gives an object with dates as keys
-  const groups = getAirtimeBillTransReducer?.data.reduce((item, data) => {
+  const groups = getAirtimeBillTransReducer?.data?.reduce((item, data) => {
     const date = data.created_at;
     if (!item[date]) {
       item[date] = [];
@@ -63,9 +65,13 @@ export default function AirtimeHistory(props) {
     };
   });
 
-  // useEffect(() => {
-  //   console.log('The Group:', groupArrays);
-  // }, []);
+  const openPanel = () => {
+    setActive(true);
+  };
+
+  const closePanel = () => {
+    setActive(false);
+  };
 
   return (
     // <View style={styles.centeredView}>
@@ -196,7 +202,8 @@ export default function AirtimeHistory(props) {
                             {item.data.map((item, index) => {
                               return (
                                 <TouchableOpacity
-                                  onPress={() => handleShowDetails(item)}
+                                  // onPress={() => handleShowDetails(item)}
+                                  onPress={openPanel}
                                   key={index}
                                   style={{
                                     flexDirection: 'row',
@@ -300,6 +307,14 @@ export default function AirtimeHistory(props) {
             </View>
           </View>
         </View>
+
+        <SwipeablePanel
+          fullWidth
+          isActive={active}
+          onClose={closePanel}
+          closeOnTouchOutside={true}
+          onPressCloseButton={closePanel}
+          style={{backgroundColor: COLORS.white}}></SwipeablePanel>
       </Modal>
 
       {showHistoryDetail && (

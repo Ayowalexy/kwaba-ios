@@ -274,7 +274,7 @@ const PurchaseAirtime = ({navigation, route}) => {
           visible={showCardModal}
           info={resData}
           navigation={navigation}
-          redirectTo="AirtimeHome"
+          redirectTo="Home"
         />
       )}
 

@@ -313,7 +313,7 @@ const App = () => {
           </Text>
         </View>
       )} */}
-      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+      <NavigationContainer linking={linking}>
         {/* <StatusBar
           animated={true}
           backgroundColor="transparent"
