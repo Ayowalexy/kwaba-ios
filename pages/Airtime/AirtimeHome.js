@@ -11,7 +11,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
 import AirtimeHistory from '../../components/AirtimeHistory';
 import {COLORS, FONTS, images, icons} from '../../util/index';
-import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
+import {
+  getAirtimeBillTrans,
+  getBillsCategory,
+} from '../../redux/actions/billsAction';
 
 const AirtimeHome = ({navigation}) => {
   const dispatch = useDispatch();
@@ -30,6 +33,7 @@ const AirtimeHome = ({navigation}) => {
   };
 
   useEffect(() => {
+    dispatch(getBillsCategory('airtime'));
     dispatch(getAirtimeBillTrans());
     setAirtimeData(getBillsCategoryLists?.data?.content);
   }, []);

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,46 +10,41 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, images, icons} from '../../util/index';
+import {useDispatch, useSelector} from 'react-redux';
 
-const screenheight = Dimensions.get('window').height;
-const screenwidth = Dimensions.get('window').width;
-const headerHeight = screenheight / 4;
-const width = Dimensions.get('window').width;
 const BillsHome = ({navigation}) => {
+  const dispatch = useDispatch();
+  const getBills = useSelector((state) => state.getBillServicesReducer);
+
+  // DATA
   const billsHomeCarddata = [
     {
       image: icons.electricity,
       cardTitle: 'Electricity',
       cardSubTitle: 'Pay for your electricity easily',
-      // onClickFunction: function openCardAndBank() {},
     },
     {
       image: icons.cabletv,
       cardTitle: 'Cable TV',
       cardSubTitle: 'Keep the show on, pay easily',
-      // onClickFunction: function openCardAndBank() {
-      //   navigation.navigate('CableTv');
-      // },
     },
     {
       image: icons.internetsub,
       cardTitle: 'Internet subscription',
       cardSubTitle: 'Pay your internet subscription',
-      // onClickFunction: function openCardAndBank() {},
     },
     {
       image: icons.waste,
       cardTitle: 'Waste',
       cardSubTitle: 'Sort out your waste bill',
-      // onClickFunction: function openCardAndBank() {},
     },
     {
       image: icons.water,
       cardTitle: 'Water',
       cardSubTitle: 'Keep water flowing, pay easily',
-      // onClickFunction: function openCardAndBank() {},
     },
   ];
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -62,7 +57,7 @@ const BillsHome = ({navigation}) => {
         />
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <View style={{flexDirection: 'column'}}>
+          <View style={{flexDirection: 'column', paddingLeft: 10}}>
             <Text style={styles.headerMainText}>Pay bills</Text>
             <Text style={styles.headertext}>
               Take care of all your essentials bills
@@ -81,45 +76,86 @@ const BillsHome = ({navigation}) => {
           flexDirection: 'column',
           alignSelf: 'center',
           borderRadius: 10,
-          width: width * 0.9,
+          width: '100%',
+          paddingHorizontal: 20,
           marginTop: 20,
         }}>
-        {billsHomeCarddata.map((value, index) => {
+        {getBills?.data?.content.map((value, index) => {
           return (
             <TouchableOpacity
+              disabled={
+                value.identifier == 'education' ||
+                value.identifier == 'events' ||
+                value.identifier == 'insurance' ||
+                value.identifier == 'other-services'
+              }
+              // activeOpacity={value.identifier == 'education' ? 0.2 : 1}
               style={{
-                // height: 78,
                 backgroundColor: COLORS.white,
                 flexDirection: 'row',
-                // marginTop: 10,
                 marginBottom: 10,
                 borderRadius: 10,
                 justifyContent: 'space-between',
                 paddingVertical: 15,
-                paddingHorizontal: 10,
+                paddingHorizontal: 15,
                 alignItems: 'center',
                 borderWidth: 1,
                 borderColor: '#EAEAEA',
+                opacity:
+                  value.identifier == 'education' ||
+                  value.identifier == 'events' ||
+                  value.identifier == 'insurance' ||
+                  value.identifier == 'other-services'
+                    ? 0.5
+                    : 1,
               }}
               key={index}
               onPress={() => {
-                navigation.navigate('CableTv', {name: value.cardTitle});
+                value.identifier == 'airtime'
+                  ? navigation.navigate('AirtimeHome')
+                  : value.identifier == 'data'
+                  ? navigation.navigate('DataBill', {name: value.name})
+                  : value.identifier == 'tv-subscription'
+                  ? navigation.navigate('CableTvBill', {name: value.name})
+                  : navigation.navigate('ElectricityBill', {name: value.name});
               }}>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Image
+                <View
                   style={{
+                    backgroundColor: '#9D98EC50',
                     width: 40,
                     height: 40,
-                    marginRight: 10,
-                    // backgroundColor: 'red',
-                  }}
-                  source={value.image}
-                  resizeMode="contain"
-                />
+                    marginRight: 20,
+                    borderRadius: 5,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Icon
+                    name={
+                      value.identifier == 'tv-subscription'
+                        ? 'tv-sharp'
+                        : value.identifier == 'electricity-bill'
+                        ? 'pulse'
+                        : value.identifier == 'data'
+                        ? 'radio'
+                        : value.identifier == 'airtime'
+                        ? 'phone-portrait'
+                        : value.identifier == 'education'
+                        ? 'school'
+                        : value.identifier == 'events'
+                        ? 'restaurant'
+                        : value.identifier == 'insurance'
+                        ? 'ribbon'
+                        : 'apps'
+                    }
+                    size={25}
+                    color={COLORS.primary}
+                  />
+                </View>
+
                 <View
                   style={{
                     flexDirection: 'column',
-                    // borderWidth: 1,
                     alignSelf: 'center',
                   }}>
                   <Text
@@ -127,14 +163,14 @@ const BillsHome = ({navigation}) => {
                       FONTS.h3FontStyling,
                       {color: COLORS.primary, fontWeight: 'bold', fontSize: 16},
                     ]}>
-                    {value.cardTitle}
+                    {value.name}
                   </Text>
                   <Text
                     style={[
                       FONTS.body4FontStyling,
                       {color: '#ADADAD', fontSize: 12},
                     ]}>
-                    {value.cardSubTitle}
+                    Pay for {value.name}
                   </Text>
                 </View>
               </View>
@@ -146,9 +182,6 @@ const BillsHome = ({navigation}) => {
                   style={{
                     fontWeight: '900',
                     fontSize: 18,
-                    // marginLeft: 16,
-                    // marginTop: 20,
-                    // marginRight: 10,
                   }}
                   color={COLORS.primary}
                 />

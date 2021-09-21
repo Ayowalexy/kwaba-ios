@@ -88,11 +88,6 @@ export default function NewHome({navigation}) {
     return data;
   };
 
-  // useEffect(() => {
-  //   // console.log('Login: ', login);
-  //   // onRefresh();
-  // }, []);
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -139,40 +134,6 @@ export default function NewHome({navigation}) {
   }, []);
 
   useEffect(() => {
-    // console.log('The User: ', login);
-    // if (login) setName(login.username);
-    // complete profile
-    // if (
-    //   user?.data?.profile_complete == 0 ||
-    //   user?.data?.profile_complete == null
-    // ) {
-    //   setIsProfileComplete(false);
-    // } else {
-    //   setIsProfileComplete(true);
-    // }
-    // // email verified
-    // if (user?.data?.email_verified == 0 || user?.data?.email_verified == null) {
-    //   setIsEmailVerified(false);
-    // } else {
-    //   setIsEmailVerified(true);
-    // }
-    //     if (
-    //   login.user.profile_complete == 0 ||
-    //   login.user.profile_complete == null
-    // ) {
-    //   setIsProfileComplete(false);
-    // } else {
-    //   setIsProfileComplete(true);
-    // }
-    // // email verified
-    // if (login.user.email_verified == 0 || login.user.email_verified == null) {
-    //   setIsEmailVerified(false);
-    // } else {
-    //   setIsEmailVerified(true);
-    // }
-  }, []);
-
-  useEffect(() => {
     // console.log('Login: ', login);
     if (login) setName(login.username);
     // complete profile
@@ -198,7 +159,7 @@ export default function NewHome({navigation}) {
     dispatch(getMaxLoanCap());
     dispatch(getTotalBuddySavings());
     dispatch(getBillServices());
-    dispatch(getBillsCategory('Airtime'));
+    // dispatch(getBillsCategory('airtime'));
   }, []);
 
   useEffect(() => {

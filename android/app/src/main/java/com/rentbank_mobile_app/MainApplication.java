@@ -23,7 +23,6 @@ import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import com.rnfs.RNFSPackage;
 import com.instabug.reactlibrary.RNInstabugReactnativePackage;
-import com.airbnb.android.react.lottie.LottiePackage;
 // import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
@@ -41,7 +40,6 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
-          packages.add(new LottiePackage());
           
          
           return packages;

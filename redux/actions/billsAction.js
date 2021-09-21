@@ -10,7 +10,7 @@ const getToken = async () => {
 };
 
 // GET BILLS SERVICES
-export const setBankAccounts = (data) => {
+export const setBillServices = (data) => {
   return {
     type: types.GET_BILLS_SERVICES,
     payload: data,
@@ -25,8 +25,8 @@ export const getBillServices = () => {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      dispatch(setBankAccounts(response.data.data));
-      //   console.log('Redux Bills Res: ', response.data);
+      dispatch(setBillServices(response.data.data));
+      // console.log('Redux Bills Res: ', response.data);
       // return response.data.userBanks;
     } catch (error) {
       return error;
