@@ -37,12 +37,12 @@ const ElectricityBill = ({navigation, route}) => {
 
   useEffect(() => {
     // console.log('The Package Data: ', packageData);
-    let selectedPackage = packageData.filter(
+    let selectedPackage = packageData?.filter(
       (item) => item.name == packageName,
     )[0];
     setAmount(selectedPackage?.variation_amount);
     // console.log('The Amount: ', amount);
-  }, [packageName]);
+  }, [packageData]);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -59,11 +59,10 @@ const ElectricityBill = ({navigation, route}) => {
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
-        // console.log(
-        //   'Response Variations: ',
-        //   response?.data?.data?.content?.variations,
-        // );
-        setPackageData(response?.data?.data?.content?.variations);
+        // console.log('Response Variations: ', response?.data?.data);
+        // test mode response?.data?.data?.content?.varations
+        // live mode response?.data?.data?.content?.variations
+        setPackageData(response?.data?.data?.content?.varations);
       } catch (error) {
         console.log('Error:', error);
       }
@@ -84,6 +83,11 @@ const ElectricityBill = ({navigation, route}) => {
   const closePanel = () => {
     setActive(false);
   };
+
+  const handleRoute = async () => {
+    console.log('Hello');
+  };
+
   return (
     <>
       <View style={{flex: 1}}>
@@ -184,6 +188,7 @@ const ElectricityBill = ({navigation, route}) => {
           </View>
 
           <TouchableOpacity
+            onPress={handleRoute}
             style={[
               styles.btn,
               {

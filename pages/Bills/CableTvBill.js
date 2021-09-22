@@ -37,7 +37,7 @@ const CableTvBill = ({navigation, route}) => {
 
   useEffect(() => {
     // console.log('The Package Data: ', packageData);
-    let selectedPackage = packageData.filter(
+    let selectedPackage = packageData?.filter(
       (item) => item.name == packageName,
     )[0];
     setAmount(selectedPackage?.variation_amount);
@@ -60,11 +60,11 @@ const CableTvBill = ({navigation, route}) => {
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
-        console.log(
-          'Response Variations: ',
-          response?.data?.data?.content?.variations,
-        );
-        setPackageData(response?.data?.data?.content?.variations);
+        // console.log(
+        //   'Response Variations: ',
+        //   response?.data?.data?.content?.variations,
+        // );
+        setPackageData(response?.data?.data?.content?.varations);
       } catch (error) {
         console.log('The Error:', error);
       }
@@ -84,6 +84,19 @@ const CableTvBill = ({navigation, route}) => {
 
   const closePanel = () => {
     setActive(false);
+  };
+
+  const handleRoute = async () => {
+    console.log('Hello');
+    const data = {
+      serviceID: 'gotv-jinja',
+      billersCode: '08011111111',
+      variation_code: 'airt-50',
+      amount: 49.99,
+      recepient: '08011111111',
+    };
+
+    await buyOtherBills(data); //init
   };
   return (
     <>
@@ -180,6 +193,7 @@ const CableTvBill = ({navigation, route}) => {
           </View>
 
           <TouchableOpacity
+            onPress={handleRoute}
             style={[
               styles.btn,
               {

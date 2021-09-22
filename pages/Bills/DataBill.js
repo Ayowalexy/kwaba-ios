@@ -16,6 +16,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getBillsCategory} from '../../redux/actions/billsAction';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
+import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 
 const DataBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -26,7 +28,11 @@ const DataBill = ({navigation, route}) => {
   const [packageModal, setPackageModal] = useState(false);
   const [packageData, setPackageData] = useState([]);
   const [packageName, setPackageName] = useState('');
+  const [spinner, setSpinner] = useState(false);
   const [amount, setAmount] = useState(0);
+
+  const [showCardModal, setShowCardModal] = useState(false);
+  const [resData, setResData] = useState('');
   const getBillsCategoryLists = useSelector(
     (state) => state.getBillCategoryReducer,
   );
@@ -63,7 +69,7 @@ const DataBill = ({navigation, route}) => {
         //   'Response Variations: ',
         //   response?.data?.data?.content?.variations,
         // );
-        setPackageData(response?.data?.data?.content?.variations);
+        setPackageData(response?.data?.data?.content?.varations);
       } catch (error) {
         console.log('Error:', error);
       }
@@ -83,6 +89,42 @@ const DataBill = ({navigation, route}) => {
 
   const closePanel = () => {
     setActive(false);
+  };
+
+  const handleRoute = async () => {
+    console.log('Hello');
+    const data = {
+      serviceID: 'airtel-data',
+      billersCode: '08011111111',
+      variation_code: 'airt-50',
+      amount: 49.99,
+      recepient: '08011111111',
+    };
+
+    await buyOtherBills(data); //init
+  };
+
+  const buyOtherBills = async (data) => {
+    setSpinner(true);
+    const token = await getToken();
+    const url = 'http://67.207.86.39:8000/api/v1/buy_other_bills';
+    try {
+      const response = await axios.post(url, data, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      if (response.status == 200) {
+        setSpinner(false);
+        setResData(response?.data?.data);
+        setShowCardModal(true);
+        console.log('The Response: ', response?.data?.data);
+      } else {
+        setSpinner(false);
+        console.log('Something went wrong', response);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Buy Bill Error: ', error);
+    }
   };
   return (
     <>
@@ -179,6 +221,7 @@ const DataBill = ({navigation, route}) => {
           </View>
 
           <TouchableOpacity
+            onPress={handleRoute}
             style={[
               styles.btn,
               {
@@ -306,6 +349,18 @@ const DataBill = ({navigation, route}) => {
           );
         })}
       </SwipeablePanel>
+
+      <Spinner visible={spinner} size="large" />
+
+      {showCardModal && (
+        <CreditCardModalBills
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          info={resData}
+          navigation={navigation}
+          redirectTo="BillsHome"
+        />
+      )}
     </>
   );
 };
