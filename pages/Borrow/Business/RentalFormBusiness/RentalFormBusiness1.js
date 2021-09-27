@@ -70,6 +70,7 @@ const RentalFormBusiness1 = ({navigation}) => {
           'businessFormDataStore',
         );
         const parseData = JSON.parse(businessFormData);
+        console.log('The parse: ', parseData);
         setFieldValue('salaryAmount', parseData.monthly_business_expenditure);
       })();
     }, []);

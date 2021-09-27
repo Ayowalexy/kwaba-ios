@@ -150,9 +150,10 @@ export default function Screen5(props) {
       ...route.params,
       locked: locked,
       savings_tenure: route.params.duration,
+      num_of_buddies: route.params.number_of_buddies,
     };
 
-    // console.log('Data: ', data);
+    console.log('Data: ', data);
 
     setSpinner(true);
 

@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {soloSaving} from '../../../redux/actions/savingsActions';
 import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 import CardAndBankModal from './CardAndBankModal';
+import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -47,8 +48,11 @@ export default function Screen3({navigation, route}) {
 
   const [storeData, setStoreData] = useState(null);
 
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
   const addCardAndBankModal = () => {
     setModal(true);
+    // setShowPaymentModal(true);
   };
 
   useEffect(() => {
@@ -89,6 +93,10 @@ export default function Screen3({navigation, route}) {
   useEffect(() => {
     dispatch(soloSaving({locked: locked}));
   }, [locked]);
+
+  const handlePaymentRoute = async (value) => {
+    console.log('Solo saving: ', value);
+  };
 
   return (
     <View style={designs.container}>
@@ -290,6 +298,16 @@ export default function Screen3({navigation, route}) {
         navigation={navigation}
         storeData={storeData}
       />
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(value) => {
+            handlePaymentRoute(value); // paystack, bank, wallet
+          }}
+        />
+      )}
     </View>
   );
 }

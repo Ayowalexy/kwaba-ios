@@ -143,7 +143,7 @@ export default function BusinessForm1({navigation}) {
       JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
-    console.log('BUSINESS: ', businessFormData);
+    // console.log('BUSINESS: ', businessFormData);
 
     navigation.navigate('BusinessForm5');
   };
@@ -226,9 +226,30 @@ export default function BusinessForm1({navigation}) {
                     component={PaymentCollected}
                   />
                 </View>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  // onPress={()=> navigation.navigate('BusinessForm5')}
+                  // disabled={isValid ? false : true}
+                  style={[
+                    designs.button,
+                    {
+                      backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 30,
+                      textTransform: 'uppercase',
+                    }}>
+                    Next
+                  </Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
-            <View style={designs.buttonContainer}>
+            {/* <View style={designs.buttonContainer}>
               <TouchableOpacity
                 onPress={handleSubmit}
                 // onPress={()=> navigation.navigate('BusinessForm5')}
@@ -250,7 +271,7 @@ export default function BusinessForm1({navigation}) {
                   Next
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </>
         )}
       </Formik>

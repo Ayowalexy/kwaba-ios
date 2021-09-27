@@ -21,6 +21,10 @@ import BusinessSectorModal from './Modals/BusinessSectorModal';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import BussinessCompleteModal from './BussinessCompleteModal';
+
+import Spinner from 'react-native-loading-spinner-overlay';
+import axios from 'axios';
 
 const businessFormSchema = yup.object().shape({
   is_payment_made_to_bank_account: yup
@@ -35,6 +39,11 @@ export default function BusinessForm1({navigation}) {
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
   const [showBusinessSectorModal, setShowBusinessSectorModal] = useState(false);
   const [registration, setRegistration] = useState('');
+
+  const [showBusinessCompleteModal, setShowBusinessCompleteModal] = useState(
+    false,
+  );
+  const [spinner, setSpinner] = useState(false);
 
   const PayInBank = (props) => {
     const option_list = ['Yes', 'No'];
@@ -131,6 +140,12 @@ export default function BusinessForm1({navigation}) {
     );
   };
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
   const handleSubmit = async (values) => {
     const url = 'http://67.207.86.39:8000/api/v1/business/application/new';
     const dummyData = {
@@ -159,20 +174,50 @@ export default function BusinessForm1({navigation}) {
       monthly_business_revenue,
     };
 
+    const token = await getToken();
+
     const businessFormData = await AsyncStorage.getItem(
       'businessFormDataStore',
     );
 
     await AsyncStorage.setItem(
       'businessFormDataStore',
-      JSON.stringify({...JSON.parse(businessFormData), ...data}),
+      JSON.stringify({...dummyData, ...JSON.parse(businessFormData), ...data}),
     );
 
-    console.log('DATA: ', data);
-    console.log('BUSINESS FORM DAT: ', businessFormData);
-    console.log('DUMMY DATA: ', dummyData);
+    // console.log('DATA: ', data);
+    // console.log('BUSINESS FORM DAT: ', businessFormData);
+    // console.log('DUMMY DATA: ', dummyData);
+    console.log('The Business Route: ', {
+      ...dummyData,
+      ...JSON.parse(businessFormData),
+      ...data,
+    });
 
-    navigation.navigate('RentalFormBusiness1');
+    try {
+      setSpinner(true);
+      const response = await axios.post(
+        url,
+        {...dummyData, ...JSON.parse(businessFormData), ...data},
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+      console.log('Res: ', response);
+
+      if (response.status == 201) {
+        setSpinner(false);
+        setShowBusinessCompleteModal(true);
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error: ', error);
+    }
+
+    // navigation.navigate('RentalFormBusiness1');
+    // setShowBusinessCompleteModal(true);
   };
 
   return (
@@ -255,14 +300,16 @@ export default function BusinessForm1({navigation}) {
                     component={PayInBank}
                   />
 
-                  {values.is_payment_made_to_bank_account.toLowerCase() ==
-                    'yes' && (
+                  {(values.is_payment_made_to_bank_account.toLowerCase() ==
+                    'yes' ||
+                    values.is_payment_made_to_bank_account.toLowerCase() ==
+                      'no') && (
                     <>
                       <Text style={[designs.boldText, {marginTop: 18}]}>
                         How much is the business monthly revenue?
                       </Text>
                       <Field
-                        name="monthly_business_expenditure"
+                        name="monthly_business_revenue"
                         component={NumberInput}
                         placeholder="Amount"
                       />
@@ -274,40 +321,48 @@ export default function BusinessForm1({navigation}) {
                       How much is spent monthly on the business?
                     </Text>
                     <Field
-                      name="monthly_business_revenue"
+                      name="monthly_business_expenditure"
                       component={NumberInput}
                       placeholder="Amount"
                     />
                   </>
                 </View>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={[
+                    designs.button,
+                    {
+                      backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    },
+                  ]}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 30,
+                      textTransform: 'uppercase',
+                    }}>
+                    Next
+                  </Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
-            <View style={designs.buttonContainer}>
-              <TouchableOpacity
-                onPress={handleSubmit}
-                // onPress={()=> navigation.navigate('BusinessForm5')}
-                // disabled={isValid ? false : true}
-                style={[
-                  designs.button,
-                  {
-                    backgroundColor: isValid ? '#00DC99' : '#00DC9950',
-                  },
-                ]}>
-                <Text
-                  style={{
-                    color: 'white',
-                    fontWeight: 'bold',
-                    fontSize: 12,
-                    lineHeight: 30,
-                    textTransform: 'uppercase',
-                  }}>
-                  Next
-                </Text>
-              </TouchableOpacity>
-            </View>
           </>
         )}
       </Formik>
+
+      {showBusinessCompleteModal && (
+        <BussinessCompleteModal
+          onRequestClose={() =>
+            setShowBusinessCompleteModal(!showBusinessCompleteModal)
+          }
+          visible={showBusinessCompleteModal}
+          navigation={navigation}
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 }

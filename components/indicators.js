@@ -27,6 +27,20 @@ export default function Indicators(props) {
             backgroundColor: currentIndex == 2 ? '#00DC99' : '#99DC9950',
           },
         ]}></Text>
+      <Text
+        style={[
+          styles.indicator,
+          {
+            backgroundColor: currentIndex == 3 ? '#00DC99' : '#99DC9950',
+          },
+        ]}></Text>
+      <Text
+        style={[
+          styles.indicator,
+          {
+            backgroundColor: currentIndex == 4 ? '#00DC99' : '#99DC9950',
+          },
+        ]}></Text>
     </View>
   );
 }

@@ -619,6 +619,48 @@ const getOneUserBuddySavings = async (id) => {
   }
 };
 
+// fetch user buddy invites
+const fetchUserBuddyInvites = async () => {
+  const url = apiUrl + `/api/v1/fetch_user_buddy_invites`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// fetch user buddy invite data
+const fetchUserBuddyInviteData = async (data) => {
+  const url = apiUrl + '/api/v1/fetch_user_buddy_invite_data';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// accept buddy invite
+const AcceptBuddyInvite = async (data) => {
+  const url = apiUrl + '/api/v1/accept_buddy_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 // Buy Airtime
 const BuyPurchaseAirtime = async (data) => {
   const url = apiUrl + '/api/v1/buy_aitime';
@@ -654,6 +696,20 @@ const getBillsCategory = async (serviceID) => {
   const token = await getToken();
   try {
     const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Buy Other Bills
+const buyOtherBills = async (data) => {
+  const token = await getToken();
+  const url = apiUrl + `buy_other_bills`;
+  try {
+    const response = await axios.post(url, data, {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
@@ -705,8 +761,12 @@ export {
   sendBuddySavingsInvites,
   deleteBuddySavingsInvite,
   getOneUserBuddySavings,
+  fetchUserBuddyInvites,
+  fetchUserBuddyInviteData,
+  AcceptBuddyInvite,
   BuyPurchaseAirtime,
   getAllBanks,
   getBillsCategory,
   addFundsToBuddySavings,
+  buyOtherBills,
 };

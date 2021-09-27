@@ -90,7 +90,7 @@ export default function chooseNetworkModal(props) {
                 keyboardType="default"
               />
             </View> */}
-            {chooseNetwork.map((value, index) => (
+            {chooseNetwork?.map((value, index) => (
               <TouchableOpacity
                 key={index}
                 disabled={value.name === selectedNetwork ? true : false}

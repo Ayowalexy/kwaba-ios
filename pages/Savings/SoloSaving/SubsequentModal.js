@@ -138,11 +138,12 @@ export default function SubsequentModal(props) {
             <View style={{marginTop: 20}}>
               {subsequentOptions.map((value, index) => (
                 <TouchableOpacity
-                  onPress={
-                    value.toLowerCase() == 'yes'
-                      ? handleTransactions
-                      : onRequestClose
-                  }
+                  // onPress={
+                  //   value.toLowerCase() == 'yes'
+                  //     ? handleTransactions
+                  //     : onRequestClose
+                  // }
+                  onPress={handleTransactions}
                   key={index}
                   style={{
                     paddingVertical: 15,

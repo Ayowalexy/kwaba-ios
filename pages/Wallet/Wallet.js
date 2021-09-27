@@ -256,6 +256,7 @@ export default function Wallet({navigation}) {
       </SwipeablePanel>
 
       <SwipeablePanel
+        showCloseButton
         fullWidth
         onlySmall
         isActive={addFundsModal}
@@ -265,7 +266,7 @@ export default function Wallet({navigation}) {
         onPressCloseButton={() => setAddFundsModal(false)}>
         <View style={{paddingVertical: 20, paddingHorizontal: 30}}>
           <Text style={{fontSize: 14, fontWeight: 'bold', color: COLORS.dark}}>
-            How would you like {'\n'}to add money?
+            How would you like{'\n'}to add money?
           </Text>
         </View>
         <View>

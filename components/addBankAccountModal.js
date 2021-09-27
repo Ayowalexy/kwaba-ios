@@ -17,7 +17,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {getAllBanks, getBankAccounts} from '../services/network';
 
 export default function AddBankAccountModal(props) {
-  const {onRequestClose, visible, onConfirm, setDisplayAllBankAccounts} = props;
+  const {onRequestClose, visible, setDisplayAllBankAccounts} = props;
   const [selectedBank, setSelectedBank] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
   const [bankAccountNumber, setBankAccountNumber] = useState('');
@@ -41,35 +41,38 @@ export default function AddBankAccountModal(props) {
     return token;
   };
 
-  useEffect(() => {
-    (async () => {
-      const res = await paystackBanks();
-
-      if (res.data.status) {
-        setBankData(res.data.data);
-      }
-
-      // console.log('RES BANK: ', res.data);
-    })();
-
-    return () => {
-      setBankData('');
-    };
-  }, []);
-
   // fetch banks via paystak
   const paystackBanks = async () => {
-    const url = 'https://api.paystack.co/bank';
+    console.log('LLLL');
     try {
-      const banks = axios.get(url, {
+      const banks = await axios.get('https://api.paystack.co/bank', {
         headers: {'Content-Type': 'application/json'},
       });
-      // console.log('Paystack Banks: ', banks);
-      return banks;
+      setBankData(banks?.data?.data);
+      console.log('Paystack banks: ', banks);
+      // return banks;
     } catch (error) {
-      return error;
+      console.log('The Big Bang Error: ', error);
+      // return error;
     }
   };
+
+  useEffect(() => {
+    paystackBanks();
+  }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const res = await paystackBanks();
+  //     setBankData(res?.data?.data);
+  //     console.log('Paystack banks: ', res?.data);
+
+  //     // console.log('RES BANK: ', res.data);
+  //   })();
+  //   // return () => {
+  //   //   setBankData('');
+  //   // };
+  // }, []);
 
   // useEffect(() => {
   //   // console.log('The banks: ', );

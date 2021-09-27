@@ -24,6 +24,7 @@ import PaymentTypeModalForBills from '../../components/paymentTypeModalForBills'
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
+import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -37,6 +38,9 @@ const PurchaseAirtime = ({navigation, route}) => {
   const [resData, setResData] = useState('');
   const [airtimeData, setAirtimeData] = useState('');
 
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [channel, setChannel] = useState('');
+
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const airtimeSchema = yup.object().shape({
@@ -46,33 +50,62 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   useEffect(() => {
     // console.log('Params: ', route.params);
-    const val = route.params.data.filter((item) => item.name == name);
+    const val = route?.params?.data?.filter((item) => item?.name == name);
     // console.log('The Value: ', name);
     setAirtimeData(val);
   }, [name]);
 
   const buyAirtimeHandler = async () => {
-    setSpinner(true);
+    // const data = {
+    //   serviceID: airtimeData[0].serviceID, // e.g mtn, airtel, glo, 9mobile
+    //   amount: unFormatNumber(amount), // e.g 100
+    //   recepient: phoneNumber, // e.g 08011111111
+    // };
+    // console.log('Data: ', data);
 
+    setConfirmModalVisible(false);
+    setShowPaymentModal(true);
+
+    // setSpinner(true);
+
+    // try {
+    //   const res = await BuyPurchaseAirtime(data);
+    //   if (res.status == 200) {
+    //     setSpinner(false);
+    //     console.log('Buy Res: ', res.data.data);
+    //     setResData(res.data.data);
+    //     setConfirmModalVisible(false);
+    //     setShowPaymentType(true);
+    //   }
+    // } catch (error) {
+    //   setSpinner(false);
+    //   console.log('Error: ', error);
+    // }
+  };
+
+  const handlePaymentRoute = async (value) => {
     const data = {
-      serviceID: airtimeData[0].serviceID, // e.g mtn, airtel, glo, 9mobile
+      serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
       amount: unFormatNumber(amount), // e.g 100
       recepient: phoneNumber, // e.g 08011111111
     };
-    // console.log('Data: ', data);
 
-    try {
-      const res = await BuyPurchaseAirtime(data);
-      if (res.status == 200) {
+    setSpinner(true);
+    if (value == 'paystack') {
+      const response = await BuyPurchaseAirtime(data);
+      console.log('The buy response: ', response);
+      if (response.status == 200) {
         setSpinner(false);
-        console.log('Buy Res: ', res.data.data);
-        setResData(res.data.data);
-        setConfirmModalVisible(false);
-        setShowPaymentType(true);
+        setShowCardModal(true); // show card modal
+        setResData(response?.data?.data);
+        setChannel(value); //paystack
+      } else {
+        setSpinner(false);
       }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
+    } else if (value == 'bank') {
+      console.log(value);
+    } else {
+      console.log(value); // wallet
     }
   };
 
@@ -153,7 +186,7 @@ const PurchaseAirtime = ({navigation, route}) => {
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            {['100', '200', '500', '1000', '1500', '2000'].map(
+            {['100', '200', '500', '1000', '1500', '2000']?.map(
               (value, index) => (
                 <TouchableOpacity
                   key={index}
@@ -241,13 +274,26 @@ const PurchaseAirtime = ({navigation, route}) => {
         {/* </View> */}
       </ScrollView>
 
-      <ChooseNetworkModal
-        visible={visible}
-        onRequestClose={() => setVisible(!visible)}
-        selectedNetwork={name}
-        onClick={(value) => setName(value.name)}
-        chooseNetwork={route.params.data}
-      />
+      {visible && (
+        <ChooseNetworkModal
+          visible={visible}
+          onRequestClose={() => setVisible(!visible)}
+          selectedNetwork={name}
+          onClick={(value) => setName(value.name)}
+          chooseNetwork={route?.params?.data}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            console.log('Hello', data);
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
 
       {confirmModalVisible && (
         <ConfirmModal
@@ -260,7 +306,18 @@ const PurchaseAirtime = ({navigation, route}) => {
         />
       )}
 
-      {showPaymentType && (
+      {showCardModal && (
+        <CreditCardModalBills
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          info={resData}
+          navigation={navigation}
+          redirectTo="Home"
+          channel={channel}
+        />
+      )}
+
+      {/* {showPaymentType && (
         <PaymentTypeModalForBills
           onRequestClose={() => setShowPaymentType(!showPaymentType)}
           visible={showPaymentType}
@@ -276,7 +333,7 @@ const PurchaseAirtime = ({navigation, route}) => {
           navigation={navigation}
           redirectTo="Home"
         />
-      )}
+      )} */}
 
       <Spinner visible={spinner} size="large" />
     </View>

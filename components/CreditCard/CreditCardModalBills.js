@@ -5,7 +5,14 @@ import {COLORS} from '../../util';
 import CreditCardFormBills from './CreditCardFormBills';
 
 export default function CreditCardModalBills(props) {
-  const {onRequestClose, visible, info, navigation, redirectTo} = props;
+  const {
+    onRequestClose,
+    visible,
+    info,
+    navigation,
+    redirectTo,
+    channel,
+  } = props;
 
   return (
     <View>
@@ -48,6 +55,7 @@ export default function CreditCardModalBills(props) {
                   navigation={navigation}
                   onRequestClose={onRequestClose}
                   redirectTo={redirectTo}
+                  channel={channel}
                 />
                 <View
                   style={{

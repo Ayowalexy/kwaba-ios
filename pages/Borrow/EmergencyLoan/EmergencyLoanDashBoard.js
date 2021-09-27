@@ -104,38 +104,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
     }
   }, [getMaxLoanCap1]);
 
-  // const handlePayment = async () => {
-  //   const data = {loanId: loanId};
-  //   setSpinner(true);
-  //   try {
-  //     const response = await loanRepayment(data);
-
-  //     if (response.status == 200) {
-  //       setSpinner(false);
-  //       const url = response.data.data.authorization_url;
-  //       const result = await openInAppBrowser(url);
-  //       if (result.type === 'cancel') {
-  //         let data = {reference: response.data.data.reference, loanId: loanId};
-  //         setVerificationSpinner(true);
-  //         const verify = await loanPaymentVerification(data);
-  //         if (verify.data.status == 'success') {
-  //           setVerificationSpinner(false);
-  //           setSuccessModal(true);
-  //         } else {
-  //           setVerificationSpinner(false);
-  //           Alert.alert(
-  //             'Payment Unverified',
-  //             'Your payment was not verified. Please retry.',
-  //           );
-  //         }
-  //       }
-  //     }
-  //   } catch (error) {
-  //     setSpinner(false);
-  //     Alert.alert('Error', error.message);
-  //   }
-  // };
-
   const handlePayNow = async (item) => {
     setShowAmountModal(true);
     setLoanRepaymentData(item); // repayment loan data
@@ -344,34 +312,36 @@ export default function EmergencyLoanDashBoard({navigation}) {
         </Text>
         {/* </View> */}
       </View>
-      <View style={[styles.banner]}>
-        <View style={{flexDirection: 'row', width: '80%'}}>
-          <Icon name="alert-circle" size={25} color={COLORS.dark} />
+      {repaymentLists?.length > 0 && (
+        <View style={[styles.banner]}>
+          <View style={{flexDirection: 'row', width: '80%'}}>
+            <Icon name="alert-circle" size={25} color={COLORS.dark} />
 
-          <Text style={[styles.bannerText]}>
-            Your loan is currently being processed. Hang tight, you will receive
-            the funds shortly.
-          </Text>
-        </View>
+            <Text style={[styles.bannerText]}>
+              Your loan is currently being processed. Hang tight, you will
+              receive the funds shortly.
+            </Text>
+          </View>
 
-        <TouchableOpacity
-          onPress={handleFetchLoans}
-          style={{
-            backgroundColor: '#FFFFFF50',
-            width: 30,
-            height: 30,
-            borderRadius: 30,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Icon
+          <TouchableOpacity
             onPress={handleFetchLoans}
-            name="reload"
-            size={20}
-            color={COLORS.dark}
-          />
-        </TouchableOpacity>
-      </View>
+            style={{
+              backgroundColor: '#FFFFFF50',
+              width: 30,
+              height: 30,
+              borderRadius: 30,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Icon
+              onPress={handleFetchLoans}
+              name="reload"
+              size={20}
+              color={COLORS.dark}
+            />
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={{flex: 1, paddingHorizontal: 20, marginTop: 10}}>
         <View style={[styles.dashboard]}>
           <View style={[styles.box1]}>

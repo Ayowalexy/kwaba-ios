@@ -5,6 +5,7 @@ import {View, Text, Image, TouchableOpacity} from 'react-native';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconOC from 'react-native-vector-icons/Octicons';
 
 import {AntDesign, FontAwesome, Ionicons} from 'react-native-vector-icons';
 
@@ -21,12 +22,13 @@ import BillsHome from '../Bills/BillsHome';
 import Mortgages from '../Mortgages/Mortgage';
 import {TabBar} from 'react-native-tab-view';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
+import Wallet from '../Wallet/Wallet';
 
 const Tab = createBottomTabNavigator();
 
 const tabItems = [
   {
-    title: 'Home',
+    title: 'Kwaba',
     screen: NewHome,
   },
   // {
@@ -34,6 +36,11 @@ const tabItems = [
   //   icon: 'piggy-bank',
   //   screen: SavingsHome,
   // },
+  {
+    title: 'Wallet',
+    icon: 'wallet-outline',
+    screen: Wallet,
+  },
   {
     title: 'Rent',
     icon: 'home-outline',
@@ -64,14 +71,10 @@ const BottomNavigator = ({navigation}) => {
             elevation: 50,
             borderWidth: 0,
             bottom: 0,
-            // borderTopWidth: 0,
             borderLeftWidth: 0,
             borderWidth: 0,
             height: 60,
-            // paddingLeft: 10,
-            // paddingRight: 10,
             overflow: 'hidden',
-            // paddingTop: 5,
           },
           showLabel: false,
           activeTintColor: COLORS.primary,
@@ -82,31 +85,16 @@ const BottomNavigator = ({navigation}) => {
             key={index}
             name={title}
             component={screen}
-            // listeners={({navigation, route}) => ({
-            //   tabPress: (e) => {
-            //     // Prevent default action
-            //     e.preventDefault();
-            //     if (route.name != 'Bills' && route.name != 'Account') {
-            //       setCompleteProfileModal(true);
-            //     } else {
-            //       return false;
-            //     }
-            //   },
-            // })}
             options={{
               tabBarIcon: ({color, focused}) => (
                 <>
-                  {/* <TouchableOpacity
-                    onPress={() => setCompleteProfileModal(true)}> */}
-                  {title.toLowerCase() == 'home' ? (
+                  {title.toLowerCase() == 'kwaba' ? (
                     <View
                       style={{
                         justifyContent: 'center',
                         alignItems: 'center',
-                        // backgroundColor: '#EAEAEA80',
                         width: 50,
                         height: 50,
-                        // borderRadius: 50,
                       }}>
                       <>
                         <Image
@@ -127,7 +115,7 @@ const BottomNavigator = ({navigation}) => {
                           fontSize: 10,
                           fontWeight: 'bold',
                           color: focused ? COLORS.dark : COLORS.grey,
-                          textTransform: 'uppercase',
+                          // textTransform: 'uppercase',
                         }}>
                         {title}
                       </Text>
@@ -145,7 +133,6 @@ const BottomNavigator = ({navigation}) => {
                           style={{
                             fontSize: 25,
                             color: COLORS.dark,
-                            // color: focused ? '#9D98EC' : '#BFBFBF',
                             color: focused ? COLORS.dark : COLORS.grey,
                           }}
                         />
@@ -157,20 +144,27 @@ const BottomNavigator = ({navigation}) => {
                               : icons.mortageInactive
                           }
                           style={{
-                            width: 28,
-                            height: 28,
+                            width: 26,
+                            height: 26,
                             alignSelf: 'center',
                           }}
                           resizeMode="contain"
                         />
+                      ) : title.toLowerCase() == 'rent' ? (
+                        <IconOC
+                          name="home"
+                          style={{
+                            fontSize: 25,
+                            color: COLORS.dark,
+                            color: focused ? COLORS.dark : COLORS.grey,
+                          }}
+                        />
                       ) : (
                         <Icon
-                          // name={focused ? icon : icon + '-outline'}
                           name={icon}
                           style={{
                             fontSize: 25,
                             color: COLORS.dark,
-                            // color: focused ? '#9D98EC' : '#BFBFBF',
                             color: focused ? COLORS.dark : COLORS.grey,
                           }}
                         />
@@ -182,13 +176,12 @@ const BottomNavigator = ({navigation}) => {
                           fontSize: 10,
                           fontWeight: 'bold',
                           color: focused ? COLORS.dark : COLORS.grey,
-                          textTransform: 'uppercase',
+                          // textTransform: 'uppercase',
                         }}>
                         {title}
                       </Text>
                     </View>
                   )}
-                  {/* </TouchableOpacity> */}
                 </>
               ),
             }}

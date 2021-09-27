@@ -26,12 +26,14 @@ import {
 //   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 // }
 
-const RentalFormBusinessDoc = ({navigation}) => {
+const RentalLoanFormDoc = ({navigation}) => {
   const [requestAmount, setRequestAmount] = useState('');
   const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [monthlyPayment, setMonthlyPayment] = useState('');
   const [preApproveAmount, setPreApproveAmount] = useState('');
+
+  const [requestAmountEmpty, setRequestAmountEmpty] = useState(false);
   // const
 
   useEffect(() => {
@@ -48,7 +50,7 @@ const RentalFormBusinessDoc = ({navigation}) => {
       setSelectedMonth(data.repayment_plan);
       await monthly_payment(
         data.amount_needed_from_kwaba,
-        Number(data.repayment_plan[0]),
+        Number(data.repayment_plan),
       );
     }
 
@@ -72,28 +74,54 @@ const RentalFormBusinessDoc = ({navigation}) => {
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
 
-    console.log('loanFormData:', loanFormData);
+    // console.log('loanFormData:', loanFormData);
 
-    console.log('data:', preApproveAmount);
+    // console.log('data:', preApproveAmount);
 
-    navigation.navigate('RentalFormBusiness2');
+    if (data.amount_needed_from_kwaba <= 0) {
+      console.log('False');
+      setRequestAmountEmpty(true);
+    } else {
+      setRequestAmountEmpty(false);
+      navigation.navigate('RentalFormBusiness2');
+    }
+
+    // const businessFormData = await AsyncStorage.getItem(
+    //   'businessFormDataStore',
+    // );
+
+    // console.log('Business: ', businessFormData);
+
+    // navigation.navigate('RentalLoanForm2');
   };
 
   const monthly_payment = async (amount, timetorepay) => {
-    console.log('Time to repay: ', timetorepay);
+    console.log('The value', amount, timetorepay);
+    // console.log('Time to repay: ', timetorepay);
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    const businessFormData = await AsyncStorage.getItem(
+      'businessFormDataStore',
+    );
 
     let salaryBalance;
     let data = JSON.parse(loanFormData);
-    console.log(data);
+    let data2 = JSON.parse(businessFormData);
+    console.log('The Data Data: ', data);
+    console.log('The Business Data: ', businessFormData);
     const tenure = timetorepay;
+
+    const revenue = unFormatNumber(data2.monthly_business_revenue);
+    const expenditure = unFormatNumber(data2.monthly_business_expenditure);
+
+    const income = revenue - expenditure;
+    console.log('Monthly Income: ', income);
 
     if (data.request_amount) {
       //salaryBalance = parseFloat(data.salary_amount) - parseFloat(data.request_amount);
 
-      salaryBalance = parseFloat(data.salary_amount);
+      salaryBalance = parseFloat(income);
     } else {
-      salaryBalance = parseFloat(data.salary_amount);
+      salaryBalance = parseFloat(income);
     }
 
     let max_pre_approved_amount;
@@ -119,7 +147,7 @@ const RentalFormBusinessDoc = ({navigation}) => {
       0.039 * pre_approved_amount + pre_approved_amount / tenure;
 
     let non_refundable_deposit = 0;
-    let temp3 = 0.035 * pre_approved_amount;
+    let temp3 = 0.05 * pre_approved_amount;
     if (temp3 >= 100000000) {
       non_refundable_deposit = 100000000;
     } else {
@@ -139,24 +167,6 @@ const RentalFormBusinessDoc = ({navigation}) => {
     // console.log(amount);
   };
 
-  // const roundUp = (n) => {
-  //   return n > 1000 ? Math.round(n / 1000) * 1000 : n;
-  // };
-
-  // const round5 = (x) => {
-  //   const round5No =
-  //     x % 5 == 0
-  //       ? Number(Math.floor(x / 5)) * 5
-  //       : Number(Math.floor(x / 5)) * 5 + 5;
-  //   return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
-
-  //   // if (x % 5 == 0) {
-  //   //   return Number(Math.floor(x / 5)) * 5;
-  //   // } else {
-  //   //   return (Number(Math.floor(x / 5)) * 5) + 5;
-  //   // }
-  // };
-
   const roundUp = (n) => {
     return n > 1000 ? Math.round(n / 1000) * 1000 : n;
   };
@@ -167,12 +177,6 @@ const RentalFormBusinessDoc = ({navigation}) => {
         ? Number(Math.floor(x / 5)) * 5
         : Number(Math.floor(x / 5)) * 5 + 5;
     return round5No > 1000 ? Math.round(round5No / 1000) * 1000 : round5No;
-
-    // if (x % 5 == 0) {
-    //   return Number(Math.floor(x / 5)) * 5;
-    // } else {
-    //   return (Number(Math.floor(x / 5)) * 5) + 5;
-    // }
   };
 
   return (
@@ -237,9 +241,14 @@ const RentalFormBusinessDoc = ({navigation}) => {
               value={requestAmount}
               onChangeText={(text) => {
                 setRequestAmount(text);
-                monthly_payment(unFormatNumber(text), selectedMonth);
+                monthly_payment(unFormatNumber(text), Number(selectedMonth[0]));
               }}
             />
+            {requestAmountEmpty && (
+              <Text style={{fontSize: 12, color: 'red', margin: 5}}>
+                Field required
+              </Text>
+            )}
 
             <Text
               style={[
@@ -265,7 +274,7 @@ const RentalFormBusinessDoc = ({navigation}) => {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {selectedMonth}
+                  {selectedMonth} {selectedMonth <= 1 ? 'Month' : 'Months'}
                 </Text>
               ) : (
                 <Text
@@ -284,24 +293,6 @@ const RentalFormBusinessDoc = ({navigation}) => {
                 color="#BABABA"
               />
             </TouchableOpacity>
-
-            {/* <Text
-              style={[
-                FONTS.body1FontStyling,
-                {
-                  color: COLORS.dark,
-                  // marginBottom: 8,
-                  marginTop: 20,
-                  // fontWeight: 'bold',
-                  fontSize: 14,
-                },
-              ]}>
-              Monthly payment plan
-            </Text>
-            <NumberFormat
-              value={salaryAmount}
-              onChangeText={(text) => setSalaryAmount(text)}
-            /> */}
 
             <Text
               style={[
@@ -353,7 +344,7 @@ const RentalFormBusinessDoc = ({navigation}) => {
                 }}>
                 <Text>Tenure</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
-                  {selectedMonth}
+                  {selectedMonth} {selectedMonth <= 1 ? 'Month' : 'Months'}
                 </Text>
               </View>
             </View>
@@ -387,7 +378,7 @@ const RentalFormBusinessDoc = ({navigation}) => {
         // selectedMonth={selectedMonth}
         onClick={(value) => {
           setSelectedMonth(value);
-          monthly_payment(unFormatNumber(requestAmount), Number(value[0]));
+          monthly_payment(unFormatNumber(requestAmount), Number(value));
         }}
         selectedMonth={selectedMonth}
       />
@@ -395,7 +386,7 @@ const RentalFormBusinessDoc = ({navigation}) => {
   );
 };
 
-export default RentalFormBusinessDoc;
+export default RentalLoanFormDoc;
 
 const styles = StyleSheet.create({
   customInput: {

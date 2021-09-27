@@ -8,12 +8,64 @@ import {
 } from 'react-native';
 import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  AcceptBuddyInvite,
+  fetchUserBuddyInviteData,
+} from '../../../services/network';
+import {formatNumber} from '../../../util/numberFormatter';
+import moment from 'moment';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function AcceptInvite({navigation}) {
-  const handleAcceptInvite = () => {
-    console.log('Hello: ');
-    navigation.navigate('BuddySavingDashBoard');
+export default function AcceptInvite(props) {
+  const {navigation, route} = props;
+  const [dashboardData, setDashboardData] = useState([]);
+  const [spinner, setSpinner] = useState(false);
+
+  const handleAcceptInvite = async () => {
+    setSpinner(true);
+    try {
+      const resp = await AcceptBuddyInvite({
+        id: dashboardData?.buddy_savings?.id,
+        email: dashboardData?.buddy_savings?.email,
+      });
+      console.log('The resp data: ', resp);
+      if (resp.status == 201) {
+        setSpinner(false);
+        navigation.navigate('BuddySavingDashBoard');
+      } else {
+        setSpinner(false);
+        // console.log('Already Accepted');
+        navigation.navigate('BuddySavingDashBoard');
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error: ', error);
+    }
   };
+
+  useEffect(() => {
+    console.log('ID: ', route.params.id);
+    dashboard();
+  }, []);
+
+  const dashboard = async () => {
+    setSpinner(true);
+    try {
+      const resp = await fetchUserBuddyInviteData({id: route.params.id});
+      if (resp.status == 200) {
+        console.log('The resp resp: ', resp.data);
+        setDashboardData(resp.data);
+        setSpinner(false);
+      } else {
+        console.log('Something went wrong');
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+      setSpinner(false);
+    }
+  };
+
   return (
     <View style={[styles.container]}>
       <Icon
@@ -23,7 +75,7 @@ export default function AcceptInvite({navigation}) {
         style={{marginLeft: -5}}
         color={COLORS.primary}
       />
-      <ScrollView>
+      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
         <Text
           style={{
             fontSize: 16,
@@ -56,7 +108,8 @@ export default function AcceptInvite({navigation}) {
                 fontWeight: 'bold',
                 color: COLORS.primary,
               }}>
-              2021 Rent
+              {/* 2021 Rent */}
+              {dashboardData?.buddy?.name}
             </Text>
           </View>
           {/*  */}
@@ -68,50 +121,75 @@ export default function AcceptInvite({navigation}) {
             <View style={[styles.flex]}>
               <View>
                 <Text style={[styles.flexTitle]}>No. of Buddies</Text>
-                <Text style={[styles.flexValue]}>4</Text>
+                <Text style={[styles.flexValue]}>
+                  {dashboardData?.buddy?.num_of_buddies}
+                </Text>
               </View>
               <View style={[styles.flexEnd]}>
                 <Text style={[styles.flexTitle]}>Target Amount</Text>
-                <Text style={styles.flexValue}>₦2,500,000</Text>
+                <Text style={styles.flexValue}>
+                  ₦{formatNumber(dashboardData?.buddy?.target_amount)}
+                </Text>
               </View>
             </View>
 
             <View style={[styles.flex]}>
               <View>
                 <Text style={[styles.flexTitle]}>Frequency</Text>
-                <Text style={[styles.flexValue]}>Monthly</Text>
+                <Text style={[styles.flexValue]}>
+                  {dashboardData?.buddy?.frequency}
+                </Text>
               </View>
               <View style={[styles.flexEnd]}>
                 <Text style={[styles.flexTitle]}>Start Date</Text>
-                <Text style={styles.flexValue}>Dec 22, 2021</Text>
+                <Text style={styles.flexValue}>
+                  {moment(dashboardData?.buddy?.start_date).format(
+                    'MMM DD, YYYY',
+                  )}
+                </Text>
               </View>
             </View>
 
             <View style={[styles.flex]}>
               <View>
                 <Text style={[styles.flexTitle]}>End Date</Text>
-                <Text style={[styles.flexValue]}>Dec 22, 2021</Text>
+                <Text style={[styles.flexValue]}>
+                  {moment(dashboardData?.buddy?.end_date).format(
+                    'MMM DD, YYYY',
+                  )}
+                </Text>
               </View>
               <View style={[styles.flexEnd]}>
                 <Text style={[styles.flexTitle]}>Interest Rate</Text>
-                <Text style={styles.flexValue}>2.5% P.A</Text>
+                <Text style={styles.flexValue}>
+                  {dashboardData?.buddy?.interest_rate}% P.A
+                </Text>
               </View>
             </View>
 
             <View style={[styles.flex]}>
               <View>
                 <Text style={[styles.flexTitle]}>Your target</Text>
-                <Text style={[styles.flexValue]}>₦625,000</Text>
+                <Text style={[styles.flexValue]}>
+                  ₦{formatNumber(dashboardData?.buddy_savings?.target_amount)}
+                </Text>
               </View>
               <View style={[styles.flexEnd]}>
-                <Text style={[styles.flexTitle]}>Amount to save</Text>
-                <Text style={styles.flexValue}>₦52,000</Text>
+                <Text style={[styles.flexTitle]}>
+                  Amount to save {dashboardData?.buddy?.frequency.toLowerCase()}
+                </Text>
+                <Text style={styles.flexValue}>
+                  ₦
+                  {formatNumber(
+                    dashboardData?.buddy_savings?.amount_to_save_monthly,
+                  )}
+                </Text>
               </View>
             </View>
           </View>
         </View>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[
             styles.btn,
             {
@@ -123,12 +201,14 @@ export default function AcceptInvite({navigation}) {
           <Text style={[styles.btnText, {color: COLORS.dark}]}>
             EDIT PREFERENCES
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <TouchableOpacity style={[styles.btn]} onPress={handleAcceptInvite}>
           <Text style={[styles.btnText]}>JOIN SAVINGS</Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 }

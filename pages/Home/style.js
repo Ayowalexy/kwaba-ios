@@ -14,9 +14,9 @@ const designs = StyleSheet.create({
   topBar: {
     display: 'flex',
     flexDirection: 'row',
-    paddingTop: 16,
+    paddingTop: 10,
     paddingRight: 16,
-    paddingBottom: 16,
+    paddingBottom: 10,
     paddingLeft: 16,
     alignItems: 'center',
     justifyContent: 'space-between',

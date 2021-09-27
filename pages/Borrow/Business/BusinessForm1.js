@@ -327,9 +327,23 @@ export default function BusinessForm1({navigation}) {
                     </>
                   )}
                 </View>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  style={[designs.button]}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 30,
+                      textTransform: 'uppercase',
+                    }}>
+                    Next
+                  </Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
-            <View style={designs.buttonContainer}>
+            {/* <View style={designs.buttonContainer}>
               <TouchableOpacity
                 onPress={handleSubmit}
                 // onPress={() => navigation.navigate('BusinessForm2')}
@@ -351,7 +365,7 @@ export default function BusinessForm1({navigation}) {
                   Next
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
           </>
         )}
       </Formik>
