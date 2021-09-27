@@ -186,7 +186,7 @@ export default function NewHome({navigation}) {
       actionText: savings == 0 ? 'Save Now' : 'Deposit',
       actionClick: () =>
         savings == 0
-          ? console.log('Save Now')
+          ? navigation.navigate('SavingsHome')
           : isProfileComplete
           ? setAddFundsToSavingsModal(true)
           : setCompleteProfileModal(true),
@@ -201,13 +201,17 @@ export default function NewHome({navigation}) {
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
-        instantLoan == 0
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : instantLoan == 0
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
-        instantLoan > 0
-          ? navigation.navigate('EmergencyLoanDashBoard')
-          : navigation.navigate('EmergencyLoanHome');
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : instantLoan == 0
+          ? navigation.navigate('EmergencyLoanHome')
+          : navigation.navigate('EmergencyLoanDashBoard');
       },
     },
     {
@@ -235,13 +239,17 @@ export default function NewHome({navigation}) {
       color: '#000',
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
-        rentalFinance == 0
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : rentalFinance == 0
           ? navigation.navigate('Borrow')
           : navigation.navigate('RentNowPayLaterDashboard'),
       cardClick: () =>
-        rentalFinance > 0
-          ? navigation.navigate('RentNowPayLaterDashboard')
-          : navigation.navigate('Borrow'),
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : rentalFinance == 0
+          ? navigation.navigate('Borrow')
+          : navigation.navigate('RentNowPayLaterDashboard'),
     },
   ];
 
@@ -885,6 +893,8 @@ export default function NewHome({navigation}) {
         <WalletPaymentModal
           onRequestClose={() => setShowWalletModal(!showWalletModal)}
           visible={showWalletModal}
+          // setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
+          // setShowAmountModal={(bol) => setShowAmountModal(bol)}
         />
       )}
     </View>

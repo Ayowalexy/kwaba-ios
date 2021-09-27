@@ -15,18 +15,18 @@ export default function WalletPaymentModal(props) {
   const {
     onRequestClose,
     visible,
-    setAddFundsToSavingsModal,
-    setShowAmountModal,
+    // setAddFundsToSavingsModal,
+    // setShowAmountModal,
   } = props;
 
   const handleClose = () => {
     onRequestClose();
-    setAddFundsToSavingsModal(true);
+    // setAddFundsToSavingsModal(true);
   };
 
   const handleClick = (item) => {
     onRequestClose();
-    setShowAmountModal(true);
+    // setShowAmountModal(true);
     console.log('Item: ', item);
   };
 

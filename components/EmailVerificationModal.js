@@ -16,6 +16,8 @@ import IconFA from 'react-native-vector-icons/FontAwesome';
 import {COLORS, icons} from '../util';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import {login} from '../services/network';
+import {useDispatch, useSelector} from 'react-redux';
 
 const formSchema = yup.object().shape({
   email: yup
@@ -30,6 +32,8 @@ export default function EmailVerificationModal(props) {
   const [spinner, setSpinner] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [changeEmail, setChangeEmail] = useState(false);
+
+  const loginState = useSelector((state) => state.loginReducer);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -89,8 +93,18 @@ export default function EmailVerificationModal(props) {
     setEmailSent(false);
   };
 
-  const handleSubmit = (values) => {
+  const handleSubmit = async (values) => {
     console.log('Values: ', values);
+    console.log('Login state: ', loginState);
+    try {
+      const response = await login({
+        email: 'realjosh2021@gmail.com',
+        password: values.password,
+      });
+      console.log('Login: reponse: ', response);
+    } catch (error) {
+      console.log('The Error: ', error);
+    }
   };
 
   const CustomInput = (props) => {
