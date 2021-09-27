@@ -353,8 +353,8 @@ export default function NewHome({navigation}) {
         <TouchableOpacity
           style={{paddingLeft: 20}}
           onPress={() => {
-            // navigation.navigate('Notifications');
-            navigation.navigate('BuddyInviteLists');
+            navigation.navigate('Notifications');
+            // navigation.navigate('BuddyInviteLists');
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
