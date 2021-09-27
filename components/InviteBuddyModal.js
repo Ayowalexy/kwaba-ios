@@ -66,9 +66,12 @@ export default function InviteBuddyModal(props) {
     console.log('The Props: ', resData.buddy_savings.frequency);
   }, []);
 
+  const inviteLink = `https://kwaba.ng/BuddyInviteLists`;
+
   const copyToClipboard = async () => {
     const msg = `${userName.toString()} has Invited you to join them to save for rent on Kwaba - Join now\n\n${
-      resData?.buddylink
+      // resData?.buddylink
+      inviteLink
     }`;
     Clipboard.setString(msg);
     ToastAndroid.show('Copied', ToastAndroid.SHORT);
@@ -78,7 +81,8 @@ export default function InviteBuddyModal(props) {
     try {
       const result = await Share.share({
         message: `${userName.toString()} has Invited you to join them to save for rent on Kwaba - Join now\n\n${
-          resData?.buddylink
+          // resData?.buddylink
+          inviteLink
         }`,
       });
       if (result.action === Share.sharedAction) {
@@ -316,7 +320,8 @@ export default function InviteBuddyModal(props) {
                   // textDecorationLine: 'underline',
                   // paddingHorizontal: 10,
                 }}>
-                {resData?.buddylink}
+                {/* {resData?.buddylink} */}
+                {inviteLink}
               </Text>
             </View>
 

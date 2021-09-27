@@ -66,7 +66,7 @@ export default function BuddyInviteLists(props) {
           alignItems: 'center',
         }}>
         <Icon
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('Home')}
           name="arrow-back-outline"
           size={20}
           style={{marginRight: 20}}

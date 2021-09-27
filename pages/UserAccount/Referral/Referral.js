@@ -129,7 +129,7 @@ const Referral = ({navigation}) => {
         <View
           style={{
             backgroundColor: '#00000022',
-            borderRadius: 13,
+            borderRadius: 0,
             // height: 26,
             paddingHorizontal: 5,
             marginTop: 20,
@@ -145,6 +145,7 @@ const Referral = ({navigation}) => {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 paddingHorizontal: 10,
+                paddingVertical: 5,
               },
             ]}>
             Your friends also get N1,000 when they make their first savings
@@ -159,7 +160,7 @@ const Referral = ({navigation}) => {
               alignSelf: 'flex-start',
               marginTop: 20,
               fontSize: 16,
-              marginLeft: 10,
+              marginLeft: 0,
             },
           ]}>
           Referral code
@@ -185,7 +186,7 @@ const Referral = ({navigation}) => {
               // width: '100%',
               flex: 1,
               // width: '70%',
-              borderRadius: 10,
+              borderRadius: 0,
               // marginLeft: 10,
               color: COLORS.white,
               paddingHorizontal: 20,
@@ -199,7 +200,7 @@ const Referral = ({navigation}) => {
               height: 60,
               width: 60,
               backgroundColor: COLORS.white,
-              borderRadius: 10,
+              borderRadius: 0,
               justifyContent: 'center',
               alignItems: 'center',
               // marginLeft: widthtouse / 20,
@@ -227,7 +228,7 @@ const Referral = ({navigation}) => {
             {
               backgroundColor: '#00DC99',
               width: '100%',
-              borderRadius: 10,
+              borderRadius: 5,
               // height: 70,
               borderRadius: 10,
               marginTop: 20,
@@ -272,6 +273,7 @@ const Referral = ({navigation}) => {
                   color: COLORS.primary,
                   marginRight: 10,
                   fontSize: 14,
+                  fontWeight: 'bold',
                 },
               ]}>
               Your referral details

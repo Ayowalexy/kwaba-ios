@@ -197,7 +197,7 @@ export default function Screen5(props) {
       if (response.status == 200) {
         setSpinner(false);
         // console.log('Invite sent: ', response.data);
-        // console.log('Res Data: ', resData);
+        console.log('Res Data: ', resData);
         setShowInviteSentModal(true); // show success modal
       }
     } catch (error) {

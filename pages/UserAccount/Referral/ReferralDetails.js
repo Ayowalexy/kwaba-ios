@@ -65,7 +65,9 @@ export default function ReferralDetails({navigation}) {
                 }}>
                 <TouchableOpacity
                   style={[styles.btn]}
-                  onPress={() => setQuickSaveModal(true)}>
+                  onPress={() => navigation.navigate('SavingsHome')}
+                  // onPress={() => setQuickSaveModal(true)}
+                >
                   <Text style={{fontSize: 12, color: COLORS.white}}>
                     Add to saving
                   </Text>
@@ -119,12 +121,13 @@ export default function ReferralDetails({navigation}) {
             </View>
           </View>
         </ScrollView>
-
+      </View>
+      {quickSaveModal && (
         <QuickSaveModal
           onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
           visible={quickSaveModal}
         />
-      </View>
+      )}
     </>
   );
 }
