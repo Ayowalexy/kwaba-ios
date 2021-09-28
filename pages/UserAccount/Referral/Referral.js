@@ -157,9 +157,9 @@ const Referral = ({navigation}) => {
             {
               color: COLORS.primary,
               fontWeight: 'bold',
-              alignSelf: 'flex-start',
+              // alignSelf: 'flex-start',
               marginTop: 20,
-              fontSize: 16,
+              fontSize: 14,
               marginLeft: 0,
             },
           ]}>
@@ -182,40 +182,33 @@ const Referral = ({navigation}) => {
             selectTextOnFocus={false}
             style={{
               backgroundColor: '#BAB5FF',
-              height: 60,
+              height: 50,
               // width: '100%',
               flex: 1,
               // width: '70%',
-              borderRadius: 0,
+              borderRadius: 5,
               // marginLeft: 10,
               color: COLORS.white,
               paddingHorizontal: 20,
-              marginRight: 20,
+              marginRight: 10,
               fontSize: 13,
             }}
             value={referralCode}
           />
           <TouchableOpacity
             style={{
-              height: 60,
-              width: 60,
+              height: 50,
+              width: 50,
               backgroundColor: COLORS.white,
-              borderRadius: 0,
+              borderRadius: 5,
               justifyContent: 'center',
               alignItems: 'center',
-              // marginLeft: widthtouse / 20,
             }}
             onPress={copyToClipboard}>
-            {/* <IconFA
-              name="clone"
-              size={20}
-              color={COLORS.primary}
-              style={{alignSelf: 'center'}}
-            /> */}
             <Icon
-              name="clipboard-outline"
-              size={30}
-              color={COLORS.primary}
+              name="clipboard"
+              size={20}
+              color={COLORS.dark}
               style={{alignSelf: 'center'}}
             />
           </TouchableOpacity>
@@ -226,11 +219,11 @@ const Referral = ({navigation}) => {
           }}
           style={[
             {
-              backgroundColor: '#00DC99',
+              backgroundColor: COLORS.secondary,
               width: '100%',
               borderRadius: 5,
               // height: 70,
-              borderRadius: 10,
+              borderRadius: 5,
               marginTop: 20,
               marginBottom: 20,
               fontSize: 14,

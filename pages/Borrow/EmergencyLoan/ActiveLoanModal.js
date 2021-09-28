@@ -97,7 +97,7 @@ export default function ActiveLoanModal(props) {
                   backgroundColor: COLORS.white,
                   width: '100%',
                   minHeight: 50,
-                  elevation: 1,
+                  elevation: 10,
                   paddingHorizontal: 30,
                   paddingVertical: 20,
                   borderRadius: 5,
@@ -112,17 +112,17 @@ export default function ActiveLoanModal(props) {
                     <Text
                       style={{
                         fontSize: 12,
-                        fontWeight: 'normal',
+                        fontWeight: 'bold',
                         color: COLORS.dark,
                       }}>
                       Repayment Amount:
                     </Text>
                     <Text
                       style={{
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: 'bold',
-                        marginTop: 5,
-                        marginLeft: 2,
+                        marginTop: 2,
+                        marginLeft: 1,
                         color: COLORS.dark,
                       }}>
                       ₦{formatNumber(dataValue.loan_amount)}
@@ -155,34 +155,23 @@ export default function ActiveLoanModal(props) {
                   backgroundColor: COLORS.white,
                   marginTop: 10,
                   borderRadius: 5,
-                  elevation: 1,
+                  elevation: 10,
                 }}>
-                <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Status</Text>
-                  <Text
-                    style={[
-                      styles.tableValue,
-                      {fontStyle: 'italic', fontWeight: 'bold'},
-                    ]}>
-                    {dataValue.status != 'pending' ? 'PAID' : 'PENDING'}
-                  </Text>
-                </View>
-
                 <Text style={[styles.tableHeader]}>Loan Details</Text>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Purpose</Text>
+                  <Text style={[styles.tableLabel]}>Loan Purpose:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue.loan_purpose}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Amount</Text>
+                  <Text style={[styles.tableLabel]}>Loan Amount:</Text>
                   <Text style={[styles.tableValue]}>
                     ₦{formatNumber(dataValue.loan_amount)}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Repayment Date</Text>
+                  <Text style={[styles.tableLabel]}>Repayment Date:</Text>
                   <Text style={[styles.tableValue]}>
                     {moment(dataValue.repayment_date).format('MMM DD YYYY')}
                   </Text>
@@ -190,19 +179,19 @@ export default function ActiveLoanModal(props) {
 
                 <Text style={[styles.tableHeader]}>Disbursement Account</Text>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Account Name</Text>
+                  <Text style={[styles.tableLabel]}>Account Name:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue.account_name}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Account Number</Text>
+                  <Text style={[styles.tableLabel]}>Account Number:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue.account_number}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Bank</Text>
+                  <Text style={[styles.tableLabel]}>Bank Name:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue.account_bank}
                   </Text>
@@ -220,14 +209,15 @@ export default function ActiveLoanModal(props) {
 const styles = StyleSheet.create({
   centeredModalWrapper: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
   bg: {
     width: '100%',
-    flex: 1,
-    backgroundColor: COLORS.white,
+    // flex: 1,
+    backgroundColor: '#fff',
+    paddingBottom: 20,
   },
   headline: {
     backgroundColor: COLORS.primary,
@@ -248,7 +238,7 @@ const styles = StyleSheet.create({
 
   table: {
     paddingHorizontal: 30,
-    paddingVertical: 20,
+    paddingVertical: 15,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
@@ -261,16 +251,17 @@ const styles = StyleSheet.create({
   },
   tableValue: {
     fontSize: 12,
-    fontWeight: 'normal',
-    fontStyle: 'italic',
+    fontWeight: 'bold',
+    // fontStyle: 'italic',
     color: COLORS.dark,
   },
   tableHeader: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 'bold',
     color: COLORS.dark,
     paddingVertical: 20,
     textAlign: 'center',
     textTransform: 'uppercase',
+    backgroundColor: '#BFBFBF50',
   },
 });

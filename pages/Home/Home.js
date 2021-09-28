@@ -51,7 +51,13 @@ export default function Home({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
 
   // useEffect(() => {
-  //   console.log('User: ', login);
+  //   (async () => {
+  //     const userBankAccount = await AsyncStorage.getItem('selectedBankAccount');
+
+  //     if (userBankAccount) {
+  //       console.log(userBankAccount);
+  //     }
+  //   })();
   // }, []);
 
   useEffect(() => {

@@ -92,12 +92,26 @@ export default function BuddyLists({navigation}) {
     return (
       <>
         <View style={[styles.cardContainer]}>
-          <ScrollView
-            contentContainerStyle={{
-              paddingBottom: 80,
-            }}
-            scrollEnabled
-            showsVerticalScrollIndicator={false}></ScrollView>
+          {true ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text style={{color: COLORS.dark}}>
+                You have not joined any savings yet
+              </Text>
+            </View>
+          ) : (
+            <ScrollView
+              contentContainerStyle={{
+                paddingBottom: 80,
+                f,
+              }}
+              scrollEnabled
+              showsVerticalScrollIndicator={false}></ScrollView>
+          )}
         </View>
       </>
     );

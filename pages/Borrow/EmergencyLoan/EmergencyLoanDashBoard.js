@@ -135,6 +135,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
         setSpinner(false);
         console.log('The Loannnnnnn: ', loans.data.data);
         setRepaymentLists(loans.data.data);
+        dispatch(getMaxLoanCap());
       }
     } catch (error) {
       setSpinner(false);
@@ -432,6 +433,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
           <View
             style={{
               padding: 10,
+              paddingVertical: 15,
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -441,7 +443,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
               All Loans
             </Text>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={{
                 backgroundColor: COLORS.white,
                 width: 30,
@@ -456,7 +458,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
                 style={{fontWeight: '900'}}
                 color={COLORS.primary}
               />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
             <RepaymaneHistory />
