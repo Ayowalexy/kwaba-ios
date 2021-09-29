@@ -404,7 +404,7 @@ export default function EmergencyLoanHome({navigation}) {
                       </View>
                       <View style={designs.repaymentTermsContent}>
                         <Text style={designs.smallTextTitles}>
-                          Repayment Amount
+                          Amount To Repay
                         </Text>
                         <Text style={designs.repaymentTermsValues}>
                           ₦

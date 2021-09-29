@@ -237,6 +237,32 @@ const getSingleLoan = async (data) => {
   }
 };
 
+const getAllEmergencyLoansRepayment = async () => {
+  const token = await getToken();
+  const url = apiUrl + `/api/get_all_emergencyloans_repayments`;
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const getSingleEmergencyLoanRepayment = async (id) => {
+  const token = await getToken();
+  const url = apiUrl + `/api/v1/loan_repayments/${id}`;
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 const resolveBankAccount = async (data) => {
   const url = apiUrl + '/api/v1/user/bank_details';
   try {
@@ -734,6 +760,8 @@ export {
   loanPaymentVerification,
   getEmergencyLoans,
   getSingleLoan,
+  getAllEmergencyLoansRepayment,
+  getSingleEmergencyLoanRepayment,
   resolveBankAccount,
   resolveCardDetails,
   tokenizeCard,

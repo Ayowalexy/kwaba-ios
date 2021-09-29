@@ -33,12 +33,15 @@ RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
-const amountSchema = yup.object().shape({
-  amount: yup.string().required('Please provide amount'),
-});
-
 export default function AmountModalFunds(props) {
-  const {onRequestClose, visible, data, navigation, redirectTo} = props;
+  const {
+    onRequestClose,
+    visible,
+    data,
+    navigation,
+    redirectTo,
+    channel,
+  } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -48,6 +51,17 @@ export default function AmountModalFunds(props) {
   const [ID, setID] = useState('');
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+
+  const repay = Number(data?.repayment_amount) - Number(data?.amount_paid);
+
+  useEffect(() => {
+    console.log('The Repay: ', repay);
+  }, []);
+
+  const amountSchema = yup.object().shape({
+    // amount: yup.string().required('Please provide amount'),
+    amount: yup.number().integer().max(repay).required(),
+  });
 
   const handleClose = () => {
     // setShowPaymentType(false);
@@ -92,14 +106,20 @@ export default function AmountModalFunds(props) {
   // };
 
   const handleSubmit = async (values) => {
-    // console.log('Emeregency funds: ', data);
+    console.log('Emeregency funds: ', data);
 
-    const repaymentData = {loanId: data.id, amount: values.amount};
-    console.log('Pay Now', repaymentData);
+    const repaymentData = {
+      loan_id: data.id,
+      amount: values.amount,
+      channel: channel,
+    };
+    // console.log('Pay Now', repaymentData);
+    // console.log('The Res: ', data);
 
     setSpinner(true);
     try {
       const response = await loanRepayment(repaymentData);
+      console.log('RRR: ', response);
       if (response.status == 200) {
         setSpinner(false);
         setResData(response.data.data);
@@ -107,6 +127,7 @@ export default function AmountModalFunds(props) {
         setModal(true);
       } else {
         setSpinner(false);
+        console.log('Error: ', 'An error occured.');
       }
     } catch (error) {
       setSpinner(false);
@@ -125,6 +146,7 @@ export default function AmountModalFunds(props) {
 
     return (
       <>
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
         <Text style={[styles.boldText, {marginTop: 10}]}>How much?</Text>
         <View
           style={[
@@ -159,7 +181,7 @@ export default function AmountModalFunds(props) {
           />
         </View>
 
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+        {/* {hasError && <Text style={styles.errorText}>{errors[name]}</Text>} */}
       </>
     );
   };
@@ -340,7 +362,8 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 10,
     color: '#f00000',
-    marginLeft: 5,
+    textTransform: 'capitalize',
+    // marginLeft: 5,
   },
   errorInput: {
     borderColor: '#f0000050',

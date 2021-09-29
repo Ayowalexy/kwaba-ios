@@ -170,7 +170,10 @@ export default function NewHome({navigation}) {
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
       setSavings(getMaxLoanCap1.data.you_have_save);
-      setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
+      // setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
+      setInstantLoan(
+        Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
+      );
     }
   }, [getMaxLoanCap1]);
 
@@ -196,8 +199,9 @@ export default function NewHome({navigation}) {
     },
     {
       title: 'Emergency Fund',
-      subtitle: instantLoan == 0 ? 'Access instant loans' : 'Repayment amount',
-      amount: formatNumber(instantLoan),
+      subtitle:
+        instantLoan == 0 ? 'Access instant loans' : 'Total amount to repay',
+      amount: formatNumber(Number(instantLoan).toFixed(2)),
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>

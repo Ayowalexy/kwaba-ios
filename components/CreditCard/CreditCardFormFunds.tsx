@@ -31,7 +31,8 @@ import {
 import {loanPaymentVerification} from '../../services/network';
 
 RNPaystack.init({
-  publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
+  // publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
+  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
 interface FormModel {
@@ -114,7 +115,8 @@ const CreditCardFormFunds: React.FC = (props: any) => {
 
       const data = {
         reference: pay.reference,
-        applicationId: props.ID,
+        //@ts-ignore
+        loanId: responseInfo?.loan_id,
       };
 
       console.log('The Pay Emergency: ', data);
