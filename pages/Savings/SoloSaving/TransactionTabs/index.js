@@ -43,9 +43,17 @@ export default function TransactionsTab(props) {
   }, []);
 
   const renderScene = SceneMap({
-    first: () => <AllTransactions savingsTransactions={props.transactions} />,
+    first: () => (
+      <AllTransactions
+        title={props?.title}
+        savingsTransactions={props.transactions}
+      />
+    ),
     second: () => (
-      <SavingsTransactions savingsTransactions={props.transactions} />
+      <SavingsTransactions
+        title={props?.title}
+        savingsTransactions={props.transactions}
+      />
     ),
     third: () => <WithdrawalTransactions />,
   });

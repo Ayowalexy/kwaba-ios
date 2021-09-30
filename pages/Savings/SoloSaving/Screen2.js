@@ -246,7 +246,7 @@ export default function Screen2(props) {
                   mode="date"
                   is24Hour={true}
                   display="spinner"
-                  minimumDate={moment().toDate()}
+                  minimumDate={moment().add(1, 'days').toDate()}
                 />
               )}
 

@@ -100,7 +100,7 @@ const General = () => {
         <Animatable.Text
           duration={500}
           easing="ease-in-out-expo"
-          animation={isActive == activeSections ? 'zoomIn' : false}
+          // animation={isActive == activeSections ? 'zoomIn' : false}
           style={[styles.accordionBody]}>
           {section.body}
         </Animatable.Text>
@@ -218,7 +218,7 @@ const RentSaving = () => {
         <Animatable.Text
           duration={500}
           easing="ease-in-out-expo"
-          animation={isActive == activeSections ? 'zoomIn' : false}
+          // animation={isActive == activeSections ? 'zoomIn' : false}
           style={[styles.accordionBody]}>
           {section.body}
         </Animatable.Text>
@@ -301,7 +301,7 @@ const EmergencyFund = () => {
         <Animatable.Text
           duration={500}
           easing="ease-in-out-expo"
-          animation={isActive == activeSections ? 'zoomIn' : false}
+          // animation={isActive == activeSections ? 'zoomIn' : false}
           style={[styles.accordionBody]}>
           {section.body}
         </Animatable.Text>
@@ -427,7 +427,7 @@ const RentNowPayLater = () => {
         <Animatable.Text
           duration={500}
           easing="ease-in-out-expo"
-          animation={isActive == activeSections ? 'zoomIn' : false}
+          // animation={isActive == activeSections ? 'zoomIn' : false}
           style={[styles.accordionBody]}>
           {section.body}
         </Animatable.Text>
@@ -469,7 +469,7 @@ const renderTabBar = (props) => (
       //   backgroundColor: 'transparent',
       flex: 1,
       height: '100%',
-      borderRadius: 10,
+      borderRadius: 5,
       elevation: 2,
       zIndex: 99999,
       //   width: 200,
@@ -485,7 +485,7 @@ const renderTabBar = (props) => (
     tabStyle={{
       backgroundColor: 'transparent',
       marginHorizontal: 10,
-      borderRadius: 10,
+      borderRadius: 5,
       zIndex: 1,
       padding: 0,
     }}
@@ -546,7 +546,7 @@ const LegalandFaq = ({navigation}) => {
         <View>
           <Text
             style={{
-              fontSize: 20,
+              fontSize: 16,
               fontWeight: 'bold',
               color: COLORS.white,
               textAlign: 'center',

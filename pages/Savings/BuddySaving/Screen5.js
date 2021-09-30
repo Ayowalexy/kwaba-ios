@@ -150,9 +150,10 @@ export default function Screen5(props) {
       ...route.params,
       locked: locked,
       savings_tenure: route.params.duration,
+      num_of_buddies: route.params.number_of_buddies,
     };
 
-    // console.log('Data: ', data);
+    console.log('Data: ', data);
 
     setSpinner(true);
 
@@ -196,7 +197,7 @@ export default function Screen5(props) {
       if (response.status == 200) {
         setSpinner(false);
         // console.log('Invite sent: ', response.data);
-        // console.log('Res Data: ', resData);
+        console.log('Res Data: ', resData);
         setShowInviteSentModal(true); // show success modal
       }
     } catch (error) {

@@ -52,7 +52,7 @@ const designs = StyleSheet.create({
     justifyContent: 'center',
     opacity: 1,
     backgroundColor: '#00DC99',
-    // marginTop: 10,
+    marginVertical: 10,
     // marginLeft: 'auto',
     // marginRight: 'auto',
     // marginBottom: 20,
@@ -93,8 +93,8 @@ const designs = StyleSheet.create({
   label: {
     color: COLORS.dark,
     marginTop: 15,
-    fontSize: 12,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: 'normal',
     lineHeight: 20,
   },
   errorText: {

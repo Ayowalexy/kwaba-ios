@@ -69,7 +69,7 @@ export default function SavingsTransactions(props) {
                       fontSize: 12,
                       color: COLORS.dark,
                     }}>
-                    My rent
+                    {props?.title}
                   </Text>
                 </View>
 

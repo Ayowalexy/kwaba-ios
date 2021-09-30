@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   ScrollView,
@@ -9,17 +9,17 @@ import {
   KeyboardAvoidingView,
   StyleSheet,
 } from 'react-native';
-import { icons } from '../../../util/index';
+import {icons} from '../../../util/index';
 import designs from './style';
-import { COLORS, FONTS, images } from '../../../util/index';
+import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { formatNumber, unFormatNumber } from '../../../util/numberFormatter';
+import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 import BusinessSectorModal from './Modals/BusinessSectorModal';
 
-import { Formik, Field } from 'formik';
+import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
 // business_sector: '',
@@ -29,7 +29,7 @@ const businessFormSchema = yup.object().shape({
   more_info: yup.string().required('This field is required'),
 });
 
-export default function BusinessForm1({ navigation }) {
+export default function BusinessForm1({navigation}) {
   const [progress, setProgress] = useState(60);
   const [businessRegistrationType, setBusinessRegistrationType] = useState('');
   const [showBusinessSectorModal, setShowBusinessSectorModal] = useState(false);
@@ -37,8 +37,8 @@ export default function BusinessForm1({ navigation }) {
 
   const CustomInput = (props) => {
     const {
-      field: { name, onBlur, onChange, value },
-      form: { errors, touched, setFieldTouched },
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
       ...inputProps
     } = props;
 
@@ -47,13 +47,12 @@ export default function BusinessForm1({ navigation }) {
     return (
       <>
         <Text style={designs.label}>
-          Tell us more about your business to support{'\n'}your
-          applictaion{' '}
+          Tell us more about your business to support{'\n'}your applictaion{' '}
         </Text>
         <View
           style={[
             designs.customInput,
-            props.multiline && { height: props.numberOfLines * 40 },
+            props.multiline && {height: props.numberOfLines * 40},
             hasError && designs.errorInput,
           ]}>
           <TextInput
@@ -84,8 +83,8 @@ export default function BusinessForm1({ navigation }) {
 
   const BusinessSector = (props) => {
     const {
-      field: { name, onBlur, onChange, value },
-      form: { errors, touched, setFieldTouched },
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched},
       ...inputProps
     } = props;
 
@@ -97,7 +96,7 @@ export default function BusinessForm1({ navigation }) {
           What Industry does you business belong?
         </Text>
         <TouchableOpacity
-          style={[designs.customInput, { padding: 20 }]}
+          style={[designs.customInput, {padding: 20}]}
           onPress={() => {
             setShowBusinessSectorModal(!showBusinessSectorModal);
             // console.log(selectedMonth);
@@ -122,22 +121,18 @@ export default function BusinessForm1({ navigation }) {
           <Icon
             name="chevron-down-outline"
             size={20}
-            style={{ fontWeight: 'bold' }}
+            style={{fontWeight: 'bold'}}
             color="#BABABA"
           />
         </TouchableOpacity>
 
-
         {hasError && <Text style={designs.errorText}>{errors[name]}</Text>}
       </>
-    )
-  }
+    );
+  };
 
   const handleSubmit = async (values) => {
-    const {
-      business_sector,
-      more_info,
-    } = values;
+    const {business_sector, more_info} = values;
     const data = {
       business_sector,
       more_info,
@@ -149,22 +144,22 @@ export default function BusinessForm1({ navigation }) {
 
     await AsyncStorage.setItem(
       'businessFormDataStore',
-      JSON.stringify({ ...JSON.parse(businessFormData), ...data }),
+      JSON.stringify({...JSON.parse(businessFormData), ...data}),
     );
 
     console.log(data);
     console.log(businessFormData);
 
-    navigation.navigate('BusinessForm4')
+    navigation.navigate('BusinessForm4');
   };
 
   return (
-    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{ fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10 }}
+        style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
         color={COLORS.primary}
       />
 
@@ -178,7 +173,7 @@ export default function BusinessForm1({ navigation }) {
           more_info: '',
         }}
         onSubmit={handleSubmit}>
-        {({ handleSubmit, isValid, values, setValues }) => (
+        {({handleSubmit, isValid, values, setValues}) => (
           <>
             <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
               <View
@@ -212,7 +207,7 @@ export default function BusinessForm1({ navigation }) {
                       ]}>
                       Business Information
                     </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
                         style={{
                           fontSize: 12,
@@ -233,22 +228,39 @@ export default function BusinessForm1({ navigation }) {
                     </View>
                   </View>
 
+                  <Field name="business_sector" component={BusinessSector} />
+
                   <Field
-                    name="business_sector"
-                    component={BusinessSector}
+                    name="more_info"
+                    component={CustomInput}
+                    placeholder="Tell us more"
                   />
-
-
-                    <Field
-                      name="more_info"
-                      component={CustomInput}
-                      placeholder="Tell us more"
-                    />
-                  
                 </View>
+                <TouchableOpacity
+                  onPress={handleSubmit}
+                  // onPress={()=> console.log('Helow')}
+                  // onPress={()=> navigation.navigate('BusinessForm4')}
+                  // disabled={isValid ? false : true}
+                  style={[
+                    designs.button,
+                    // {
+                    //   backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    // },
+                  ]}>
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 30,
+                      textTransform: 'uppercase',
+                    }}>
+                    Next
+                  </Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
-            <View style={designs.buttonContainer}>
+            {/* <View style={designs.buttonContainer}>
               <TouchableOpacity
                 onPress={handleSubmit}
                 // onPress={()=> console.log('Helow')}
@@ -271,18 +283,19 @@ export default function BusinessForm1({ navigation }) {
                   Next
                 </Text>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <BusinessSectorModal
               visible={showBusinessSectorModal}
               onRequestClose={() =>
                 setShowBusinessSectorModal(!showBusinessSectorModal)
               }
-              onClick={(value) => setValues({ ...values, 'business_sector': value })}
-            // registration={registration}
-            // setRegistration={setRegistration}
+              onClick={(value) =>
+                setValues({...values, business_sector: value})
+              }
+              // registration={registration}
+              // setRegistration={setRegistration}
             />
-
           </>
         )}
       </Formik>

@@ -66,6 +66,7 @@ export default function OkraDebitMandate2({navigation}) {
   let okraOptions = {
     // callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
     callback_url: 'http://67.207.86.39:8000/api/v1/webhook',
+    // callback_url: 'https://kwaba.com.ng/api/webhook/okra',
     clientName: 'Kwaba',
     color: COLORS.secondary,
     connectMessage: 'Which account do you want to connect with?',
@@ -79,7 +80,7 @@ export default function OkraDebitMandate2({navigation}) {
     },
     options: {saverid: 'this is it'},
     isCorporate: false,
-    key: '4afcc9bf-c937-573b-87a1-5234c2d68bdf',
+    key: '03e94436-d4df-5b42-8624-19e21eb14c5b',
     limit: '24',
     logo: 'https://kwaba.ng/assets/imgs/logo.png',
     products: ['auth', 'balance', 'identity', 'transactions'],
@@ -191,7 +192,7 @@ export default function OkraDebitMandate2({navigation}) {
             navigation.navigate('AwaitingDisbursement');
           }}
           onError={(response) => {
-            console.log('on error');
+            console.log('on error', response);
           }}
         />
       </>

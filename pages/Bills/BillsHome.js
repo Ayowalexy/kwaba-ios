@@ -60,7 +60,7 @@ const BillsHome = ({navigation}) => {
           <View style={{flexDirection: 'column', paddingLeft: 10}}>
             <Text style={styles.headerMainText}>Pay bills</Text>
             <Text style={styles.headertext}>
-              Take care of all your essentials bills
+              Take care of all your essential bills
             </Text>
           </View>
 
@@ -84,10 +84,10 @@ const BillsHome = ({navigation}) => {
           return (
             <TouchableOpacity
               disabled={
-                value.identifier == 'education' ||
-                value.identifier == 'events' ||
-                value.identifier == 'insurance' ||
-                value.identifier == 'other-services'
+                value.identifier != 'airtime' &&
+                value.identifier != 'data' &&
+                value.identifier != 'tv-subscription' &&
+                value.identifier != 'electricity-bill'
               }
               // activeOpacity={value.identifier == 'education' ? 0.2 : 1}
               style={{
@@ -102,10 +102,10 @@ const BillsHome = ({navigation}) => {
                 borderWidth: 1,
                 borderColor: '#EAEAEA',
                 opacity:
-                  value.identifier == 'education' ||
-                  value.identifier == 'events' ||
-                  value.identifier == 'insurance' ||
-                  value.identifier == 'other-services'
+                  value.identifier != 'airtime' &&
+                  value.identifier != 'data' &&
+                  value.identifier != 'tv-subscription' &&
+                  value.identifier != 'electricity-bill'
                     ? 0.5
                     : 1,
               }}

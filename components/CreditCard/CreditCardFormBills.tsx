@@ -10,6 +10,8 @@ import {
   TextInput,
   // @ts-ignore
   TouchableOpacity,
+  // @ts-ignore
+  Alert,
 } from 'react-native';
 import {COLORS} from '../../util/index';
 import {useForm, FormProvider, useFormContext} from 'react-hook-form';
@@ -131,7 +133,7 @@ const CreditCardFormBills: React.FC = (props: any) => {
 
       const data = {
         reference: pay.reference,
-        channel: 'paystack',
+        channel: props.channel,
       };
 
       console.log('Verify Payment Data: ', data);
@@ -155,9 +157,14 @@ const CreditCardFormBills: React.FC = (props: any) => {
         props.onRequestClose();
       } else {
         setSpinner(false);
+        Alert.alert(
+          'Something went wrong',
+          'An error occured, please try again',
+        );
       }
     } catch (error) {
       console.log('The Error: ', error);
+      Alert.alert('Error', error);
       setSpinner(false);
     }
   };

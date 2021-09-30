@@ -129,7 +129,7 @@ const Referral = ({navigation}) => {
         <View
           style={{
             backgroundColor: '#00000022',
-            borderRadius: 13,
+            borderRadius: 0,
             // height: 26,
             paddingHorizontal: 5,
             marginTop: 20,
@@ -145,6 +145,7 @@ const Referral = ({navigation}) => {
                 fontWeight: 'bold',
                 textAlign: 'center',
                 paddingHorizontal: 10,
+                paddingVertical: 5,
               },
             ]}>
             Your friends also get N1,000 when they make their first savings
@@ -156,10 +157,10 @@ const Referral = ({navigation}) => {
             {
               color: COLORS.primary,
               fontWeight: 'bold',
-              alignSelf: 'flex-start',
+              // alignSelf: 'flex-start',
               marginTop: 20,
-              fontSize: 16,
-              marginLeft: 10,
+              fontSize: 14,
+              marginLeft: 0,
             },
           ]}>
           Referral code
@@ -181,40 +182,33 @@ const Referral = ({navigation}) => {
             selectTextOnFocus={false}
             style={{
               backgroundColor: '#BAB5FF',
-              height: 60,
+              height: 50,
               // width: '100%',
               flex: 1,
               // width: '70%',
-              borderRadius: 10,
+              borderRadius: 5,
               // marginLeft: 10,
               color: COLORS.white,
               paddingHorizontal: 20,
-              marginRight: 20,
+              marginRight: 10,
               fontSize: 13,
             }}
             value={referralCode}
           />
           <TouchableOpacity
             style={{
-              height: 60,
-              width: 60,
+              height: 50,
+              width: 50,
               backgroundColor: COLORS.white,
-              borderRadius: 10,
+              borderRadius: 5,
               justifyContent: 'center',
               alignItems: 'center',
-              // marginLeft: widthtouse / 20,
             }}
             onPress={copyToClipboard}>
-            {/* <IconFA
-              name="clone"
-              size={20}
-              color={COLORS.primary}
-              style={{alignSelf: 'center'}}
-            /> */}
             <Icon
-              name="clipboard-outline"
-              size={30}
-              color={COLORS.primary}
+              name="clipboard"
+              size={20}
+              color={COLORS.dark}
               style={{alignSelf: 'center'}}
             />
           </TouchableOpacity>
@@ -225,11 +219,11 @@ const Referral = ({navigation}) => {
           }}
           style={[
             {
-              backgroundColor: '#00DC99',
+              backgroundColor: COLORS.secondary,
               width: '100%',
-              borderRadius: 10,
+              borderRadius: 5,
               // height: 70,
-              borderRadius: 10,
+              borderRadius: 5,
               marginTop: 20,
               marginBottom: 20,
               fontSize: 14,
@@ -272,6 +266,7 @@ const Referral = ({navigation}) => {
                   color: COLORS.primary,
                   marginRight: 10,
                   fontSize: 14,
+                  fontWeight: 'bold',
                 },
               ]}>
               Your referral details

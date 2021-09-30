@@ -43,6 +43,7 @@ import {
   BuddySavingDashBoard,
   BuddyPaymentScreen,
   AcceptInvite,
+  BuddyInviteLists,
 } from './pages/Savings/index';
 import Borrow from './pages/Borrow/Borrow';
 import RentNowPayLaterOnboarding from './pages/Borrow/RentNowPayLaterOnboarding';
@@ -123,6 +124,15 @@ import BusinessForm2 from './pages/Borrow/Business/BusinessForm2';
 import BusinessForm3 from './pages/Borrow/Business/BusinessForm3';
 import BusinessForm4 from './pages/Borrow/Business/BusinessForm4';
 import BusinessForm5 from './pages/Borrow/Business/BusinessForm5';
+import BusinessDocumentUpload from './pages/Borrow/Business/BusinessDocumentUpload';
+
+// Rental Form Business
+import {
+  RentalFormBusiness1,
+  RentalFormBusiness2,
+  RentalFormBusinessDoc,
+  RentalFormBusinessCongratulation,
+} from './pages/Borrow/Business/RentalFormBusiness/index';
 
 // Signature
 import Signature from './pages/Signature/Signature';
@@ -150,13 +160,6 @@ import Reject from './pages/Decline/Reject';
 // Acceptance Letter
 import AcceptanceLetterAddosser from './pages/Borrow/AcceptanceletterAddosser';
 import AcceptanceLetterKwaba from './pages/Borrow/AcceptanceLetterKwaba';
-
-// Rental Form Business
-import {
-  RentalFormBusiness1,
-  RentalFormBusiness2,
-  RentalFormBusinessDoc,
-} from './pages/Borrow/Business/RentalFormBusiness/index';
 
 // Offer Letters
 import {KwabaLetter, AddosserLetter, PTMFB} from './pages/OfferLetters';
@@ -199,6 +202,7 @@ const linking = {
   prefixes: ['https://kwaba.ng', 'kwaba://'],
   config: {
     screens: {
+      BuddyInviteLists: 'BuddyInviteLists',
       AcceptInvite: 'AcceptInvite',
       BuddyLists: 'BuddyLists',
       SavingLists: 'SavingLists',
@@ -410,6 +414,10 @@ const App = () => {
                 name="AcceptInvite"
                 component={AcceptInvite}></Stack.Screen>
 
+              <Stack.Screen
+                name="BuddyInviteLists"
+                component={BuddyInviteLists}></Stack.Screen>
+
               <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
               <Stack.Screen
                 name="RentNowPayLaterOnboarding"
@@ -545,6 +553,24 @@ const App = () => {
                 name="BusinessForm5"
                 component={BusinessForm5}></Stack.Screen>
               <Stack.Screen
+                name="BusinessDocumentUpload"
+                component={BusinessDocumentUpload}></Stack.Screen>
+              <Stack.Screen
+                name="RentalFormBusinessCongratulation"
+                component={RentalFormBusinessCongratulation}></Stack.Screen>
+              <Stack.Screen
+                name="RentalFormBusiness1"
+                component={RentalFormBusiness1}
+              />
+              <Stack.Screen
+                name="RentalFormBusiness2"
+                component={RentalFormBusiness2}
+              />
+              <Stack.Screen
+                name="RentalFormBusinessDoc"
+                component={RentalFormBusinessDoc}
+              />
+              <Stack.Screen
                 name="EmergencyLoanHome"
                 component={EmergencyLoanHome}></Stack.Screen>
               <Stack.Screen
@@ -648,21 +674,6 @@ const App = () => {
 
               <Stack.Screen name="Decline" component={Decline} />
               <Stack.Screen name="Reject" component={Reject} />
-
-              <Stack.Screen
-                name="RentalFormBusiness1"
-                component={RentalFormBusiness1}
-              />
-
-              <Stack.Screen
-                name="RentalFormBusiness2"
-                component={RentalFormBusiness2}
-              />
-
-              <Stack.Screen
-                name="RentalFormBusinessDoc"
-                component={RentalFormBusinessDoc}
-              />
 
               {/* Offer Letter screen */}
 

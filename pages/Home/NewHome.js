@@ -46,6 +46,7 @@ import SavingsOptionModal from '../../components/savingsOptionModal';
 import PaymentTypeModal from '../../components/paymentTypeModal';
 import AmountModal from '../../components/amountModal';
 import WalletPaymentModal from '../Wallet/WalletPaymentModal';
+import QuickSaveListModal from './QuickSaveListModal';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -79,6 +80,10 @@ export default function NewHome({navigation}) {
   const [showAmountModal, setShowAmountModal] = useState(false);
 
   const [showWalletModal, setShowWalletModal] = useState(false);
+
+  const [showQuickSaveListModal, setShowQuickSaveListModal] = useState(false);
+
+  const [savingType, setSavingType] = useState('');
 
   const layout = useWindowDimensions();
 
@@ -165,7 +170,10 @@ export default function NewHome({navigation}) {
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
       setSavings(getMaxLoanCap1.data.you_have_save);
-      setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
+      // setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
+      setInstantLoan(
+        Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
+      );
     }
   }, [getMaxLoanCap1]);
 
@@ -181,7 +189,7 @@ export default function NewHome({navigation}) {
       actionText: savings == 0 ? 'Save Now' : 'Deposit',
       actionClick: () =>
         savings == 0
-          ? console.log('Save Now')
+          ? navigation.navigate('SavingsHome')
           : isProfileComplete
           ? setAddFundsToSavingsModal(true)
           : setCompleteProfileModal(true),
@@ -191,14 +199,23 @@ export default function NewHome({navigation}) {
     },
     {
       title: 'Emergency Fund',
-      subtitle: instantLoan == 0 ? 'Access instant loans' : 'Repayment amount',
-      amount: formatNumber(instantLoan),
+      subtitle:
+        instantLoan == 0 ? 'Access instant loans' : 'Total amount to repay',
+      amount: formatNumber(Number(instantLoan).toFixed(2)),
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
-        instantLoan == 0 ? console.log('Apply Now') : console.log('Pay Now'),
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : instantLoan == 0
+          ? navigation.navigate('EmergencyLoanHome')
+          : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
-        navigation.navigate('EmergencyLoanDashBoard');
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : instantLoan == 0
+          ? navigation.navigate('EmergencyLoanHome')
+          : navigation.navigate('EmergencyLoanDashBoard');
       },
     },
     {
@@ -224,10 +241,19 @@ export default function NewHome({navigation}) {
           : 'Next payment amount',
       amount: formatNumber(rentalFinance),
       color: '#000',
-      actionText: wallet == 0 ? 'Apply Now' : 'Pay Now',
+      actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
-        wallet == 0 ? console.log('Apply Now') : console.log('Pay Now'),
-      cardClick: () => console.log('Rent Now Pay Later'),
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : rentalFinance == 0
+          ? navigation.navigate('Borrow')
+          : navigation.navigate('RentNowPayLaterDashboard'),
+      cardClick: () =>
+        !isProfileComplete
+          ? setCompleteProfileModal(true)
+          : rentalFinance == 0
+          ? navigation.navigate('Borrow')
+          : navigation.navigate('RentNowPayLaterDashboard'),
     },
   ];
 
@@ -251,12 +277,12 @@ export default function NewHome({navigation}) {
       image: icons.ic2,
       route: () => navigation.navigate('BillsHome'),
     },
-    {
-      // name: 'Buy now pay\nlater',
-      name: 'Wallets',
-      image: icons.ic4,
-      route: () => navigation.navigate('Wallet'),
-    },
+    // {
+    //   // name: 'Buy now pay\nlater',
+    //   name: 'Wallets',
+    //   image: icons.ic4,
+    //   route: () => navigation.navigate('Wallet'),
+    // },
   ];
 
   const bottomCards = [
@@ -328,7 +354,12 @@ export default function NewHome({navigation}) {
             Hi {name}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
+        <TouchableOpacity
+          style={{paddingLeft: 20}}
+          onPress={() => {
+            navigation.navigate('Notifications');
+            // navigation.navigate('BuddyInviteLists');
+          }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
       </View>
@@ -832,7 +863,21 @@ export default function NewHome({navigation}) {
           setAddFundsToSavingsModal(!addFundsToSavingsModal)
         }
         visible={addFundsToSavingsModal}
-        setShowPaymentType={(bol) => setShowPaymentType(bol)}
+        // setShowPaymentType={(bol) => setShowPaymentType(bol)}
+        showSavingType={(data) => {
+          // console.log('Done: ', data);
+          setSavingType(data);
+          setShowQuickSaveListModal(true);
+        }}
+      />
+
+      <QuickSaveListModal
+        onRequestClose={() =>
+          setShowQuickSaveListModal(!showQuickSaveListModal)
+        }
+        visible={showQuickSaveListModal}
+        type={savingType}
+        navigation={navigation}
       />
 
       <PaymentTypeModal
@@ -852,6 +897,8 @@ export default function NewHome({navigation}) {
         <WalletPaymentModal
           onRequestClose={() => setShowWalletModal(!showWalletModal)}
           visible={showWalletModal}
+          // setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
+          // setShowAmountModal={(bol) => setShowAmountModal(bol)}
         />
       )}
     </View>

@@ -13,7 +13,7 @@ import * as Animatable from 'react-native-animatable';
 import PaymentTypeModal from './paymentTypeModal';
 
 export default function SavingsOptionModal(props) {
-  const {onRequestClose, visible, setShowPaymentType} = props;
+  const {onRequestClose, visible, showSavingType} = props;
 
   const handleClose = () => {
     onRequestClose();
@@ -21,8 +21,8 @@ export default function SavingsOptionModal(props) {
 
   const handleClick = (item) => {
     onRequestClose();
-    setShowPaymentType(true);
-    console.log('Item: ', item);
+    showSavingType(item.name);
+    // console.log('Item: ', item);
   };
 
   const savings = [

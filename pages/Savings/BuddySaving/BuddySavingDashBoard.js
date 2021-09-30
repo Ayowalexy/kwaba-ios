@@ -472,7 +472,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        <TransactionsTab transactions={transactions} />
+        <TransactionsTab title={savingTitle} transactions={transactions} />
       </ScrollView>
 
       {/* <QuickSaveModal

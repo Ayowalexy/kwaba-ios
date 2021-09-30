@@ -65,7 +65,8 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     (async () => {
       const user = await getUser();
       const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
-      console.log('The Account From Local Storage: ', storeBank);
+      // console.log('The Account From Local Storage: ', storeBank);
+      setUserSelectedBankAccount(JSON.parse(storeBank));
     })();
   }, []);
 
@@ -73,10 +74,10 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     dispatch(getBankAccounts());
   }, []);
 
-  useEffect(() => {
-    console.log('From Redux Store Man: ', theStoredAccount);
-    setUserSelectedBankAccount(theStoredAccount.data);
-  }, [theStoredAccount]);
+  // useEffect(() => {
+  //   console.log('From Redux Store Man: ', theStoredAccount);
+  //   setUserSelectedBankAccount(theStoredAccount.data);
+  // }, [theStoredAccount]);
 
   useEffect(() => {
     (async () => {

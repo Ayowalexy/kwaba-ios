@@ -20,37 +20,45 @@ export default function ConfirmModal(props) {
       animationType="fade"
       transparent={true}>
       <View style={styles.centeredModalWrapper}>
-        <View style={[styles.successModal, {borderRadius: 30}]}>
-          <Icon
+        <View style={[styles.successModal]}>
+          <TouchableOpacity
             style={{
               position: 'absolute',
-              right: 0,
-              top: 0,
-              padding: 20,
-            }}
-            onPress={() => onRequestClose()}
-            name="close-outline"
-            size={25}
-            color={COLORS.dark}
-          />
-          <Image
-            source={icons.tick}
-            style={{width: 84, height: 84, marginTop: 50}}
-          />
+              top: 10,
+              right: 10,
+              borderRadius: 30,
+              width: 30,
+              height: 30,
+              backgroundColor: '#00000010',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Icon
+              onPress={() => onRequestClose()}
+              name="close-outline"
+              size={25}
+              color={COLORS.dark}
+            />
+          </TouchableOpacity>
+          <View style={{alignSelf: 'center', marginTop: 20}}>
+            <Image source={icons.tick} style={{width: 60, height: 60}} />
+          </View>
           <Text
             style={{
-              marginTop: 35,
-              fontSize: 20,
+              marginTop: 10,
+              fontSize: 18,
               fontWeight: 'bold',
               color: COLORS.primary,
               fontWeight: 'bold',
+              textAlign: 'center',
             }}>
             Request Successful
           </Text>
           <Text
             style={{
               color: COLORS.grey,
-              fontSize: 12,
+              fontSize: 14,
+              textAlign: 'center',
             }}>
             Loan will be disbursed shortly
           </Text>
@@ -88,8 +96,8 @@ const styles = StyleSheet.create({
   btn: {
     width: '100%',
     paddingVertical: 20,
-    borderRadius: 10,
-    marginTop: 18,
+    borderRadius: 5,
+    marginTop: 10,
     fontSize: 14,
     fontFamily: 'CircularStd-Medium',
     fontWeight: '600',
@@ -103,10 +111,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 20,
   },
   successModal: {
     backgroundColor: 'white',
-    borderRadius: 30,
+    borderRadius: 10,
     paddingVertical: 30,
     paddingHorizontal: 30,
     paddingBottom: 50,
@@ -114,12 +123,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 'auto',
   },
   button: {
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: COLORS.white,
     padding: 24,
     marginHorizontal: 20,
     elevation: 20,
-    shadowColor: COLORS.secondary,
-    marginBottom: 40,
+    // shadowColor: COLORS.secondary,
+    // marginBottom: 40,
   },
 });

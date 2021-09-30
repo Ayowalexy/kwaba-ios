@@ -46,57 +46,49 @@ export default function SelectBankModal(props) {
             // showsVerticalScrollIndicator={false}
           >
             <View>
-              {banks &&
-                banks != null &&
-                banks != '' &&
-                banks.length &&
-                banks.map(({name, code}, index) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      onClick(name, code);
-                      onRequestClose();
-                    }}
-                    key={index}
+              {banks?.map(({name, code}, index) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    onClick(name, code);
+                    onRequestClose();
+                  }}
+                  key={index}
+                  style={{
+                    paddingVertical: 15,
+                    paddingHorizontal: 25,
+                    backgroundColor:
+                      name == selectedBank ? COLORS.secondary : 'transparent',
+
+                    // alignItems: 'center',
+                  }}>
+                  <View
                     style={{
-                      paddingVertical: 15,
-                      paddingHorizontal: 25,
-                      backgroundColor:
-                        name == selectedBank ? COLORS.secondary : 'transparent',
+                      fontSize: 14,
+                      // fontWeight: 'bold',
+                      // color: COLORS.primary,
 
-                      // alignItems: 'center',
+                      flexDirection: 'row',
+                      alignItems: 'center',
                     }}>
-                    <View
+                    <Text
                       style={{
-                        fontSize: 14,
-                        // fontWeight: 'bold',
-                        // color: COLORS.primary,
-
-                        flexDirection: 'row',
-                        alignItems: 'center',
+                        fontSize: 10,
+                        paddingRight: 10,
+                        color:
+                          name == selectedBank ? COLORS.white : COLORS.primary,
                       }}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          paddingRight: 10,
-                          color:
-                            name == selectedBank
-                              ? COLORS.white
-                              : COLORS.primary,
-                        }}>
-                        {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
-                      </Text>
-                      <Text
-                        style={{
-                          color:
-                            name == selectedBank
-                              ? COLORS.white
-                              : COLORS.primary,
-                        }}>
-                        {name}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                ))}
+                      {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
+                    </Text>
+                    <Text
+                      style={{
+                        color:
+                          name == selectedBank ? COLORS.white : COLORS.primary,
+                      }}>
+                      {name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
             </View>
           </ScrollView>
         </View>

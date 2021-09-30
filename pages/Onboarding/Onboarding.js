@@ -40,6 +40,22 @@ const screens = [
     image: icons.onboardingImage3,
     loader: icons.onboardingLoader3,
   },
+  {
+    id: 4,
+    title: 'Save to own',
+    content:
+      'WSave monthly to build up a down\npayment for the home of your dreams',
+    image: images.saveToOwn,
+    loader: icons.onboardingLoader3,
+  },
+  {
+    id: 5,
+    title: 'Mortgages',
+    content:
+      'Buy or build your dream home\nwith a Kwaba mortgage.\nLet’s help make your dream a reality.',
+    image: images.mortgages_1,
+    loader: icons.onboardingLoader3,
+  },
 ];
 
 const Onboarding = ({navigation}) => {
@@ -123,7 +139,7 @@ const Onboarding = ({navigation}) => {
                   top: 0,
                   right: 0,
                 }}
-                resizeMode="stretch"
+                resizeMode="contain"
                 source={item.image}
               />
             </View>
@@ -171,7 +187,7 @@ const Onboarding = ({navigation}) => {
 
                 <Indicators currentIndex={currentIndex} />
 
-                {item.id == 3 ? (
+                {item.id == 5 ? (
                   <TouchableOpacity
                     // onPress={() => navigation.navigate('SignUp')}
                     onPress={handleDone}

@@ -79,6 +79,7 @@ export default function Profile({navigation}) {
           fontWeight: 'bold',
           marginBottom: 20,
           marginLeft: 10,
+          color: COLORS.dark,
         }}>
         Profile
       </Text>

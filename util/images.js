@@ -113,6 +113,7 @@ const discovercardIcon = require('../assets/images/icons/discover.png');
 const amexcardIcon = require('../assets/images/icons/amex.png');
 
 const saveToOwn = require('../assets/images/saveToOwn.png');
+const mortgages_1 = require('../assets/images/mortgages_1.png');
 
 export {
   logo,
@@ -220,4 +221,5 @@ export {
   discovercardIcon,
   amexcardIcon,
   saveToOwn,
+  mortgages_1,
 };

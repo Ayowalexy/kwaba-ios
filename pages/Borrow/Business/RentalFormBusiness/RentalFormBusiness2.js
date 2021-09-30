@@ -195,14 +195,14 @@ const RentalFormBusiness2 = ({navigation}) => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       // console.log('The response: ', response);
-      navigation.navigate('RentalLoanFormCongratulation');
+      navigation.navigate('RentalFormBusinessCongratulation');
     } catch (error) {
       console.log(error.response.data);
       if (
         error?.response?.data?.statusMsg ==
         'You already have a pending application!'
       ) {
-        navigation.navigate('RentalLoanFormCongratulation');
+        navigation.navigate('RentalFormBusinessCongratulation');
       }
     }
   };

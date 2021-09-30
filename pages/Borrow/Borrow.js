@@ -119,7 +119,9 @@ const Borrow = ({navigation}) => {
       }
 
       // //QUICK NAVIGATIONS
-      // navigation.navigate('NewAllDocuments');
+      // navigation.navigate('RentalFormBusiness1');
+      // navigation.navigate('BusinessForm1');
+      // navigation.navigate('BusinessDocumentUpload');
     }
   };
 

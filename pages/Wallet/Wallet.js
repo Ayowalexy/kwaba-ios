@@ -113,23 +113,24 @@ export default function Wallet({navigation}) {
         </TouchableOpacity>
       </View>
       <View style={[styles.content]}>
-        <Text
-          style={{
-            fontSize: 12,
-            fontWeight: 'normal',
-            textAlign: 'left',
-            color: COLORS.white,
-            marginLeft: 25,
-          }}>
-          Your Balance:
-        </Text>
         <View
           style={{
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Text
+            style={{
+              fontSize: 12,
+              fontWeight: 'normal',
+              textAlign: 'left',
+              color: COLORS.white,
+              // marginLeft: 25,
+            }}>
+            Your Balance:
+          </Text>
+          <View
+            style={{flexDirection: 'row', alignItems: 'center', marginTop: 10}}>
             <Text
               style={{
                 fontSize: 30,
@@ -156,7 +157,7 @@ export default function Wallet({navigation}) {
               <Icon name="eye-off-outline" size={15} color={COLORS.white} />
             </TouchableOpacity>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => setAddFundsModal(true)}
               style={{
                 backgroundColor: '#ffffff20',
@@ -170,20 +171,20 @@ export default function Wallet({navigation}) {
                 style={{fontSize: 12, fontWeight: 'bold', color: COLORS.white}}>
                 Add Funds
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
 
-          <View
+          {/* <View
             style={{
               padding: 10,
               paddingHorizontal: 0,
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            {/* <Text
+            <Text
               style={{fontSize: 12, fontWeight: 'normal', color: COLORS.white}}>
-              Wallet ID:
-            </Text> */}
+              Account Number:
+            </Text>
             <Text
               style={{
                 height: 30,
@@ -213,9 +214,9 @@ export default function Wallet({navigation}) {
               }}>
               <Icon name="copy-outline" size={15} color={COLORS.white} />
             </TouchableOpacity>
-          </View>
-          {/* <TouchableOpacity
-            onPress={openPanel}
+          </View> */}
+          <TouchableOpacity
+            onPress={() => setAddFundsModal(true)}
             style={{
               backgroundColor: '#ffffff20',
               justifyContent: 'center',
@@ -223,12 +224,13 @@ export default function Wallet({navigation}) {
               borderRadius: 5,
               paddingHorizontal: 20,
               paddingVertical: 10,
+              marginTop: 20,
             }}>
             <Text
               style={{fontSize: 12, fontWeight: 'bold', color: COLORS.white}}>
               Add Funds
             </Text>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
         </View>
       </View>
 
@@ -254,6 +256,7 @@ export default function Wallet({navigation}) {
       </SwipeablePanel>
 
       <SwipeablePanel
+        showCloseButton
         fullWidth
         onlySmall
         isActive={addFundsModal}
@@ -263,7 +266,7 @@ export default function Wallet({navigation}) {
         onPressCloseButton={() => setAddFundsModal(false)}>
         <View style={{paddingVertical: 20, paddingHorizontal: 30}}>
           <Text style={{fontSize: 14, fontWeight: 'bold', color: COLORS.dark}}>
-            How would you like {'\n'}to add money?
+            How would you like{'\n'}to add money?
           </Text>
         </View>
         <View>

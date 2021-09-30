@@ -16,6 +16,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getBillsCategory} from '../../redux/actions/billsAction';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
+import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
+import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
+import {BuyPurchaseAirtime} from '../../services/network';
 
 const DataBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -26,7 +30,18 @@ const DataBill = ({navigation, route}) => {
   const [packageModal, setPackageModal] = useState(false);
   const [packageData, setPackageData] = useState([]);
   const [packageName, setPackageName] = useState('');
-  const [amount, setAmount] = useState(0);
+  const [spinner, setSpinner] = useState(false);
+  const [amount, setAmount] = useState('');
+  const [customerID, setCustomerID] = useState('');
+  const [variationCode, setVariationCode] = useState('');
+
+  const [showCardModal, setShowCardModal] = useState(false);
+  const [resData, setResData] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const [channel, setChannel] = useState('');
+
+  const [billData, setBillData] = useState('');
   const getBillsCategoryLists = useSelector(
     (state) => state.getBillCategoryReducer,
   );
@@ -36,12 +51,13 @@ const DataBill = ({navigation, route}) => {
   }, [serviceID]);
 
   useEffect(() => {
-    // console.log('The Package Data: ', packageData);
-    let selectedPackage = packageData.filter(
-      (item) => item.name == packageName,
-    )[0];
-    setAmount(selectedPackage?.variation_amount);
-    // console.log('The Amount: ', amount);
+    if (packageName != '') {
+      let selectedPackage = packageData.filter(
+        (item) => item.name == packageName,
+      )[0];
+      setAmount(selectedPackage?.variation_amount);
+      setVariationCode(selectedPackage?.variation_code);
+    }
   }, [packageName]);
 
   const getToken = async () => {
@@ -59,11 +75,7 @@ const DataBill = ({navigation, route}) => {
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
-        // console.log(
-        //   'Response Variations: ',
-        //   response?.data?.data?.content?.variations,
-        // );
-        setPackageData(response?.data?.data?.content?.variations);
+        setPackageData(response?.data?.data?.content?.varations);
       } catch (error) {
         console.log('Error:', error);
       }
@@ -71,8 +83,6 @@ const DataBill = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    // console.log('Name: ', name);
-    // console.log('Hello world: ', getBillsCategoryLists?.data?.content);
     dispatch(getBillsCategory('data'));
   }, []);
 
@@ -84,6 +94,78 @@ const DataBill = ({navigation, route}) => {
   const closePanel = () => {
     setActive(false);
   };
+
+  const handleRoute = async () => {
+    // const data = {
+    //   serviceID: 'airtel-data',
+    //   billersCode: '08011111111',
+    //   variation_code: 'airt-50',
+    //   amount: 49.99,
+    //   recepient: '08011111111',
+    // };
+    setShowPaymentModal(true);
+  };
+
+  const handlePaymentRoute = async (value) => {
+    setSpinner(true);
+    const data = {
+      serviceID: serviceID,
+      billersCode: customerID,
+      variation_code: variationCode,
+      amount: amount,
+      recepient: customerID,
+    };
+
+    if (value == 'paystack') {
+      const response = await BuyPurchaseAirtime(data);
+
+      console.log('The buy response: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+
+        setShowCardModal(true); // show card modal
+        setResData(response?.data?.data);
+        setChannel(value); //paystack
+      } else {
+        setSpinner(false);
+      }
+    } else if (value == 'bank') {
+      console.log(value);
+    } else {
+      console.log(value); // wallet
+    }
+  };
+
+  // const buyOtherBills = async () => {
+  //   const data = {
+  //     serviceID: serviceID,
+  //     billersCode: customerID,
+  //     variation_code: variationCode,
+  //     amount: amount,
+  //     recepient: customerID,
+  //   };
+
+  //   setSpinner(true);
+  //   const token = await getToken();
+  //   const url = 'http://67.207.86.39:8000/api/v1/buy_other_bills';
+  //   try {
+  //     const response = await axios.post(url, data, {
+  //       headers: {'Content-Type': 'application/json', Authorization: token},
+  //     });
+  //     if (response.status == 200) {
+  //       setSpinner(false);
+  //       setResData(response?.data?.data);
+  //       setShowCardModal(true);
+  //       console.log('The Response: ', response?.data?.data);
+  //     } else {
+  //       setSpinner(false);
+  //       console.log('Something went wrong', response);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     console.log('The Buy Bill Error: ', error);
+  //   }
+  // };
   return (
     <>
       <View style={{flex: 1}}>
@@ -158,6 +240,15 @@ const DataBill = ({navigation, route}) => {
               placeholder="Customer ID"
               placeholderTextColor="#BFBFBF"
               keyboardType="phone-pad"
+              value={customerID}
+              onChangeText={(text) => {
+                setCustomerID(text);
+                console.log(text);
+              }}
+              // onTextInput={(text) => {
+              //   setCustomerID(text);
+              //   console.log(text);
+              // }}
             />
           </View>
 
@@ -179,10 +270,16 @@ const DataBill = ({navigation, route}) => {
           </View>
 
           <TouchableOpacity
+            onPress={handleRoute}
+            disabled={customerID.length < 11 || amount == ''}
             style={[
               styles.btn,
               {
                 backgroundColor: '#00DC99',
+                backgroundColor:
+                  customerID.length < 11 || amount == ''
+                    ? '#00DC9950'
+                    : '#00DC99',
                 width: '100%',
                 borderRadius: 10,
                 zIndex: 0,
@@ -306,6 +403,29 @@ const DataBill = ({navigation, route}) => {
           );
         })}
       </SwipeablePanel>
+
+      <Spinner visible={spinner} size="large" />
+
+      {showCardModal && (
+        <CreditCardModalBills
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          info={resData}
+          navigation={navigation}
+          redirectTo="BillsHome"
+          channel={channel}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(value) => {
+            handlePaymentRoute(value); // paystack, bank, wallet
+          }}
+        />
+      )}
     </>
   );
 };
