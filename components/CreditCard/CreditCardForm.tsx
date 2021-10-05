@@ -30,7 +30,8 @@ import {
 } from '../../redux/actions/savingsActions';
 
 RNPaystack.init({
-  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
+  publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
+  // publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
 interface FormModel {
@@ -90,8 +91,9 @@ const CreditCardForm: React.FC = (props: any) => {
   // Address Verification RNPL
   const verifyPayment = async (data: any) => {
     const token = await getToken();
-    // const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
-    const url = 'http://67.207.86.39:8000/api/v1/application/payment/verify';
+    // const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/verify_savings_payment';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/verify';
 
     try {
       const response = await axios.put(url, data, {
@@ -114,7 +116,7 @@ const CreditCardForm: React.FC = (props: any) => {
     const token = await getToken();
     try {
       const applicationIDCallRes = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/one',
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },

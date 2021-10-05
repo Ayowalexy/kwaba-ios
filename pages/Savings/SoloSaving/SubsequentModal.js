@@ -58,7 +58,8 @@ export default function SubsequentModal(props) {
 
   const verifyPayment = async (data) => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/verify_savings_payment';
     try {
       const response = await axios.post(url, JSON.stringify(data), {
         headers: {
@@ -73,7 +74,8 @@ export default function SubsequentModal(props) {
   };
 
   const handleTransactions = async () => {
-    const url = 'http://67.207.86.39:8000/api/v1/user_create_savings';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user_create_savings';
     const data = savingsData;
     try {
       setSpinner(true);

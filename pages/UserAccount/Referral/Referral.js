@@ -21,6 +21,8 @@ import {icons, images, COLORS, FONTS, designs} from '../../../util/index';
 
 const widthtouse = Dimensions.get('window').width;
 
+const dplink = `https://kwaba.ng/referral`;
+
 const Referral = ({navigation}) => {
   const referral_msg = `I use Kwaba to save and pay for my rent. Join with my link to get N1,000 towards your rent savings`;
   const [referralCode, setReferralCode] = useState('');
@@ -50,7 +52,7 @@ const Referral = ({navigation}) => {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: `${referral_msg}  | ${referralCode}`,
+        message: `${referral_msg}  | ${dplink}?${referralCode}`,
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

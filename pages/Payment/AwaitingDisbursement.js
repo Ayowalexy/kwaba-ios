@@ -41,7 +41,8 @@ const AwaitingDisbursement = ({navigation, route}) => {
     setSpinner(true);
     const token = await getToken();
     const user = await getUser();
-    const url = 'http://67.207.86.39:8000/api/v1/application/one';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one';
 
     try {
       const applicationIDCallRes = await axios.get(url, {

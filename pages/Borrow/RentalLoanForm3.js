@@ -119,7 +119,8 @@ const RentalLoanForm3 = ({navigation}) => {
     console.log(lengthOfResidence);
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    const url = 'http://67.207.86.39:8000/api/v1/application/new';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/new';
     const token = await getToken();
     console.log(dummyData);
     console.log(token);
@@ -201,7 +202,8 @@ const RentalLoanForm3 = ({navigation}) => {
     console.log('The Data: ', data);
 
     try {
-      const url = 'http://67.207.86.39:8000/api/v1/application/new';
+      const url =
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/new';
       const response = await axios.post(url, data, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
@@ -235,7 +237,7 @@ const RentalLoanForm3 = ({navigation}) => {
     console.log('steps here' + steps);
     try {
       const applicationIDCallRes = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/one',
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },

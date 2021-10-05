@@ -74,7 +74,7 @@ export default function Signature({navigation}) {
     const user = await getUser();
 
     const applicationIDCallRes = await axios.get(
-      'http://67.207.86.39:8000/api/v1/application/one',
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -86,7 +86,7 @@ export default function Signature({navigation}) {
 
     try {
       const response = await axios.put(
-        'http://67.207.86.39:8000/api/v1/application/accept_offer',
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/accept_offer',
         {applicationId, signature},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},

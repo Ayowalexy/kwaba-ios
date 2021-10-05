@@ -32,12 +32,15 @@ import {getBankAccounts} from '../../../redux/actions/bankActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {getBankFromStorageReducer} from '../../../redux/reducers/bankReducer';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
+import DisbursementModal from './DisbursementModal';
 
 const EmergencyLoanRequest = ({route, navigation}) => {
   const dispatch = useDispatch();
   const theStoredAccount = useSelector(
     (state) => state.getBankFromStorageReducer,
   );
+  const userBankAccounts = useSelector((state) => state.getBankAccountsReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [spinner, setSpinner] = useState(false);
   const [modalVisible, setVisible] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
@@ -55,20 +58,22 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
   const [userSelectedBankAccount, setUserSelectedBankAccount] = useState([]);
 
+  const [disbursementModal, setDisbursementModal] = useState(false);
+
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const user = JSON.parse(userData).user;
     return user;
   };
 
-  useEffect(() => {
-    (async () => {
-      const user = await getUser();
-      const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
-      // console.log('The Account From Local Storage: ', storeBank);
-      setUserSelectedBankAccount(JSON.parse(storeBank));
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const user = await getUser();
+  //     const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+  //     // console.log('The Account From Local Storage: ', storeBank);
+  //     setUserSelectedBankAccount(JSON.parse(storeBank));
+  //   })();
+  // }, []);
 
   useEffect(() => {
     dispatch(getBankAccounts());
@@ -80,18 +85,58 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   // }, [theStoredAccount]);
 
   useEffect(() => {
-    (async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const accountName = JSON.parse(userData).user.savings_account_name;
-      const accountNumber = JSON.parse(userData).user.savings_account_number;
-      const code = JSON.parse(userData).user.savings_bank_code;
-      setBankAccountName(accountName != null ? accountName : '');
-      setBankAccountNumber(accountNumber != null ? accountNumber : '');
-      setBankCode(code != null ? code : '');
+    console.log('Called again nnn...');
+    getBankAccountLocally();
+  }, [getMaxLoanCap1]);
 
-      // console.log(accountNumber, accountName, code, JSON.parse(userData).user);
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      // if (userBankAccounts?.data?.length == 0) {
+      //   await AsyncStorage.removeItem(`storeBank-${user.id}`);
+      // }
+      const localBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+      // console.log(JSON.parse(localBank).bank_account_number);
+      // console.log(userBankAccounts);
+
+      userBankAccounts?.data?.map(async (item, index) => {
+        if (
+          item.bank_account_number != JSON.parse(localBank).bank_account_number
+        ) {
+          await AsyncStorage.removeItem(`storeBank-${user.id}`);
+        }
+      });
+
+      // console.log('User Bank: ', userBankAccounts?.data);
+      // console.log(
+      //   'Local Bank: ',
+      //   await AsyncStorage.getItem(`storeBank-${user.id}`),
+      // );
     })();
+    // console.log('The user banks: ', userBankAccounts);
   }, []);
+
+  const getBankAccountLocally = async () => {
+    const user = await getUser();
+    const account = await AsyncStorage.getItem(`storeBank-${user.id}`);
+    const parsedData = JSON.parse(account);
+    console.log('The parsed bank', parsedData?.user_bank_name);
+    setUserSelectedBankAccount(parsedData);
+  };
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const userData = await AsyncStorage.getItem('userData');
+  //     const accountName = JSON.parse(userData).user.savings_account_name;
+  //     const accountNumber = JSON.parse(userData).user.savings_account_number;
+  //     const code = JSON.parse(userData).user.savings_bank_code;
+  //     setBankAccountName(accountName != null ? accountName : '');
+  //     setBankAccountNumber(accountNumber != null ? accountNumber : '');
+  //     setBankCode(code != null ? code : '');
+
+  //     // console.log(accountNumber, accountName, code, JSON.parse(userData).user);
+  //   })();
+  // }, []);
 
   useEffect(() => {
     setLoanAmount(route.params.loan_amount);
@@ -99,40 +144,20 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     setDueDate(moment().add(30, 'days').format('DD, MMM YYYY'));
   }, []);
 
-  useEffect(() => {
-    (async () => {
-      const userBankAccount = await AsyncStorage.getItem('selectedBankAccount');
-      if (userBankAccount) {
-        const parsedUserBankAccount = JSON.parse(userBankAccount);
-        console.log(userBankAccount);
-        setUserSelectedBankAccount(parsedUserBankAccount);
+  // useEffect(() => {
+  //   (async () => {
+  //     const userBankAccount = await AsyncStorage.getItem('selectedBankAccount');
+  //     if (userBankAccount) {
+  //       const parsedUserBankAccount = JSON.parse(userBankAccount);
+  //       console.log(userBankAccount);
+  //       setUserSelectedBankAccount(parsedUserBankAccount);
 
-        setBankAccountName(parsedUserBankAccount.user_bank_name);
-        setBankAccountNumber(parsedUserBankAccount.bank_account_number);
-        setBankName(parsedUserBankAccount.bank_name);
-      }
-    })();
-  }, [userSelectedBankAccount]);
-
-  // const addCard = async () => {
-  //   setBankModalVisible(false);
-  //   const data = {
-  //     account_number: bankAccountNumber,
-  //     bank_code: bankCode,
-  //   };
-  //   try {
-  //     let bankDetails = await resolveBankAccount(data);
-  //     let banks = await fetchBanks();
-  //     if (bankDetails.accountStatus == true) {
-  //       setBankAccountName(bankDetails.data.account_name);
-  //       setBankAccountNumber(bankDetails.data.account_number);
-  //       let bank = banks.banks.filter((c) => c.code == bankCode);
-  //       setBankName(bank[0].name);
+  //       setBankAccountName(parsedUserBankAccount.user_bank_name);
+  //       setBankAccountNumber(parsedUserBankAccount.bank_account_number);
+  //       setBankName(parsedUserBankAccount.bank_name);
   //     }
-  //   } catch (error) {
-  //     Alert.alert('', error);
-  //   }
-  // };
+  //   })();
+  // }, [userSelectedBankAccount]);
 
   const loanTable = [
     {
@@ -154,12 +179,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   ];
 
   const handleSubmit = async () => {
-    // setVisible(false);
-    // setting this manually
-    // setBankAccountName('Joshua Udo Nwosu');
-    // setBankAccountNumber('0094552107');
-    // setBankName('Access Bank');
-
     const data = {
       loan_amount: loanAmount,
       loan_purpose: loanPurpose,
@@ -167,10 +186,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
       // disbursement_account_name: 'JOSHUA UDO NWOSU',
       // disbursement_account_number: '0094552107',
       // disbursement_account_bank: 'Access Bank(Diamond)',
-
-      // disbursement_account_name: '',
-      // disbursement_account_number: '',
-      // disbursement_account_bank: '',
 
       disbursement_account_name: userSelectedBankAccount.user_bank_name,
       disbursement_account_number: userSelectedBankAccount.bank_account_number,
@@ -269,9 +284,8 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                 Disbursement Account
               </Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('Disbursement')}
-                // onPress={() => navigation.navigate('CardAndBankDetails')}
-              >
+                // onPress={() => navigation.navigate('Disbursement')}
+                onPress={() => setDisbursementModal(true)}>
                 <Text
                   style={{
                     fontSize: 12,
@@ -376,6 +390,11 @@ const EmergencyLoanRequest = ({route, navigation}) => {
         // onRequestClose={() => console.log('Joshua')}
         onRequestClose={() => setSuccessModal(!successModal)}
         // setSuccessModal={() => setSuccessModal(!successModal)}
+      />
+
+      <DisbursementModal
+        onRequestClose={() => setDisbursementModal(!disbursementModal)}
+        visible={disbursementModal}
       />
     </View>
   );

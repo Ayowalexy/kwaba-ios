@@ -86,7 +86,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   // // For Solo Savings
   // const verifyPayment = async (data) => {
   //   const token = await getToken();
-  //   const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+  //   const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/verify_savings_payment';
   //   try {
   //     const response = await axios.post(url, data, {
   //       headers: {
@@ -103,7 +103,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   // // For Address Verification RNPL
   // const addressVerification = async (data) => {
   //   const token = await getToken();
-  //   const url = 'http://67.207.86.39:8000/api/v1/application/payment/verify';
+  //   const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/verify';
   //   try {
   //     const response = await axios.put(url, JSON.stringify(data), {
   //       headers: {
@@ -121,7 +121,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   // const rentPaymentVerify = async (data) => {
   //   const token = await getToken();
   //   const url =
-  //     'http://67.207.86.39:8000/api/v1/application/rentrepayment/verify';
+  //     'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/rentrepayment/verify';
   //   try {
   //     const response = await axios.put(url, JSON.stringify(data), {
   //       headers: {

@@ -147,7 +147,8 @@ export default function BusinessForm1({navigation}) {
   };
 
   const handleSubmit = async (values) => {
-    const url = 'http://67.207.86.39:8000/api/v1/business/application/new';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/business/application/new';
     const dummyData = {
       rent_purpose: 'Business space',
       business_name: 'Kwaba',

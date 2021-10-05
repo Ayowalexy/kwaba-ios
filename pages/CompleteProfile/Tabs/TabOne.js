@@ -131,7 +131,8 @@ export default function TabOne(props) {
     setSpinner(true);
 
     try {
-      const url = 'http://67.207.86.39:8000/api/v1/user/update_profile';
+      const url =
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user/update_profile';
       const response = await axios.put(url, JSON.stringify(updateData), {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });

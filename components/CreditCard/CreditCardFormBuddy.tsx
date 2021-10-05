@@ -86,7 +86,8 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   // For Buddy Savings
   const verifyPayment = async (data: any) => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/buddy/verifypayment';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/buddy/verifypayment';
     try {
       const response = await axios.post(url, data, {
         headers: {

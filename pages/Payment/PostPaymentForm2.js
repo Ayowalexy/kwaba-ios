@@ -43,7 +43,8 @@ const PostPaymentForm1 = ({navigation}) => {
   useEffect(() => {
     (async () => {
       try {
-        const url = 'http://67.207.86.39:8000/api/v1/bank_email';
+        const url =
+          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/bank_email';
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json'},
         });

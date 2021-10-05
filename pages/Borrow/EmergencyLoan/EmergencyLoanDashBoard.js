@@ -36,9 +36,8 @@ import ActiveLoanModal from './ActiveLoanModal';
 import AmountModalFunds from '../../../components/amountModalFunds';
 import CreditCardFormFunds from '../../../components/CreditCard/CreditCardFormFunds';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
-// RNPaystack.init({
-//   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
-// });
+
+import LoanTabs from './LoanTabs';
 
 moment.suppressDeprecationWarnings = true;
 
@@ -68,7 +67,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
   const [loanData, setLoanData] = useState({});
   const [channel, setChannel] = useState('');
 
-  // const [data, setData] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
@@ -80,7 +78,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
       const paidLoans = loans.data.data.filter((c) => c.repayment_status == 1);
       setRepaidLoans(paidLoans);
       setLoanAmount(activeLoan != undefined ? activeLoan.loan_amount : 0);
-      // setRepayment(activeLoan != undefined ? activeLoan.repayment_amount : 0);
       setDueDate(
         activeLoan != undefined
           ? moment(activeLoan.repayment_date.split(' ')[0]).format(
@@ -94,60 +91,18 @@ export default function EmergencyLoanDashBoard({navigation}) {
     })();
   }, []);
 
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
-  };
-
   useEffect(() => {
     dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
-      // setRepayment(getMaxLoanCap1?.data?.total_emmegency_loan_amount_taken);
       setRepayment(
         Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
       );
       setLoanPiad(getMaxLoanCap1?.data?.total_emmegency_loan_amount_repay);
     }
-    handleFetchLoans();
   }, [getMaxLoanCap1]);
-
-  useEffect(() => {
-    handleFetchLoans();
-  }, []);
-
-  const getAllLoans = async () => {
-    const token = await getToken();
-    const apiUrl = 'http://67.207.86.39:8000';
-    const url = apiUrl + '/api/v1/emergency_loan/all';
-    try {
-      const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      return response;
-    } catch (error) {
-      return error;
-    }
-  };
-
-  const handleFetchLoans = async () => {
-    setSpinner(true);
-    try {
-      const loans = await getAllLoans();
-      if (loans.status == 200) {
-        setSpinner(false);
-        console.log('The Loannnnnnn: ', loans.data.data);
-        setRepaymentLists(loans.data.data);
-        dispatch(getMaxLoanCap());
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
-    }
-  };
 
   const requestLoan = async () => {
     navigation.navigate('EmergencyLoanHome');
@@ -158,145 +113,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
     console.log('The Value: ', value);
     setChannel(value);
     setShowAmountModal(true);
-  };
-
-  // useEffect(() => {
-  //   filterLoans(); // filter loans by date
-  // }, []);
-
-  // filter by date
-  // const filterLoans = () => {
-  //   const date =
-  // };
-
-  // returned lists of repayments;
-  const RepaymaneHistory = () => {
-    return (
-      <View style={[styles.repaymentListContainer]}>
-        {repaymentLists.map((item, index) => {
-          const status = item.status.toLowerCase();
-          return (
-            <TouchableOpacity
-              style={{
-                marginBottom: 10,
-                backgroundColor: COLORS.white,
-                borderRadius: 10,
-                elevation: 0.5,
-                // borderWidth: 1,
-                // borderColor: '#2A286A10',
-                overflow: 'hidden',
-              }}
-              key={index}
-              onPress={() => {
-                setActiveLoanModal(true);
-                setLoanID(item.id);
-                setLoanData({status: item.disbursement_status, id: item.id});
-              }}>
-              <View style={[styles.repaymentFlex]}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <View
-                    style={[
-                      styles.repaymentStatus,
-                      {
-                        backgroundColor:
-                          status == 'active' || status == 'paid'
-                            ? COLORS.secondary
-                            : status == 'pending' || status == 'running'
-                            ? COLORS.orange
-                            : COLORS.red,
-                      },
-                    ]}
-                  />
-                  <View>
-                    <Text
-                      style={[
-                        styles.repaymentText,
-                        {fontSize: 12, fontWeight: 'bold'},
-                      ]}>
-                      {item.loan_purpose}
-                      {'  '}
-                      <Text style={{fontSize: 10}}>
-                        ₦{formatNumber(item.repayment_amount)}
-                      </Text>
-                    </Text>
-                    <Text
-                      style={[
-                        styles.repaymentText,
-                        {
-                          fontWeight: 'normal',
-                          marginLeft: 2,
-                          fontStyle: 'italic',
-                          textTransform: 'capitalize',
-                        },
-                      ]}>
-                      {item.status}
-                    </Text>
-                  </View>
-                </View>
-
-                <View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                    }}>
-                    <Text
-                      style={[
-                        styles.repaymentText,
-                        {
-                          color: COLORS.secondary,
-                        },
-                      ]}>
-                      View
-                    </Text>
-                    <Icon
-                      name="arrow-forward"
-                      color={COLORS.secondary}
-                      size={12}
-                      style={{marginLeft: 5}}
-                    />
-                  </View>
-                  <Text style={[styles.repaymentText]}>
-                    {item.disbursement_status == 1
-                      ? moment(item.disbursement_date).format('DD MMM YYYY')
-                      : moment(item.created_at).format('DD MMM YYYY')}
-                  </Text>
-                </View>
-              </View>
-
-              {status == 'pending' ||
-                (status == 'active' && (
-                  <View style={{marginTop: -5}}>
-                    <TouchableOpacity
-                      // onPress={() => handlePayNow(item)}
-                      onPress={() => {
-                        setLoanRepaymentData(item);
-                        setShowPaymentModal(true);
-                      }}
-                      style={{
-                        backgroundColor: COLORS.primary,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: COLORS.white,
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          textAlign: 'center',
-                        }}>
-                        Pay Now
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-    );
   };
 
   return (
@@ -314,13 +130,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
           size={25}
           color={COLORS.primary}
         />
-        {/* <View
-          style={{
-            marginLeft: 20,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}> */}
         <Text
           style={[
             {
@@ -335,7 +144,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
         </Text>
         {/* </View> */}
       </View>
-      {repaymentLists?.length > 0 && (
+      {repaymentAmount > 0 && (
         <View style={[styles.banner]}>
           <View style={{flexDirection: 'row', width: '80%'}}>
             <Icon name="alert-circle" size={25} color={COLORS.dark} />
@@ -347,7 +156,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
           </View>
 
           <TouchableOpacity
-            onPress={handleFetchLoans}
+            // onPress={handleFetchLoans}
+            onPress={() => dispatch(getMaxLoanCap())}
             style={{
               backgroundColor: '#FFFFFF50',
               width: 30,
@@ -357,7 +167,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
               alignItems: 'center',
             }}>
             <Icon
-              onPress={handleFetchLoans}
+              // onPress={handleFetchLoans}
               name="reload"
               size={20}
               color={COLORS.dark}
@@ -365,7 +175,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
           </TouchableOpacity>
         </View>
       )}
-      <View style={{flex: 1, paddingHorizontal: 20, marginTop: 10}}>
+      <View style={{paddingHorizontal: 20, marginVertical: 10}}>
         <View style={[styles.dashboard]}>
           <View style={[styles.box1]}>
             <View
@@ -450,43 +260,9 @@ export default function EmergencyLoanDashBoard({navigation}) {
             </View>
           </View>
         </View>
-
-        <View style={[styles.transaction]}>
-          <View
-            style={{
-              padding: 10,
-              paddingVertical: 15,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{fontSize: 14, fontWeight: 'bold', color: COLORS.dark}}>
-              All Loans
-            </Text>
-
-            {/* <TouchableOpacity
-              style={{
-                backgroundColor: COLORS.white,
-                width: 30,
-                height: 30,
-                borderRadius: 30,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Icon
-                name="filter"
-                size={15}
-                style={{fontWeight: '900'}}
-                color={COLORS.primary}
-              />
-            </TouchableOpacity> */}
-          </View>
-          <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-            <RepaymaneHistory />
-          </ScrollView>
-        </View>
       </View>
+
+      <LoanTabs navigation={navigation} />
 
       {transactionModal && (
         <Transactions
@@ -495,7 +271,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
         />
       )}
 
-      {activeLoanModal && (
+      {/* {activeLoanModal && (
         <ActiveLoanModal
           onRequestClose={() => setActiveLoanModal(!activeLoanModal)}
           visible={activeLoanModal}
@@ -503,7 +279,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
           loanData={loanData}
           navigation={navigation}
         />
-      )}
+      )} */}
 
       {showPaymentModal && (
         <PaymentTypeModal

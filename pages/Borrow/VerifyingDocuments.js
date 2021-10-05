@@ -47,7 +47,7 @@ const VerifyingDocuments = ({navigation, route}) => {
 
     try {
       const applicationIDCallRes = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/one',
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -113,7 +113,7 @@ const VerifyingDocuments = ({navigation, route}) => {
   //   const token = await getToken();
   //   try {
   //     const resp = await axios.get(
-  //       'http://67.207.86.39:8000/api/v1/application/documents',
+  //       'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/documents',
   //       {
   //         headers: {'Content-Type': 'application/json', Authorization: token},
   //       },

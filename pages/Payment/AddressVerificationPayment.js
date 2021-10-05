@@ -49,7 +49,8 @@ const AddressVerificationPayment = ({navigation}) => {
     const token = await getToken();
     const amount = 2500;
 
-    const url = 'http://67.207.86.39:8000/api/v1/application/payment/pay';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/pay';
 
     const data = {
       amount,
