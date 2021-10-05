@@ -48,6 +48,7 @@ export default function GetCode({navigation}) {
       } else {
         setSpinner(false);
         setValid(false);
+        console.log('The error otp: ');
       }
     }
   };
