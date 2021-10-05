@@ -311,10 +311,11 @@ export default function NewHome({navigation}) {
       body:
         'Invite your friends and family to use  Kwaba and earn from every referral ',
       img: images.giftPackage,
-      route: () =>
-        isProfileComplete
-          ? navigation.navigate('Referral')
-          : setCompleteProfileModal(true),
+      // route: () =>
+      //   isProfileComplete
+      //     ? navigation.navigate('Referral')
+      //     : setCompleteProfileModal(true),
+      route: () => navigation.navigate('Referral'),
     },
   ];
 
