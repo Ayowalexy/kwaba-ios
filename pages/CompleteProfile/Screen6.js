@@ -74,7 +74,8 @@ const Screen5 = (props) => {
   const verifyEmail = async (data) => {
     setSpinner(true);
     try {
-      const url = 'http://67.207.86.39:8000/api/v1/user/sendmaillink';
+      const url =
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user/sendmaillink';
       const token = await getToken();
       const response = await axios.post(url, JSON.stringify(data), {
         headers: {

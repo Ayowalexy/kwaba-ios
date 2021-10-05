@@ -9,9 +9,13 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, icons} from '../../../util';
+import {useDispatch, useSelector} from 'react-redux';
+import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 
 export default function ConfirmModal(props) {
   const {visible, navigation, onRequestClose} = props;
+  const dispatch = useDispatch();
+  // const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
   return (
     <Modal
@@ -66,6 +70,7 @@ export default function ConfirmModal(props) {
             onPress={() => {
               onRequestClose();
               navigation.navigate('EmergencyLoanDashBoard');
+              dispatch(getMaxLoanCap());
             }}
             style={[
               styles.btn,

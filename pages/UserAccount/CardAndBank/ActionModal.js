@@ -7,6 +7,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {setBankFromStorage} from '../../../redux/actions/bankActions';
+import {getBankAccounts} from '../../../services/network';
 
 export default function ActionModal(props) {
   const dispatch = useDispatch();
@@ -30,32 +31,63 @@ export default function ActionModal(props) {
     return token;
   };
 
+  const updateUserBankAccount = async (data) => {
+    const token = await getToken();
+
+    try {
+      const url =
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/updateuserbankaccount';
+      const response = await axios.put(url, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  };
+
+  const handleDefaultBank = async () => {
+    const accounts = await getBankAccounts();
+    if (accounts.status == 200) {
+      let userBanks = accounts?.data?.userBanks;
+      userBanks.map(async (item) => {
+        const data = {
+          id: item.id,
+          defaultbank: 0,
+        };
+
+        const res = await updateUserBankAccount(data);
+        if (res.status == 200) {
+          // const data = {
+          //   id: clickedItem.id,
+          //   defaultbank: 1,
+          // };
+          setDefaultbank(!defaultbank);
+
+          const data = {
+            id: clickedItem.id,
+            defaultbank: defaultbank ? 0 : 1,
+          };
+
+          const res = await updateUserBankAccount(data);
+          if (res.status == 200) {
+            console.log('The res: ', {...clickedItem, ...data});
+          }
+        }
+      });
+    }
+  };
+
   const handleDelete = () => {
     setShowDeleteModal(!showDeleteModal);
   };
 
-  const handleDefaultBank = async (item) => {
-    const data = {
-      id: clickedItem.id,
-      defaultbank: 1,
-    };
-
-    // console.log('The Data: ', data);
-
-    const token = await getToken();
-
-    try {
-      const url = 'http://67.207.86.39:8000/api/v1/updateuserbankaccount';
-      const res = await axios.put(url, data, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      dispatch(setBankFromStorage(clickedItem)); // dispatch bank for now
-      console.log('The res: ', res);
-      props.navigation.navigate('EmergencyLoanRequest');
-    } catch (error) {
-      console.log('Error: ', error);
-    }
-  };
+  useEffect(() => {
+    console.log('click:', clickedItem);
+  }, [clickedItem]);
 
   const setDefaultCard = async (item) => {
     if (item == 'Default Payment Card') {
@@ -68,30 +100,21 @@ export default function ActionModal(props) {
 
       console.log(data);
     } else if (item == 'Default Bank Account') {
-      setDefaultbank(!defaultbank);
+      // setDefaultbank(!defaultbank);
 
-      const data = {
-        id: clickedItem.id,
-        defaultbank: defaultbank ? 1 : 0,
-      };
+      // const data = {
+      //   id: clickedItem.id,
+      //   defaultbank: defaultbank ? 0 : 1,
+      // };
 
-      console.log(data);
+      // console.log(data);
+      handleDefaultBank();
     }
   };
 
   useEffect(() => {
     if (visible) console.log('clickedItem: ', clickedItem);
   }, [visible]);
-
-  // const setDeleteResponse = async (data) => {
-  //   if (type == 'card') {
-  //     // console.log('A card was deleted:', data);
-  //     setCards(data);
-  //   } else {
-  //     // console.log('A bank was deleted:', data);
-  //     setBanks(data);
-  //   }
-  // };
 
   const CardLayout = () => {
     return (
@@ -190,13 +213,11 @@ export default function ActionModal(props) {
         color="#465969"
         style={{position: 'absolute', right: 0, padding: 10}}
       />
-      {['Withdrawal', 'Pay Rent', 'Default Bank Account'].map((item, index) => (
+      {/* {['Withdrawal', 'Pay Rent', 'Default Bank Account'].map((item, index) => ( */}
+      {['Default Bank Account'].map((item, index) => (
         <TouchableOpacity
-          // onPress={() => setDefaultCard(item)}
           onPress={() => {
-            // setDefaultCard(item);
-            handleDefaultBank(item);
-            console.log(item);
+            setDefaultCard(item);
           }}
           key={index}
           style={{

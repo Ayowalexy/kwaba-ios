@@ -32,7 +32,7 @@ export default function OkraDebitMandate2({navigation}) {
 
     try {
       const applicationIDCallRes = await axios.get(
-        'http://67.207.86.39:8000/api/v1/application/one',
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -65,7 +65,8 @@ export default function OkraDebitMandate2({navigation}) {
 
   let okraOptions = {
     // callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
-    callback_url: 'http://67.207.86.39:8000/api/v1/webhook',
+    callback_url:
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/webhook',
     // callback_url: 'https://kwaba.com.ng/api/webhook/okra',
     clientName: 'Kwaba',
     color: COLORS.secondary,
@@ -74,10 +75,10 @@ export default function OkraDebitMandate2({navigation}) {
     env: 'production-sandbox', // for sandbox use production-sandbox
     // exp: '2020-08-06',
     exp: endDate,
-    filter: {
-      banks: [],
-      industry_type: 'all',
-    },
+    // filter: {
+    //   banks: [],
+    //   industry_type: 'all',
+    // },
     options: {saverid: 'this is it'},
     isCorporate: false,
     key: '03e94436-d4df-5b42-8624-19e21eb14c5b',
@@ -91,20 +92,21 @@ export default function OkraDebitMandate2({navigation}) {
     widget_failed: '',
     widget_success: 'Your account was successfully linked to Okra, Inc',
     debitLater: true,
-    payment: true,
-    charge: {
-      type: 'recurring',
-      amount: monthlyRepayment * 100, // amount in KOBO
-      note: '', // optional note
-      schedule: {
-        // required
-        interval: 'monthly',
-        startDate: startDate, // If blank will default to today
-        endDate: endDate, //If blank will not stop
-      },
-      currency: 'NGN', // supports 'NGN'
-      account: '5f450b2689a23801307c8b5b', // Your account ID to credit
-    },
+    debitType: 'recurring',
+    // payment: true,
+    // charge: {
+    //   type: 'recurring',
+    //   amount: monthlyRepayment * 100, // amount in KOBO
+    //   note: '', // optional note
+    //   schedule: {
+    //     // required
+    //     interval: 'monthly',
+    //     startDate: startDate, // If blank will default to today
+    //     endDate: endDate, //If blank will not stop
+    //   },
+    //   currency: 'NGN', // supports 'NGN'
+    //   account: '5f450b2689a23801307c8b5b', // Your account ID to credit
+    // },
   };
 
   const handleLinkingSucess = async (response) => {
@@ -125,7 +127,8 @@ export default function OkraDebitMandate2({navigation}) {
 
     console.log('Link Data: ', linkdata);
 
-    const linkUrl = 'http://67.207.86.39:8000/api/v1/application/link_account';
+    const linkUrl =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/link_account';
 
     try {
       const response = await axios.put(linkUrl, JSON.stringify(linkdata), {
@@ -138,7 +141,8 @@ export default function OkraDebitMandate2({navigation}) {
       // }
 
       if (response.status == 200) {
-        const url = 'http://67.207.86.39:8000/api/v1/application/direct_debit';
+        const url =
+          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/direct_debit';
 
         let data = {
           interval: 'monthly',

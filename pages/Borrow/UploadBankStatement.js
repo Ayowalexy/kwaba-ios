@@ -40,7 +40,8 @@ const UploadBankStatement = ({navigation}) => {
   const [accommodationStatus, setAccommodationStatus] = useState('');
   const [salaryAmount, setSalaryAmount] = useState('');
 
-  const api = 'http://67.207.86.39:8000/api/v1/application/bank_statement';
+  const api =
+    'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/bank_statement';
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');

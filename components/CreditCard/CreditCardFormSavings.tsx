@@ -27,8 +27,8 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
 
 RNPaystack.init({
-  // publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
-  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
+  publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
+  // publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
 interface FormModel {
@@ -87,7 +87,8 @@ const CreditCardFormSavings: React.FC = (props: any) => {
   // For Solo Savings
   const verifyPayment = async (data) => {
     const token = await getToken();
-    const url = 'http://67.207.86.39:8000/api/v1/verify_savings_payment';
+    const url =
+      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/verify_savings_payment';
     try {
       const response = await axios.post(url, data, {
         headers: {

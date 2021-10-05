@@ -122,8 +122,8 @@ export default function AmountModalFunds(props) {
       console.log('RRR: ', response);
       if (response.status == 200) {
         setSpinner(false);
-        setResData(response.data.data);
-        setID(repaymentData.loanId);
+        setResData(response?.data.data);
+        setID(repaymentData?.loanId);
         setModal(true);
       } else {
         setSpinner(false);

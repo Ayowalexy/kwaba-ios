@@ -67,6 +67,7 @@ export default function ActiveLoanModal(props) {
           account_number: d.disbursement_account_number,
           account_bank: d.disbursement_account_bank,
         });
+        console.log('D: ', d);
       } else {
         setSpinner(false);
       }
