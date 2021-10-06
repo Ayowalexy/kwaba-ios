@@ -44,7 +44,7 @@ const PostPaymentForm1 = ({navigation}) => {
     (async () => {
       try {
         const url =
-          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/bank_email';
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bank_email';
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json'},
         });

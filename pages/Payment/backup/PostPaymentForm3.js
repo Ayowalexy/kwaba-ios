@@ -96,9 +96,9 @@ const PostPaymentForm3 = ({navigation}) => {
     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
     const data = JSON.parse(postPaymentFormData);
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/update/landlord_and_property';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/update/landlord_and_property';
     const refreeUrl =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/update/referee';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/update/referee';
 
     const token = await getToken();
     console.log(dummyData);

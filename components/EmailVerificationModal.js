@@ -48,7 +48,7 @@ export default function EmailVerificationModal(props) {
     setSpinner(true);
     try {
       const url =
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user/sendmaillink';
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/sendmaillink';
       const token = await getToken();
       const response = await axios.post(url, JSON.stringify(data), {
         headers: {

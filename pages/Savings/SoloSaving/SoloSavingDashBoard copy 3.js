@@ -95,8 +95,8 @@ export default function SoloSavingDashBoard({navigation}) {
     getSavingsPlan();
   }, [getSoloSaving]);
 
-  // const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/payments';
-  // const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/savings';
+  // const url = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/payments';
+  // const url = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/savings';
 
   // useEffect(() => {
   //   getSavingsPlan();
@@ -105,7 +105,7 @@ export default function SoloSavingDashBoard({navigation}) {
   const getSavingsPlan = async () => {
     const token = await getToken();
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/savings_plan';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/savings_plan';
 
     // console.log('Token: ', token);
 

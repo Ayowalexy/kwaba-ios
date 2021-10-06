@@ -46,7 +46,7 @@ export default function OkraDebitMandate({navigation}) {
 
       try {
         const applicationIDCallRes = await axios.get(
-          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
           {
             headers: {'Content-Type': 'application/json', Authorization: token},
           },
@@ -87,7 +87,7 @@ export default function OkraDebitMandate({navigation}) {
     console.log(linkdata);
 
     const linkUrl =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/link_account';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/link_account';
 
     try {
       const response = await axios.put(linkUrl, linkdata, {
@@ -97,7 +97,7 @@ export default function OkraDebitMandate({navigation}) {
 
       if (response.status == 200) {
         const url =
-          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/direct_debit';
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/direct_debit';
 
         let data = {
           interval: 'monthly',

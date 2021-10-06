@@ -58,7 +58,7 @@ export default function AirtimeHistory(props) {
   }, {});
 
   // Edit: to add it in the array format instead
-  const groupArrays = Object.keys(groups).map((date) => {
+  const groupArrays = Object.keys(groups || {}).map((date) => {
     return {
       date,
       data: groups[date],
@@ -103,7 +103,7 @@ export default function AirtimeHistory(props) {
                 }}>
                 Transaction History
               </Text>
-              {getAirtimeBillTransReducer?.data.length < 1 ? (
+              {getAirtimeBillTransReducer?.length < 1 ? (
                 <View
                   style={{
                     flex: 1,
@@ -202,7 +202,6 @@ export default function AirtimeHistory(props) {
                             {item.data.map((item, index) => {
                               return (
                                 <TouchableOpacity
-                                  // onPress={() => handleShowDetails(item)}
                                   onPress={openPanel}
                                   key={index}
                                   style={{
@@ -275,7 +274,6 @@ export default function AirtimeHistory(props) {
                                         fontWeight: 'bold',
                                         marginRight: 5,
                                       }}>
-                                      {/* ₦ */}
                                       {item.status == 1
                                         ? `+ ${formatNumber(
                                             Number(item.billsAmount).toFixed(2),

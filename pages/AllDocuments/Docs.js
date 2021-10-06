@@ -40,7 +40,7 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/documents',
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -128,7 +128,7 @@ export default function Docs(props, {navigation}) {
     const token = await getToken();
     try {
       const response = await axios.delete(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/document/delete',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/document/delete',
         {
           headers: {
             'Content-Type': 'application/json',

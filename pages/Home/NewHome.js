@@ -29,6 +29,7 @@ import {
 import {
   getBillServices,
   getBillsCategory,
+  getAirtime,
 } from '../../redux/actions/billsAction';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -164,6 +165,7 @@ export default function NewHome({navigation}) {
     dispatch(getMaxLoanCap());
     dispatch(getTotalBuddySavings());
     dispatch(getBillServices());
+    dispatch(getAirtime());
     // dispatch(getBillsCategory('airtime'));
   }, []);
 
@@ -205,34 +207,30 @@ export default function NewHome({navigation}) {
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
-        !isProfileComplete
-          ? setCompleteProfileModal(true)
-          : instantLoan == 0
+        instantLoan == 0
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
-        !isProfileComplete
-          ? setCompleteProfileModal(true)
-          : instantLoan == 0
+        instantLoan == 0
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard');
       },
     },
-    {
-      title: 'Wallets',
-      subtitle:
-        wallet == 0
-          ? 'Fund your wallet to transact on Kwaba'
-          : 'Save and pay bills from yout wallet',
-      amount: formatNumber(wallet),
-      color: COLORS.dark,
-      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
-      actionClick: () =>
-        wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
-      cardClick: () => {
-        navigation.navigate('Wallet');
-      },
-    },
+    // {
+    //   title: 'Wallets',
+    //   subtitle:
+    //     wallet == 0
+    //       ? 'Fund your wallet to transact on Kwaba'
+    //       : 'Save and pay bills from yout wallet',
+    //   amount: formatNumber(wallet),
+    //   color: COLORS.dark,
+    //   actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+    //   actionClick: () =>
+    //     wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
+    //   cardClick: () => {
+    //     navigation.navigate('Wallet');
+    //   },
+    // },
     {
       title: 'Rent Now Pay Later',
       subtitle:
@@ -262,10 +260,7 @@ export default function NewHome({navigation}) {
       name: 'Emergency\nfunds',
       // name: 'Emergency',
       image: icons.ic3,
-      route: () =>
-        isProfileComplete
-          ? navigation.navigate('EmergencyFundOnboarding')
-          : setCompleteProfileModal(true),
+      route: () => navigation.navigate('EmergencyFundOnboarding'),
     },
     {
       name: 'Buy Airtime',

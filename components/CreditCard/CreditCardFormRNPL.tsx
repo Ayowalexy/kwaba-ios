@@ -92,7 +92,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
   const verifyPayment = async (data: any) => {
     const token = await getToken();
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/rentrepayment/verify';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/rentrepayment/verify';
 
     try {
       const response = await axios.post(url, data, {
@@ -115,7 +115,7 @@ const CreditCardFormRNPL: React.FC = (props: any) => {
     const token = await getToken();
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },

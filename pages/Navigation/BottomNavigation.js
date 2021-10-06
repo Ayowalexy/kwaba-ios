@@ -36,11 +36,11 @@ const tabItems = [
   //   icon: 'piggy-bank',
   //   screen: SavingsHome,
   // },
-  {
-    title: 'Wallet',
-    icon: 'wallet-outline',
-    screen: Wallet,
-  },
+  // {
+  //   title: 'Wallet',
+  //   icon: 'wallet-outline',
+  //   screen: Wallet,
+  // },
   {
     title: 'Rent',
     icon: 'home-outline',

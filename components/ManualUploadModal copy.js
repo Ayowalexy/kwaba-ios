@@ -31,7 +31,7 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/documents',
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -47,7 +47,7 @@ const deleteFile = async (item) => {
 
   try {
     const response = await axios.get(
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/document/delete',
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/document/delete',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
         data: {
@@ -117,7 +117,7 @@ export default function ManualUploadModal(props) {
 
         const token = await getToken();
         const applicationIDCallRes = await axios.get(
-          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
           {
             headers: {'Content-Type': 'application/json', Authorization: token},
           },
@@ -163,7 +163,7 @@ export default function ManualUploadModal(props) {
             },
           };
           const response = await axios.post(
-            'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/documents/upload',
+            'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents/upload',
             data,
             config,
           );

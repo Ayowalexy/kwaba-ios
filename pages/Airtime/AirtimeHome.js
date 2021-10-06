@@ -22,20 +22,20 @@ const AirtimeHome = ({navigation}) => {
     (state) => state.getBillCategoryReducer,
   );
 
+  const getAirtime = useSelector((state) => state.getAirtimeReducer);
+
   const [airtimeData, setAirtimeData] = useState([]);
   const [showAirtimeHistoryModal, setShowAirtimeHistoryModal] = useState(false);
 
   const handleClick = (value) => {
     navigation.navigate('PurchaseAirtime', {
       name: value.name,
-      data: airtimeData,
+      data: getAirtime?.data?.content,
     });
   };
 
   useEffect(() => {
-    dispatch(getBillsCategory('airtime'));
     dispatch(getAirtimeBillTrans());
-    setAirtimeData(getBillsCategoryLists?.data?.content);
   }, []);
 
   return (
@@ -72,7 +72,7 @@ const AirtimeHome = ({navigation}) => {
           marginTop: 20,
           paddingHorizontal: 20,
         }}>
-        {getBillsCategoryLists?.data?.content?.map((value, index) => {
+        {getAirtime?.data?.content?.map((value, index) => {
           return (
             <TouchableOpacity
               style={{

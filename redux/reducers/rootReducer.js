@@ -17,6 +17,7 @@ import {
   getBillServicesReducer,
   getBillCategoryReducer,
   getAirtimeBillTransReducer,
+  getAirtimeReducer,
 } from './billReducer';
 
 export const rootReducer = combineReducers({
@@ -37,4 +38,5 @@ export const rootReducer = combineReducers({
   getBillServicesReducer: getBillServicesReducer,
   getBillCategoryReducer: getBillCategoryReducer,
   getAirtimeBillTransReducer: getAirtimeBillTransReducer,
+  getAirtimeReducer: getAirtimeReducer,
 });

@@ -94,7 +94,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -106,7 +106,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
         Number(applicationIDCallRes.data.data.approvedrepayment),
       );
 
-      // const response = await axios.post('https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/pay', {amount}, {
+      // const response = await axios.post('https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/payment/pay', {amount}, {
       //   headers: {'Content-Type': 'application/json', Authorization: token},
       // });
 
@@ -117,7 +117,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
       setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
 
       const res = await axios.post(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/dashboard',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/dashboard',
         {loanId},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
@@ -146,7 +146,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
   const payment = async (data) => {
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/rentrepayment/pay';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/rentrepayment/pay';
     const token = await getToken();
     try {
       const response = await axios.post(url, data, {
@@ -160,7 +160,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
   const verifyPayment = async (data) => {
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/rentrepayment/verify';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/rentrepayment/verify';
     const token = await getToken();
     try {
       const response = await axios.post(url, data, {
