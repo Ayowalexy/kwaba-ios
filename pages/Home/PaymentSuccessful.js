@@ -44,7 +44,12 @@ export default function PaymentSuccessful(props) {
     return () => backHandler.remove();
   }, []);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    dispatch(getTotalSoloSavings());
+    dispatch(getMaxLoanCap());
+    dispatch(getOneSoloSavings(props?.route?.params?.id));
+    dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
+  }, []);
 
   const handlePress = () => {
     dispatch(getTotalSoloSavings());
