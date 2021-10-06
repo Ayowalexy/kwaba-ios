@@ -41,7 +41,7 @@ const UploadBankStatement = ({navigation}) => {
   const [salaryAmount, setSalaryAmount] = useState('');
 
   const api =
-    'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/bank_statement';
+    'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/bank_statement';
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');

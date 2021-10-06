@@ -67,7 +67,7 @@ export default function PTMFB(props) {
 
     try {
       const application = await axios.get(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },

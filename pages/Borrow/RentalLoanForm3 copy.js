@@ -111,7 +111,7 @@ const RentalLoanForm3 = ({navigation}) => {
     // }
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/new';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new';
     const token = await getToken();
     console.log(dummyData);
     console.log(token);

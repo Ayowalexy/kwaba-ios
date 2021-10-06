@@ -60,7 +60,7 @@ export default function EligibilitySalaryEarner({navigation}) {
     // } else if (steps.offer_letter == '') {
     //   // navigation.navigate('OfferLetter');
     //   const applicationIDCallRes = await axios.get(
-    //     'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+    //     'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
     //     {
     //       headers: {'Content-Type': 'application/json', Authorization: token},
     //     },
@@ -103,7 +103,7 @@ export default function EligibilitySalaryEarner({navigation}) {
 
     // try {
     //   const applicationIDCallRes = await axios.get(
-    //     'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+    //     'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
     //     {
     //       headers: {'Content-Type': 'application/json', Authorization: token},
     //     },

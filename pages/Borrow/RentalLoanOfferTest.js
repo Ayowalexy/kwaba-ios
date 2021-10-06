@@ -47,7 +47,7 @@ const RentalLoanOfferTest = ({navigation}) => {
     const setLoanOffer = async () => {
       const token = await getToken();
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -90,7 +90,7 @@ const RentalLoanOfferTest = ({navigation}) => {
 
     const token = await getToken();
     const applicationIDCallRes = await axios.get(
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -102,7 +102,7 @@ const RentalLoanOfferTest = ({navigation}) => {
 
     try {
       const response = await axios.put(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/accept_offer',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/accept_offer',
         {applicationId, signature},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},

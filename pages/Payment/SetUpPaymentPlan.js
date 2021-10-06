@@ -36,7 +36,7 @@ const SetUpPaymentPlan = ({navigation}) => {
     };
     const token = await getToken();
     const applicationIDCallRes = await axios.get(
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -46,7 +46,7 @@ const SetUpPaymentPlan = ({navigation}) => {
     setSpinner(true);
     try {
       const response = await axios.post(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/pay',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/payment/pay',
         {amount},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
@@ -69,7 +69,7 @@ const SetUpPaymentPlan = ({navigation}) => {
 
           setVerificationSpinner(true);
           const verify = await axios.put(
-            'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/verify',
+            'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/payment/verify',
             JSON.stringify(data),
             {
               headers: {

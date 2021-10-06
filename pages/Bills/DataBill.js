@@ -71,7 +71,7 @@ const DataBill = ({navigation, route}) => {
       console.log('Service ID: ', serviceID);
       try {
         const token = await getToken();
-        const url = `https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
+        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
@@ -147,7 +147,7 @@ const DataBill = ({navigation, route}) => {
 
   //   setSpinner(true);
   //   const token = await getToken();
-  //   const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/buy_other_bills';
+  //   const url = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/buy_other_bills';
   //   try {
   //     const response = await axios.post(url, data, {
   //       headers: {'Content-Type': 'application/json', Authorization: token},

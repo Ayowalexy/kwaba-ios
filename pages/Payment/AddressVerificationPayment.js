@@ -50,7 +50,7 @@ const AddressVerificationPayment = ({navigation}) => {
     const amount = 2500;
 
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/payment/pay';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/payment/pay';
 
     const data = {
       amount,

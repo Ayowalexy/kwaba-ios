@@ -36,7 +36,7 @@ export default function ActionModal(props) {
 
     try {
       const url =
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/updateuserbankaccount';
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/updateuserbankaccount';
       const response = await axios.put(url, data, {
         headers: {
           'Content-Type': 'application/json',

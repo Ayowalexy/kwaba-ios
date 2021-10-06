@@ -58,6 +58,30 @@ export const getBillsCategory = (serviceID) => {
   };
 };
 
+// SET AIRTIME
+export const setAirtime = (data) => {
+  return {
+    type: types.GET_AIRTIME,
+    payload: data,
+  };
+};
+
+// Get AIRTIME
+export const getAirtime = () => {
+  return async (dispatch) => {
+    const token = await getToken();
+    const url = apiUrl + `/api/v1/get_bills_category/airtime`;
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'applictaion/json', Authorization: token},
+      });
+      dispatch(setAirtime(response.data.data));
+    } catch (error) {
+      return error;
+    }
+  };
+};
+
 // SET AIRTiME BILLS TRANSACTION
 export const setAirtimeBillTrans = (data) => {
   return {

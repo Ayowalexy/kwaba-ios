@@ -174,7 +174,7 @@ const AccountPage = ({navigation}) => {
 
     try {
       const url =
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user/change_password';
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/change_password';
 
       const response = await axios.put(url, JSON.stringify(userPasswordData), {
         headers: {'Content-Type': 'application/json', Authorization: token},

@@ -44,7 +44,7 @@ export const uploadFile = (token, item, data) => {
 
     try {
       const response = await axios.post(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/documents/upload',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents/upload',
         data,
         config,
       );

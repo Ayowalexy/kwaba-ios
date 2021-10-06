@@ -39,7 +39,7 @@ const AcceptanceLetterKwaba = ({navigation}) => {
   const setLoanOffer = async () => {
     const token = await getToken();
     const applicationIDCallRes = await axios.get(
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -58,7 +58,7 @@ const AcceptanceLetterKwaba = ({navigation}) => {
 
       try {
         const applicationIDCallRes = await axios.get(
-          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
           {
             headers: {'Content-Type': 'application/json', Authorization: token},
           },
@@ -77,7 +77,7 @@ const AcceptanceLetterKwaba = ({navigation}) => {
         setworkplace(applicationIDCallRes.data.data.employer_name);
 
         const res = await axios.post(
-          'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/dashboard',
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/dashboard',
           {loanId},
           {
             headers: {'Content-Type': 'application/json', Authorization: token},

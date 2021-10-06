@@ -93,7 +93,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
   const chargeCard = async () => {
     console.log('Loading...');
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user_create_savings';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user_create_savings';
     let data = {
       savings_amount: 50000,
       target_amount: 200000,
@@ -244,7 +244,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   const getAllLoans = async () => {
     const token = await getToken();
-    const apiUrl = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app';
+    const apiUrl = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app';
     const url = apiUrl + '/api/v1/emergency_loan/all';
     try {
       const response = await axios.get(url, {

@@ -24,6 +24,18 @@ export const getBillCategoryReducer = (state = [], action) => {
   }
 };
 
+export const getAirtimeReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_AIRTIME:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
+
 export const getAirtimeBillTransReducer = (state = [], action) => {
   switch (action.type) {
     case types.GET_AIRTIME_BILL_TRANS:

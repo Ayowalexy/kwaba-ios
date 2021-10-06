@@ -29,7 +29,7 @@ const Borrow = ({navigation}) => {
     // console.log('steps here' + steps);
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/application/one',
+        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -122,6 +122,7 @@ const Borrow = ({navigation}) => {
       // navigation.navigate('RentalFormBusiness1');
       // navigation.navigate('BusinessForm1');
       // navigation.navigate('BusinessDocumentUpload');
+      // navigation.navigate('OkraDebitMandate');
     }
   };
 

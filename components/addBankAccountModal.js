@@ -96,7 +96,7 @@ export default function AddBankAccountModal(props) {
   // useEffect(() => {
   //   (async () => {
   //     try {
-  //       const url = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/bank_email';
+  //       const url = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bank_email';
   //       const response = await axios.get(url, {
   //         headers: {'Content-Type': 'application/json'},
   //       });
@@ -136,7 +136,7 @@ export default function AddBankAccountModal(props) {
   const verifyBankAccount = async (account_number, bank_code) => {
     // console.log({account_number, bank_code});
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/user/bank_details';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/bank_details';
     try {
       const token = await getToken();
       const response = await axios.post(
@@ -187,7 +187,7 @@ export default function AddBankAccountModal(props) {
     console.log('Create Bank: ', d);
 
     const url =
-      'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/createbankaccount';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/createbankaccount';
     const token = await getToken();
     try {
       const response = await axios.post(url, JSON.stringify(d), {

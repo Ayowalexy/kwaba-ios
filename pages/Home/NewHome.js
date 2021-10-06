@@ -29,6 +29,7 @@ import {
 import {
   getBillServices,
   getBillsCategory,
+  getAirtime,
 } from '../../redux/actions/billsAction';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -164,6 +165,7 @@ export default function NewHome({navigation}) {
     dispatch(getMaxLoanCap());
     dispatch(getTotalBuddySavings());
     dispatch(getBillServices());
+    dispatch(getAirtime());
     // dispatch(getBillsCategory('airtime'));
   }, []);
 

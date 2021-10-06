@@ -56,7 +56,7 @@ const CableTvBill = ({navigation, route}) => {
 
       try {
         const token = await getToken();
-        const url = `https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
+        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
