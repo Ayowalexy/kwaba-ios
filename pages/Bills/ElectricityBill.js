@@ -18,6 +18,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const ElectricityBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -28,27 +29,41 @@ const ElectricityBill = ({navigation, route}) => {
   const [packageModal, setPackageModal] = useState(false);
   const [packageData, setPackageData] = useState([]);
   const [packageName, setPackageName] = useState('');
+  const [spinner, setSpinner] = useState(false);
   const [amount, setAmount] = useState(0);
-  const getBillsCategoryLists = useSelector(
-    (state) => state.getBillCategoryReducer,
-  );
+  const [customerID, setCustomerID] = useState('');
+  const [variationCode, setVariationCode] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   const [showCardModal, setShowCardModal] = useState(false);
   const [resData, setResData] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const [channel, setChannel] = useState('');
+
+  const getBillsCategoryLists = useSelector(
+    (state) => state.getBillCategoryReducer,
+  );
 
   useEffect(() => {
     getBillsItems();
   }, [serviceID]);
 
   useEffect(() => {
-    // console.log('The Package Data: ', packageData);
-    let selectedPackage = packageData?.filter(
-      (item) => item.name == packageName,
-    )[0];
-    setAmount(selectedPackage?.variation_amount);
-    // console.log('The Amount: ', amount);
+    if (packageName != '') {
+      let selectedPackage = packageData?.filter(
+        (item) => item.name == packageName,
+      )[0];
+      // setAmount(selectedPackage?.variation_amount);
+      setVariationCode(selectedPackage?.variation_code);
+    }
   }, [packageData]);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -65,10 +80,9 @@ const ElectricityBill = ({navigation, route}) => {
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
-        // console.log('Response Variations: ', response?.data?.data);
         // test mode response?.data?.data?.content?.varations
         // live mode response?.data?.data?.content?.variations
-        setPackageData(response?.data?.data?.content?.varations);
+        setPackageData(response?.data?.data?.content?.variations);
       } catch (error) {
         console.log('Error:', error);
       }
@@ -76,9 +90,11 @@ const ElectricityBill = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    // console.log('Name: ', name);
-    // console.log('Hello world: ', getBillsCategoryLists?.data?.content);
     dispatch(getBillsCategory('electricity-bill'));
+    (async () => {
+      const user = await getUser();
+      setPhoneNumber(user.telephone);
+    })();
   }, []);
 
   const openPanel = () => {
@@ -91,7 +107,14 @@ const ElectricityBill = ({navigation, route}) => {
   };
 
   const handleRoute = async () => {
-    console.log('Hello');
+    // const data = {
+    //   serviceID: serviceID,
+    //   billersCode: customerID,
+    //   variation_code: variationCode,
+    //   amount: amount,
+    //   recepient: phoneNumber,
+    // };
+    setShowPaymentModal(true);
   };
 
   const handlePaymentRoute = async (value) => {
@@ -101,7 +124,7 @@ const ElectricityBill = ({navigation, route}) => {
       billersCode: customerID,
       variation_code: variationCode,
       amount: amount,
-      recepient: customerID,
+      recepient: phoneNumber,
     };
 
     if (value == 'paystack') {
@@ -204,6 +227,10 @@ const ElectricityBill = ({navigation, route}) => {
               placeholder="Customer ID"
               placeholderTextColor="#BFBFBF"
               keyboardType="default"
+              value={customerID}
+              onChangeText={(text) => {
+                setCustomerID(text);
+              }}
             />
           </View>
 
@@ -219,16 +246,42 @@ const ElectricityBill = ({navigation, route}) => {
               placeholder="Amount"
               placeholderTextColor="#BFBFBF"
               keyboardType="number-pad"
-              //   editable={false}
+              value={amount}
+              onChangeText={(text) => {
+                setAmount(text);
+              }}
+            />
+          </View>
+
+          <View style={[styles.customInput, {padding: 0, display: 'none'}]}>
+            <TextInput
+              style={{
+                width: '100%',
+                paddingLeft: 20,
+                paddingVertical: 16,
+                color: COLORS.dark,
+              }}
+              placeholder="Phone Number"
+              placeholderTextColor="#BFBFBF"
+              keyboardType="phone-pad"
+              value={phoneNumber}
+              onChangeText={(text) => {
+                setPhoneNumber(text);
+              }}
             />
           </View>
 
           <TouchableOpacity
             onPress={handleRoute}
+            disabled={customerID.length < 1 || amount < 1 || phoneNumber < 11}
             style={[
               styles.btn,
               {
                 backgroundColor: '#00DC99',
+                backgroundColor:
+                  customerID.length < 1 || amount < 1 || phoneNumber < 11
+                    ? '#00DC9950'
+                    : '#00DC99',
                 width: '100%',
                 borderRadius: 10,
                 zIndex: 0,
