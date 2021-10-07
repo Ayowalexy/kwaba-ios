@@ -16,6 +16,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getBillsCategory} from '../../redux/actions/billsAction';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
+import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {BuyPurchaseAirtime} from '../../services/network';
 
 const CableTvBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -26,7 +30,18 @@ const CableTvBill = ({navigation, route}) => {
   const [packageModal, setPackageModal] = useState(false);
   const [packageData, setPackageData] = useState([]);
   const [packageName, setPackageName] = useState('');
+  const [spinner, setSpinner] = useState(false);
   const [amount, setAmount] = useState(0);
+  const [customerID, setCustomerID] = useState('');
+  const [variationCode, setVariationCode] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
+  const [showCardModal, setShowCardModal] = useState(false);
+  const [resData, setResData] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const [channel, setChannel] = useState('');
+
   const getBillsCategoryLists = useSelector(
     (state) => state.getBillCategoryReducer,
   );
@@ -36,13 +51,20 @@ const CableTvBill = ({navigation, route}) => {
   }, [providerName]);
 
   useEffect(() => {
-    // console.log('The Package Data: ', packageData);
-    let selectedPackage = packageData?.filter(
-      (item) => item.name == packageName,
-    )[0];
-    setAmount(selectedPackage?.variation_amount);
-    // console.log('The Amount: ', amount);
+    if (packageName != '') {
+      let selectedPackage = packageData?.filter(
+        (item) => item.name == packageName,
+      )[0];
+      setAmount(selectedPackage?.variation_amount);
+      setVariationCode(selectedPackage?.variation_code);
+    }
   }, [packageName]);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -60,10 +82,6 @@ const CableTvBill = ({navigation, route}) => {
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
-        // console.log(
-        //   'Response Variations: ',
-        //   response?.data?.data?.content?.variations,
-        // );
         setPackageData(response?.data?.data?.content?.varations);
       } catch (error) {
         console.log('The Error:', error);
@@ -72,9 +90,11 @@ const CableTvBill = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    // console.log('Name: ', name);
-    // console.log('Hello world: ', getBillsCategoryLists?.data?.content);
     dispatch(getBillsCategory('tv-subscription'));
+    (async () => {
+      const user = await getUser();
+      setPhoneNumber(user.telephone);
+    })();
   }, []);
 
   const openPanel = () => {
@@ -87,16 +107,45 @@ const CableTvBill = ({navigation, route}) => {
   };
 
   const handleRoute = async () => {
-    console.log('Hello');
-    const data = {
-      serviceID: 'gotv-jinja',
-      billersCode: '08011111111',
-      variation_code: 'airt-50',
-      amount: 49.99,
-      recepient: '08011111111',
-    };
+    // const data = {
+    //   serviceID: 'gotv-jinja',
+    //   billersCode: '08011111111',
+    //   variation_code: 'airt-50',
+    //   amount: 49.99,
+    //   recepient: '08011111111',
+    // };
+    setShowPaymentModal(true);
+  };
 
-    await buyOtherBills(data); //init
+  const handlePaymentRoute = async (value) => {
+    setSpinner(true);
+    const data = {
+      serviceID: serviceID,
+      billersCode: customerID,
+      variation_code: variationCode,
+      amount: amount,
+      recepient: phoneNumber,
+    };
+    // console.log('Hello', data);
+
+    if (value == 'paystack') {
+      const response = await BuyPurchaseAirtime(data);
+
+      console.log('The buy response: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+
+        setShowCardModal(true); // show card modal
+        setResData(response?.data?.data);
+        setChannel(value); //paystack
+      } else {
+        setSpinner(false);
+      }
+    } else if (value == 'bank') {
+      console.log(value);
+    } else {
+      console.log(value); // wallet
+    }
   };
   return (
     <>
@@ -172,6 +221,10 @@ const CableTvBill = ({navigation, route}) => {
               placeholder="Customer ID"
               placeholderTextColor="#BFBFBF"
               keyboardType="phone-pad"
+              value={customerID}
+              onChangeText={(text) => {
+                setCustomerID(text);
+              }}
             />
           </View>
 
@@ -192,12 +245,35 @@ const CableTvBill = ({navigation, route}) => {
             />
           </View>
 
+          <View style={[styles.customInput, {padding: 0, display: 'none'}]}>
+            <TextInput
+              style={{
+                width: '100%',
+                paddingLeft: 20,
+                paddingVertical: 16,
+                color: COLORS.dark,
+              }}
+              placeholder="Phone Number"
+              placeholderTextColor="#BFBFBF"
+              keyboardType="phone-pad"
+              value={phoneNumber}
+              onChangeText={(text) => {
+                setPhoneNumber(text);
+              }}
+            />
+          </View>
+
           <TouchableOpacity
             onPress={handleRoute}
+            disabled={customerID.length < 1 || amount == '' || phoneNumber < 11}
             style={[
               styles.btn,
               {
                 backgroundColor: '#00DC99',
+                backgroundColor:
+                  customerID.length < 1 || amount == '' || phoneNumber < 11
+                    ? '#00DC9950'
+                    : '#00DC99',
                 width: '100%',
                 borderRadius: 10,
                 zIndex: 0,
@@ -321,6 +397,29 @@ const CableTvBill = ({navigation, route}) => {
           );
         })}
       </SwipeablePanel>
+
+      <Spinner visible={spinner} size="large" />
+
+      {showCardModal && (
+        <CreditCardModalBills
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          info={resData}
+          navigation={navigation}
+          redirectTo="BillsHome"
+          channel={channel}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(value) => {
+            handlePaymentRoute(value); // paystack, bank, wallet
+          }}
+        />
+      )}
     </>
   );
 };
