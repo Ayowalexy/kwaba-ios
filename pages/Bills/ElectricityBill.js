@@ -16,6 +16,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getBillsCategory} from '../../redux/actions/billsAction';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
+import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 
 const ElectricityBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -30,6 +32,10 @@ const ElectricityBill = ({navigation, route}) => {
   const getBillsCategoryLists = useSelector(
     (state) => state.getBillCategoryReducer,
   );
+
+  const [showCardModal, setShowCardModal] = useState(false);
+  const [resData, setResData] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   useEffect(() => {
     getBillsItems();
@@ -86,6 +92,36 @@ const ElectricityBill = ({navigation, route}) => {
 
   const handleRoute = async () => {
     console.log('Hello');
+  };
+
+  const handlePaymentRoute = async (value) => {
+    setSpinner(true);
+    const data = {
+      serviceID: serviceID,
+      billersCode: customerID,
+      variation_code: variationCode,
+      amount: amount,
+      recepient: customerID,
+    };
+
+    if (value == 'paystack') {
+      const response = await BuyPurchaseAirtime(data);
+
+      console.log('The buy response: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+
+        setShowCardModal(true); // show card modal
+        setResData(response?.data?.data);
+        setChannel(value); //paystack
+      } else {
+        setSpinner(false);
+      }
+    } else if (value == 'bank') {
+      console.log(value);
+    } else {
+      console.log(value); // wallet
+    }
   };
 
   return (
@@ -319,6 +355,29 @@ const ElectricityBill = ({navigation, route}) => {
           );
         })}
       </SwipeablePanel>
+
+      <Spinner visible={spinner} size="large" />
+
+      {showCardModal && (
+        <CreditCardModalBills
+          onRequestClose={() => setShowCardModal(!showCardModal)}
+          visible={showCardModal}
+          info={resData}
+          navigation={navigation}
+          redirectTo="BillsHome"
+          channel={channel}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(value) => {
+            handlePaymentRoute(value); // paystack, bank, wallet
+          }}
+        />
+      )}
     </>
   );
 };
