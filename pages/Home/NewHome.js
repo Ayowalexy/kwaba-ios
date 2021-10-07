@@ -203,7 +203,7 @@ export default function NewHome({navigation}) {
       title: 'Emergency Fund',
       subtitle:
         instantLoan == 0 ? 'Access instant loans' : 'Total amount to repay',
-      amount: formatNumber(Number(instantLoan).toFixed(2)),
+      amount: formatNumber(instantLoan),
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
