@@ -40,26 +40,45 @@ const PostPaymentForm1 = ({navigation}) => {
     return user;
   };
 
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const url =
+  //         'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bank_email';
+  //       const response = await axios.get(url, {
+  //         headers: {'Content-Type': 'application/json'},
+  //       });
+  //       const data = response.data;
+
+  //       const userData = await AsyncStorage.getItem('userData');
+
+  //       if (response.status == 200) {
+  //         setBankData(data.banks);
+  //         console.log(data.banks);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   })();
+  // }, []);
+
+  // fetch banks via paystak
+  const paystackBanks = async () => {
+    try {
+      const banks = await axios.get('https://api.paystack.co/bank', {
+        headers: {'Content-Type': 'application/json'},
+      });
+      setBankData(banks?.data?.data);
+      console.log('Paystack banks: ', banks);
+      // return banks;
+    } catch (error) {
+      console.log('The Big Bang Error: ', error);
+      // return error;
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const url =
-          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bank_email';
-        const response = await axios.get(url, {
-          headers: {'Content-Type': 'application/json'},
-        });
-        const data = response.data;
-
-        const userData = await AsyncStorage.getItem('userData');
-
-        if (response.status == 200) {
-          setBankData(data.banks);
-          console.log(data.banks);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
+    paystackBanks();
   }, []);
 
   const handleSubmit = async (values) => {

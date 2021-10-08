@@ -25,7 +25,6 @@ import {fetchBanks} from '../../services/network';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import OkraView from 'react-native-okra';
-import moment from 'moment';
 
 let height = Dimensions.get('window').height;
 
@@ -35,18 +34,6 @@ export default function OkraDebitMandate({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
   const [existingApplication, setExistingApplication] = useState('');
   const [monthlyRepayment, setmonthlyRepayment] = useState();
-
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState();
-
-  const [dataLoaded, setDataLoaded] = useState(false);
-
-  const [banks, setBanks] = useState([]);
-
-  const [accountDeatils, setAccountDetails] = useState({
-    bankName: '',
-    bankAccountNumber: '',
-  });
 
   useEffect(() => {
     const getApplicationData = async () => {
@@ -64,35 +51,15 @@ export default function OkraDebitMandate({navigation}) {
             headers: {'Content-Type': 'application/json', Authorization: token},
           },
         );
-        // console.log(applicationIDCallRes.data.data.id);
+        console.log(applicationIDCallRes.data.data.id);
 
         const applicationId = applicationIDCallRes.data.data.id;
 
         setExistingApplication(applicationId);
-        // console.log('here', applicationIDCallRes.data.data.monthly_repayment);
+        console.log('here', applicationIDCallRes.data.data.monthly_repayment);
         setmonthlyRepayment(
           Number(applicationIDCallRes.data.data.monthly_repayment),
         );
-
-        const approved_repayment_plan =
-          applicationIDCallRes.data.data.approved_repayment_plan;
-        const repayment_start_date =
-          applicationIDCallRes.data.data.remita_repayment_date;
-        const repayment_end_date = moment(repayment_start_date)
-          .add(Number(approved_repayment_plan) - 1, 'months')
-          .format('YYYY-MM-DD');
-        // console.log('Repayment start: ', repayment_start_date);
-        // console.log('Repayment end: ', repayment_end_date);
-
-        setStartDate(repayment_start_date);
-        setEndDate(repayment_end_date);
-
-        setDataLoaded(true);
-
-        setAccountDetails({
-          bankName: applicationIDCallRes.data.data.bank_name,
-          bankAccountNumber: applicationIDCallRes.data.data.account_no,
-        });
       } catch (error) {
         console.log(error.response.data);
       }
@@ -100,47 +67,6 @@ export default function OkraDebitMandate({navigation}) {
 
     getApplicationData();
   }, []);
-
-  // fetch banks via paystak
-  const paystackBanks = async () => {
-    try {
-      const banks = await axios.get('https://api.paystack.co/bank', {
-        headers: {'Content-Type': 'application/json'},
-      });
-      // setBankData(banks?.data?.data);
-      console.log('Paystack banks: ', banks?.data?.data);
-      setBanks(banks?.data?.data);
-      // return banks;
-    } catch (error) {
-      console.log('The Big Bang Error: ', error);
-      // return error;
-    }
-  };
-
-  useEffect(() => {
-    paystackBanks();
-  }, []);
-
-  // Generate unique reference Id of the direct debit mandate. This is integrator's external reference
-  const transactionRef = 'KWABA_REM-' + Math.random().toString().split('.')[1];
-
-  let remitaOptions = {
-    transactionRef: transactionRef,
-    description: 'Rent Now Pay Later',
-    sourceAccount: accountDeatils.bankAccountNumber,
-    sourceAccountName: '',
-    sourceAccountBankCode: '',
-    maximumAmount: '',
-    maximumTransactions: '',
-    startDate: startDate,
-    endDate: endDate,
-    billPaymentProductId: '',
-    statusWebHook: '',
-  };
-
-  useEffect(() => {
-    console.log('Remita: ', remitaOptions);
-  }, [dataLoaded]);
 
   const handleLinkingSucess = async (response) => {
     const getToken = async () => {
@@ -199,6 +125,28 @@ export default function OkraDebitMandate({navigation}) {
     } catch (error) {
       Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
     }
+  };
+
+  const StartOkra = () => {
+    return (
+      <>
+        <OkraView
+          okraOptions={okraOptions}
+          onClose={(response) => {
+            console.log('on close');
+            //navigation.navigate('PostPaymentForm4')
+            navigation.navigate('OkraDebitmandate');
+          }}
+          onSuccess={(response) => {
+            console.log('on success we go ' + JSON.stringify(response));
+            handleLinkingSucess(response);
+          }}
+          onError={(response) => {
+            console.log('on error');
+          }}
+        />
+      </>
+    );
   };
 
   return (
