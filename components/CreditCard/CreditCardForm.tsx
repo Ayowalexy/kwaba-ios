@@ -139,10 +139,10 @@ const CreditCardForm: React.FC = (props: any) => {
     const user = await userData();
     try {
       const pay = await RNPaystack.chargeCard({
-        cardNumber: '4123450131001381',
-        expiryMonth: '10',
-        expiryYear: '22',
-        cvc: '883',
+        cardNumber: model.cardNumber,
+        expiryMonth: model.expiration.slice(0, 2),
+        expiryYear: model.expiration.slice(-2),
+        cvc: model.cvv,
         email: user.email,
         //@ts-ignore
         amountInKobo: responseInfo?.amount * 100, //@ts-ignore
@@ -154,7 +154,8 @@ const CreditCardForm: React.FC = (props: any) => {
         applicationId: appID,
       };
 
-      // console.log('The Pay: ', data);
+      // console.log('The Pay: ', pay);
+      // console.log('The Verify Data: ', data);
       // setSpinner(false);
 
       const verify = await verifyPayment(data);

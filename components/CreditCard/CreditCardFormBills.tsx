@@ -117,10 +117,9 @@ const CreditCardFormBills: React.FC = (props: any) => {
     //   cvc: model.cvv,
     // };
     // console.log('The Card: ', card);
+    setSpinner(true);
     const user = await userData();
     try {
-      setSpinner(true);
-
       const pay = await RNPaystack.chargeCard({
         cardNumber: model.cardNumber,
         expiryMonth: model.expiration.slice(0, 2),
@@ -138,6 +137,7 @@ const CreditCardFormBills: React.FC = (props: any) => {
       };
 
       console.log('Verify Payment Data: ', data);
+      setSpinner(false);
 
       const verify = await verifyPayment(data);
 

@@ -5,7 +5,6 @@ import OkraView from 'react-native-okra';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLORS, FONTS, images} from '../../util/index';
 import axios from 'axios';
-import Spinner from 'react-native-loading-spinner-overlay';
 const moment = require('moment');
 
 export default function OkraDebitMandate2({navigation}) {
@@ -14,12 +13,9 @@ export default function OkraDebitMandate2({navigation}) {
   const [monthlyRepayment, setmonthlyRepayment] = useState();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
-  const [spinner, setSpinner] = useState(false);
+  // const [okraOptions, setOkraOptions] = useState({});
 
-  const [accountDeatils, setAccountDetails] = useState({
-    bankName: '',
-    bankAccountNumber: '',
-  });
+  //const okraOptions;
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -62,23 +58,27 @@ export default function OkraDebitMandate2({navigation}) {
 
       console.log('repayment_start_date', repayment_start_date);
       console.log('repayment_end_date', repayment_end_date);
-
-      // account details;
-      console.log('Account Details: ', applicationIDCallRes.data.data);
     } catch (error) {
       console.log(error.response.data);
     }
   };
 
   let okraOptions = {
+    // callback_url: 'https://webhook.site/ded54b3f-f4f5-4fa1-86c3-0def6098fb4d',
     callback_url:
       'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/webhook',
+    // callback_url: 'https://kwaba.com.ng/api/webhook/okra',
     clientName: 'Kwaba',
     color: COLORS.secondary,
     connectMessage: 'Which account do you want to connect with?',
     currency: 'NGN',
     env: 'production-sandbox', // for sandbox use production-sandbox
+    // exp: '2020-08-06',
     exp: endDate,
+    // filter: {
+    //   banks: [],
+    //   industry_type: 'all',
+    // },
     options: {saverid: 'this is it'},
     isCorporate: false,
     key: '03e94436-d4df-5b42-8624-19e21eb14c5b',
@@ -93,24 +93,84 @@ export default function OkraDebitMandate2({navigation}) {
     widget_success: 'Your account was successfully linked to Okra, Inc',
     debitLater: true,
     debitType: 'recurring',
+    // payment: true,
+    // charge: {
+    //   type: 'recurring',
+    //   amount: monthlyRepayment * 100, // amount in KOBO
+    //   note: '', // optional note
+    //   schedule: {
+    //     // required
+    //     interval: 'monthly',
+    //     startDate: startDate, // If blank will default to today
+    //     endDate: endDate, //If blank will not stop
+    //   },
+    //   currency: 'NGN', // supports 'NGN'
+    //   account: '5f450b2689a23801307c8b5b', // Your account ID to credit
+    // },
   };
 
-  // // Generate unique reference Id of the direct debit mandate. This is integrator's external reference
-  // const transactionRef = 'KWABA_REM' + Math.random().toString().split('.')[1];
+  const handleLinkingSucess = async (response) => {
+    const getToken = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const token = JSON.parse(userData).token;
+      return token;
+    };
+    const token = await getToken();
+    console.log(token);
 
-  // let remitaOption = {
-  //   transactionRef: transactionRef,
-  //   description: '',
-  //   sourceAccount: '',
-  //   sourceAccountName: '',
-  //   sourceAccountBankCode: '',
-  //   maximumAmount: '',
-  //   maximumTransactions: '',
-  //   startDate: startDate,
-  //   endDate: endDate,
-  //   billPaymentProductId: '',
-  //   statusWebHook: '',
-  // };
+    let linkdata = {
+      bank_id: response.bank_id,
+      customer_id: response.customer_id,
+      record_id: response.record_id,
+      account_id: response.accounts[0].id,
+    };
+
+    console.log('Link Data: ', linkdata);
+
+    const linkUrl =
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/link_account';
+
+    try {
+      const response = await axios.put(linkUrl, JSON.stringify(linkdata), {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      console.log('here is the linkurl resposonse ', response);
+
+      if (response.status == 200) {
+        const url =
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/direct_debit';
+
+        let data = {
+          interval: 'monthly',
+          startDate: startDate,
+          endDate: endDate,
+          amount: monthlyRepayment,
+          loanId: existingApplication,
+        };
+
+        console.log('DATA RES TATA: ', data);
+
+        try {
+          const response = await axios.post(url, JSON.stringify(data), {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          });
+          console.log('REDIRECT DEBIT: ', response);
+          setSuccessModal(true);
+
+          logCurrentStorage();
+
+          navigation.navigate('AwaitingDisbursement');
+        } catch (error) {
+          console.log(error.response.data);
+          // Alert.alert('Message', error.response.data.statusMsg, [
+          //   {text: 'Close'},
+          // ]);
+        }
+      }
+    } catch (error) {
+      Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
+    }
+  };
 
   if (monthlyRepayment != null) {
     return (
@@ -119,6 +179,11 @@ export default function OkraDebitMandate2({navigation}) {
           okraOptions={okraOptions}
           onClose={(response) => {
             console.log('on close');
+            //navigation.navigate('PostPaymentForm4')
+            // navigation.goBack();
+            // navigation.navigate('AwaitingDisbursement');
+            // console.log('on success we go ' + monthlyRepayment);
+            // console.log('The RESPONSE: ', response);
           }}
           onSuccess={(response) => {
             console.log('Na here we dey oo');
@@ -144,3 +209,13 @@ export default function OkraDebitMandate2({navigation}) {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
+});

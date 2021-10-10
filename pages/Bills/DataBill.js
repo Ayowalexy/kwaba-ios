@@ -237,7 +237,7 @@ const DataBill = ({navigation, route}) => {
                 paddingVertical: 16,
                 color: COLORS.dark,
               }}
-              placeholder="Customer ID"
+              placeholder="Phone Number"
               placeholderTextColor="#BFBFBF"
               keyboardType="phone-pad"
               value={customerID}
