@@ -733,7 +733,7 @@ const getBillsCategory = async (serviceID) => {
 // Buy Other Bills
 const buyOtherBills = async (data) => {
   const token = await getToken();
-  const url = apiUrl + `buy_other_bills`;
+  const url = apiUrl + `/api/v1/buy_other_bills`;
   try {
     const response = await axios.post(url, data, {
       headers: {'Content-Type': 'application/json', Authorization: token},

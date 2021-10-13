@@ -19,7 +19,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {BuyPurchaseAirtime} from '../../services/network';
+import {buyOtherBills, BuyPurchaseAirtime} from '../../services/network';
+import {unFormatNumber} from '../../util/numberFormatter';
+import NumberFormat from '../../components/NumberFormat';
 
 const CableTvBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -123,13 +125,13 @@ const CableTvBill = ({navigation, route}) => {
       serviceID: serviceID,
       billersCode: customerID,
       variation_code: variationCode,
-      amount: amount,
+      amount: unFormatNumber(amount),
       recepient: phoneNumber,
     };
     // console.log('Hello', data);
 
     if (value == 'paystack') {
-      const response = await BuyPurchaseAirtime(data);
+      const response = await buyOtherBills(data);
 
       console.log('The buy response: ', response);
       if (response.status == 200) {
@@ -228,7 +230,7 @@ const CableTvBill = ({navigation, route}) => {
             />
           </View>
 
-          <View style={[styles.customInput, {padding: 0}]}>
+          {/* <View style={[styles.customInput, {padding: 0}]}>
             <TextInput
               style={{
                 width: '100%',
@@ -243,7 +245,13 @@ const CableTvBill = ({navigation, route}) => {
               value={amount ? '₦' + amount : ''}
               editable={false}
             />
-          </View>
+          </View> */}
+
+          <NumberFormat
+            value={amount}
+            onChangeText={(text) => setAmount(text)}
+            editable={false}
+          />
 
           <View style={[styles.customInput, {padding: 0, display: 'none'}]}>
             <TextInput

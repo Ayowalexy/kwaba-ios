@@ -19,7 +19,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
-import {BuyPurchaseAirtime} from '../../services/network';
+import {buyOtherBills, BuyPurchaseAirtime} from '../../services/network';
+import NumberFormat from '../../components/NumberFormat';
+import {unFormatNumber} from '../../util/numberFormatter';
 
 const DataBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -112,12 +114,14 @@ const DataBill = ({navigation, route}) => {
       serviceID: serviceID,
       billersCode: customerID,
       variation_code: variationCode,
-      amount: amount,
+      amount: unFormatNumber(amount),
       recepient: customerID,
     };
 
+    console.log('Bills Payload: ', data);
+
     if (value == 'paystack') {
-      const response = await BuyPurchaseAirtime(data);
+      const response = await buyOtherBills(data);
 
       console.log('The buy response: ', response);
       if (response.status == 200) {
@@ -252,7 +256,7 @@ const DataBill = ({navigation, route}) => {
             />
           </View>
 
-          <View style={[styles.customInput, {padding: 0}]}>
+          {/* <View style={[styles.customInput, {padding: 0}]}>
             <TextInput
               style={{
                 width: '100%',
@@ -267,7 +271,12 @@ const DataBill = ({navigation, route}) => {
               value={amount ? '₦' + amount : ''}
               editable={false}
             />
-          </View>
+          </View> */}
+
+          <NumberFormat
+            value={amount}
+            onChangeText={(text) => setAmount(text)}
+          />
 
           <TouchableOpacity
             onPress={handleRoute}

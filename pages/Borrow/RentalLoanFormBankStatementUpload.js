@@ -7,12 +7,19 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  PermissionsAndroid,
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ManualUploadModal from '../../components/ManualUploadModal';
 import {MonoProvider, useMonoConnect} from '@mono.co/connect-react-native';
+import {uploadFile} from '../../redux/actions/documentUploadActions';
+import DocumentPicker from 'react-native-document-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import {useDispatch, useSelector} from 'react-redux';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const ConnectWithMono = () => {
   const {init} = useMonoConnect();
@@ -28,7 +35,14 @@ const ConnectWithMono = () => {
   );
 };
 
-export default function RentalLoanFormBankStatementUpload({navigation}) {
+export default function RentalLoanFormBankStatementUpload(props) {
+  const {navigation, route} = props;
+  const item = route.params.item;
+  useEffect(() => {
+    console.log('The Real Item: ', item);
+  }, []);
+  const dispatch = useDispatch();
+  const [spinner, setSpinner] = useState(false);
   const [showManualUploadModal, setShowManualUploadModal] = useState(false);
   const bankStatementUpload = [
     {
@@ -53,7 +67,8 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
 
   const config = {
     publicKey: 'live_pk_3MSVtE6Jtj2K6ZGMrkCT',
-    onClose: () => alert('Widget closed'),
+    // onClose: () => alert('Widget closed'),
+    onClose: () => console.log('Widget closed'),
     onSuccess: async (data) => {
       const code = data.getAuthCode();
       console.log('Access code', code);
@@ -61,8 +76,93 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
     },
   };
 
-  const handleNavigation = () => {
-    navigation.navigate('PostPaymentForm1');
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const uploadBankStatementFile = async () => {
+    try {
+      setSpinner(true);
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: 'Permission',
+          message:
+            'Kwaba needs access to your storage ' +
+            'so you can upload documents.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const res = await DocumentPicker.pick({
+          type: [DocumentPicker.types.allFiles],
+        });
+
+        const blob = {
+          uri: res.uri,
+          type: res.type,
+          name: res.name,
+        };
+
+        // setFileProgress(20);
+
+        const token = await getToken();
+        const applicationIDCallRes = await axios.get(
+          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+          {
+            headers: {'Content-Type': 'application/json', Authorization: token},
+          },
+        );
+
+        const applicationId = applicationIDCallRes.data.data.id;
+        console.log('App ID: ', applicationId);
+
+        const formdata = new FormData();
+        formdata.append('file', blob);
+        formdata.append('upload_preset', 'rental_loan_documents');
+        formdata.append('cloud_name', 'kwaba');
+
+        const response = await axios.post(
+          'https://api.cloudinary.com/v1_1/kwaba/auto/upload',
+          formdata,
+        );
+
+        const data = {
+          applicationId,
+          file: response.data.url,
+          document_type: item.id,
+          filename: item.title,
+        };
+
+        try {
+          dispatch(uploadFile(token, item, data));
+          navigation.goBack();
+          setSpinner(false);
+        } catch (error) {
+          console.log('The Error: ', error);
+          setSpinner(false);
+        }
+      } else {
+        console.log('File permission denied');
+        // setFileProgress(0);
+        setSpinner(false);
+      }
+    } catch (error) {
+      if (DocumentPicker.isCancel(error)) {
+        console.log('This was canceled');
+        setSpinner(false);
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        setSpinner(false);
+        console.log('This is the error: ', error);
+        // setFileProgress(0);
+      }
+    }
   };
 
   return (
@@ -74,7 +174,7 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
         style={{
           fontWeight: '900',
           paddingVertical: 20,
-          paddingHorizontal: 10,
+          paddingHorizontal: 20,
         }}
         color={COLORS.primary}
       />
@@ -87,7 +187,8 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
 
           <View>
             <TouchableOpacity
-              onPress={() => setShowManualUploadModal(!showManualUploadModal)}
+              onPress={() => uploadBankStatementFile()}
+              // onPress={() => setShowManualUploadModal(!showManualUploadModal)}
               style={[styles.card]}>
               <Text style={[styles.title]}>Manual Upload</Text>
               <Text style={[styles.body]}>
@@ -126,6 +227,8 @@ export default function RentalLoanFormBankStatementUpload({navigation}) {
           //setSelectedPayMethod(value)
         }}
       />
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 }
