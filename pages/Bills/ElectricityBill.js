@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, images, icons} from '../../util/index';
+import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import {SwipeablePanel} from 'rn-swipeable-panel';
 import {useDispatch, useSelector} from 'react-redux';
 import {getBillsCategory} from '../../redux/actions/billsAction';
@@ -19,6 +20,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import Spinner from 'react-native-loading-spinner-overlay';
+import {buyOtherBills} from '../../services/network';
+import NumberFormat from '../../components/NumberFormat';
 
 const ElectricityBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -30,7 +33,7 @@ const ElectricityBill = ({navigation, route}) => {
   const [packageData, setPackageData] = useState([]);
   const [packageName, setPackageName] = useState('');
   const [spinner, setSpinner] = useState(false);
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState('');
   const [customerID, setCustomerID] = useState('');
   const [variationCode, setVariationCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -40,6 +43,11 @@ const ElectricityBill = ({navigation, route}) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const [channel, setChannel] = useState('');
+
+  const [minMaxAmount, setMinMaxAmount] = useState({
+    min: 0,
+    max: 0,
+  });
 
   const getBillsCategoryLists = useSelector(
     (state) => state.getBillCategoryReducer,
@@ -90,6 +98,12 @@ const ElectricityBill = ({navigation, route}) => {
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      console.log('MinMax: ', minMaxAmount);
+    }, 1000);
+  }, [minMaxAmount]);
+
+  useEffect(() => {
     dispatch(getBillsCategory('electricity-bill'));
     (async () => {
       const user = await getUser();
@@ -118,17 +132,19 @@ const ElectricityBill = ({navigation, route}) => {
   };
 
   const handlePaymentRoute = async (value) => {
-    setSpinner(true);
     const data = {
       serviceID: serviceID,
       billersCode: customerID,
-      variation_code: variationCode,
-      amount: amount,
+      variation_code: packageName.toString().toLowerCase(),
+      amount: unFormatNumber(amount),
       recepient: phoneNumber,
     };
 
+    // console.log('Electricity payload: ', data);
+
+    setSpinner(true);
     if (value == 'paystack') {
-      const response = await BuyPurchaseAirtime(data);
+      const response = await buyOtherBills(data);
 
       console.log('The buy response: ', response);
       if (response.status == 200) {
@@ -234,7 +250,8 @@ const ElectricityBill = ({navigation, route}) => {
             />
           </View>
 
-          <View style={[styles.customInput, {padding: 0}]}>
+          {/* <View style={[styles.customInput, {padding: 0}]}>
+            <Text></Text>
             <TextInput
               style={{
                 width: '100%',
@@ -251,6 +268,39 @@ const ElectricityBill = ({navigation, route}) => {
                 setAmount(text);
               }}
             />
+          </View> */}
+
+          <NumberFormat
+            value={amount}
+            onChangeText={(text) => setAmount(text)}
+          />
+          <View
+            style={{
+              display:
+                amount != ''
+                  ? unFormatNumber(amount) < minMaxAmount.min ||
+                    unFormatNumber(amount) > minMaxAmount.max
+                    ? 'flex'
+                    : 'none'
+                  : 'none',
+            }}>
+            {unFormatNumber(amount) < minMaxAmount.min && (
+              <>
+                <Text style={[styles.amountError]}>
+                  The minimum purchase amount is ₦
+                  {formatNumber(minMaxAmount.min)}
+                </Text>
+              </>
+            )}
+
+            {unFormatNumber(amount) > minMaxAmount.max && (
+              <>
+                <Text style={[styles.amountError]}>
+                  The maximum purchase amount is ₦
+                  {formatNumber(minMaxAmount.max)}
+                </Text>
+              </>
+            )}
           </View>
 
           <View style={[styles.customInput, {padding: 0, display: 'none'}]}>
@@ -273,13 +323,21 @@ const ElectricityBill = ({navigation, route}) => {
 
           <TouchableOpacity
             onPress={handleRoute}
-            disabled={customerID.length < 1 || amount < 1 || phoneNumber < 11}
+            disabled={
+              customerID.length < 1 ||
+              unFormatNumber(amount) < minMaxAmount.min ||
+              unFormatNumber(amount) > minMaxAmount.max ||
+              phoneNumber < 11
+            }
             style={[
               styles.btn,
               {
                 backgroundColor: '#00DC99',
                 backgroundColor:
-                  customerID.length < 1 || amount < 1 || phoneNumber < 11
+                  customerID.length < 1 ||
+                  unFormatNumber(amount) < minMaxAmount.min ||
+                  unFormatNumber(amount) > minMaxAmount.max ||
+                  phoneNumber < 11
                     ? '#00DC9950'
                     : '#00DC99',
                 width: '100%',
@@ -321,6 +379,10 @@ const ElectricityBill = ({navigation, route}) => {
                   setProviderName(item.name);
                   setPackageName('');
                   closePanel();
+                  setMinMaxAmount({
+                    min: Number(item.minimium_amount),
+                    max: Number(item.maximum_amount),
+                  });
                 }}
                 key={index}
                 style={{
@@ -463,5 +525,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
+  },
+
+  amountError: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: COLORS.red,
+    marginTop: 5,
+    marginLeft: 10,
+    textAlign: 'left',
   },
 });

@@ -138,7 +138,11 @@ const AirtimeHome = ({navigation}) => {
         })}
 
         <View style={[styles.transactionHistory]}>
-          <TouchableOpacity onPress={() => setShowAirtimeHistoryModal(true)}>
+          <TouchableOpacity
+            onPress={() => {
+              setShowAirtimeHistoryModal(true);
+              dispatch(getAirtimeBillTrans());
+            }}>
             <Text style={[styles.transactionHistoryText]}>
               View transactions history
             </Text>

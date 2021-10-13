@@ -384,16 +384,21 @@ export default function AllDocuments({navigation}) {
                   item.isUploaded == false &&
                   item.id && (
                     <TouchableOpacity
-                      // onPress={() => {
-                      //   if (item.title == 'Bank Statement') {
-                      //     handleBankStatementUpload();
-                      //   } else {
-                      //     handleDocumentType(item);
-                      //   }
-                      // }}
                       onPress={() => {
-                        handleDocumentType(item);
+                        if (item.title == 'Bank Statement') {
+                          // handleBankStatementUpload();
+                          setShowSelectDocumentsModal(false);
+                          navigation.navigate(
+                            'RentalLoanFormBankStatementUpload',
+                            {item},
+                          );
+                        } else {
+                          handleDocumentType(item);
+                        }
                       }}
+                      // onPress={() => {
+                      //   handleDocumentType(item);
+                      // }}
                       key={index}
                       style={[
                         styles.selectBtn,

@@ -17,6 +17,7 @@ import {
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
 } from '../../redux/actions/savingsActions';
+import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
 import {useDispatch, useSelector} from 'react-redux';
 
 export default function PaymentSuccessful(props) {
@@ -49,6 +50,7 @@ export default function PaymentSuccessful(props) {
     dispatch(getMaxLoanCap());
     dispatch(getOneSoloSavings(props?.route?.params?.id));
     dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
+    dispatch(getAirtimeBillTrans());
   }, []);
 
   const handlePress = () => {
@@ -56,6 +58,7 @@ export default function PaymentSuccessful(props) {
     dispatch(getMaxLoanCap());
     dispatch(getOneSoloSavings(props?.route?.params?.id));
     dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
+    dispatch(getAirtimeBillTrans());
 
     console.log('Payment ID: ', props?.route?.params?.id);
 

@@ -145,7 +145,7 @@ const CreditCardFormBills: React.FC = (props: any) => {
 
       if (verify?.status == 200) {
         console.log('Payment verified');
-        setSpinner(false);
+
         // display success modal
         // navigate to dashboard / homepage
 
@@ -156,6 +156,7 @@ const CreditCardFormBills: React.FC = (props: any) => {
           name: props.redirectTo,
         });
         props.onRequestClose();
+        setSpinner(false);
       } else {
         setSpinner(false);
         Alert.alert(
