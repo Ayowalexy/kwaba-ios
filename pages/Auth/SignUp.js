@@ -143,7 +143,8 @@ export default function SignUp({navigation}) {
     if (res.status == 201) {
       setSpinner(false);
       await AsyncStorage.setItem('authData', res.data.authData);
-      navigation.navigate('GetCode');
+      // navigation.navigate('GetCode');
+      navigation.navigate('Login'); // Login after signup
 
       // setValues({
       //   firstName: '',

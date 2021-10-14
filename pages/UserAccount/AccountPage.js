@@ -461,9 +461,8 @@ const AccountPage = ({navigation}) => {
                         : 'transparent'
                     }`,
                     alignItems: 'center',
-                    // paddingLeft: 10,
-                    paddingTop: 20,
-                    paddingBottom: 20,
+                    paddingHorizontal: 10,
+                    paddingVertical: 20,
                   }}>
                   <View
                     style={{
@@ -473,7 +472,7 @@ const AccountPage = ({navigation}) => {
                     }}>
                     <Icon
                       name={value.iconName}
-                      size={23}
+                      size={20}
                       style={{
                         color: COLORS.light,
                         width: 40,
@@ -496,12 +495,7 @@ const AccountPage = ({navigation}) => {
                     </Text>
                   </View>
                   <View style={{}}>
-                    <IconFA
-                      name="angle-right"
-                      size={20}
-                      color="#BFBFBF"
-                      // style={{marginRight: 20, marginTop: 10}}
-                    />
+                    <IconFA name="angle-right" size={20} color="#BFBFBF" />
                   </View>
                 </View>
               </TouchableOpacity>
@@ -513,8 +507,8 @@ const AccountPage = ({navigation}) => {
             style={{
               paddingTop: 20,
               paddingBottom: 20,
-              paddingLeft: 10,
-              paddingRight: 10,
+              paddingLeft: 20,
+              paddingRight: 20,
             }}
             onPress={() => {
               LogOut();
