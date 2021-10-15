@@ -113,7 +113,7 @@ const AccountPage = ({navigation}) => {
     },
     {
       iconName: 'lock-open-outline',
-      tabTitle: 'Change Password',
+      tabTitle: 'Password and PIN',
       onClickFunction: function openCardAndBank() {
         setModalVisible(true);
       },
@@ -224,42 +224,43 @@ const AccountPage = ({navigation}) => {
     <ScrollView>
       {/* <StatusBar backgroundColor="#F7F8FD" /> */}
       <View style={{backgroundColor: '#F7F8FD', flex: 1}}>
-        <View style={{backgroundColor: '#F7F8FD', marginBottom: 22}}>
-          <Text
-            style={[
-              FONTS.h1FontStyling,
-              {
-                color: '#2A286A',
-                textAlign: 'left',
-                fontWeight: 'bold',
-                marginBottom: 20,
-                marginTop: 20,
-                marginLeft: 20,
-              },
-            ]}>
-            Account
-          </Text>
+        <View style={{paddingHorizontal: 20}}>
+          <View style={{backgroundColor: '#F7F8FD', marginBottom: 22}}>
+            <Text
+              style={[
+                {
+                  color: '#2A286A',
+                  textAlign: 'left',
+                  fontWeight: 'bold',
+                  marginBottom: 10,
+                  marginTop: 20,
+                  marginLeft: 5,
+                  fontSize: 20,
+                },
+              ]}>
+              Account
+            </Text>
 
-          <View
-            style={{
-              borderRadius: 10,
-              backgroundColor: '#ffffff',
-              alignSelf: 'center',
-              backgroundColor: '#ffffff',
-              width: width * 0.95,
-              // borderColor: '#ff0',
-              // borderWidth: 1,
-            }}>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
+                borderRadius: 10,
+                backgroundColor: '#ffffff',
+                alignSelf: 'center',
+                backgroundColor: '#ffffff',
+                width: '100%',
+                // borderColor: '#ff0',
                 // borderWidth: 1,
-
-                padding: 25,
               }}>
-              {/* <Image
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  // borderWidth: 1,
+
+                  padding: 25,
+                }}>
+                {/* <Image
                 style={{
                   width: 101,
                   height: 101,
@@ -271,101 +272,102 @@ const AccountPage = ({navigation}) => {
                 }}
                 source={images.ellipse96}
               /> */}
-              <View
-                style={{
-                  width: 90,
-                  height: 90,
-                  borderRadius: 100,
-                  backgroundColor: COLORS.light,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginRight: 20,
-                }}>
-                <Text style={{fontWeight: 'bold', fontSize: 30, color: '#fff'}}>
-                  {firstName.charAt(0)}
-                  {lastName.charAt(0)}
-                </Text>
-              </View>
-              {/* <Text>JD</Text> */}
-              <View style={{marginTop: 0, width: 120}}>
-                <Text
-                  numberOfLines={1}
-                  style={[
-                    FONTS.h3FontStyling,
-                    {
-                      // marginLeft: 40,
-                      // marginTop: -23,
-                      color: COLORS.primary,
-                      fontWeight: 'bold',
-                    },
-                  ]}>
-                  {/* Joshua Nwosu */}
-                  {fullName}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('profile');
-                  }}
+                <View
                   style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    backgroundColor: '#9D98EC',
-
-                    width: 100,
-                    // height: 30,
-                    borderRadius: 15,
-                    paddingTop: 7,
-                    paddingRight: 15,
-                    paddingBottom: 7,
-                    paddingLeft: 15,
-                    // marginLeft: 40,
-                    marginTop: 10,
+                    width: 90,
+                    height: 90,
+                    borderRadius: 100,
+                    backgroundColor: COLORS.light,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginRight: 20,
                   }}>
                   <Text
+                    style={{fontWeight: 'bold', fontSize: 30, color: '#fff'}}>
+                    {firstName.charAt(0)}
+                    {lastName.charAt(0)}
+                  </Text>
+                </View>
+                {/* <Text>JD</Text> */}
+                <View style={{marginTop: 0, width: 120}}>
+                  <Text
+                    numberOfLines={1}
+                    style={[
+                      FONTS.h3FontStyling,
+                      {
+                        // marginLeft: 40,
+                        // marginTop: -23,
+                        color: COLORS.primary,
+                        fontWeight: 'bold',
+                      },
+                    ]}>
+                    {/* Joshua Nwosu */}
+                    {fullName}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('profile');
+                    }}
                     style={{
-                      // width: 78,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      backgroundColor: '#9D98EC',
+
+                      width: 100,
                       // height: 30,
                       borderRadius: 15,
-                      color: COLORS.white,
-                      textAlign: 'center',
-                      // marginTop: 5,
-                      fontWeight: 'bold',
+                      paddingTop: 7,
+                      paddingRight: 15,
+                      paddingBottom: 7,
+                      paddingLeft: 15,
+                      // marginLeft: 40,
+                      marginTop: 10,
                     }}>
-                    Profile
-                  </Text>
-                  <IconFA
-                    name="angle-right"
-                    size={20}
-                    color="#ffffff"
-                    // style={{marginRight: 0, marginTop: 10, marginTop: }}
-                  />
-                </TouchableOpacity>
+                    <Text
+                      style={{
+                        // width: 78,
+                        // height: 30,
+                        borderRadius: 15,
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        // marginTop: 5,
+                        fontWeight: 'bold',
+                      }}>
+                      Profile
+                    </Text>
+                    <IconFA
+                      name="angle-right"
+                      size={20}
+                      color="#ffffff"
+                      // style={{marginRight: 0, marginTop: 10, marginTop: }}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                // marginTop: 22,
-                borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10,
-                backgroundColor: '#2A286A',
-                // height: 40,
-                flexDirection: 'row',
-                padding: 10,
-              }}>
-              <Image
-                style={{width: 25, height: 25, marginRight: 5}}
-                source={icons.star}
-              />
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.white, fontSize: 12},
-                ]}>
-                credit score
-              </Text>
-              {/* <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  // marginTop: 22,
+                  borderBottomLeftRadius: 10,
+                  borderBottomRightRadius: 10,
+                  backgroundColor: '#2A286A',
+                  // height: 40,
+                  flexDirection: 'row',
+                  padding: 10,
+                }}>
+                <Image
+                  style={{width: 25, height: 25, marginRight: 5}}
+                  source={icons.star}
+                />
+                <Text
+                  style={[
+                    FONTS.body1FontStyling,
+                    {color: COLORS.white, fontSize: 12},
+                  ]}>
+                  credit score
+                </Text>
+                {/* <View>
                 <TouchableOpacity
                   style={{
                     backgroundColor: COLORS.secondary,
@@ -387,163 +389,163 @@ const AccountPage = ({navigation}) => {
                   </Text>
                 </TouchableOpacity>
               </View> */}
-              {/* <Text
+                {/* <Text
                 style={[
                   FONTS.body1FontStyling,
                   {color: COLORS.white, textAlign: 'center', fontSize: 14},
                 ]}>
                 /100
               </Text> */}
-              <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {
-                    color: COLORS.white,
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    fontSize: 14,
-                    marginHorizontal: 10,
-                  },
-                ]}>
-                N/A
-              </Text>
-
-              <View style={{flexDirection: 'column', flex: 1}}>
                 <Text
                   style={[
                     FONTS.body1FontStyling,
                     {
-                      color: COLORS.light,
-                      textAlign: 'right',
-                      fontSize: 9,
-                      flexShrink: 1,
-                      lineHeight: 12,
+                      color: COLORS.white,
+                      textAlign: 'center',
+                      fontWeight: 'bold',
+                      fontSize: 14,
+                      marginHorizontal: 10,
                     },
                   ]}>
-                  You can build your credit score by saving and paying your rent
-                  with Kwaba - coming soon
+                  N/A
                 </Text>
+
+                <View style={{flexDirection: 'column', flex: 1}}>
+                  <Text
+                    style={[
+                      FONTS.body1FontStyling,
+                      {
+                        color: COLORS.light,
+                        textAlign: 'right',
+                        fontSize: 9,
+                        flexShrink: 1,
+                        lineHeight: 12,
+                      },
+                    ]}>
+                    You can build your credit score by saving and paying your
+                    rent with Kwaba - coming soon
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-        </View>
 
-        <View
-          style={{
-            flexDirection: 'column',
-            alignSelf: 'center',
-            backgroundColor: '#ffffff',
-            width: width * 0.95,
-            borderRadius: 20,
-            // padding: 15,
-            paddingTop: 10,
-            paddingBottom: 10,
-            paddingRight: 20,
-            paddingLeft: 20,
-          }}>
-          {accountTabsAndSettings.map((value, index) => {
-            return (
-              <TouchableOpacity
-                // style={{height: 50}}
-                key={index}
-                onPress={() => {
-                  value.onClickFunction();
-                }}>
-                <View
-                  style={{
-                    // height: 50,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    borderBottomWidth: 1,
-                    borderBottomColor: `${
-                      index !== accountTabsAndSettings.length - 1
-                        ? '#EAEAEA'
-                        : 'transparent'
-                    }`,
-                    alignItems: 'center',
-                    paddingHorizontal: 10,
-                    paddingVertical: 20,
+          <View
+            style={{
+              flexDirection: 'column',
+              alignSelf: 'center',
+              backgroundColor: '#ffffff',
+              width: '100%',
+              borderRadius: 20,
+              // padding: 15,
+              // paddingTop: 10,
+              // paddingBottom: 10,
+              // paddingRight: 20,
+              // paddingLeft: 20,
+            }}>
+            {accountTabsAndSettings.map((value, index) => {
+              return (
+                <TouchableOpacity
+                  style={{paddingHorizontal: 20}}
+                  key={index}
+                  onPress={() => {
+                    value.onClickFunction();
                   }}>
                   <View
                     style={{
-                      justifyContent: 'center',
+                      // height: 50,
                       flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      borderBottomWidth: 1,
+                      borderBottomColor: `${
+                        index !== accountTabsAndSettings.length - 1
+                          ? '#EAEAEA'
+                          : 'transparent'
+                      }`,
                       alignItems: 'center',
+                      paddingHorizontal: 10,
+                      paddingVertical: 20,
                     }}>
-                    <Icon
-                      name={value.iconName}
-                      size={20}
+                    <View
                       style={{
-                        color: COLORS.light,
-                        width: 40,
-                        // borderBottomWidth: 1,
-                      }}
-                    />
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      <Icon
+                        name={value.iconName}
+                        size={20}
+                        style={{
+                          color: COLORS.light,
+                          width: 40,
+                          // borderBottomWidth: 1,
+                        }}
+                      />
 
-                    <Text
-                      style={[
-                        FONTS.h3FontStyling,
-                        {
-                          // marginLeft: 40,
-                          // marginTop: -23,
-                          color: COLORS.dark,
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                        },
-                      ]}>
-                      {value.tabTitle}
-                    </Text>
+                      <Text
+                        style={[
+                          FONTS.h3FontStyling,
+                          {
+                            // marginLeft: 40,
+                            // marginTop: -23,
+                            color: COLORS.dark,
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                          },
+                        ]}>
+                        {value.tabTitle}
+                      </Text>
+                    </View>
+                    <View style={{}}>
+                      <IconFA name="angle-right" size={20} color="#BFBFBF" />
+                    </View>
                   </View>
-                  <View style={{}}>
-                    <IconFA name="angle-right" size={20} color="#BFBFBF" />
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <View style={{alignSelf: 'center', width: width * 0.9}}>
-          <TouchableOpacity
-            style={{
-              paddingTop: 20,
-              paddingBottom: 20,
-              paddingLeft: 20,
-              paddingRight: 20,
-            }}
-            onPress={() => {
-              LogOut();
-            }}>
-            <View
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <View style={{alignSelf: 'center', width: '100%'}}>
+            <TouchableOpacity
               style={{
-                // height: 50,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: 3,
+                paddingTop: 20,
+                paddingBottom: 20,
+                paddingHorizontal: 30,
+              }}
+              onPress={() => {
+                LogOut();
               }}>
-              <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                <IconFA
-                  name="sign-out"
-                  size={20}
-                  style={{color: COLORS.light, width: 40}}
-                />
-                <Text
-                  style={[
-                    FONTS.h3FontStyling,
-                    {color: COLORS.dark, fontSize: 14, fontWeight: 'bold'},
-                  ]}>
-                  Logout
-                </Text>
+              <View
+                style={{
+                  // height: 50,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  padding: 3,
+                }}>
+                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                  <IconFA
+                    name="sign-out"
+                    size={20}
+                    style={{color: COLORS.light, width: 40}}
+                  />
+                  <Text
+                    style={[
+                      FONTS.h3FontStyling,
+                      {color: COLORS.dark, fontSize: 14, fontWeight: 'bold'},
+                    ]}>
+                    Logout
+                  </Text>
+                </View>
+                <View style={{}}>
+                  <IconFA
+                    name="angle-right"
+                    size={20}
+                    color="#BFBFBF"
+                    // style={{marginRight: 20, marginTop: 10}}
+                  />
+                </View>
               </View>
-              <View style={{}}>
-                <IconFA
-                  name="angle-right"
-                  size={20}
-                  color="#BFBFBF"
-                  // style={{marginRight: 20, marginTop: 10}}
-                />
-              </View>
-            </View>
-          </TouchableOpacity>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View>

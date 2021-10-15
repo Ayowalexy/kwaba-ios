@@ -216,21 +216,21 @@ export default function NewHome({navigation}) {
           : navigation.navigate('EmergencyLoanDashBoard');
       },
     },
-    // {
-    //   title: 'Wallets',
-    //   subtitle:
-    //     wallet == 0
-    //       ? 'Fund your wallet to transact on Kwaba'
-    //       : 'Save and pay bills from yout wallet',
-    //   amount: formatNumber(wallet),
-    //   color: COLORS.dark,
-    //   actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
-    //   actionClick: () =>
-    //     wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
-    //   cardClick: () => {
-    //     navigation.navigate('Wallet');
-    //   },
-    // },
+    {
+      title: 'Wallets',
+      subtitle:
+        wallet == 0
+          ? 'Fund your wallet to transact on Kwaba'
+          : 'Save and pay bills from yout wallet',
+      amount: formatNumber(wallet),
+      color: COLORS.dark,
+      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+      actionClick: () =>
+        wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
+      cardClick: () => {
+        navigation.navigate('Wallet');
+      },
+    },
     {
       title: 'Rent Now Pay Later',
       subtitle:
