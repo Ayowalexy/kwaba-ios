@@ -54,8 +54,8 @@ const tabItems = [
   },
 
   {
-    title: 'Account',
-    icon: 'person-outline',
+    title: 'More',
+    icon: 'apps-outline',
     screen: AccountPage,
   },
 ];

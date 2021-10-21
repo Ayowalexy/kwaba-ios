@@ -251,7 +251,7 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  Request Bank State
+                  Request Bank Statement
                 </Text>
                 <Text
                   style={{

@@ -1,4 +1,5 @@
 import {StyleSheet, Dimensions} from 'react-native';
+import {COLORS} from '../../util';
 
 const widthTouse = Dimensions.get('window').width;
 
@@ -86,21 +87,19 @@ const designs = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     fontWeight: '900',
-    // elevation: 1,
     color: 'black',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
   },
   codeInputContainer: {
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    // marginLeft: 31,
-    // marginRight: 31,
-    marginTop: 15,
-    paddingHorizontal: 20,
+    marginTop: 20,
+    paddingHorizontal: 40,
   },
   counter: {
     width: 80,
@@ -133,6 +132,31 @@ const designs = StyleSheet.create({
   },
   errorInput: {
     borderColor: '#f0000050',
+  },
+
+  cellText: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#465969',
+  },
+  focusCell: {
+    borderColor: '#00DC99',
+  },
+  headline: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: COLORS.dark,
+    lineHeight: 20,
+  },
+  contentText: {
+    paddingLeft: 20,
   },
 });
 export default designs;

@@ -73,7 +73,7 @@ const AccountPage = ({navigation}) => {
     //   'userData',
     //   JSON.stringify({...JSON.parse(login), isLoggedIn: false, token: ''}),
     // );
-    navigation.navigate('Login');
+    navigation.navigate('Welcome');
   };
 
   const Referral = () => {};
@@ -90,7 +90,15 @@ const AccountPage = ({navigation}) => {
 
   const accountTabsAndSettings = [
     {
-      iconName: 'cash-outline',
+      iconName: 'wallet',
+      tabTitle: 'Wallet',
+      onClickFunction: function openCardAndBank() {
+        // setWithrawModalVisible(true);
+        navigation.navigate('Wallet');
+      },
+    },
+    {
+      iconName: 'md-create-sharp',
       tabTitle: 'Withdraw',
       onClickFunction: function openCardAndBank() {
         // setWithrawModalVisible(true);
@@ -98,43 +106,51 @@ const AccountPage = ({navigation}) => {
       },
     },
     {
-      iconName: 'card-outline',
+      iconName: 'card',
       tabTitle: 'Card and Bank',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('CardAndBankDetails');
       },
     },
     {
-      iconName: 'share-social-outline',
+      iconName: 'ios-share-social-sharp',
       tabTitle: 'Referral',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('Referral');
       },
     },
     {
-      iconName: 'lock-open-outline',
+      iconName: 'ios-shield-checkmark-sharp',
       tabTitle: 'Password and PIN',
       onClickFunction: function openCardAndBank() {
-        setModalVisible(true);
+        // setModalVisible(true);
+        navigation.navigate('PinPassword');
       },
     },
     {
-      iconName: 'folder-open-outline',
+      iconName: 'documents',
       tabTitle: 'Documents',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('UploadDocumentsList');
       },
     },
     {
-      iconName: 'document-outline',
+      iconName: 'chatbox-ellipses',
       tabTitle: 'FAQs',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('LegalandFaq');
       },
     },
     {
-      iconName: 'information',
+      iconName: 'information-circle',
       tabTitle: 'About us',
+      onClickFunction: function openCardAndBank() {
+        navigation.navigate('Aboutus');
+      },
+    },
+    {
+      iconName: 'finger-print',
+      tabTitle: 'Fingerprint',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('Aboutus');
       },
@@ -277,7 +293,7 @@ const AccountPage = ({navigation}) => {
                     width: 90,
                     height: 90,
                     borderRadius: 100,
-                    backgroundColor: COLORS.light,
+                    backgroundColor: COLORS.dark,
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginRight: 20,
@@ -311,7 +327,7 @@ const AccountPage = ({navigation}) => {
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      backgroundColor: '#9D98EC',
+                      backgroundColor: COLORS.dark,
 
                       width: 100,
                       // height: 30,
@@ -446,7 +462,7 @@ const AccountPage = ({navigation}) => {
             {accountTabsAndSettings.map((value, index) => {
               return (
                 <TouchableOpacity
-                  style={{paddingHorizontal: 20}}
+                  style={{paddingHorizontal: 0}}
                   key={index}
                   onPress={() => {
                     value.onClickFunction();
@@ -463,7 +479,7 @@ const AccountPage = ({navigation}) => {
                           : 'transparent'
                       }`,
                       alignItems: 'center',
-                      paddingHorizontal: 10,
+                      paddingHorizontal: 30,
                       paddingVertical: 20,
                     }}>
                     <View
@@ -474,10 +490,11 @@ const AccountPage = ({navigation}) => {
                       }}>
                       <Icon
                         name={value.iconName}
-                        size={20}
+                        size={23}
                         style={{
-                          color: COLORS.light,
+                          color: COLORS.dark,
                           width: 40,
+                          // opacity: 0.6,
                           // borderBottomWidth: 1,
                         }}
                       />
@@ -497,7 +514,12 @@ const AccountPage = ({navigation}) => {
                       </Text>
                     </View>
                     <View style={{}}>
-                      <IconFA name="angle-right" size={20} color="#BFBFBF" />
+                      <IconFA
+                        name="chevron-right"
+                        size={12}
+                        color={COLORS.dark}
+                        style={{opacity: 0.5}}
+                      />
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -522,26 +544,21 @@ const AccountPage = ({navigation}) => {
                   padding: 3,
                 }}>
                 <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-                  <IconFA
-                    name="sign-out"
-                    size={20}
-                    style={{color: COLORS.light, width: 40}}
+                  <Icon
+                    name="exit"
+                    size={23}
+                    style={{color: COLORS.red, width: 40}}
                   />
                   <Text
                     style={[
                       FONTS.h3FontStyling,
-                      {color: COLORS.dark, fontSize: 14, fontWeight: 'bold'},
+                      {color: COLORS.red, fontSize: 14, fontWeight: 'bold'},
                     ]}>
                     Logout
                   </Text>
                 </View>
                 <View style={{}}>
-                  <IconFA
-                    name="angle-right"
-                    size={20}
-                    color="#BFBFBF"
-                    // style={{marginRight: 20, marginTop: 10}}
-                  />
+                  <IconFA name="chevron-right" size={12} color={COLORS.red} />
                 </View>
               </View>
             </TouchableOpacity>

@@ -106,7 +106,7 @@ export default function Withdraw({navigation}) {
               style={{
                 color: '#BABABA',
               }}>
-              Select Savings Option
+              Select Withdrawal Source
             </Text>
           )}
 
@@ -316,7 +316,7 @@ export default function Withdraw({navigation}) {
       <Text style={[styles.heading]}>Withdraw</Text>
 
       <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        {savings <= 0 ? (
+        {savings > 0 ? (
           <View style={[styles.content, {alignItems: 'center'}]}>
             <Image source={images.piggy} style={[styles.image]} />
             <Text

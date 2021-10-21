@@ -26,7 +26,17 @@ const Welcome = ({navigation}) => {
     TRANSITIONS[0],
   );
 
-  const changeStatusBarVisibility = () => setHidden(!hidden);
+  const [email, setEmail] = useState('');
+
+  // const changeStatusBarVisibility = () => setHidden(!hidden);
+
+  useEffect(() => {
+    (async () => {
+      const e = await AsyncStorage.getItem('loginEmail');
+      // console.log('Na im be dis: ', JSON.parse(e));
+      setEmail(JSON.parse(e));
+    })();
+  }, []);
 
   const changeStatusBarStyle = () => {
     const styled = STYLES.indexOf(statusBarStyle) + 1;
@@ -127,13 +137,24 @@ const Welcome = ({navigation}) => {
               Get Started
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={{marginTop: 15}}
-            onPress={() => navigation.navigate('Login')}>
-            <Text style={{color: '#2A286A', fontWeight: 'bold'}}>
-              Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
-            </Text>
-          </TouchableOpacity>
+
+          {email == '' ? (
+            <TouchableOpacity
+              style={{marginTop: 15}}
+              onPress={() => navigation.navigate('Login')}>
+              <Text style={{color: '#2A286A', fontWeight: 'bold'}}>
+                Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              style={{marginTop: 15}}
+              onPress={() => navigation.navigate('EnterPin')}>
+              <Text style={{color: '#2A286A', fontWeight: 'bold'}}>
+                Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </SafeAreaView>

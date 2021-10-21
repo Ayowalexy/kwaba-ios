@@ -44,7 +44,7 @@ const screens = [
     id: 4,
     title: 'Save to own',
     content:
-      'WSave monthly to build up a down\npayment for the home of your dreams',
+      'Save monthly to build up a down\npayment for the home of your dreams',
     image: images.saveToOwn,
     loader: icons.onboardingLoader3,
   },

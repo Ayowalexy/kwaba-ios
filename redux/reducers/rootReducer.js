@@ -19,6 +19,10 @@ import {
   getAirtimeBillTransReducer,
   getAirtimeReducer,
 } from './billReducer';
+import {
+  getUserWalletReducer,
+  getUserWalletTransactionsReducer,
+} from './walletReducer';
 
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
@@ -39,4 +43,6 @@ export const rootReducer = combineReducers({
   getBillCategoryReducer: getBillCategoryReducer,
   getAirtimeBillTransReducer: getAirtimeBillTransReducer,
   getAirtimeReducer: getAirtimeReducer,
+  getUserWalletReducer: getUserWalletReducer,
+  getUserWalletTransactionsReducer: getUserWalletTransactionsReducer,
 });

@@ -744,6 +744,46 @@ const buyOtherBills = async (data) => {
   }
 };
 
+// PIN
+const setPin = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user_set_pin';
+    const response = await axios.post(url, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Enter Pin To Login
+const enterPinToLogin = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user_login_verify_pin';
+    const response = await axios.post(url, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// /api/v1/add_funds_to_wallet_initiate
+const addFundsToWallet = async (data) => {
+  const url = apiUrl + '/api/v1/add_funds_to_wallet_initiate';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -797,4 +837,7 @@ export {
   getBillsCategory,
   addFundsToBuddySavings,
   buyOtherBills,
+  setPin,
+  enterPinToLogin,
+  addFundsToWallet,
 };

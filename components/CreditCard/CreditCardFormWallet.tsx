@@ -45,7 +45,7 @@ enum CardFields {
   CVV,
 }
 
-const CreditCardFormSavings: React.FC = (props: any) => {
+const CreditCardWallet: React.FC = (props: any) => {
   const formMethods = useForm<FormModel>({
     mode: 'onBlur',
     reValidateMode: 'onChange',
@@ -88,7 +88,7 @@ const CreditCardFormSavings: React.FC = (props: any) => {
   const verifyPayment = async (data) => {
     const token = await getToken();
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/verify_savings_payment';
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/verify_add_fund_to_wallet';
     try {
       const response = await axios.post(url, data, {
         headers: {
@@ -110,7 +110,7 @@ const CreditCardFormSavings: React.FC = (props: any) => {
     setSpinner(true);
     // console.log('form submitted: ', model);
     const user = await userData();
-    console.log('IDDDDDDD: ', props.ResInfo.id);
+    // console.log('IDDDDDDD: ', props.ResInfo.id);
     try {
       // console.log('The props: ', props);
       const pay = await RNPaystack.chargeCard({
@@ -126,7 +126,7 @@ const CreditCardFormSavings: React.FC = (props: any) => {
 
       const data = {
         reference: pay.reference,
-        channel: 'paystack',
+        // channel: 'paystack',
       };
 
       console.log('The Data: ', data);
@@ -146,7 +146,6 @@ const CreditCardFormSavings: React.FC = (props: any) => {
         // dispatch(getMaxLoanCap());
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,
-          id: props.ID,
         });
         props.onRequestClose();
       } else {
@@ -295,4 +294,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
-export default CreditCardFormSavings;
+export default CreditCardWallet;
