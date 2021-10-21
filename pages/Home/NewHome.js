@@ -31,6 +31,10 @@ import {
   getBillsCategory,
   getAirtime,
 } from '../../redux/actions/billsAction';
+import {
+  getUserWallet,
+  getUserWalletTransactions,
+} from '../../redux/actions/walletAction';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {currencyFormat, formatNumber} from '../../util/numberFormatter';
@@ -55,6 +59,7 @@ export default function NewHome({navigation}) {
   const user = useSelector((state) => state.getUserReducer);
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const getWallet = useSelector((state) => state.getUserWalletReducer);
 
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -166,6 +171,8 @@ export default function NewHome({navigation}) {
     dispatch(getTotalBuddySavings());
     dispatch(getBillServices());
     dispatch(getAirtime());
+    dispatch(getUserWallet());
+    dispatch(getUserWalletTransactions());
     // dispatch(getBillsCategory('airtime'));
   }, []);
 
@@ -178,6 +185,11 @@ export default function NewHome({navigation}) {
       );
     }
   }, [getMaxLoanCap1]);
+
+  useEffect(() => {
+    // console.log('The Wallet: ', getWallet);
+    setWallet(getWallet.available_balances);
+  }, [getWallet]);
 
   const slides = [
     {
@@ -216,21 +228,21 @@ export default function NewHome({navigation}) {
           : navigation.navigate('EmergencyLoanDashBoard');
       },
     },
-    // {
-    //   title: 'Wallets',
-    //   subtitle:
-    //     wallet == 0
-    //       ? 'Fund your wallet to transact on Kwaba'
-    //       : 'Save and pay bills from yout wallet',
-    //   amount: formatNumber(wallet),
-    //   color: COLORS.dark,
-    //   actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
-    //   actionClick: () =>
-    //     wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
-    //   cardClick: () => {
-    //     navigation.navigate('Wallet');
-    //   },
-    // },
+    {
+      title: 'Wallets',
+      subtitle:
+        wallet == 0
+          ? 'Fund your wallet to transact on Kwaba'
+          : 'Save and pay bills from yout wallet',
+      amount: formatNumber(wallet),
+      color: COLORS.dark,
+      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+      actionClick: () =>
+        wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
+      cardClick: () => {
+        navigation.navigate('Wallet');
+      },
+    },
     {
       title: 'Rent Now Pay Later',
       subtitle:

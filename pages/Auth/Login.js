@@ -134,23 +134,32 @@ export default function Login({navigation}) {
       if (res.status == 200) {
         setSpinner(false);
         setErrorMsg('');
-        saveLoginToStorage({
-          ...res.data.authData,
-          username: res.data.authData.user.firstname,
-          isLoggedIn: true,
-          // isProfileCompleted: res.data.authData.user.profile_complete,
-          // emailVerified: res.data.authData.user.email_verified,
-        });
-        dispatch(
-          setLoginState({
-            ...res.data.authData,
-            username: res.data.authData.user.firstname,
-            isLoggedIn: true,
-            // isProfileCompleted: res.data.authData.user.profile_complete,
-            // emailVerified: res.data.authData.user.email_verified,
-          }),
+        console.log('Res: ', res.data); // log out response
+        if (res.data.authData.haveSetPin) {
+          navigation.navigate('EnterPin');
+        } else {
+          navigation.navigate('CreatePin', data);
+        }
+
+        // store email locally
+        await AsyncStorage.setItem(
+          'loginEmail',
+          JSON.stringify(res.data.authData.email),
         );
-        navigation.navigate('Home');
+
+        // saveLoginToStorage({
+        //   ...res.data.authData,
+        //   username: res.data.authData.user.firstname,
+        //   isLoggedIn: true,
+        // });
+        // dispatch(
+        //   setLoginState({
+        //     ...res.data.authData,
+        //     username: res.data.authData.user.firstname,
+        //     isLoggedIn: true,
+        //   }),
+        // );
+        // navigation.navigate('Home');
       } else {
         setSpinner(false);
         console.log('Invalid, please provide a valid email and password');
@@ -367,6 +376,27 @@ export default function Login({navigation}) {
                   <Text style={{color: '#00DC99'}}>Sign up</Text>
                 </Text>
               </TouchableOpacity>
+
+              {/* <TouchableOpacity
+                onPress={() => navigation.navigate('CreatePin')}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginTop: 10,
+                }}>
+                <Text
+                  style={{
+                    color: '#465969',
+                    fontSize: 14,
+                    lineHeight: 30,
+                    fontWeight: 'bold',
+                  }}>
+                  Haven't set a pin?{' '}
+                  <Text style={{color: '#00DC99'}}>Create pin</Text>
+                </Text>
+              </TouchableOpacity> */}
             </>
           )}
         </Formik>

@@ -24,6 +24,8 @@ import GetCode from './pages/Auth/GetCode';
 import VerifyNumber from './pages/Auth/VerifyNumber';
 import SignUp from './pages/Auth/SignUp';
 import Login from './pages/Auth/Login';
+import CreatePin from './pages/Auth/CreatePin';
+import EnterPin from './pages/Auth/EnterPin';
 import Home from './pages/Home/Home';
 import {
   SavingsHome,
@@ -196,6 +198,8 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Instabug from 'instabug-reactnative';
 
+import {PinPassword} from './pages/UserAccount/PinPassword';
+
 const Stack = createStackNavigator();
 
 const linking = {
@@ -234,7 +238,7 @@ const App = () => {
       dispatch(setLoginState(JSON.parse(userData)));
       // console.log('here is the store', store2.token);
       const loggedInStatus =
-        userData != null ? JSON.parse(userData).isLoggedIn : false;
+        userData != null ? JSON.parse(userData)?.isLoggedIn : false;
       setIsLoggedIn(loggedInStatus);
       setUserToken(token);
 
@@ -316,8 +320,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'RentNowPayLaterDashboard'}
-        >
+          initialRouteName={'Welcome'}>
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
@@ -326,6 +329,10 @@ const App = () => {
                 name="Onboarding"
                 component={Onboarding}></Stack.Screen>
               <Stack.Screen name="Login" component={Login}></Stack.Screen>
+              <Stack.Screen
+                name="CreatePin"
+                component={CreatePin}></Stack.Screen>
+              <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen
                 name="VerifyNumber"
@@ -696,6 +703,8 @@ const App = () => {
               <Stack.Screen name="LoanScreen1" component={LoanScreen1} />
 
               <Stack.Screen name="Wallet" component={Wallet} />
+
+              <Stack.Screen name="PinPassword" component={PinPassword} />
             </>
           )}
         </Stack.Navigator>
