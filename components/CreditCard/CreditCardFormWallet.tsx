@@ -24,7 +24,7 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import {useSelector, useDispatch} from 'react-redux';
-import {getTotalSoloSavings} from '../../redux/actions/savingsActions';
+import {getUserWallet} from '../../redux/actions/walletAction';
 
 RNPaystack.init({
   publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
@@ -142,7 +142,7 @@ const CreditCardWallet: React.FC = (props: any) => {
         // display success modal
         // navigate to dashboard / homepage
         //dispatch
-        dispatch(getTotalSoloSavings());
+        dispatch(getUserWallet());
         // dispatch(getMaxLoanCap());
         props.navigation.navigate('PaymentSuccessful', {
           name: props.redirectTo,

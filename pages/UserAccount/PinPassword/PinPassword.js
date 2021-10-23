@@ -5,11 +5,13 @@ import IconFA from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../../../util';
 import ChangePasswordModal from './ChangePasswordModal';
 import SetPinModal from './SetPinModal';
+import ChangePinModal from './ChangePinModal';
 
 export default function PinPassword(props) {
   const {navigation} = props;
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [showSetPinModal, setShowSetPinModal] = useState(false);
+  const [showChangePinModal, setShowChangePinModal] = useState(false);
   return (
     <>
       <View style={[styles.container]}>
@@ -40,7 +42,7 @@ export default function PinPassword(props) {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.card]}
-            onPress={() => setShowSetPinModal(true)}>
+            onPress={() => setShowChangePinModal(true)}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon
                 name="keypad"
@@ -48,7 +50,7 @@ export default function PinPassword(props) {
                 style={{color: COLORS.primary, marginRight: 10}}
               />
 
-              <Text style={[styles.cardText]}>Set PIN</Text>
+              <Text style={[styles.cardText]}>Change PIN</Text>
             </View>
             <IconFA
               name="chevron-right"
@@ -68,10 +70,17 @@ export default function PinPassword(props) {
         />
       )}
 
-      {showSetPinModal && (
+      {/* {showSetPinModal && (
         <SetPinModal
           onRequestClose={() => setShowSetPinModal(!showSetPinModal)}
           visible={showSetPinModal}
+        />
+      )} */}
+
+      {showChangePinModal && (
+        <ChangePinModal
+          onRequestClose={() => setShowChangePinModal(!showChangePinModal)}
+          visible={showChangePinModal}
         />
       )}
     </>

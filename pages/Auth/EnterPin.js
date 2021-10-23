@@ -30,6 +30,8 @@ export default function EnterPin({navigation, route}) {
   const [spinner, setSpinner] = useState(false);
   const [email, setEmail] = useState('');
 
+  const [invalidPin, setInvalidPin] = useState(false);
+
   useEffect(() => {
     (async () => {
       const e = await AsyncStorage.getItem('loginEmail');
@@ -52,6 +54,7 @@ export default function EnterPin({navigation, route}) {
       pin: value,
     };
     setSpinner(true);
+    setInvalidPin(false);
     try {
       const res = await enterPinToLogin(data);
       console.log('The Res: ', res);
@@ -71,13 +74,16 @@ export default function EnterPin({navigation, route}) {
         );
         console.log('Give am');
         navigation.navigate('Home');
+        setInvalidPin(false);
       } else {
         setSpinner(false);
+        setInvalidPin(true);
         console.log('Something went wrong...');
       }
     } catch (error) {
       setSpinner(false);
       console.log('Error: ', error);
+      setInvalidPin(true);
     }
   };
 
@@ -113,6 +119,7 @@ export default function EnterPin({navigation, route}) {
               {...cellProps}
               value={value}
               onChangeText={setValue}
+              onTextInput={() => setInvalidPin(false)}
               cellCount={CELL_COUNT}
               rootStyle={designs.codeInputContainer}
               keyboardType="number-pad"
@@ -120,7 +127,11 @@ export default function EnterPin({navigation, route}) {
               renderCell={({index, symbol, isFocused}) => (
                 <View
                   key={index}
-                  style={[designs.codeInput, isFocused && designs.focusCell]}
+                  style={[
+                    designs.codeInput,
+                    isFocused && designs.focusCell,
+                    {borderColor: invalidPin ? COLORS.red : '#EFEFEF'},
+                  ]}
                   onLayout={getCellLayoutHandler(index)}>
                   <Text style={designs.cellText}>
                     {symbol || (isFocused ? <Cursor /> : null)}
@@ -128,6 +139,18 @@ export default function EnterPin({navigation, route}) {
                 </View>
               )}
             />
+            {invalidPin && (
+              <Text
+                style={[
+                  designs.subtitle,
+                  {
+                    color: COLORS.red,
+                    marginTop: 20,
+                  },
+                ]}>
+                Incorrect Pin
+              </Text>
+            )}
           </View>
         </View>
 
@@ -151,28 +174,6 @@ export default function EnterPin({navigation, route}) {
                 fontWeight: 'bold',
               }}>
               CONFIRM
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SignUp');
-            }}
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              // marginTop: 20,
-            }}>
-            <Text
-              style={{
-                color: '#465969',
-                fontSize: 14,
-                lineHeight: 30,
-                fontWeight: 'bold',
-              }}>
-              Don't have an account?{' '}
-              <Text style={{color: '#00DC99'}}>Sign up</Text>
             </Text>
           </TouchableOpacity>
         </View>

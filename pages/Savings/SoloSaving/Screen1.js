@@ -114,7 +114,7 @@ export default function Screen1({navigation}) {
     return (
       <>
         <Text style={[designs.boldText, {marginTop: 20}]}>
-          What's your savings title?
+          Create your savings title?
         </Text>
         <View
           style={[
@@ -321,7 +321,7 @@ export default function Screen1({navigation}) {
               <Field
                 component={CustomInput}
                 name="savingTitle"
-                placeholder="Savings Title"
+                placeholder="e.g Next year's rent"
               />
 
               <Field component={ActiveOptionSelection} name="savingOption" />
@@ -336,11 +336,16 @@ export default function Screen1({navigation}) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={isValid ? false : true}
+                // disabled={isValid ? false : true}
+                disabled={values.targetAmount != '' && isValid ? false : true}
                 style={[
                   designs.button,
                   {
-                    backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    // backgroundColor: isValid ? '#00DC99' : '#00DC9950',
+                    backgroundColor:
+                      values.targetAmount != '' && isValid
+                        ? '#00DC99'
+                        : '#00DC9950',
                   },
                 ]}>
                 <Text

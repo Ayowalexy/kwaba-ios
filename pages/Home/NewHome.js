@@ -108,6 +108,7 @@ export default function NewHome({navigation}) {
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
         dispatch(getTotalBuddySavings());
+        dispatch(getUserWallet());
 
         dispatch(
           setLoginState({
