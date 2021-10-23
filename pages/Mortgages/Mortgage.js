@@ -24,7 +24,7 @@ const Mortgages = ({navigation}) => {
         scrollEnabled
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flex: 1}}>
-        <Icon
+        {/* <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back"
           size={25}
@@ -35,7 +35,7 @@ const Mortgages = ({navigation}) => {
             top: 10,
             left: 10,
           }}
-        />
+        /> */}
         <Image
           style={{
             width: 50,
