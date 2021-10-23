@@ -142,7 +142,7 @@ const Borrow = ({navigation}) => {
           resizeMode: 'cover',
         }}
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           position: 'absolute',
           top: 0,
@@ -159,7 +159,7 @@ const Borrow = ({navigation}) => {
           }}
           color={COLORS.light}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <ScrollView
         scrollEnabled
         showsVerticalScrollIndicator={false}
