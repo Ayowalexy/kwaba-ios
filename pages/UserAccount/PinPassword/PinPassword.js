@@ -28,7 +28,7 @@ export default function PinPassword(props) {
             onPress={() => setShowChangePasswordModal(true)}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon
-                name="lock-open"
+                name="lock-closed"
                 size={25}
                 style={{color: COLORS.primary, marginRight: 10}}
               />
