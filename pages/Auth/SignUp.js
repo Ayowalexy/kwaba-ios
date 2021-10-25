@@ -370,7 +370,8 @@ export default function SignUp({navigation}) {
             flexDirection: 'row',
             justifyContent: 'center',
             alignItems: 'center',
-            marginVertical: 20,
+            marginTop: 10,
+            marginBottom: 20,
           }}>
           <Text
             style={{

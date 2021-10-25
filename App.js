@@ -200,6 +200,8 @@ import Instabug from 'instabug-reactnative';
 
 import {PinPassword} from './pages/UserAccount/PinPassword';
 
+import analytics from '@segment/analytics-react-native';
+
 const Stack = createStackNavigator();
 
 const linking = {
@@ -222,6 +224,32 @@ const App = () => {
   const [isOffline, setOfflineStatus] = useState(false);
 
   const store2 = useSelector((state) => state.loginReducer);
+
+  useEffect(() => {
+    (async () => {
+      await analytics.setup('C0BVBjco2Aev69fXdUJfCpkBFvjHRZle', {
+        // Record screen views automatically!
+        recordScreenViews: true,
+        // Record certain application events automatically!
+        trackAppLifecycleEvents: true,
+      });
+
+      await analytics.track('C0BVBjco2Aev69fXdUJfCpkBFvjHRZle', {
+        messageId: 'segment-test-message-igjoi',
+        timestamp: '2021-10-25T09:50:21.111Z',
+        type: 'track',
+        email: 'test@example.org',
+        projectId: '8iu7kgTk99NCBVLJQpAC6N',
+        properties: {
+          property1: 1,
+          property2: 'test',
+          property3: true,
+        },
+        userId: 'test-user-ye4q7e',
+        event: 'Segment Test Event Name',
+      });
+    })();
+  }, []);
 
   useEffect(() => {
     // console.log('Instabug: ', Instabug);

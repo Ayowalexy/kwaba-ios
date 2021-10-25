@@ -151,7 +151,7 @@ const designs = StyleSheet.create({
     marginBottom: 5,
   },
   subtitle: {
-    fontSize: 13,
+    fontSize: 12,
     color: COLORS.dark,
     lineHeight: 20,
   },

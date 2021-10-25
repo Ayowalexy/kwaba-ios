@@ -52,6 +52,7 @@ import PaymentTypeModal from '../../components/paymentTypeModal';
 import AmountModal from '../../components/amountModal';
 import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
+import analytics from '@segment/analytics-react-native';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -365,9 +366,28 @@ export default function NewHome({navigation}) {
         </View>
         <TouchableOpacity
           style={{paddingLeft: 20}}
-          onPress={() => {
+          onPress={async () => {
             navigation.navigate('Notifications');
             // navigation.navigate('BuddyInviteLists');
+
+            // await analytics.track('Notification-Button', {
+            //   messageId: 'segment-test-message-igjoi',
+            //   timestamp: '2021-10-25T09:50:21.111Z',
+            //   type: 'track',
+            //   email: 'joshuanwosu078@gmail.com',
+            //   projectId: '8iu7kgTk99NCBVLJQpAC6N',
+            //   properties: {
+            //     property1: 1,
+            //     property2: 'test',
+            //     property3: true,
+            //   },
+            //   userId: 'test-user-ye4q7e',
+            //   event: 'Segment Test Event Name',
+            // });
+
+            await analytics.track('Notification-Button', {
+              name: 'Notification button',
+            });
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>

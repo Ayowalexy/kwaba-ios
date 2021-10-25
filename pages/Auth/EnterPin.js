@@ -33,12 +33,20 @@ export default function EnterPin({navigation, route}) {
   const [invalidPin, setInvalidPin] = useState(false);
 
   useEffect(() => {
+    console.log('**********');
+    console.log('Hello Joshua', route);
+
     (async () => {
-      const e = await AsyncStorage.getItem('loginEmail');
-      console.log('Na im be dis: ', JSON.parse(e));
-      setEmail(JSON.parse(e));
+      if (route?.params) {
+        setEmail(route?.params?.email);
+        console.log('Email: ', route?.params?.email);
+      } else {
+        const e = await AsyncStorage.getItem('loginEmail');
+        console.log('Na im be dissss: ', JSON.parse(e));
+        setEmail(JSON.parse(e));
+      }
     })();
-  }, []);
+  }, [route?.params?.email]);
 
   const saveLoginToStorage = async (data) => {
     // console.log(data);
@@ -111,8 +119,27 @@ export default function EnterPin({navigation, route}) {
             </Text>
           </View>
 
-          <View style={{marginTop: 50, alignItems: 'center'}}>
-            <Text style={[designs.subtitle]}>ENTER PIN</Text>
+          <View
+            style={{
+              marginTop: 20,
+              backgroundColor: '#00DC9910',
+              paddingVertical: 15,
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                color: COLORS.dark,
+                fontSize: 12,
+                fontWeight: 'normal',
+              }}>
+              Current User : {email}
+            </Text>
+          </View>
+
+          <View style={{marginTop: 40, alignItems: 'center'}}>
+            <Text style={[designs.subtitle, {fontWeight: 'bold'}]}>
+              ENTER PIN
+            </Text>
 
             <CodeField
               ref={ref}
@@ -174,6 +201,27 @@ export default function EnterPin({navigation, route}) {
                 fontWeight: 'bold',
               }}>
               CONFIRM
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Login')}
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: 10,
+            }}>
+            <Text
+              style={{
+                color: '#465969',
+                fontSize: 14,
+                lineHeight: 30,
+                fontWeight: 'bold',
+              }}>
+              Log in with a different{' '}
+              <Text style={{color: '#00DC99'}}>Account</Text>
             </Text>
           </TouchableOpacity>
         </View>

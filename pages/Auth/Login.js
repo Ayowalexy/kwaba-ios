@@ -136,9 +136,11 @@ export default function Login({navigation}) {
         setErrorMsg('');
         console.log('Res: ', res.data); // log out response
         if (res.data.authData.haveSetPin) {
-          navigation.navigate('EnterPin');
+          navigation.navigate('EnterPin', {email: res.data.authData.email});
+          console.log('He get pin');
         } else {
           navigation.navigate('CreatePin', data);
+          console.log('He no get pin');
         }
 
         // store email locally

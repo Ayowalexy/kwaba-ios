@@ -784,6 +784,21 @@ const addFundsToWallet = async (data) => {
   }
 };
 
+// change password
+
+const changePassword = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user/change_password';
+    const token = await getToken();
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -840,4 +855,5 @@ export {
   setPin,
   enterPinToLogin,
   addFundsToWallet,
+  changePassword,
 };
