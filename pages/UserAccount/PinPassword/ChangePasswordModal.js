@@ -14,6 +14,7 @@ import {COLORS} from '../../../util';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {changePassword} from '../../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const CustomInput = (props) => {
   const {
@@ -91,10 +92,9 @@ const changePasswordSchema = yup.object().shape({
 
 export default function ChangePasswordModal(props) {
   const {onRequestClose, visible} = props;
+  const [spinner, setSpinner] = useState(false);
 
-  const handleSubmit = async (values) => handleChangePassword(values);
-
-  const handleChangePassword = async (values) => {
+  const handleSubmit = async (values) => {
     const data = {
       oldPassword: values.oldPassword,
       newPassword: values.newPassword,
@@ -102,18 +102,21 @@ export default function ChangePasswordModal(props) {
 
     console.log('The Data For Password: ', data);
 
+    setSpinner(true);
     try {
-      const response = changePassword(data);
-      console.log(response.status);
-      if (response.status == 200) {
-        // setSuccessModalMessage('password Change successfull');
-        // setSuccessModal(true);
-        console.log('Reset Successful.');
-      } else {
-        console.log('Something went wrong.');
-      }
+      const response = await changePassword(data);
+      console.log('Omi:', response);
+      setSpinner(false);
+      // if (response.status == 200) {
+      //   // setSuccessModalMessage('password Change successfull');
+      //   // setSuccessModal(true);
+      //   console.log('Reset Successful.');
+      // } else {
+      //   console.log('Something went wrong.');
+      // }
     } catch (error) {
       console.log('The Error: ', error);
+      setSpinner(false);
     }
   };
 
@@ -193,6 +196,8 @@ export default function ChangePasswordModal(props) {
           </View>
         </View>
       </Modal>
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }
