@@ -140,7 +140,7 @@ const Screen2 = ({navigation}) => {
       'complete_profile',
       JSON.stringify({...JSON.parse(complete_profile), ...values}),
     );
-    navigation.navigate('CompleteProfile5');
+    navigation.navigate('CompleteProfile3');
   };
 
   return (
@@ -156,6 +156,7 @@ const Screen2 = ({navigation}) => {
         <View
           style={{
             marginTop: 25,
+            paddingHorizontal: 10,
           }}>
           <Text
             style={[
