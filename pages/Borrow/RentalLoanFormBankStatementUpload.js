@@ -67,12 +67,16 @@ export default function RentalLoanFormBankStatementUpload(props) {
 
   const config = {
     publicKey: 'live_pk_3MSVtE6Jtj2K6ZGMrkCT',
-    // onClose: () => alert('Widget closed'),
     onClose: () => console.log('Widget closed'),
     onSuccess: async (data) => {
       const code = data.getAuthCode();
       console.log('Access code', code);
-      await postData(code);
+      // await postData(code);
+    },
+    onEvent: (eventName, data) => {
+      // optional
+      console.log('The Event Name: ', eventName);
+      console.log('The Data: ', data);
     },
   };
 
