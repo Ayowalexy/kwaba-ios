@@ -16,6 +16,12 @@ import * as yup from 'yup';
 import {changePassword} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+import {
+  ErrorModal,
+  SuccessModal,
+  WarningModal,
+} from '../../../components/MessageModals';
+
 const CustomInput = (props) => {
   const {
     field: {name, onBlur, onChange, value},
@@ -93,6 +99,9 @@ const changePasswordSchema = yup.object().shape({
 export default function ChangePasswordModal(props) {
   const {onRequestClose, visible} = props;
   const [spinner, setSpinner] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(true);
+  const [showWarningModal, setShowWarningModal] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(true);
 
   const handleSubmit = async (values) => {
     const data = {
@@ -198,6 +207,27 @@ export default function ChangePasswordModal(props) {
       </Modal>
 
       <Spinner visible={spinner} size="large" />
+
+      {/* <SuccessModal
+        onRequestClose={() => {
+          setShowSuccessModal(!showSuccessModal);
+        }}
+        visible={showSuccessModal}
+      /> */}
+
+      {/* <ErrorModal
+        onRequestClose={() => {
+          setShowErrorModal(!showErrorModal);
+        }}
+        visible={showErrorModal}
+      /> */}
+
+      {/* <WarningModal
+        onRequestClose={() => {
+          setShowWarningModal(!showWarningModal);
+        }}
+        visible={showWarningModal}
+      /> */}
     </>
   );
 }

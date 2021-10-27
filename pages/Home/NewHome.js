@@ -54,6 +54,8 @@ import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
 import analytics from '@segment/analytics-react-native';
 
+import {TrackEvent} from '../../util/eventTracker';
+
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
@@ -385,9 +387,10 @@ export default function NewHome({navigation}) {
             //   event: 'Segment Test Event Name',
             // });
 
-            await analytics.track('Notification-Button', {
-              name: 'Notification button',
-            });
+            // await analytics.track('Notification-Button', {
+            //   name: 'Notification button',
+            // });
+            TrackEvent('Notification-Button');
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
@@ -791,7 +794,13 @@ export default function NewHome({navigation}) {
                             marginTop: 20,
                           }}>
                           <TouchableOpacity
-                            onPress={() => navigation.navigate('SavingsHome')}
+                            onPress={async () => {
+                              navigation.navigate('SavingsHome');
+
+                              await analytics.track('Rent Savings', {
+                                name: 'Rent Savings',
+                              });
+                            }}
                             style={{
                               backgroundColor: COLORS.primary,
                               borderRadius: 10,

@@ -316,9 +316,9 @@ export default function Withdraw({navigation}) {
       <Text style={[styles.heading]}>Withdraw</Text>
 
       <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        {savings > 0 ? (
+        {savings <= 0 ? (
           <View style={[styles.content, {alignItems: 'center'}]}>
-            <Image source={images.piggy} style={[styles.image]} />
+            <Image source={images.purplePiggy} style={[styles.image]} />
             <Text
               style={{
                 fontSize: 20,
@@ -331,12 +331,12 @@ export default function Withdraw({navigation}) {
               style={{
                 fontSize: 14,
                 fontWeight: 'normal',
-                color: '#999',
-                lineHeight: 22,
+                color: COLORS.dark,
+                lineHeight: 20,
                 textAlign: 'center',
                 marginVertical: 10,
               }}>
-              You know you don't have an active{'\n'}rent savings right?
+              You know you don't have an active{'\n'}savings right?
             </Text>
             <TouchableOpacity
               style={[styles.button]}
@@ -530,11 +530,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   image: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     // borderWidth: 1,
     marginVertical: 10,
     resizeMode: 'contain',
+    marginTop: 50,
   },
 
   button: {

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import analytics from '@segment/analytics-react-native';
+
+import PhoneInput from 'react-native-phone-number-input';
 
 const CustomInput = (props) => {
   const {
@@ -104,20 +107,21 @@ const signUpValidationSchema = yup.object().shape({
     .required('Email is required'),
   password: yup
     .string()
-    // .matches(/\w*[a-z]\w*/, 'Password must have a small letter')
-    // .matches(/\w*[A-Z]\w*/, 'Password must have a capital letter')
     .matches(/\d/, 'Password must have a number')
     .min(6, ({min}) => `Password must be at least ${min} characters`)
     .required('Password is required'),
-  confirmPassword: yup
-    .string()
-    .test('passwords-match', 'Passwords must match', function (value) {
-      return this.parent.password === value;
-    }),
+  // confirmPassword: yup
+  //   .string()
+  //   .test('passwords-match', 'Passwords must match', function (value) {
+  //     return this.parent.password === value;
+  //   }),
 });
 
 export default function SignUp({navigation}) {
   const [spinner, setSpinner] = useState(false);
+  const phoneInput = useRef(null);
+  const [telePhone, setTelePhone] = useState('');
+  const [formattedValue, setFormattedValue] = useState('');
 
   const handleSubmit = async (values, setValues, setErrors) => {
     const data = {
@@ -127,11 +131,11 @@ export default function SignUp({navigation}) {
       password: values.password,
       gender: values.gender,
       referral_code: values.referral_code,
+      telephone: formattedValue,
     };
 
-    console.log(data);
-
-    // navigation.navigate('VerifyNumber');
+    // console.log(data);
+    // console.log('Formattted Number: ', formattedValue);
 
     setSpinner(true);
     const res = await signUp(data);
@@ -139,31 +143,21 @@ export default function SignUp({navigation}) {
     console.log(res.status);
     console.log('The RES', res.status);
 
-    // // if (res == 'Request failed with status code 409') setSpinner(false);
     if (res.status == 201) {
       setSpinner(false);
       await AsyncStorage.setItem('authData', res.data.authData);
-      // navigation.navigate('GetCode');
       navigation.navigate('Login'); // Login after signup
 
-      // setValues({
-      //   firstName: '',
-      //   lastName: '',
-      //   email: '',
-      //   password: '',
-      //   confirmPassword: '',
-      //   gender: 'Female',
-      // });
+      await analytics.track('User-Signup', {
+        email: values.email,
+      });
     } else {
       setSpinner(false);
       if (res == 'Request failed with status code 409') {
-        // console.log('Email is already taken');
         setErrors({email: 'Email is already taken'});
       } else {
         let errorMsg =
           'An error occurred, please check you internet connection or try again';
-
-        // setValues({...values, error: errorMsg});
         console.log(errorMsg);
       }
     }
@@ -247,7 +241,6 @@ export default function SignUp({navigation}) {
             lastName: '',
             email: '',
             password: '',
-            confirmPassword: '',
             gender: 'Female',
             referral_code: '',
           }}
@@ -281,10 +274,47 @@ export default function SignUp({navigation}) {
                 placeholder="Password"
               />
 
-              <Field
+              {/* <Field
                 component={CustomInput}
                 name="confirmPassword"
                 placeholder="Confirm Password"
+              /> */}
+              <PhoneInput
+                ref={phoneInput}
+                defaultValue={telePhone}
+                defaultCode="NG"
+                layout="first"
+                placeholder="Phone number"
+                onChangeText={setTelePhone}
+                onChangeFormattedText={(text) => {
+                  setFormattedValue(text);
+                }}
+                renderDropdownImage={<Icon name="chevron-down" />}
+                // autoFocus
+                containerStyle={{
+                  width: '100%',
+                  height: 60,
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  borderColor: '#EFEFEF',
+                  backgroundColor: 'white',
+                  marginTop: 10,
+                }}
+                flagButtonStyle={{
+                  backgroundColor: 'transparent',
+                }}
+                codeTextStyle={{
+                  backgroundColor: 'transparent',
+                  fontSize: 14,
+                }}
+                textContainerStyle={{
+                  backgroundColor: 'transparent',
+                }}
+                textInputStyle={{
+                  fontSize: 14,
+                  padding: 0,
+                  margin: 0,
+                }}
               />
 
               <Field
@@ -301,7 +331,7 @@ export default function SignUp({navigation}) {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   width: '100%',
-                  marginTop: 20,
+                  marginTop: 10,
                 }}>
                 {['Male', 'Female'].map((value, index) => (
                   <TouchableOpacity
@@ -333,15 +363,6 @@ export default function SignUp({navigation}) {
                   </TouchableOpacity>
                 ))}
               </View>
-
-              {/* <Text
-                style={{
-                  marginTop: 10,
-                  fontSize: 10,
-                  color: 'blue',
-                }}>
-                Gender: {values.gender}
-              </Text> */}
 
               <Spinner visible={spinner} animation="fade" size="large" />
 

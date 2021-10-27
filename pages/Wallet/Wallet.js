@@ -28,7 +28,7 @@ export default function Wallet(props) {
 
   const [transactions, setTransactions] = useState([]);
 
-  const [toggleAmount, setToggleAmount] = useState(false);
+  const [toggleAmount, setToggleAmount] = useState(true);
 
   const getWallet = useSelector((state) => state.getUserWalletReducer);
   const getWalletTransactions = useSelector(
@@ -149,7 +149,7 @@ export default function Wallet(props) {
               alignItems: 'center',
               borderRadius: 50,
             }}>
-            <Icon name="apps" size={20} color={COLORS.white} />
+            <Icon name="list-sharp" size={20} color={COLORS.white} />
           </TouchableOpacity>
         </View>
         <View style={[styles.content]}>

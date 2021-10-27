@@ -96,6 +96,7 @@ const bankRequest = require('../assets/images/bank_request.png');
 const uploadDocument = require('../assets/images/uploadDocument.png');
 
 const piggy = require('../assets/images/piggy.png');
+const purplePiggy = require('../assets/images/purple-piggy.png');
 
 const guarantorImage = require('../assets/images/guarantorImage.png');
 
@@ -211,6 +212,7 @@ export {
   bankRequest,
   uploadDocument,
   piggy,
+  purplePiggy,
   guarantorImage,
   declineImage,
   addosserLogo,

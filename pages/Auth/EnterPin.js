@@ -15,6 +15,7 @@ import {
 import {enterPinToLogin} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import analytics from '@segment/analytics-react-native';
 
 const CELL_COUNT = 4;
 
@@ -83,6 +84,10 @@ export default function EnterPin({navigation, route}) {
         console.log('Give am');
         navigation.navigate('Home');
         setInvalidPin(false);
+
+        await analytics.track('Enter-Pin', {
+          email: email,
+        });
       } else {
         setSpinner(false);
         setInvalidPin(true);
