@@ -2,27 +2,19 @@ import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import IconFA from 'react-native-vector-icons/FontAwesome';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconOC from 'react-native-vector-icons/Octicons';
 
-import {AntDesign, FontAwesome, Ionicons} from 'react-native-vector-icons';
-
-import {SavingsHome} from '../Savings';
 import Borrow from '../Borrow/Borrow';
-import screen1 from '../CompleteProfile/Screen1';
-import {COLORS, FONTS, images, icons} from '../../util/index';
-import Home from '../Home/Home';
+import {COLORS, icons} from '../../util/index';
 import NewHome from '../Home/NewHome';
-import EmergencyLoanRequestDashBoard from '../Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
-import Account from '../UserAccount/Account';
 import AccountPage from '../UserAccount/AccountPage';
-import BillsHome from '../Bills/BillsHome';
 import Mortgages from '../Mortgages/Mortgage';
-import {TabBar} from 'react-native-tab-view';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
 import Wallet from '../Wallet/Wallet';
+
+import {TrackEvent} from '../../util/segmentEvents';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,11 +23,6 @@ const tabItems = [
     title: 'Kwaba',
     screen: NewHome,
   },
-  // {
-  //   title: 'Save',
-  //   icon: 'piggy-bank',
-  //   screen: SavingsHome,
-  // },
   {
     title: 'Wallet',
     icon: 'wallet-outline',
@@ -62,6 +49,17 @@ const tabItems = [
 
 const BottomNavigator = ({navigation}) => {
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
+
+  const onPress = async (title) => {
+    // const event = navigation.emit({
+    //   type: 'tabPress',
+    //   target: route.key,
+    //   canPreventDefault: true,
+    // });
+    // navigation.navigate(title);
+    // Track clicked
+    await TrackEvent(`Bottom-Navigation-${title}`);
+  };
 
   return (
     <>
@@ -115,72 +113,72 @@ const BottomNavigator = ({navigation}) => {
                           fontSize: 10,
                           fontWeight: 'bold',
                           color: focused ? COLORS.dark : COLORS.grey,
-                          // textTransform: 'uppercase',
                         }}>
                         {title}
                       </Text>
                     </View>
                   ) : (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      {icon.toLowerCase() == 'piggy-bank' ? (
-                        <IconFA5
-                          name={icon}
-                          style={{
-                            fontSize: 25,
-                            color: COLORS.dark,
-                            color: focused ? COLORS.dark : COLORS.grey,
-                          }}
-                        />
-                      ) : title == 'Mortgages' ? (
-                        <Image
-                          source={
-                            focused
-                              ? icons.mortageActive
-                              : icons.mortageInactive
-                          }
-                          style={{
-                            width: 26,
-                            height: 26,
-                            alignSelf: 'center',
-                          }}
-                          resizeMode="contain"
-                        />
-                      ) : title.toLowerCase() == 'rent' ? (
-                        <IconOC
-                          name="home"
-                          style={{
-                            fontSize: 25,
-                            color: COLORS.dark,
-                            color: focused ? COLORS.dark : COLORS.grey,
-                          }}
-                        />
-                      ) : (
-                        <Icon
-                          name={icon}
-                          style={{
-                            fontSize: 25,
-                            color: COLORS.dark,
-                            color: focused ? COLORS.dark : COLORS.grey,
-                          }}
-                        />
-                      )}
-
-                      <Text
+                    <TouchableOpacity onPress={() => onPress(title)}>
+                      <View
                         style={{
-                          marginTop: 2,
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                          color: focused ? COLORS.dark : COLORS.grey,
-                          // textTransform: 'uppercase',
+                          flex: 1,
+                          justifyContent: 'center',
+                          alignItems: 'center',
                         }}>
-                        {title}
-                      </Text>
-                    </View>
+                        {icon.toLowerCase() == 'piggy-bank' ? (
+                          <IconFA5
+                            name={icon}
+                            style={{
+                              fontSize: 25,
+                              color: COLORS.dark,
+                              color: focused ? COLORS.dark : COLORS.grey,
+                            }}
+                          />
+                        ) : title == 'Mortgages' ? (
+                          <Image
+                            source={
+                              focused
+                                ? icons.mortageActive
+                                : icons.mortageInactive
+                            }
+                            style={{
+                              width: 26,
+                              height: 26,
+                              alignSelf: 'center',
+                            }}
+                            resizeMode="contain"
+                          />
+                        ) : title.toLowerCase() == 'rent' ? (
+                          <IconOC
+                            name="home"
+                            style={{
+                              fontSize: 25,
+                              color: COLORS.dark,
+                              color: focused ? COLORS.dark : COLORS.grey,
+                            }}
+                          />
+                        ) : (
+                          <Icon
+                            name={icon}
+                            style={{
+                              fontSize: 25,
+                              color: COLORS.dark,
+                              color: focused ? COLORS.dark : COLORS.grey,
+                            }}
+                          />
+                        )}
+
+                        <Text
+                          style={{
+                            marginTop: 2,
+                            fontSize: 10,
+                            fontWeight: 'bold',
+                            color: focused ? COLORS.dark : COLORS.grey,
+                          }}>
+                          {title}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
                   )}
                 </>
               ),

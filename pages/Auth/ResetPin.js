@@ -9,6 +9,7 @@ import analytics from '@segment/analytics-react-native';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import {setPin} from '../../services/network';
 
 const ResetPinValidationSchema = yup.object().shape({
   pin: yup.string().required('Password is required'),
@@ -99,8 +100,26 @@ export default function ResetPin({navigation, route}) {
       email: values.email,
       password: values.password,
     };
+    // console.log('The Reset Data: ', data);
 
-    console.log('Reset Data: ', data);
+    setSpinner(true);
+    try {
+      const resp = await setPin(data);
+      // if(resp.status )
+      if (resp.status == 200) {
+        console.log('The RESP: ', resp.data);
+        navigation.navigate('EnterPin');
+        setSpinner(false);
+        await analytics.track('Reset-Pin', {
+          email: values.email,
+        });
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
+    }
   };
 
   return (

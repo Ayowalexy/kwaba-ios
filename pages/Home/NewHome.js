@@ -54,7 +54,7 @@ import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
 import analytics from '@segment/analytics-react-native';
 
-import {TrackEvent} from '../../util/eventTracker';
+import {TrackEvent} from '../../util/segmentEvents';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();

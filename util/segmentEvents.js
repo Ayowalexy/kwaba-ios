@@ -14,8 +14,8 @@ import analytics from '@segment/analytics-react-native';
 
 const getUserData = async () => {
   const userData = await AsyncStorage.getItem('userData');
-  const parsedUserData = JSON.parse(userData);
-  return parsedUserData;
+  const user = JSON.parse(userData).user;
+  return user;
 };
 
 /**
@@ -23,10 +23,10 @@ const getUserData = async () => {
  * @param eventName
  */
 const TrackEvent = async (eventName) => {
-  const userInfo = await getUserData();
+  const user = await getUserData();
 
   return analytics.track(eventName, {
-    email: user != null ? userInfo.user.email : email,
+    email: user.email,
   });
 };
 

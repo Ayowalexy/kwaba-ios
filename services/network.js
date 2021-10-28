@@ -744,7 +744,12 @@ const buyOtherBills = async (data) => {
   }
 };
 
-// PIN
+// creating/Reseting PIN
+/**
+ *
+ * @param {pin, email, password} data
+ * @returns
+ */
 const setPin = async (data) => {
   try {
     const url = apiUrl + '/api/v1/user_set_pin';

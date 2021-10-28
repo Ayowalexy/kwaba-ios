@@ -27,7 +27,7 @@ import Login from './pages/Auth/Login';
 import CreatePin from './pages/Auth/CreatePin';
 import EnterPin from './pages/Auth/EnterPin';
 import ResetPin from './pages/Auth/ResetPin';
-import Home from './pages/Home/Home';
+
 import {
   SavingsHome,
   SoloSaving1,
