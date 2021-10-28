@@ -202,7 +202,7 @@ export default function NewHome({navigation}) {
         savings > 0
           ? 'Save now to make your rent\nwork for you'
           : 'Great job on your rent savings',
-      amount: formatNumber(savings),
+      amount: formatNumber(Number(savings).toFixed(2)),
       color: COLORS.primary,
       actionText: savings == 0 ? 'Save Now' : 'Deposit',
       actionClick: () =>
@@ -219,7 +219,7 @@ export default function NewHome({navigation}) {
       title: 'Emergency Fund',
       subtitle:
         instantLoan == 0 ? 'Access instant loans' : 'Total amount to repay',
-      amount: formatNumber(instantLoan),
+      amount: formatNumber(Number(instantLoan).toFixed(2)),
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -237,8 +237,8 @@ export default function NewHome({navigation}) {
       subtitle:
         wallet == 0
           ? 'Fund your wallet to transact on Kwaba'
-          : 'Save and pay bills from yout wallet',
-      amount: formatNumber(wallet),
+          : 'Save and pay bills from your wallet',
+      amount: formatNumber(Number(wallet).toFixed(2)),
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () =>
@@ -253,7 +253,7 @@ export default function NewHome({navigation}) {
         rentalFinance == 0
           ? "Let's help you pay your rent"
           : 'Next payment amount',
-      amount: formatNumber(rentalFinance),
+      amount: formatNumber(Number(rentalFinance).toFixed(2)),
       color: '#000',
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -644,7 +644,7 @@ export default function NewHome({navigation}) {
                             fontWeight: 'bold',
                             color: COLORS.white,
                           }}>
-                          ₦{formatNumber(item.amount) || '0.00'}
+                          ₦{item.amount || '0.00'}
                         </Text>
                       </View>
                     </View>
