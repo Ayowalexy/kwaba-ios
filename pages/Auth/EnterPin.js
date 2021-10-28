@@ -127,17 +127,18 @@ export default function EnterPin({navigation, route}) {
           <View
             style={{
               marginTop: 20,
-              backgroundColor: '#00DC9910',
+              backgroundColor: '#00DC9900',
               paddingVertical: 15,
+              // display: 'none',
             }}>
             <Text
               style={{
                 textAlign: 'center',
                 color: COLORS.dark,
-                fontSize: 12,
-                fontWeight: 'normal',
+                fontSize: 14,
+                fontWeight: 'bold',
               }}>
-              Current User : {email}
+              {email}
             </Text>
           </View>
 
@@ -162,7 +163,7 @@ export default function EnterPin({navigation, route}) {
                   style={[
                     designs.codeInput,
                     isFocused && designs.focusCell,
-                    {borderColor: invalidPin ? COLORS.red : '#EFEFEF'},
+                    {borderColor: invalidPin ? COLORS.red : '#46596950'},
                   ]}
                   onLayout={getCellLayoutHandler(index)}>
                   <Text style={designs.cellText}>
@@ -183,6 +184,25 @@ export default function EnterPin({navigation, route}) {
                 Incorrect Pin
               </Text>
             )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ResetPin')}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <Text
+                style={{
+                  color: '#465969',
+                  fontSize: 12,
+                  lineHeight: 30,
+                  fontWeight: 'bold',
+                }}>
+                Forgot your PIN? <Text style={{color: '#00DC99'}}>Reset</Text>
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -210,10 +230,10 @@ export default function EnterPin({navigation, route}) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => navigation.navigate('Welcome')}
             style={{
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
               marginTop: 10,

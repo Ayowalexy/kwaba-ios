@@ -26,6 +26,7 @@ import SignUp from './pages/Auth/SignUp';
 import Login from './pages/Auth/Login';
 import CreatePin from './pages/Auth/CreatePin';
 import EnterPin from './pages/Auth/EnterPin';
+import ResetPin from './pages/Auth/ResetPin';
 import Home from './pages/Home/Home';
 import {
   SavingsHome,
@@ -237,24 +238,24 @@ const App = () => {
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
-  useEffect(() => {
-    const subscription = AppState.addEventListener('change', (nextAppState) => {
-      if (
-        appState.current.match(/inactive|background/) &&
-        nextAppState === 'active'
-      ) {
-        console.log('App has come to the foreground!');
-      }
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener('change', (nextAppState) => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === 'active'
+  //     ) {
+  //       console.log('App has come to the foreground!');
+  //     }
 
-      appState.current = nextAppState;
-      setAppStateVisible(appState.current);
-      console.log('AppState', appState.current);
-    });
+  //     appState.current = nextAppState;
+  //     setAppStateVisible(appState.current);
+  //     console.log('AppState', appState.current);
+  //   });
 
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
 
   useEffect(() => {
     (async () => {
@@ -392,6 +393,7 @@ const App = () => {
                 name="CreatePin"
                 component={CreatePin}></Stack.Screen>
               <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
+              <Stack.Screen name="ResetPin" component={ResetPin}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen
                 name="VerifyNumber"
