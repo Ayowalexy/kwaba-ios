@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,11 @@ import {COLORS} from '../../util';
 const {width, height} = Dimensions.get('window');
 
 export default function BankTransferModal(props) {
-  const {onRequestClose, visible} = props;
+  const {onRequestClose, visible, walletDetails} = props;
+  useEffect(() => {
+    console.log('Details: ', walletDetails);
+  }, []);
+
   return (
     <>
       <Modal
@@ -44,11 +48,11 @@ export default function BankTransferModal(props) {
               style={{
                 paddingVertical: 30,
                 flex: 1,
-                justifyContent: 'flex-end',
+                // justifyContent: 'flex-end',
               }}>
               <Text
                 style={{
-                  fontSize: 20,
+                  fontSize: 18,
                   fontWeight: 'bold',
                   color: COLORS.primary,
                 }}>
@@ -56,7 +60,7 @@ export default function BankTransferModal(props) {
               </Text>
               <Text
                 style={{
-                  fontSize: 14,
+                  fontSize: 12,
                   fontWeight: 'normal',
                   color: COLORS.primary,
                   marginVertical: 10,
@@ -67,44 +71,35 @@ export default function BankTransferModal(props) {
                 The account number is unique to your Kwaba account
               </Text>
 
-              {/* <Text
-                style={{paddingVertical: 20, fontSize: 14, color: COLORS.primary}}>
-                1. Copy the account details provided below
-              </Text> */}
-
               <View
                 style={{
                   width: '100%',
-                  //   borderWidth: 1,
-                  //   borderColor: COLORS.secondary,
-                  // paddingVertical: 30,
-                  // paddingHorizontal: 30,
-                  backgroundColor: '#46596920',
-                  backgroundColor: '#F7F8FD',
-                  borderRadius: 10,
+                  backgroundColor: '#46596910',
+                  // backgroundColor: '#F7F8FD',
+                  borderRadius: 5,
                   marginVertical: 10,
-                  elevation: 1,
+                  // elevation: 1,
                 }}>
                 <View
                   style={{
                     // marginTop: 0,
                     paddingVertical: 20,
                     paddingHorizontal: 20,
-                    borderBottomColor: '#46596920',
+                    borderBottomColor: '#46596910',
                     borderBottomWidth: 1,
                   }}>
                   <View style={[styles.flex]}>
                     <View>
-                      <Text style={{fontSize: 14, color: COLORS.dark}}>
+                      <Text style={{fontSize: 14, color: COLORS.primary}}>
                         Bank Name
                       </Text>
                       <Text
                         style={{
                           fontSize: 14,
-                          color: COLORS.dark,
-                          fontWeight: 'bold',
+                          color: COLORS.primary,
+                          // fontWeight: 'bold',
                         }}>
-                        Paga
+                        {walletDetails?.bank_name}
                       </Text>
                     </View>
 
@@ -114,7 +109,7 @@ export default function BankTransferModal(props) {
                         name="copy"
                         style={{
                           fontSize: 20,
-                          color: COLORS.dark,
+                          color: COLORS.primary,
                         }}
                       />
                     </TouchableOpacity>
@@ -126,21 +121,21 @@ export default function BankTransferModal(props) {
                     // marginTop: 20,
                     paddingVertical: 20,
                     paddingHorizontal: 20,
-                    borderBottomColor: '#46596920',
+                    borderBottomColor: '#46596910',
                     borderBottomWidth: 1,
                   }}>
                   <View style={[styles.flex]}>
                     <View>
-                      <Text style={{fontSize: 14, color: COLORS.dark}}>
+                      <Text style={{fontSize: 14, color: COLORS.primary}}>
                         Bank Account Number
                       </Text>
                       <Text
                         style={{
                           fontSize: 14,
-                          color: COLORS.dark,
-                          fontWeight: 'bold',
+                          color: COLORS.primary,
+                          // fontWeight: 'bold',
                         }}>
-                        0094552107
+                        {walletDetails?.wallet_number}
                       </Text>
                     </View>
 
@@ -150,7 +145,7 @@ export default function BankTransferModal(props) {
                         name="copy"
                         style={{
                           fontSize: 20,
-                          color: COLORS.dark,
+                          color: COLORS.primary,
                         }}
                       />
                     </TouchableOpacity>
@@ -165,16 +160,16 @@ export default function BankTransferModal(props) {
                   }}>
                   <View style={[styles.flex]}>
                     <View>
-                      <Text style={{fontSize: 14, color: COLORS.dark}}>
+                      <Text style={{fontSize: 14, color: COLORS.primary}}>
                         Bank Account Name
                       </Text>
                       <Text
                         style={{
                           fontSize: 14,
-                          color: COLORS.dark,
-                          fontWeight: 'bold',
+                          color: COLORS.primary,
+                          // fontWeight: 'bold',
                         }}>
-                        Joshua Nwosu
+                        {walletDetails.name}
                       </Text>
                     </View>
 
@@ -184,7 +179,7 @@ export default function BankTransferModal(props) {
                         name="copy"
                         style={{
                           fontSize: 20,
-                          color: COLORS.dark,
+                          color: COLORS.primary,
                         }}
                       />
                     </TouchableOpacity>
@@ -229,7 +224,7 @@ const styles = StyleSheet.create({
   },
 
   copy: {
-    backgroundColor: '#46596920',
+    backgroundColor: '#46596910',
     paddingHorizontal: 10,
     paddingVertical: 10,
     borderRadius: 5,

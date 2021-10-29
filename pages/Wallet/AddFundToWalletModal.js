@@ -19,7 +19,7 @@ import AmountModalWallet from '../../components/amountModalWallet';
 const {width, height} = Dimensions.get('window');
 
 export default function AddFundToWalletModal(props) {
-  const {onRequestClose, visible, navigation} = props;
+  const {onRequestClose, visible, navigation, walletDetails} = props;
   const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   const [showCardModal, setShowCardModal] = useState(false);
   const [showAmountModal, setShowAmountModal] = useState(false);
@@ -202,6 +202,7 @@ export default function AddFundToWalletModal(props) {
             setShowBankTransferModal(!showBankTransferModal)
           }
           visible={showBankTransferModal}
+          walletDetails={walletDetails}
         />
       )}
     </>
@@ -214,7 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     // height: height - 84,
     // backgroundColor: '#F7F8FD',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.0)',
   },
   modalView: {
     // flex: 1,

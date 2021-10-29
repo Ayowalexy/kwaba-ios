@@ -45,14 +45,14 @@ export default function Wallet(props) {
     setAmount(getWallet.available_balances);
   }, [getWallet]);
 
-  useEffect(() => {
-    // setTransactions(getWalletTransactions);
-    // console.log(getWalletTransactions);
-  }, [getWalletTransactions]);
+  // useEffect(() => {
+  //   // setTransactions(getWalletTransactions);
+  //   // console.log(getWalletTransactions);
+  // }, [getWalletTransactions]);
 
-  useEffect(() => {
-    openPanel();
-  }, []);
+  // useEffect(() => {
+  //   openPanel();
+  // }, []);
 
   const openPanel = () => {
     setActive(true);
@@ -269,6 +269,7 @@ export default function Wallet(props) {
           onRequestClose={() => setAddFundsModal(!addFundsModal)}
           visible={addFundsModal}
           navigation={navigation}
+          walletDetails={getWallet}
         />
       )}
     </>
