@@ -368,7 +368,7 @@ export default function NewHome({navigation}) {
               lineHeight: 19,
             }}>
             {/* Hi {name}, {greeting} */}
-            Hello, {name}
+            Hi, {name}
           </Text>
         </View>
         <TouchableOpacity
@@ -783,9 +783,7 @@ export default function NewHome({navigation}) {
                             onPress={async () => {
                               navigation.navigate('SavingsHome');
 
-                              await analytics.track('Rent Savings', {
-                                name: 'Rent Savings',
-                              });
+                              TrackEvent('Rent Savings From Home Screen');
                             }}
                             style={{
                               backgroundColor: COLORS.primary,

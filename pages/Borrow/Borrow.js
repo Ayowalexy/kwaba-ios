@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
+import {TrackEvent} from '../../util/segmentEvents';
 
 const Borrow = ({navigation}) => {
   const [existingApplication, setExistingApplication] = useState('');
@@ -70,6 +71,7 @@ const Borrow = ({navigation}) => {
   }, []);
 
   const handleRentalLoanClick = async () => {
+    TrackEvent('RNPL From Bottom Navigation');
     const user = await getUser();
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
@@ -129,6 +131,7 @@ const Borrow = ({navigation}) => {
 
   const handleSavingClick = async () => {
     navigation.navigate('SavingsHome');
+    TrackEvent('Rent Savings From Bottom Navigation');
   };
 
   return (

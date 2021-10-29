@@ -15,6 +15,7 @@ import designs from './style';
 import {useSelector, useDispatch} from 'react-redux';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import ComingSoon from '../../../components/ComingSoon';
+import {TrackEvent} from '../../../util/segmentEvents';
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -211,11 +212,12 @@ export default function Start({navigation}) {
                   Save towards your next{'\n'}rent alone
                 </Text>
                 <TouchableOpacity
-                  onPress={() =>
+                  onPress={() => {
+                    TrackEvent('Solo Saving');
                     navigation.navigate(
                       soloSaving == 0 ? 'SoloSaving1' : 'SavingLists',
-                    )
-                  }
+                    );
+                  }}
                   style={[
                     designs.cardFlex,
                     {
@@ -285,11 +287,10 @@ export default function Start({navigation}) {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
-                    // console.log('Hello')
+                    TrackEvent('Buddy Saving');
                     navigation.navigate(
                       buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
                     );
-                    // setShowModal(!showModal)
                   }}
                   style={[
                     designs.cardFlex,
