@@ -20,6 +20,9 @@ import analytics from '@segment/analytics-react-native';
 
 import PhoneInput from 'react-native-phone-number-input';
 
+import {COLORS} from '../../util';
+import SelectWhereDoYouHearAboutUsModal from '../../components/SelectWhereDoYouHearAboutUsModal';
+
 const CustomInput = (props) => {
   const {
     field: {name, onBlur, onChange, value},
@@ -122,6 +125,69 @@ export default function SignUp({navigation}) {
   const phoneInput = useRef(null);
   const [telePhone, setTelePhone] = useState('');
   const [formattedValue, setFormattedValue] = useState('');
+  const [showModal, setShowModal] = useState(false);
+
+  const SelectHandles = (props) => {
+    const {
+      field: {name, value},
+      form: {errors, touched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    return (
+      <>
+        <TouchableOpacity
+          style={[
+            {
+              borderRadius: 5,
+              backgroundColor: '#FFFFFF',
+              borderColor: '#EFEFEF',
+              borderWidth: 1,
+              marginTop: 10,
+              width: '100%',
+              position: 'relative',
+
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: 20,
+            },
+          ]}
+          onPress={() => {
+            setShowModal(true);
+          }}>
+          {value != '' ? (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#000000',
+              }}>
+              {value}
+            </Text>
+          ) : (
+            <Text
+              style={{
+                // fontWeight: 'bold',
+                color: '#999',
+              }}>
+              How did you hear about us? (optional)
+            </Text>
+          )}
+
+          <Icon
+            name="chevron-down-outline"
+            size={20}
+            style={{fontWeight: 'bold'}}
+            color="#BABABA"
+          />
+        </TouchableOpacity>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
 
   const handleSubmit = async (values, setValues, setErrors) => {
     const data = {
@@ -132,6 +198,7 @@ export default function SignUp({navigation}) {
       gender: values.gender,
       referral_code: values.referral_code,
       telephone: formattedValue,
+      where_did_you_hear_about_us: values.selectHandle,
     };
 
     // console.log(data);
@@ -241,6 +308,8 @@ export default function SignUp({navigation}) {
             lastName: '',
             email: '',
             password: '',
+            telePhone: '',
+            selectHandle: '',
             gender: 'Female',
             referral_code: '',
           }}
@@ -317,6 +386,8 @@ export default function SignUp({navigation}) {
                 }}
               />
 
+              <Field component={SelectHandles} name="selectHandle" />
+
               <Field
                 component={CustomInput}
                 name="referral_code"
@@ -381,6 +452,14 @@ export default function SignUp({navigation}) {
                   Sign Up
                 </Text>
               </TouchableOpacity>
+
+              <SelectWhereDoYouHearAboutUsModal
+                onRequestClose={() => setShowModal(!showModal)}
+                visible={showModal}
+                onClick={(value) => {
+                  setValues({...values, selectHandle: value});
+                }}
+              />
             </>
           )}
         </Formik>
