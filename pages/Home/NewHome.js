@@ -212,6 +212,7 @@ export default function NewHome({navigation}) {
           ? setAddFundsToSavingsModal(true)
           : setCompleteProfileModal(true),
       cardClick: () => {
+        TrackEvent('Home-Card-Savings');
         navigation.navigate('SavingsHome');
       },
     },
@@ -227,6 +228,7 @@ export default function NewHome({navigation}) {
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
+        TrackEvent('Home-Card-Emergencyloan');
         instantLoan == 0
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard');
@@ -244,6 +246,7 @@ export default function NewHome({navigation}) {
       actionClick: () =>
         wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
       cardClick: () => {
+        TrackEvent('Home-Card-Wallet');
         navigation.navigate('Wallet');
       },
     },
@@ -262,12 +265,14 @@ export default function NewHome({navigation}) {
           : rentalFinance == 0
           ? navigation.navigate('Borrow')
           : navigation.navigate('RentNowPayLaterDashboard'),
-      cardClick: () =>
+      cardClick: () => {
+        TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
           ? navigation.navigate('Borrow')
-          : navigation.navigate('RentNowPayLaterDashboard'),
+          : navigation.navigate('RentNowPayLaterDashboard');
+      },
     },
   ];
 
@@ -363,7 +368,7 @@ export default function NewHome({navigation}) {
               lineHeight: 19,
             }}>
             {/* Hi {name}, {greeting} */}
-            Hi {name}
+            Hello, {name}
           </Text>
         </View>
         <TouchableOpacity
@@ -371,25 +376,6 @@ export default function NewHome({navigation}) {
           onPress={async () => {
             navigation.navigate('Notifications');
             // navigation.navigate('BuddyInviteLists');
-
-            // await analytics.track('Notification-Button', {
-            //   messageId: 'segment-test-message-igjoi',
-            //   timestamp: '2021-10-25T09:50:21.111Z',
-            //   type: 'track',
-            //   email: 'joshuanwosu078@gmail.com',
-            //   projectId: '8iu7kgTk99NCBVLJQpAC6N',
-            //   properties: {
-            //     property1: 1,
-            //     property2: 'test',
-            //     property3: true,
-            //   },
-            //   userId: 'test-user-ye4q7e',
-            //   event: 'Segment Test Event Name',
-            // });
-
-            // await analytics.track('Notification-Button', {
-            //   name: 'Notification button',
-            // });
             TrackEvent('Notification-Button');
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />

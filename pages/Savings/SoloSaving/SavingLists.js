@@ -87,7 +87,7 @@ export default function SavingLists({navigation}) {
             <Text style={{fontSize: 14, color: COLORS.light}}>₦{'  '}</Text>
             <Text>
               {formatNumber(
-                Number(getMaxLoanCap1.data.total_solo_savings).toFixed(2),
+                Number(getMaxLoanCap1?.data?.total_solo_savings).toFixed(2),
               )}
             </Text>
           </Text>
@@ -112,7 +112,7 @@ export default function SavingLists({navigation}) {
           }}
           scrollEnabled
           showsVerticalScrollIndicator={false}>
-          {allSavings?.data.map((item, index) => {
+          {allSavings?.data?.map((item, index) => {
             return (
               <TouchableOpacity
                 key={index}

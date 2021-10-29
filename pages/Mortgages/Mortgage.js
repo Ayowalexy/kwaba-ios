@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {FONTS, icons, images, COLORS} from '../../util/index';
 import designs from './style';
@@ -16,26 +17,24 @@ const logo = require('../../assets/images/Vector.png');
 
 const Mortgages = ({navigation}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const url = 'https://mortgage.kwaba.ng';
+
+  const handleClick = () => {
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };
 
   return (
     <View style={designs.container}>
-      {/* <View style={designs.item}> */}
       <ScrollView
         scrollEnabled
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flex: 1}}>
-        {/* <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back"
-          size={25}
-          color={COLORS.dark}
-          style={{
-            padding: 10,
-            position: 'absolute',
-            top: 10,
-            left: 10,
-          }}
-        /> */}
         <Image
           style={{
             width: 50,
@@ -141,6 +140,7 @@ const Mortgages = ({navigation}) => {
         </View>
         <View style={{paddingHorizontal: 20, marginBottom: 10}}>
           <TouchableOpacity
+            onPress={handleClick}
             style={{
               backgroundColor: COLORS.secondary,
               borderRadius: 5,

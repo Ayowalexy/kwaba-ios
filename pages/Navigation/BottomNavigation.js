@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {View, Image, TouchableOpacity} from 'react-native';
+import {View, Text, Image, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconOC from 'react-native-vector-icons/Octicons';
 
@@ -26,7 +26,7 @@ const BottomNavigator = ({navigation}) => {
         style={{
           flexDirection: 'row',
           backgroundColor: COLORS.white,
-          borderTopColor: '#BFBFBF20',
+          borderTopColor: '#F7F8FD',
           borderTopWidth: 1,
         }}>
         {state.routes.map((route, index) => {
@@ -87,10 +87,10 @@ const BottomNavigator = ({navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 paddingVertical: 10,
-                backgroundColor: isFocused ? '#BFBFBF40' : COLORS.white,
+                backgroundColor: isFocused ? '#F7F8FD' : COLORS.white,
                 borderWidth: 0,
                 borderRightWidth: 1,
-                borderColor: '#BFBFBF40',
+                borderColor: '#F7F8FD',
               }}>
               <>
                 {route.name == 'Home' ? (
@@ -131,6 +131,14 @@ const BottomNavigator = ({navigation}) => {
                     color={isFocused ? COLORS.dark : COLORS.grey}
                   />
                 )}
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    color: isFocused ? COLORS.dark : COLORS.grey,
+                  }}>
+                  {label}
+                </Text>
               </>
             </TouchableOpacity>
           );
