@@ -87,10 +87,10 @@ const BottomNavigator = ({navigation}) => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 paddingVertical: 10,
-                backgroundColor: isFocused ? '#F7F8FD' : COLORS.white,
-                borderWidth: 0,
-                borderRightWidth: 1,
-                borderColor: '#F7F8FD',
+                // backgroundColor: isFocused ? '#F7F8FD' : COLORS.white,
+                // borderWidth: 0,
+                // borderRightWidth: 1,
+                // borderColor: '#F7F8FD',
               }}>
               <>
                 {route.name == 'Home' ? (

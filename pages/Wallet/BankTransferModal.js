@@ -80,8 +80,10 @@ export default function BankTransferModal(props) {
                   // paddingVertical: 30,
                   // paddingHorizontal: 30,
                   backgroundColor: '#46596920',
+                  backgroundColor: '#F7F8FD',
                   borderRadius: 10,
                   marginVertical: 10,
+                  elevation: 1,
                 }}>
                 <View
                   style={{
@@ -200,17 +202,15 @@ export default function BankTransferModal(props) {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
-    // backgroundColor: '#F7F8FD',
     backgroundColor: 'rgba(0,0,0,0.2)',
     justifyContent: 'flex-end',
   },
   modalView: {
     flex: 1,
     width: '100%',
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.grey,
     overflow: 'hidden',
     paddingVertical: 20,
-    // paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     elevation: 50,
@@ -219,8 +219,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.primary,
-    // marginTop: 10,
-    // marginBottom: 20,
     paddingLeft: 10,
   },
 
