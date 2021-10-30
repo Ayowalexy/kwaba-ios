@@ -138,9 +138,10 @@ android {
         applicationId "com.kwaba_mobile_app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1.8.1.0"
         multiDexEnabled true
+        missingDimensionStrategy 'react-native-webview', 'general'
     }
     signingConfigs {
         release {
