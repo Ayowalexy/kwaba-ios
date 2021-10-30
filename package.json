@@ -1,6 +1,6 @@
 {
   "name": "kwaba_mobile_app",
-  "version": "0.0.1",
+  "version": "1.8.1.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
