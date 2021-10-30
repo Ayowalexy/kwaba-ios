@@ -116,6 +116,8 @@ const amexcardIcon = require('../assets/images/icons/amex.png');
 const saveToOwn = require('../assets/images/saveToOwn.png');
 const mortgages_1 = require('../assets/images/mortgages_1.png');
 
+const appUpdate = require('../assets/images/Group43387.png');
+
 export {
   logo,
   applicationReview,
@@ -224,4 +226,5 @@ export {
   amexcardIcon,
   saveToOwn,
   mortgages_1,
+  appUpdate,
 };
