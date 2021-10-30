@@ -281,17 +281,26 @@ export default function NewHome({navigation}) {
       name: 'Emergency\nfunds',
       // name: 'Emergency',
       image: icons.ic3,
-      route: () => navigation.navigate('EmergencyFundOnboarding'),
+      route: () => {
+        navigation.navigate('EmergencyFundOnboarding');
+        TrackEvent('Emergency Funds Home Quick Action');
+      },
     },
     {
       name: 'Buy Airtime',
       image: icons.ic1,
-      route: () => navigation.navigate('AirtimeHome'),
+      route: () => {
+        navigation.navigate('AirtimeHome');
+        TrackEvent('Buy Airtime Home Quick Action');
+      },
     },
     {
       name: 'Pay Bills',
       image: icons.ic2,
-      route: () => navigation.navigate('BillsHome'),
+      route: () => {
+        navigation.navigate('BillsHome');
+        TrackEvent('Pay Bills Home Quick Action');
+      },
     },
     // {
     //   // name: 'Buy now pay\nlater',

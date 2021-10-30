@@ -349,6 +349,11 @@ const App = () => {
     any_custom_type: () => {},
   };
 
+  useEffect(() => {
+    var pkg = require('./package.json');
+    console.log('pkg: ', pkg.version);
+  }, []);
+
   return (
     <>
       {/* {isOffline && (

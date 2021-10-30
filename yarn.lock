@@ -6660,10 +6660,10 @@ react-native-country-picker-modal@^2.0.0:
     prop-types "15.7.2"
     react-async-hook "3.6.1"
 
-react-native-device-info@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.1.0.tgz#7d0ecf65cb26dbdbcdd555fc7bce2d9750b8b3d9"
-  integrity sha512-szEbRRFQ1NYPOjGWyIMsZGk5W2eU4JTiFLaNVXTbK4u/BS/Z5moVJKcoJgYR6Fxiu6qPAY/ofJySJoSdhSeOnw==
+react-native-device-info@^8.4.3:
+  version "8.4.3"
+  resolved "https://registry.yarnpkg.com/react-native-device-info/-/react-native-device-info-8.4.3.tgz#b2e9ade45867ae9526f1a54d0c83d33a24ac7680"
+  integrity sha512-1MOMBpLNjeaLEjL3lNAAmgisdcGekZJxNBp0F9OuA0EzBtH52mBLxFl+g7wyenVlibbUZIxngWDtlhVwLswoWQ==
 
 react-native-document-picker@^5.0.2:
   version "5.0.2"
