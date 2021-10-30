@@ -383,8 +383,8 @@ export default function NewHome({navigation}) {
         <TouchableOpacity
           style={{paddingLeft: 20}}
           onPress={async () => {
-            // navigation.navigate('Notifications');
-            navigation.navigate('AppUpdate');
+            navigation.navigate('Notifications');
+            // navigation.navigate('AppUpdate');
             TrackEvent('Notification-Button');
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
