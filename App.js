@@ -210,7 +210,7 @@ import {PinPassword} from './pages/UserAccount/PinPassword';
 
 import analytics from '@segment/analytics-react-native';
 
-// import Screen1 from './pages/AppUpdate/screen1';
+import AppUpdate from './pages/AppUpdate/AppUpdate';
 
 const Stack = createStackNavigator();
 
@@ -766,6 +766,8 @@ const App = () => {
               <Stack.Screen name="Wallet" component={Wallet} />
 
               <Stack.Screen name="PinPassword" component={PinPassword} />
+
+              <Stack.Screen name="AppUpdate" component={AppUpdate} />
             </>
           )}
         </Stack.Navigator>

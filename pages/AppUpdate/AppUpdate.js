@@ -1,10 +1,10 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 
-export default function Screen1() {
+export default function AppUpdate() {
   return (
     <View>
-      <Text>Screen</Text>
+      <Text>App Update Screen</Text>
     </View>
   );
 }
