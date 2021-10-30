@@ -78,7 +78,7 @@ export default function CreditCardModalWallet(props) {
                       marginLeft: 10,
                     }}>
                     Secured by{' '}
-                    <Text style={{fontWeight: 'bold'}}>Payssssstack</Text>
+                    <Text style={{fontWeight: 'bold'}}>Paystack</Text>
                   </Text>
                 </View>
               </View>

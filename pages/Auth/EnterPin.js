@@ -15,6 +15,7 @@ import {
 import {enterPinToLogin} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import analytics from '@segment/analytics-react-native';
 
 const CELL_COUNT = 4;
 
@@ -30,13 +31,23 @@ export default function EnterPin({navigation, route}) {
   const [spinner, setSpinner] = useState(false);
   const [email, setEmail] = useState('');
 
+  const [invalidPin, setInvalidPin] = useState(false);
+
   useEffect(() => {
+    console.log('**********');
+    console.log('Hello Joshua', route);
+
     (async () => {
-      const e = await AsyncStorage.getItem('loginEmail');
-      console.log('Na im be dis: ', JSON.parse(e));
-      setEmail(JSON.parse(e));
+      if (route?.params) {
+        setEmail(route?.params?.email);
+        console.log('Email: ', route?.params?.email);
+      } else {
+        const e = await AsyncStorage.getItem('loginEmail');
+        console.log('Na im be dissss: ', JSON.parse(e));
+        setEmail(JSON.parse(e));
+      }
     })();
-  }, []);
+  }, [route?.params?.email]);
 
   const saveLoginToStorage = async (data) => {
     // console.log(data);
@@ -52,6 +63,7 @@ export default function EnterPin({navigation, route}) {
       pin: value,
     };
     setSpinner(true);
+    setInvalidPin(false);
     try {
       const res = await enterPinToLogin(data);
       console.log('The Res: ', res);
@@ -71,13 +83,20 @@ export default function EnterPin({navigation, route}) {
         );
         console.log('Give am');
         navigation.navigate('Home');
+        setInvalidPin(false);
+
+        await analytics.track('Enter-Pin', {
+          email: email,
+        });
       } else {
         setSpinner(false);
+        setInvalidPin(true);
         console.log('Something went wrong...');
       }
     } catch (error) {
       setSpinner(false);
       console.log('Error: ', error);
+      setInvalidPin(true);
     }
   };
 
@@ -105,14 +124,35 @@ export default function EnterPin({navigation, route}) {
             </Text>
           </View>
 
-          <View style={{marginTop: 50, alignItems: 'center'}}>
-            <Text style={[designs.subtitle]}>ENTER PIN</Text>
+          <View
+            style={{
+              marginTop: 20,
+              backgroundColor: '#00DC9900',
+              paddingVertical: 15,
+              // display: 'none',
+            }}>
+            <Text
+              style={{
+                textAlign: 'center',
+                color: COLORS.dark,
+                fontSize: 14,
+                fontWeight: 'bold',
+              }}>
+              {email}
+            </Text>
+          </View>
+
+          <View style={{marginTop: 40, alignItems: 'center'}}>
+            <Text style={[designs.subtitle, {fontWeight: 'bold'}]}>
+              ENTER PIN
+            </Text>
 
             <CodeField
               ref={ref}
               {...cellProps}
               value={value}
               onChangeText={setValue}
+              onTextInput={() => setInvalidPin(false)}
               cellCount={CELL_COUNT}
               rootStyle={designs.codeInputContainer}
               keyboardType="number-pad"
@@ -120,7 +160,11 @@ export default function EnterPin({navigation, route}) {
               renderCell={({index, symbol, isFocused}) => (
                 <View
                   key={index}
-                  style={[designs.codeInput, isFocused && designs.focusCell]}
+                  style={[
+                    designs.codeInput,
+                    isFocused && designs.focusCell,
+                    {borderColor: invalidPin ? COLORS.red : '#46596950'},
+                  ]}
                   onLayout={getCellLayoutHandler(index)}>
                   <Text style={designs.cellText}>
                     {symbol || (isFocused ? <Cursor /> : null)}
@@ -128,6 +172,37 @@ export default function EnterPin({navigation, route}) {
                 </View>
               )}
             />
+            {invalidPin && (
+              <Text
+                style={[
+                  designs.subtitle,
+                  {
+                    color: COLORS.red,
+                    marginTop: 20,
+                  },
+                ]}>
+                Incorrect Pin
+              </Text>
+            )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ResetPin')}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: 10,
+              }}>
+              <Text
+                style={{
+                  color: '#465969',
+                  fontSize: 12,
+                  lineHeight: 30,
+                  fontWeight: 'bold',
+                }}>
+                Forgot your PIN? <Text style={{color: '#00DC99'}}>Reset</Text>
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -153,16 +228,15 @@ export default function EnterPin({navigation, route}) {
               CONFIRM
             </Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            onPress={() => {
-              navigation.navigate('SignUp');
-            }}
+            onPress={() => navigation.navigate('Welcome')}
             style={{
               display: 'flex',
-              flexDirection: 'row',
+              flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              // marginTop: 20,
+              marginTop: 10,
             }}>
             <Text
               style={{
@@ -171,8 +245,8 @@ export default function EnterPin({navigation, route}) {
                 lineHeight: 30,
                 fontWeight: 'bold',
               }}>
-              Don't have an account?{' '}
-              <Text style={{color: '#00DC99'}}>Sign up</Text>
+              Log in with a different{' '}
+              <Text style={{color: '#00DC99'}}>Account</Text>
             </Text>
           </TouchableOpacity>
         </View>

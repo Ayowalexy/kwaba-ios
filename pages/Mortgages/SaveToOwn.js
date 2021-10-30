@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Text,
   ScrollView,
+  Linking,
 } from 'react-native';
 import {FONTS, icons, images, COLORS} from '../../util/index';
 import designs from './style';
@@ -15,6 +16,18 @@ const saveToOwnImage = require('../../assets/images/saveToOwn.png');
 const logo = require('../../assets/images/Vector.png');
 
 const SaveToOwn = ({navigation}) => {
+  const url = 'https://mortgage.kwaba.ng';
+
+  const handleClick = () => {
+    Linking.canOpenURL(url).then((supported) => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + url);
+      }
+    });
+  };
+
   return (
     <View style={designs.container}>
       {/* <View style={designs.item}> */}
@@ -154,6 +167,7 @@ const SaveToOwn = ({navigation}) => {
         </View>
         <View style={{paddingHorizontal: 20, marginBottom: 10}}>
           <TouchableOpacity
+            onPress={handleClick}
             style={{
               backgroundColor: COLORS.secondary,
               borderRadius: 5,

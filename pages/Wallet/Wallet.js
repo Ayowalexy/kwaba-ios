@@ -28,6 +28,8 @@ export default function Wallet(props) {
 
   const [transactions, setTransactions] = useState([]);
 
+  const [toggleAmount, setToggleAmount] = useState(true);
+
   const getWallet = useSelector((state) => state.getUserWalletReducer);
   const getWalletTransactions = useSelector(
     (state) => state.getUserWalletTransactionsReducer,
@@ -43,14 +45,14 @@ export default function Wallet(props) {
     setAmount(getWallet.available_balances);
   }, [getWallet]);
 
-  useEffect(() => {
-    // setTransactions(getWalletTransactions);
-    // console.log(getWalletTransactions);
-  }, [getWalletTransactions]);
+  // useEffect(() => {
+  //   // setTransactions(getWalletTransactions);
+  //   // console.log(getWalletTransactions);
+  // }, [getWalletTransactions]);
 
-  useEffect(() => {
-    openPanel();
-  }, []);
+  // useEffect(() => {
+  //   openPanel();
+  // }, []);
 
   const openPanel = () => {
     setActive(true);
@@ -114,8 +116,8 @@ export default function Wallet(props) {
             alignItems: 'center',
             padding: 10,
           }}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
+          {/* <TouchableOpacity
+            onPress={() => navigation.navigate('Home')}
             style={{
               backgroundColor: '#ffffff20',
               width: 40,
@@ -125,8 +127,15 @@ export default function Wallet(props) {
               borderRadius: 50,
             }}>
             <Icon name="arrow-back" size={20} color={COLORS.white} />
-          </TouchableOpacity>
-          <Text style={{fontSize: 12, fontWeight: 'bold', color: COLORS.white}}>
+          </TouchableOpacity> */}
+          <View />
+          <Text
+            style={{
+              fontSize: 12,
+              marginLeft: 40,
+              fontWeight: 'bold',
+              color: COLORS.white,
+            }}>
             My Wallet
           </Text>
 
@@ -140,7 +149,7 @@ export default function Wallet(props) {
               alignItems: 'center',
               borderRadius: 50,
             }}>
-            <Icon name="apps" size={20} color={COLORS.white} />
+            <Icon name="list-sharp" size={20} color={COLORS.white} />
           </TouchableOpacity>
         </View>
         <View style={[styles.content]}>
@@ -173,11 +182,16 @@ export default function Wallet(props) {
                   color: COLORS.white,
                 }}>
                 <Text style={{fontSize: 15}}>₦ </Text>
-                {formatNumber(Number(amount).toFixed(2)) || '0.00'}
+                {toggleAmount
+                  ? formatNumber(Number(amount).toFixed(2))
+                  : formatNumber(Number(amount).toFixed(2)).replace(
+                      new RegExp('[0-9]', 'g'),
+                      'x',
+                    )}
               </Text>
 
               <TouchableOpacity
-                onPress={openPanel}
+                onPress={() => setToggleAmount(!toggleAmount)}
                 style={{
                   backgroundColor: '#ffffff20',
                   width: 30,
@@ -188,7 +202,11 @@ export default function Wallet(props) {
                   marginLeft: 10,
                   marginRight: 10,
                 }}>
-                <Icon name="eye-off-outline" size={15} color={COLORS.white} />
+                <Icon
+                  name={toggleAmount ? 'eye-off-outline' : 'eye-outline'}
+                  size={15}
+                  color={COLORS.white}
+                />
               </TouchableOpacity>
             </View>
 
@@ -251,6 +269,7 @@ export default function Wallet(props) {
           onRequestClose={() => setAddFundsModal(!addFundsModal)}
           visible={addFundsModal}
           navigation={navigation}
+          walletDetails={getWallet}
         />
       )}
     </>

@@ -22,6 +22,7 @@ import {login} from '../../services/network';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import analytics from '@segment/analytics-react-native';
 
 const CustomInput = (props) => {
   const {
@@ -100,10 +101,7 @@ const LoginValidationSchema = yup.object().shape({
     .string()
     // .email('Please enter a valid email')
     .required('Email is required'),
-  password: yup
-    .string()
-    // .min(6, ({min}) => `Password must be at least ${min} characters`)
-    .required('Password is required'),
+  password: yup.string().required('Password is required'),
 });
 
 export default function Login({navigation}) {
@@ -113,7 +111,6 @@ export default function Login({navigation}) {
   const [errorMsg, setErrorMsg] = useState('');
 
   const saveLoginToStorage = async (data) => {
-    // console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
     } catch (error) {}
@@ -129,16 +126,16 @@ export default function Login({navigation}) {
       setSpinner(true);
       const res = await login(data);
 
-      // console.log('LOGIN: ', res.data.authData);
-
       if (res.status == 200) {
         setSpinner(false);
         setErrorMsg('');
         console.log('Res: ', res.data); // log out response
         if (res.data.authData.haveSetPin) {
-          navigation.navigate('EnterPin');
+          navigation.navigate('EnterPin', {email: res.data.authData.email});
+          console.log('He get pin');
         } else {
           navigation.navigate('CreatePin', data);
+          console.log('He no get pin');
         }
 
         // store email locally
@@ -147,19 +144,9 @@ export default function Login({navigation}) {
           JSON.stringify(res.data.authData.email),
         );
 
-        // saveLoginToStorage({
-        //   ...res.data.authData,
-        //   username: res.data.authData.user.firstname,
-        //   isLoggedIn: true,
-        // });
-        // dispatch(
-        //   setLoginState({
-        //     ...res.data.authData,
-        //     username: res.data.authData.user.firstname,
-        //     isLoggedIn: true,
-        //   }),
-        // );
-        // navigation.navigate('Home');
+        await analytics.track('User-Login', {
+          email: res.data.authData.email,
+        });
       } else {
         setSpinner(false);
         console.log('Invalid, please provide a valid email and password');
@@ -170,9 +157,6 @@ export default function Login({navigation}) {
       console.log('Error, An error occured, please retry');
       setErrorMsg('An error occured, please retry');
     }
-
-    // console.log('DATA:', data);
-    // console.log(res);
   };
 
   return (
@@ -233,7 +217,6 @@ export default function Login({navigation}) {
             lineHeight: 23,
             marginTop: 10,
             textAlign: 'center',
-            // marginLeft: 16,
           }}>
           Login to your account
         </Text>
@@ -285,8 +268,7 @@ export default function Login({navigation}) {
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    // borderWidth: 1,
-                    marginTop: 20,
+                    marginTop: 10,
                     paddingHorizontal: 20,
                   }}>
                   <View
@@ -309,7 +291,6 @@ export default function Login({navigation}) {
                         lineHeight: 30,
                         fontWeight: '900',
                         marginLeft: 8,
-                        // marginRight: widthTouse * 0.25,
                       }}>
                       Remember me
                     </Text>
@@ -320,11 +301,8 @@ export default function Login({navigation}) {
                       style={{
                         color: '#00DC99',
                         fontSize: 12,
-                        // lineHeight: 30,
                         fontWeight: '900',
                         alignSelf: 'flex-end',
-                        // marginTop: 10,
-                        // borderWidth: 1,
                         paddingVertical: 5,
                       }}>
                       Forgot Password ?
@@ -363,7 +341,7 @@ export default function Login({navigation}) {
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  marginTop: 20,
+                  marginTop: 10,
                 }}>
                 <Text
                   style={{
@@ -376,27 +354,6 @@ export default function Login({navigation}) {
                   <Text style={{color: '#00DC99'}}>Sign up</Text>
                 </Text>
               </TouchableOpacity>
-
-              {/* <TouchableOpacity
-                onPress={() => navigation.navigate('CreatePin')}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: 10,
-                }}>
-                <Text
-                  style={{
-                    color: '#465969',
-                    fontSize: 14,
-                    lineHeight: 30,
-                    fontWeight: 'bold',
-                  }}>
-                  Haven't set a pin?{' '}
-                  <Text style={{color: '#00DC99'}}>Create pin</Text>
-                </Text>
-              </TouchableOpacity> */}
             </>
           )}
         </Formik>

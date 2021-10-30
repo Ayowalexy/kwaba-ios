@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
+import {TrackEvent} from '../../util/segmentEvents';
 
 const Borrow = ({navigation}) => {
   const [existingApplication, setExistingApplication] = useState('');
@@ -70,6 +71,7 @@ const Borrow = ({navigation}) => {
   }, []);
 
   const handleRentalLoanClick = async () => {
+    TrackEvent('RNPL From Bottom Navigation');
     const user = await getUser();
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
@@ -123,11 +125,13 @@ const Borrow = ({navigation}) => {
       // navigation.navigate('BusinessForm1');
       // navigation.navigate('BusinessDocumentUpload');
       // navigation.navigate('OkraDebitMandate');
+      // navigation.navigate('AddressVerificationPayment');
     }
   };
 
   const handleSavingClick = async () => {
     navigation.navigate('SavingsHome');
+    TrackEvent('Rent Savings From Bottom Navigation');
   };
 
   return (
@@ -142,7 +146,7 @@ const Borrow = ({navigation}) => {
           resizeMode: 'cover',
         }}
       />
-      <TouchableOpacity
+      {/* <TouchableOpacity
         style={{
           position: 'absolute',
           top: 0,
@@ -159,7 +163,7 @@ const Borrow = ({navigation}) => {
           }}
           color={COLORS.light}
         />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <ScrollView
         scrollEnabled
         showsVerticalScrollIndicator={false}

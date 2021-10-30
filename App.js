@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect, useState, useCallback} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 
@@ -26,7 +26,8 @@ import SignUp from './pages/Auth/SignUp';
 import Login from './pages/Auth/Login';
 import CreatePin from './pages/Auth/CreatePin';
 import EnterPin from './pages/Auth/EnterPin';
-import Home from './pages/Home/Home';
+import ResetPin from './pages/Auth/ResetPin';
+
 import {
   SavingsHome,
   SoloSaving1,
@@ -188,7 +189,14 @@ import Wallet from './pages/Wallet/Wallet';
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import {View, Text, RefreshControl, StatusBar, Linking} from 'react-native';
+import {
+  View,
+  Text,
+  RefreshControl,
+  StatusBar,
+  Linking,
+  AppState,
+} from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
 
@@ -199,6 +207,10 @@ import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Instabug from 'instabug-reactnative';
 
 import {PinPassword} from './pages/UserAccount/PinPassword';
+
+import analytics from '@segment/analytics-react-native';
+
+import AppUpdate from './pages/AppUpdate/AppUpdate';
 
 const Stack = createStackNavigator();
 
@@ -222,6 +234,54 @@ const App = () => {
   const [isOffline, setOfflineStatus] = useState(false);
 
   const store2 = useSelector((state) => state.loginReducer);
+
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  // useEffect(() => {
+  //   const subscription = AppState.addEventListener('change', (nextAppState) => {
+  //     if (
+  //       appState.current.match(/inactive|background/) &&
+  //       nextAppState === 'active'
+  //     ) {
+  //       console.log('App has come to the foreground!');
+  //     }
+
+  //     appState.current = nextAppState;
+  //     setAppStateVisible(appState.current);
+  //     console.log('AppState', appState.current);
+  //   });
+
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
+
+  useEffect(() => {
+    (async () => {
+      await analytics.setup('C0BVBjco2Aev69fXdUJfCpkBFvjHRZle', {
+        // Record screen views automatically!
+        recordScreenViews: true,
+        // Record certain application events automatically!
+        trackAppLifecycleEvents: true,
+      });
+
+      // await analytics.track('App Launch', {
+      //   messageId: 'segment-test-message-igjoi',
+      //   timestamp: '2021-10-25T09:50:21.111Z',
+      //   type: 'track',
+      //   email: 'test@example.org',
+      //   projectId: '8iu7kgTk99NCBVLJQpAC6N',
+      //   properties: {
+      //     property1: 1,
+      //     property2: 'test',
+      //     property3: true,
+      //   },
+      //   userId: 'test-user-ye4q7e',
+      //   event: 'Segment Test Event Name',
+      // });
+    })();
+  }, []);
 
   useEffect(() => {
     // console.log('Instabug: ', Instabug);
@@ -289,6 +349,11 @@ const App = () => {
     any_custom_type: () => {},
   };
 
+  useEffect(() => {
+    var pkg = require('./package.json');
+    console.log('pkg: ', pkg.version);
+  }, []);
+
   return (
     <>
       {/* {isOffline && (
@@ -333,6 +398,7 @@ const App = () => {
                 name="CreatePin"
                 component={CreatePin}></Stack.Screen>
               <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
+              <Stack.Screen name="ResetPin" component={ResetPin}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen
                 name="VerifyNumber"
@@ -705,6 +771,8 @@ const App = () => {
               <Stack.Screen name="Wallet" component={Wallet} />
 
               <Stack.Screen name="PinPassword" component={PinPassword} />
+
+              <Stack.Screen name="AppUpdate" component={AppUpdate} />
             </>
           )}
         </Stack.Navigator>

@@ -96,6 +96,7 @@ const bankRequest = require('../assets/images/bank_request.png');
 const uploadDocument = require('../assets/images/uploadDocument.png');
 
 const piggy = require('../assets/images/piggy.png');
+const purplePiggy = require('../assets/images/purple-piggy.png');
 
 const guarantorImage = require('../assets/images/guarantorImage.png');
 
@@ -114,6 +115,8 @@ const amexcardIcon = require('../assets/images/icons/amex.png');
 
 const saveToOwn = require('../assets/images/saveToOwn.png');
 const mortgages_1 = require('../assets/images/mortgages_1.png');
+
+const appUpdate = require('../assets/images/Group43387.png');
 
 export {
   logo,
@@ -211,6 +214,7 @@ export {
   bankRequest,
   uploadDocument,
   piggy,
+  purplePiggy,
   guarantorImage,
   declineImage,
   addosserLogo,
@@ -222,4 +226,5 @@ export {
   amexcardIcon,
   saveToOwn,
   mortgages_1,
+  appUpdate,
 };

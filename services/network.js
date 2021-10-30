@@ -744,7 +744,12 @@ const buyOtherBills = async (data) => {
   }
 };
 
-// PIN
+// creating/Reseting PIN
+/**
+ *
+ * @param {pin, email, password} data
+ * @returns
+ */
 const setPin = async (data) => {
   try {
     const url = apiUrl + '/api/v1/user_set_pin';
@@ -777,6 +782,21 @@ const addFundsToWallet = async (data) => {
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {'Content-type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// change password
+
+const changePassword = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user/change_password';
+    const token = await getToken();
+    const response = await axios.put(url, JSON.stringify(data), {
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
@@ -840,4 +860,5 @@ export {
   setPin,
   enterPinToLogin,
   addFundsToWallet,
+  changePassword,
 };

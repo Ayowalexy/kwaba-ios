@@ -19,7 +19,7 @@ import AmountModalWallet from '../../components/amountModalWallet';
 const {width, height} = Dimensions.get('window');
 
 export default function AddFundToWalletModal(props) {
-  const {onRequestClose, visible, navigation} = props;
+  const {onRequestClose, visible, navigation, walletDetails} = props;
   const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   const [showCardModal, setShowCardModal] = useState(false);
   const [showAmountModal, setShowAmountModal] = useState(false);
@@ -39,99 +39,139 @@ export default function AddFundToWalletModal(props) {
         visible={visible}
         onRequestClose={onRequestClose}>
         <View style={styles.centeredView}>
-          <View
-            style={{
-              alignItems: 'flex-end',
-              padding: 20,
-            }}>
-            <TouchableOpacity
-              onPress={onRequestClose}
+          <View style={[styles.modalView]}>
+            <View
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 40,
-                backgroundColor: '#2A286A20',
-                justifyContent: 'center',
-                alignItems: 'center',
+                alignItems: 'flex-end',
+                paddingVertical: 10,
+                paddingHorizontal: 20,
               }}>
-              <IconFA name="close" size={15} style={{color: COLORS.primary}} />
-            </TouchableOpacity>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              paddingHorizontal: 20,
-              justifyContent: 'flex-end',
-              padding: 20,
-              paddingBottom: 40,
-            }}>
-            <Text
+              <TouchableOpacity
+                onPress={onRequestClose}
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: 40,
+                  backgroundColor: '#2A286A20',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <IconFA
+                  name="close"
+                  size={15}
+                  style={{color: COLORS.primary}}
+                />
+              </TouchableOpacity>
+            </View>
+            <View
               style={{
-                fontSize: 22,
-                fontWeight: 'bold',
-                color: COLORS.dark,
-                marginBottom: 20,
-                paddingLeft: 10,
-                lineHeight: 30,
+                // flex: 1,
+                paddingHorizontal: 20,
+                // justifyContent: 'flex-start',
+                padding: 0,
+                paddingBottom: 10,
               }}>
-              {/* How would you like{'\n'}to add money? */}
-              How would you like to{'\n'}fund your wallet?
-            </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                  marginBottom: 20,
+                  paddingLeft: 10,
+                  lineHeight: 20,
+                }}>
+                {/* How would you like{'\n'}to add money? */}
+                How would you like to fund{'\n'}your wallet?
+              </Text>
 
-            <View>
-              {[
-                {name: 'Debit Card', icon: 'card'},
-                {name: 'Bank Transfer', icon: 'home'},
-                // {name: 'Others', icon: 'apps'},
-              ].map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    disabled={item.icon == 'home'}
-                    onPress={() => {
-                      if (item.icon == 'card') {
-                        transferWithCard();
-                      } else {
-                        setShowBankTransferModal(true);
-                      }
-                    }}
-                    key={index}
-                    style={{
-                      paddingVertical: 20,
-                      paddingHorizontal: 30,
-                      backgroundColor: '#00DC9920',
-                      backgroundColor: '#2A286A20',
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginVertical: 5,
-                      borderRadius: 10,
-                      borderWidth: 1,
-                      borderColor: '#2A286A30',
-                      opacity: item.icon == 'home' ? 0.5 : 1,
-                    }}>
-                    <View
+              <View>
+                {[
+                  {
+                    name: 'Debit Card',
+                    icon: 'card',
+                    title: 'Add money to your wallet using your debit card.',
+                  },
+                  {
+                    name: 'Bank Transfer',
+                    icon: 'home',
+                    title: 'Add money to your wallet via bank transfer.',
+                  },
+                  // {name: 'Others', icon: 'apps'},
+                ].map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      // disabled={item.icon == 'home'}
+                      onPress={() => {
+                        if (item.icon == 'card') {
+                          transferWithCard();
+                        } else {
+                          setShowBankTransferModal(true);
+                        }
+                      }}
+                      key={index}
                       style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 50,
-                        backgroundColor: '#00DC9920',
-                        backgroundColor: '#2A286A20',
-                        marginRight: 20,
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        paddingVertical: 15,
+                        paddingHorizontal: 20,
+                        // backgroundColor: '#00DC9920',
+                        // backgroundColor: '#2A286A05',
+                        // backgroundColor: '#ffffff',
+                        flexDirection: 'row',
+                        alignItems: 'flex-start',
+                        // marginVertical: 5,
+                        borderRadius: 10,
+                        borderBottomWidth: index == 0 ? 1 : 0,
+                        // borderWidth: 1,
+                        borderColor: '#2A286A20',
+                        // elevation: 1,
+                        // opacity: item.icon == 'home' ? 0.5 : 1,
                       }}>
-                      <Icon name={item.icon} size={20} color={COLORS.primary} />
-                    </View>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: COLORS.dark,
-                      }}>
-                      {item.name}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
+                      <View
+                        style={{
+                          width: 35,
+                          height: 35,
+                          borderRadius: 5,
+                          backgroundColor: '#00DC9920',
+                          backgroundColor: '#2A286A20',
+                          marginRight: 20,
+                          marginTop: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Icon
+                          name={item.icon}
+                          size={20}
+                          color={COLORS.primary}
+                        />
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.dark,
+                          }}>
+                          {item.name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'normal',
+                            color: COLORS.dark,
+                            marginTop: 4,
+                            width: '70%',
+                            lineHeight: 15,
+                            opacity: 0.7,
+                          }}>
+                          {item.title}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
             </View>
           </View>
         </View>
@@ -162,6 +202,7 @@ export default function AddFundToWalletModal(props) {
             setShowBankTransferModal(!showBankTransferModal)
           }
           visible={showBankTransferModal}
+          walletDetails={walletDetails}
         />
       )}
     </>
@@ -171,15 +212,18 @@ export default function AddFundToWalletModal(props) {
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
+    justifyContent: 'flex-end',
     // height: height - 84,
-    backgroundColor: '#F7F8FD',
+    // backgroundColor: '#F7F8FD',
+    backgroundColor: 'rgba(0,0,0,0.0)',
   },
   modalView: {
-    flex: 1,
+    // flex: 1,
+    // justifyContent: 'flex-end',
     width: '100%',
     backgroundColor: COLORS.white,
     overflow: 'hidden',
-    paddingVertical: 20,
+    paddingVertical: 10,
     // paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

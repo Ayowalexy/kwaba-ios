@@ -2,191 +2,161 @@ import 'react-native-gesture-handler';
 import React, {useState} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
-import IconFA from 'react-native-vector-icons/FontAwesome';
-import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconOC from 'react-native-vector-icons/Octicons';
 
-import {AntDesign, FontAwesome, Ionicons} from 'react-native-vector-icons';
-
-import {SavingsHome} from '../Savings';
 import Borrow from '../Borrow/Borrow';
-import screen1 from '../CompleteProfile/Screen1';
-import {COLORS, FONTS, images, icons} from '../../util/index';
-import Home from '../Home/Home';
+import {COLORS, icons} from '../../util/index';
 import NewHome from '../Home/NewHome';
-import EmergencyLoanRequestDashBoard from '../Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
-import Account from '../UserAccount/Account';
 import AccountPage from '../UserAccount/AccountPage';
-import BillsHome from '../Bills/BillsHome';
 import Mortgages from '../Mortgages/Mortgage';
-import {TabBar} from 'react-native-tab-view';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
 import Wallet from '../Wallet/Wallet';
 
+import {TrackEvent} from '../../util/segmentEvents';
+
 const Tab = createBottomTabNavigator();
-
-const tabItems = [
-  {
-    title: 'Kwaba',
-    screen: NewHome,
-  },
-  // {
-  //   title: 'Save',
-  //   icon: 'piggy-bank',
-  //   screen: SavingsHome,
-  // },
-  {
-    title: 'Wallet',
-    icon: 'wallet-outline',
-    screen: Wallet,
-  },
-  {
-    title: 'Rent',
-    icon: 'home-outline',
-    screen: Borrow,
-  },
-
-  {
-    title: 'Mortgages',
-    icon: 'receipt-outline',
-    screen: Mortgages,
-  },
-
-  {
-    title: 'More',
-    icon: 'apps-outline',
-    screen: AccountPage,
-  },
-];
 
 const BottomNavigator = ({navigation}) => {
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
 
+  const MyTabBar = ({state, descriptors, navigation}) => {
+    return (
+      <View
+        style={{
+          flexDirection: 'row',
+          backgroundColor: COLORS.white,
+          borderTopColor: '#F7F8FD',
+          borderTopWidth: 1,
+        }}>
+        {state.routes.map((route, index) => {
+          const {options} = descriptors[route.key];
+          const label =
+            options.tabBarLabel !== undefined
+              ? options.tabBarLabel
+              : options.title !== undefined
+              ? options.title
+              : route.name;
+
+          const isFocused = state.index === index;
+
+          const onPress = async () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              // The `merge: true` option makes sure that the params inside the tab screen are preserved
+              navigation.navigate({name: route.name, merge: true});
+              await TrackEvent(`Bottom-Navigation-${route.name}`);
+            }
+          };
+
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
+
+          let iconName;
+
+          if (route.name === 'Home') {
+            iconName = 'home';
+          } else if (route.name === 'Wallet') {
+            iconName = 'wallet-outline';
+          } else if (route.name === 'Rent') {
+            iconName = 'home';
+          } else if (route.name === 'More') {
+            iconName = 'apps-outline';
+          }
+
+          return (
+            <TouchableOpacity
+              key={index}
+              accessibilityRole="button"
+              accessibilityState={isFocused ? {selected: true} : {}}
+              accessibilityLabel={options.tabBarAccessibilityLabel}
+              testID={options.tabBarTestID}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingVertical: 10,
+                // backgroundColor: isFocused ? '#F7F8FD' : COLORS.white,
+                // borderWidth: 0,
+                // borderRightWidth: 1,
+                // borderColor: '#F7F8FD',
+              }}>
+              <>
+                {route.name == 'Home' ? (
+                  <Image
+                    source={
+                      isFocused ? icons.kwabalogocol : icons.kwabalogonocol
+                    }
+                    style={{
+                      width: 20,
+                      height: 28,
+                      alignSelf: 'center',
+                      marginTop: 2,
+                    }}
+                    resizeMode="contain"
+                  />
+                ) : route.name == 'Rent' ? (
+                  <IconOC
+                    name={iconName}
+                    size={26}
+                    color={isFocused ? COLORS.dark : COLORS.grey}
+                  />
+                ) : route.name == 'Mortgages' ? (
+                  <Image
+                    source={
+                      isFocused ? icons.mortageActive : icons.mortageInactive
+                    }
+                    style={{
+                      width: 26,
+                      height: 26,
+                      alignSelf: 'center',
+                    }}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <Icon
+                    name={iconName}
+                    size={26}
+                    color={isFocused ? COLORS.dark : COLORS.grey}
+                  />
+                )}
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    color: isFocused ? COLORS.dark : COLORS.grey,
+                  }}>
+                  {label}
+                </Text>
+              </>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  };
+
   return (
     <>
       <Tab.Navigator
-        tabBarOptions={{
-          style: {
-            elevation: 50,
-            borderWidth: 0,
-            bottom: 0,
-            borderLeftWidth: 0,
-            borderWidth: 0,
-            height: 60,
-            overflow: 'hidden',
-          },
-          showLabel: false,
-          activeTintColor: COLORS.primary,
-        }}
+        tabBar={(props) => <MyTabBar {...props} />}
         initialRouteName="Home">
-        {tabItems.map(({title, screen, icon}, index) => (
-          <Tab.Screen
-            key={index}
-            name={title}
-            component={screen}
-            options={{
-              tabBarIcon: ({color, focused}) => (
-                <>
-                  {title.toLowerCase() == 'kwaba' ? (
-                    <View
-                      style={{
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: 50,
-                        height: 50,
-                      }}>
-                      <>
-                        <Image
-                          source={
-                            focused ? icons.kwabalogocol : icons.kwabalogonocol
-                          }
-                          style={{
-                            width: 20,
-                            height: 28,
-                            alignSelf: 'center',
-                            marginTop: 2,
-                          }}
-                          resizeMode="contain"
-                        />
-                      </>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                          color: focused ? COLORS.dark : COLORS.grey,
-                          // textTransform: 'uppercase',
-                        }}>
-                        {title}
-                      </Text>
-                    </View>
-                  ) : (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                      }}>
-                      {icon.toLowerCase() == 'piggy-bank' ? (
-                        <IconFA5
-                          name={icon}
-                          style={{
-                            fontSize: 25,
-                            color: COLORS.dark,
-                            color: focused ? COLORS.dark : COLORS.grey,
-                          }}
-                        />
-                      ) : title == 'Mortgages' ? (
-                        <Image
-                          source={
-                            focused
-                              ? icons.mortageActive
-                              : icons.mortageInactive
-                          }
-                          style={{
-                            width: 26,
-                            height: 26,
-                            alignSelf: 'center',
-                          }}
-                          resizeMode="contain"
-                        />
-                      ) : title.toLowerCase() == 'rent' ? (
-                        <IconOC
-                          name="home"
-                          style={{
-                            fontSize: 25,
-                            color: COLORS.dark,
-                            color: focused ? COLORS.dark : COLORS.grey,
-                          }}
-                        />
-                      ) : (
-                        <Icon
-                          name={icon}
-                          style={{
-                            fontSize: 25,
-                            color: COLORS.dark,
-                            color: focused ? COLORS.dark : COLORS.grey,
-                          }}
-                        />
-                      )}
-
-                      <Text
-                        style={{
-                          marginTop: 2,
-                          fontSize: 10,
-                          fontWeight: 'bold',
-                          color: focused ? COLORS.dark : COLORS.grey,
-                          // textTransform: 'uppercase',
-                        }}>
-                        {title}
-                      </Text>
-                    </View>
-                  )}
-                </>
-              ),
-            }}
-          />
-        ))}
+        <Tab.Screen name="Home" component={NewHome} />
+        <Tab.Screen name="Wallet" component={Wallet} />
+        <Tab.Screen name="Rent" component={Borrow} />
+        <Tab.Screen name="Mortgages" component={Mortgages} />
+        <Tab.Screen name="More" component={AccountPage} />
       </Tab.Navigator>
 
       <CompleteProfileModal

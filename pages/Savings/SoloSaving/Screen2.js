@@ -21,8 +21,8 @@ import * as Animatable from 'react-native-animatable';
 import {unFormatNumber} from '../../../util/numberFormatter';
 
 const soloSavingFormSchema = yup.object().shape({
-  // savingDuration: yup.string().required('Please select saving duration'),
-  // savingStartOption: yup.string().required('Please select saving start date'),
+  savingDuration: yup.string().required('Please select saving duration'),
+  savingStartOption: yup.string().required('Please select saving start date'),
 });
 
 export default function Screen2(props) {
@@ -250,7 +250,18 @@ export default function Screen2(props) {
                 />
               )}
 
-              <TouchableOpacity onPress={handleSubmit} style={[designs.button]}>
+              <TouchableOpacity
+                onPress={handleSubmit}
+                disabled={values.savingDuration != '' && isValid ? false : true}
+                style={[
+                  designs.button,
+                  {
+                    backgroundColor:
+                      values.savingDuration != '' && isValid
+                        ? '#00DC99'
+                        : '#00DC9950',
+                  },
+                ]}>
                 <Text
                   style={{
                     color: 'white',

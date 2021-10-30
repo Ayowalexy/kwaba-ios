@@ -14,6 +14,8 @@ import axios from 'axios';
 import {setPin} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+import analytics from '@segment/analytics-react-native';
+
 const CELL_COUNT = 4;
 
 export default function CreatePin({navigation, route}) {
@@ -58,6 +60,9 @@ export default function CreatePin({navigation, route}) {
         console.log('The RESP: ', resp.data);
         navigation.navigate('EnterPin');
         setSpinner(false);
+        await analytics.track('Create-Pin', {
+          email: email,
+        });
       } else {
         setSpinner(false);
       }

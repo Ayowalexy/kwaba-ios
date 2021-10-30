@@ -148,13 +148,13 @@ const AccountPage = ({navigation}) => {
         navigation.navigate('Aboutus');
       },
     },
-    {
-      iconName: 'finger-print',
-      tabTitle: 'Fingerprint',
-      onClickFunction: function openCardAndBank() {
-        navigation.navigate('Aboutus');
-      },
-    },
+    // {
+    //   iconName: 'finger-print',
+    //   tabTitle: 'Fingerprint',
+    //   onClickFunction: function openCardAndBank() {
+    //     navigation.navigate('Aboutus');
+    //   },
+    // },
   ];
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -293,7 +293,7 @@ const AccountPage = ({navigation}) => {
                     width: 90,
                     height: 90,
                     borderRadius: 100,
-                    backgroundColor: COLORS.dark,
+                    backgroundColor: COLORS.primary,
                     justifyContent: 'center',
                     alignItems: 'center',
                     marginRight: 20,
@@ -327,7 +327,7 @@ const AccountPage = ({navigation}) => {
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
-                      backgroundColor: COLORS.dark,
+                      backgroundColor: COLORS.primary,
 
                       width: 100,
                       // height: 30,
@@ -492,7 +492,7 @@ const AccountPage = ({navigation}) => {
                         name={value.iconName}
                         size={23}
                         style={{
-                          color: COLORS.dark,
+                          color: COLORS.primary,
                           width: 40,
                           // opacity: 0.6,
                           // borderBottomWidth: 1,
@@ -505,7 +505,7 @@ const AccountPage = ({navigation}) => {
                           {
                             // marginLeft: 40,
                             // marginTop: -23,
-                            color: COLORS.dark,
+                            color: COLORS.primary,
                             fontSize: 14,
                             fontWeight: 'bold',
                           },
@@ -517,7 +517,7 @@ const AccountPage = ({navigation}) => {
                       <IconFA
                         name="chevron-right"
                         size={12}
-                        color={COLORS.dark}
+                        color={COLORS.primary}
                         style={{opacity: 0.5}}
                       />
                     </View>

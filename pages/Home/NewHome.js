@@ -52,6 +52,9 @@ import PaymentTypeModal from '../../components/paymentTypeModal';
 import AmountModal from '../../components/amountModal';
 import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
+import analytics from '@segment/analytics-react-native';
+
+import {TrackEvent} from '../../util/segmentEvents';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -108,6 +111,7 @@ export default function NewHome({navigation}) {
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
         dispatch(getTotalBuddySavings());
+        dispatch(getUserWallet());
 
         dispatch(
           setLoginState({
@@ -198,7 +202,7 @@ export default function NewHome({navigation}) {
         savings > 0
           ? 'Save now to make your rent\nwork for you'
           : 'Great job on your rent savings',
-      amount: formatNumber(savings),
+      amount: formatNumber(Number(savings).toFixed(2)),
       color: COLORS.primary,
       actionText: savings == 0 ? 'Save Now' : 'Deposit',
       actionClick: () =>
@@ -208,6 +212,7 @@ export default function NewHome({navigation}) {
           ? setAddFundsToSavingsModal(true)
           : setCompleteProfileModal(true),
       cardClick: () => {
+        TrackEvent('Home-Card-Savings');
         navigation.navigate('SavingsHome');
       },
     },
@@ -215,7 +220,7 @@ export default function NewHome({navigation}) {
       title: 'Emergency Fund',
       subtitle:
         instantLoan == 0 ? 'Access instant loans' : 'Total amount to repay',
-      amount: formatNumber(instantLoan),
+      amount: formatNumber(Number(instantLoan).toFixed(2)),
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -223,6 +228,7 @@ export default function NewHome({navigation}) {
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
+        TrackEvent('Home-Card-Emergencyloan');
         instantLoan == 0
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard');
@@ -233,13 +239,14 @@ export default function NewHome({navigation}) {
       subtitle:
         wallet == 0
           ? 'Fund your wallet to transact on Kwaba'
-          : 'Save and pay bills from yout wallet',
-      amount: formatNumber(wallet),
+          : 'Save and pay bills from your wallet',
+      amount: formatNumber(Number(wallet).toFixed(2)),
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () =>
         wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
       cardClick: () => {
+        TrackEvent('Home-Card-Wallet');
         navigation.navigate('Wallet');
       },
     },
@@ -249,7 +256,7 @@ export default function NewHome({navigation}) {
         rentalFinance == 0
           ? "Let's help you pay your rent"
           : 'Next payment amount',
-      amount: formatNumber(rentalFinance),
+      amount: formatNumber(Number(rentalFinance).toFixed(2)),
       color: '#000',
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -258,12 +265,14 @@ export default function NewHome({navigation}) {
           : rentalFinance == 0
           ? navigation.navigate('Borrow')
           : navigation.navigate('RentNowPayLaterDashboard'),
-      cardClick: () =>
+      cardClick: () => {
+        TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
           ? navigation.navigate('Borrow')
-          : navigation.navigate('RentNowPayLaterDashboard'),
+          : navigation.navigate('RentNowPayLaterDashboard');
+      },
     },
   ];
 
@@ -272,17 +281,26 @@ export default function NewHome({navigation}) {
       name: 'Emergency\nfunds',
       // name: 'Emergency',
       image: icons.ic3,
-      route: () => navigation.navigate('EmergencyFundOnboarding'),
+      route: () => {
+        navigation.navigate('EmergencyFundOnboarding');
+        TrackEvent('Emergency Funds Home Quick Action');
+      },
     },
     {
       name: 'Buy Airtime',
       image: icons.ic1,
-      route: () => navigation.navigate('AirtimeHome'),
+      route: () => {
+        navigation.navigate('AirtimeHome');
+        TrackEvent('Buy Airtime Home Quick Action');
+      },
     },
     {
       name: 'Pay Bills',
       image: icons.ic2,
-      route: () => navigation.navigate('BillsHome'),
+      route: () => {
+        navigation.navigate('BillsHome');
+        TrackEvent('Pay Bills Home Quick Action');
+      },
     },
     // {
     //   // name: 'Buy now pay\nlater',
@@ -359,14 +377,15 @@ export default function NewHome({navigation}) {
               lineHeight: 19,
             }}>
             {/* Hi {name}, {greeting} */}
-            Hi {name}
+            Hi, {name}
           </Text>
         </View>
         <TouchableOpacity
           style={{paddingLeft: 20}}
-          onPress={() => {
-            navigation.navigate('Notifications');
-            // navigation.navigate('BuddyInviteLists');
+          onPress={async () => {
+            // navigation.navigate('Notifications');
+            navigation.navigate('AppUpdate');
+            TrackEvent('Notification-Button');
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
@@ -620,7 +639,7 @@ export default function NewHome({navigation}) {
                             fontWeight: 'bold',
                             color: COLORS.white,
                           }}>
-                          ₦{formatNumber(item.amount) || '0.00'}
+                          ₦{item.amount || '0.00'}
                         </Text>
                       </View>
                     </View>
@@ -770,7 +789,11 @@ export default function NewHome({navigation}) {
                             marginTop: 20,
                           }}>
                           <TouchableOpacity
-                            onPress={() => navigation.navigate('SavingsHome')}
+                            onPress={async () => {
+                              navigation.navigate('SavingsHome');
+
+                              TrackEvent('Rent Savings From Home Screen');
+                            }}
                             style={{
                               backgroundColor: COLORS.primary,
                               borderRadius: 10,

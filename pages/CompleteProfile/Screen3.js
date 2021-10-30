@@ -23,14 +23,10 @@ export default function Screen3({navigation}) {
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
         <View
-          style={
-            {
-              // marginTop: 25,
-              // marginBottom: 49,
-              // marginLeft: 16,
-              // marginRight: 16,
-            }
-          }>
+          style={{
+            marginTop: 25,
+            paddingHorizontal: 10,
+          }}>
           <Text
             style={[
               designs.heading,
@@ -53,75 +49,37 @@ export default function Screen3({navigation}) {
                 lineHeight: 19,
               },
             ]}>
-            Provide your employment details
-          </Text>
-          <View style={designs.customInput}>
-            <Picker
-              mode="dropdown"
-              accessibilityLabel="Employment Status"
-              dropdownIconColor="white"
-              style={{flex: 1}}
-              selectedValue={selectedValue}
-              onValueChange={(itemValue, itemIndex) =>
-                setSelectedValue(itemValue)
-              }>
-              <Picker.Item label="employed" value="employed" />
-              <Picker.Item label="self-employed" value="self-employed" />
-              <Picker.Item label="unemployed" value="unemployed" />
-            </Picker>
-            <TouchableOpacity style={designs.iconBtn}>
-              <Icon name="chevron-down-outline" size={20} color="#BFBFBF" />
-            </TouchableOpacity>
-          </View>
-
-          <TextInput
-            style={designs.textField}
-            placeholder="Phone Number"
-            placeholderTextColor="#BFBFBF"
-          />
-          <TextInput
-            style={designs.textField}
-            placeholder="Official work email"
-            placeholderTextColor="#BFBFBF"
-          />
-          <Text
-            style={[
-              designs.heading,
-              {
-                fontSize: 15,
-                color: '#2A286A',
-                textAlign: 'left',
-                lineHeight: 19,
-                marginTop: 29,
-              },
-            ]}>
-            Office Address
+            Provide next of kin details
           </Text>
           <TextInput
             style={designs.textField}
-            placeholder="Street"
+            placeholder="Full name"
             placeholderTextColor="#BFBFBF"
           />
           <TextInput
             style={designs.textField}
-            placeholder="City"
+            placeholder="Relationship"
             placeholderTextColor="#BFBFBF"
           />
           <TextInput
             style={designs.textField}
-            placeholder="State"
-            placeholderTextColor="#BFBFBF"
-          />
-          <TextInput
-            style={designs.textField}
-            placeholder="Country"
+            placeholder="Email"
             placeholderTextColor="#BFBFBF"
           />
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('CompleteProfile4')}
+            // onPress={handleSubmit}
+            onPress={() => navigation.navigate('CompleteProfile5')}
             style={[designs.btn, {backgroundColor: '#00DC99'}]}>
-            <Text style={{color: 'white'}}>Next</Text>
+            <Text
+              style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: 14,
+                lineHeight: 30,
+              }}>
+              NEXT
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

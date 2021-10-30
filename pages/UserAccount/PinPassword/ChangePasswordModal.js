@@ -13,6 +13,14 @@ import {COLORS} from '../../../util';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import {changePassword} from '../../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
+
+import {
+  ErrorModal,
+  SuccessModal,
+  WarningModal,
+} from '../../../components/MessageModals';
 
 const CustomInput = (props) => {
   const {
@@ -75,7 +83,6 @@ const CustomInput = (props) => {
 };
 
 const changePasswordSchema = yup.object().shape({
-  firstName: yup.string().required('First name is required'),
   oldPassword: yup.string().required('Old password is required'),
   newPassword: yup
     .string()
@@ -85,12 +92,43 @@ const changePasswordSchema = yup.object().shape({
   retypeNewPassword: yup
     .string()
     .test('passwords-match', 'Passwords must match', function (value) {
-      return this.parent.password === value;
+      return this.parent.newPassword === value;
     }),
 });
 
 export default function ChangePasswordModal(props) {
   const {onRequestClose, visible} = props;
+  const [spinner, setSpinner] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(true);
+  const [showWarningModal, setShowWarningModal] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(true);
+
+  const handleSubmit = async (values) => {
+    const data = {
+      oldPassword: values.oldPassword,
+      newPassword: values.newPassword,
+    };
+
+    console.log('The Data For Password: ', data);
+
+    setSpinner(true);
+    try {
+      const response = await changePassword(data);
+      console.log('Omi:', response);
+      setSpinner(false);
+      // if (response.status == 200) {
+      //   // setSuccessModalMessage('password Change successfull');
+      //   // setSuccessModal(true);
+      //   console.log('Reset Successful.');
+      // } else {
+      //   console.log('Something went wrong.');
+      // }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
+    }
+  };
+
   return (
     <>
       <Modal
@@ -167,6 +205,29 @@ export default function ChangePasswordModal(props) {
           </View>
         </View>
       </Modal>
+
+      <Spinner visible={spinner} size="large" />
+
+      {/* <SuccessModal
+        onRequestClose={() => {
+          setShowSuccessModal(!showSuccessModal);
+        }}
+        visible={showSuccessModal}
+      /> */}
+
+      {/* <ErrorModal
+        onRequestClose={() => {
+          setShowErrorModal(!showErrorModal);
+        }}
+        visible={showErrorModal}
+      /> */}
+
+      {/* <WarningModal
+        onRequestClose={() => {
+          setShowWarningModal(!showWarningModal);
+        }}
+        visible={showWarningModal}
+      /> */}
     </>
   );
 }
