@@ -1,8 +1,17 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+} from 'react-native';
 import {COLORS, images} from '../../util';
 
-export default function AppUpdate() {
+const {width, height} = Dimensions.get('window');
+
+export default function AppUpdate({navigation}) {
   return (
     <View style={[styles.container]}>
       <View style={{flex: 1}}>
@@ -27,6 +36,7 @@ export default function AppUpdate() {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={() => navigation.goBack()}
           style={[styles.actionBtn, {backgroundColor: 'transparent'}]}>
           <Text style={[styles.actionBtnText]}>I'LL UPDATE LATER</Text>
         </TouchableOpacity>
@@ -41,9 +51,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   img: {
-    width: '100%',
-    height: 300,
     marginVertical: 20,
+    flex: 1,
   },
   textContainer: {
     // marginTop: 20,
@@ -66,7 +75,9 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
 
-  actionCenter: {},
+  actionCenter: {
+    marginTop: 20,
+  },
   actionBtn: {
     backgroundColor: COLORS.secondary,
     paddingVertical: 20,
