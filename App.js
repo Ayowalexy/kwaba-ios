@@ -196,6 +196,7 @@ import {
   StatusBar,
   Linking,
   AppState,
+  Platform,
 } from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
@@ -211,6 +212,10 @@ import {PinPassword} from './pages/UserAccount/PinPassword';
 import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
+
+import {getVersion} from 'react-native-device-info';
+
+import VersionCheck from 'react-native-version-check';
 
 const Stack = createStackNavigator();
 
@@ -349,10 +354,28 @@ const App = () => {
     any_custom_type: () => {},
   };
 
-  useEffect(() => {
-    var pkg = require('./package.json');
-    console.log('pkg: ', pkg.version);
-  }, []);
+  // useEffect(() => {
+  //   var pkg = require('./package.json');
+  //   console.log('pkg: ', pkg.version);
+  //   console.log('version: ', getVersion());
+  // }, []);
+
+  // useEffect(() => {
+  //   checkVersion();
+  // }, []);
+
+  // const checkVersion = async () => {
+  //   try {
+  //     let updateNeeded = await VersionCheck.needUpdate();
+  //     // if (updateNeeded.isNeeded) {
+  //     //   //Alert the user and direct to the app url
+  //     //   console.log('Something something....');
+  //     // }
+  //     console.log('The update: ', updateNeeded);
+  //   } catch (error) {
+  //     console.log('Error: ', error);
+  //   }
+  // };
 
   return (
     <>
