@@ -226,6 +226,75 @@ export default function Wallet(props) {
                 Add Funds
               </Text>
             </TouchableOpacity>
+
+            <View
+              style={{
+                // borderWidth: 1,
+                // borderColor: 'red',
+                marginTop: 20,
+                width: '100%',
+                // flex: 1,
+                paddingTop: 20,
+                paddingBottom: 10,
+                paddingHorizontal: 40,
+                justifyContent: 'space-evenly',
+                alignItems: 'center',
+                flexDirection: 'row',
+                borderTopWidth: 1,
+                borderTopColor: COLORS.primary,
+              }}>
+              {['Save', 'Bills', 'Funds'].map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    style={{marginHorizontal: 5, alignItems: 'center'}}>
+                    <View
+                      style={{
+                        width: 60,
+                        height: 40,
+                        // borderWidth: 1,
+                        // borderColor: COLORS.white,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        borderRadius: 5,
+                        padding: 2,
+                      }}>
+                      <View
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: COLORS.white,
+                          borderRadius: 5,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Icon
+                          name={
+                            item == 'Save'
+                              ? 'duplicate'
+                              : item == 'Bills'
+                              ? 'apps'
+                              : 'enter-sharp'
+                          }
+                          size={20}
+                          color={COLORS.light}
+                        />
+                      </View>
+                    </View>
+
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 'normal',
+                        marginTop: 5,
+                        color: COLORS.white,
+                      }}>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
         </View>
 
@@ -283,7 +352,8 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: 20,
-    paddingVertical: 50,
+    paddingTop: 50,
+    paddingBottom: 10,
     backgroundColor: '#00000050',
     borderTopWidth: 1,
     borderTopColor: COLORS.primary,
