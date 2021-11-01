@@ -71,6 +71,20 @@ export default function BankTransferModal(props) {
                 The account number is unique to your Kwaba account
               </Text>
 
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'normal',
+                  color: COLORS.primary,
+                  marginVertical: 10,
+                  lineHeight: 20,
+                  opacity: 0.8,
+                  //   paddingHorizontal: 5,
+                }}>
+                Once you make a transfer, your account will be updated in 5
+                minutes max.
+              </Text>
+
               <View
                 style={{
                   width: '100%',

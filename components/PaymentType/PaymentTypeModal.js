@@ -77,7 +77,7 @@ export default function PaymentTypeModal(props) {
                 ].map((item, index) => {
                   return (
                     <TouchableOpacity
-                      disabled={item.icon != 'card'}
+                      disabled={item.icon == 'home'}
                       onPress={() => {
                         setPaymentType(item.tag);
                         onRequestClose();
@@ -91,7 +91,7 @@ export default function PaymentTypeModal(props) {
                         borderTopColor: '#BFBFBF30',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        opacity: item.icon == 'card' ? 1 : 0.4,
+                        opacity: item.icon == 'home' ? 0.4 : 1,
                       }}>
                       <View
                         style={{
