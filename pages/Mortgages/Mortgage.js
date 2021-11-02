@@ -150,7 +150,7 @@ const Mortgages = ({navigation}) => {
             }}>
             <Text
               style={{fontSize: 12, fontWeight: 'bold', color: COLORS.white}}>
-              COMING SOON
+              JOIN WAITLIST
             </Text>
           </TouchableOpacity>
         </View>
