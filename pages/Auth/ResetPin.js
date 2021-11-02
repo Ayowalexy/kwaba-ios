@@ -11,11 +11,19 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {setPin} from '../../services/network';
 
+import {
+  CodeField,
+  Cursor,
+  useBlurOnFulfill,
+  useClearByFocusCell,
+} from 'react-native-confirmation-code-field';
+
 const ResetPinValidationSchema = yup.object().shape({
-  pin: yup.string().required('Password is required'),
   email: yup.string().required('Email is required'),
   password: yup.string().required('Password is required'),
 });
+
+const CELL_COUNT = 4;
 
 const CustomInput = (props) => {
   const {
@@ -94,9 +102,16 @@ const CustomInput = (props) => {
 export default function ResetPin({navigation, route}) {
   const [spinner, setSpinner] = useState(false);
 
+  const [value, setValue] = useState('');
+  const ref = useBlurOnFulfill({value, cellCount: CELL_COUNT});
+  const [cellProps, getCellLayoutHandler] = useClearByFocusCell({
+    value,
+    setValue,
+  });
+
   const handleSubmit = async (values) => {
     const data = {
-      pin: values.pin,
+      pin: value,
       email: values.email,
       password: values.password,
     };
@@ -126,7 +141,7 @@ export default function ResetPin({navigation, route}) {
     <>
       <Formik
         validationSchema={ResetPinValidationSchema}
-        initialValues={{pin: '', email: '', password: ''}}
+        initialValues={{email: '', password: ''}}
         onSubmit={(values) => {
           handleSubmit(values);
         }}>
@@ -151,31 +166,73 @@ export default function ResetPin({navigation, route}) {
                   <Text style={[designs.headline]}>Reset PIN</Text>
                 </View>
 
-                <View style={{paddingHorizontal: 0}}>
-                  <Field
+                <View style={{paddingHorizontal: 20}}>
+                  {/* <Field
                     component={CustomInput}
                     name="pin"
                     placeholder="New Pin"
-                  />
-                  <Field
-                    component={CustomInput}
-                    name="email"
-                    placeholder="Email Address"
-                  />
-                  <Field
-                    component={CustomInput}
-                    name="password"
-                    placeholder="Password"
-                  />
+                  /> */}
+                  <View style={{marginTop: 40}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color: COLORS.dark,
+                        textAlign: 'center',
+                        opacity: 0.5,
+                      }}>
+                      Enter new PIN
+                    </Text>
+                    <CodeField
+                      ref={ref}
+                      {...cellProps}
+                      value={value}
+                      onChangeText={setValue}
+                      cellCount={CELL_COUNT}
+                      rootStyle={[
+                        designs.codeInputContainer,
+                        {paddingHorizontal: 10},
+                      ]}
+                      keyboardType="number-pad"
+                      textContentType="oneTimeCode"
+                      renderCell={({index, symbol, isFocused}) => (
+                        <View
+                          key={index}
+                          style={[
+                            designs.codeInput,
+                            isFocused && designs.focusCell,
+                          ]}
+                          onLayout={getCellLayoutHandler(index)}>
+                          <Text style={designs.cellText}>
+                            {symbol || (isFocused ? <Cursor /> : null)}
+                          </Text>
+                        </View>
+                      )}
+                    />
+                  </View>
+
+                  <View style={{marginTop: 40}}>
+                    <Field
+                      component={CustomInput}
+                      name="email"
+                      placeholder="Email Address"
+                    />
+                    <Field
+                      component={CustomInput}
+                      name="password"
+                      placeholder="Password"
+                    />
+                  </View>
                 </View>
               </View>
 
               <TouchableOpacity
                 onPress={handleSubmit}
+                disabled={value.toString().length <= 3}
                 style={[
                   designs.btn,
                   {
-                    backgroundColor: '#00DC99',
+                    backgroundColor:
+                      value.toString().length <= 3 ? '#00DC9980' : '#00DC99',
                     width: '100%',
                     borderRadius: 10,
                   },

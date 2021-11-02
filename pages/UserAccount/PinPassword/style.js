@@ -36,7 +36,7 @@ const designs = StyleSheet.create({
 
   customInput: {
     // height: 70,
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: '#FFFFFF',
     borderColor: '#EFEFEF',
     borderWidth: 1,
@@ -59,7 +59,7 @@ const designs = StyleSheet.create({
     alignItems: 'center',
     // marginLeft: 16,
     // marginRight: 16,
-    elevation: 1,
+    // elevation: 1,
   },
   errorText: {
     fontSize: 10,
@@ -97,6 +97,30 @@ const designs = StyleSheet.create({
     marginTop: 15,
     paddingHorizontal: 40,
     // borderWidth: 1,
+  },
+  cellText: {
+    fontSize: 18,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#465969',
+  },
+  focusCell: {
+    borderColor: '#00DC99',
+  },
+  headline: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  subtitle: {
+    fontSize: 12,
+    color: COLORS.dark,
+    lineHeight: 20,
+  },
+  contentText: {
+    paddingLeft: 20,
   },
 });
 

@@ -23,7 +23,7 @@ const designs = StyleSheet.create({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 1,
+    // elevation: 1,
   },
   textField: {
     borderRadius: 5,
@@ -70,6 +70,7 @@ const designs = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: 'white',
     borderWidth: 1,
+    borderColor: '#46596950',
     fontSize: 18,
     textAlign: 'center',
     fontWeight: '900',
