@@ -247,7 +247,17 @@ export default function Wallet(props) {
                 return (
                   <TouchableOpacity
                     key={index}
-                    style={{marginHorizontal: 5, alignItems: 'center'}}>
+                    style={{marginHorizontal: 5, alignItems: 'center'}}
+                    onPress={() => {
+                      if (item == 'Save') {
+                        navigation.navigate('SavingsHome');
+                      } else if (item == 'Bills') {
+                        navigation.navigate('BillsHome');
+                      } else {
+                        navigation.navigate('EmergencyLoanHome');
+                      }
+                      console.log('Clicked');
+                    }}>
                     <View
                       style={{
                         width: 60,

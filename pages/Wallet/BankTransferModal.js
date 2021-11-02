@@ -111,7 +111,7 @@ export default function BankTransferModal(props) {
                         style={{
                           fontSize: 14,
                           color: COLORS.primary,
-                          // fontWeight: 'bold',
+                          fontWeight: 'bold',
                         }}>
                         {walletDetails?.bank_name}
                       </Text>
@@ -147,7 +147,7 @@ export default function BankTransferModal(props) {
                         style={{
                           fontSize: 14,
                           color: COLORS.primary,
-                          // fontWeight: 'bold',
+                          fontWeight: 'bold',
                         }}>
                         {walletDetails?.wallet_number}
                       </Text>
@@ -181,7 +181,7 @@ export default function BankTransferModal(props) {
                         style={{
                           fontSize: 14,
                           color: COLORS.primary,
-                          // fontWeight: 'bold',
+                          fontWeight: 'bold',
                         }}>
                         {walletDetails.name}
                       </Text>
