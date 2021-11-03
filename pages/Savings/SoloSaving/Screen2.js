@@ -18,10 +18,10 @@ import NumberFormat from '../../../components/NumberFormat';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import * as Animatable from 'react-native-animatable';
-import {unFormatNumber} from '../../../util/numberFormatter';
+import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 
 const soloSavingFormSchema = yup.object().shape({
-  savingDuration: yup.string().required('Please select saving duration'),
+  targetAmount: yup.string().required('Please provide saving amount'),
   savingStartOption: yup.string().required('Please select saving start date'),
 });
 
@@ -42,15 +42,9 @@ export default function Screen2(props) {
 
   const handleSubmit = (values) => {
     try {
-      let chosenDuration =
-        values.savingDuration == '3 Months'
-          ? '3months'
-          : values.savingDuration == '6 Months'
-          ? '6months'
-          : '1years';
       const data = {
         ...props.route.params,
-        how_long: chosenDuration,
+        target_amount: Number(unFormatNumber(values.targetAmount)),
         start_date:
           values.savingStartOption == 'today'
             ? moment().format('YYYY-MM-DD')
@@ -65,54 +59,106 @@ export default function Screen2(props) {
     } catch (error) {}
   };
 
-  const HowLongSelection = (props) => {
-    const howLongList = ['3 Months', '6 Months', '1 Year'];
-
+  const NumberInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched, setFieldValue},
+      form: {errors, touched, setFieldTouched},
       ...inputProps
     } = props;
 
     const hasError = errors[name] && touched[name];
+
     return (
       <>
-        <Text style={[designs.boldText, {marginTop: 35}]}>
-          How long do you want to save for?
+        <Text style={[designs.boldText, {marginTop: 18}]}>
+          How much is your saving target?
         </Text>
-        <View style={designs.options}>
-          {howLongList.map((duration, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => setFieldValue('savingDuration', duration)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 5,
-                  width: '32%',
-                  height: 54,
-                  backgroundColor: duration == value ? '#9D98EC' : 'white',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: duration == value ? 'white' : '#465969',
-                    lineHeight: 19,
-                  }}>
-                  {duration}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingLeft: 50,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={formatNumber(value)}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => onChange(name)(text)}
+            {...inputProps}
+          />
         </View>
 
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
     );
   };
+
+  // const HowLongSelection = (props) => {
+  //   const howLongList = ['3 Months', '6 Months', '1 Year'];
+
+  //   const {
+  //     field: {name, onBlur, onChange, value},
+  //     form: {errors, touched, setFieldTouched, setFieldValue},
+  //     ...inputProps
+  //   } = props;
+
+  //   const hasError = errors[name] && touched[name];
+  //   return (
+  //     <>
+  //       <Text style={[designs.boldText, {marginTop: 35}]}>
+  //         How long do you want to save for?
+  //       </Text>
+  //       <View style={designs.options}>
+  //         {howLongList.map((duration, index) => {
+  //           return (
+  //             <TouchableOpacity
+  //               key={index}
+  //               onPress={() => setFieldValue('savingDuration', duration)}
+  //               style={{
+  //                 display: 'flex',
+  //                 alignItems: 'center',
+  //                 justifyContent: 'center',
+  //                 borderRadius: 5,
+  //                 width: '32%',
+  //                 height: 54,
+  //                 backgroundColor: duration == value ? '#9D98EC' : 'white',
+  //               }}>
+  //               <Text
+  //                 style={{
+  //                   fontSize: 12,
+  //                   fontWeight: '600',
+  //                   color: duration == value ? 'white' : '#465969',
+  //                   lineHeight: 19,
+  //                 }}>
+  //                 {duration}
+  //               </Text>
+  //             </TouchableOpacity>
+  //           );
+  //         })}
+  //       </View>
+
+  //       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+  //     </>
+  //   );
+  // };
 
   const StartOptionSelection = (props) => {
     const startOptionList = [
@@ -189,7 +235,7 @@ export default function Screen2(props) {
         <Formik
           validationSchema={soloSavingFormSchema}
           initialValues={{
-            savingDuration: '',
+            targetAmount: '',
             savingStartOption: '',
           }}
           onSubmit={(values) => {
@@ -197,7 +243,12 @@ export default function Screen2(props) {
           }}>
           {({handleSubmit, isValid, values, setValues}) => (
             <>
-              <Field component={HowLongSelection} name="savingDuration" />
+              {/* <Field component={HowLongSelection} name="savingDuration" /> */}
+              <Field
+                component={NumberInput}
+                name="targetAmount"
+                placeholder="Amount"
+              />
 
               <Field
                 component={StartOptionSelection}
@@ -252,12 +303,12 @@ export default function Screen2(props) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={values.savingDuration != '' && isValid ? false : true}
+                disabled={values.targetAmount != '' && isValid ? false : true}
                 style={[
                   designs.button,
                   {
                     backgroundColor:
-                      values.savingDuration != '' && isValid
+                      values.targetAmount != '' && isValid
                         ? '#00DC99'
                         : '#00DC9950',
                   },

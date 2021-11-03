@@ -119,48 +119,57 @@ export default function SubsequentModal(props) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  width: 260,
-                  color: '#465969',
-                  lineHeight: 25,
-                }}>
-                Do you want to use this payment option for subsequent rent
-                saving?
-              </Text>
-
-              <Icon
+              <TouchableOpacity
                 onPress={onRequestClose}
-                name="close-outline"
-                size={25}
-                color="#465969"
-              />
-            </View>
-            <View style={{marginTop: 20}}>
-              {subsequentOptions.map((value, index) => (
-                <TouchableOpacity
-                  // onPress={
-                  //   value.toLowerCase() == 'yes'
-                  //     ? handleTransactions
-                  //     : onRequestClose
-                  // }
-                  onPress={handleTransactions}
-                  key={index}
+                style={{
+                  width: 30,
+                  height: 30,
+                  backgroundColor: COLORS.grey,
+                  borderRadius: 30,
+                  position: 'absolute',
+                  right: 20,
+                  top: 20,
+
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  opacity: 0.3,
+                }}>
+                <Icon name="close" size={25} color={COLORS.dark} />
+              </TouchableOpacity>
+              <View
+                style={{marginTop: 70, width: '100%', paddingHorizontal: 25}}>
+                <Text
                   style={{
-                    paddingVertical: 15,
-                    alignItems: 'center',
+                    fontSize: 15,
+                    width: 260,
+                    color: '#465969',
+                    lineHeight: 25,
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 14 + index,
-                      fontWeight: 'bold',
-                      color: COLORS.primary,
-                    }}>
-                    {value}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                  Do you want to use this payment option for subsequent rent
+                  saving?
+                </Text>
+                <View style={{marginTop: 20, marginBottom: 10}}>
+                  {subsequentOptions.map((value, index) => (
+                    <TouchableOpacity
+                      onPress={handleTransactions}
+                      key={index}
+                      style={{
+                        paddingVertical: 15,
+                        alignItems: 'center',
+                        // borderWidth: 1,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14 + index,
+                          fontWeight: 'bold',
+                          color: COLORS.primary,
+                        }}>
+                        {value}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
             </View>
           </View>
         </View>
@@ -195,7 +204,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     overflow: 'hidden',
-    padding: 25,
+    // padding: 25,
   },
   btn: {
     width: '100%',

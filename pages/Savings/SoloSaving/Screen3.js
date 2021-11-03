@@ -17,6 +17,8 @@ import {soloSaving} from '../../../redux/actions/savingsActions';
 import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 import CardAndBankModal from './CardAndBankModal';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
+import DepositModal from './DepositModal';
+import SubsequentModal from './SubsequentModal';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -49,6 +51,8 @@ export default function Screen3({navigation, route}) {
   const [storeData, setStoreData] = useState(null);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showSubsequentModal, setShowSubsequentModal] = useState(false);
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -96,6 +100,7 @@ export default function Screen3({navigation, route}) {
 
   const handlePaymentRoute = async (value) => {
     console.log('Solo saving: ', value);
+    setShowDepositModal(true);
   };
 
   return (
@@ -269,7 +274,8 @@ export default function Screen3({navigation, route}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
-          onPress={addCardAndBankModal}
+          // onPress={addCardAndBankModal}
+          onPress={() => setShowPaymentModal(true)}
           style={[
             designs.button,
             {
@@ -306,6 +312,29 @@ export default function Screen3({navigation, route}) {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
+        />
+      )}
+
+      {showDepositModal && (
+        <DepositModal
+          onRequestClose={() => setShowDepositModal(!showDepositModal)}
+          visible={showDepositModal}
+          store={store}
+          navigation={navigation}
+          storeData={storeData}
+          showModal={() => setShowSubsequentModal(true)}
+        />
+      )}
+
+      {showSubsequentModal && (
+        <SubsequentModal
+          onRequestClose={() => setShowSubsequentModal(!showSubsequentModal)}
+          visible={showSubsequentModal}
+          goToDashboard={() => {
+            navigation.navigate('SoloSavingDashBoard');
+          }}
+          savingsData={storeData}
+          navigation={navigation}
         />
       )}
     </View>

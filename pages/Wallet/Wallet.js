@@ -15,8 +15,11 @@ import {SwipeablePanel} from 'rn-swipeable-panel';
 import AddFundToWalletModal from './AddFundToWalletModal';
 import {
   getUserWallet,
-  getUserWalletTransactions,
+  // getUserWalletTransactions,
 } from '../../redux/actions/walletAction';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import moment from 'moment';
 
 export default function Wallet(props) {
   const {navigation} = props;
@@ -37,7 +40,7 @@ export default function Wallet(props) {
 
   useEffect(() => {
     dispatch(getUserWallet());
-    dispatch(getUserWalletTransactions());
+    // dispatch(getUserWalletTransactions());
     // dispatch(getBillsCategory('airtime'));
   }, []);
 
@@ -45,101 +48,68 @@ export default function Wallet(props) {
     setAmount(getWallet.available_balances);
   }, [getWallet]);
 
-  // useEffect(() => {
-  //   // setTransactions(getWalletTransactions);
-  //   // console.log(getWalletTransactions);
-  // }, [getWalletTransactions]);
+  useEffect(() => {
+    console.log(getWalletTransactions);
+  }, [getWalletTransactions]);
 
-  // useEffect(() => {
-  //   openPanel();
-  // }, []);
-
-  const openPanel = () => {
-    setActive(true);
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
   };
 
-  const closePanel = () => {
-    setActive(false);
+  const getUserWalletTransactions = async () => {
+    const token = await getToken();
+    const url =
+      `https://kwaba-main-api-3-cp4jm.ondigitalocean.app` +
+      '/api/v1/get_wallet_transactions';
+    try {
+      const response = await axios.get(url, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      setTransactions(response.data.data);
+      console.log('Wallet Transaction New: ', response.data.data);
+      // return response.data.data;
+    } catch (error) {
+      console.log(error);
+      // return error.message;
+    }
   };
+
+  useEffect(() => {
+    getUserWalletTransactions();
+  }, []);
 
   return (
     <>
       <View style={[styles.container]}>
         <View
           style={{
-            width: '100%',
-            flex: 1,
-            position: 'absolute',
-            //   alignItems: 'center',
-            //   justifyContent: 'center',
-            opacity: 0.1,
-          }}>
-          <Icon
-            name="wallet"
-            size={200}
-            color={COLORS.light}
-            style={{
-              position: 'absolute',
-              right: -20,
-              transform: [{rotate: '10deg'}],
-            }}
-          />
-          <Icon
-            name="wallet"
-            size={100}
-            color={COLORS.light}
-            style={{
-              position: 'absolute',
-              left: -10,
-              top: 50,
-              transform: [{rotate: '-10deg'}],
-            }}
-          />
-          <Icon
-            name="wallet"
-            size={50}
-            color={COLORS.light}
-            style={{
-              position: 'absolute',
-              left: 100,
-              top: 100,
-              transform: [{rotate: '-10deg'}],
-            }}
-          />
-        </View>
-        <View
-          style={{
-            backgroundColor: '#00000050',
+            backgroundColor: COLORS.primary,
             width: '100%',
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            padding: 10,
+            paddingHorizontal: 20,
+            paddingVertical: 15,
+            borderBottomWidth: 1,
+            borderBottomColor: '#FFFFFF20',
+            // borderTopWidth: 1,
+            // borderTopColor: '#FFFFFF20',
           }}>
-          {/* <TouchableOpacity
-            onPress={() => navigation.navigate('Home')}
-            style={{
-              backgroundColor: '#ffffff20',
-              width: 40,
-              height: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50,
-            }}>
-            <Icon name="arrow-back" size={20} color={COLORS.white} />
-          </TouchableOpacity> */}
           <View />
           <Text
             style={{
-              fontSize: 12,
-              marginLeft: 40,
+              fontSize: 14,
+              // marginLeft: 40,
               fontWeight: 'bold',
               color: COLORS.white,
             }}>
             My Wallet
           </Text>
+          <View />
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={openPanel}
             style={{
               backgroundColor: '#ffffff20',
@@ -150,9 +120,50 @@ export default function Wallet(props) {
               borderRadius: 50,
             }}>
             <Icon name="list-sharp" size={20} color={COLORS.white} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={[styles.content]}>
+          <View
+            style={{
+              width: '100%',
+              flex: 1,
+              position: 'absolute',
+              opacity: 0.05,
+              backgroundColor: COLORS.primary,
+            }}>
+            <Icon
+              name="wallet"
+              size={200}
+              color={COLORS.light}
+              style={{
+                position: 'absolute',
+                right: -20,
+                transform: [{rotate: '10deg'}],
+              }}
+            />
+            <Icon
+              name="wallet"
+              size={100}
+              color={COLORS.light}
+              style={{
+                position: 'absolute',
+                left: -10,
+                top: 50,
+                transform: [{rotate: '-10deg'}],
+              }}
+            />
+            <Icon
+              name="wallet"
+              size={50}
+              color={COLORS.light}
+              style={{
+                position: 'absolute',
+                left: 100,
+                top: 100,
+                transform: [{rotate: '-10deg'}],
+              }}
+            />
+          </View>
           <View
             style={{
               width: '100%',
@@ -241,7 +252,7 @@ export default function Wallet(props) {
                 alignItems: 'center',
                 flexDirection: 'row',
                 borderTopWidth: 1,
-                borderTopColor: COLORS.primary,
+                borderTopColor: '#FFFFFF20',
               }}>
               {['Save', 'Bills', 'Funds'].map((item, index) => {
                 return (
@@ -308,39 +319,123 @@ export default function Wallet(props) {
           </View>
         </View>
 
-        <SwipeablePanel
-          fullWidth
-          isActive={active}
-          onClose={closePanel}
-          noBackgroundOpacity={true}
-          closeOnTouchOutside={true}
-          style={{flex: 1, borderWidth: 1}}
-          onPressCloseButton={closePanel}>
+        <ScrollView>
           <View
             style={{
               flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingVertical: 20,
+              // justifyContent: 'center',
+              // alignItems: 'center',
+              // paddingVertical: 20,
+              paddingHorizontal: 20,
             }}>
-            {/* {!getWalletTransactions?.data?.length ? ( */}
-            <Text
-              style={{fontSize: 14, fontWeight: 'bold', color: COLORS.grey}}>
-              No Transactions
-            </Text>
-            {/* // ) : (
-            //   <View>
-            //     {getWalletTransactions?.data?.map((item, index) => {
-            //       return (
-            //         <View key={index}>
-            //           <Text>{item.amount}</Text>
-            //         </View>
-            //       );
-            //     })}
-            //   </View>
-            // )} */}
+            {!transactions?.length ? (
+              <Text
+                style={{fontSize: 14, fontWeight: 'bold', color: COLORS.grey}}>
+                No Transactions
+              </Text>
+            ) : (
+              <View>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    marginVertical: 15,
+                    color: COLORS.primary,
+                  }}>
+                  Transaction history
+                </Text>
+                {transactions?.reverse().map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
+                      style={[
+                        styles.lists,
+                        {
+                          borderLeftColor:
+                            item.transaction_type == 'credit'
+                              ? COLORS.success
+                              : COLORS.warning,
+                          borderLeftColor: COLORS.primary,
+                        },
+                      ]}>
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <View
+                          style={{
+                            width: 50,
+                            height: 50,
+                            // padding: 10,
+                            backgroundColor:
+                              item.transaction_type == 'credit'
+                                ? COLORS.success
+                                : COLORS.warning,
+                            backgroundColor: '#f7f8fd',
+                            marginRight: 20,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              fontWeight: 'bold',
+                              color: COLORS.primary,
+                            }}>
+                            {moment(item.updated_at).format('DD')}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontWeight: 'normal',
+                              lineHeight: 10,
+                              color: COLORS.primary,
+                              // opacity: 0.5,
+                            }}>
+                            {moment(item.updated_at).format('MMM')}
+                          </Text>
+                        </View>
+                        <View
+                          style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}>
+                          <View style={{flex: 1, paddingRight: 20}}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: COLORS.primary,
+                                textTransform: 'capitalize',
+                              }}
+                              numberOfLines={1}>
+                              {item.narration}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: COLORS.grey,
+                                marginTop: 5,
+                              }}>
+                              {moment(item.updated_at).format('DD MMM YYYY')}
+                            </Text>
+                          </View>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 'bold',
+                              color: COLORS.primary,
+                            }}>
+                            ₦{item.amount}
+                          </Text>
+                        </View>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            )}
           </View>
-        </SwipeablePanel>
+        </ScrollView>
       </View>
 
       {addFundsModal && (
@@ -358,13 +453,13 @@ export default function Wallet(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: '#F7F8FD',
   },
   content: {
     paddingHorizontal: 20,
-    paddingTop: 50,
+    paddingTop: 20,
     paddingBottom: 10,
-    backgroundColor: '#00000050',
+    backgroundColor: COLORS.primary,
     borderTopWidth: 1,
     borderTopColor: COLORS.primary,
   },
@@ -372,5 +467,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+
+  lists: {
+    backgroundColor: COLORS.white,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    borderRadius: 5,
+    elevation: 1,
+    marginBottom: 10,
+    borderLeftWidth: 5,
   },
 });
