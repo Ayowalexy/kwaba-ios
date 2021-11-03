@@ -1,29 +1,27 @@
 import React, {useState, useEffect} from 'react';
 import {
   View,
-  ScrollView,
   Text,
-  Image,
   TouchableOpacity,
-  Alert,
   StyleSheet,
   TextInput,
+  Image,
 } from 'react-native';
-import {icons} from '../../util/index';
-import designs from './style';
-import {COLORS, FONTS, images} from '../../util/index';
-import Icon from 'react-native-vector-icons/Ionicons';
-
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
-import {formatNumber} from '../../util/numberFormatter';
+
+import {COLORS, FONTS, images} from '../../../util/index';
+import Icon from 'react-native-vector-icons/Ionicons';
+
+import {formatNumber} from '../../../util/numberFormatter';
 import {onChange} from 'react-native-reanimated';
 
-import SelectSavingsOptionModal from '../../components/SelectSavingsOptionModal';
-import LoandPurposeModal from '../../components/LoanPurposeModal';
+import SelectSavingsOptionModal from '../../../components/SelectSavingsOptionModal';
+import LoandPurposeModal from '../../../components/LoanPurposeModal';
 
 import {useDispatch, useSelector} from 'react-redux';
-import {getMaxLoanCap} from '../../redux/actions/savingsActions';
+import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -31,8 +29,12 @@ const withdrawalFormSchema = yup.object().shape({
   reason: yup.string().required('Provide an amount'),
 });
 
-export default function Withdraw({navigation}) {
+export default function WithdrawalForm(props) {
+  const {navigation} = props;
   const dispatch = useDispatch();
+  const theStoredAccount = useSelector(
+    (state) => state.getBankFromStorageReducer,
+  );
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
   const [amountValue, setAmountValue] = useState('');
@@ -40,6 +42,21 @@ export default function Withdraw({navigation}) {
   const [selectedAmountIndex, setSelectedAmountIndex] = useState(1);
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
   const [loanPurpose, setLoanPurpose] = useState('');
+  const [userSelectedBankAccount, setUserSelectedBankAccount] = useState([]);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+      console.log('The Account From Local Storage: ', storeBank);
+    })();
+  }, []);
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
@@ -49,6 +66,11 @@ export default function Withdraw({navigation}) {
     const data = getMaxLoanCap1.data;
     setSavings(data.you_have_save);
   }, []);
+
+  useEffect(() => {
+    console.log('From Redux Store Man: ', theStoredAccount);
+    setUserSelectedBankAccount(theStoredAccount.data);
+  }, [theStoredAccount]);
 
   const handleSubmit = async (values) => {
     console.log(values);
@@ -82,7 +104,7 @@ export default function Withdraw({navigation}) {
               style={{
                 color: '#BABABA',
               }}>
-              Select Savings Option
+              Select Withdrawal Source
             </Text>
           )}
 
@@ -278,203 +300,155 @@ export default function Withdraw({navigation}) {
   };
 
   return (
-    <View style={[styles.container]}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={25}
-        style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
+    <View>
+      <Formik
+        validationSchema={withdrawalFormSchema}
+        initialValues={{
+          savingsOption: '',
+          withdrawalAmount: '',
+          reason: '',
         }}
-        color={COLORS.primary}
-      />
-      <Text style={[styles.heading]}>Withdraw</Text>
+        onSubmit={(values) => {
+          handleSubmit(values);
+        }}>
+        {({handleSubmit, isValid, values, setValues}) => (
+          <>
+            <View style={[styles.content]}>
+              <Field component={SelectSavings} name="savingsOption" />
+              <Field component={AmountOptions} name="withdrawalAmount" />
+              <Field component={SelectReason} name="reason" />
 
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        {savings <= 0 ? (
-          <View style={[styles.content, {alignItems: 'center'}]}>
-            <Image source={images.piggy} style={[styles.image]} />
-            <Text
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                color: COLORS.primary,
-              }}>
-              Cheeky!
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: 'normal',
-                color: '#999',
-                lineHeight: 22,
-                textAlign: 'center',
-                marginVertical: 10,
-              }}>
-              You know you don't have an active{'\n'}rent savings right?
-            </Text>
-            <TouchableOpacity
-              style={[styles.button]}
-              onPress={() => navigation.navigate('SavingsHome')}>
-              <Text
+              <View
                 style={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: 12,
-                  lineHeight: 30,
-                  textTransform: 'uppercase',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 10,
+                  marginTop: 20,
                 }}>
-                START SAVING
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <Formik
-            validationSchema={withdrawalFormSchema}
-            initialValues={{
-              savingsOption: '',
-              withdrawalAmount: '',
-              reason: '',
-            }}
-            onSubmit={(values) => {
-              handleSubmit(values);
-            }}>
-            {({handleSubmit, isValid, values, setValues}) => (
-              <>
-                <View style={[styles.content]}>
-                  <Field component={SelectSavings} name="savingsOption" />
-                  <Field component={AmountOptions} name="withdrawalAmount" />
-                  <Field component={SelectReason} name="reason" />
-
-                  <View
+                <Text
+                  style={{
+                    color: COLORS.dark,
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}>
+                  Bank Account
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Disbursement')}>
+                  <Text
                     style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      paddingHorizontal: 10,
-                      marginTop: 20,
+                      fontSize: 12,
+                      color: COLORS.secondary,
+                      fontWeight: 'bold',
                     }}>
-                    <Text
-                      style={{
-                        color: COLORS.dark,
-                        fontSize: 16,
-                        fontWeight: 'bold',
-                      }}>
-                      Bank Account
-                    </Text>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('CardAndBankDetails')}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: COLORS.secondary,
-                          fontWeight: 'bold',
-                        }}>
-                        Change
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                    {userSelectedBankAccount ? 'Change Account' : 'Add Account'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-                  <View style={{marginVertical: 30, alignItems: 'center'}}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('CardAndBankDetails')}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: COLORS.primary,
-                          textAlign: 'center',
-                        }}>
-                        No account? Click to select bank account
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                  {/* <View style={{marginTop: 20, alignItems: 'center'}}>
-                    <TouchableOpacity
-                      activeOpacity={0.9}
-                      style={[styles.bankCard]}>
-                      <View>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                            color: COLORS.white,
-                          }}>
-                          JOSHUA UDO NWOSU
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            color: COLORS.light,
-                          }}>
-                          Access Bank
-                        </Text>
-                        <Text
-                          style={{
-                            top: 70,
-                            fontSize: 14,
-                            color: COLORS.white,
-                            opacity: 0.8,
-                          }}>
-                          0094552107
-                        </Text>
-
-                        <Image
-                          style={{
-                            width: 71,
-                            height: 100,
-                            position: 'absolute',
-                            resizeMode: 'contain',
-                            right: -21,
-                            bottom: -100,
-                            borderWidth: 1,
-                          }}
-                          source={images.maskGroup24}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                  </View> */}
-
+              {!userSelectedBankAccount && (
+                <View style={{marginVertical: 30, alignItems: 'center'}}>
                   <TouchableOpacity
-                    style={[styles.button]}
-                    // onPress={() => navigation.navigate('SavingsHome')}
-                    onPress={handleSubmit}>
+                    onPress={() => navigation.navigate('CardAndBankDetails')}>
                     <Text
                       style={{
-                        color: 'white',
-                        fontWeight: 'bold',
                         fontSize: 12,
-                        lineHeight: 30,
-                        textTransform: 'uppercase',
+                        color: COLORS.primary,
+                        textAlign: 'center',
                       }}>
-                      WITHDRAW
+                      No account? Click to select bank account
                     </Text>
                   </TouchableOpacity>
                 </View>
+              )}
 
-                <SelectSavingsOptionModal
-                  onRequestClose={() =>
-                    setShowSavingsOptionModal(!showSavingsOptionModal)
-                  }
-                  visible={showSavingsOptionModal}
-                  onClick={(value) => {
-                    setValues({...values, savingsOption: value});
-                  }}
-                />
+              {userSelectedBankAccount && (
+                <View style={{marginTop: 20}}>
+                  <TouchableOpacity
+                    activeOpacity={0.9}
+                    style={[styles.bankCard]}>
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                          color: COLORS.white,
+                        }}>
+                        {/* JOSHUA UDO NWOSU */}
+                        {userSelectedBankAccount?.user_bank_name}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: COLORS.light,
+                        }}>
+                        {/* Access Bank(DIAMOND) */}
+                        {userSelectedBankAccount?.bank_name}
+                      </Text>
+                      <Text
+                        style={{
+                          marginTop: 20,
+                          fontSize: 14,
+                          color: COLORS.white,
+                          opacity: 0.8,
+                        }}>
+                        {/* 0094552107 */}
+                        {userSelectedBankAccount?.bank_account_number}
+                      </Text>
 
-                <LoandPurposeModal
-                  visible={showLoanPurposeModal}
-                  onRequestClose={() =>
-                    setShowLoanPurposehModal(!showLoanPurposeModal)
-                  }
-                  onClick={(value) => setLoanPurpose(value)}
-                  loanPurpose={loanPurpose}
-                  setLoanPurpose={setLoanPurpose}
-                />
-              </>
-            )}
-          </Formik>
+                      <Image
+                        style={{
+                          width: 71,
+                          height: 110,
+                          position: 'absolute',
+                          resizeMode: 'contain',
+                          right: -21,
+                          bottom: -20,
+                          borderWidth: 1,
+                        }}
+                        source={images.maskGroup24}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              <TouchableOpacity style={[styles.button]} onPress={handleSubmit}>
+                <Text
+                  style={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: 12,
+                    lineHeight: 30,
+                    textTransform: 'uppercase',
+                  }}>
+                  WITHDRAW
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <SelectSavingsOptionModal
+              onRequestClose={() =>
+                setShowSavingsOptionModal(!showSavingsOptionModal)
+              }
+              visible={showSavingsOptionModal}
+              onClick={(value) => {
+                setValues({...values, savingsOption: value});
+              }}
+            />
+
+            <LoandPurposeModal
+              visible={showLoanPurposeModal}
+              onRequestClose={() =>
+                setShowLoanPurposehModal(!showLoanPurposeModal)
+              }
+              onClick={(value) => setLoanPurpose(value)}
+              loanPurpose={loanPurpose}
+              setLoanPurpose={setLoanPurpose}
+            />
+          </>
         )}
-      </ScrollView>
+      </Formik>
     </View>
   );
 }
@@ -495,11 +469,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   image: {
-    width: 300,
-    height: 300,
+    width: 200,
+    height: 200,
     // borderWidth: 1,
     marginVertical: 10,
     resizeMode: 'contain',
+    marginTop: 50,
   },
 
   button: {
@@ -552,13 +527,10 @@ const styles = StyleSheet.create({
   },
 
   bankCard: {
-    width: 300,
-    maxWidth: '100%',
-    height: 170,
+    width: 270,
+    height: 120,
     backgroundColor: COLORS.primary,
     borderRadius: 20,
-    marginLeft: 5,
-    marginRight: 5,
     padding: 20,
     elevation: 1,
     overflow: 'hidden',
