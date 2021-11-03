@@ -13,7 +13,7 @@ import * as yup from 'yup';
 import {COLORS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {formatNumber} from '../../../util/numberFormatter';
+import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 
 import SelectSavingsOptionModal from '../../../components/SelectSavingsOptionModal';
 import LoandPurposeModal from '../../../components/LoanPurposeModal';
@@ -71,7 +71,20 @@ export default function WithdrawalForm(props) {
   }, [theStoredAccount]);
 
   const handleSubmit = async (values) => {
-    console.log(values);
+    const data = {
+      option:
+        values.savingsOption == 'Solo Savings'
+          ? 'savings'
+          : values.savingsOption,
+      amount: selectedAmountIndex == 0 ? savings : unFormatNumber(amountValue),
+      reason: values.reason,
+      savings_id: '',
+      account_number: '',
+      account_name: '',
+      bank_name: '',
+      bank_code: '',
+    };
+    console.log('The Data Withdraw: ', data);
   };
 
   const SelectSavings = (props) => {
@@ -138,7 +151,7 @@ export default function WithdrawalForm(props) {
           {loanPurpose != '' ? (
             <Text
               style={{
-                color: COLORS.primary,
+                color: COLORS.dark,
               }}>
               {loanPurpose}
             </Text>
@@ -182,7 +195,9 @@ export default function WithdrawalForm(props) {
                 <Field component={SelectSavings} name="savingsOption" />
 
                 <TouchableOpacity
-                  onPress={() => console.log('Full Amount')}
+                  onPress={() => {
+                    setSelectedAmountIndex(0);
+                  }}
                   style={{
                     marginTop: 10,
                     height: 65,
@@ -205,7 +220,11 @@ export default function WithdrawalForm(props) {
                       alignItems: 'center',
                     }}>
                     <Icon
-                      name="radio-button-off"
+                      name={
+                        selectedAmountIndex == 0
+                          ? 'radio-button-on'
+                          : 'radio-button-off'
+                      }
                       size={25}
                       color={COLORS.dark}
                       style={{marginRight: 10}}
@@ -245,7 +264,9 @@ export default function WithdrawalForm(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => console.log('Specific Amount')}
+                  onPress={() => {
+                    setSelectedAmountIndex(1);
+                  }}
                   style={{
                     marginTop: 10,
                     height: 65,
@@ -268,7 +289,11 @@ export default function WithdrawalForm(props) {
                       alignItems: 'center',
                     }}>
                     <Icon
-                      name="radio-button-on"
+                      name={
+                        selectedAmountIndex == 1
+                          ? 'radio-button-on'
+                          : 'radio-button-off'
+                      }
                       size={25}
                       color={COLORS.dark}
                       style={{marginRight: 10}}
@@ -303,7 +328,7 @@ export default function WithdrawalForm(props) {
                       keyboardType="number-pad"
                       value={formatNumber(amountValue)}
                       onChangeText={(text) => setAmountValue(text)}
-                      autoFocus
+                      //   autoFocus
                     />
                   </View>
                 </TouchableOpacity>
