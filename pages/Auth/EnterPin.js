@@ -230,7 +230,7 @@ export default function EnterPin({navigation, route}) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('Welcome')}
+            onPress={() => navigation.navigate('Login')}
             style={{
               display: 'flex',
               flexDirection: 'column',

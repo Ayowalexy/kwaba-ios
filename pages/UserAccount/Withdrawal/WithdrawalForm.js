@@ -24,8 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
-  withdrawalAmount: yup.string().required('Provide an amount'),
-  reason: yup.string().required('Provide an amount'),
+  reason: yup.string().required('Select a reason'),
 });
 
 export default function WithdrawalForm(props) {
@@ -172,7 +171,6 @@ export default function WithdrawalForm(props) {
           validationSchema={withdrawalFormSchema}
           initialValues={{
             savingsOption: '',
-            withdrawalAmount: '',
             reason: '',
           }}
           onSubmit={(values) => {
@@ -184,6 +182,7 @@ export default function WithdrawalForm(props) {
                 <Field component={SelectSavings} name="savingsOption" />
 
                 <TouchableOpacity
+                  onPress={() => console.log('Full Amount')}
                   style={{
                     marginTop: 10,
                     height: 65,
@@ -246,6 +245,7 @@ export default function WithdrawalForm(props) {
                 </TouchableOpacity>
 
                 <TouchableOpacity
+                  onPress={() => console.log('Specific Amount')}
                   style={{
                     marginTop: 10,
                     height: 65,
@@ -303,6 +303,7 @@ export default function WithdrawalForm(props) {
                       keyboardType="number-pad"
                       value={formatNumber(amountValue)}
                       onChangeText={(text) => setAmountValue(text)}
+                      autoFocus
                     />
                   </View>
                 </TouchableOpacity>
@@ -332,14 +333,14 @@ export default function WithdrawalForm(props) {
                         color: COLORS.secondary,
                         fontWeight: 'bold',
                       }}>
-                      {userSelectedBankAccount
+                      {theStoredAccount?.data
                         ? 'Change Account'
                         : 'Add Account'}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
-                {!userSelectedBankAccount && (
+                {!theStoredAccount?.data && (
                   <View style={{marginVertical: 30, alignItems: 'center'}}>
                     <TouchableOpacity
                       onPress={() => navigation.navigate('CardAndBankDetails')}>
@@ -355,7 +356,7 @@ export default function WithdrawalForm(props) {
                   </View>
                 )}
 
-                {userSelectedBankAccount && (
+                {theStoredAccount?.data && (
                   <View style={{marginTop: 20}}>
                     <TouchableOpacity
                       activeOpacity={0.9}
@@ -368,7 +369,7 @@ export default function WithdrawalForm(props) {
                             color: COLORS.white,
                           }}>
                           {/* JOSHUA UDO NWOSU */}
-                          {userSelectedBankAccount?.user_bank_name}
+                          {theStoredAccount?.data?.user_bank_name}
                         </Text>
                         <Text
                           style={{
@@ -376,7 +377,7 @@ export default function WithdrawalForm(props) {
                             color: COLORS.light,
                           }}>
                           {/* Access Bank(DIAMOND) */}
-                          {userSelectedBankAccount?.bank_name}
+                          {theStoredAccount?.data?.bank_name}
                         </Text>
                         <Text
                           style={{
@@ -386,7 +387,7 @@ export default function WithdrawalForm(props) {
                             opacity: 0.8,
                           }}>
                           {/* 0094552107 */}
-                          {userSelectedBankAccount?.bank_account_number}
+                          {theStoredAccount?.data?.bank_account_number}
                         </Text>
 
                         <Image
@@ -436,7 +437,10 @@ export default function WithdrawalForm(props) {
                 onRequestClose={() =>
                   setShowLoanPurposehModal(!showLoanPurposeModal)
                 }
-                onClick={(value) => setLoanPurpose(value)}
+                onClick={(value) => {
+                  setValues({...values, reason: value});
+                  setLoanPurpose(value);
+                }}
                 loanPurpose={loanPurpose}
                 setLoanPurpose={setLoanPurpose}
               />
