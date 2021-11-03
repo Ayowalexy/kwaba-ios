@@ -35,6 +35,7 @@ export default function SubsequentModal(props) {
     goToDashboard,
     savingsData,
     navigation,
+    channel,
   } = props;
   const [subsequent, setSubsequent] = useState('');
   const subsequentOptions = ['Yes', 'No'];
@@ -101,6 +102,10 @@ export default function SubsequentModal(props) {
       console.log('Error: ', error);
     }
   };
+
+  useEffect(() => {
+    console.log('Nwakpa: ', channel);
+  }, []);
 
   return (
     <>

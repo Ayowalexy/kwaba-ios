@@ -19,6 +19,7 @@ import CardAndBankModal from './CardAndBankModal';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import DepositModal from './DepositModal';
 import SubsequentModal from './SubsequentModal';
+import DepositWalletModal from './DepositWalletModal';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -52,7 +53,10 @@ export default function Screen3({navigation, route}) {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showDepositWalletModal, setShowDepositWalletModal] = useState(false);
   const [showSubsequentModal, setShowSubsequentModal] = useState(false);
+
+  const [channel, setChannel] = useState('');
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -99,8 +103,15 @@ export default function Screen3({navigation, route}) {
   }, [locked]);
 
   const handlePaymentRoute = async (value) => {
-    console.log('Solo saving: ', value);
-    setShowDepositModal(true);
+    setChannel(value);
+
+    if (value.toLowerCase() == 'paystack') {
+      setShowDepositModal(true);
+    } else if (value.toLowerCase() == 'bank transafer') {
+      // For bank transafer
+    } else {
+      setShowDepositWalletModal(true);
+    }
   };
 
   return (
@@ -326,6 +337,19 @@ export default function Screen3({navigation, route}) {
         />
       )}
 
+      {showDepositWalletModal && (
+        <DepositWalletModal
+          onRequestClose={() =>
+            setShowDepositWalletModal(!showDepositWalletModal)
+          }
+          visible={showDepositWalletModal}
+          store={store}
+          navigation={navigation}
+          savingsData={storeData}
+          channel={channel}
+        />
+      )}
+
       {showSubsequentModal && (
         <SubsequentModal
           onRequestClose={() => setShowSubsequentModal(!showSubsequentModal)}
@@ -335,6 +359,7 @@ export default function Screen3({navigation, route}) {
           }}
           savingsData={storeData}
           navigation={navigation}
+          channel={channel}
         />
       )}
     </View>
