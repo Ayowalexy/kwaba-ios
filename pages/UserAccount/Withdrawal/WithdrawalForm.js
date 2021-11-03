@@ -10,11 +10,10 @@ import {
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
-import {COLORS, FONTS, images} from '../../../util/index';
+import {COLORS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {formatNumber} from '../../../util/numberFormatter';
-import {onChange} from 'react-native-reanimated';
 
 import SelectSavingsOptionModal from '../../../components/SelectSavingsOptionModal';
 import LoandPurposeModal from '../../../components/LoanPurposeModal';
@@ -121,138 +120,6 @@ export default function WithdrawalForm(props) {
     );
   };
 
-  const AmountOptions = (props) => {
-    const amount_option_list = ['Full Amount', 'Specific Amount'];
-
-    const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-
-    return (
-      <>
-        {amount_option_list.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={[styles.amountButton]}
-            // onPress={() => setFieldValue('withdrawalAmount', option)}
-            onPress={() => setSelectedAmountIndex(index)}>
-            <View
-              style={{
-                flex: 1,
-                // borderWidth: 1,
-                justifyContent: 'center',
-                flexDirection: 'row',
-                // marginTop: 15,
-              }}>
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  // borderWidth: 1,
-                  paddingLeft: 20,
-                }}>
-                {/* radio button */}
-                <View
-                  style={{
-                    width: 15,
-                    height: 15,
-                    borderWidth: 1,
-                    borderRadius: 20,
-                    borderColor: COLORS.primary,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  {selectedAmountIndex == index && (
-                    <View
-                      style={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: 12,
-                        backgroundColor: COLORS.primary,
-                      }}
-                    />
-                  )}
-                </View>
-                {/* text value */}
-                <Text
-                  style={{
-                    fontSize: 14,
-                    // fontWeight: 'bold',
-                    color: '#999',
-                    marginLeft: 20,
-                  }}>
-                  {option}
-                </Text>
-              </View>
-
-              {option.toLowerCase() != 'full amount' ? (
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    flex: 0.7,
-                    backgroundColor: '#f5f5f5',
-                  }}>
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      fontSize: 14,
-                      position: 'absolute',
-                      left: 15,
-                      color: COLORS.dark,
-                    }}>
-                    ₦
-                  </Text>
-                  <TextInput
-                    style={{
-                      width: '100%',
-                      // height: '100%',
-                      paddingLeft: 32,
-                      color: COLORS.dark,
-                      fontWeight: 'bold',
-                      fontSize: 14,
-                      // borderWidth: 1,
-                      marginTop: 1,
-                    }}
-                    keyboardType="number-pad"
-                    value={formatNumber(amountValue)}
-                    onChangeText={(text) => setAmountValue(text)}
-                    // autoFocus={selectedAmountIndex == 1 ? true : false}
-                  />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    width: '100%',
-                    flex: 0.7,
-                    justifyContent: 'center',
-                    // paddingLeft: 30,
-                  }}>
-                  <Text
-                    style={{
-                      left: 15,
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                      color: COLORS.dark,
-                    }}>
-                    ₦ {formatNumber(savings)}
-                  </Text>
-                </View>
-              )}
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
-
   const SelectReason = (props) => {
     const {
       field: {name, value},
@@ -267,7 +134,6 @@ export default function WithdrawalForm(props) {
         <TouchableOpacity
           style={[styles.customInput, {padding: 20}]}
           onPress={() => {
-            // setShowTypeOfPropertiesModal(!showTypeOfPropertiesModal);
             setShowLoanPurposehModal(!showLoanPurposeModal);
           }}>
           {loanPurpose != '' ? (
@@ -300,118 +166,246 @@ export default function WithdrawalForm(props) {
   };
 
   return (
-    <View>
-      <Formik
-        validationSchema={withdrawalFormSchema}
-        initialValues={{
-          savingsOption: '',
-          withdrawalAmount: '',
-          reason: '',
-        }}
-        onSubmit={(values) => {
-          handleSubmit(values);
-        }}>
-        {({handleSubmit, isValid, values, setValues}) => (
-          <>
-            <View style={[styles.content]}>
-              <Field component={SelectSavings} name="savingsOption" />
-              <Field component={AmountOptions} name="withdrawalAmount" />
-              <Field component={SelectReason} name="reason" />
+    <>
+      <View style={[styles.content]}>
+        <Formik
+          validationSchema={withdrawalFormSchema}
+          initialValues={{
+            savingsOption: '',
+            withdrawalAmount: '',
+            reason: '',
+          }}
+          onSubmit={(values) => {
+            handleSubmit(values);
+          }}>
+          {({handleSubmit, isValid, values, setValues}) => (
+            <>
+              <View style={{flex: 1}}>
+                <Field component={SelectSavings} name="savingsOption" />
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 10,
-                  marginTop: 20,
-                }}>
-                <Text
-                  style={{
-                    color: COLORS.dark,
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                  }}>
-                  Bank Account
-                </Text>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('Disbursement')}>
+                  style={{
+                    marginTop: 10,
+                    height: 65,
+                    flexDirection: 'row',
+                    borderWidth: 1,
+                    borderColor: '#ADADAD50',
+                    borderRadius: 5,
+                    overflow: 'hidden',
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: COLORS.white,
+                      flex: 3,
+                      height: '100%',
+                      width: '100%',
+                      borderRightWidth: 1,
+                      borderRightColor: '#ADADAD50',
+                      paddingLeft: 20,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="radio-button-off"
+                      size={25}
+                      color={COLORS.dark}
+                      style={{marginRight: 10}}
+                    />
+                    <Text style={{fontSize: 14, color: COLORS.dark}}>
+                      Full Amount
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 2,
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    <Text
+                      style={{
+                        width: 30,
+                        fontWeight: 'bold',
+                        color: COLORS.dark,
+                        textAlign: 'center',
+                      }}>
+                      ₦
+                    </Text>
+                    <View
+                      style={{
+                        color: COLORS.dark,
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                        marginTop: 1,
+                        flex: 1,
+                      }}>
+                      <Text style={{fontWeight: 'bold', color: COLORS.dark}}>
+                        {formatNumber(savings)}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={{
+                    marginTop: 10,
+                    height: 65,
+                    flexDirection: 'row',
+                    borderWidth: 1,
+                    borderColor: '#ADADAD50',
+                    borderRadius: 5,
+                    overflow: 'hidden',
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: COLORS.white,
+                      flex: 3,
+                      height: '100%',
+                      width: '100%',
+                      borderRightWidth: 1,
+                      borderRightColor: '#ADADAD50',
+                      paddingLeft: 20,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <Icon
+                      name="radio-button-on"
+                      size={25}
+                      color={COLORS.dark}
+                      style={{marginRight: 10}}
+                    />
+                    <Text style={{fontSize: 14, color: COLORS.dark}}>
+                      Specific Amount
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flex: 2,
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    <Text
+                      style={{
+                        width: 30,
+                        fontWeight: 'bold',
+                        color: COLORS.dark,
+                        textAlign: 'center',
+                      }}>
+                      ₦
+                    </Text>
+                    <TextInput
+                      style={{
+                        color: COLORS.dark,
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                        marginTop: 1,
+                        flex: 1,
+                      }}
+                      keyboardType="number-pad"
+                      value={formatNumber(amountValue)}
+                      onChangeText={(text) => setAmountValue(text)}
+                    />
+                  </View>
+                </TouchableOpacity>
+
+                <Field component={SelectReason} name="reason" />
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 10,
+                    marginTop: 20,
+                  }}>
                   <Text
                     style={{
+                      color: COLORS.dark,
                       fontSize: 12,
-                      color: COLORS.secondary,
                       fontWeight: 'bold',
                     }}>
-                    {userSelectedBankAccount ? 'Change Account' : 'Add Account'}
+                    Bank Account
                   </Text>
-                </TouchableOpacity>
-              </View>
-
-              {!userSelectedBankAccount && (
-                <View style={{marginVertical: 30, alignItems: 'center'}}>
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('CardAndBankDetails')}>
+                    onPress={() => navigation.navigate('Disbursement')}>
                     <Text
                       style={{
                         fontSize: 12,
-                        color: COLORS.primary,
-                        textAlign: 'center',
+                        color: COLORS.secondary,
+                        fontWeight: 'bold',
                       }}>
-                      No account? Click to select bank account
+                      {userSelectedBankAccount
+                        ? 'Change Account'
+                        : 'Add Account'}
                     </Text>
                   </TouchableOpacity>
                 </View>
-              )}
 
-              {userSelectedBankAccount && (
-                <View style={{marginTop: 20}}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    style={[styles.bankCard]}>
-                    <View>
+                {!userSelectedBankAccount && (
+                  <View style={{marginVertical: 30, alignItems: 'center'}}>
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('CardAndBankDetails')}>
                       <Text
                         style={{
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                          color: COLORS.white,
+                          fontSize: 12,
+                          color: COLORS.primary,
+                          textAlign: 'center',
                         }}>
-                        {/* JOSHUA UDO NWOSU */}
-                        {userSelectedBankAccount?.user_bank_name}
+                        No account? Click to select bank account
                       </Text>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: COLORS.light,
-                        }}>
-                        {/* Access Bank(DIAMOND) */}
-                        {userSelectedBankAccount?.bank_name}
-                      </Text>
-                      <Text
-                        style={{
-                          marginTop: 20,
-                          fontSize: 14,
-                          color: COLORS.white,
-                          opacity: 0.8,
-                        }}>
-                        {/* 0094552107 */}
-                        {userSelectedBankAccount?.bank_account_number}
-                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
 
-                      <Image
-                        style={{
-                          width: 71,
-                          height: 110,
-                          position: 'absolute',
-                          resizeMode: 'contain',
-                          right: -21,
-                          bottom: -20,
-                          borderWidth: 1,
-                        }}
-                        source={images.maskGroup24}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
+                {userSelectedBankAccount && (
+                  <View style={{marginTop: 20}}>
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      style={[styles.bankCard]}>
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.white,
+                          }}>
+                          {/* JOSHUA UDO NWOSU */}
+                          {userSelectedBankAccount?.user_bank_name}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: COLORS.light,
+                          }}>
+                          {/* Access Bank(DIAMOND) */}
+                          {userSelectedBankAccount?.bank_name}
+                        </Text>
+                        <Text
+                          style={{
+                            marginTop: 20,
+                            fontSize: 14,
+                            color: COLORS.white,
+                            opacity: 0.8,
+                          }}>
+                          {/* 0094552107 */}
+                          {userSelectedBankAccount?.bank_account_number}
+                        </Text>
+
+                        <Image
+                          style={{
+                            width: 71,
+                            height: 110,
+                            position: 'absolute',
+                            resizeMode: 'contain',
+                            right: -21,
+                            bottom: -20,
+                            borderWidth: 1,
+                          }}
+                          source={images.maskGroup24}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
 
               <TouchableOpacity style={[styles.button]} onPress={handleSubmit}>
                 <Text
@@ -425,31 +419,32 @@ export default function WithdrawalForm(props) {
                   WITHDRAW
                 </Text>
               </TouchableOpacity>
-            </View>
+              {/* </View> */}
 
-            <SelectSavingsOptionModal
-              onRequestClose={() =>
-                setShowSavingsOptionModal(!showSavingsOptionModal)
-              }
-              visible={showSavingsOptionModal}
-              onClick={(value) => {
-                setValues({...values, savingsOption: value});
-              }}
-            />
+              <SelectSavingsOptionModal
+                onRequestClose={() =>
+                  setShowSavingsOptionModal(!showSavingsOptionModal)
+                }
+                visible={showSavingsOptionModal}
+                onClick={(value) => {
+                  setValues({...values, savingsOption: value});
+                }}
+              />
 
-            <LoandPurposeModal
-              visible={showLoanPurposeModal}
-              onRequestClose={() =>
-                setShowLoanPurposehModal(!showLoanPurposeModal)
-              }
-              onClick={(value) => setLoanPurpose(value)}
-              loanPurpose={loanPurpose}
-              setLoanPurpose={setLoanPurpose}
-            />
-          </>
-        )}
-      </Formik>
-    </View>
+              <LoandPurposeModal
+                visible={showLoanPurposeModal}
+                onRequestClose={() =>
+                  setShowLoanPurposehModal(!showLoanPurposeModal)
+                }
+                onClick={(value) => setLoanPurpose(value)}
+                loanPurpose={loanPurpose}
+                setLoanPurpose={setLoanPurpose}
+              />
+            </>
+          )}
+        </Formik>
+      </View>
+    </>
   );
 }
 
@@ -488,6 +483,7 @@ const styles = StyleSheet.create({
     opacity: 1,
     backgroundColor: '#00DC99',
     marginTop: 20,
+    marginBottom: 20,
   },
 
   customInput: {
