@@ -34,6 +34,8 @@ export default function Screen2(props) {
   const [showDate, setShowDate] = useState(false);
   const [instantSaving, setInstantSaving] = useState(null);
 
+  const [howLong, setHowLong] = useState('');
+
   const handleDateSelect = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setShowDate(Platform.OS === 'ios');
@@ -59,6 +61,11 @@ export default function Screen2(props) {
     } catch (error) {}
   };
 
+  useEffect(() => {
+    // console.log('How Long?: ', props.route.params?.how_long);
+    setHowLong(props.route.params?.how_long);
+  }, []);
+
   const NumberInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
@@ -68,10 +75,13 @@ export default function Screen2(props) {
 
     const hasError = errors[name] && touched[name];
 
+    const hl = howLong.toString().charAt(0).split(''); //
+
     return (
       <>
         <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much is your saving target?
+          How much do you want to save in {hl}{' '}
+          {hl == '1' ? 'Year' : hl == '6' ? 'Months' : 'Months'}
         </Text>
         <View
           style={[

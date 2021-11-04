@@ -26,7 +26,7 @@ const designs = StyleSheet.create({
     paddingLeft: 20,
   },
   boldText: {
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
     fontFamily: 'CircularStd',
