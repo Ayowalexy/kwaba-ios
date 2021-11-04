@@ -365,7 +365,7 @@ export default function WithdrawalForm(props) {
                   </TouchableOpacity>
                 </View>
 
-                {!theStoredAccount?.data && (
+                {/* {!theStoredAccount?.data && (
                   <View style={{marginVertical: 30, alignItems: 'center'}}>
                     <TouchableOpacity
                       onPress={() => navigation.navigate('CardAndBankDetails')}>
@@ -379,7 +379,7 @@ export default function WithdrawalForm(props) {
                       </Text>
                     </TouchableOpacity>
                   </View>
-                )}
+                )} */}
 
                 {theStoredAccount?.data && (
                   <View style={{marginTop: 20}}>
