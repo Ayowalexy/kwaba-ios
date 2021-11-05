@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TextInput,
   Image,
+  Alert,
 } from 'react-native';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
@@ -21,6 +22,12 @@ import LoandPurposeModal from '../../../components/LoanPurposeModal';
 import {useDispatch, useSelector} from 'react-redux';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SavingsListModal from './SavingsListModal';
+
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {getBankAccounts, requestWithdrawal} from '../../../services/network';
+
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -37,10 +44,20 @@ export default function WithdrawalForm(props) {
   const [savings, setSavings] = useState(0);
   const [amountValue, setAmountValue] = useState('');
   const [showSavingsOptionModal, setShowSavingsOptionModal] = useState(false);
-  const [selectedAmountIndex, setSelectedAmountIndex] = useState(1);
+  const [selectedAmountIndex, setSelectedAmountIndex] = useState(0);
   const [showLoanPurposeModal, setShowLoanPurposehModal] = useState(false);
   const [loanPurpose, setLoanPurpose] = useState('');
+  const [withdrawSource, setWithdrawSource] = useState('');
   const [userSelectedBankAccount, setUserSelectedBankAccount] = useState([]);
+
+  const [showSavingsListModal, setShowSavingsListModal] = useState(false);
+  const [item, setItem] = useState(false);
+
+  const [selectedBank, setSelectedBank] = useState('');
+
+  const [spinner, setSpinner] = useState(false);
+
+  const focusedInput = useRef();
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -53,22 +70,43 @@ export default function WithdrawalForm(props) {
       const user = await getUser();
       const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
       console.log('The Account From Local Storage: ', storeBank);
+
+      setUserSelectedBankAccount(JSON.parse(storeBank));
     })();
   }, []);
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
+    getBanks();
   }, []);
 
-  useEffect(() => {
-    const data = getMaxLoanCap1.data;
-    setSavings(data.you_have_save);
-  }, []);
+  //   useEffect(() => {
+  //     const data = getMaxLoanCap1.data;
+  //     setSavings(data?.you_have_save);
+  //   }, []);
 
   useEffect(() => {
-    console.log('From Redux Store Man: ', theStoredAccount);
-    setUserSelectedBankAccount(theStoredAccount.data);
-  }, [theStoredAccount]);
+    if (item) {
+      console.log('The save: ', item.save_amount);
+      setSavings(item.amount_save);
+    }
+  }, [item]);
+
+  const getBanks = async () => {
+    const accounts = await getBankAccounts();
+
+    try {
+      console.log('The bank account: ', accounts?.data?.userBanks);
+      const currentBank = accounts?.data?.userBanks.filter(
+        (item) => item.defaultbank != 1,
+      )[0];
+      setSelectedBank(currentBank);
+      console.log('Current: ', currentBank);
+      console.log('Current user bank name: ', currentBank.user_bank_name);
+    } catch (error) {
+      console.log('The error: ', error);
+    }
+  };
 
   const handleSubmit = async (values) => {
     const data = {
@@ -78,13 +116,29 @@ export default function WithdrawalForm(props) {
           : values.savingsOption,
       amount: selectedAmountIndex == 0 ? savings : unFormatNumber(amountValue),
       reason: values.reason,
-      savings_id: '',
-      account_number: '',
-      account_name: '',
-      bank_name: '',
-      bank_code: '',
+      savings_id: item && item.id,
+      account_number: selectedBank?.bank_account_number,
+      account_name: selectedBank?.user_bank_name,
+      bank_name: selectedBank?.bank_name,
+      bank_code: selectedBank?.bank_short_code,
     };
-    console.log('The Data Withdraw: ', data);
+    // console.log('The Data Withdraw: ', data);
+    setSpinner(true);
+    try {
+      const response = await requestWithdrawal(data);
+      if (response.status == 200) {
+        setSpinner(false);
+
+        console.log(response);
+        Alert.alert('Successful', 'Your withdrawal request has been sent', [
+          {text: 'Continue', onPress: () => navigation.navigate('Home')},
+        ]);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error);
+    }
+    // console.log('Item: ', item);
   };
 
   const SelectSavings = (props) => {
@@ -194,6 +248,91 @@ export default function WithdrawalForm(props) {
               <View style={{flex: 1}}>
                 <Field component={SelectSavings} name="savingsOption" />
 
+                {item && (
+                  <TouchableOpacity
+                    style={[
+                      styles.card,
+                      {
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginBottom: 0,
+                      },
+                    ]}
+                    onPress={() => {
+                      setShowSavingsListModal(true);
+                    }}>
+                    <View style={[styles.cardFlex, {flex: 1}]}>
+                      <View style={[styles.progressContainer]}>
+                        <AnimatedCircularProgress
+                          size={60}
+                          width={5}
+                          rotation={0}
+                          style={{zIndex: 9, position: 'relative'}}
+                          fill={
+                            (Number(item.amount_save) /
+                              Number(item.target_amount)) *
+                            100
+                          }
+                          tintColor={COLORS.light}
+                          backgroundColor="#2A286A10">
+                          {(fill) => (
+                            <View
+                              style={{
+                                backgroundColor: COLORS.white,
+                                height: 40,
+                                width: 40,
+                                borderRadius: 50,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                // elevation: 2,
+                              }}>
+                              <Text
+                                style={{
+                                  fontFamily: 'CircularStd',
+                                  fontSize: 14,
+                                  fontWeight: 'bold',
+                                  color: COLORS.dark,
+                                  textAlign: 'center',
+                                }}>
+                                {fill.toFixed(0)}%
+                              </Text>
+                            </View>
+                          )}
+                        </AnimatedCircularProgress>
+                      </View>
+                      <View style={[styles.cardText]}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}>
+                          <Text style={[styles.cardTitle]}>{item.name}</Text>
+                        </View>
+
+                        <View style={[styles.cardAmount]}>
+                          <View>
+                            <Text style={{fontSize: 12, color: COLORS.dark}}>
+                              Amount Saved
+                            </Text>
+                            <Text style={[styles.amountText]}>
+                              ₦{formatNumber(item.amount_save) || '0.00'}
+                            </Text>
+                          </View>
+                          <View>
+                            <Text style={{fontSize: 12, color: COLORS.dark}}>
+                              Target Amount
+                            </Text>
+                            <Text style={[styles.amountText]}>
+                              ₦{formatNumber(item.target_amount)}
+                            </Text>
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                )}
+
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedAmountIndex(0);
@@ -229,7 +368,12 @@ export default function WithdrawalForm(props) {
                       color={COLORS.dark}
                       style={{marginRight: 10}}
                     />
-                    <Text style={{fontSize: 14, color: COLORS.dark}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color:
+                          selectedAmountIndex == 0 ? COLORS.dark : '#46596950',
+                      }}>
                       Full Amount
                     </Text>
                   </View>
@@ -243,21 +387,25 @@ export default function WithdrawalForm(props) {
                       style={{
                         width: 30,
                         fontWeight: 'bold',
-                        color: COLORS.dark,
+                        color:
+                          selectedAmountIndex == 0 ? COLORS.dark : '#46596950',
                         textAlign: 'center',
                       }}>
                       ₦
                     </Text>
                     <View
                       style={{
-                        color: COLORS.dark,
-                        fontWeight: 'bold',
-                        fontSize: 14,
-                        marginTop: 1,
                         flex: 1,
                       }}>
-                      <Text style={{fontWeight: 'bold', color: COLORS.dark}}>
-                        {formatNumber(savings)}
+                      <Text
+                        style={{
+                          fontWeight: 'bold',
+                          color:
+                            selectedAmountIndex == 0
+                              ? COLORS.dark
+                              : '#46596950',
+                        }}>
+                        {formatNumber(savings) || '0.00'}
                       </Text>
                     </View>
                   </View>
@@ -266,6 +414,7 @@ export default function WithdrawalForm(props) {
                 <TouchableOpacity
                   onPress={() => {
                     setSelectedAmountIndex(1);
+                    focusedInput.current.focus();
                   }}
                   style={{
                     marginTop: 10,
@@ -298,7 +447,12 @@ export default function WithdrawalForm(props) {
                       color={COLORS.dark}
                       style={{marginRight: 10}}
                     />
-                    <Text style={{fontSize: 14, color: COLORS.dark}}>
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        color:
+                          selectedAmountIndex == 1 ? COLORS.dark : '#46596950',
+                      }}>
                       Specific Amount
                     </Text>
                   </View>
@@ -312,14 +466,17 @@ export default function WithdrawalForm(props) {
                       style={{
                         width: 30,
                         fontWeight: 'bold',
-                        color: COLORS.dark,
+                        color:
+                          selectedAmountIndex == 1 ? COLORS.dark : '#46596950',
                         textAlign: 'center',
                       }}>
                       ₦
                     </Text>
                     <TextInput
+                      ref={focusedInput}
                       style={{
-                        color: COLORS.dark,
+                        color:
+                          selectedAmountIndex == 1 ? COLORS.dark : '#46596950',
                         fontWeight: 'bold',
                         fontSize: 14,
                         marginTop: 1,
@@ -328,10 +485,17 @@ export default function WithdrawalForm(props) {
                       keyboardType="number-pad"
                       value={formatNumber(amountValue)}
                       onChangeText={(text) => setAmountValue(text)}
-                      //   autoFocus
+                      //   autoFocus={selectedAmountIndex == 0}
+                      //   focusable={selectedAmountIndex == 1}
                     />
                   </View>
                 </TouchableOpacity>
+                {item && Number(amountValue) > Number(item.amount_save) && (
+                  <Text
+                    style={{color: COLORS.red, fontSize: 10, marginLeft: 5}}>
+                    Insuffiecent funds
+                  </Text>
+                )}
 
                 <Field component={SelectReason} name="reason" />
 
@@ -351,37 +515,19 @@ export default function WithdrawalForm(props) {
                     Bank Account
                   </Text>
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('Disbursement')}>
+                    onPress={() => navigation.navigate('CardAndBankDetails')}>
                     <Text
                       style={{
                         fontSize: 12,
                         color: COLORS.secondary,
                         fontWeight: 'bold',
                       }}>
-                      {theStoredAccount?.data
-                        ? 'Change Account'
-                        : 'Add Account'}
+                      {selectedBank != '' ? 'Change Account' : 'Add Account'}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
-                {/* {!theStoredAccount?.data && (
-                  <View style={{marginVertical: 30, alignItems: 'center'}}>
-                    <TouchableOpacity
-                      onPress={() => navigation.navigate('CardAndBankDetails')}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: COLORS.primary,
-                          textAlign: 'center',
-                        }}>
-                        No account? Click to select bank account
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                )} */}
-
-                {theStoredAccount?.data && (
+                {selectedBank != '' && (
                   <View style={{marginTop: 20}}>
                     <TouchableOpacity
                       activeOpacity={0.9}
@@ -394,7 +540,7 @@ export default function WithdrawalForm(props) {
                             color: COLORS.white,
                           }}>
                           {/* JOSHUA UDO NWOSU */}
-                          {theStoredAccount?.data?.user_bank_name}
+                          {selectedBank?.user_bank_name}
                         </Text>
                         <Text
                           style={{
@@ -402,7 +548,7 @@ export default function WithdrawalForm(props) {
                             color: COLORS.light,
                           }}>
                           {/* Access Bank(DIAMOND) */}
-                          {theStoredAccount?.data?.bank_name}
+                          {selectedBank?.bank_name}
                         </Text>
                         <Text
                           style={{
@@ -412,7 +558,7 @@ export default function WithdrawalForm(props) {
                             opacity: 0.8,
                           }}>
                           {/* 0094552107 */}
-                          {theStoredAccount?.data?.bank_account_number}
+                          {selectedBank?.bank_account_number}
                         </Text>
 
                         <Image
@@ -454,6 +600,12 @@ export default function WithdrawalForm(props) {
                 visible={showSavingsOptionModal}
                 onClick={(value) => {
                   setValues({...values, savingsOption: value});
+                  setWithdrawSource(value);
+                  setItem(false);
+                  //   console.log('Values: ', value);
+                  if (value == 'Solo Savings') {
+                    setShowSavingsListModal(true);
+                  }
                 }}
               />
 
@@ -469,10 +621,24 @@ export default function WithdrawalForm(props) {
                 loanPurpose={loanPurpose}
                 setLoanPurpose={setLoanPurpose}
               />
+
+              {values.savingsOption != '' && (
+                <SavingsListModal
+                  onRequestClose={() =>
+                    setShowSavingsListModal(!showSavingsListModal)
+                  }
+                  visible={showSavingsListModal}
+                  type={values.savingsOption}
+                  navigation={navigation}
+                  selectedItem={(item) => setItem(item)}
+                />
+              )}
             </>
           )}
         </Formik>
       </View>
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }
@@ -559,5 +725,60 @@ const styles = StyleSheet.create({
     padding: 20,
     elevation: 1,
     overflow: 'hidden',
+  },
+
+  //
+
+  cardContainer: {
+    paddingHorizontal: 10,
+    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.primary,
+    width: '100%',
+    flex: 1,
+  },
+  card: {
+    width: '100%',
+    // backgroundColor: '#9D98EC20',
+    backgroundColor: COLORS.white,
+    borderRadius: 5,
+    // marginBottom: 5,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#ADADAD50',
+  },
+  cardFlex: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  progressContainer: {
+    marginRight: 20,
+  },
+  cardText: {
+    // borderWidth: 1,
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    textTransform: 'capitalize',
+    color: COLORS.dark,
+    marginRight: 20,
+  },
+  cardAmount: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+
+  amountText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: COLORS.dark,
+    fontWeight: 'bold',
+    fontStyle: 'italic',
   },
 });

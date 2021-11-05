@@ -99,9 +99,9 @@ const changePasswordSchema = yup.object().shape({
 export default function ChangePasswordModal(props) {
   const {onRequestClose, visible} = props;
   const [spinner, setSpinner] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(true);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(true);
-  const [showSuccessModal, setShowSuccessModal] = useState(true);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const handleSubmit = async (values) => {
     const data = {
@@ -116,16 +116,18 @@ export default function ChangePasswordModal(props) {
       const response = await changePassword(data);
       console.log('Omi:', response);
       setSpinner(false);
-      // if (response.status == 200) {
-      //   // setSuccessModalMessage('password Change successfull');
-      //   // setSuccessModal(true);
-      //   console.log('Reset Successful.');
-      // } else {
-      //   console.log('Something went wrong.');
-      // }
+      if (response.status == 200) {
+        // setSuccessModalMessage('password Change successfull');
+        setShowSuccessModal(true);
+        // console.log('Reset Successful.');
+      } else {
+        console.log('Something went wrong.');
+        setShowErrorModal(true);
+      }
     } catch (error) {
       console.log('The Error: ', error);
       setSpinner(false);
+      setShowErrorModal(true);
     }
   };
 
@@ -208,19 +210,23 @@ export default function ChangePasswordModal(props) {
 
       <Spinner visible={spinner} size="large" />
 
-      {/* <SuccessModal
-        onRequestClose={() => {
-          setShowSuccessModal(!showSuccessModal);
-        }}
-        visible={showSuccessModal}
-      /> */}
+      {showSuccessModal && (
+        <SuccessModal
+          onRequestClose={() => {
+            setShowSuccessModal(!showSuccessModal);
+          }}
+          visible={showSuccessModal}
+        />
+      )}
 
-      {/* <ErrorModal
-        onRequestClose={() => {
-          setShowErrorModal(!showErrorModal);
-        }}
-        visible={showErrorModal}
-      /> */}
+      {showErrorModal && (
+        <ErrorModal
+          onRequestClose={() => {
+            setShowErrorModal(!showErrorModal);
+          }}
+          visible={showErrorModal}
+        />
+      )}
 
       {/* <WarningModal
         onRequestClose={() => {

@@ -31,7 +31,11 @@ export default function Withdraw({navigation}) {
       />
       <Text style={[styles.heading]}>Withdraw</Text>
 
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+      <ScrollView
+        scrollEnabled
+        showsVerticalScrollIndicator={false}
+        // keyboardShouldPersistTaps="handled"
+      >
         {getMaxLoanCap1?.data?.you_have_save <= 0 ? (
           <WithdrawalStart navigation={navigation} />
         ) : (

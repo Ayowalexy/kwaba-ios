@@ -83,6 +83,7 @@ const CustomInput = (props) => {
           keyboardType={
             name.toLowerCase() == 'password' ? 'default' : 'email-address'
           }
+          autoCompleteType="off"
         />
         {name.toLowerCase() == 'password' && (
           <Icon
