@@ -124,7 +124,7 @@ export default function EnterPin({navigation, route}) {
             </Text>
           </View>
 
-          <View
+          {/* <View
             style={{
               marginTop: 20,
               backgroundColor: '#00DC9900',
@@ -140,7 +140,7 @@ export default function EnterPin({navigation, route}) {
               }}>
               {email}
             </Text>
-          </View>
+          </View> */}
 
           <View style={{marginTop: 40, alignItems: 'center'}}>
             <Text style={[designs.subtitle, {fontWeight: 'bold'}]}>
@@ -230,7 +230,7 @@ export default function EnterPin({navigation, route}) {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('Welcome')}
+            onPress={() => navigation.navigate('Login')}
             style={{
               display: 'flex',
               flexDirection: 'column',

@@ -23,7 +23,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import designs from './style';
 import axios from 'axios';
 import PasswordChangeModal from './PasswordChangeModal';
-import WithdrawModal from './WithdrawModal';
 import {setLoginState} from '../../redux/actions/userActions';
 import SuccessModal from '../../components/SuccessModal';
 import ErrorModal from '../../components/ErrorModal';
@@ -74,18 +73,6 @@ const AccountPage = ({navigation}) => {
     //   JSON.stringify({...JSON.parse(login), isLoggedIn: false, token: ''}),
     // );
     navigation.navigate('Welcome');
-  };
-
-  const Referral = () => {};
-
-  const addCard = () => {
-    setModalVisible(false);
-    setShowCard(true);
-  };
-
-  const addWithdrawCard = () => {
-    setWithdrawModalVisible(false);
-    setWithdrawShowCard(true);
   };
 
   const accountTabsAndSettings = [
@@ -570,20 +557,6 @@ const AccountPage = ({navigation}) => {
             onConfirm={changePassword}
             onRequestClose={() => setModalVisible(!modalVisible)}
             visible={modalVisible}
-            oldpassword={oldpassword}
-            setoldpassword={setoldpassword}
-            newpassword={newpassword}
-            setnewpassword={setnewpassword}
-            confirmnewpassword={confirmnewpassword}
-            setconfirmnewpassword={setconfirmnewpassword}
-          />
-        </View>
-
-        <View>
-          <WithdrawModal
-            onConfirm={addWithdrawCard}
-            onRequestClose={() => setWithrawModalVisible(!WithrawmodalVisible)}
-            visible={WithrawmodalVisible}
             oldpassword={oldpassword}
             setoldpassword={setoldpassword}
             newpassword={newpassword}

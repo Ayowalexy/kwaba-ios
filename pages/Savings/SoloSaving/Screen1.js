@@ -21,85 +21,30 @@ const soloSavingFormSchema = yup.object().shape({
   savingTitle: yup.string().required('Please provide saving title'),
   savingOption: yup.string().required('Please select saving option'),
   savingFrequency: yup.string().required('Please select saving frequency'),
-  targetAmount: yup.string().required('Please provide saving amount'),
+  savingDuration: yup.string().required('Please select saving duration'),
 });
 
 export default function Screen1({navigation}) {
   const dispatch = useDispatch();
 
   const handleSubmit = (values) => {
-    // const data = {
-    //   savings_title: values.savingTitle,
-    //   savings_activeOption: values.savingOption,
-    //   savings_amount: Number(unFormatNumber(values.targetAmount)),
-    //   savings_frequency: values.savingFrequency,
-    // };
-    // console.log(data);
-    // try {
-    //   dispatch(soloSaving(data));
-
-    //   return navigation.navigate('SoloSaving2');
-    // } catch (error) {}
-    const data = {
-      name: values.savingTitle,
-      auto_save: values.savingOption == 'auto' ? true : false,
-      target_amount: Number(unFormatNumber(values.targetAmount)),
-      frequency: values.savingFrequency,
-    };
-    console.log('SOLO SAVING DATA: ', data);
-    navigation.navigate('SoloSaving2', data);
-  };
-
-  const NumberInput = (props) => {
-    const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-
-    return (
-      <>
-        <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much is your saving target?
-        </Text>
-        <View
-          style={[
-            styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
-            hasError && styles.errorInput,
-          ]}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              fontSize: 14,
-              position: 'absolute',
-              left: 15,
-              color: COLORS.dark,
-            }}>
-            ₦
-          </Text>
-          <TextInput
-            style={{
-              width: '100%',
-              paddingLeft: 50,
-              paddingVertical: 16,
-            }}
-            keyboardType="number-pad"
-            value={formatNumber(value)}
-            onBlur={() => {
-              setFieldTouched(name);
-              onBlur(name);
-            }}
-            onChangeText={(text) => onChange(name)(text)}
-            {...inputProps}
-          />
-        </View>
-
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      </>
-    );
+    try {
+      let chosenDuration =
+        values.savingDuration == '3 Months'
+          ? '3months'
+          : values.savingDuration == '6 Months'
+          ? '6months'
+          : '1years';
+      const data = {
+        name: values.savingTitle,
+        auto_save: values.savingOption == 'auto' ? true : false,
+        target_amount: Number(unFormatNumber(values.targetAmount)),
+        frequency: values.savingFrequency,
+        how_long: chosenDuration,
+      };
+      // console.log('SOLO SAVING DATA: ', data);
+      navigation.navigate('SoloSaving2', data);
+    } catch (error) {}
   };
 
   const CustomInput = (props) => {
@@ -271,6 +216,55 @@ export default function Screen1({navigation}) {
     );
   };
 
+  const HowLongSelection = (props) => {
+    const howLongList = ['3 Months', '6 Months', '1 Year'];
+
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched, setFieldValue},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+    return (
+      <>
+        <Text style={[designs.boldText, {marginTop: 35}]}>
+          How long do you want to save for?
+        </Text>
+        <View style={designs.options}>
+          {howLongList.map((duration, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                onPress={() => setFieldValue('savingDuration', duration)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  width: '32%',
+                  height: 54,
+                  backgroundColor: duration == value ? '#9D98EC' : 'white',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: '600',
+                    color: duration == value ? 'white' : '#465969',
+                    lineHeight: 19,
+                  }}>
+                  {duration}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
+
   return (
     <View style={designs.container}>
       <Icon
@@ -311,7 +305,7 @@ export default function Screen1({navigation}) {
             savingTitle: '',
             savingOption: '',
             savingFrequency: '',
-            targetAmount: '',
+            savingDuration: '',
           }}
           onSubmit={(values) => {
             handleSubmit(values);
@@ -328,22 +322,18 @@ export default function Screen1({navigation}) {
 
               <Field component={FrequencySelection} name="savingFrequency" />
 
-              <Field
-                component={NumberInput}
-                name="targetAmount"
-                placeholder="Amount"
-              />
+              <Field component={HowLongSelection} name="savingDuration" />
 
               <TouchableOpacity
                 onPress={handleSubmit}
                 // disabled={isValid ? false : true}
-                disabled={values.targetAmount != '' && isValid ? false : true}
+                disabled={values.savingDuration != '' && isValid ? false : true}
                 style={[
                   designs.button,
                   {
                     // backgroundColor: isValid ? '#00DC99' : '#00DC9950',
                     backgroundColor:
-                      values.targetAmount != '' && isValid
+                      values.savingDuration != '' && isValid
                         ? '#00DC99'
                         : '#00DC9950',
                   },

@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     // height: height - 84,
     // backgroundColor: '#F7F8FD',
-    backgroundColor: 'rgba(0,0,0,0.0)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
     // flex: 1,

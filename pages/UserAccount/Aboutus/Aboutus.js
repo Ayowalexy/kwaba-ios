@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Image, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
@@ -13,6 +13,13 @@ import {
 } from '../../../util/index';
 
 const Aboutus = ({navigation}) => {
+  const [appVersion, setAppVersion] = useState('');
+
+  useEffect(() => {
+    var pkg = require('../../../package.json');
+    setAppVersion(pkg.version);
+    // console.log('pkg: ', pkg.version);
+  }, []);
   return (
     <View style={styles.container}>
       <Icon
@@ -25,18 +32,18 @@ const Aboutus = ({navigation}) => {
           fontWeight: '900',
           paddingVertical: 20,
         }}
-        color="#2A286A"
+        color={COLORS.primary}
       />
       <ScrollView>
         <Text
           style={[
             FONTS.h1FontStyling,
             {
-              color: '#2A286A',
+              color: COLORS.primary,
               textAlign: 'left',
               fontWeight: 'bold',
-              marginBottom: 15,
-              marginLeft: 16,
+              marginBottom: 10,
+              marginLeft: 30,
             },
           ]}>
           About us
@@ -51,57 +58,62 @@ const Aboutus = ({navigation}) => {
             rent.
           </Text>
           <Text style={styles.contactusText}>Contact us</Text>
-          <Text style={styles.aboutusMinorText}>
-            131A Eti-Osa way, Dolphin Estate, Ikoyi, Lagos - Nigeria
-          </Text>
-          <View style={styles.iconsSection}>
-            <Image
-              source={icons.instagram}
-              style={{height: 24, width: 24, marginRight: 20}}
-            />
-            <Image
-              source={icons.facebook}
-              style={{height: 24, width: 24, marginRight: 20}}
-            />
-            <Image
-              source={icons.whatsapp}
-              style={{height: 24, width: 24, marginRight: 20}}
-            />
-            <Image
-              source={icons.linkedin}
-              style={{height: 24, width: 24, marginRight: 20}}
-            />
-            <Image
-              source={icons.telegram}
-              style={{height: 24, width: 24, marginRight: 20}}
-            />
+          <View style={{paddingLeft: 0}}>
+            <Text style={styles.aboutusMinorText}>
+              131A Eti-Osa way, Dolphin Estate, Ikoyi, Lagos - Nigeria
+            </Text>
+            <View style={styles.iconsSection}>
+              <Image
+                source={icons.instagram}
+                style={{height: 24, width: 24, marginRight: 20}}
+              />
+              <Image
+                source={icons.facebook}
+                style={{height: 24, width: 24, marginRight: 20}}
+              />
+              <Image
+                source={icons.whatsapp}
+                style={{height: 24, width: 24, marginRight: 20}}
+              />
+              <Image
+                source={icons.linkedin}
+                style={{height: 24, width: 24, marginRight: 20}}
+              />
+              <Image
+                source={icons.telegram}
+                style={{height: 24, width: 24, marginRight: 20}}
+              />
+            </View>
+            <Text style={[styles.aboutusMinorText, {fontWeight: 'bold'}]}>
+              Email us :{' '}
+              <Text style={{color: COLORS.light}}>hello@kwaba.ng</Text>
+            </Text>
+            <Text style={[styles.aboutusMinorText, {fontWeight: 'bold'}]}>
+              Website : <Text style={{color: COLORS.light}}>www.kwaba.ng</Text>
+            </Text>
           </View>
-          <Text style={styles.aboutusMinorText}>
-            Email : <Text>hello@kwaba.ng</Text>
-          </Text>
-          <Text style={styles.aboutusMinorText}>
-            Website : <Text>www.kwaba.ng</Text>
-          </Text>
-          <Image
-            style={[
-              {
-                marginTop: 0,
-                width: 130,
-                height: 50,
-                // marginLeft: 16,
-                marginTop: 89,
-                resizeMode: 'contain',
-              },
-            ]}
-            source={images.companyLogo}
-          />
-          <Text
-            style={[
-              styles.aboutusMinorText,
-              {color: COLORS.grey, fontSize: 12},
-            ]}>
-            Copyright 2021. All Rights Reserved {'\n'}App Version 0.1
-          </Text>
+          <View style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Image
+              style={[
+                {
+                  marginTop: 0,
+                  width: 100,
+                  height: 50,
+                  // marginLeft: 16,
+                  marginTop: 40,
+                  resizeMode: 'contain',
+                },
+              ]}
+              source={images.companyLogo}
+            />
+            <Text
+              style={[
+                styles.aboutusMinorText,
+                {color: COLORS.dark, fontSize: 12, textAlign: 'center'},
+              ]}>
+              Copyright 2021. All Rights Reserved {'\n'}App Version {appVersion}
+            </Text>
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -122,6 +134,7 @@ const styles = StyleSheet.create({
     margin: 10,
     flexDirection: 'column',
     padding: 20,
+    paddingHorizontal: 30,
   },
   aboutusText: {
     fontFamily: 'Circular Std',
@@ -150,10 +163,11 @@ const styles = StyleSheet.create({
     // marginBottom: 20,
   },
   iconsSection: {
-    marginTop: 20,
+    // marginTop: 20,
     // marginBottom: 20,
+    marginVertical: 20,
     flexDirection: 'row',
     height: 25,
-    // justifyContent: 'space-evenly',
+    justifyContent: 'space-evenly',
   },
 });

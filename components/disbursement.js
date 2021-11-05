@@ -18,7 +18,8 @@ import BankAccount from '../pages/UserAccount/CardAndBank/BankAccount';
 import {getAllBanks, getBankAccounts} from '../services/network';
 import AddBankAccountModal from './addBankAccountModal';
 
-export default function Disbursement({navigation}) {
+export default function Disbursement(props) {
+  const {navigation, route} = props;
   const dispatch = useDispatch();
   const theBank = useSelector((state) => state.getBankAccountsReducer);
   const [clickedID, setClickedID] = useState('');
@@ -33,9 +34,14 @@ export default function Disbursement({navigation}) {
 
   const handlePress = async (item) => {
     console.log('Item: ', item);
+    console.log('Route: ', route?.params?.from);
     const user = await getUser();
     await AsyncStorage.setItem(`storeBank-${user.id}`, JSON.stringify(item));
-    navigation.navigate('EmergencyLoanRequest');
+    if (route?.params?.from) {
+      navigation.navigate(route?.params?.from);
+    } else {
+      navigation.navigate('EmergencyLoanRequest');
+    }
   };
 
   // useEffect(() => {

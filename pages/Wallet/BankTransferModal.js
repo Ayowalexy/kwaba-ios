@@ -71,6 +71,20 @@ export default function BankTransferModal(props) {
                 The account number is unique to your Kwaba account
               </Text>
 
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'normal',
+                  color: COLORS.primary,
+                  marginVertical: 10,
+                  lineHeight: 20,
+                  opacity: 0.8,
+                  //   paddingHorizontal: 5,
+                }}>
+                Once you make a transfer, your account will be updated in 5
+                minutes max.
+              </Text>
+
               <View
                 style={{
                   width: '100%',
@@ -97,7 +111,7 @@ export default function BankTransferModal(props) {
                         style={{
                           fontSize: 14,
                           color: COLORS.primary,
-                          // fontWeight: 'bold',
+                          fontWeight: 'bold',
                         }}>
                         {walletDetails?.bank_name}
                       </Text>
@@ -133,7 +147,7 @@ export default function BankTransferModal(props) {
                         style={{
                           fontSize: 14,
                           color: COLORS.primary,
-                          // fontWeight: 'bold',
+                          fontWeight: 'bold',
                         }}>
                         {walletDetails?.wallet_number}
                       </Text>
@@ -167,7 +181,7 @@ export default function BankTransferModal(props) {
                         style={{
                           fontSize: 14,
                           color: COLORS.primary,
-                          // fontWeight: 'bold',
+                          fontWeight: 'bold',
                         }}>
                         {walletDetails.name}
                       </Text>

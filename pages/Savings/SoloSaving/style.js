@@ -5,13 +5,8 @@ const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8FD',
-    // paddingTop: 20,
-    // paddingLeft: 16,
-    // paddingRight: 16,
     padding: 15,
     fontFamily: 'CircularStd',
-    // borderWidth: 2,
-    // borderColor: 'red',
   },
   header: {
     marginTop: 22,
@@ -26,7 +21,7 @@ const designs = StyleSheet.create({
     paddingLeft: 20,
   },
   boldText: {
-    fontSize: 18,
+    fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
     fontFamily: 'CircularStd',

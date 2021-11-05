@@ -269,8 +269,8 @@ export default function AirtimeHistory(props) {
                                         fontSize: 10,
                                         color:
                                           item.status == 1
-                                            ? COLORS.secondary
-                                            : COLORS.dark,
+                                            ? COLORS.success
+                                            : COLORS.error,
                                         fontWeight: 'bold',
                                         marginRight: 5,
                                       }}>

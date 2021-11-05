@@ -13,7 +13,7 @@ import {COLORS} from '../util';
 
 export default function SelectSavingsOptionModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const genders = ['Solo Savings', 'Buddy Savings', 'Wallets'];
+  const genders = ['Solo Savings', 'Buddy Savings', 'Wallets', 'Referral'];
   return (
     // <View>
     <Modal
@@ -38,16 +38,17 @@ export default function SelectSavingsOptionModal(props) {
             }}
           />
           <View style={{marginTop: 20}}>
-            {genders.map((bank, index) => (
+            {genders.map((item, index) => (
               <TouchableOpacity
                 onPress={() => {
-                  onClick(bank);
+                  onClick(item);
                   onRequestClose();
                 }}
                 key={index}
                 style={{
                   paddingVertical: 15,
-                  alignItems: 'center',
+                  paddingHorizontal: 20,
+                  // alignItems: 'center',
                 }}>
                 <Text
                   style={{
@@ -55,7 +56,7 @@ export default function SelectSavingsOptionModal(props) {
                     fontWeight: 'bold',
                     color: COLORS.primary,
                   }}>
-                  {bank}
+                  {item}
                 </Text>
               </TouchableOpacity>
             ))}

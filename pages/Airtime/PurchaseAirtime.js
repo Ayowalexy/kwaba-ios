@@ -25,6 +25,8 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -83,6 +85,29 @@ const PurchaseAirtime = ({navigation, route}) => {
     // }
   };
 
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const verifyPayment = async (data) => {
+    const token = await getToken();
+    const url =
+      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/verify_bills_transactions';
+    try {
+      const response = await axios.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      return response;
+    } catch (error) {
+      return error;
+    }
+  };
+
   const handlePaymentRoute = async (value) => {
     const data = {
       serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
@@ -103,9 +128,34 @@ const PurchaseAirtime = ({navigation, route}) => {
         setSpinner(false);
       }
     } else if (value == 'bank') {
+      setSpinner(false);
       console.log(value);
     } else {
-      console.log(value); // wallet
+      const response = await BuyPurchaseAirtime(data);
+      if (response.status == 200) {
+        console.log(value); // wallet
+        console.log('From Wallet: ', response?.data?.data);
+        setChannel(value);
+
+        const data = {
+          channel: value,
+          reference: response?.data?.data?.reference,
+        };
+
+        console.log('The Data Wallet: ', data);
+
+        const verify = await verifyPayment(data);
+
+        // console.log('The Verify Data Wallet: ', verify);
+
+        if (verify.status == 200) {
+          setSpinner(false);
+          console.log('Done Verify Payment');
+          navigation.navigate('PaymentSuccessful', {
+            name: 'AirtimeHome',
+          });
+        }
+      }
     }
   };
 

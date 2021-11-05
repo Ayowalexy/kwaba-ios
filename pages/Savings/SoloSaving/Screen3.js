@@ -17,6 +17,9 @@ import {soloSaving} from '../../../redux/actions/savingsActions';
 import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
 import CardAndBankModal from './CardAndBankModal';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
+import DepositModal from './DepositModal';
+import SubsequentModal from './SubsequentModal';
+import DepositWalletModal from './DepositWalletModal';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -49,6 +52,11 @@ export default function Screen3({navigation, route}) {
   const [storeData, setStoreData] = useState(null);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showDepositWalletModal, setShowDepositWalletModal] = useState(false);
+  const [showSubsequentModal, setShowSubsequentModal] = useState(false);
+
+  const [channel, setChannel] = useState('');
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -95,7 +103,15 @@ export default function Screen3({navigation, route}) {
   }, [locked]);
 
   const handlePaymentRoute = async (value) => {
-    console.log('Solo saving: ', value);
+    setChannel(value);
+
+    if (value.toLowerCase() == 'paystack') {
+      setShowDepositModal(true);
+    } else if (value.toLowerCase() == 'bank transafer') {
+      // For bank transafer
+    } else {
+      setShowDepositWalletModal(true);
+    }
   };
 
   return (
@@ -269,7 +285,8 @@ export default function Screen3({navigation, route}) {
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}
-          onPress={addCardAndBankModal}
+          // onPress={addCardAndBankModal}
+          onPress={() => setShowPaymentModal(true)}
           style={[
             designs.button,
             {
@@ -306,6 +323,43 @@ export default function Screen3({navigation, route}) {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
+        />
+      )}
+
+      {showDepositModal && (
+        <DepositModal
+          onRequestClose={() => setShowDepositModal(!showDepositModal)}
+          visible={showDepositModal}
+          store={store}
+          navigation={navigation}
+          storeData={storeData}
+          showModal={() => setShowSubsequentModal(true)}
+        />
+      )}
+
+      {showDepositWalletModal && (
+        <DepositWalletModal
+          onRequestClose={() =>
+            setShowDepositWalletModal(!showDepositWalletModal)
+          }
+          visible={showDepositWalletModal}
+          store={store}
+          navigation={navigation}
+          savingsData={storeData}
+          channel={channel}
+        />
+      )}
+
+      {showSubsequentModal && (
+        <SubsequentModal
+          onRequestClose={() => setShowSubsequentModal(!showSubsequentModal)}
+          visible={showSubsequentModal}
+          goToDashboard={() => {
+            navigation.navigate('SoloSavingDashBoard');
+          }}
+          savingsData={storeData}
+          navigation={navigation}
+          channel={channel}
         />
       )}
     </View>
