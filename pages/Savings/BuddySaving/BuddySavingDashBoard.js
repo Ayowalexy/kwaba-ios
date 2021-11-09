@@ -40,7 +40,7 @@ import AmountModal from '../../../components/amountModal';
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
-  const getOneSavings = useSelector((state) => state.getOneBuddySavingsReducer);
+  const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
 
   // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   // const soloSaving = useSelector((state) => state.soloSavingReducer);
@@ -76,17 +76,17 @@ export default function SoloSavingDashBoard(props) {
   }, [getOneSavings]);
 
   const setDashboardData = () => {
-    if (getOneSavings?.data) {
+    if (getOneSavings && getOneSavings.data != undefined) {
       console.log('The Result From Dashboard: ', getOneSavings?.data);
-      const data = getOneSavings?.data?.buddy_saving;
+      const data = getOneSavings.data[0];
 
-      setSavingsTarget(data.target_amount);
-      setSavingTitle(data.name);
-      setTotalSaving(data.amount_save);
-      setYourSavings(data.amount);
-      setPercentAchieved((data.amount_save / data.target_amount) * 100);
-      setBuddies(getOneSavings.data.buddies);
-      setTransactions(getOneSavings.data.transactions);
+      setSavingsTarget(data?.target_amount);
+      setSavingTitle(data?.name);
+      setTotalSaving(data?.amount_save);
+      setYourSavings(data?.amount);
+      setPercentAchieved((data?.amount_save / data?.target_amount) * 100);
+      setBuddies(getOneSavings?.data?.buddies);
+      setTransactions(getOneSavings?.data?.transactions);
     }
   };
 

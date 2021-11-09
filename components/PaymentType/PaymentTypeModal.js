@@ -71,13 +71,13 @@ export default function PaymentTypeModal(props) {
                   Select a Payment Method
                 </Text>
                 {[
-                  {name: 'Debit Card', icon: 'card', tag: 'paystack'},
+                  {name: 'Debit Card', icon: 'card', tag: 'card'},
+                  {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
                   {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
-                  {name: 'Bank Transfer', icon: 'home', tag: 'bank'},
                 ].map((item, index) => {
                   return (
                     <TouchableOpacity
-                      disabled={item.icon == 'home'}
+                      // disabled={item.icon == 'home'}
                       onPress={() => {
                         setPaymentType(item.tag);
                         onRequestClose();
@@ -91,7 +91,7 @@ export default function PaymentTypeModal(props) {
                         borderTopColor: '#BFBFBF30',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        opacity: item.icon == 'home' ? 0.4 : 1,
+                        // opacity: item.icon == 'home' ? 0.4 : 1,
                       }}>
                       <View
                         style={{

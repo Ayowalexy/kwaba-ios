@@ -45,9 +45,9 @@ export default function AmountModalWallet(props) {
 
   const repay = 100;
 
-  useEffect(() => {
-    console.log('The Repay: ', repay);
-  }, []);
+  // useEffect(() => {
+  //   console.log('The Repay: ', repay);
+  // }, []);
 
   const amountSchema = yup.object().shape({
     amount: yup
@@ -69,11 +69,12 @@ export default function AmountModalWallet(props) {
     console.log('The amount: ', data);
 
     setSpinner(true);
+    const res = await addFundsToWallet(data);
+    console.log('The Res: ', res);
     try {
-      const res = await addFundsToWallet(data);
       if (res.status == 200) {
         setSpinner(false);
-        console.log('The Res Card Wallet: ', res.data.data);
+        // console.log('The Res Card Wallet: ', res.data.data);
         setData(res.data.data);
         onRequestClose();
         showCard();
@@ -140,71 +141,71 @@ export default function AmountModalWallet(props) {
 
   return (
     <>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={visible}
-          onRequestClose={onRequestClose}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Icon
-                onPress={handleClose}
-                name="close-outline"
-                size={25}
-                style={{
-                  right: 5,
-                  top: 5,
-                  position: 'absolute',
-                  zIndex: 2,
-                  color: COLORS.grey,
-                  padding: 10,
-                  //   borderWidth: 1,
+      {/* <View style={styles.centeredView}> */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={visible}
+        onRequestClose={onRequestClose}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Icon
+              onPress={handleClose}
+              name="close-outline"
+              size={25}
+              style={{
+                right: 5,
+                top: 5,
+                position: 'absolute',
+                zIndex: 2,
+                color: COLORS.grey,
+                padding: 10,
+                //   borderWidth: 1,
+              }}
+            />
+            <Animatable.View
+              duration={300}
+              delay={100}
+              easing="ease-in-out"
+              animation="slideInLeft">
+              <Formik
+                validationSchema={amountSchema}
+                initialValues={{
+                  amount: '',
                 }}
-              />
-              <Animatable.View
-                duration={300}
-                delay={100}
-                easing="ease-in-out"
-                animation="slideInLeft">
-                <Formik
-                  validationSchema={amountSchema}
-                  initialValues={{
-                    amount: '',
-                  }}
-                  onSubmit={(values) => {
-                    handleSubmit(values);
-                  }}>
-                  {({handleSubmit, isValid, values, setValues}) => (
-                    <>
-                      <Field
-                        component={NumberInput}
-                        name="amount"
-                        placeholder="Amount"
-                      />
+                onSubmit={(values) => {
+                  handleSubmit(values);
+                }}>
+                {({handleSubmit, isValid, values, setValues}) => (
+                  <>
+                    <Field
+                      component={NumberInput}
+                      name="amount"
+                      placeholder="Amount"
+                    />
 
-                      <TouchableOpacity
-                        onPress={handleSubmit}
-                        // disabled={isValid ? false : true}
-                        style={[styles.button]}>
-                        <Text
-                          style={{
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: 12,
-                            lineHeight: 30,
-                          }}>
-                          PROCEED
-                        </Text>
-                      </TouchableOpacity>
-                    </>
-                  )}
-                </Formik>
-              </Animatable.View>
-            </View>
+                    <TouchableOpacity
+                      onPress={handleSubmit}
+                      // disabled={isValid ? false : true}
+                      style={[styles.button]}>
+                      <Text
+                        style={{
+                          color: 'white',
+                          fontWeight: 'bold',
+                          fontSize: 12,
+                          lineHeight: 30,
+                        }}>
+                        PROCEED
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+                )}
+              </Formik>
+            </Animatable.View>
           </View>
-        </Modal>
-      </View>
+        </View>
+      </Modal>
+      {/* </View> */}
 
       {/* {modal && (
         <CreditCardModalFunds

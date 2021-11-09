@@ -19,17 +19,24 @@ import AmountModalWallet from '../../components/amountModalWallet';
 const {width, height} = Dimensions.get('window');
 
 export default function AddFundToWalletModal(props) {
-  const {onRequestClose, visible, navigation, walletDetails} = props;
-  const [showBankTransferModal, setShowBankTransferModal] = useState(false);
-  const [showCardModal, setShowCardModal] = useState(false);
-  const [showAmountModal, setShowAmountModal] = useState(false);
+  const {
+    onRequestClose,
+    visible,
+    navigation,
+    walletDetails,
+    showAmountModal,
+    showBankTransferModal,
+  } = props;
+  // const [showBankTransferModal, setShowBankTransferModal] = useState(false);
+  // const [showCardModal, setShowCardModal] = useState(false);
+  // const [showAmountModal, setShowAmountModal] = useState(false);
 
   const [info, setInfo] = useState({});
 
-  const transferWithCard = async () => {
-    // console.log('Hello');
-    setShowAmountModal(true);
-  };
+  // const transferWithCard = async () => {
+  //   // console.log('Hello');
+  //   setShowAmountModal(true);
+  // };
 
   return (
     <>
@@ -102,10 +109,11 @@ export default function AddFundToWalletModal(props) {
                     <TouchableOpacity
                       // disabled={item.icon == 'home'}
                       onPress={() => {
+                        onRequestClose();
                         if (item.icon == 'card') {
-                          transferWithCard();
+                          showAmountModal();
                         } else {
-                          setShowBankTransferModal(true);
+                          showBankTransferModal();
                         }
                       }}
                       key={index}
@@ -177,7 +185,7 @@ export default function AddFundToWalletModal(props) {
         </View>
       </Modal>
 
-      {showAmountModal && (
+      {/* {showAmountModal && (
         <AmountModalWallet
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
@@ -204,7 +212,7 @@ export default function AddFundToWalletModal(props) {
           visible={showBankTransferModal}
           walletDetails={walletDetails}
         />
-      )}
+      )} */}
     </>
   );
 }

@@ -20,6 +20,11 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import moment from 'moment';
+import AmountModalWallet from '../../components/amountModalWallet';
+import BankTransferModal from './BankTransferModal';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
+import {verifyAddFundToWallet} from '../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function Wallet(props) {
   const {navigation} = props;
@@ -32,6 +37,16 @@ export default function Wallet(props) {
   const [transactions, setTransactions] = useState([]);
 
   const [toggleAmount, setToggleAmount] = useState(true);
+
+  const [showAmountModal, setShowAmountModal] = useState(false);
+
+  const [showBankTransferModal, setShowBankTransferModal] = useState(false);
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
+  const [resData, setResData] = useState('');
+
+  const [spinner, setSpinner] = useState(false);
 
   const getWallet = useSelector((state) => state.getUserWalletReducer);
   const getWalletTransactions = useSelector(
@@ -48,9 +63,9 @@ export default function Wallet(props) {
     setAmount(getWallet.available_balances);
   }, [getWallet]);
 
-  useEffect(() => {
-    console.log(getWalletTransactions);
-  }, [getWalletTransactions]);
+  // useEffect(() => {
+  //   // console.log(getWalletTransactions);
+  // }, [getWalletTransactions]);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -444,8 +459,65 @@ export default function Wallet(props) {
           visible={addFundsModal}
           navigation={navigation}
           walletDetails={getWallet}
+          showAmountModal={() => setShowAmountModal(true)}
+          showBankTransferModal={() => setShowBankTransferModal(true)}
         />
       )}
+
+      {showAmountModal && (
+        <AmountModalWallet
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          setData={(d) => setResData(d)}
+          showCard={() => setShowPaystackPayment(true)}
+        />
+      )}
+
+      {showBankTransferModal && (
+        <BankTransferModal
+          onRequestClose={() =>
+            setShowBankTransferModal(!showBankTransferModal)
+          }
+          visible={showBankTransferModal}
+          walletDetails={getWallet}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={'card'}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifyAddFundToWallet(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              navigation.navigate('PaymentSuccessful', {
+                name: 'Home',
+              });
+              setSpinner(false);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }
