@@ -6,6 +6,7 @@ import {
   Image,
   Switch,
   ScrollView,
+  Alert,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -20,6 +21,12 @@ import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import DepositModal from './DepositModal';
 import SubsequentModal from './SubsequentModal';
 import DepositWalletModal from './DepositWalletModal';
+import PaystackPayment from '../../../components/Paystack/PaystackPayment';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {
+  userCreateSavings,
+  verifySavingsPayment,
+} from '../../../services/network';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -56,7 +63,13 @@ export default function Screen3({navigation, route}) {
   const [showDepositWalletModal, setShowDepositWalletModal] = useState(false);
   const [showSubsequentModal, setShowSubsequentModal] = useState(false);
 
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
   const [channel, setChannel] = useState('');
+
+  const [spinner, setSpinner] = useState(false);
+
+  const [resData, setResData] = useState('');
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -65,6 +78,8 @@ export default function Screen3({navigation, route}) {
 
   useEffect(() => {
     const data = route.params;
+
+    // console.log('The Data: ', data);
 
     setSavingsTitle(data.name);
     setSavingsTarget(data.target_amount);
@@ -82,7 +97,7 @@ export default function Screen3({navigation, route}) {
     let start = moment(data.start_date);
     let end = moment(end_date);
 
-    console.log(start, end, data.start_date);
+    // console.log(start, end, data.start_date);
 
     let diff = end.diff(
       start,
@@ -91,26 +106,64 @@ export default function Screen3({navigation, route}) {
         : data.frequency.substring(0, data.frequency.length - 2).toLowerCase() +
             's',
     );
-    console.log('Calc: ', diff);
-    setSavingsAmount((data.target_amount - data.savings_amount) / diff);
+    // console.log('Calc: ', diff);
+    setSavingsAmount(data.target_amount / diff);
     setAmountToSaveNow(
       moment().format('YYYY-MM-DD') == data.start_date && data.savings_amount,
     );
-  }, []);
 
-  useEffect(() => {
     dispatch(soloSaving({locked: locked}));
   }, [locked]);
 
-  const handlePaymentRoute = async (value) => {
-    setChannel(value);
+  // useEffect(() => {
+  //   dispatch(soloSaving({locked: locked}));
+  // }, [locked]);
 
-    if (value.toLowerCase() == 'paystack') {
-      setShowDepositModal(true);
-    } else if (value.toLowerCase() == 'bank transafer') {
-      // For bank transafer
-    } else {
-      setShowDepositWalletModal(true);
+  const handlePaymentRoute = async (value) => {
+    // console.log('The Value: ', value);
+    try {
+      const data = storeData;
+      // console.log('What Store Data: ', data);
+
+      setSpinner(true);
+      const response = await userCreateSavings(data);
+
+      console.log('The Savings: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+        if (value == 'wallet') {
+          const data = {
+            channel: value,
+            reference: response?.data?.data?.reference,
+          };
+
+          console.log(data);
+
+          setSpinner(true);
+          const verify = await verifySavingsPayment(data);
+          console.log('The Verify: ', verify);
+
+          if (verify.status == 200) {
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'SoloSavingDashBoard',
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Insufficient fund', 'Please fund your wallet');
+          }
+        } else {
+          setSpinner(false);
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
     }
   };
 
@@ -308,23 +361,13 @@ export default function Screen3({navigation, route}) {
         </TouchableOpacity>
       </ScrollView>
 
-      <CardAndBankModal
+      {/* <CardAndBankModal
         onRequestClose={() => setModal(!modal)}
         visible={modal}
         store={store}
         navigation={navigation}
         storeData={storeData}
       />
-
-      {showPaymentModal && (
-        <PaymentTypeModal
-          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
-          visible={showPaymentModal}
-          setPaymentType={(value) => {
-            handlePaymentRoute(value); // paystack, bank, wallet
-          }}
-        />
-      )}
 
       {showDepositModal && (
         <DepositModal
@@ -361,7 +404,57 @@ export default function Screen3({navigation, route}) {
           navigation={navigation}
           channel={channel}
         />
+      )} */}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(value) => {
+            handlePaymentRoute(value); // paystack, bank, wallet
+          }}
+        />
       )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            // console.log('Pay done', res);
+
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            // console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifySavingsPayment(data);
+
+            // console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              navigation.navigate('PaymentSuccessful', {
+                name: 'SoloSavingDashBoard',
+                id: resData?.id,
+              });
+              setSpinner(false);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 }

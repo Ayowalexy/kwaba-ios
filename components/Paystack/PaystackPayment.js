@@ -32,7 +32,7 @@ export default function PaystackPayment(props) {
     paystackWebViewRef.current.startTransaction();
     (async () => {
       const user = await userData();
-      console.log('The User: ', user);
+      // console.log('The User: ', user);
       setUser({email: user.email, phone: user.telephone});
     })();
     console.log('Data: ', data);

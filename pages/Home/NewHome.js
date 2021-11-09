@@ -243,8 +243,10 @@ export default function NewHome({navigation}) {
       amount: formatNumber(Number(wallet).toFixed(2)),
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
-      actionClick: () =>
-        wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
+      actionClick: () => {
+        // wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true);
+        navigation.navigate('Wallet');
+      },
       cardClick: () => {
         TrackEvent('Home-Card-Wallet');
         navigation.navigate('Wallet');

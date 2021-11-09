@@ -20,11 +20,6 @@ import * as yup from 'yup';
 import * as Animatable from 'react-native-animatable';
 import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 
-const soloSavingFormSchema = yup.object().shape({
-  targetAmount: yup.string().required('Please provide saving amount'),
-  savingStartOption: yup.string().required('Please select saving start date'),
-});
-
 export default function Screen2(props) {
   const dispatch = useDispatch();
   // const savings = useSelector((state) => state.soloSavingReducer);
@@ -35,6 +30,27 @@ export default function Screen2(props) {
   const [instantSaving, setInstantSaving] = useState(null);
 
   const [howLong, setHowLong] = useState('');
+
+  const minAmount =
+    props.route.params?.how_long == '3months'
+      ? 10000
+      : props.route.params?.how_long == '6months'
+      ? 20000
+      : 40000;
+
+  const soloSavingFormSchema = yup.object().shape({
+    // targetAmount: yup.string().required('Please provide saving amount'),
+    savingStartOption: yup.string().required('Please select saving start date'),
+    targetAmount: yup.number().test({
+      name: 'min',
+      exclusive: false,
+      params: {},
+      message: `The minimum amount you can save is ₦${formatNumber(minAmount)}`,
+      test: function (value) {
+        return value >= minAmount;
+      },
+    }),
+  });
 
   const handleDateSelect = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -62,7 +78,7 @@ export default function Screen2(props) {
   };
 
   useEffect(() => {
-    // console.log('How Long?: ', props.route.params?.how_long);
+    console.log('How Long?: ', props.route.params?.how_long);
     setHowLong(props.route.params?.how_long);
   }, []);
 
@@ -111,7 +127,11 @@ export default function Screen2(props) {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => {
+              const n = unFormatNumber(text);
+              console.log('N: ', n);
+              onChange(name)(n);
+            }}
             {...inputProps}
           />
         </View>
