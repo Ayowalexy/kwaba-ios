@@ -25,6 +25,9 @@ import BankTransferModal from './BankTransferModal';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import {verifyAddFundToWallet} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
+import QuickSaveListModal from '../Home/QuickSaveListModal';
+import QuickSaveModal from '../../components/QuickSaveModal';
+import SavingsOptionModal from '../../components/savingsOptionModal';
 
 export default function Wallet(props) {
   const {navigation} = props;
@@ -47,6 +50,14 @@ export default function Wallet(props) {
   const [resData, setResData] = useState('');
 
   const [spinner, setSpinner] = useState(false);
+
+  const [showQuickSaveListModal, setShowQuickSaveListModal] = useState(false);
+
+  const [showQuickSaveModal, setShowQuickSaveModal] = useState(false);
+
+  const [savingType, setSavingType] = useState('');
+
+  const [channel, setChannel] = useState('card');
 
   const getWallet = useSelector((state) => state.getUserWalletReducer);
   const getWalletTransactions = useSelector(
@@ -269,19 +280,21 @@ export default function Wallet(props) {
                 borderTopWidth: 1,
                 borderTopColor: '#FFFFFF20',
               }}>
-              {['Save', 'Bills', 'Funds'].map((item, index) => {
+              {['Fund Savings', 'Pay Bills'].map((item, index) => {
                 return (
                   <TouchableOpacity
                     key={index}
                     style={{marginHorizontal: 5, alignItems: 'center'}}
                     onPress={() => {
-                      if (item == 'Save') {
-                        navigation.navigate('SavingsHome');
-                      } else if (item == 'Bills') {
+                      if (item == 'Fund Savings') {
+                        // navigation.navigate('SavingsHome');
+                        setShowQuickSaveModal(true);
+                      } else if (item == 'Pay Bills') {
                         navigation.navigate('BillsHome');
-                      } else {
-                        navigation.navigate('EmergencyLoanHome');
                       }
+                      // else {
+                      //   navigation.navigate('EmergencyLoanHome');
+                      // }
                       console.log('Clicked');
                     }}>
                     <View
@@ -306,9 +319,9 @@ export default function Wallet(props) {
                         }}>
                         <Icon
                           name={
-                            item == 'Save'
+                            item == 'Fund Savings'
                               ? 'duplicate'
-                              : item == 'Bills'
+                              : item == 'Pay Bills'
                               ? 'apps'
                               : 'enter-sharp'
                           }
@@ -334,21 +347,33 @@ export default function Wallet(props) {
           </View>
         </View>
 
-        <ScrollView>
-          <View
-            style={{
-              flex: 1,
-              // justifyContent: 'center',
-              // alignItems: 'center',
-              // paddingVertical: 20,
-              paddingHorizontal: 20,
-            }}>
-            {!transactions?.length ? (
+        <View
+          style={{
+            flex: 1,
+            // justifyContent: 'center',
+            // alignItems: 'center',
+            // paddingVertical: 20,
+            paddingHorizontal: 20,
+          }}>
+          {!transactions?.length ? (
+            <View
+              style={{
+                justifyContent: 'center',
+                alignItems: 'center',
+                paddingVertical: 20,
+                flex: 1,
+              }}>
               <Text
-                style={{fontSize: 14, fontWeight: 'bold', color: COLORS.grey}}>
+                style={{
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  color: COLORS.grey,
+                }}>
                 No Transactions
               </Text>
-            ) : (
+            </View>
+          ) : (
+            <ScrollView showsVerticalScrollIndicator={false}>
               <View>
                 <Text
                   style={{
@@ -448,10 +473,34 @@ export default function Wallet(props) {
                   );
                 })}
               </View>
-            )}
-          </View>
-        </ScrollView>
+            </ScrollView>
+          )}
+        </View>
       </View>
+
+      {showQuickSaveModal && (
+        <SavingsOptionModal
+          onRequestClose={() => setShowQuickSaveModal(!showQuickSaveModal)}
+          visible={showQuickSaveModal}
+          // setShowPaymentType={(bol) => setShowPaymentType(bol)}
+          showSavingType={(data) => {
+            // console.log('Done: ', data);
+            setSavingType(data);
+            setShowQuickSaveListModal(true);
+          }}
+        />
+      )}
+
+      {showQuickSaveListModal && (
+        <QuickSaveListModal
+          onRequestClose={() =>
+            setShowQuickSaveListModal(!showQuickSaveListModal)
+          }
+          visible={showQuickSaveListModal}
+          type={savingType}
+          navigation={navigation}
+        />
+      )}
 
       {addFundsModal && (
         <AddFundToWalletModal
@@ -461,6 +510,7 @@ export default function Wallet(props) {
           walletDetails={getWallet}
           showAmountModal={() => setShowAmountModal(true)}
           showBankTransferModal={() => setShowBankTransferModal(true)}
+          setChannel={(c) => setChannel(c)}
         />
       )}
 
@@ -487,7 +537,7 @@ export default function Wallet(props) {
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
           data={resData}
-          channel={'card'}
+          channel={channel}
           paymentCanceled={(e) => {
             console.log('Pay cancel', e);
             // Do something

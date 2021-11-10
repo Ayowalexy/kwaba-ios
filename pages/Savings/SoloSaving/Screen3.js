@@ -147,6 +147,7 @@ export default function Screen3({navigation, route}) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
+              id: resData?.id,
             });
           } else {
             setSpinner(false);

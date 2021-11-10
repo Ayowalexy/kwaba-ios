@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   Switch,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../../util/index';
@@ -159,6 +160,7 @@ export default function SoloSavingDashBoard(props) {
             });
           } else {
             setSpinner(false);
+            Alert.alert('Insufficient fund', 'Please fund your wallet');
           }
         } else {
           setChannel(value);
@@ -199,21 +201,55 @@ export default function SoloSavingDashBoard(props) {
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-                marginTop: 5,
-                paddingLeft: 2,
+                marginTop: 10,
+                paddingLeft: 0,
                 paddingRight: 10,
               }}>
-              <Text
-                style={{fontSize: 12, fontWeight: '700', color: COLORS.dark}}>
-                {/* {moment().format('ddd, D MMM')} */}
-                {moment(date.startDate).format('ddd, D MMM YYYY')}
-              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  backgroundColor: '#9D98EC20',
+                  padding: 5,
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 'normal',
+                    color: COLORS.dark,
+                    marginRight: 5,
+                  }}>
+                  Start
+                </Text>
+                <Text
+                  style={{fontSize: 12, fontWeight: '700', color: COLORS.dark}}>
+                  {moment(date.startDate).format('ddd, D MMM YYYY')}
+                </Text>
+              </View>
 
-              <Text
-                style={{fontSize: 12, fontWeight: '700', color: COLORS.dark}}>
-                {/* {moment().format('ddd, D MMM')} */}
-                {moment(date.endDate).format('ddd, D MMM YYYY')}
-              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  backgroundColor: '#9D98EC20',
+                  padding: 5,
+                  paddingHorizontal: 10,
+                  borderRadius: 5,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 'normal',
+                    color: COLORS.dark,
+                    marginRight: 5,
+                  }}>
+                  End
+                </Text>
+                <Text
+                  style={{fontSize: 12, fontWeight: '700', color: COLORS.dark}}>
+                  {moment(date.endDate).format('ddd, D MMM YYYY')}
+                </Text>
+              </View>
             </View>
           </View>
           <View style={[styles.soloSavingCard]}>

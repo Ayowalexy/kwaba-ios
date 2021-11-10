@@ -31,6 +31,10 @@ export default function Screen2(props) {
 
   const [howLong, setHowLong] = useState('');
 
+  const instantSavingMinimumAmount = 100;
+
+  const hl = howLong.toString().charAt(0).split('');
+
   const minAmount =
     props.route.params?.how_long == '3months'
       ? 10000
@@ -45,7 +49,9 @@ export default function Screen2(props) {
       name: 'min',
       exclusive: false,
       params: {},
-      message: `The minimum amount you can save is ₦${formatNumber(minAmount)}`,
+      message: `The minimum amount you can save in ${hl} ${
+        hl == '1' ? 'year' : hl == '6' ? 'months' : 'months'
+      } Is ₦${formatNumber(minAmount)}`,
       test: function (value) {
         return value >= minAmount;
       },
@@ -314,6 +320,15 @@ export default function Screen2(props) {
                         value={instantSaving}
                         onChangeText={(text) => setInstantSaving(text)}
                       />
+                      {instantSaving != null &&
+                        Number(instantSaving) < instantSavingMinimumAmount && (
+                          <View>
+                            <Text style={styles.errorText}>
+                              The minimum amount you can save is ₦
+                              {instantSavingMinimumAmount}
+                            </Text>
+                          </View>
+                        )}
                     </Animatable.View>
                   </View>
                 </>
@@ -333,12 +348,28 @@ export default function Screen2(props) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={values.targetAmount != '' && isValid ? false : true}
+                disabled={
+                  values.targetAmount != '' &&
+                  isValid &&
+                  values.savingStartOption != 'today'
+                    ? false
+                    : values.savingStartOption == 'today' &&
+                      instantSaving == instantSavingMinimumAmount &&
+                      isValid
+                    ? false
+                    : true
+                }
                 style={[
                   designs.button,
                   {
                     backgroundColor:
-                      values.targetAmount != '' && isValid
+                      values.targetAmount != '' &&
+                      isValid &&
+                      values.savingStartOption != 'today'
+                        ? '#00DC99'
+                        : values.savingStartOption == 'today' &&
+                          instantSaving == instantSavingMinimumAmount &&
+                          isValid
                         ? '#00DC99'
                         : '#00DC9950',
                   },

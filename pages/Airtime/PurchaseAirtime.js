@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, images, icons} from '../../util/index';
@@ -143,6 +144,7 @@ const PurchaseAirtime = ({navigation, route}) => {
             });
           } else {
             setSpinner(false);
+            Alert.alert('Insufficient fund', 'Please fund your wallet');
           }
         } else {
           setChannel(value);

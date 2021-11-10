@@ -26,6 +26,7 @@ export default function AddFundToWalletModal(props) {
     walletDetails,
     showAmountModal,
     showBankTransferModal,
+    setChannel,
   } = props;
   // const [showBankTransferModal, setShowBankTransferModal] = useState(false);
   // const [showCardModal, setShowCardModal] = useState(false);
@@ -97,11 +98,13 @@ export default function AddFundToWalletModal(props) {
                     name: 'Debit Card',
                     icon: 'card',
                     title: 'Add money to your wallet using your debit card.',
+                    channel: 'card',
                   },
                   {
                     name: 'Bank Transfer',
                     icon: 'home',
                     title: 'Add money to your wallet via bank transfer.',
+                    channel: 'bank_transfer',
                   },
                   // {name: 'Others', icon: 'apps'},
                 ].map((item, index) => {
@@ -110,11 +113,15 @@ export default function AddFundToWalletModal(props) {
                       // disabled={item.icon == 'home'}
                       onPress={() => {
                         onRequestClose();
-                        if (item.icon == 'card') {
-                          showAmountModal();
-                        } else {
-                          showBankTransferModal();
-                        }
+                        showAmountModal();
+                        setChannel(item.channel);
+
+                        // We might use this later - DO NOT DELETE
+                        // if (item.icon == 'card') {
+                        //   showAmountModal();
+                        // } else {
+                        //   showBankTransferModal();
+                        // }
                       }}
                       key={index}
                       style={{

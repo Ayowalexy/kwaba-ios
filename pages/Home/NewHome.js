@@ -204,7 +204,7 @@ export default function NewHome({navigation}) {
           : 'Great job on your rent savings',
       amount: formatNumber(Number(savings).toFixed(2)),
       color: COLORS.primary,
-      actionText: savings == 0 ? 'Save Now' : 'Deposit',
+      actionText: savings == 0 ? 'Save Now' : 'Fund savings',
       actionClick: () =>
         savings == 0
           ? navigation.navigate('SavingsHome')

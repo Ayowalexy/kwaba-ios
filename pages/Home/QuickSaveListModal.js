@@ -6,9 +6,11 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Alert,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS} from '../../util';
+import {COLORS, images} from '../../util';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../util/numberFormatter';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,6 +18,12 @@ import {
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
 } from '../../redux/actions/savingsActions';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
+import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
+import AmountModal from '../../components/amountModal';
+
+import Spinner from 'react-native-loading-spinner-overlay';
+import {addFundsToSavings, verifySavingsPayment} from '../../services/network';
 
 export default function QuickSaveListModal(props) {
   const dispatch = useDispatch();
@@ -23,6 +31,22 @@ export default function QuickSaveListModal(props) {
   const allBuddySaving = useSelector((state) => state.getBuddySavingsReducer);
   const {onRequestClose, visible, type, navigation} = props;
   const [savingLists, setSavingLists] = useState([]);
+
+  const [spinner, setSpinner] = useState(false);
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
+  const [showAmountModal, setShowAmountModal] = useState(false);
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const [amount, setAmount] = useState('');
+
+  const [resData, setResData] = useState('');
+
+  const [id, setID] = useState('');
+
+  const [channel, setChannel] = useState('');
 
   useEffect(() => {
     console.log('The Type: ', type);
@@ -35,6 +59,51 @@ export default function QuickSaveListModal(props) {
     } else {
       setSavingLists(allBuddySaving);
       console.log('All Buddy: ', allBuddySaving);
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    console.log('The Value: ', value);
+    try {
+      const data = {
+        savings_id: id,
+        amount: amount,
+      };
+
+      console.log('The Dataaaaaa: ', data);
+
+      setSpinner(true);
+      const response = await addFundsToSavings(data);
+      if (response.status == 200) {
+        if (value == 'wallet') {
+          const data = {
+            channel: value,
+            reference: response?.data?.data?.reference,
+          };
+
+          setSpinner(true);
+          const verify = await verifySavingsPayment(data);
+
+          if (verify.status == 200) {
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'SoloSavingDashBoard',
+              id: resData?.id,
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Insufficient fund', 'Please fund your wallet');
+          }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
     }
   };
 
@@ -85,14 +154,26 @@ export default function QuickSaveListModal(props) {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
+                  <Image
+                    source={images.purplePiggy}
+                    style={{
+                      width: 200,
+                      height: 200,
+                      // borderWidth: 1,
+                      marginVertical: 10,
+                      resizeMode: 'contain',
+                      marginTop: 50,
+                    }}
+                  />
                   <Text
                     style={{
                       fontSize: 14,
                       fontWeight: 'normal',
                       textAlign: 'center',
                       color: COLORS.dark,
+                      textTransform: 'capitalize',
                     }}>
-                    No {type}
+                    You have no {type} yet.
                   </Text>
                   <TouchableOpacity
                     onPress={() => {
@@ -104,11 +185,16 @@ export default function QuickSaveListModal(props) {
                     style={{
                       backgroundColor: COLORS.primary,
                       paddingVertical: 15,
-                      paddingHorizontal: 30,
-                      marginTop: 10,
+                      paddingHorizontal: 40,
+                      marginTop: 15,
                       borderRadius: 5,
                     }}>
-                    <Text style={{fontSize: 12, color: COLORS.white}}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 'bold',
+                        color: COLORS.white,
+                      }}>
                       BEGIN SAVING
                     </Text>
                   </TouchableOpacity>
@@ -138,13 +224,15 @@ export default function QuickSaveListModal(props) {
                             key={index}
                             style={[styles.card]}
                             onPress={() => {
-                              dispatch(getOneSoloSavings(item.id));
-                              dispatch(getOneSoloSavingsTransaction(item.id));
-                              navigation.navigate('SoloSavingDashBoard', {
-                                id: item.id,
-                              });
+                              // dispatch(getOneSoloSavings(item.id));
+                              // dispatch(getOneSoloSavingsTransaction(item.id));
+                              // navigation.navigate('SoloSavingDashBoard', {
+                              //   id: item.id,
+                              // });
                               console.log('The ID: ', item.id);
-                              onRequestClose();
+                              setID(item.id);
+                              setShowAmountModal(true);
+                              // onRequestClose();
                             }}>
                             <View style={[styles.cardFlex]}>
                               <View style={[styles.progressContainer]}>
@@ -224,6 +312,68 @@ export default function QuickSaveListModal(props) {
           </View>
         </Modal>
       </View>
+
+      {showAmountModal && (
+        <AmountModal
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          setAmount={(d) => setAmount(d)}
+          // setData={(d) => setResData(d)}
+          showCard={() => setShowPaymentModal(true)}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            console.log('Hello', data);
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            // console.log('Pay done', res);
+
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifySavingsPayment(data);
+
+            // console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              navigation.navigate('PaymentSuccessful', {
+                name: 'SoloSavingDashBoard',
+                id: resData?.id,
+              });
+              setSpinner(false);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }
