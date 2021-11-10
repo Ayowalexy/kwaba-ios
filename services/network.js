@@ -554,7 +554,7 @@ const verifySavingsPayment = async (data) => {
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
-      headers: {Authorization: token},
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {

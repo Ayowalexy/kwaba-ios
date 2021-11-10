@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  Switch,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../../util/index';
@@ -25,10 +26,16 @@ import moment from 'moment';
 import Spinner from 'react-native-loading-spinner-overlay';
 
 import TransactionsTab from './TransactionTabs';
-import {getOneUserSavings} from '../../../services/network';
+import {
+  getOneUserSavings,
+  verifySavingsPayment,
+  addFundsToSavings,
+} from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
 import AmountModal from '../../../components/amountModal';
+import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
+import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
@@ -54,6 +61,25 @@ export default function SoloSavingDashBoard(props) {
 
   const [spinner, setSpinner] = useState(false);
 
+  const [date, setDate] = useState({
+    startDate: '',
+    endDate: '',
+  });
+
+  const [autoSaving, setAutoSaving] = useState(false);
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const [amount, setAmount] = useState('');
+
+  const [resData, setResData] = useState('');
+
+  const toggleSwitch = () => {
+    setAutoSaving((previousState) => !previousState);
+  };
+
   useEffect(() => {
     dispatch(getOneSoloSavingsTransaction(route.params.id));
     console.log('The ID: ', route.params.id);
@@ -73,6 +99,13 @@ export default function SoloSavingDashBoard(props) {
       const amount_saved = Number(data?.amount_save);
 
       console.log('Data: ', data);
+
+      setDate({
+        startDate: data?.start_date,
+        endDate: data?.end_date,
+      });
+
+      setAutoSaving(data?.auto_save);
 
       setTotalInterest(data?.interest);
       setLocked(data?.locked);
@@ -96,28 +129,92 @@ export default function SoloSavingDashBoard(props) {
     setTotalSaving(0);
   };
 
+  const handlePaymentRoute = async (value) => {
+    console.log('The Value: ', value);
+    try {
+      const data = {
+        savings_id: route?.params?.id,
+        amount: amount,
+      };
+
+      console.log('The Dataaaaaa: ', data);
+
+      setSpinner(true);
+      const response = await addFundsToSavings(data);
+      if (response.status == 200) {
+        if (value == 'wallet') {
+          const data = {
+            channel: value,
+            reference: response?.data?.data?.reference,
+          };
+
+          setSpinner(true);
+          const verify = await verifySavingsPayment(data);
+
+          if (verify.status == 200) {
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'SoloSavingDashBoard',
+              id: resData?.id,
+            });
+          } else {
+            setSpinner(false);
+          }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Icon
         onPress={goback}
         name="arrow-back-outline"
         size={25}
-        style={{padding: 18, paddingHorizontal: 10}}
+        style={{
+          paddingVertical: 10,
+          paddingHorizontal: 10,
+        }}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
         <View style={[styles.content]}>
-          <View style={{marginBottom: 20}}>
+          <View style={{marginBottom: 20, paddingLeft: 10}}>
             <Text
               style={{fontSize: 25, fontWeight: 'bold', color: COLORS.primary}}>
               Solo Saving{' '}
-              <Text style={{fontSize: 10, color: '#ADADAD'}}>
+              <Text style={{fontSize: 10, color: COLORS.dark}}>
                 {savingTitle}
               </Text>
             </Text>
-            <Text style={{fontSize: 12, fontWeight: '700', color: '#ADADAD'}}>
-              {moment().format('ddd, D MMM')}
-            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginTop: 5,
+                paddingLeft: 2,
+                paddingRight: 10,
+              }}>
+              <Text
+                style={{fontSize: 12, fontWeight: '700', color: COLORS.dark}}>
+                {/* {moment().format('ddd, D MMM')} */}
+                {moment(date.startDate).format('ddd, D MMM YYYY')}
+              </Text>
+
+              <Text
+                style={{fontSize: 12, fontWeight: '700', color: COLORS.dark}}>
+                {/* {moment().format('ddd, D MMM')} */}
+                {moment(date.endDate).format('ddd, D MMM YYYY')}
+              </Text>
+            </View>
           </View>
           <View style={[styles.soloSavingCard]}>
             <Image
@@ -137,11 +234,13 @@ export default function SoloSavingDashBoard(props) {
               <TouchableOpacity
                 style={{
                   position: 'absolute',
-                  right: 0,
+                  right: 5,
                   top: 0,
                   zIndex: 5,
                 }}
-                onPress={() => setShowPaymentType(true)}
+                onPress={() => setShowAmountModal(true)}
+                // onPress={() => setShowPaymentModal(true)}
+                // onPress={() => setShowPaymentType(true)}
                 // onPress={() => setQuickSaveModal(true)}
               >
                 <Image
@@ -156,26 +255,46 @@ export default function SoloSavingDashBoard(props) {
               <Text style={{color: COLORS.white}}>You have saved</Text>
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 5,
-                  marginLeft: 5,
                   // borderWidth: 1,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginTop: 5,
                 }}>
-                <Text
+                <View
                   style={{
-                    fontSize: 22,
-                    fontWeight: 'bold',
-                    color: COLORS.white,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginTop: 5,
+                    marginLeft: 5,
+                    // borderWidth: 1,
                   }}>
-                  ₦{currencyFormat(Number(totalSaving))}
-                </Text>
-                <Icon
-                  name={locked ? 'lock-closed' : 'lock-open'}
-                  size={15}
-                  style={{marginLeft: 10}}
-                  color={COLORS.primary}
-                />
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 'bold',
+                      color: COLORS.white,
+                    }}>
+                    ₦{currencyFormat(Number(totalSaving))}
+                  </Text>
+                  <Icon
+                    name={locked ? 'lock-closed' : 'lock-open'}
+                    size={15}
+                    style={{marginLeft: 10}}
+                    color={COLORS.primary}
+                  />
+                </View>
+                <View style={{display: 'flex'}}>
+                  <Text style={{color: COLORS.white, fontSize: 10}}>
+                    Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
+                  </Text>
+                  <Switch
+                    trackColor={{false: 'white', true: 'white'}}
+                    thumbColor={autoSaving ? '#00DC99' : '#ADADAD'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={autoSaving}
+                  />
+                </View>
               </View>
               <View
                 style={{
@@ -279,7 +398,7 @@ export default function SoloSavingDashBoard(props) {
               // borderWidth: 1,
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: -50,
+              marginTop: -60,
               elevation: 10,
             }}>
             <AnimatedCircularProgress
@@ -427,27 +546,14 @@ export default function SoloSavingDashBoard(props) {
         ID={route.params.id}
       /> */}
 
-      {showPaymentType && (
+      {/* {showPaymentType && (
         <PaymentTypeModalForSavings
           onRequestClose={() => setShowPaymentType(!showPaymentType)}
           visible={showPaymentType}
           setShowAmountModal={(bol) => setShowAmountModal(bol)}
           setChannel={(value) => setChannel(value)}
         />
-      )}
-
-      {showAmountModal && (
-        <AmountModal
-          onRequestClose={() => setShowAmountModal(!showAmountModal)}
-          visible={showAmountModal}
-          // setShowCardModal={(bol) => setShowCardModal(bol)}
-          navigation={navigation}
-          channel={channel}
-          ID={route.params.id}
-          redirectTo="SoloSavingDashBoard"
-          from="solo"
-        />
-      )}
+      )} */}
 
       {/* {showCardModal && (
         <CreditCardFormSavings
@@ -458,6 +564,66 @@ export default function SoloSavingDashBoard(props) {
           ID={route.params.id}
         />
       )} */}
+
+      {showAmountModal && (
+        <AmountModal
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          setAmount={(d) => setAmount(d)}
+          // setData={(d) => setResData(d)}
+          showCard={() => setShowPaymentModal(true)}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            console.log('Hello', data);
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            // console.log('Pay done', res);
+
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifySavingsPayment(data);
+
+            // console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              navigation.navigate('PaymentSuccessful', {
+                name: 'SoloSavingDashBoard',
+                id: resData?.id,
+              });
+              setSpinner(false);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
 
       <Spinner visible={spinner} size="large" />
     </View>
@@ -484,7 +650,7 @@ const styles = StyleSheet.create({
   },
   soloSavingCard: {
     width: '100%',
-    minHeight: 180,
+    minHeight: 190,
     // marginTop: 10,
     backgroundColor: COLORS.light,
     borderRadius: 20,

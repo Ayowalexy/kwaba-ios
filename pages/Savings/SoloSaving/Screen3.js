@@ -433,7 +433,7 @@ export default function Screen3({navigation, route}) {
               reference: res.data.transactionRef.reference,
             };
 
-            // console.log('the dataatatta: ', data);
+            console.log('the dataatatta: ', data);
 
             setSpinner(true);
             const verify = await verifySavingsPayment(data);
