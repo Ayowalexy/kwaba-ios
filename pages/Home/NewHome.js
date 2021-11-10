@@ -388,7 +388,7 @@ export default function NewHome({navigation}) {
             navigation.navigate('BuddyPaymentScreen');
             // navigation.navigate('Notifications');
             // navigation.navigate('AppUpdate');
-            // TrackEvent('Notification-Button');
+            TrackEvent('Notification-Button');
           }}>
           <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
