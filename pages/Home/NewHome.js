@@ -204,7 +204,7 @@ export default function NewHome({navigation}) {
           : 'Great job on your rent savings',
       amount: formatNumber(Number(savings).toFixed(2)),
       color: COLORS.primary,
-      actionText: savings == 0 ? 'Save Now' : 'Deposit',
+      actionText: savings == 0 ? 'Save Now' : 'Fund savings',
       actionClick: () =>
         savings == 0
           ? navigation.navigate('SavingsHome')
@@ -243,8 +243,10 @@ export default function NewHome({navigation}) {
       amount: formatNumber(Number(wallet).toFixed(2)),
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
-      actionClick: () =>
-        wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true),
+      actionClick: () => {
+        // wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true);
+        navigation.navigate('Wallet');
+      },
       cardClick: () => {
         TrackEvent('Home-Card-Wallet');
         navigation.navigate('Wallet');
