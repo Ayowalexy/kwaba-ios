@@ -58,7 +58,7 @@ export default function QuickSaveListModal(props) {
       setSavingLists(allSoloSaving);
     } else {
       setSavingLists(allBuddySaving);
-      console.log('All Buddy: ', allBuddySaving);
+      // console.log('All Buddy: ', allBuddySaving);
     }
   };
 

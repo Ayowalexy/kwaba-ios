@@ -21,6 +21,8 @@ import * as yup from 'yup';
 import {verifyBankAccount} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 
+import moment from 'moment';
+
 const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const bankRequestSchema = yup.object().shape({
@@ -87,17 +89,22 @@ export default function RentalLoanFormBankStatementUploadEmail({navigation}) {
     });
   }, [selectedBank]);
 
+  const sixMonthsAgo = moment().subtract(6, 'months').format('MMMM Do, YYYY');
+
+  const todaysDate = moment().format('MMMM Do, YYYY');
+
   const handleSubmit = async (values) => {
     console.log(values);
     sendEmail({
       to: `${selectedBankForVerification.email}`,
       subject: 'REQUEST FOR LATEST SIX (6) MONTHS BANK STATEMENT',
-      body: `
-        I hereby request for my latest six (6) months bank statement for the account(s) listed below;\n
-        Account name: ${accountName}\n
-        Account number: ${values.account_number}\n
-        Kindly reply to this email with my statement and put hello@kwaba.ng in copy while sending it.\n
-        Thanks.`,
+      // body: `
+      //   I hereby request for my latest six (6) months bank statement for the account(s) listed below;\n
+      //   Account name: ${accountName}\n
+      //   Account number: ${values.account_number}\n
+      //   Kindly reply to this email with my statement and put hello@kwaba.ng in copy while sending it.\n
+      //   Thanks.`,
+      body: `I hereby request for my bank statement from ${sixMonthsAgo} to ${todaysDate} for the account(s) listed below;\n\nAccount name: ${accountName}\nAccount number: ${values.account_number}\n\nKindly reply to this email with my statement and put hello@kwaba.ng in copy while sending it.\n\nThanks.`,
     }).then((res) => console.log('Email response: ', res));
   };
 

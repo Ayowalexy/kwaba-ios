@@ -126,6 +126,7 @@ const Borrow = ({navigation}) => {
       // navigation.navigate('BusinessDocumentUpload');
       // navigation.navigate('OkraDebitMandate');
       // navigation.navigate('AddressVerificationPayment');
+      // navigation.navigate('RentalLoanFormBankStatementUploadEmail');
     }
   };
 
