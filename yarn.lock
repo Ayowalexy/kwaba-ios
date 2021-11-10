@@ -6953,6 +6953,16 @@ react-native-vector-icons@^8.0.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
+react-native-version-check@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/react-native-version-check/-/react-native-version-check-3.4.2.tgz#f330c3050b5e8de249eb2dd53ef55c5a17bfa0cd"
+  integrity sha512-f2eHI6p60UlBzlcxuy4pQaGqCEmR5cNvRQuyG/pFydLdutYpa05zeg4KkTfHWdVmGHhiawyaAfto9QsnBZ70Ew==
+  dependencies:
+    lodash.isfunction "^3.0.9"
+    lodash.isnil "^4.0.0"
+    lodash.pick "^4.4.0"
+    semver "^6.1.1"
+
 react-native-webview@*:
   version "11.14.2"
   resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.14.2.tgz#31e62864b28f950fd887bf20469fe8cd71101d29"
