@@ -90,6 +90,8 @@ export default function DepositWalletModal(props) {
 
         const verify = await verifyPayment(data);
 
+        console.log('Verify: ', verify);
+
         if (verify.status == 200) {
           setSpinner(false);
           console.log('Done Verify Payment');
@@ -195,6 +197,7 @@ export default function DepositWalletModal(props) {
                 <TouchableOpacity
                   onPress={() => {
                     handleTransactions();
+                    console.log('Yhis is JoshuA');
                   }}
                   style={[
                     designs.button,

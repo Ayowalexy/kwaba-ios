@@ -6,9 +6,11 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  ToastAndroid,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const {width, height} = Dimensions.get('window');
 
@@ -17,6 +19,11 @@ export default function BankTransferModal(props) {
   useEffect(() => {
     console.log('Details: ', walletDetails);
   }, []);
+
+  const copyToClipboard = async (data) => {
+    Clipboard.setString(data);
+    ToastAndroid.show('Copied', ToastAndroid.SHORT);
+  };
 
   return (
     <>
@@ -117,7 +124,9 @@ export default function BankTransferModal(props) {
                       </Text>
                     </View>
 
-                    <TouchableOpacity style={[styles.copy]}>
+                    <TouchableOpacity
+                      onPress={() => copyToClipboard(walletDetails?.bank_name)}
+                      style={[styles.copy]}>
                       <Icon
                         // onPress={onRequestClose}
                         name="copy"
@@ -153,7 +162,11 @@ export default function BankTransferModal(props) {
                       </Text>
                     </View>
 
-                    <TouchableOpacity style={[styles.copy]}>
+                    <TouchableOpacity
+                      onPress={() =>
+                        copyToClipboard(walletDetails?.wallet_number)
+                      }
+                      style={[styles.copy]}>
                       <Icon
                         // onPress={onRequestClose}
                         name="copy"
@@ -183,11 +196,13 @@ export default function BankTransferModal(props) {
                           color: COLORS.primary,
                           fontWeight: 'bold',
                         }}>
-                        {walletDetails.name}
+                        {walletDetails?.name}
                       </Text>
                     </View>
 
-                    <TouchableOpacity style={[styles.copy]}>
+                    <TouchableOpacity
+                      onPress={() => copyToClipboard(walletDetails?.name)}
+                      style={[styles.copy]}>
                       <Icon
                         // onPress={onRequestClose}
                         name="copy"

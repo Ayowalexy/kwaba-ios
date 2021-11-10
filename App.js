@@ -243,48 +243,55 @@ const App = () => {
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
+  // This user is inactive we want to log
+  // them out of the app
+  const login = useSelector((state) => state.loginReducer);
+  const LogOut = async () => {
+    await AsyncStorage.removeItem('userData');
+
+    dispatch(
+      setLoginState({
+        ...login,
+        isLoggedIn: false,
+        token: '',
+      }),
+    );
+  };
+
+  useEffect(() => {
+    AppState.addEventListener('change', _handleAppStateChange);
+
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      console.log('App has come to the foreground!');
+    }
+
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+  };
+
   // useEffect(() => {
-  //   const subscription = AppState.addEventListener('change', (nextAppState) => {
-  //     if (
-  //       appState.current.match(/inactive|background/) &&
-  //       nextAppState === 'active'
-  //     ) {
-  //       console.log('App has come to the foreground!');
-  //     }
-
-  //     appState.current = nextAppState;
-  //     setAppStateVisible(appState.current);
-  //     console.log('AppState', appState.current);
-  //   });
-
-  //   return () => {
-  //     subscription.remove();
-  //   };
-  // }, []);
+  //   console.log('The AppState', appStateVisible);
+  //   if (appStateVisible.match(/inactive|background/)) {
+  //     console.log('Log Out Now');
+  //     LogOut();
+  //   }
+  // }, [appStateVisible]);
 
   useEffect(() => {
     (async () => {
       await analytics.setup('C0BVBjco2Aev69fXdUJfCpkBFvjHRZle', {
-        // Record screen views automatically!
         recordScreenViews: true,
-        // Record certain application events automatically!
         trackAppLifecycleEvents: true,
       });
-
-      // await analytics.track('App Launch', {
-      //   messageId: 'segment-test-message-igjoi',
-      //   timestamp: '2021-10-25T09:50:21.111Z',
-      //   type: 'track',
-      //   email: 'test@example.org',
-      //   projectId: '8iu7kgTk99NCBVLJQpAC6N',
-      //   properties: {
-      //     property1: 1,
-      //     property2: 'test',
-      //     property3: true,
-      //   },
-      //   userId: 'test-user-ye4q7e',
-      //   event: 'Segment Test Event Name',
-      // });
     })();
   }, []);
 

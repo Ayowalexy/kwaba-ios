@@ -16,64 +16,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getMaxLoanCap,
+  getOneSoloSavings,
   getTotalBuddySavings,
 } from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-
-// const renderTabBar = (props) => (
-// <TabBar
-//   {...props}
-//   scrollEnabled={true}
-//   indicatorStyle={{
-//     backgroundColor: COLORS.primary,
-//     //   backgroundColor: 'transparent',
-//     flex: 1,
-//     height: '100%',
-//     borderRadius: 0,
-//     elevation: 2,
-//     zIndex: 99999,
-//     //   width: 200,
-//   }}
-//   // indicatorContainerStyle={{backgroundColor: 'red'}}
-//   pressColor={'transparent'}
-//   style={{
-//     backgroundColor: '#F7F8FD',
-//     elevation: 0,
-//     // flexDirection: 'row',
-//     width: '100%',
-//     justifyContent: 'center',
-//     // alignItems: 'center',
-//     // marginVertical: 10,
-//     // backgroundColor: 'red',
-//     // marginTop: 50,
-//     // borderWidth: 1,
-//     // flex: 1,
-//   }}
-//   tabStyle={{
-//     backgroundColor: 'transparent',
-//     // marginHorizontal: 10,
-//     // borderRadius: 5,
-//     zIndex: 1,
-//     padding: 0,
-//     // borderWidth: 5,
-//     flex: 1,
-//   }}
-//   renderLabel={({route, focused, color}) => (
-//     <Text
-//       // numberOfLines={1}
-//       style={{
-//         color: focused ? 'white' : '#808285',
-//         fontSize: 12,
-//         //   fontWeight: focused ? 'bold' : 'normal',
-//         fontWeight: 'bold',
-//       }}>
-//       {route.title}
-//     </Text>
-//   )}
-// />
-// );
 
 export default function BuddyLists({navigation}) {
   const dispatch = useDispatch();
@@ -134,10 +82,10 @@ export default function BuddyLists({navigation}) {
                     key={index}
                     style={[styles.card]}
                     onPress={() => {
+                      dispatch(getOneSoloSavings(item.id));
                       navigation.navigate('BuddySavingDashBoard', {
                         id: item.id,
                       });
-                      // console.log(item.id);
                     }}>
                     <View style={[styles.cardFlex]}>
                       <View style={[styles.progressContainer]}>

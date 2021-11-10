@@ -172,7 +172,7 @@ export default function EligibilitySalaryEarner({navigation}) {
             <View style={[styles.listText]}>
               {[
                 'Earn a minimum monthly income of ₦80,000',
-                'Have received salary for at least 3 months',
+                'Have received salary for at least 6 months',
                 'Have no bad loans and a clean credit history',
                 'Be above 21 years of age',
               ].map((text, index) => (

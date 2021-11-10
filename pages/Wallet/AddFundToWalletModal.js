@@ -19,17 +19,25 @@ import AmountModalWallet from '../../components/amountModalWallet';
 const {width, height} = Dimensions.get('window');
 
 export default function AddFundToWalletModal(props) {
-  const {onRequestClose, visible, navigation, walletDetails} = props;
-  const [showBankTransferModal, setShowBankTransferModal] = useState(false);
-  const [showCardModal, setShowCardModal] = useState(false);
-  const [showAmountModal, setShowAmountModal] = useState(false);
+  const {
+    onRequestClose,
+    visible,
+    navigation,
+    walletDetails,
+    showAmountModal,
+    showBankTransferModal,
+    setChannel,
+  } = props;
+  // const [showBankTransferModal, setShowBankTransferModal] = useState(false);
+  // const [showCardModal, setShowCardModal] = useState(false);
+  // const [showAmountModal, setShowAmountModal] = useState(false);
 
   const [info, setInfo] = useState({});
 
-  const transferWithCard = async () => {
-    // console.log('Hello');
-    setShowAmountModal(true);
-  };
+  // const transferWithCard = async () => {
+  //   // console.log('Hello');
+  //   setShowAmountModal(true);
+  // };
 
   return (
     <>
@@ -90,11 +98,13 @@ export default function AddFundToWalletModal(props) {
                     name: 'Debit Card',
                     icon: 'card',
                     title: 'Add money to your wallet using your debit card.',
+                    channel: 'card',
                   },
                   {
                     name: 'Bank Transfer',
                     icon: 'home',
                     title: 'Add money to your wallet via bank transfer.',
+                    channel: 'bank_transfer',
                   },
                   // {name: 'Others', icon: 'apps'},
                 ].map((item, index) => {
@@ -102,11 +112,16 @@ export default function AddFundToWalletModal(props) {
                     <TouchableOpacity
                       // disabled={item.icon == 'home'}
                       onPress={() => {
-                        if (item.icon == 'card') {
-                          transferWithCard();
-                        } else {
-                          setShowBankTransferModal(true);
-                        }
+                        onRequestClose();
+                        showAmountModal();
+                        setChannel(item.channel);
+
+                        // We might use this later - DO NOT DELETE
+                        // if (item.icon == 'card') {
+                        //   showAmountModal();
+                        // } else {
+                        //   showBankTransferModal();
+                        // }
                       }}
                       key={index}
                       style={{
@@ -177,7 +192,7 @@ export default function AddFundToWalletModal(props) {
         </View>
       </Modal>
 
-      {showAmountModal && (
+      {/* {showAmountModal && (
         <AmountModalWallet
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
@@ -204,7 +219,7 @@ export default function AddFundToWalletModal(props) {
           visible={showBankTransferModal}
           walletDetails={walletDetails}
         />
-      )}
+      )} */}
     </>
   );
 }

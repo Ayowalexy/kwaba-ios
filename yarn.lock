@@ -6797,6 +6797,14 @@ react-native-pager-view@^5.4.4:
   resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-5.4.4.tgz#83a873a82748440696ca0e0fd07a77477b854a78"
   integrity sha512-5zyol+FZ9X4N4OEz92IyaFFROR3KtgAgTmgqlUvG59Eigf+f6aWs5fvcbWwzuz/AlLZbrxIDrnLmSpMUOK57ww==
 
+react-native-paystack-webview@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-paystack-webview/-/react-native-paystack-webview-4.0.3.tgz#f2d7599a544c07e3ec206196bd2fce5ec989a8cd"
+  integrity sha512-qlu6O7bzI+InvOPSTIfLP+NLltiBnMoqUvQG3rBXl38/g7NwJ2fvtrxunPQK/DkzgwNKetZozskjhjWg0ipbpw==
+  dependencies:
+    react-native-webview "*"
+    validator "^13.6.0"
+
 react-native-paystack@^3.4.0:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/react-native-paystack/-/react-native-paystack-3.4.0.tgz#9e2d326dfb465ff99f756708dbf60af8f9bf7ee3"
@@ -6945,15 +6953,13 @@ react-native-vector-icons@^8.0.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native-version-check@^3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/react-native-version-check/-/react-native-version-check-3.4.2.tgz#f330c3050b5e8de249eb2dd53ef55c5a17bfa0cd"
-  integrity sha512-f2eHI6p60UlBzlcxuy4pQaGqCEmR5cNvRQuyG/pFydLdutYpa05zeg4KkTfHWdVmGHhiawyaAfto9QsnBZ70Ew==
+react-native-webview@*:
+  version "11.14.2"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-11.14.2.tgz#31e62864b28f950fd887bf20469fe8cd71101d29"
+  integrity sha512-4pRLskbu98xmC8q+YY9cfshSxhywVran+tQ0ou7V6Js0ye2Zb33dDpe6d7QUWD39w5LbYSI3knpxLLVDAVm0hA==
   dependencies:
-    lodash.isfunction "^3.0.9"
-    lodash.isnil "^4.0.0"
-    lodash.pick "^4.4.0"
-    semver "^6.1.1"
+    escape-string-regexp "2.0.0"
+    invariant "2.2.4"
 
 react-native-webview@11.3.1, react-native-webview@>=6.0.2:
   version "11.3.1"
@@ -8350,6 +8356,11 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "^3.0.0"
     spdx-expression-parse "^3.0.0"
+
+validator@^13.6.0:
+  version "13.7.0"
+  resolved "https://registry.yarnpkg.com/validator/-/validator-13.7.0.tgz#4f9658ba13ba8f3d82ee881d3516489ea85c0857"
+  integrity sha512-nYXQLCBkpJ8X6ltALua9dRrZDHVYxjJ1wgskNt1lH9fzGjs3tgojGSCBjmEPwkWS1y29+DrizMTW19Pr9uB2nw==
 
 vary@~1.1.2:
   version "1.1.2"

@@ -151,6 +151,7 @@ export default function Screen5(props) {
       locked: locked,
       savings_tenure: route.params.duration,
       num_of_buddies: route.params.number_of_buddies,
+      admin_target_amount: route.params.target_amount,
     };
 
     console.log('Data: ', data);

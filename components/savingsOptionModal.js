@@ -123,27 +123,27 @@ export default function SavingsOptionModal(props) {
 
   return (
     <>
-      <View style={styles.centeredView}>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={visible}
-          onRequestClose={onRequestClose}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <>
-                <Animatable.View
-                  duration={300}
-                  delay={100}
-                  easing="ease-in-out"
-                  animation={'slideInLeft'}>
-                  <SavingsType />
-                </Animatable.View>
-              </>
-            </View>
+      {/* <View style={styles.centeredView}> */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={visible}
+        onRequestClose={onRequestClose}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <>
+              <Animatable.View
+                duration={300}
+                delay={100}
+                easing="ease-in-out"
+                animation={'slideInLeft'}>
+                <SavingsType />
+              </Animatable.View>
+            </>
           </View>
-        </Modal>
-      </View>
+        </View>
+      </Modal>
+      {/* </View> */}
     </>
   );
 }

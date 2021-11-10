@@ -292,7 +292,7 @@ const AccountPage = ({navigation}) => {
                   </Text>
                 </View>
                 {/* <Text>JD</Text> */}
-                <View style={{marginTop: 0, width: 120}}>
+                <View style={{marginTop: 0, flex: 1}}>
                   <Text
                     numberOfLines={1}
                     style={[
@@ -304,7 +304,6 @@ const AccountPage = ({navigation}) => {
                         fontWeight: 'bold',
                       },
                     ]}>
-                    {/* Joshua Nwosu */}
                     {fullName}
                   </Text>
                   <TouchableOpacity

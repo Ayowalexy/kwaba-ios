@@ -385,7 +385,8 @@ export default function NewHome({navigation}) {
         <TouchableOpacity
           style={{paddingLeft: 20}}
           onPress={async () => {
-            navigation.navigate('Notifications');
+            navigation.navigate('BuddyPaymentScreen');
+            // navigation.navigate('Notifications');
             // navigation.navigate('AppUpdate');
             TrackEvent('Notification-Button');
           }}>

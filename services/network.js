@@ -554,7 +554,7 @@ const verifySavingsPayment = async (data) => {
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
-      headers: {Authorization: token},
+      headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
@@ -817,6 +817,40 @@ const requestWithdrawal = async (data) => {
   }
 };
 
+// Verify Bills Payment
+const verifyBillsTransactions = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/verify_bills_transactions';
+    const token = await getToken();
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Verify Add funds to wallet
+const verifyAddFundToWallet = async (data) => {
+  const url = apiUrl + '/api/v1/verify_add_fund_to_wallet';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.message;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -875,4 +909,6 @@ export {
   addFundsToWallet,
   changePassword,
   requestWithdrawal,
+  verifyBillsTransactions,
+  verifyAddFundToWallet,
 };

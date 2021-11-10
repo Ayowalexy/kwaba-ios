@@ -20,11 +20,6 @@ import * as yup from 'yup';
 import * as Animatable from 'react-native-animatable';
 import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 
-const soloSavingFormSchema = yup.object().shape({
-  targetAmount: yup.string().required('Please provide saving amount'),
-  savingStartOption: yup.string().required('Please select saving start date'),
-});
-
 export default function Screen2(props) {
   const dispatch = useDispatch();
   // const savings = useSelector((state) => state.soloSavingReducer);
@@ -35,6 +30,33 @@ export default function Screen2(props) {
   const [instantSaving, setInstantSaving] = useState(null);
 
   const [howLong, setHowLong] = useState('');
+
+  const instantSavingMinimumAmount = 100;
+
+  const hl = howLong.toString().charAt(0).split('');
+
+  const minAmount =
+    props.route.params?.how_long == '3months'
+      ? 10000
+      : props.route.params?.how_long == '6months'
+      ? 20000
+      : 40000;
+
+  const soloSavingFormSchema = yup.object().shape({
+    // targetAmount: yup.string().required('Please provide saving amount'),
+    savingStartOption: yup.string().required('Please select saving start date'),
+    targetAmount: yup.number().test({
+      name: 'min',
+      exclusive: false,
+      params: {},
+      message: `The minimum amount you can save in ${hl} ${
+        hl == '1' ? 'year' : hl == '6' ? 'months' : 'months'
+      } Is ₦${formatNumber(minAmount)}`,
+      test: function (value) {
+        return value >= minAmount;
+      },
+    }),
+  });
 
   const handleDateSelect = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -62,7 +84,7 @@ export default function Screen2(props) {
   };
 
   useEffect(() => {
-    // console.log('How Long?: ', props.route.params?.how_long);
+    console.log('How Long?: ', props.route.params?.how_long);
     setHowLong(props.route.params?.how_long);
   }, []);
 
@@ -111,7 +133,11 @@ export default function Screen2(props) {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => {
+              const n = unFormatNumber(text);
+              console.log('N: ', n);
+              onChange(name)(n);
+            }}
             {...inputProps}
           />
         </View>
@@ -294,6 +320,15 @@ export default function Screen2(props) {
                         value={instantSaving}
                         onChangeText={(text) => setInstantSaving(text)}
                       />
+                      {instantSaving != null &&
+                        Number(instantSaving) < instantSavingMinimumAmount && (
+                          <View>
+                            <Text style={styles.errorText}>
+                              The minimum amount you can save is ₦
+                              {instantSavingMinimumAmount}
+                            </Text>
+                          </View>
+                        )}
                     </Animatable.View>
                   </View>
                 </>
@@ -313,12 +348,28 @@ export default function Screen2(props) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={values.targetAmount != '' && isValid ? false : true}
+                disabled={
+                  values.targetAmount != '' &&
+                  isValid &&
+                  values.savingStartOption != 'today'
+                    ? false
+                    : values.savingStartOption == 'today' &&
+                      instantSaving == instantSavingMinimumAmount &&
+                      isValid
+                    ? false
+                    : true
+                }
                 style={[
                   designs.button,
                   {
                     backgroundColor:
-                      values.targetAmount != '' && isValid
+                      values.targetAmount != '' &&
+                      isValid &&
+                      values.savingStartOption != 'today'
+                        ? '#00DC99'
+                        : values.savingStartOption == 'today' &&
+                          instantSaving == instantSavingMinimumAmount &&
+                          isValid
                         ? '#00DC99'
                         : '#00DC9950',
                   },

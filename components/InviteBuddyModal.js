@@ -133,19 +133,30 @@ export default function InviteBuddyModal(props) {
 
   const sendInvite = async () => {
     setSpinner(true);
-    const data = {
-      loan_id: resData.buddy_savings.id,
-      fullname: fullname,
+    const invite_buddy_data = {
+      // loan_id: resData.buddy_savings.id,
+      // fullname: fullname,
+      // email: email,
+      // phonenumber: phone,
+      // target_amount: buddyTarget,
+      // amount_to_save_monthly: savingAmount,
+      // buddy_name: userName,
+
+      amount: savingAmount,
+      frequency: data.savings_frequency,
+      buddy_name: userName,
       email: email,
+      fullname: fullname,
+      savings_id: resData.buddy_savings.id,
       phonenumber: phone,
       target_amount: buddyTarget,
-      amount_to_save_monthly: savingAmount,
-      buddy_name: userName,
+      buddy_target_amount: data.target_amount,
     };
 
-    console.log('The Invite: ', data);
+    console.log('The Invite: ', invite_buddy_data);
+    // console.log('The Data: ', data);
     try {
-      const res = await InviteBuddy(data);
+      const res = await InviteBuddy(invite_buddy_data);
 
       if (res.status == 200) {
         setSpinner(false);

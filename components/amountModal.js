@@ -36,17 +36,7 @@ const amountSchema = yup.object().shape({
 });
 
 export default function AmountModal(props) {
-  const {
-    onRequestClose,
-    visible,
-    // setShowCardModal,
-    channel,
-    navigation,
-    redirectTo,
-    ID,
-    from,
-    openSuccessModal,
-  } = props;
+  const {onRequestClose, visible, setAmount, setData, showCard} = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -56,56 +46,39 @@ export default function AmountModal(props) {
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
   const handleClose = () => {
-    // setShowPaymentType(false);
-    // setShowCardModal(true);
     onRequestClose();
-    // console.log('Hello');
   };
 
   const handleSubmit = async (values) => {
     let data = {
-      savings_id: ID,
       amount: Number(unFormatNumber(values.amount)),
-      channel: channel,
     };
+
+    setAmount(data?.amount);
+    onRequestClose(); // close amount modal
+    showCard();
 
     // console.log('The DATATAATA: ', data);
     // console.log('From: ', from);
 
-    if (from == 'solo') {
-      try {
-        setSpinner(true);
+    // setSpinner(true);
+    // const res = await addFundsToSavings(data);
+    // console.log('The Res Savings: ', res);
 
-        const res = await addFundsToSavings(data);
-        // console.log('The Res: ', res);
+    // try {
+    //   if (res.status == 200) {
+    //     setSpinner(false);
 
-        if (res.status == 200) {
-          setSpinner(false);
-          const resData = res.data.data;
-
-          // we can use redux to dispatch this data
-          // but for now let's use useState by sending
-          // the data as props
-          setResDataObj(resData);
-          setModal(true);
-        } else {
-          setSpinner(false);
-        }
-      } catch (error) {
-        console.log(error);
-        setSpinner(false);
-      }
-    } else {
-      // console.log('Setup');
-      try {
-        // setSpinner(true);
-        const res = await addFundsToBuddySavings(data);
-        console.log('The Res: ', res);
-      } catch (error) {
-        console.log(error);
-        setSpinner(false);
-      }
-    }
+    //     setData(res.data.data);
+    //     onRequestClose();
+    //     showCard();
+    //   } else {
+    //     setSpinner(false);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    //   setSpinner(false);
+    // }
   };
 
   const NumberInput = (props) => {
@@ -228,7 +201,7 @@ export default function AmountModal(props) {
       <Spinner visible={spinner} size="large" />
 
       {/* {modal && ( */}
-      <CreditCardModalSavings
+      {/* <CreditCardModalSavings
         onRequestClose={() => {
           setModal(!modal);
           onRequestClose();
@@ -238,7 +211,7 @@ export default function AmountModal(props) {
         redirectTo={redirectTo}
         info={resDataObj}
         ID={ID}
-      />
+      /> */}
       {/* )} */}
     </>
   );

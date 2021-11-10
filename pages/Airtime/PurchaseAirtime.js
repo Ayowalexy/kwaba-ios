@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, images, icons} from '../../util/index';
@@ -17,7 +18,10 @@ import {
 import ChooseNetworkModal from './chooseNetworkModal';
 import ConfirmModal from './ConfirmModal';
 import NumberFormat from '../../components/NumberFormat';
-import {BuyPurchaseAirtime} from '../../services/network';
+import {
+  BuyPurchaseAirtime,
+  verifyBillsTransactions,
+} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaymentTypeModalForBills from '../../components/paymentTypeModalForBills';
 
@@ -27,6 +31,7 @@ import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBil
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -42,6 +47,8 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [channel, setChannel] = useState('');
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
@@ -85,77 +92,70 @@ const PurchaseAirtime = ({navigation, route}) => {
     // }
   };
 
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
-  };
+  // const getToken = async () => {
+  //   const userData = await AsyncStorage.getItem('userData');
+  //   const token = JSON.parse(userData).token;
+  //   return token;
+  // };
 
-  const verifyPayment = async (data) => {
-    const token = await getToken();
-    const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/verify_bills_transactions';
-    try {
-      const response = await axios.post(url, data, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-      });
-      return response;
-    } catch (error) {
-      return error;
-    }
-  };
+  // const verifyPayment = async (data) => {
+  //   const token = await getToken();
+  //   const url =
+  //     'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/verify_bills_transactions';
+  //   try {
+  //     const response = await axios.post(url, data, {
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: token,
+  //       },
+  //     });
+  //     return response;
+  //   } catch (error) {
+  //     return error;
+  //   }
+  // };
 
   const handlePaymentRoute = async (value) => {
-    const data = {
-      serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
-      amount: unFormatNumber(amount), // e.g 100
-      recepient: phoneNumber, // e.g 08011111111
-    };
+    try {
+      const data = {
+        serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+        amount: unFormatNumber(amount), // e.g 100
+        recepient: phoneNumber, // e.g 08011111111
+      };
 
-    setSpinner(true);
-    if (value == 'paystack') {
+      setSpinner(true);
       const response = await BuyPurchaseAirtime(data);
-      console.log('The buy response: ', response);
+
       if (response.status == 200) {
         setSpinner(false);
-        setShowCardModal(true); // show card modal
-        setResData(response?.data?.data);
-        setChannel(value); //paystack
+        if (value == 'wallet') {
+          const data = {
+            channel: value,
+            reference: response?.data?.data?.reference,
+          };
+
+          setSpinner(true);
+          const verify = await verifyBillsTransactions(data);
+
+          if (verify.status == 200) {
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'AirtimeHome',
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Insufficient fund', 'Please fund your wallet');
+          }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
       } else {
         setSpinner(false);
       }
-    } else if (value == 'bank') {
-      setSpinner(false);
-      console.log(value);
-    } else {
-      const response = await BuyPurchaseAirtime(data);
-      if (response.status == 200) {
-        console.log(value); // wallet
-        console.log('From Wallet: ', response?.data?.data);
-        setChannel(value);
-
-        const data = {
-          channel: value,
-          reference: response?.data?.data?.reference,
-        };
-
-        console.log('The Data Wallet: ', data);
-
-        const verify = await verifyPayment(data);
-
-        // console.log('The Verify Data Wallet: ', verify);
-
-        if (verify.status == 200) {
-          setSpinner(false);
-          console.log('Done Verify Payment');
-          navigation.navigate('PaymentSuccessful', {
-            name: 'AirtimeHome',
-          });
-        }
-      }
+    } catch (error) {
+      console.log('Error: ', error);
     }
   };
 
@@ -367,23 +367,44 @@ const PurchaseAirtime = ({navigation, route}) => {
         />
       )}
 
-      {/* {showPaymentType && (
-        <PaymentTypeModalForBills
-          onRequestClose={() => setShowPaymentType(!showPaymentType)}
-          visible={showPaymentType}
-          setShowCardModal={(bol) => setShowCardModal(bol)}
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            // Do something
+
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifyBillsTransactions(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              navigation.navigate('PaymentSuccessful', {
+                name: 'AirtimeHome',
+              });
+              setSpinner(false);
+            } else {
+              setSpinner(false);
+            }
+          }}
         />
       )}
-
-      {showCardModal && (
-        <CreditCardModalBills
-          onRequestClose={() => setShowCardModal(!showCardModal)}
-          visible={showCardModal}
-          info={resData}
-          navigation={navigation}
-          redirectTo="Home"
-        />
-      )} */}
 
       <Spinner visible={spinner} size="large" />
     </View>
