@@ -25,7 +25,7 @@ const ConnectWithMono = () => {
   const {init} = useMonoConnect();
   return (
     <TouchableOpacity onPress={() => init()} style={[styles.card]}>
-      <Text style={[styles.title]}>Mobile/interent banking</Text>
+      <Text style={[styles.title]}>Mobile/Internet Banking</Text>
       <Text style={[styles.body]}>
         Securely send us your bank statement from your mobile/internet banking.
         We do not have access to your login details or money in your account.
@@ -211,7 +211,7 @@ export default function RentalLoanFormBankStatementUpload(props) {
                 navigation.navigate('RentalLoanFormBankStatementUploadEmail')
               }
               style={[styles.card]}>
-              <Text style={[styles.title]}>Bank request</Text>
+              <Text style={[styles.title]}>Bank Request</Text>
               <Text style={[styles.body]}>
                 Request your bank statement directly from your bank via email
                 seamlessly.
