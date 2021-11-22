@@ -240,7 +240,7 @@ export default function NewHome({navigation}) {
         wallet <= 0
           ? 'Fund your wallet to transact on Kwaba'
           : 'Save and pay bills from your wallet',
-      amount: formatNumber(Number(wallet).toFixed(2)),
+      amount: formatNumber(Number(wallet).toFixed(2)) || '0.00',
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () => {
@@ -385,8 +385,8 @@ export default function NewHome({navigation}) {
         <TouchableOpacity
           style={{paddingLeft: 20}}
           onPress={async () => {
-            navigation.navigate('BuddyPaymentScreen');
-            // navigation.navigate('Notifications');
+            // navigation.navigate('BuddyPaymentScreen');
+            navigation.navigate('Notifications');
             // navigation.navigate('AppUpdate');
             TrackEvent('Notification-Button');
           }}>

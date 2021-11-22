@@ -71,16 +71,17 @@ export default function OkraDebitMandate2({navigation}) {
   };
 
   let okraOptions = {
-    callback_url:
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/webhook',
+    // callback_url:
+    //   'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/webhook',
     clientName: 'Kwaba',
     color: COLORS.secondary,
-    connectMessage: 'Which account do you want to connect with?',
+    // connectMessage: 'Which account do you want to connect with?',
+    connectMessage: 'Connect your salary account.',
     currency: 'NGN',
     env: 'production-sandbox', // for sandbox use production-sandbox
-    exp: endDate,
+    // exp: endDate,
     options: {saverid: 'this is it'},
-    isCorporate: false,
+    // isCorporate: false,
     key: '03e94436-d4df-5b42-8624-19e21eb14c5b',
     limit: '24',
     logo: 'https://kwaba.ng/assets/imgs/logo.png',
@@ -121,7 +122,7 @@ export default function OkraDebitMandate2({navigation}) {
             console.log('on close');
           }}
           onSuccess={(response) => {
-            console.log('Na here we dey oo');
+            // console.log('Na here we dey oo');
             console.log('on success we go ' + JSON.stringify(response));
             // handleLinkingSucess(response);
             navigation.navigate('AwaitingDisbursement');

@@ -3,31 +3,27 @@ import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {store} from './redux/store';
-import {Provider} from 'react-redux';
-
 import SplashScreen from 'react-native-splash-screen';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Welcome from './pages/Welcome/welcome';
-import Onboarding from './pages/Onboarding/Onboarding';
-import CompleteProfile1 from './pages/CompleteProfile/Screen1';
-import CompleteProfile2 from './pages/CompleteProfile/Screen2';
-import CompleteProfile3 from './pages/CompleteProfile/Screen3';
-import CompleteProfile4 from './pages/CompleteProfile/Screen4';
-import CompleteProfile5 from './pages/CompleteProfile/Screen5';
-import CompleteProfile6 from './pages/CompleteProfile/Screen6';
-import ForgotPassword from './pages/Auth/ForgotPassword';
-import PasswordResetSuccess from './pages/Auth/PasswordResetSuccess';
-import GetCode from './pages/Auth/GetCode';
-import VerifyNumber from './pages/Auth/VerifyNumber';
-import SignUp from './pages/Auth/SignUp';
-import Login from './pages/Auth/Login';
-import CreatePin from './pages/Auth/CreatePin';
-import WelcomeBack from './pages/Auth/WelcomeBack';
-import EnterPin from './pages/Auth/EnterPin';
-import ResetPin from './pages/Auth/ResetPin';
+import Welcome from '../../pages/Welcome/welcome';
+import Onboarding from '../../pages/Onboarding/Onboarding';
+import CompleteProfile1 from '../../pages/CompleteProfile/Screen1';
+import CompleteProfile2 from '../../pages/CompleteProfile/Screen2';
+import CompleteProfile3 from '../../pages/CompleteProfile/Screen3';
+import CompleteProfile4 from '../../pages/CompleteProfile/Screen4';
+import CompleteProfile5 from '../../pages/CompleteProfile/Screen5';
+import CompleteProfile6 from '../../pages/CompleteProfile/Screen6';
+import ForgotPassword from '../../pages/Auth/ForgotPassword';
+import PasswordResetSuccess from '../../pages/Auth/PasswordResetSuccess';
+import GetCode from '../../pages/Auth/GetCode';
+import VerifyNumber from '../../pages/Auth/VerifyNumber';
+import SignUp from '../../pages/Auth/SignUp';
+import Login from '../../pages/Auth/Login';
+import CreatePin from '../../pages/Auth/CreatePin';
+import EnterPin from '../../pages/Auth/EnterPin';
+import ResetPin from '../../pages/Auth/ResetPin';
 
 import {
   SavingsHome,
@@ -48,87 +44,87 @@ import {
   BuddyPaymentScreen,
   AcceptInvite,
   BuddyInviteLists,
-} from './pages/Savings/index';
-import Borrow from './pages/Borrow/Borrow';
-import RentNowPayLaterOnboarding from './pages/Borrow/RentNowPayLaterOnboarding';
-import EmploymentStatus from './pages/Borrow/EmploymentStatus';
-import EligibilitySalaryEarner from './pages/Borrow/EligibilitySalaryEarner';
-import RentalLoanForm1 from './pages/Borrow/RentalLoanForm1';
-import RentalLoanFormDoc from './pages/Borrow/RentalLoanFormDoc';
-import RentalLoanForm2 from './pages/Borrow/RentalLoanForm2';
-import RentalLoanForm3 from './pages/Borrow/RentalLoanForm3';
-import RentalLoanFormCongratulation from './pages/Borrow/RentalLoanFormCongratulation';
-import RentalLoanFormBankStatementUpload from './pages/Borrow/RentalLoanFormBankStatementUpload';
-import RentalLoanFormBankStatementUploadEmail from './pages/Borrow/RentalLoanFormBankStatementUploadEmail';
-import RentalLoanFormBankStatementUploadMono from './pages/Borrow/RentalLoanFormBankStatementUploadMono';
-import RentNowPayLaterDashboard from './pages/Borrow/RentNowPayLaterDashboard';
+} from '../../pages/Savings/index';
+import Borrow from '../../pages/Borrow/Borrow';
+import RentNowPayLaterOnboarding from '../../pages/Borrow/RentNowPayLaterOnboarding';
+import EmploymentStatus from '../../pages/Borrow/EmploymentStatus';
+import EligibilitySalaryEarner from '../../pages/Borrow/EligibilitySalaryEarner';
+import RentalLoanForm1 from '../../pages/Borrow/RentalLoanForm1';
+import RentalLoanFormDoc from '../../pages/Borrow/RentalLoanFormDoc';
+import RentalLoanForm2 from '../../pages/Borrow/RentalLoanForm2';
+import RentalLoanForm3 from '../../pages/Borrow/RentalLoanForm3';
+import RentalLoanFormCongratulation from '../../pages/Borrow/RentalLoanFormCongratulation';
+import RentalLoanFormBankStatementUpload from '../../pages/Borrow/RentalLoanFormBankStatementUpload';
+import RentalLoanFormBankStatementUploadEmail from '../../pages/Borrow/RentalLoanFormBankStatementUploadEmail';
+import RentalLoanFormBankStatementUploadMono from '../../pages/Borrow/RentalLoanFormBankStatementUploadMono';
+import RentNowPayLaterDashboard from '../../pages/Borrow/RentNowPayLaterDashboard';
 
-import UploadBankStatement from './pages/Borrow/UploadBankStatement';
-import UploadDocuments from './pages/Borrow/UploadDocuments';
-import AllDocuments from './pages/Borrow/AllDocuments';
-import LoanRequestApproval from './pages/Borrow/LoanRequestApproval';
-import RentalLoanOffer from './pages/Borrow/RentalLoanOffer';
-import SetUpPaymentPlan from './pages/Payment/SetUpPaymentPlan';
-import RentalLoanActiveDashBoard from './pages/Payment/RentalLoanActiveDashBoard';
-import RentalLoanThirdPartyConnection from './pages/Borrow/RentalLoanThirdPartyConnection';
-import LinkingAccount from './pages/Borrow/LinkingAccount';
-import ThirdPartyLink from './pages/Borrow/ThirdPartyLink';
-import RentalLoanRequestDashBoard from './pages/Borrow/RentalLoanRequestDashboard';
-import PayWithSavings from './pages/Payment/PayWithSavings';
-import {logCurrentStorage} from './util/logCurrentStorage';
-import FileUploadTest from './pages/Borrow/FileUploadTest';
-import RentalLoanOfferTest from './pages/Borrow/RentalLoanOfferTest';
-import BottomNavigator from './pages/Navigation/BottomNavigation';
-import EmergencyLoanRequestDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
-import EmergencyFundOnboarding from './pages/Borrow/EmergencyLoan/EmergencyFundOnboarding';
-import EmergencyLoanRequest from './pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
-import EmergencyLoanDashBoard from './pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
-import Account from './pages/UserAccount/Account';
-import {FileViewAndDelete} from './pages/Borrow/FileViewAndDelete';
-import AccountPage from './pages/UserAccount/AccountPage';
-import CardAndBankDetails from './pages/UserAccount/CardAndBank/CardAndBank';
-import Withdraw from './pages/UserAccount/Withdraw';
-import PostPaymentForm1 from './pages/Payment/PostPaymentForm1';
-import PostPaymentForm2 from './pages/Payment/PostPaymentForm2';
-import PostPaymentForm3 from './pages/Payment/PostPaymentForm3';
-import PostPaymentForm4 from './pages/Payment/PostPaymentForm4';
-import OkraDebitMandate from './pages/Payment/OkraDebitMandate';
-import LoanOfferContent from './pages/Payment/LoanOfferContent';
-import AddressVerificationPayment from './pages/Payment/AddressVerificationPayment';
-import AwaitingDisbursement from './pages/Payment/AwaitingDisbursement';
-import BillsHome from './pages/Bills/BillsHome';
-import CableTvBill from './pages/Bills/CableTvBill';
-import DataBill from './pages/Bills/DataBill';
-import ElectricityBill from './pages/Bills/ElectricityBill';
+import UploadBankStatement from '../../pages/Borrow/UploadBankStatement';
+import UploadDocuments from '../../pages/Borrow/UploadDocuments';
+import AllDocuments from '../../pages/Borrow/AllDocuments';
+import LoanRequestApproval from '../../pages/Borrow/LoanRequestApproval';
+import RentalLoanOffer from '../../pages/Borrow/RentalLoanOffer';
+import SetUpPaymentPlan from '../../pages/Payment/SetUpPaymentPlan';
+import RentalLoanActiveDashBoard from '../../pages/Payment/RentalLoanActiveDashBoard';
+import RentalLoanThirdPartyConnection from '../../pages/Borrow/RentalLoanThirdPartyConnection';
+import LinkingAccount from '../../pages/Borrow/LinkingAccount';
+import ThirdPartyLink from '../../pages/Borrow/ThirdPartyLink';
+import RentalLoanRequestDashBoard from '../../pages/Borrow/RentalLoanRequestDashboard';
+import PayWithSavings from '../../pages/Payment/PayWithSavings';
+import {logCurrentStorage} from '../../util/logCurrentStorage';
+import FileUploadTest from '../../pages/Borrow/FileUploadTest';
+import RentalLoanOfferTest from '../../pages/Borrow/RentalLoanOfferTest';
+import BottomNavigator from '../../pages/Navigation/BottomNavigation';
+import EmergencyLoanRequestDashBoard from '../../pages/Borrow/EmergencyLoan/EmergencyLoanRequestDashBoard';
+import EmergencyFundOnboarding from '../../pages/Borrow/EmergencyLoan/EmergencyFundOnboarding';
+import EmergencyLoanRequest from '../../pages/Borrow/EmergencyLoan/EmergencyLoanRequest';
+import EmergencyLoanDashBoard from '../../pages/Borrow/EmergencyLoan/EmergencyLoanDashBoard';
+import Account from '../../pages/UserAccount/Account';
+import {FileViewAndDelete} from '../../pages/Borrow/FileViewAndDelete';
+import AccountPage from '../../pages/UserAccount/AccountPage';
+import CardAndBankDetails from '../../pages/UserAccount/CardAndBank/CardAndBank';
+import Withdraw from '../../pages/UserAccount/Withdraw';
+import PostPaymentForm1 from '../../pages/Payment/PostPaymentForm1';
+import PostPaymentForm2 from '../../pages/Payment/PostPaymentForm2';
+import PostPaymentForm3 from '../../pages/Payment/PostPaymentForm3';
+import PostPaymentForm4 from '../../pages/Payment/PostPaymentForm4';
+import OkraDebitMandate from '../../pages/Payment/OkraDebitMandate';
+import LoanOfferContent from '../../pages/Payment/LoanOfferContent';
+import AddressVerificationPayment from '../../pages/Payment/AddressVerificationPayment';
+import AwaitingDisbursement from '../../pages/Payment/AwaitingDisbursement';
+import BillsHome from '../../pages/Bills/BillsHome';
+import CableTvBill from '../../pages/Bills/CableTvBill';
+import DataBill from '../../pages/Bills/DataBill';
+import ElectricityBill from '../../pages/Bills/ElectricityBill';
 // import
-import AirtimeHome from './pages/Airtime/AirtimeHome';
-import PurchaseAirtime from './pages/Airtime/PurchaseAirtime';
-import PrintOfferLetter from './pages/Payment/PrintOfferLetter';
-import UploadDocumentsList from './pages/UserAccount/UploadDocumentsList';
-import profile from './pages/CompleteProfile/profile';
-import Referral from './pages/UserAccount/Referral/Referral';
-import ReferralDetails from './pages/UserAccount/Referral/ReferralDetails';
-import Aboutus from './pages/UserAccount/Aboutus/Aboutus';
-import LegalandFaq from './pages/UserAccount/Aboutus/LegalandFaq';
-import OkraDebitMandate2 from './pages/Payment/OkraDebitMandate2';
-import {setLoginState} from './redux/actions/userActions';
+import AirtimeHome from '../../pages/Airtime/AirtimeHome';
+import PurchaseAirtime from '../../pages/Airtime/PurchaseAirtime';
+import PrintOfferLetter from '../../pages/Payment/PrintOfferLetter';
+import UploadDocumentsList from '../../pages/UserAccount/UploadDocumentsList';
+import profile from '../../pages/CompleteProfile/profile';
+import Referral from '../../pages/UserAccount/Referral/Referral';
+import ReferralDetails from '../../pages/UserAccount/Referral/ReferralDetails';
+import Aboutus from '../../pages/UserAccount/Aboutus/Aboutus';
+import LegalandFaq from '../../pages/UserAccount/Aboutus/LegalandFaq';
+import OkraDebitMandate2 from '../../pages/Payment/OkraDebitMandate2';
+import {setLoginState} from '../../redux/actions/userActions';
 import Toast from 'react-native-toast-message';
-//import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
+//import UploadBankStatementForProfile from '../../pages/UserAccount/UploadBankStatementForProfile';
 
-import ApplicationProgress from './pages/Borrow/ApplicationProgress';
-import UploadBankStatementDocument from './pages/Borrow/UploadBankStatementDocument';
+import ApplicationProgress from '../../pages/Borrow/ApplicationProgress';
+import UploadBankStatementDocument from '../../pages/Borrow/UploadBankStatementDocument';
 
 // Notifications
-import Notifications from './pages/Notifications/Notifications';
+import Notifications from '../../pages/Notifications/Notifications';
 
 // Business Owner Route
-import EligibilityBusinessOwner from './pages/Borrow/Business/EligibilityBusinessOwner';
-import BusinessForm1 from './pages/Borrow/Business/BusinessForm1';
-import BusinessForm2 from './pages/Borrow/Business/BusinessForm2';
-import BusinessForm3 from './pages/Borrow/Business/BusinessForm3';
-import BusinessForm4 from './pages/Borrow/Business/BusinessForm4';
-import BusinessForm5 from './pages/Borrow/Business/BusinessForm5';
-import BusinessDocumentUpload from './pages/Borrow/Business/BusinessDocumentUpload';
+import EligibilityBusinessOwner from '../../pages/Borrow/Business/EligibilityBusinessOwner';
+import BusinessForm1 from '../../pages/Borrow/Business/BusinessForm1';
+import BusinessForm2 from '../../pages/Borrow/Business/BusinessForm2';
+import BusinessForm3 from '../../pages/Borrow/Business/BusinessForm3';
+import BusinessForm4 from '../../pages/Borrow/Business/BusinessForm4';
+import BusinessForm5 from '../../pages/Borrow/Business/BusinessForm5';
+import BusinessDocumentUpload from '../../pages/Borrow/Business/BusinessDocumentUpload';
 
 // Rental Form Business
 import {
@@ -136,82 +132,72 @@ import {
   RentalFormBusiness2,
   RentalFormBusinessDoc,
   RentalFormBusinessCongratulation,
-} from './pages/Borrow/Business/RentalFormBusiness/index';
+} from '../../pages/Borrow/Business/RentalFormBusiness/index';
 
 // Signature
-import Signature from './pages/Signature/Signature';
+import Signature from '../../pages/Signature/Signature';
 
 // New All Documents
-import NewAllDocuments from './pages/AllDocuments/AllDocuments';
+import NewAllDocuments from '../../pages/AllDocuments/AllDocuments';
 
 // OfferApprovalBreakDown
-import OfferApprovalBreakDown from './pages/Borrow/OfferApprovalBreakDown';
+import OfferApprovalBreakDown from '../../pages/Borrow/OfferApprovalBreakDown';
 
 // VerifyingDocuments
-import VerifyingDocuments from './pages/Borrow/VerifyingDocuments';
+import VerifyingDocuments from '../../pages/Borrow/VerifyingDocuments';
 
 // OfferLetter
-import OfferLetter from './pages/Borrow/OfferLetter';
+import OfferLetter from '../../pages/Borrow/OfferLetter';
 
 // Guarantor
-import GuarantorOnboarding from './pages/Guarantor/GuarantorOnboarding';
-import GuarantorForm from './pages/Guarantor/GuarantorForm';
+import GuarantorOnboarding from '../../pages/Guarantor/GuarantorOnboarding';
+import GuarantorForm from '../../pages/Guarantor/GuarantorForm';
 
 // Decline and Reject screens
-import Decline from './pages/Decline/Decline';
-import Reject from './pages/Decline/Reject';
+import Decline from '../../pages/Decline/Decline';
+import Reject from '../../pages/Decline/Reject';
 
 // Acceptance Letter
-import AcceptanceLetterAddosser from './pages/Borrow/AcceptanceletterAddosser';
-import AcceptanceLetterKwaba from './pages/Borrow/AcceptanceLetterKwaba';
+import AcceptanceLetterAddosser from '../../pages/Borrow/AcceptanceletterAddosser';
+import AcceptanceLetterKwaba from '../../pages/Borrow/AcceptanceLetterKwaba';
 
 // Offer Letters
-import {KwabaLetter, AddosserLetter, PTMFB} from './pages/OfferLetters';
+import {KwabaLetter, AddosserLetter, PTMFB} from '../../pages/OfferLetters';
 
 // Disbursement
-import Disbursement from './components/disbursement';
+import Disbursement from '../../components/disbursement';
 
 // payment form screen
-import PaymentForm from './pages/Home/PaymentForm';
+import PaymentForm from '../../pages/Home/PaymentForm';
 
 // payment successful screen
-import PaymentSuccessful from './pages/Home/PaymentSuccessful';
+import PaymentSuccessful from '../../pages/Home/PaymentSuccessful';
 
 // Mortgages screen
-import Mortgages from './pages/Mortgages/Mortgage';
-import SaveToOwn from './pages/Mortgages/SaveToOwn';
+import Mortgages from '../../pages/Mortgages/Mortgage';
+import SaveToOwn from '../../pages/Mortgages/SaveToOwn';
 
 // Loans
-import {LoanScreen1} from './pages/Loans';
+import {LoanScreen1} from '../../pages/Loans';
 
 // Wallet
-import Wallet from './pages/Wallet/Wallet';
+import Wallet from '../../pages/Wallet/Wallet';
 
 import {useSelector, useDispatch} from 'react-redux';
-import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
-import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import {
-  View,
-  Text,
-  RefreshControl,
-  StatusBar,
-  Linking,
-  AppState,
-} from 'react-native';
-import {COLORS} from './util/index';
-import {signIn} from './util/icons';
+import MonoDebitMandate from '../../pages/Payment/MonoDebitMandate';
+import EmergencyLoanHome from '../../pages/Borrow/EmergencyLoan/EmergencyLoanHome';
+import {View, Text, StatusBar, AppState} from 'react-native';
+import {COLORS} from '../../util/index';
 
 import NetInfo from '@react-native-community/netinfo';
 
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-
 import Instabug from 'instabug-reactnative';
 
-import {PinPassword} from './pages/UserAccount/PinPassword';
+import {PinPassword} from '../../pages/UserAccount/PinPassword';
 
 import analytics from '@segment/analytics-react-native';
 
-import AppUpdate from './pages/AppUpdate/AppUpdate';
+import AppUpdate from '../../pages/AppUpdate/AppUpdate';
 
 const Stack = createStackNavigator();
 
@@ -228,7 +214,7 @@ const linking = {
   },
 };
 
-const App = () => {
+const ScreenNavigation = () => {
   const dispatch = useDispatch();
   const [userToken, setUserToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -358,7 +344,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    var pkg = require('./package.json');
+    var pkg = require('../../package.json');
     console.log('pkg: ', pkg.version);
   }, []);
 
@@ -406,9 +392,6 @@ const App = () => {
                 name="CreatePin"
                 component={CreatePin}></Stack.Screen>
               <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
-              <Stack.Screen
-                name="WelcomeBack"
-                component={WelcomeBack}></Stack.Screen>
               <Stack.Screen name="ResetPin" component={ResetPin}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen
@@ -794,4 +777,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default ScreenNavigation;

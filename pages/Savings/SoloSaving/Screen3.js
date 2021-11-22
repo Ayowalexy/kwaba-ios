@@ -123,7 +123,7 @@ export default function Screen3({navigation, route}) {
     // console.log('The Value: ', value);
     try {
       const data = storeData;
-      // console.log('What Store Data: ', data);
+      console.log('What Store Data: ', data);
 
       setSpinner(true);
       const response = await userCreateSavings(data);
@@ -161,6 +161,7 @@ export default function Screen3({navigation, route}) {
         }
       } else {
         setSpinner(false);
+        Alert.alert('Error', 'something went wrong');
       }
     } catch (error) {
       console.log('The Error: ', error);
@@ -251,7 +252,7 @@ export default function Screen3({navigation, route}) {
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Interest Rate</Text>
-              <Text style={designs.value}>{locked ? '8%' : '7%'} P.A</Text>
+              <Text style={designs.value}>{locked ? '11%' : '10%'} P.A</Text>
             </View>
           </View>
           <View

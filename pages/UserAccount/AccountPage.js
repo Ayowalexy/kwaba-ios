@@ -72,7 +72,7 @@ const AccountPage = ({navigation}) => {
     //   'userData',
     //   JSON.stringify({...JSON.parse(login), isLoggedIn: false, token: ''}),
     // );
-    navigation.navigate('Welcome');
+    navigation.navigate('WelcomeBack');
   };
 
   const accountTabsAndSettings = [

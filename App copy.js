@@ -25,7 +25,6 @@ import VerifyNumber from './pages/Auth/VerifyNumber';
 import SignUp from './pages/Auth/SignUp';
 import Login from './pages/Auth/Login';
 import CreatePin from './pages/Auth/CreatePin';
-import WelcomeBack from './pages/Auth/WelcomeBack';
 import EnterPin from './pages/Auth/EnterPin';
 import ResetPin from './pages/Auth/ResetPin';
 
@@ -406,9 +405,6 @@ const App = () => {
                 name="CreatePin"
                 component={CreatePin}></Stack.Screen>
               <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
-              <Stack.Screen
-                name="WelcomeBack"
-                component={WelcomeBack}></Stack.Screen>
               <Stack.Screen name="ResetPin" component={ResetPin}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen

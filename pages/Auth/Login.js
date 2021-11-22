@@ -144,6 +144,12 @@ export default function Login({navigation}) {
           JSON.stringify(res.data.authData.email),
         );
 
+        // welcome back userInfo
+        await AsyncStorage.setItem(
+          'loginInfo',
+          JSON.stringify(res.data.authData),
+        );
+
         await analytics.track('User-Login', {
           email: res.data.authData.email,
         });

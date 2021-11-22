@@ -122,15 +122,21 @@ export default function WithdrawalForm(props) {
       bank_name: selectedBank?.bank_name,
       bank_code: selectedBank?.bank_short_code,
     };
-    // console.log('The Data Withdraw: ', data);
+    console.log('The Data Withdraw: ', data);
     setSpinner(true);
     try {
       const response = await requestWithdrawal(data);
+      console.log('The Res: ', response);
       if (response.status == 200) {
         setSpinner(false);
 
         console.log(response);
         Alert.alert('Successful', 'Your withdrawal request has been sent', [
+          {text: 'Continue', onPress: () => navigation.navigate('Home')},
+        ]);
+      } else {
+        setSpinner(false);
+        Alert.alert('Error', 'An error occurred', [
           {text: 'Continue', onPress: () => navigation.navigate('Home')},
         ]);
       }
