@@ -27,6 +27,7 @@ import {
   userCreateSavings,
   verifySavingsPayment,
 } from '../../../services/network';
+import PaymentTypeModalSavings from '../../../components/PaymentType/PaymentTypeModalSavings';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -79,7 +80,7 @@ export default function Screen3({navigation, route}) {
   useEffect(() => {
     const data = route.params;
 
-    // console.log('The Data: ', data);
+    console.log('The Data: ', data);
 
     setSavingsTitle(data.name);
     setSavingsTarget(data.target_amount);
@@ -409,12 +410,13 @@ export default function Screen3({navigation, route}) {
       )} */}
 
       {showPaymentModal && (
-        <PaymentTypeModal
+        <PaymentTypeModalSavings
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
+          savingsType={route?.params?.auto_save}
         />
       )}
 

@@ -3,8 +3,8 @@ import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import {images, icons, COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-export default function PaymentTypeModal(props) {
-  const {visible, onRequestClose, setPaymentType} = props;
+export default function PaymentTypeModalSavings(props) {
+  const {visible, onRequestClose, setPaymentType, savingsType} = props;
   return (
     <>
       <Modal
@@ -68,12 +68,24 @@ export default function PaymentTypeModal(props) {
                     paddingVertical: 20,
                     // textAlign: 'center',
                   }}>
-                  Select a Payment Method
+                  Select a source to fund your savings
                 </Text>
                 {[
-                  {name: 'Debit Card', icon: 'card', tag: 'card'},
+                  {
+                    name: 'Debit Card',
+                    icon: 'card',
+                    tag: 'card',
+                    subtitle:
+                      'We will automatically move money from your bank account to your Kwaba savings plan based on your saving frequency',
+                  },
                   {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
-                  // {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
+                  {
+                    name: 'Your Wallet',
+                    icon: 'wallet',
+                    tag: 'wallet',
+                    subtitle:
+                      'Money will be automatically moved from your Kwaba wallet to your Kwaba savings plan. Note, your wallet will have to be funded sufficiently for us to successfully fund your savings plan',
+                  },
                 ].map((item, index) => {
                   return (
                     <TouchableOpacity
@@ -109,14 +121,28 @@ export default function PaymentTypeModal(props) {
                           color={COLORS.secondary}
                         />
                       </View>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                          color: COLORS.dark,
-                        }}>
-                        {item.name}
-                      </Text>
+
+                      <View style={{flex: 1}}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.dark,
+                          }}>
+                          {item.name}
+                        </Text>
+                        {item.subtitle && (
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: COLORS.dark,
+                              marginTop: 10,
+                              lineHeight: 20,
+                            }}>
+                            {item.subtitle}
+                          </Text>
+                        )}
+                      </View>
                     </TouchableOpacity>
                   );
                 })}

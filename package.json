@@ -82,6 +82,7 @@
     "redux-thunk": "^2.3.0",
     "rn-swipeable-panel": "^1.2.5",
     "rn-tooltip": "^3.0.1",
+    "smartlook-react-native-wrapper": "^1.2.2",
     "yup": "^0.32.9"
   },
   "devDependencies": {
