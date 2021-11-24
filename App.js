@@ -257,13 +257,13 @@ const App = () => {
     );
   };
 
-  useEffect(() => {
-    AppState.addEventListener('change', _handleAppStateChange);
+  // useEffect(() => {
+  //   AppState.addEventListener('change', _handleAppStateChange);
 
-    return () => {
-      AppState.removeEventListener('change', _handleAppStateChange);
-    };
-  }, []);
+  //   return () => {
+  //     AppState.removeEventListener('change', _handleAppStateChange);
+  //   };
+  // }, []);
 
   const _handleAppStateChange = (nextAppState) => {
     if (

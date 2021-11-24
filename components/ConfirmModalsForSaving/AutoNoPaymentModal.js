@@ -6,30 +6,16 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Switch,
+  Alert,
 } from 'react-native';
 import {images, icons, COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {userCreateSavings} from '../../services/network';
 
-export default function ConfirmSave(props) {
+export default function AutoNoPaymentModal(props) {
   const {visible, onRequestClose, handleClickPaymentType} = props;
-  const [autoSave, setAutoSave] = useState(true);
-  const [savingsType, setSavingsType] = useState('');
-
-  const toggleSwitch = () => {
-    setAutoSave((previousState) => !previousState);
-  };
-
-  // const savingsType = 'Automatic';
-
-  useEffect(() => {
-    if (autoSave) {
-      setSavingsType('Manual Saving');
-    } else {
-      setSavingsType('Auto Saving');
-    }
-    console.log('SWitching....');
-  }, [autoSave]);
+  const [spinner, setSpinner] = useState(false);
 
   return (
     <>
@@ -63,7 +49,7 @@ export default function ConfirmSave(props) {
                       fontWeight: 'bold',
                       marginTop: 10,
                     }}>
-                    You have chosen to save manually
+                    You have chosen to save automatically
                   </Text>
                 </View>
                 <Text
@@ -74,16 +60,17 @@ export default function ConfirmSave(props) {
                     paddingHorizontal: 20,
                     textAlign: 'center',
                   }}>
-                  This means that Kwaba will not be able to help you save
-                  automatically and you will always have to manually fund your
-                  savings plan.
+                  You will be charged a small fee of{' '}
+                  <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
+                    ₦50
+                  </Text>{' '}
+                  to check if your card is valid. Don’t worry, this money will
+                  be added into your Kwaba savings account.
                 </Text>
 
                 <TouchableOpacity
-                  //   disabled={!toggleCheckBox}
-                  // onPress={addCardAndBankModal}
-                  //   onPress={() => setShowPaymentModal(true)}
                   onPress={() => {
+                    // console.log('Clicked on');
                     handleClickPaymentType();
                     onRequestClose();
                   }}
@@ -114,43 +101,13 @@ export default function ConfirmSave(props) {
                     CONFIRM
                   </Text>
                 </TouchableOpacity>
-
-                {/* <View
-                  style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    marginTop: 0,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      color: COLORS.dark,
-                      marginBottom: 10,
-                    }}>
-                    Switch to {savingsType}{' '}
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'bold',
-                        color: '#46596940',
-                      }}>
-                      (Recommended)
-                    </Text>
-                  </Text>
-
-                  <Switch
-                    trackColor={{false: '#EEE', true: '#EEE'}}
-                    thumbColor={autoSave ? '#00DC99' : '#ADADAD'}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={toggleSwitch}
-                    value={autoSave}
-                  />
-                </View> */}
               </View>
             </View>
           </View>
         </View>
       </Modal>
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

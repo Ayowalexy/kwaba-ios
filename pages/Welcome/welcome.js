@@ -149,7 +149,8 @@ const Welcome = ({navigation}) => {
           ) : (
             <TouchableOpacity
               style={{marginTop: 15}}
-              onPress={() => navigation.navigate('EnterPin')}>
+              // onPress={() => navigation.navigate('EnterPin')}
+              onPress={() => navigation.navigate('WelcomeBack')}>
               <Text style={{color: '#2A286A', fontWeight: 'bold'}}>
                 Got an account? <Text style={{color: '#00DC99'}}>Log in</Text>
               </Text>

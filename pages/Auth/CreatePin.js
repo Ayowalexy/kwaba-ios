@@ -34,10 +34,11 @@ export default function CreatePin({navigation, route}) {
 
   useEffect(() => {
     if (route?.params) {
-      console.log(route?.params);
+      const login = route?.params?.login;
+      console.log(login);
       // console.log('Email: ', route?.params?.email);
-      setEmail(route?.params?.email);
-      setPassword(route?.params?.password);
+      setEmail(login.email);
+      setPassword(login.password);
       setFromLogin(true);
     } else {
       console.log('Not from login');
@@ -52,13 +53,15 @@ export default function CreatePin({navigation, route}) {
       password: password,
     };
     setSpinner(true);
-    // console.log('The Data: ', data);
+    console.log('The Data: ', data);
+    console.log('The Data 2: ', route?.params?.data);
     try {
       const resp = await setPin(data);
       // if(resp.status )
       if (resp.status == 200) {
         console.log('The RESP: ', resp.data);
-        navigation.navigate('EnterPin');
+        // navigation.navigate('EnterPin');
+        navigation.navigate('WelcomeBack', {data: route?.params?.data});
         setSpinner(false);
         await analytics.track('Create-Pin', {
           email: email,

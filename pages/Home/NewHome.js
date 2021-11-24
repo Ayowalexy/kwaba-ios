@@ -200,7 +200,7 @@ export default function NewHome({navigation}) {
       title: 'Total Savings',
       subtitle:
         savings <= 0
-          ? 'Save now to make your rent\nwork for you'
+          ? 'Save now to make your rent work for you'
           : 'Great job on your rent savings',
       amount: formatNumber(Number(savings).toFixed(2)),
       color: COLORS.primary,
@@ -318,43 +318,35 @@ export default function NewHome({navigation}) {
       body:
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
-      // route: () =>
-      //   isProfileComplete
-      //     ? navigation.navigate('SavingsHome')
-      //     : setCompleteProfileModal(true),
     },
     // {
-    //   title: 'Home Loans',
+    //   title: 'Join a savings challenge',
     //   body:
-    //     'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
-    //   img: images.maskGroup29,
-    //   route: () =>
-    //     isProfileComplete
-    //       ? navigation.navigate('LoanScreen1')
-    //       : setCompleteProfileModal(true),
-    // },
-    // {
-    //   title: 'Refer and Earn',
-    //   body:
-    //     'Invite your friends and family to use  Kwaba and earn from every referral ',
-    //   img: images.giftPackage,
-    //   // route: () =>
-    //   //   isProfileComplete
-    //   //     ? navigation.navigate('Referral')
-    //   //     : setCompleteProfileModal(true),
+    //     'Get instant loans from Kwaba when you need to sort out life emergencies or unexpected expenses.',
+    //   img: images.maskGroup14,
     //   route: () => navigation.navigate('Referral'),
     // },
     {
-      title: 'Join a savings challenge',
+      title: 'Home Loans',
       body:
-        'Get instant loans from Kwaba when you need to sort out life emergencies or unexpected expenses.',
+        'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
       img: images.maskGroup29,
+      route: () =>
+        isProfileComplete
+          ? navigation.navigate('LoanScreen1')
+          : setCompleteProfileModal(true),
+    },
+    {
+      title: 'Refer and Earn',
+      body:
+        'Invite your friends and family to use  Kwaba and earn from every referral ',
+      img: images.giftPackage,
       route: () => navigation.navigate('Referral'),
     },
   ];
 
   const OFFSET = 30;
-  const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 2;
+  const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;
   const ITEM_HEIGHT = 180;
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
@@ -520,7 +512,7 @@ export default function NewHome({navigation}) {
           <ScrollView
             horizontal={true}
             decelerationRate={'normal'}
-            snapToInterval={ITEM_WIDTH / 1.5}
+            snapToInterval={ITEM_WIDTH}
             style={{paddingHorizontal: 0}}
             showsHorizontalScrollIndicator={false}
             bounces={false}
@@ -532,9 +524,9 @@ export default function NewHome({navigation}) {
             scrollEventThrottle={12}>
             {slides.map((item, idx) => {
               const inputRange = [
-                (idx - 1) * (ITEM_WIDTH / 1.5),
-                idx * (ITEM_WIDTH / 1.5),
-                (idx + 1) * (ITEM_WIDTH / 1.5),
+                (idx - 1) * ITEM_WIDTH,
+                idx * ITEM_WIDTH,
+                (idx + 1) * ITEM_WIDTH,
               ];
               const translate = scrollX.interpolate({
                 inputRange,
@@ -548,7 +540,7 @@ export default function NewHome({navigation}) {
                 <Animated.View
                   key={idx}
                   style={{
-                    width: ITEM_WIDTH / 1.5,
+                    width: ITEM_WIDTH,
                     height: ITEM_HEIGHT - 20,
                     marginLeft: idx === 0 ? OFFSET : undefined,
                     marginRight: idx === slides.length - 1 ? OFFSET : undefined,
@@ -809,7 +801,7 @@ export default function NewHome({navigation}) {
                             }}
                             style={{
                               backgroundColor: COLORS.primary,
-                              borderRadius: 10,
+                              borderRadius: 5,
                               paddingVertical: 15,
                               paddingHorizontal: 25,
                               marginRight: 10,
@@ -827,7 +819,7 @@ export default function NewHome({navigation}) {
                             onPress={() => navigation.navigate('SaveToOwn')}
                             style={{
                               backgroundColor: COLORS.white,
-                              borderRadius: 10,
+                              borderRadius: 5,
                               paddingVertical: 15,
                               paddingHorizontal: 25,
                               marginRight: 10,

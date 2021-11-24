@@ -18,6 +18,8 @@ export default function PaymentTypeModalSavings(props) {
     setPaymentTypeValue,
     mandateType,
     showConfirmModal,
+    showAutoModal,
+    setPaymentWallet,
   } = props;
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export default function PaymentTypeModalSavings(props) {
   const RenderItem = ({data, show}) => {
     return (
       <>
-        <View style={{marginTop: 70, width: '100%'}}>
+        <View style={{marginTop: 60, width: '100%'}}>
           <Text style={styles.heading}>
             Select a source to fund your savings
           </Text>
@@ -90,8 +92,19 @@ export default function PaymentTypeModalSavings(props) {
                     setPaymentType(item.tag);
                   }
                   if (show == 2) {
-                    showConfirmModal(true);
-                    setPaymentType(item.tag);
+                    // showConfirmModal(true);
+                    // setPaymentType(item.tag);
+
+                    console.log(item.tag);
+                    if (item.tag == 'card') {
+                      showAutoModal(true);
+                      setPaymentTypeValue(item.tag);
+                      // console.log('item.tag', 'CARD');
+                    } else {
+                      setPaymentWallet(item.tag);
+
+                      // console.log(item.tag, 'WALLET');
+                    }
                   }
                   if (show == 3) {
                     showConfirmModal(true);
@@ -102,14 +115,17 @@ export default function PaymentTypeModalSavings(props) {
                     // setPaymentType(item.tag);
                   }
 
+                  // console.log('The Item: ', item.tag);
+                  // console.log('The Show: ', show);
+
                   onRequestClose();
                 }}
                 key={index}
                 style={{
                   width: '100%',
                   paddingVertical: 10,
-                  paddingHorizontal: 30,
-                  borderTopWidth: 1,
+                  paddingHorizontal: 20,
+                  borderTopWidth: index == 0 ? 0 : 1,
                   borderTopColor: '#BFBFBF30',
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -215,6 +231,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    paddingBottom: 20,
   },
 
   close: {
@@ -232,13 +249,14 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.dark,
     fontWeight: 'bold',
-    // marginBottom: 20,
-    paddingLeft: 30,
-    backgroundColor: '#BFBFBF20',
+    marginBottom: 20,
+    paddingLeft: 20,
+    backgroundColor: '#BFBFBF10',
     paddingVertical: 20,
+    textTransform: 'uppercase',
     // textAlign: 'center',
   },
 });

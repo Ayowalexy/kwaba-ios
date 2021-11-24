@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,12 +6,46 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import {images, icons, COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {userCreateSavings} from '../../services/network';
 
 export default function ManualNoPaymentModal(props) {
-  const {visible, onRequestClose} = props;
+  const {visible, onRequestClose, storeData, navigation} = props;
+  const [spinner, setSpinner] = useState(false);
+
+  const handleClick = async () => {
+    try {
+      const data = storeData;
+
+      setSpinner(true);
+      const response = await userCreateSavings(data);
+
+      console.log('The Savings: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+        // Alert.alert('Success', 'Savings created');
+        console.log('Response Data:', response?.data);
+        navigation.navigate('PaymentSuccessful', {
+          content: 'Savings Plan Created Successfully',
+          name: 'SoloSavingDashBoard',
+          id: response?.data?.data?.id,
+        });
+      } else {
+        setSpinner(false);
+        Alert.alert('Error', 'something went wrong');
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      Alert.alert('Error', 'An error occured, please retry');
+      setSpinner(false);
+    }
+
+    onRequestClose();
+  };
 
   return (
     <>
@@ -29,22 +63,42 @@ export default function ManualNoPaymentModal(props) {
               </TouchableOpacity>
 
               <View style={{marginTop: 50, padding: 20}}>
+                <View style={{alignItems: 'center', marginBottom: 20}}>
+                  <Text
+                    style={{
+                      fontWeight: 'bold',
+                      color: COLORS.dark,
+                      fontSize: 16,
+                    }}>
+                    Confirm
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLORS.dark,
+                      fontWeight: 'bold',
+                      marginTop: 10,
+                    }}>
+                    You have chosen to save manually
+                  </Text>
+                </View>
                 <Text
                   style={{
                     fontSize: 14,
-                    lineHeight: 25,
+                    lineHeight: 22,
                     color: COLORS.dark,
-                    paddingHorizontal: 10,
+                    paddingHorizontal: 20,
+                    textAlign: 'center',
                   }}>
-                  You have chosen to save manually. This means that Kwaba will
-                  not be able to help you save automatically and you will always
-                  have to manually fund your savings plan.
+                  This means that Kwaba will not be able to help you save
+                  automatically and you will always have to manually fund your
+                  savings plan.
                 </Text>
 
                 <TouchableOpacity
                   onPress={() => {
                     // handleClickPaymentType();
-                    onRequestClose();
+                    handleClick();
                   }}
                   style={{
                     width: '100%',
@@ -78,6 +132,8 @@ export default function ManualNoPaymentModal(props) {
           </View>
         </View>
       </Modal>
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

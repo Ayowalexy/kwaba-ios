@@ -69,6 +69,8 @@ export default function WelcomeBack({navigation, route}) {
 
   const [spinner, setSpinner] = useState(false);
   const [email, setEmail] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [lastname, setLastname] = useState('');
 
   const [invalidPin, setInvalidPin] = useState(false);
 
@@ -120,20 +122,35 @@ export default function WelcomeBack({navigation, route}) {
     );
   };
 
+  const getUserDetial = async () => {
+    const e = await AsyncStorage.getItem('loginEmail');
+    const loginInfo = await AsyncStorage.getItem('loginInfo');
+
+    if (loginInfo) {
+      // console.log('Na im be dissss: ', JSON.parse(e));
+      const parsedData = JSON.parse(loginInfo);
+      setEmail(JSON.parse(e));
+      setFirstname(parsedData.firstname);
+      setLastname(parsedData.lastname);
+      console.log('LoginInfo: ', loginInfo);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      if (route?.params) {
-        setEmail(route?.params?.email);
-        console.log('Email: ', route?.params?.email);
-      } else {
-        const e = await AsyncStorage.getItem('loginEmail');
-        const loginInfo = await AsyncStorage.getItem('loginInfo');
-        // console.log('Na im be dissss: ', JSON.parse(e));
-        setEmail(JSON.parse(e));
-        console.log('LoginInfo: ', loginInfo);
-      }
-    })();
+    getUserDetial();
   }, []);
+
+  useEffect(() => {
+    console.log('Na the route: ', route?.params);
+    if (route?.params) {
+      // setEmail(route?.params?.email);
+      console.log('Email: ', route?.params?.data);
+      const data = route?.params?.data;
+      setEmail(data.email);
+      setFirstname(data.firstname);
+      setLastname(data.lastname);
+    }
+  }, [route?.params]);
 
   const saveLoginToStorage = async (data) => {
     try {
@@ -188,12 +205,23 @@ export default function WelcomeBack({navigation, route}) {
   return (
     <>
       <View style={styles.container}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{color: COLORS.primary}}
-        />
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Icon
+            onPress={() => navigation.goBack()}
+            name="arrow-back-outline"
+            size={25}
+            style={{color: COLORS.dark}}
+          />
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: 'bold',
+              color: COLORS.dark,
+              marginLeft: 20,
+            }}>
+            Enter Pin
+          </Text>
+        </View>
         <ScrollView
           scrollEnabled
           showsVerticalScrollIndicator={false}
@@ -221,8 +249,11 @@ export default function WelcomeBack({navigation, route}) {
                 </View>
                 <View style={styles.profile_user}>
                   <Text style={[styles.profile_text, styles.profile_text_user]}>
-                    Joshua Nwosu
+                    {firstname} {lastname}
                   </Text>
+                  {/* <Text style={[styles.profile_text, styles.profile_text_user]}>
+                    {email}
+                  </Text> */}
                 </View>
               </View>
             </View>

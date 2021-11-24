@@ -851,6 +851,22 @@ const verifyAddFundToWallet = async (data) => {
   }
 };
 
+const getUserReferral = async () => {
+  const url = apiUrl + '/api/v1/get_user_referrer';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -911,4 +927,5 @@ export {
   requestWithdrawal,
   verifyBillsTransactions,
   verifyAddFundToWallet,
+  getUserReferral,
 };

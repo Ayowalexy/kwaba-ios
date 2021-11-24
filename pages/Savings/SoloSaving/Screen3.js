@@ -30,6 +30,7 @@ import {
 import PaymentTypeModalSavings from '../../../components/PaymentType/PaymentTypeModalSavings';
 import ConfirmSave from '../../../components/ConfirmModalsForSaving/ConfirmSave';
 import ManualNoPaymentModal from '../../../components/ConfirmModalsForSaving/ManualNoPaymentModal';
+import AutoNoPaymentModal from '../../../components/ConfirmModalsForSaving/AutoNoPaymentModal';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -83,6 +84,8 @@ export default function Screen3({navigation, route}) {
   const [showManualNoPaymentModal, setShowManualNoPaymanetModal] = useState(
     false,
   );
+
+  const [showAutoNoPaymentModal, setShowAutoNoPaymentModal] = useState(false);
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -182,6 +185,86 @@ export default function Screen3({navigation, route}) {
     }
   };
 
+  const handlePaymentRoute2 = async (value, amount) => {
+    // console.log('The Value: ', value);
+    const data = {...storeData, savings_amount: amount};
+    console.log('What Store Data: ', data);
+    try {
+      // const data = {...storeData, savings_amount: amount};
+      // console.log('What Store Data: ', data);
+
+      setSpinner(true);
+      const response = await userCreateSavings(data);
+
+      console.log('The Savings: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+        if (value == 'wallet') {
+          const data = {
+            channel: value,
+            reference: response?.data?.data?.reference,
+          };
+
+          console.log(data);
+
+          setSpinner(true);
+          const verify = await verifySavingsPayment(data);
+          console.log('The Verify: ', verify);
+
+          if (verify.status == 200) {
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'SoloSavingDashBoard',
+              id: resData?.id,
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Insufficient fund', 'Please fund your wallet');
+          }
+        } else {
+          setSpinner(false);
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+        Alert.alert('Error', 'something went wrong');
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
+    }
+  };
+
+  const handleCreateSavings = async () => {
+    try {
+      const data = storeData;
+
+      setSpinner(true);
+      const response = await userCreateSavings(data);
+
+      console.log('The Savings: ', response);
+      if (response.status == 200) {
+        setSpinner(false);
+        // Alert.alert('Success', 'Savings created');
+        console.log('Response Data:', response?.data);
+        navigation.navigate('PaymentSuccessful', {
+          content: 'Savings Plan Created Successfully',
+          name: 'SoloSavingDashBoard',
+          id: response?.data?.data?.id,
+        });
+      } else {
+        setSpinner(false);
+        Alert.alert('Error', 'something went wrong');
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      Alert.alert('Error', 'An error occured, please retry');
+      setSpinner(false);
+    }
+  };
+
   useEffect(() => {
     checkIfAutoAndPayment();
   }, []);
@@ -217,7 +300,13 @@ export default function Screen3({navigation, route}) {
   const handleContinue = () => {
     if (mandateType == 'manualSaveAndNoPayment') {
       setShowManualNoPaymanetModal(true);
-    } else {
+    }
+
+    // else if (mandateType == 'autoSaveAndNoPayment') {
+    //   // setShowAutoNoPaymentModal(true);
+    //   console.log('True');
+    // }
+    else {
       setShowPaymentModal(true);
     }
   };
@@ -430,6 +519,14 @@ export default function Screen3({navigation, route}) {
           showConfirmModal={(bol) => {
             setShowConfirmModal(bol);
           }}
+          showAutoModal={(bol) => {
+            setShowAutoNoPaymentModal(bol);
+          }}
+          setPaymentWallet={(value) => {
+            // handlePaymentRoute(value)
+            console.log('The Value: ', value);
+            handleCreateSavings();
+          }}
         />
       )}
 
@@ -449,6 +546,21 @@ export default function Screen3({navigation, route}) {
             setShowManualNoPaymanetModal(!showManualNoPaymentModal)
           }
           visible={showManualNoPaymentModal}
+          storeData={storeData}
+          navigation={navigation}
+        />
+      )}
+
+      {showAutoNoPaymentModal && (
+        <AutoNoPaymentModal
+          onRequestClose={() =>
+            setShowAutoNoPaymentModal(!showAutoNoPaymentModal)
+          }
+          visible={showAutoNoPaymentModal}
+          handleClickPaymentType={() => {
+            // console.log('The Type: ', paymentTypeValue, 50);
+            handlePaymentRoute2(paymentTypeValue, 50);
+          }}
         />
       )}
 
