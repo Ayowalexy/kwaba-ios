@@ -323,32 +323,25 @@ export default function NewHome({navigation}) {
       //     ? navigation.navigate('SavingsHome')
       //     : setCompleteProfileModal(true),
     },
-    // {
-    //   title: 'Home Loans',
-    //   body:
-    //     'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
-    //   img: images.maskGroup29,
-    //   route: () =>
-    //     isProfileComplete
-    //       ? navigation.navigate('LoanScreen1')
-    //       : setCompleteProfileModal(true),
-    // },
-    // {
-    //   title: 'Refer and Earn',
-    //   body:
-    //     'Invite your friends and family to use  Kwaba and earn from every referral ',
-    //   img: images.giftPackage,
-    //   // route: () =>
-    //   //   isProfileComplete
-    //   //     ? navigation.navigate('Referral')
-    //   //     : setCompleteProfileModal(true),
-    //   route: () => navigation.navigate('Referral'),
-    // },
     {
-      title: 'Join a savings challenge',
+      title: 'Home Loans',
       body:
-        'Get instant loans from Kwaba when you need to sort out life emergencies or unexpected expenses.',
+        'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
       img: images.maskGroup29,
+      route: () =>
+        isProfileComplete
+          ? navigation.navigate('LoanScreen1')
+          : setCompleteProfileModal(true),
+    },
+    {
+      title: 'Refer and Earn',
+      body:
+        'Invite your friends and family to use  Kwaba and earn from every referral ',
+      img: images.giftPackage,
+      // route: () =>
+      //   isProfileComplete
+      //     ? navigation.navigate('Referral')
+      //     : setCompleteProfileModal(true),
       route: () => navigation.navigate('Referral'),
     },
   ];
@@ -393,13 +386,11 @@ export default function NewHome({navigation}) {
           style={{paddingLeft: 20}}
           onPress={async () => {
             // navigation.navigate('BuddyPaymentScreen');
-            // navigation.navigate('Notifications');
-            navigation.navigate('Referral');
+            navigation.navigate('Notifications');
             // navigation.navigate('AppUpdate');
-            TrackEvent('Invite Friends');
+            TrackEvent('Notification-Button');
           }}>
-          {/* <Icon name="notifications" color={COLORS.dark} size={25} /> */}
-          <Text style={{fontSize: 14, color: COLORS.dark}}>Invite friends</Text>
+          <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
       </View>
       {!isProfileComplete && (
@@ -520,7 +511,7 @@ export default function NewHome({navigation}) {
           <ScrollView
             horizontal={true}
             decelerationRate={'normal'}
-            snapToInterval={ITEM_WIDTH / 1.5}
+            snapToInterval={ITEM_WIDTH}
             style={{paddingHorizontal: 0}}
             showsHorizontalScrollIndicator={false}
             bounces={false}
@@ -532,9 +523,9 @@ export default function NewHome({navigation}) {
             scrollEventThrottle={12}>
             {slides.map((item, idx) => {
               const inputRange = [
-                (idx - 1) * (ITEM_WIDTH / 1.5),
-                idx * (ITEM_WIDTH / 1.5),
-                (idx + 1) * (ITEM_WIDTH / 1.5),
+                (idx - 1) * ITEM_WIDTH,
+                idx * ITEM_WIDTH,
+                (idx + 1) * ITEM_WIDTH,
               ];
               const translate = scrollX.interpolate({
                 inputRange,
@@ -542,14 +533,14 @@ export default function NewHome({navigation}) {
               });
               const opacity = scrollX.interpolate({
                 inputRange,
-                outputRange: [1, 1, 1],
+                outputRange: [0.9, 1, 0.9],
               });
               return (
                 <Animated.View
                   key={idx}
                   style={{
-                    width: ITEM_WIDTH / 1.5,
-                    height: ITEM_HEIGHT - 20,
+                    width: ITEM_WIDTH,
+                    height: ITEM_HEIGHT,
                     marginLeft: idx === 0 ? OFFSET : undefined,
                     marginRight: idx === slides.length - 1 ? OFFSET : undefined,
                     opacity: opacity,
@@ -559,10 +550,9 @@ export default function NewHome({navigation}) {
                     activeOpacity={0.9}
                     onPress={item.cardClick}
                     style={{
-                      // backgroundColor: item.color,
-                      backgroundColor: COLORS.primary,
+                      backgroundColor: item.color,
                       width: '100%',
-                      height: '100%',
+                      height: ITEM_HEIGHT,
                       padding: 30,
                       borderRadius: 10,
                       overflow: 'hidden',
@@ -570,7 +560,7 @@ export default function NewHome({navigation}) {
                       borderWidth: 1,
                       elevation: 5,
                     }}>
-                    {/* <Image
+                    <Image
                       source={images.frame}
                       style={{
                         width: 200,
@@ -580,7 +570,7 @@ export default function NewHome({navigation}) {
                         top: 0,
                       }}
                       resizeMode="contain"
-                    /> */}
+                    />
                     <View>
                       <View
                         style={{
@@ -592,7 +582,7 @@ export default function NewHome({navigation}) {
                           {item.title}
                         </Text>
 
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                           onPress={item.actionClick}
                           style={{
                             flexDirection: 'row',
@@ -624,10 +614,10 @@ export default function NewHome({navigation}) {
                               style={{color: COLORS.grey}}
                             />
                           </View>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                       </View>
 
-                      <View style={{marginTop: 10}}>
+                      <View style={{marginTop: 20}}>
                         <View
                           style={{
                             flexDirection: 'row',
@@ -661,7 +651,7 @@ export default function NewHome({navigation}) {
               );
             })}
           </ScrollView>
-          {/* <View
+          <View
             style={{
               flex: 1,
               width: '100%',
@@ -683,7 +673,7 @@ export default function NewHome({navigation}) {
                 />
               );
             })}
-          </View> */}
+          </View>
         </View>
 
         <View style={{width: '100%', flex: 1}}>
@@ -776,7 +766,7 @@ export default function NewHome({navigation}) {
                         style={{
                           color: index == 2 ? 'white' : COLORS.dark,
                           fontFamily: 'CircularStd',
-                          fontSize: 15,
+                          fontSize: 14,
                           lineHeight: 23,
                           fontWeight: 'bold',
                         }}>
@@ -817,7 +807,7 @@ export default function NewHome({navigation}) {
                             <Text
                               style={{
                                 fontSize: 12,
-                                fontWeight: 'normal',
+                                fontWeight: 'bold',
                                 color: COLORS.white,
                               }}>
                               Rent Savings
@@ -835,7 +825,7 @@ export default function NewHome({navigation}) {
                             <Text
                               style={{
                                 fontSize: 12,
-                                fontWeight: 'normal',
+                                fontWeight: 'bold',
                                 color: COLORS.dark,
                               }}>
                               Save to own

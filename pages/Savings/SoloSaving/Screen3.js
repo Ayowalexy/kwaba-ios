@@ -28,6 +28,8 @@ import {
   verifySavingsPayment,
 } from '../../../services/network';
 import PaymentTypeModalSavings from '../../../components/PaymentType/PaymentTypeModalSavings';
+import ConfirmSave from '../../../components/ConfirmModalsForSaving/ConfirmSave';
+import ManualNoPaymentModal from '../../../components/ConfirmModalsForSaving/ManualNoPaymentModal';
 
 export default function Screen3({navigation, route}) {
   const store = useSelector((state) => state.soloSavingReducer);
@@ -71,6 +73,16 @@ export default function Screen3({navigation, route}) {
   const [spinner, setSpinner] = useState(false);
 
   const [resData, setResData] = useState('');
+
+  const [mandateType, setMandateType] = useState(null);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const [paymentTypeValue, setPaymentTypeValue] = useState('');
+
+  const [showManualNoPaymentModal, setShowManualNoPaymanetModal] = useState(
+    false,
+  );
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -167,6 +179,46 @@ export default function Screen3({navigation, route}) {
     } catch (error) {
       console.log('The Error: ', error);
       setSpinner(false);
+    }
+  };
+
+  useEffect(() => {
+    checkIfAutoAndPayment();
+  }, []);
+
+  const checkIfAutoAndPayment = () => {
+    const data = route.params;
+
+    // Auto save and payment
+    if (data.auto_save && data.savings_amount != 0) {
+      console.log('Auto Save and Payment');
+      setMandateType('autoSaveAndPayment');
+    }
+
+    // Auto save and no payment
+    if (data.auto_save && data.savings_amount == 0) {
+      console.log('Auto Save and No Payment');
+      setMandateType('autoSaveAndNoPayment');
+    }
+
+    // Manual save and payment
+    if (!data.auto_save && data.savings_amount != 0) {
+      console.log('Manual Save and Payment');
+      setMandateType('manualSaveAndPayment');
+    }
+
+    // Manual save and no payment
+    if (!data.auto_save && data.savings_amount == 0) {
+      console.log('Manual Save and No Payment');
+      setMandateType('manualSaveAndNoPayment');
+    }
+  };
+
+  const handleContinue = () => {
+    if (mandateType == 'manualSaveAndNoPayment') {
+      setShowManualNoPaymanetModal(true);
+    } else {
+      setShowPaymentModal(true);
     }
   };
 
@@ -342,7 +394,7 @@ export default function Screen3({navigation, route}) {
         <TouchableOpacity
           disabled={!toggleCheckBox}
           // onPress={addCardAndBankModal}
-          onPress={() => setShowPaymentModal(true)}
+          onPress={handleContinue}
           style={[
             designs.button,
             {
@@ -364,51 +416,6 @@ export default function Screen3({navigation, route}) {
         </TouchableOpacity>
       </ScrollView>
 
-      {/* <CardAndBankModal
-        onRequestClose={() => setModal(!modal)}
-        visible={modal}
-        store={store}
-        navigation={navigation}
-        storeData={storeData}
-      />
-
-      {showDepositModal && (
-        <DepositModal
-          onRequestClose={() => setShowDepositModal(!showDepositModal)}
-          visible={showDepositModal}
-          store={store}
-          navigation={navigation}
-          storeData={storeData}
-          showModal={() => setShowSubsequentModal(true)}
-        />
-      )}
-
-      {showDepositWalletModal && (
-        <DepositWalletModal
-          onRequestClose={() =>
-            setShowDepositWalletModal(!showDepositWalletModal)
-          }
-          visible={showDepositWalletModal}
-          store={store}
-          navigation={navigation}
-          savingsData={storeData}
-          channel={channel}
-        />
-      )}
-
-      {showSubsequentModal && (
-        <SubsequentModal
-          onRequestClose={() => setShowSubsequentModal(!showSubsequentModal)}
-          visible={showSubsequentModal}
-          goToDashboard={() => {
-            navigation.navigate('SoloSavingDashBoard');
-          }}
-          savingsData={storeData}
-          navigation={navigation}
-          channel={channel}
-        />
-      )} */}
-
       {showPaymentModal && (
         <PaymentTypeModalSavings
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
@@ -416,7 +423,32 @@ export default function Screen3({navigation, route}) {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
-          savingsType={route?.params?.auto_save}
+          setPaymentTypeValue={(value) => {
+            setPaymentTypeValue(value); // paystack, bank, wallet
+          }}
+          mandateType={mandateType}
+          showConfirmModal={(bol) => {
+            setShowConfirmModal(bol);
+          }}
+        />
+      )}
+
+      {showConfirmModal && (
+        <ConfirmSave
+          onRequestClose={() => setShowConfirmModal(!showConfirmModal)}
+          visible={showConfirmModal}
+          handleClickPaymentType={() => {
+            handlePaymentRoute(paymentTypeValue);
+          }}
+        />
+      )}
+
+      {showManualNoPaymentModal && (
+        <ManualNoPaymentModal
+          onRequestClose={() =>
+            setShowManualNoPaymanetModal(!showManualNoPaymentModal)
+          }
+          visible={showManualNoPaymentModal}
         />
       )}
 
