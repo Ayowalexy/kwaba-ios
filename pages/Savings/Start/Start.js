@@ -20,6 +20,7 @@ import {TrackEvent} from '../../../util/segmentEvents';
 export default function Start({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
+  const store2 = useSelector((state) => state.getBuddySavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [totalBalance, setTotalBalance] = useState(0);
   const [totalSaving, setTotalSaving] = useState(0);
@@ -215,7 +216,8 @@ export default function Start({navigation}) {
                   onPress={() => {
                     TrackEvent('Solo Saving');
                     navigation.navigate(
-                      soloSaving == 0 ? 'SoloSaving1' : 'SavingLists',
+                      // soloSaving == 0 ? 'SoloSaving1' : 'SavingLists',
+                      store?.data?.length == 0 ? 'SoloSaving1' : 'SavingLists',
                     );
                   }}
                   style={[
@@ -289,7 +291,8 @@ export default function Start({navigation}) {
                   onPress={() => {
                     TrackEvent('Buddy Saving');
                     navigation.navigate(
-                      buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
+                      // buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
+                      store2?.data?.length == 0 ? 'BuddySaving1' : 'BuddyLists',
                     );
                   }}
                   style={[

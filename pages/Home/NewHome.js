@@ -382,7 +382,7 @@ export default function NewHome({navigation}) {
           </Text>
         </View>
         <TouchableOpacity
-          style={{paddingLeft: 20}}
+          style={{paddingLeft: 20, flexDirection: 'row', alignItems: 'center'}}
           onPress={async () => {
             // navigation.navigate('BuddyPaymentScreen');
             // navigation.navigate('Notifications');
@@ -390,8 +390,17 @@ export default function NewHome({navigation}) {
             // navigation.navigate('AppUpdate');
             TrackEvent('Invite Friends');
           }}>
-          {/* <Icon name="notifications" color={COLORS.dark} size={25} /> */}
-          <Text style={{fontSize: 14, color: COLORS.dark}}>Invite friends</Text>
+          <Icon name="people-sharp" color={COLORS.dark} size={25} />
+
+          <Text
+            style={{
+              fontSize: 14,
+              color: COLORS.dark,
+              marginLeft: 5,
+              marginTop: 0,
+            }}>
+            Invite friends
+          </Text>
         </TouchableOpacity>
       </View>
       {!isProfileComplete && (

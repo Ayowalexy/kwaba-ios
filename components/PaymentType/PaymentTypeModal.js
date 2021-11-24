@@ -73,7 +73,7 @@ export default function PaymentTypeModal(props) {
                 {[
                   {name: 'Debit Card', icon: 'card', tag: 'card'},
                   {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
-                  // {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
+                  {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
                 ].map((item, index) => {
                   return (
                     <TouchableOpacity
