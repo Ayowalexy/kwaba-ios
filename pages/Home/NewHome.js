@@ -278,6 +278,10 @@ export default function NewHome({navigation}) {
     },
   ];
 
+  // useEffect(() => {
+  //   console.log('The Wallet: ', wallet);
+  // }, []);
+
   const quickActions = [
     {
       name: 'Emergency\nfunds',
@@ -560,8 +564,8 @@ export default function NewHome({navigation}) {
                     activeOpacity={0.9}
                     onPress={item.cardClick}
                     style={{
-                      // backgroundColor: item.color,
-                      backgroundColor: COLORS.primary,
+                      backgroundColor: item.color,
+                      // backgroundColor: COLORS.primary,
                       width: '100%',
                       height: '100%',
                       padding: 30,
@@ -571,7 +575,7 @@ export default function NewHome({navigation}) {
                       borderWidth: 1,
                       elevation: 5,
                     }}>
-                    {/* <Image
+                    <Image
                       source={images.frame}
                       style={{
                         width: 200,
@@ -581,7 +585,7 @@ export default function NewHome({navigation}) {
                         top: 0,
                       }}
                       resizeMode="contain"
-                    /> */}
+                    />
                     <View>
                       <View
                         style={{
