@@ -25,7 +25,6 @@ import VerifyNumber from './pages/Auth/VerifyNumber';
 import SignUp from './pages/Auth/SignUp';
 import Login from './pages/Auth/Login';
 import CreatePin from './pages/Auth/CreatePin';
-import WelcomeBack from './pages/Auth/WelcomeBack';
 import EnterPin from './pages/Auth/EnterPin';
 import ResetPin from './pages/Auth/ResetPin';
 
@@ -197,7 +196,6 @@ import {
   StatusBar,
   Linking,
   AppState,
-  Platform,
 } from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
@@ -213,9 +211,6 @@ import {PinPassword} from './pages/UserAccount/PinPassword';
 import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
-
-import Smartlook from 'smartlook-react-native-wrapper';
-Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
 
 const Stack = createStackNavigator();
 
@@ -258,13 +253,13 @@ const App = () => {
     );
   };
 
-  // useEffect(() => {
-  //   AppState.addEventListener('change', _handleAppStateChange);
+  useEffect(() => {
+    AppState.addEventListener('change', _handleAppStateChange);
 
-  //   return () => {
-  //     AppState.removeEventListener('change', _handleAppStateChange);
-  //   };
-  // }, []);
+    return () => {
+      AppState.removeEventListener('change', _handleAppStateChange);
+    };
+  }, []);
 
   const _handleAppStateChange = (nextAppState) => {
     if (
@@ -361,28 +356,10 @@ const App = () => {
     any_custom_type: () => {},
   };
 
-  // useEffect(() => {
-  //   var pkg = require('./package.json');
-  //   console.log('pkg: ', pkg.version);
-  //   console.log('version: ', getVersion());
-  // }, []);
-
-  // useEffect(() => {
-  //   checkVersion();
-  // }, []);
-
-  // const checkVersion = async () => {
-  //   try {
-  //     let updateNeeded = await VersionCheck.needUpdate();
-  //     // if (updateNeeded.isNeeded) {
-  //     //   //Alert the user and direct to the app url
-  //     //   console.log('Something something....');
-  //     // }
-  //     console.log('The update: ', updateNeeded);
-  //   } catch (error) {
-  //     console.log('Error: ', error);
-  //   }
-  // };
+  useEffect(() => {
+    var pkg = require('./package.json');
+    console.log('pkg: ', pkg.version);
+  }, []);
 
   return (
     <>
@@ -428,9 +405,6 @@ const App = () => {
                 name="CreatePin"
                 component={CreatePin}></Stack.Screen>
               <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
-              <Stack.Screen
-                name="WelcomeBack"
-                component={WelcomeBack}></Stack.Screen>
               <Stack.Screen name="ResetPin" component={ResetPin}></Stack.Screen>
               <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
               <Stack.Screen

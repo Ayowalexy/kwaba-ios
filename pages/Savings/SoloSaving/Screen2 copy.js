@@ -65,9 +65,6 @@ export default function Screen2(props) {
   };
 
   const handleSubmit = (values) => {
-    if (values.question == 'No') {
-      setInstantSaving(0);
-    }
     try {
       const data = {
         ...props.route.params,
@@ -77,7 +74,9 @@ export default function Screen2(props) {
             ? moment().format('YYYY-MM-DD')
             : moment(date).format('YYYY-MM-DD'),
         savings_amount:
-          values.question == 'No' ? 0 : Number(unFormatNumber(instantSaving)),
+          values.savingStartOption == 'today'
+            ? Number(unFormatNumber(instantSaving))
+            : 50,
       };
       // console.log(data);
       props.navigation.navigate('SoloSaving3', data);
@@ -148,6 +147,55 @@ export default function Screen2(props) {
     );
   };
 
+  // const HowLongSelection = (props) => {
+  //   const howLongList = ['3 Months', '6 Months', '1 Year'];
+
+  //   const {
+  //     field: {name, onBlur, onChange, value},
+  //     form: {errors, touched, setFieldTouched, setFieldValue},
+  //     ...inputProps
+  //   } = props;
+
+  //   const hasError = errors[name] && touched[name];
+  //   return (
+  //     <>
+  //       <Text style={[designs.boldText, {marginTop: 35}]}>
+  //         How long do you want to save for?
+  //       </Text>
+  //       <View style={designs.options}>
+  //         {howLongList.map((duration, index) => {
+  //           return (
+  //             <TouchableOpacity
+  //               key={index}
+  //               onPress={() => setFieldValue('savingDuration', duration)}
+  //               style={{
+  //                 display: 'flex',
+  //                 alignItems: 'center',
+  //                 justifyContent: 'center',
+  //                 borderRadius: 5,
+  //                 width: '32%',
+  //                 height: 54,
+  //                 backgroundColor: duration == value ? '#9D98EC' : 'white',
+  //               }}>
+  //               <Text
+  //                 style={{
+  //                   fontSize: 12,
+  //                   fontWeight: '600',
+  //                   color: duration == value ? 'white' : '#465969',
+  //                   lineHeight: 19,
+  //                 }}>
+  //                 {duration}
+  //               </Text>
+  //             </TouchableOpacity>
+  //           );
+  //         })}
+  //       </View>
+
+  //       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+  //     </>
+  //   );
+  // };
+
   const StartOptionSelection = (props) => {
     const startOptionList = [
       {
@@ -210,69 +258,6 @@ export default function Screen2(props) {
     );
   };
 
-  const Question = (props) => {
-    const startOptionList = [
-      {
-        title: 'Yes',
-        tag: 'today',
-      },
-      {
-        title: 'No',
-        tag: 'pick_date',
-      },
-    ];
-    const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched, setFieldValue},
-      ...inputProps
-    } = props;
-
-    const hasError = errors[name] && touched[name];
-    return (
-      <>
-        <Text style={[designs.boldText, {marginTop: 26}]}>
-          Do you want to deposit some money today?
-        </Text>
-        <View style={designs.options}>
-          {startOptionList.map(({title, tag}, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setFieldValue('question', title);
-
-                  // if (title == 'pick_date') setShowDate(true);
-                  // else setDate(moment().toDate());
-                  console.log('Title: ', title);
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 5,
-                  width: '49%',
-                  height: 54,
-                  backgroundColor: value == title ? '#9D98EC' : 'white',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: value == title ? 'white' : '#465969',
-                    lineHeight: 15,
-                  }}>
-                  {title}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
-
   return (
     <View style={designs.container}>
       <Icon
@@ -288,7 +273,6 @@ export default function Screen2(props) {
           initialValues={{
             targetAmount: '',
             savingStartOption: '',
-            question: '',
           }}
           onSubmit={(values) => {
             handleSubmit(values);
@@ -306,6 +290,7 @@ export default function Screen2(props) {
                 component={StartOptionSelection}
                 name="savingStartOption"
               />
+
               <Text
                 style={{
                   width: '100%',
@@ -320,11 +305,7 @@ export default function Screen2(props) {
                   new Date(date.toISOString()).toDateString().slice(4)}
               </Text>
 
-              {values.savingStartOption != '' && (
-                <Field component={Question} name="question" />
-              )}
-
-              {values.question == 'Yes' && (
+              {values.savingStartOption == 'today' && (
                 <>
                   <View style={{overflow: 'hidden'}}>
                     <Animatable.View
@@ -368,12 +349,13 @@ export default function Screen2(props) {
               <TouchableOpacity
                 onPress={handleSubmit}
                 disabled={
+                  values.targetAmount != '' &&
                   isValid &&
-                  values.savingStartOption != '' &&
-                  values.question != '' &&
-                  unFormatNumber(instantSaving) >= instantSavingMinimumAmount
+                  values.savingStartOption != 'today'
                     ? false
-                    : values.question == 'No'
+                    : values.savingStartOption == 'today' &&
+                      instantSaving == instantSavingMinimumAmount &&
+                      isValid
                     ? false
                     : true
                 }
@@ -381,13 +363,13 @@ export default function Screen2(props) {
                   designs.button,
                   {
                     backgroundColor:
+                      values.targetAmount != '' &&
                       isValid &&
-                      values.savingStartOption != '' &&
-                      values.question != '' &&
-                      unFormatNumber(instantSaving) >=
-                        instantSavingMinimumAmount
+                      values.savingStartOption != 'today'
                         ? '#00DC99'
-                        : values.question == 'No'
+                        : values.savingStartOption == 'today' &&
+                          instantSaving == instantSavingMinimumAmount &&
+                          isValid
                         ? '#00DC99'
                         : '#00DC9950',
                   },

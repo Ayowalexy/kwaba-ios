@@ -325,7 +325,7 @@ export default function SoloSavingDashBoard(props) {
                   </Text>
                   <Switch
                     trackColor={{false: 'white', true: 'white'}}
-                    thumbColor={autoSaving ? '#00DC99' : '#ADADAD'}
+                    thumbColor={autoSaving ? COLORS.secondary : '#ddd'}
                     ios_backgroundColor="#3e3e3e"
                     onValueChange={toggleSwitch}
                     value={autoSaving}

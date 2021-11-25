@@ -5,24 +5,53 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {COLORS, FONTS, images, icons} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import apiUrl from '../../../services/api';
-import {referralDetails} from '../../../services/network';
+import {getUserReferral, referralDetails} from '../../../services/network';
 import QuickSaveModal from '../../../components/QuickSaveModal';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export default function ReferralDetails({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
+  const [spinner, setSpinner] = useState(false);
+
+  const [signUpCount, setSignUpCount] = useState(0);
+  const [earning, setEarning] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+  const [unpaid, setUnpaid] = useState(0);
 
   useEffect(() => {
-    const getReferralDetails = async () => {
-      const referral = await referralDetails();
-      console.log(referral);
-    };
     getReferralDetails();
   }, []);
+
+  const getReferralDetails = async () => {
+    try {
+      setSpinner(true);
+
+      const response = await getUserReferral();
+      if (response.status == 200) {
+        setSpinner(false);
+        console.log('The Res: ', response.data);
+
+        const res = response.data;
+
+        // setUserCount(res.steps.length);
+        setSignUpCount(res.steps.length);
+      } else {
+        setSpinner(false);
+        Alert.alert('Error', 'Uhm.. something Went wrong, please retry');
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error);
+      Alert.alert('Error', 'An Error occurred, please retry');
+    }
+    // console.log(referral);
+  };
 
   return (
     <>
@@ -104,19 +133,19 @@ export default function ReferralDetails({navigation}) {
             <View style={[styles.bottomCard]}>
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Unpaid earning</Text>
-                <Text style={[styles.value]}>₦0.00</Text>
+                <Text style={[styles.value]}>₦{unpaid || '0.00'}</Text>
               </View>
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Signups</Text>
-                <Text style={[styles.value]}>0</Text>
+                <Text style={[styles.value]}>{signUpCount}</Text>
               </View>
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Earnings per referral</Text>
-                <Text style={[styles.value]}>₦0.00</Text>
+                <Text style={[styles.value]}>₦{earning || '0.00'}</Text>
               </View>
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Referred users</Text>
-                <Text style={[styles.value]}>0</Text>
+                <Text style={[styles.value]}>{userCount}</Text>
               </View>
             </View>
           </View>
@@ -128,6 +157,8 @@ export default function ReferralDetails({navigation}) {
           visible={quickSaveModal}
         />
       )}
+
+      <Spinner visible={spinner} size="large" />
     </>
   );
 }

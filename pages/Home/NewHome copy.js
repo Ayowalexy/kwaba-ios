@@ -200,7 +200,7 @@ export default function NewHome({navigation}) {
       title: 'Total Savings',
       subtitle:
         savings <= 0
-          ? 'Save now to make your rent work for you'
+          ? 'Save now to make your rent\nwork for you'
           : 'Great job on your rent savings',
       amount: formatNumber(Number(savings).toFixed(2)),
       color: COLORS.primary,
@@ -318,14 +318,11 @@ export default function NewHome({navigation}) {
       body:
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
+      // route: () =>
+      //   isProfileComplete
+      //     ? navigation.navigate('SavingsHome')
+      //     : setCompleteProfileModal(true),
     },
-    // {
-    //   title: 'Join a savings challenge',
-    //   body:
-    //     'Get instant loans from Kwaba when you need to sort out life emergencies or unexpected expenses.',
-    //   img: images.maskGroup14,
-    //   route: () => navigation.navigate('Referral'),
-    // },
     {
       title: 'Home Loans',
       body:
@@ -341,12 +338,16 @@ export default function NewHome({navigation}) {
       body:
         'Invite your friends and family to use  Kwaba and earn from every referral ',
       img: images.giftPackage,
+      // route: () =>
+      //   isProfileComplete
+      //     ? navigation.navigate('Referral')
+      //     : setCompleteProfileModal(true),
       route: () => navigation.navigate('Referral'),
     },
   ];
 
   const OFFSET = 30;
-  const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;
+  const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 2;
   const ITEM_HEIGHT = 180;
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
@@ -382,25 +383,14 @@ export default function NewHome({navigation}) {
           </Text>
         </View>
         <TouchableOpacity
-          style={{paddingLeft: 20, flexDirection: 'row', alignItems: 'center'}}
+          style={{paddingLeft: 20}}
           onPress={async () => {
             // navigation.navigate('BuddyPaymentScreen');
-            // navigation.navigate('Notifications');
-            navigation.navigate('Referral');
+            navigation.navigate('Notifications');
             // navigation.navigate('AppUpdate');
-            TrackEvent('Invite Friends');
+            TrackEvent('Notification-Button');
           }}>
-          <Icon name="people-sharp" color={COLORS.dark} size={25} />
-
-          <Text
-            style={{
-              fontSize: 14,
-              color: COLORS.dark,
-              marginLeft: 5,
-              marginTop: 0,
-            }}>
-            Invite friends
-          </Text>
+          <Icon name="notifications" color={COLORS.dark} size={25} />
         </TouchableOpacity>
       </View>
       {!isProfileComplete && (
@@ -543,14 +533,14 @@ export default function NewHome({navigation}) {
               });
               const opacity = scrollX.interpolate({
                 inputRange,
-                outputRange: [1, 1, 1],
+                outputRange: [0.9, 1, 0.9],
               });
               return (
                 <Animated.View
                   key={idx}
                   style={{
                     width: ITEM_WIDTH,
-                    height: ITEM_HEIGHT - 20,
+                    height: ITEM_HEIGHT,
                     marginLeft: idx === 0 ? OFFSET : undefined,
                     marginRight: idx === slides.length - 1 ? OFFSET : undefined,
                     opacity: opacity,
@@ -560,10 +550,9 @@ export default function NewHome({navigation}) {
                     activeOpacity={0.9}
                     onPress={item.cardClick}
                     style={{
-                      // backgroundColor: item.color,
-                      backgroundColor: COLORS.primary,
+                      backgroundColor: item.color,
                       width: '100%',
-                      height: '100%',
+                      height: ITEM_HEIGHT,
                       padding: 30,
                       borderRadius: 10,
                       overflow: 'hidden',
@@ -571,7 +560,7 @@ export default function NewHome({navigation}) {
                       borderWidth: 1,
                       elevation: 5,
                     }}>
-                    {/* <Image
+                    <Image
                       source={images.frame}
                       style={{
                         width: 200,
@@ -581,7 +570,7 @@ export default function NewHome({navigation}) {
                         top: 0,
                       }}
                       resizeMode="contain"
-                    /> */}
+                    />
                     <View>
                       <View
                         style={{
@@ -593,7 +582,7 @@ export default function NewHome({navigation}) {
                           {item.title}
                         </Text>
 
-                        {/* <TouchableOpacity
+                        <TouchableOpacity
                           onPress={item.actionClick}
                           style={{
                             flexDirection: 'row',
@@ -625,10 +614,10 @@ export default function NewHome({navigation}) {
                               style={{color: COLORS.grey}}
                             />
                           </View>
-                        </TouchableOpacity> */}
+                        </TouchableOpacity>
                       </View>
 
-                      <View style={{marginTop: 10}}>
+                      <View style={{marginTop: 20}}>
                         <View
                           style={{
                             flexDirection: 'row',
@@ -662,7 +651,7 @@ export default function NewHome({navigation}) {
               );
             })}
           </ScrollView>
-          {/* <View
+          <View
             style={{
               flex: 1,
               width: '100%',
@@ -684,7 +673,7 @@ export default function NewHome({navigation}) {
                 />
               );
             })}
-          </View> */}
+          </View>
         </View>
 
         <View style={{width: '100%', flex: 1}}>
@@ -777,7 +766,7 @@ export default function NewHome({navigation}) {
                         style={{
                           color: index == 2 ? 'white' : COLORS.dark,
                           fontFamily: 'CircularStd',
-                          fontSize: 15,
+                          fontSize: 14,
                           lineHeight: 23,
                           fontWeight: 'bold',
                         }}>
@@ -810,7 +799,7 @@ export default function NewHome({navigation}) {
                             }}
                             style={{
                               backgroundColor: COLORS.primary,
-                              borderRadius: 5,
+                              borderRadius: 10,
                               paddingVertical: 15,
                               paddingHorizontal: 25,
                               marginRight: 10,
@@ -818,7 +807,7 @@ export default function NewHome({navigation}) {
                             <Text
                               style={{
                                 fontSize: 12,
-                                fontWeight: 'normal',
+                                fontWeight: 'bold',
                                 color: COLORS.white,
                               }}>
                               Rent Savings
@@ -828,7 +817,7 @@ export default function NewHome({navigation}) {
                             onPress={() => navigation.navigate('SaveToOwn')}
                             style={{
                               backgroundColor: COLORS.white,
-                              borderRadius: 5,
+                              borderRadius: 10,
                               paddingVertical: 15,
                               paddingHorizontal: 25,
                               marginRight: 10,
@@ -836,7 +825,7 @@ export default function NewHome({navigation}) {
                             <Text
                               style={{
                                 fontSize: 12,
-                                fontWeight: 'normal',
+                                fontWeight: 'bold',
                                 color: COLORS.dark,
                               }}>
                               Save to own

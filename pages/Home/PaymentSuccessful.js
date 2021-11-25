@@ -81,13 +81,18 @@ export default function PaymentSuccessful(props) {
         style={{padding: 18, paddingHorizontal: 10}}
         color="#2A286A"
       />
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
         <Image
-          style={{width: 300, height: 300}}
+          style={{width: 200, height: 200}}
           source={images.congratulation}
         />
         <Text style={{fontSize: 20, fontWeight: 'bold', color: COLORS.primary}}>
-          Payment Successful
+          {props?.route?.params?.content || 'Payment Successful'}
         </Text>
       </View>
     </View>

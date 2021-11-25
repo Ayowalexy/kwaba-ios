@@ -131,10 +131,14 @@ export default function Login({navigation}) {
         setErrorMsg('');
         console.log('Res: ', res.data); // log out response
         if (res.data.authData.haveSetPin) {
-          navigation.navigate('EnterPin', {email: res.data.authData.email});
+          // navigation.navigate('EnterPin', {email: res.data.authData.email});
+          navigation.navigate('WelcomeBack', {data: res.data.authData});
           console.log('He get pin');
         } else {
-          navigation.navigate('CreatePin', data);
+          navigation.navigate('CreatePin', {
+            data: res.data.authData,
+            login: data,
+          });
           console.log('He no get pin');
         }
 
@@ -142,6 +146,12 @@ export default function Login({navigation}) {
         await AsyncStorage.setItem(
           'loginEmail',
           JSON.stringify(res.data.authData.email),
+        );
+
+        // welcome back userInfo
+        await AsyncStorage.setItem(
+          'loginInfo',
+          JSON.stringify(res.data.authData),
         );
 
         await analytics.track('User-Login', {
