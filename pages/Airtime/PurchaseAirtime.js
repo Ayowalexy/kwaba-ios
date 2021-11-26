@@ -131,7 +131,7 @@ const PurchaseAirtime = ({navigation, route}) => {
         setSpinner(false);
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 

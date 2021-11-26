@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import {COLORS} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getBankAccounts, getTokenizeCards} from '../../../services/network';
@@ -11,6 +17,7 @@ import BankAccount from './BankAccount';
 export default function CardAndBankDetails({navigation}) {
   const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [paymentCards, setPaymentCards] = useState([]);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
     const getAllCards = async () => {
@@ -28,10 +35,17 @@ export default function CardAndBankDetails({navigation}) {
   useEffect(() => {
     const getAllBanks = async () => {
       try {
+        setShowSpinner(true);
         const res = await getBankAccounts();
-        setUserBankAccounts(res.data.userBanks);
+        if (res.status == 200) {
+          setUserBankAccounts(res.data.userBanks);
+          setShowSpinner(false);
+        } else {
+          setShowSpinner(false);
+        }
       } catch (error) {
         console.log(error);
+        setShowSpinner(false);
       }
     };
 
@@ -39,31 +53,40 @@ export default function CardAndBankDetails({navigation}) {
   }, []);
 
   return (
-    <View style={[styles.container]}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={25}
-        style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
-        }}
-        color={COLORS.primary}
-      />
-      <Text style={[styles.heading]}>Card and Bank</Text>
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        <View style={[styles.content]}>
-          <PaymentCard
-            paymentCards={paymentCards}
-            allCards={(value) => setPaymentCards(value)}
-          />
-          <BankAccount
-            userBankAccounts={userBankAccounts}
-            allBanks={(value) => setUserBankAccounts(value)}
-          />
-        </View>
-      </ScrollView>
-    </View>
+    <>
+      <View style={[styles.container]}>
+        <Icon
+          onPress={() => navigation.goBack()}
+          name="arrow-back-outline"
+          size={25}
+          style={{
+            paddingVertical: 15,
+            paddingHorizontal: 15,
+          }}
+          color={COLORS.primary}
+        />
+
+        <Text style={[styles.heading]}>Card and Bank</Text>
+
+        <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+          <View style={[styles.content]}>
+            <PaymentCard
+              paymentCards={paymentCards}
+              allCards={(value) => setPaymentCards(value)}
+            />
+            <BankAccount
+              userBankAccounts={userBankAccounts}
+              allBanks={(value) => setUserBankAccounts(value)}
+            />
+          </View>
+        </ScrollView>
+        {showSpinner && (
+          <View>
+            <ActivityIndicator size={'large'} color={COLORS.secondary} />
+          </View>
+        )}
+      </View>
+    </>
   );
 }
 

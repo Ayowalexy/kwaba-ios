@@ -146,7 +146,7 @@ export default function SoloSavingDashBoard(props) {
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 
