@@ -151,7 +151,7 @@ export default function EmergencyLoanHome({navigation}) {
           backgroundColor: '#F7F8FD',
         },
       ]}>
-      {savings <= 0 ? (
+      {getMaxLoanCap1?.data?.you_have_save <= 0 ? (
         <View style={{flex: 1, backgroundColor: COLORS.white}}>
           <Icon
             onPress={() => navigation.goBack()}

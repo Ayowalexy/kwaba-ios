@@ -66,55 +66,28 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     return user;
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const user = await getUser();
-  //     const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
-  //     // console.log('The Account From Local Storage: ', storeBank);
-  //     setUserSelectedBankAccount(JSON.parse(storeBank));
-  //   })();
-  // }, []);
-
   useEffect(() => {
     dispatch(getBankAccounts());
   }, []);
-
-  // useEffect(() => {
-  //   console.log('From Redux Store Man: ', theStoredAccount);
-  //   setUserSelectedBankAccount(theStoredAccount.data);
-  // }, [theStoredAccount]);
 
   useEffect(() => {
     console.log('Called again nnn...');
     getBankAccountLocally();
   }, [getMaxLoanCap1]);
 
-  useEffect(() => {
-    (async () => {
-      const user = await getUser();
-      // if (userBankAccounts?.data?.length == 0) {
-      //   await AsyncStorage.removeItem(`storeBank-${user.id}`);
-      // }
-      const localBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
-      // console.log(JSON.parse(localBank).bank_account_number);
-      // console.log(userBankAccounts);
-
-      userBankAccounts?.data?.map(async (item, index) => {
-        if (
-          item.bank_account_number != JSON.parse(localBank).bank_account_number
-        ) {
-          await AsyncStorage.removeItem(`storeBank-${user.id}`);
-        }
-      });
-
-      // console.log('User Bank: ', userBankAccounts?.data);
-      // console.log(
-      //   'Local Bank: ',
-      //   await AsyncStorage.getItem(`storeBank-${user.id}`),
-      // );
-    })();
-    // console.log('The user banks: ', userBankAccounts);
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const user = await getUser();
+  //     const localBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+  //     userBankAccounts?.data?.map(async (item, index) => {
+  //       if (
+  //         item.bank_account_number != JSON.parse(localBank).bank_account_number
+  //       ) {
+  //         await AsyncStorage.removeItem(`storeBank-${user.id}`);
+  //       }
+  //     });
+  //   })();
+  // }, []);
 
   const getBankAccountLocally = async () => {
     const user = await getUser();
@@ -124,40 +97,11 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     setUserSelectedBankAccount(parsedData);
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const userData = await AsyncStorage.getItem('userData');
-  //     const accountName = JSON.parse(userData).user.savings_account_name;
-  //     const accountNumber = JSON.parse(userData).user.savings_account_number;
-  //     const code = JSON.parse(userData).user.savings_bank_code;
-  //     setBankAccountName(accountName != null ? accountName : '');
-  //     setBankAccountNumber(accountNumber != null ? accountNumber : '');
-  //     setBankCode(code != null ? code : '');
-
-  //     // console.log(accountNumber, accountName, code, JSON.parse(userData).user);
-  //   })();
-  // }, []);
-
   useEffect(() => {
-    setLoanAmount(route.params.loan_amount);
-    setRepaymentAmount(route.params.repayment_amount);
+    setLoanAmount(route?.params?.loan_amount);
+    setRepaymentAmount(route?.params?.repayment_amount);
     setDueDate(moment().add(30, 'days').format('DD, MMM YYYY'));
   }, []);
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const userBankAccount = await AsyncStorage.getItem('selectedBankAccount');
-  //     if (userBankAccount) {
-  //       const parsedUserBankAccount = JSON.parse(userBankAccount);
-  //       console.log(userBankAccount);
-  //       setUserSelectedBankAccount(parsedUserBankAccount);
-
-  //       setBankAccountName(parsedUserBankAccount.user_bank_name);
-  //       setBankAccountNumber(parsedUserBankAccount.bank_account_number);
-  //       setBankName(parsedUserBankAccount.bank_name);
-  //     }
-  //   })();
-  // }, [userSelectedBankAccount]);
 
   const loanTable = [
     {
@@ -182,10 +126,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
     const data = {
       loan_amount: loanAmount,
       loan_purpose: loanPurpose,
-
-      // disbursement_account_name: 'JOSHUA UDO NWOSU',
-      // disbursement_account_number: '0094552107',
-      // disbursement_account_bank: 'Access Bank(Diamond)',
 
       disbursement_account_name: userSelectedBankAccount.user_bank_name,
       disbursement_account_number: userSelectedBankAccount.bank_account_number,
@@ -307,7 +247,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         fontWeight: 'bold',
                         color: COLORS.white,
                       }}>
-                      {/* JOSHUA UDO NWOSU */}
                       {userSelectedBankAccount?.user_bank_name}
                     </Text>
                     <Text
@@ -315,7 +254,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         fontSize: 10,
                         color: COLORS.light,
                       }}>
-                      {/* Access Bank(DIAMOND) */}
                       {userSelectedBankAccount?.bank_name}
                     </Text>
                     <Text
@@ -325,7 +263,6 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                         color: COLORS.white,
                         opacity: 0.8,
                       }}>
-                      {/* 0094552107 */}
                       {userSelectedBankAccount?.bank_account_number}
                     </Text>
 
@@ -392,10 +329,12 @@ const EmergencyLoanRequest = ({route, navigation}) => {
         // setSuccessModal={() => setSuccessModal(!successModal)}
       />
 
-      <DisbursementModal
-        onRequestClose={() => setDisbursementModal(!disbursementModal)}
-        visible={disbursementModal}
-      />
+      {disbursementModal && (
+        <DisbursementModal
+          onRequestClose={() => setDisbursementModal(!disbursementModal)}
+          visible={disbursementModal}
+        />
+      )}
     </View>
   );
 };

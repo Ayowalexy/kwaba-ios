@@ -31,6 +31,7 @@ import {
   getOneUserSavings,
   verifySavingsPayment,
   addFundsToSavings,
+  verifyWalletTransaction,
 } from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
@@ -150,7 +151,8 @@ export default function SoloSavingDashBoard(props) {
           };
 
           setSpinner(true);
-          const verify = await verifySavingsPayment(data);
+          // const verify = await verifySavingsPayment(data);
+          const verify = await verifyWalletTransaction(data);
 
           if (verify.status == 200) {
             setSpinner(false);
@@ -569,7 +571,7 @@ export default function SoloSavingDashBoard(props) {
         </View>
 
         <TransactionsTab
-          transactions={getOneTransaction?.data}
+          transactions={getOneTransaction?.data?.reverse()}
           title={savingTitle}
         />
       </ScrollView>

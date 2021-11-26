@@ -39,7 +39,7 @@ export const getTotalSoloSavings = () => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       dispatch(setTotalSoloSavings(response.data.data));
-      return response.data.data;
+      return response.data.data?.reverse();
     } catch (error) {
       return error.message;
     }

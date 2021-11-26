@@ -883,6 +883,23 @@ const getInterestRate = async () => {
   }
 };
 
+const verifyWalletTransaction = async () => {
+  const url =
+    'https://kwaba-php-api-bpplt.ondigitalocean.app/api/verify_wallet_transaction';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -945,4 +962,5 @@ export {
   verifyAddFundToWallet,
   getUserReferral,
   getInterestRate,
+  verifyWalletTransaction,
 };

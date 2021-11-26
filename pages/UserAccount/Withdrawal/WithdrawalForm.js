@@ -25,9 +25,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import SavingsListModal from './SavingsListModal';
 
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {getBankAccounts, requestWithdrawal} from '../../../services/network';
+import {requestWithdrawal} from '../../../services/network';
+import {getBankAccounts} from '../../../redux/actions/bankActions';
 
 import Spinner from 'react-native-loading-spinner-overlay';
+import DisbursementModal from '../../Borrow/EmergencyLoan/DisbursementModal';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -40,6 +42,7 @@ export default function WithdrawalForm(props) {
   const theStoredAccount = useSelector(
     (state) => state.getBankFromStorageReducer,
   );
+  const userBankAccounts = useSelector((state) => state.getBankAccountsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
   const [amountValue, setAmountValue] = useState('');
@@ -57,6 +60,8 @@ export default function WithdrawalForm(props) {
 
   const [spinner, setSpinner] = useState(false);
 
+  const [disbursementModal, setDisbursementModal] = useState(false);
+
   const focusedInput = useRef();
 
   const getUser = async () => {
@@ -66,46 +71,35 @@ export default function WithdrawalForm(props) {
   };
 
   useEffect(() => {
-    (async () => {
-      const user = await getUser();
-      const storeBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
-      console.log('The Account From Local Storage: ', storeBank);
-
-      setUserSelectedBankAccount(JSON.parse(storeBank));
-    })();
+    dispatch(getBankAccounts());
+    // dispatch(getMaxLoanCap());
+    // getBanks();
   }, []);
 
   useEffect(() => {
-    dispatch(getMaxLoanCap());
-    getBanks();
-  }, []);
+    getBankAccountLocally();
+  }, [getMaxLoanCap1]);
 
-  //   useEffect(() => {
-  //     const data = getMaxLoanCap1.data;
-  //     setSavings(data?.you_have_save);
-  //   }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const user = await getUser();
+  //     const localBank = await AsyncStorage.getItem(`storeBank-${user.id}`);
+  //     userBankAccounts?.data?.map(async (item, index) => {
+  //       if (
+  //         item.bank_account_number != JSON.parse(localBank).bank_account_number
+  //       ) {
+  //         await AsyncStorage.removeItem(`storeBank-${user.id}`);
+  //       }
+  //     });
+  //   })();
+  // }, []);
 
-  useEffect(() => {
-    if (item) {
-      console.log('The save: ', item.save_amount);
-      setSavings(item.amount_save);
-    }
-  }, [item]);
-
-  const getBanks = async () => {
-    const accounts = await getBankAccounts();
-
-    try {
-      console.log('The bank account: ', accounts?.data?.userBanks);
-      const currentBank = accounts?.data?.userBanks.filter(
-        (item) => item.defaultbank != 1,
-      )[0];
-      setSelectedBank(currentBank);
-      console.log('Current: ', currentBank);
-      console.log('Current user bank name: ', currentBank.user_bank_name);
-    } catch (error) {
-      console.log('The error: ', error);
-    }
+  const getBankAccountLocally = async () => {
+    const user = await getUser();
+    const account = await AsyncStorage.getItem(`storeBank-${user.id}`);
+    const parsedData = JSON.parse(account);
+    console.log('The parsed bank', parsedData?.user_bank_name);
+    setUserSelectedBankAccount(parsedData);
   };
 
   const handleSubmit = async (values) => {
@@ -117,10 +111,10 @@ export default function WithdrawalForm(props) {
       amount: selectedAmountIndex == 0 ? savings : unFormatNumber(amountValue),
       reason: values.reason,
       savings_id: item && item.id,
-      account_number: selectedBank?.bank_account_number,
-      account_name: selectedBank?.user_bank_name,
-      bank_name: selectedBank?.bank_name,
-      bank_code: selectedBank?.bank_short_code,
+      account_number: userSelectedBankAccount?.bank_account_number,
+      account_name: userSelectedBankAccount?.user_bank_name,
+      bank_name: userSelectedBankAccount?.bank_name,
+      bank_code: userSelectedBankAccount?.bank_short_code,
     };
     console.log('The Data Withdraw: ', data);
     setSpinner(true);
@@ -521,19 +515,22 @@ export default function WithdrawalForm(props) {
                     Bank Account
                   </Text>
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('CardAndBankDetails')}>
+                    // onPress={() => navigation.navigate('CardAndBankDetails')}
+                    onPress={() => setDisbursementModal(true)}>
                     <Text
                       style={{
                         fontSize: 12,
                         color: COLORS.secondary,
                         fontWeight: 'bold',
                       }}>
-                      {selectedBank != '' ? 'Change Account' : 'Add Account'}
+                      {userSelectedBankAccount
+                        ? 'Change Account'
+                        : 'Add Account'}
                     </Text>
                   </TouchableOpacity>
                 </View>
 
-                {selectedBank != '' && (
+                {userSelectedBankAccount && (
                   <View style={{marginTop: 20}}>
                     <TouchableOpacity
                       activeOpacity={0.9}
@@ -545,16 +542,14 @@ export default function WithdrawalForm(props) {
                             fontWeight: 'bold',
                             color: COLORS.white,
                           }}>
-                          {/* JOSHUA UDO NWOSU */}
-                          {selectedBank?.user_bank_name}
+                          {userSelectedBankAccount?.user_bank_name}
                         </Text>
                         <Text
                           style={{
                             fontSize: 10,
                             color: COLORS.light,
                           }}>
-                          {/* Access Bank(DIAMOND) */}
-                          {selectedBank?.bank_name}
+                          {userSelectedBankAccount?.bank_name}
                         </Text>
                         <Text
                           style={{
@@ -563,8 +558,7 @@ export default function WithdrawalForm(props) {
                             color: COLORS.white,
                             opacity: 0.8,
                           }}>
-                          {/* 0094552107 */}
-                          {selectedBank?.bank_account_number}
+                          {userSelectedBankAccount?.bank_account_number}
                         </Text>
 
                         <Image
@@ -643,6 +637,13 @@ export default function WithdrawalForm(props) {
           )}
         </Formik>
       </View>
+
+      {disbursementModal && (
+        <DisbursementModal
+          onRequestClose={() => setDisbursementModal(!disbursementModal)}
+          visible={disbursementModal}
+        />
+      )}
 
       <Spinner visible={spinner} size="large" />
     </>

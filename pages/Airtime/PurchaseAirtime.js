@@ -21,6 +21,7 @@ import NumberFormat from '../../components/NumberFormat';
 import {
   BuyPurchaseAirtime,
   verifyBillsTransactions,
+  verifyWalletTransaction,
 } from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaymentTypeModalForBills from '../../components/paymentTypeModalForBills';
@@ -134,17 +135,24 @@ const PurchaseAirtime = ({navigation, route}) => {
             reference: response?.data?.data?.reference,
           };
 
+          console.log('Airtime Data: ', data);
+
           setSpinner(true);
-          const verify = await verifyBillsTransactions(data);
+          // const verify = await verifyBillsTransactions(data);
+          const verify = await verifyWalletTransaction(data);
 
           if (verify.status == 200) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
+              content: 'Your airtime purchase was successful',
               name: 'AirtimeHome',
             });
           } else {
             setSpinner(false);
-            Alert.alert('Insufficient fund', 'Please fund your wallet');
+            Alert.alert(
+              'Service Unavailable',
+              'Unable to process the transaction. Please try again later.',
+            );
           }
         } else {
           setChannel(value);
@@ -342,6 +350,7 @@ const PurchaseAirtime = ({navigation, route}) => {
             console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
+          // disable="wallet"
         />
       )}
 

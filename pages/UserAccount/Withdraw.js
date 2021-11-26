@@ -20,7 +20,10 @@ export default function Withdraw({navigation}) {
   return (
     <View style={[styles.container]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => {
+          navigation.goBack();
+          dispatch(getMaxLoanCap());
+        }}
         name="arrow-back-outline"
         size={25}
         style={{

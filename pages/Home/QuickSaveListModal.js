@@ -92,7 +92,10 @@ export default function QuickSaveListModal(props) {
             });
           } else {
             setSpinner(false);
-            Alert.alert('Insufficient fund', 'Please fund your wallet');
+            Alert.alert(
+              'Error',
+              'Something went wrong, please try again later.',
+            );
           }
         } else {
           setChannel(value);
@@ -101,9 +104,12 @@ export default function QuickSaveListModal(props) {
         }
       } else {
         setSpinner(false);
+        Alert.alert('Error', 'Something went wrong, please try again later.');
       }
     } catch (error) {
+      setSpinner(false);
       console.log('Error: ', error);
+      Alert.alert('Error', 'Something went wrong, please try again later.');
     }
   };
 
@@ -283,21 +289,27 @@ export default function QuickSaveListModal(props) {
                                   <Text style={[styles.cardTitle]}>
                                     {item.name}
                                   </Text>
-                                  {/* <Icon
-                        name={item.locked ? 'lock-closed' : 'lock-open'}
-                        size={12}
-                        color={COLORS.light}
-                      /> */}
                                 </View>
 
                                 <View style={[styles.cardAmount]}>
-                                  <Text style={[styles.amountText]}>
-                                    ₦{formatNumber(item.amount_save) || '0.00'}
-                                  </Text>
-                                  <Text
-                                    style={[styles.amountText, {opacity: 0.5}]}>
-                                    ₦{formatNumber(item.target_amount)}
-                                  </Text>
+                                  <View>
+                                    <Text style={[styles.amountText]}>
+                                      Amount Saved
+                                    </Text>
+                                    <Text style={[styles.amountText]}>
+                                      ₦
+                                      {formatNumber(item.amount_save) || '0.00'}
+                                    </Text>
+                                  </View>
+
+                                  <View>
+                                    <Text style={[styles.amountText]}>
+                                      Target Amount
+                                    </Text>
+                                    <Text style={[styles.amountText]}>
+                                      ₦{formatNumber(item.target_amount)}
+                                    </Text>
+                                  </View>
                                 </View>
                               </View>
                             </View>
@@ -342,6 +354,7 @@ export default function QuickSaveListModal(props) {
           paymentCanceled={(e) => {
             setSpinner(false);
             console.log('Pay cancel', e);
+            onRequestClose();
             // Do something
           }}
           paymentSuccessful={async (res) => {
@@ -361,13 +374,16 @@ export default function QuickSaveListModal(props) {
 
             if (verify.status == 200) {
               // console.log('Success: Bills Payment Verified', res);
+              onRequestClose();
               navigation.navigate('PaymentSuccessful', {
                 name: 'SoloSavingDashBoard',
                 id: resData?.id,
               });
               setSpinner(false);
             } else {
+              onRequestClose();
               setSpinner(false);
+              Alert.alert('uhmm..', 'Something went wrong, please retry.');
             }
           }}
         />
