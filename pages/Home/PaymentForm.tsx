@@ -5,6 +5,7 @@ import {
   StyleSheet, //@ts-ignore
   ScrollView, //@ts-ignore
   TouchableOpacity,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
@@ -24,7 +25,9 @@ const PaymentForm: React.FC = (props: any) => {
         />
         <Text style={styles.title}>Payment details</Text>
         <TouchableOpacity onPress={() => setModal(true)}>
-          <Text>Open Modal</Text>
+          <View>
+            <Text>Open Modal</Text>
+          </View>
         </TouchableOpacity>
       </ScrollView>
 

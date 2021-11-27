@@ -1,5 +1,11 @@
 import React, {useEffect} from 'react';
-import {View, ScrollView, Text, StyleSheet} from 'react-native';
+import {
+  View,
+  ScrollView,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -18,31 +24,30 @@ export default function Withdraw({navigation}) {
   }, []);
 
   return (
-    <View style={[styles.container]}>
-      <Icon
-        onPress={() => navigation.goBack()}
-        name="arrow-back-outline"
-        size={25}
-        style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
-        }}
-        color={COLORS.primary}
-      />
-      <Text style={[styles.heading]}>Withdraw</Text>
+    <>
+      <View style={[styles.container]}>
+        <Icon
+          onPress={() => {
+            navigation.goBack();
+            dispatch(getMaxLoanCap());
+          }}
+          name="arrow-back-outline"
+          size={25}
+          style={{
+            paddingVertical: 15,
+            paddingHorizontal: 15,
+          }}
+          color={COLORS.primary}
+        />
+        <Text style={[styles.heading]}>Withdraw</Text>
 
-      <ScrollView
-        scrollEnabled
-        showsVerticalScrollIndicator={false}
-        // keyboardShouldPersistTaps="handled"
-      >
         {getMaxLoanCap1?.data?.you_have_save <= 0 ? (
           <WithdrawalStart navigation={navigation} />
         ) : (
           <WithdrawalForm navigation={navigation} />
         )}
-      </ScrollView>
-    </View>
+      </View>
+    </>
   );
 }
 

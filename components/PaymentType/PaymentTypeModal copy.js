@@ -4,7 +4,7 @@ import {images, icons, COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function PaymentTypeModal(props) {
-  const {visible, onRequestClose, setPaymentType, disable} = props;
+  const {visible, onRequestClose, setPaymentType} = props;
   return (
     <>
       <Modal
@@ -73,7 +73,7 @@ export default function PaymentTypeModal(props) {
                 {[
                   {name: 'Debit Card', icon: 'card', tag: 'card'},
                   {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
-                  {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
+                  // {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
                 ].map((item, index) => {
                   return (
                     <TouchableOpacity
@@ -91,7 +91,7 @@ export default function PaymentTypeModal(props) {
                         borderTopColor: '#BFBFBF30',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        display: disable == item.tag ? 'none' : 'flex',
+                        // opacity: item.icon == 'home' ? 0.4 : 1,
                       }}>
                       <View
                         style={{

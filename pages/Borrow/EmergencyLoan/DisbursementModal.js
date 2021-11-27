@@ -8,6 +8,7 @@ import {
   ScrollView,
   FlatList,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS, FONTS, images} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -50,6 +51,7 @@ export default function DisbursementModal(props) {
 
   const storeBankAccountLocally = async (bank) => {
     const user = await getUser();
+    await AsyncStorage.removeItem(`storeBank-${user.id}`);
     await AsyncStorage.setItem(`storeBank-${user.id}`, JSON.stringify(bank));
     dispatch(getMaxLoanCap());
     //   setClickedID(parsedData?.id);
@@ -81,14 +83,14 @@ export default function DisbursementModal(props) {
             fontWeight: 'bold',
             color: COLORS.white,
           }}>
-          {item.user_bank_name}
+          {item?.user_bank_name}
         </Text>
         <Text
           style={{
             fontSize: 12,
             color: COLORS.light,
           }}>
-          {item.bank_name}
+          {item?.bank_name}
         </Text>
         <Text
           style={{
@@ -97,7 +99,7 @@ export default function DisbursementModal(props) {
             color: COLORS.white,
             opacity: 0.8,
           }}>
-          {item.bank_account_number}
+          {item?.bank_account_number}
         </Text>
 
         <Image
@@ -187,9 +189,9 @@ export default function DisbursementModal(props) {
                 <FlatList
                   data={userBankAccounts?.data}
                   renderItem={renderBankAccounts}
-                  keyExtractor={(item) => item.id.toString()}
+                  keyExtractor={(item) => item?.id?.toString()}
                   horizontal
-                  showsHorizontalScrollIndicator={false}
+                  showsHorizontalScrollIndicator={true}
                   showsVerticalScrollIndicator={false}
                   style={{
                     marginLeft: 10,
@@ -204,15 +206,22 @@ export default function DisbursementModal(props) {
         </View>
       </View>
 
-      <AddBankAccountModal
-        onRequestClose={() => setBankModalVisible(!bankModalVisible)}
-        visible={bankModalVisible}
-        // setDisplayAllBankAccounts={(all) => allBanks(all)}
-        // setDisplayAllBankAccounts={(all) => console.log('The all', all)}
-        setDisplayAllBankAccounts={(all) => setUserBankAccounts({data: all})}
-      />
+      {bankModalVisible && (
+        <AddBankAccountModal
+          onRequestClose={() => setBankModalVisible(!bankModalVisible)}
+          visible={bankModalVisible}
+          // setDisplayAllBankAccounts={(all) => allBanks(all)}
+          // setDisplayAllBankAccounts={(all) => console.log('The all', all)}
+          setDisplayAllBankAccounts={(all) => setUserBankAccounts({data: all})}
+        />
+      )}
 
       <Spinner visible={spinner} size="large" />
+      {/* <ActivityIndicator
+        size={'small'}
+        color={COLORS.orange}
+        animating={false}
+      /> */}
     </Modal>
   );
 }
@@ -222,7 +231,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   content: {
     width: '100%',

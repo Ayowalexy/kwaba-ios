@@ -24,8 +24,10 @@ import DepositWalletModal from './DepositWalletModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
+  getInterestRate,
   userCreateSavings,
   verifySavingsPayment,
+  verifyWalletTransaction,
 } from '../../../services/network';
 import PaymentTypeModalSavings from '../../../components/PaymentType/PaymentTypeModalSavings';
 import ConfirmSave from '../../../components/ConfirmModalsForSaving/ConfirmSave';
@@ -92,6 +94,14 @@ export default function Screen3({navigation, route}) {
     // setShowPaymentModal(true);
   };
 
+  const [lockedSavingsInterestValue, setLockedSavingsInterestValue] = useState(
+    0,
+  );
+  const [
+    unlockedSavingsInterestValue,
+    setUnlockedSavingsInterestValue,
+  ] = useState(0);
+
   useEffect(() => {
     const data = route.params;
 
@@ -149,14 +159,15 @@ export default function Screen3({navigation, route}) {
         setSpinner(false);
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 
           console.log(data);
 
           setSpinner(true);
-          const verify = await verifySavingsPayment(data);
+          // const verify = await verifySavingsPayment(data);
+          const verify = await verifyWalletTransaction(data);
           console.log('The Verify: ', verify);
 
           if (verify.status == 200) {
@@ -311,6 +322,32 @@ export default function Screen3({navigation, route}) {
     }
   };
 
+  const fetchInterestData = async () => {
+    setSpinner(true);
+    try {
+      const response = await getInterestRate();
+      if (response.status == 200) {
+        const data = response.data.data;
+        console.log('The Res Data Interest Rate: ', data?.data);
+
+        data?.forEach((item) => {
+          if (item.id == 1) setUnlockedSavingsInterestValue(item.value);
+          if (item.id == 2) setLockedSavingsInterestValue(item.value);
+        });
+
+        setSpinner(false);
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      setSpinner(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchInterestData();
+  }, [locked]);
+
   return (
     <View style={designs.container}>
       <Icon
@@ -394,7 +431,12 @@ export default function Screen3({navigation, route}) {
             </View>
             <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={designs.key}>Interest Rate</Text>
-              <Text style={designs.value}>{locked ? '11%' : '10%'} P.A</Text>
+              <Text style={designs.value}>
+                {locked
+                  ? lockedSavingsInterestValue
+                  : unlockedSavingsInterestValue}
+                % P.A
+              </Text>
             </View>
           </View>
           <View

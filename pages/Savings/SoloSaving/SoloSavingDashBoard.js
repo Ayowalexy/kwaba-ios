@@ -31,6 +31,8 @@ import {
   getOneUserSavings,
   verifySavingsPayment,
   addFundsToSavings,
+  verifyWalletTransaction,
+  changeSavingsMethod,
 } from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
@@ -77,9 +79,29 @@ export default function SoloSavingDashBoard(props) {
 
   const [resData, setResData] = useState('');
 
-  const toggleSwitch = () => {
+  const toggleSwitch = async () => {
     setAutoSaving((previousState) => !previousState);
   };
+
+  useEffect(() => {
+    (async () => {
+      const data = {
+        savings_id: route.params.id,
+        action: autoSaving ? 'auto' : 'manual',
+      };
+      console.log('The Data: ', data);
+
+      setSpinner(true);
+      try {
+        const response = await changeSavingsMethod(data);
+        if (response.status == 200) {
+          setSpinner(false);
+        }
+      } catch (error) {
+        setSpinner(false);
+      }
+    })();
+  }, [autoSaving]);
 
   useEffect(() => {
     dispatch(getOneSoloSavingsTransaction(route.params.id));
@@ -145,12 +167,13 @@ export default function SoloSavingDashBoard(props) {
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 
           setSpinner(true);
-          const verify = await verifySavingsPayment(data);
+          // const verify = await verifySavingsPayment(data);
+          const verify = await verifyWalletTransaction(data);
 
           if (verify.status == 200) {
             setSpinner(false);
@@ -569,7 +592,7 @@ export default function SoloSavingDashBoard(props) {
         </View>
 
         <TransactionsTab
-          transactions={getOneTransaction?.data}
+          transactions={getOneTransaction?.data?.reverse()}
           title={savingTitle}
         />
       </ScrollView>

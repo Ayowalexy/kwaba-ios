@@ -31,6 +31,7 @@ export default function SavingLists({navigation}) {
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
+    console.log('Length: ', allSavings?.data?.length);
   }, []);
 
   return (
@@ -174,12 +175,19 @@ export default function SavingLists({navigation}) {
                     </View>
 
                     <View style={[styles.cardAmount]}>
-                      <Text style={[styles.amountText]}>
-                        ₦{formatNumber(item.amount_save) || '0.00'}
-                      </Text>
-                      <Text style={[styles.amountText, {opacity: 0.5}]}>
-                        ₦{formatNumber(item.target_amount)}
-                      </Text>
+                      <View>
+                        <Text style={[styles.amountText]}>Amount Saved</Text>
+                        <Text style={[styles.amountText]}>
+                          ₦{formatNumber(item.amount_save) || '0.00'}
+                        </Text>
+                      </View>
+
+                      <View>
+                        <Text style={[styles.amountText]}>Target Amount</Text>
+                        <Text style={[styles.amountText]}>
+                          ₦{formatNumber(item.target_amount)}
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </View>

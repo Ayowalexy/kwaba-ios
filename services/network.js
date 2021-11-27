@@ -867,6 +867,56 @@ const getUserReferral = async () => {
   }
 };
 
+const getInterestRate = async () => {
+  const url = apiUrl + '/api/v1/get_interest_rate';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// change_savings_method
+const changeSavingsMethod = async (data) => {
+  const url = apiUrl + '/api/v1/change_savings_method';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const verifyWalletTransaction = async () => {
+  const url =
+    'https://kwaba-php-api-bpplt.ondigitalocean.app/api/verify_wallet_transaction';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -928,4 +978,7 @@ export {
   verifyBillsTransactions,
   verifyAddFundToWallet,
   getUserReferral,
+  getInterestRate,
+  changeSavingsMethod,
+  verifyWalletTransaction,
 };

@@ -94,7 +94,7 @@ export default function Wallet(props) {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       setTransactions(response.data.data);
-      console.log('Wallet Transaction New: ', response.data.data);
+      // console.log('Wallet Transaction New: ', response.data.data);
       // return response.data.data;
     } catch (error) {
       console.log(error);
@@ -557,11 +557,14 @@ export default function Wallet(props) {
 
             if (verify.status == 200) {
               navigation.navigate('PaymentSuccessful', {
+                content: 'Funds Add To Your Wallet Successfully',
                 name: 'Home',
               });
               setSpinner(false);
+              // setShowQuickSaveListModal(false);
             } else {
               setSpinner(false);
+              // setShowQuickSaveListModal(false);
             }
           }}
         />

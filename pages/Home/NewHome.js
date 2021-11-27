@@ -216,6 +216,26 @@ export default function NewHome({navigation}) {
         navigation.navigate('SavingsHome');
       },
     },
+
+    {
+      title: 'Wallet Balance',
+      subtitle:
+        wallet <= 0
+          ? 'Fund your wallet to transact on Kwaba'
+          : 'Save and pay bills from your wallet',
+      amount: formatNumber(Number(wallet).toFixed(2)) || '0.00',
+      color: COLORS.dark,
+      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
+      actionClick: () => {
+        // wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true);
+        navigation.navigate('Wallet');
+      },
+      cardClick: () => {
+        TrackEvent('Home-Card-Wallet');
+        navigation.navigate('Wallet');
+      },
+    },
+
     {
       title: 'Emergency Fund',
       subtitle:
@@ -234,24 +254,7 @@ export default function NewHome({navigation}) {
           : navigation.navigate('EmergencyLoanDashBoard');
       },
     },
-    {
-      title: 'Wallets',
-      subtitle:
-        wallet <= 0
-          ? 'Fund your wallet to transact on Kwaba'
-          : 'Save and pay bills from your wallet',
-      amount: formatNumber(Number(wallet).toFixed(2)) || '0.00',
-      color: COLORS.dark,
-      actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
-      actionClick: () => {
-        // wallet == 0 ? setShowWalletModal(true) : setShowWalletModal(true);
-        navigation.navigate('Wallet');
-      },
-      cardClick: () => {
-        TrackEvent('Home-Card-Wallet');
-        navigation.navigate('Wallet');
-      },
-    },
+
     {
       title: 'Rent Now Pay Later',
       subtitle:
@@ -259,24 +262,28 @@ export default function NewHome({navigation}) {
           ? "Let's help you pay your rent"
           : 'Next payment amount',
       amount: formatNumber(Number(rentalFinance).toFixed(2)),
-      color: '#000',
+      color: COLORS.dark,
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Borrow')
+          ? navigation.navigate('RentNowPayLaterOnboarding')
           : navigation.navigate('RentNowPayLaterDashboard'),
       cardClick: () => {
         TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Borrow')
+          ? navigation.navigate('RentNowPayLaterOnboarding')
           : navigation.navigate('RentNowPayLaterDashboard');
       },
     },
   ];
+
+  // useEffect(() => {
+  //   console.log('The Wallet: ', wallet);
+  // }, []);
 
   const quickActions = [
     {
@@ -284,8 +291,13 @@ export default function NewHome({navigation}) {
       // name: 'Emergency',
       image: icons.ic3,
       route: () => {
-        navigation.navigate('EmergencyFundOnboarding');
         TrackEvent('Emergency Funds Home Quick Action');
+
+        if (savings == 0) {
+          navigation.navigate('EmergencyFundOnboarding');
+        } else {
+          navigation.navigate('EmergencyLoanHome');
+        }
       },
     },
     {
@@ -550,7 +562,7 @@ export default function NewHome({navigation}) {
                   key={idx}
                   style={{
                     width: ITEM_WIDTH,
-                    height: ITEM_HEIGHT - 20,
+                    height: ITEM_HEIGHT - 30,
                     marginLeft: idx === 0 ? OFFSET : undefined,
                     marginRight: idx === slides.length - 1 ? OFFSET : undefined,
                     opacity: opacity,
@@ -560,18 +572,20 @@ export default function NewHome({navigation}) {
                     activeOpacity={0.9}
                     onPress={item.cardClick}
                     style={{
-                      // backgroundColor: item.color,
-                      backgroundColor: COLORS.primary,
+                      backgroundColor: item.color,
+                      // backgroundColor: COLORS.primary,
                       width: '100%',
                       height: '100%',
-                      padding: 30,
+                      paddingHorizontal: 30,
+                      paddingVertical: 10,
                       borderRadius: 10,
                       overflow: 'hidden',
                       borderColor: '#9D98EC',
                       borderWidth: 1,
                       elevation: 5,
+                      justifyContent: 'center',
                     }}>
-                    {/* <Image
+                    <Image
                       source={images.frame}
                       style={{
                         width: 200,
@@ -581,7 +595,7 @@ export default function NewHome({navigation}) {
                         top: 0,
                       }}
                       resizeMode="contain"
-                    /> */}
+                    />
                     <View>
                       <View
                         style={{
@@ -589,7 +603,12 @@ export default function NewHome({navigation}) {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                         }}>
-                        <Text style={{fontSize: 14, color: COLORS.white}}>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: COLORS.white,
+                            fontWeight: 'bold',
+                          }}>
                           {item.title}
                         </Text>
 

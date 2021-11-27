@@ -214,8 +214,8 @@ import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
 
-import Smartlook from 'smartlook-react-native-wrapper';
-Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
+// import Smartlook from 'smartlook-react-native-wrapper';
+// Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
 
 const Stack = createStackNavigator();
 
@@ -415,6 +415,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
+          // initialRouteName={'PaymentSuccessful'}
           initialRouteName={'Welcome'}>
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
