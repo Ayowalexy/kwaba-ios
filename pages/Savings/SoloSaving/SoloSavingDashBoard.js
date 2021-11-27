@@ -32,6 +32,7 @@ import {
   verifySavingsPayment,
   addFundsToSavings,
   verifyWalletTransaction,
+  changeSavingsMethod,
 } from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
@@ -78,9 +79,29 @@ export default function SoloSavingDashBoard(props) {
 
   const [resData, setResData] = useState('');
 
-  const toggleSwitch = () => {
+  const toggleSwitch = async () => {
     setAutoSaving((previousState) => !previousState);
   };
+
+  useEffect(() => {
+    (async () => {
+      const data = {
+        savings_id: route.params.id,
+        action: autoSaving ? 'auto' : 'manual',
+      };
+      console.log('The Data: ', data);
+
+      setSpinner(true);
+      try {
+        const response = await changeSavingsMethod(data);
+        if (response.status == 200) {
+          setSpinner(false);
+        }
+      } catch (error) {
+        setSpinner(false);
+      }
+    })();
+  }, [autoSaving]);
 
   useEffect(() => {
     dispatch(getOneSoloSavingsTransaction(route.params.id));

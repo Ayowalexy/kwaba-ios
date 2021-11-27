@@ -13,7 +13,8 @@ import {COLORS} from '../util';
 
 export default function SelectSavingsOptionModal(props) {
   const {onRequestClose, visible, onClick} = props;
-  const genders = ['Solo Savings', 'Wallets', 'Referral'];
+  // const genders = ['Solo Savings', 'Buddy Savings', 'Wallets', 'Referral'];
+  const genders = ['Solo Savings', 'Wallets'];
   return (
     // <View>
     <Modal

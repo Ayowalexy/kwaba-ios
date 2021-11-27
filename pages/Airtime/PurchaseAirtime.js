@@ -350,7 +350,7 @@ const PurchaseAirtime = ({navigation, route}) => {
             console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
-          // disable="wallet"
+          disable="wallet"
         />
       )}
 
