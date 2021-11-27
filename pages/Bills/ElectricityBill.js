@@ -326,8 +326,7 @@ const ElectricityBill = ({navigation, route}) => {
             disabled={
               customerID.length < 1 ||
               unFormatNumber(amount) < minMaxAmount.min ||
-              unFormatNumber(amount) > minMaxAmount.max ||
-              phoneNumber < 11
+              unFormatNumber(amount) > minMaxAmount.max
             }
             style={[
               styles.btn,
@@ -336,8 +335,7 @@ const ElectricityBill = ({navigation, route}) => {
                 backgroundColor:
                   customerID.length < 1 ||
                   unFormatNumber(amount) < minMaxAmount.min ||
-                  unFormatNumber(amount) > minMaxAmount.max ||
-                  phoneNumber < 11
+                  unFormatNumber(amount) > minMaxAmount.max
                     ? '#00DC9950'
                     : '#00DC99',
                 width: '100%',
@@ -491,6 +489,7 @@ const ElectricityBill = ({navigation, route}) => {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
+          disable="wallet"
         />
       )}
     </>

@@ -159,26 +159,27 @@ export default function Screen3({navigation, route}) {
         setSpinner(false);
         if (value == 'wallet') {
           const data = {
-            payment_channel: value,
+            channel: value,
             reference: response?.data?.data?.reference,
           };
 
           console.log(data);
 
           setSpinner(true);
-          // const verify = await verifySavingsPayment(data);
-          const verify = await verifyWalletTransaction(data);
+          const verify = await verifySavingsPayment(data);
+          // const verify = await verifyWalletTransaction(data);
           console.log('The Verify: ', verify);
 
           if (verify.status == 200) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
-              id: resData?.id,
+              id: verify?.data?.data?.id,
             });
           } else {
             setSpinner(false);
-            Alert.alert('Insufficient fund', 'Please fund your wallet');
+            // Alert.alert('Insufficient fund', 'Please fund your wallet');
+            console.log('Error: ', verify.response);
           }
         } else {
           setSpinner(false);

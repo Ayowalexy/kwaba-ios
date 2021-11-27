@@ -273,13 +273,13 @@ const CableTvBill = ({navigation, route}) => {
 
           <TouchableOpacity
             onPress={handleRoute}
-            disabled={customerID.length < 1 || amount == '' || phoneNumber < 11}
+            disabled={customerID.length < 1 || amount == ''}
             style={[
               styles.btn,
               {
                 backgroundColor: '#00DC99',
                 backgroundColor:
-                  customerID.length < 1 || amount == '' || phoneNumber < 11
+                  customerID.length < 1 || amount == ''
                     ? '#00DC9950'
                     : '#00DC99',
                 width: '100%',
@@ -426,6 +426,7 @@ const CableTvBill = ({navigation, route}) => {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
+          disable="wallet"
         />
       )}
     </>

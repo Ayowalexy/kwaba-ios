@@ -83,25 +83,25 @@ export default function SoloSavingDashBoard(props) {
     setAutoSaving((previousState) => !previousState);
   };
 
-  useEffect(() => {
-    (async () => {
-      const data = {
-        savings_id: route.params.id,
-        action: autoSaving ? 'auto' : 'manual',
-      };
-      console.log('The Data: ', data);
+  // useEffect(() => {
+  //   (async () => {
+  //     const data = {
+  //       savings_id: route.params.id,
+  //       action: autoSaving ? 'auto' : 'manual',
+  //     };
+  //     console.log('The Data: ', data);
 
-      setSpinner(true);
-      try {
-        const response = await changeSavingsMethod(data);
-        if (response.status == 200) {
-          setSpinner(false);
-        }
-      } catch (error) {
-        setSpinner(false);
-      }
-    })();
-  }, [autoSaving]);
+  //     setSpinner(true);
+  //     try {
+  //       const response = await changeSavingsMethod(data);
+  //       if (response.status == 200) {
+  //         setSpinner(false);
+  //       }
+  //     } catch (error) {
+  //       setSpinner(false);
+  //     }
+  //   })();
+  // }, [autoSaving]);
 
   useEffect(() => {
     dispatch(getOneSoloSavingsTransaction(route.params.id));
@@ -167,23 +167,24 @@ export default function SoloSavingDashBoard(props) {
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
-            payment_channel: value,
+            channel: value,
             reference: response?.data?.data?.reference,
           };
 
           setSpinner(true);
-          // const verify = await verifySavingsPayment(data);
-          const verify = await verifyWalletTransaction(data);
+          const verify = await verifySavingsPayment(data);
+          // const verify = await verifyWalletTransaction(data);
 
           if (verify.status == 200) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
-              id: resData?.id,
+              id: route?.params?.id,
             });
           } else {
             setSpinner(false);
-            Alert.alert('Insufficient fund', 'Please fund your wallet');
+            // Alert.alert('Insufficient fund', 'Please fund your wallet');
+            // console.log('Response: ', verify.response);
           }
         } else {
           setChannel(value);
@@ -294,7 +295,7 @@ export default function SoloSavingDashBoard(props) {
                 style={{
                   position: 'absolute',
                   right: 5,
-                  top: 0,
+                  top: 5,
                   zIndex: 5,
                 }}
                 onPress={() => setShowAmountModal(true)}
@@ -342,7 +343,7 @@ export default function SoloSavingDashBoard(props) {
                     color={COLORS.primary}
                   />
                 </View>
-                <View style={{display: 'flex'}}>
+                {/* <View style={{display: 'flex', marginTop: 5}}>
                   <Text style={{color: COLORS.white, fontSize: 10}}>
                     Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
                   </Text>
@@ -353,7 +354,7 @@ export default function SoloSavingDashBoard(props) {
                     onValueChange={toggleSwitch}
                     value={autoSaving}
                   />
-                </View>
+                </View> */}
               </View>
               <View
                 style={{
