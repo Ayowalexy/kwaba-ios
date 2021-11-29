@@ -197,6 +197,7 @@ import {
   StatusBar,
   Linking,
   AppState,
+  LogBox,
 } from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
@@ -213,8 +214,14 @@ import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
 
+import PushNotification from 'react-native-push-notification';
+
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const Stack = createStackNavigator();
 
@@ -364,6 +371,17 @@ const App = () => {
     var pkg = require('./package.json');
     console.log('pkg: ', pkg.version);
   }, []);
+
+  useEffect(() => {
+    createChannel();
+  }, []);
+
+  const createChannel = () => {
+    PushNotification.createChannel({
+      channelId: 'test-channel',
+      channelName: 'Test Channel',
+    });
+  };
 
   return (
     <>

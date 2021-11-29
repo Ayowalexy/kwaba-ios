@@ -54,6 +54,8 @@ import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
 import analytics from '@segment/analytics-react-native';
 
+import PushNotification from 'react-native-push-notification';
+
 import {TrackEvent} from '../../util/segmentEvents';
 
 export default function NewHome({navigation}) {
@@ -361,6 +363,15 @@ export default function NewHome({navigation}) {
     },
   ];
 
+  const handleNotification = (item) => {
+    PushNotification.localNotification({
+      channelId: 'test-channel',
+      title: 'Notification',
+      message:
+        '<strong>This is a very big test can will span more than one line in the notification panel. You need to expand the notification to see all.</strong>',
+    });
+  };
+
   const OFFSET = 30;
   const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;
   const ITEM_HEIGHT = 180;
@@ -402,9 +413,14 @@ export default function NewHome({navigation}) {
           onPress={async () => {
             // navigation.navigate('BuddyPaymentScreen');
             // navigation.navigate('Notifications');
-            navigation.navigate('Referral');
+            // navigation.navigate('Referral');
             // navigation.navigate('AppUpdate');
-            TrackEvent('Invite Friends');
+            // TrackEvent('Invite Friends');
+            handleNotification({
+              name: 'Invite Frineds',
+              sub:
+                'You just clicked on invite friends, do you want to invite your friends?',
+            });
           }}>
           <Icon name="people-sharp" color={COLORS.dark} size={25} />
 

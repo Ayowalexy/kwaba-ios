@@ -558,8 +558,9 @@ export default function Wallet(props) {
 
             if (verify.status == 200) {
               navigation.navigate('PaymentSuccessful', {
-                content: 'Funds Added To Your Wallet Successfully',
                 name: 'Home',
+                content: 'Payment Successfully',
+                subText: 'Awesome! You have successfully funded you wallet',
               });
               setSpinner(false);
               // setShowQuickSaveListModal(false);

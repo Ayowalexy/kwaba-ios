@@ -34,6 +34,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import ModalMessage from '../../components/MessageModals/ModalMessage';
+import PushNotification from 'react-native-push-notification';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -106,8 +107,16 @@ const PurchaseAirtime = ({navigation, route}) => {
           if (verify.status == 200) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
-              content: 'Your airtime purchase was successful',
               name: 'AirtimeHome',
+              content: 'Recharge Successful',
+              subText: 'Sent! You have successfully recharged the number',
+              onNotify: () => {
+                PushNotification.localNotification({
+                  channelId: 'test-channel',
+                  title: 'Airtime Recharge',
+                  message: 'You just recharged',
+                });
+              },
             });
           } else {
             setSpinner(false);
@@ -115,11 +124,11 @@ const PurchaseAirtime = ({navigation, route}) => {
             setMessage({
               visible: true,
               body:
-                verify.response.data.response_message ||
+                verify?.response?.data?.response_message ||
                 'An error occurred, please try again later.',
               success: false,
             });
-            console.log('Verify Error: ', verify.response);
+            console.log('Verify Error: ', verify?.response);
           }
         } else {
           setChannel(value);
@@ -128,14 +137,14 @@ const PurchaseAirtime = ({navigation, route}) => {
         }
       } else {
         setSpinner(false);
-        console.log('Response Error: ', response.response);
+        console.log('Response Error: ', response?.response);
       }
     } catch (error) {
       setSpinner(false);
-      console.log('Error: ', error.response);
+      console.log('Error: ', error?.response);
       setMessage({
         visible: true,
-        body: error.response.data.response_message,
+        body: error?.response?.data?.response_message,
         success: false,
       });
     }
@@ -380,6 +389,15 @@ const PurchaseAirtime = ({navigation, route}) => {
               // console.log('Success: Bills Payment Verified', res);
               navigation.navigate('PaymentSuccessful', {
                 name: 'AirtimeHome',
+                content: 'Recharge Successful',
+                subText: 'Sent! You have successfully recharged the number',
+                onNotify: () => {
+                  PushNotification.localNotification({
+                    channelId: 'test-channel',
+                    title: 'Airtime Recharge',
+                    message: 'You just recharged',
+                  });
+                },
               });
               setSpinner(false);
             } else {
