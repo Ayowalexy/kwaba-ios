@@ -443,8 +443,9 @@ export default function Wallet(props) {
                           <View style={{flex: 1, paddingRight: 20}}>
                             <Text
                               style={{
-                                fontSize: 14,
-                                color: COLORS.primary,
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                color: COLORS.dark,
                                 textTransform: 'capitalize',
                               }}
                               numberOfLines={1}>
@@ -453,7 +454,7 @@ export default function Wallet(props) {
                             <Text
                               style={{
                                 fontSize: 12,
-                                color: COLORS.grey,
+                                color: COLORS.dark,
                                 marginTop: 5,
                               }}>
                               {moment(item.updated_at).format('DD MMM YYYY')}
@@ -463,9 +464,9 @@ export default function Wallet(props) {
                             style={{
                               fontSize: 12,
                               fontWeight: 'bold',
-                              color: COLORS.primary,
+                              color: COLORS.dark,
                             }}>
-                            ₦{item.amount}
+                            ₦{formatNumber(Number(item.amount).toFixed(2))}
                           </Text>
                         </View>
                       </View>
@@ -557,7 +558,7 @@ export default function Wallet(props) {
 
             if (verify.status == 200) {
               navigation.navigate('PaymentSuccessful', {
-                content: 'Funds Add To Your Wallet Successfully',
+                content: 'Funds Added To Your Wallet Successfully',
                 name: 'Home',
               });
               setSpinner(false);
@@ -597,9 +598,9 @@ const styles = StyleSheet.create({
   lists: {
     backgroundColor: COLORS.white,
     paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderRadius: 5,
-    elevation: 1,
+    paddingVertical: 10,
+    // borderRadius: 5,
+    // elevation: 1,
     marginBottom: 10,
     borderLeftWidth: 5,
   },

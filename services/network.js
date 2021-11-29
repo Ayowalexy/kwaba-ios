@@ -900,12 +900,12 @@ const changeSavingsMethod = async (data) => {
   }
 };
 
-const verifyWalletTransaction = async () => {
+const verifyWalletTransaction = async (data) => {
   const url =
     'https://kwaba-php-api-bpplt.ondigitalocean.app/api/verify_wallet_transaction';
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
+    const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,

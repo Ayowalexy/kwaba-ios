@@ -202,7 +202,7 @@ export default function NewHome({navigation}) {
         savings <= 0
           ? 'Save now to make your rent work for you'
           : 'Great job on your rent savings',
-      amount: formatNumber(Number(savings).toFixed(2)),
+      amount: savings ? formatNumber(Number(savings).toFixed(2)) : '0.00',
       color: COLORS.primary,
       actionText: savings == 0 ? 'Save Now' : 'Fund savings',
       actionClick: () =>
@@ -223,7 +223,7 @@ export default function NewHome({navigation}) {
         wallet <= 0
           ? 'Fund your wallet to transact on Kwaba'
           : 'Save and pay bills from your wallet',
-      amount: formatNumber(Number(wallet).toFixed(2)) || '0.00',
+      amount: wallet ? formatNumber(Number(wallet).toFixed(2)) : '0.00',
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () => {
@@ -240,7 +240,9 @@ export default function NewHome({navigation}) {
       title: 'Emergency Fund',
       subtitle:
         instantLoan <= 0 ? 'Access instant loans' : 'Total amount to repay',
-      amount: formatNumber(Number(instantLoan).toFixed(2)),
+      amount: instantLoan
+        ? formatNumber(Number(instantLoan).toFixed(2))
+        : '0.00',
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -261,7 +263,9 @@ export default function NewHome({navigation}) {
         rentalFinance <= 0
           ? "Let's help you pay your rent"
           : 'Next payment amount',
-      amount: formatNumber(Number(rentalFinance).toFixed(2)),
+      amount: rentalFinance
+        ? formatNumber(Number(rentalFinance).toFixed(2))
+        : '0.00',
       color: COLORS.dark,
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -281,9 +285,9 @@ export default function NewHome({navigation}) {
     },
   ];
 
-  // useEffect(() => {
-  //   console.log('The Wallet: ', wallet);
-  // }, []);
+  useEffect(() => {
+    console.log('The Wallet: ', wallet);
+  }, []);
 
   const quickActions = [
     {

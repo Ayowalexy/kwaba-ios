@@ -33,6 +33,7 @@ import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
+import ModalMessage from '../../components/MessageModals/ModalMessage';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -51,6 +52,13 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
+  const [message, setMessage] = useState({
+    title: 'Title',
+    body: 'Body',
+    visible: false,
+    success: false,
+  });
+
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const airtimeSchema = yup.object().shape({
@@ -66,55 +74,9 @@ const PurchaseAirtime = ({navigation, route}) => {
   }, [name]);
 
   const buyAirtimeHandler = async () => {
-    // const data = {
-    //   serviceID: airtimeData[0].serviceID, // e.g mtn, airtel, glo, 9mobile
-    //   amount: unFormatNumber(amount), // e.g 100
-    //   recepient: phoneNumber, // e.g 08011111111
-    // };
-    // console.log('Data: ', data);
-
     setConfirmModalVisible(false);
     setShowPaymentModal(true);
-
-    // setSpinner(true);
-
-    // try {
-    //   const res = await BuyPurchaseAirtime(data);
-    //   if (res.status == 200) {
-    //     setSpinner(false);
-    //     console.log('Buy Res: ', res.data.data);
-    //     setResData(res.data.data);
-    //     setConfirmModalVisible(false);
-    //     setShowPaymentType(true);
-    //   }
-    // } catch (error) {
-    //   setSpinner(false);
-    //   console.log('Error: ', error);
-    // }
   };
-
-  // const getToken = async () => {
-  //   const userData = await AsyncStorage.getItem('userData');
-  //   const token = JSON.parse(userData).token;
-  //   return token;
-  // };
-
-  // const verifyPayment = async (data) => {
-  //   const token = await getToken();
-  //   const url =
-  //     'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/verify_bills_transactions';
-  //   try {
-  //     const response = await axios.post(url, data, {
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: token,
-  //       },
-  //     });
-  //     return response;
-  //   } catch (error) {
-  //     return error;
-  //   }
-  // };
 
   const handlePaymentRoute = async (value) => {
     try {
@@ -149,10 +111,15 @@ const PurchaseAirtime = ({navigation, route}) => {
             });
           } else {
             setSpinner(false);
-            Alert.alert(
-              'Service Unavailable',
-              'Unable to process the transaction. Please try again later.',
-            );
+
+            setMessage({
+              visible: true,
+              body:
+                verify.response.data.response_message ||
+                'An error occurred, please try again later.',
+              success: false,
+            });
+            console.log('Verify Error: ', verify.response);
           }
         } else {
           setChannel(value);
@@ -161,9 +128,16 @@ const PurchaseAirtime = ({navigation, route}) => {
         }
       } else {
         setSpinner(false);
+        console.log('Response Error: ', response.response);
       }
     } catch (error) {
-      console.log('Error: ', error);
+      setSpinner(false);
+      console.log('Error: ', error.response);
+      setMessage({
+        visible: true,
+        body: error.response.data.response_message,
+        success: false,
+      });
     }
   };
 
@@ -350,7 +324,7 @@ const PurchaseAirtime = ({navigation, route}) => {
             console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
-          disable="wallet"
+          // disable="wallet"
         />
       )}
 
@@ -415,6 +389,13 @@ const PurchaseAirtime = ({navigation, route}) => {
         />
       )}
 
+      {message.visible && (
+        <ModalMessage
+          message={message}
+          navigation={navigation}
+          onClose={() => setMessage(!message.visible)}
+        />
+      )}
       <Spinner visible={spinner} size="large" />
     </View>
   );

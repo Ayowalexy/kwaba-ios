@@ -160,11 +160,13 @@ export default function Login({navigation}) {
       } else {
         setSpinner(false);
         console.log('Invalid, please provide a valid email and password');
+        console.log('Res Error', res);
         setErrorMsg('Please provide a valid email or password');
       }
     } catch (error) {
       setSpinner(false);
       console.log('Error, An error occured, please retry');
+      console.log('Error', error);
       setErrorMsg('An error occured, please retry');
     }
   };
