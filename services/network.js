@@ -291,8 +291,9 @@ const resolveCardDetails = async (data) => {
   }
 };
 
-const tokenizeCard = async (data) => {
-  const url = apiUrl + '/api/v1/cardtokenize';
+// amount (#50)
+const tokenizePayment = async (data) => {
+  const url = apiUrl + '/api/v1/paycardtokenize';
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -307,8 +308,9 @@ const tokenizeCard = async (data) => {
   }
 };
 
-const tokenizePayment = async (data) => {
-  const url = apiUrl + '/api/v1/paycardtokenize';
+// reference
+const tokenizeCard = async (data) => {
+  const url = apiUrl + '/api/v1/cardtokenize';
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -900,6 +902,7 @@ const changeSavingsMethod = async (data) => {
   }
 };
 
+// Verify wallet Transaction
 const verifyWalletTransaction = async (data) => {
   const url =
     'https://kwaba-php-api-bpplt.ondigitalocean.app/api/verify_wallet_transaction';

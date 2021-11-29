@@ -19,86 +19,38 @@ import {
 } from '../services/network';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Spinner from 'react-native-loading-spinner-overlay';
+import PaystackPayment from './Paystack/PaystackPayment';
 
 export default function AddPaymentCardModal(props) {
   const {onRequestClose, visible, onConfirm, setDisplayAllPaymentCards} = props;
 
   const [paymentCards, setPaymentCards] = useState([]);
   const [spinner, setSpinner] = useState(false);
-
-  const openInAppBrowser = async (url) => {
-    try {
-      if (await InAppBrowser.isAvailable()) {
-        const result = await InAppBrowser.open(url, {
-          // iOS Properties
-          dismissButtonStyle: 'done',
-          preferredBarTintColor: '#453AA4',
-          preferredControlTintColor: 'white',
-          readerMode: false,
-          animated: true,
-          modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'coverVertical',
-          modalEnabled: true,
-          enableBarCollapsing: false,
-          // Android Properties
-          showTitle: true,
-          toolbarColor: '#2A286A',
-          secondaryToolbarColor: 'black',
-          enableUrlBarHiding: true,
-          enableDefaultShare: true,
-          forceCloseOnRedirection: false,
-          hasBackButton: true,
-          // Specify full animation resource identifier(package:anim/name)
-          // or only resource name(in case of animation bundled with app).
-          animations: {
-            startEnter: 'slide_in_right',
-            startExit: 'slide_out_left',
-            endEnter: 'slide_in_left',
-            endExit: 'slide_out_right',
-          },
-        });
-
-        return result;
-      } else Linking.openURL(url);
-    } catch (error) {
-      return error.message;
-    }
-  };
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+  const [resData, setResData] = useState('');
+  const [channel, setChannel] = useState('');
 
   const addAccount = async () => {
-    console.log('Opening paystack...');
-    setSpinner(true);
-
     const data = {
       amount: 50,
     };
 
+    setSpinner(true);
     try {
       const res = await tokenizePayment(data);
       console.log('RES: ', res);
       setSpinner(false);
-      // if (res.status == 200) {
-      //   setSpinner(false);
-      //   const result = await openInAppBrowser(res.data.data.authorization_url);
-      //   if (result.type == 'cancel') {
-      //     setSpinner(false);
-      //     let data = {reference: res.data.data.reference};
-      //     const verify = await verifyPayment(data);
+      if (res.status == 200) {
+        setSpinner(false);
+        console.log('The Response: ', res.data.data);
+        setShowPaystackPayment(true);
+        setResData(res.data.data);
+        setChannel('card');
 
-      //     if (verify.status == 200) {
-      //       setSpinner(false);
-      //       const card = await tokenizeCard(data);
-
-      //       if (card.data.status == 'success') {
-      //         setSpinner(false);
-      //         setPaymentCards([...paymentCards, card.data.card]);
-      //       }
-      //     } else {
-      //       setSpinner(false);
-      //       console.log('Your payment was not verified. Please retry.');
-      //     }
-      //   }
-      // }
+        // const verify =
+      } else {
+        setSpinner(false);
+      }
     } catch (error) {
       setSpinner(false);
       console.log(error);
@@ -162,15 +114,15 @@ export default function AddPaymentCardModal(props) {
                   style={{
                     fontSize: 15,
                     width: '100%',
-                    color: '#465969',
+                    color: COLORS.dark,
                     lineHeight: 25,
-                    paddingRight: 80,
+                    paddingRight: 40,
                   }}>
                   To verify your card you will be charged{' '}
                   <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
                     ₦50.
                   </Text>{' '}
-                  This money goes towards your rent savings.
+                  {/* This money goes towards your rent savings. */}
                 </Text>
               </View>
 
@@ -184,13 +136,51 @@ export default function AddPaymentCardModal(props) {
                 ]}>
                 <Text
                   style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
-                  ADD CARD
+                  CONTINUE
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
       </View>
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            const data = {
+              // channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await tokenizeCard(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              navigation.navigate('PaymentSuccessful', {
+                name: 'Home',
+                content: 'Card Tokenized',
+                subText:
+                  'Awesome! You have successfully tokenized your card for payments.',
+              });
+              setSpinner(false);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
+
       <Spinner visible={spinner} size="large" />
     </>
   );
