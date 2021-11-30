@@ -216,6 +216,8 @@ import AppUpdate from './pages/AppUpdate/AppUpdate';
 
 import PushNotification from 'react-native-push-notification';
 
+import CodePush from 'react-native-code-push';
+
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
 
@@ -235,6 +237,15 @@ const linking = {
       SavingLists: 'SavingLists',
       AirtimeHome: 'AirtimeHome',
     },
+  },
+};
+
+let CodePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+  mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+  updateDialog: {
+    appendReleaseDescription: true,
+    title: 'A new update is available!',
   },
 };
 
@@ -816,4 +827,5 @@ const App = () => {
   );
 };
 
-export default App;
+// export default App;
+export default CodePush(CodePushOptions)(App);
