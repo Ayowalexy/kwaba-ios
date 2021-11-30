@@ -1,6 +1,6 @@
 {
   "name": "kwaba_mobile_app",
-  "version": "2.0.0",
+  "version": "1.8.4",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,7 +9,7 @@
     "test": "jest",
     "lint": "eslint .",
     "CodePush:ios": "appcenter CodePush release-react -a Kwabauser/Kwaba-App -d Production",
-    "CodePush:android": "appcenter codepush release-react -a Kwabauser/Kwaba-App -d Production --target-binary-version ~2.0.0"
+    "CodePush:android": "appcenter codepush release-react -a Kwabauser/Kwaba-App -d Production --target-binary-version ~1.8.4"
   },
   "dependencies": {
     "@mono.co/connect-react-native": "^0.1.3",

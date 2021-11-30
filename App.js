@@ -187,6 +187,10 @@ import {LoanScreen1} from './pages/Loans';
 // Wallet
 import Wallet from './pages/Wallet/Wallet';
 
+// Challenge
+import JoinChallengeList from './pages/Challenge/JoinChallengeList';
+import JoinChallengeDashboard from './pages/Challenge/JoinChallengeDashboard';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -817,6 +821,10 @@ const App = () => {
               <Stack.Screen name="PinPassword" component={PinPassword} />
 
               <Stack.Screen name="AppUpdate" component={AppUpdate} />
+
+              <Stack.Screen name="JoinChallengeList" component={JoinChallengeList} />
+              
+              <Stack.Screen name="JoinChallengeDashboard" component={JoinChallengeDashboard} />
             </>
           )}
         </Stack.Navigator>

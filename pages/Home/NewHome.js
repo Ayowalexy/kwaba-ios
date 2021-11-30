@@ -337,30 +337,30 @@ export default function NewHome({navigation}) {
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
     },
+    {
+      title: 'Join a Savings Challenge',
+      body:
+        'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
+      img: images.maskGroup29,
+      route: () => navigation.navigate('JoinChallengeList'),
+    },
     // {
-    //   title: 'Join a savings challenge',
+    //   title: 'Home Loans',
     //   body:
-    //     'Get instant loans from Kwaba when you need to sort out life emergencies or unexpected expenses.',
-    //   img: images.maskGroup14,
+    //     'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
+    //   img: images.maskGroup29,
+    //   route: () =>
+    //     isProfileComplete
+    //       ? navigation.navigate('LoanScreen1')
+    //       : setCompleteProfileModal(true),
+    // },
+    // {
+    //   title: 'Refer and Earn',
+    //   body:
+    //     'Invite your friends and family to use  Kwaba and earn from every referral ',
+    //   img: images.giftPackage,
     //   route: () => navigation.navigate('Referral'),
     // },
-    {
-      title: 'Home Loans',
-      body:
-        'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
-      img: images.maskGroup29,
-      route: () =>
-        isProfileComplete
-          ? navigation.navigate('LoanScreen1')
-          : setCompleteProfileModal(true),
-    },
-    {
-      title: 'Refer and Earn',
-      body:
-        'Invite your friends and family to use  Kwaba and earn from every referral ',
-      img: images.giftPackage,
-      route: () => navigation.navigate('Referral'),
-    },
   ];
 
   const handleNotification = (item) => {
@@ -376,6 +376,16 @@ export default function NewHome({navigation}) {
   const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;
   const ITEM_HEIGHT = 180;
   const scrollX = React.useRef(new Animated.Value(0)).current;
+
+  const TransactionHistory = () => {
+    return (
+      <View style={{paddingHorizontal: 20, paddingBottom: 20}}>
+        <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
+          Latest Transaction
+        </Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -422,7 +432,7 @@ export default function NewHome({navigation}) {
                 'You just clicked on invite friends, do you want to invite your friends?',
             });
           }}>
-          {/* <Icon name="people-sharp" color={COLORS.dark} size={25} /> */}
+          <Icon name="people-sharp" color={COLORS.dark} size={25} />
 
           <Text
             style={{
@@ -794,7 +804,11 @@ export default function NewHome({navigation}) {
                   key={index}
                   style={{
                     backgroundColor:
-                      index == 0 ? '#EDECFC' : index == 1 ? 'white' : '#01A573',
+                      index == 0
+                        ? '#EDECFC'
+                        : index != bottomCards.length - 1
+                        ? COLORS.white
+                        : '#5A4CB1',
                     marginBottom: 10,
                     borderRadius: 10,
                     elevation: 0.5,
@@ -814,7 +828,10 @@ export default function NewHome({navigation}) {
                     <View style={{padding: 20}}>
                       <Text
                         style={{
-                          color: index == 2 ? 'white' : COLORS.dark,
+                          color:
+                            index == bottomCards.length - 1
+                              ? 'white'
+                              : COLORS.dark,
                           fontFamily: 'CircularStd',
                           fontSize: 15,
                           lineHeight: 23,
@@ -826,7 +843,10 @@ export default function NewHome({navigation}) {
                         style={{
                           width: '75%',
                           marginTop: 9,
-                          color: index == 2 ? 'white' : COLORS.dark,
+                          color:
+                            index == bottomCards.length - 1
+                              ? 'white'
+                              : COLORS.dark,
                           fontFamily: 'CircularStd',
                           fontSize: 12,
                           lineHeight: 20,
@@ -902,6 +922,11 @@ export default function NewHome({navigation}) {
             })}
           </View>
         </View>
+
+        <>
+          {/* Transactions History Here */}
+          <TransactionHistory />
+        </>
       </ScrollView>
 
       {quickSaveModal && (
