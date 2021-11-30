@@ -122,7 +122,7 @@ export default function AddPaymentCardModal(props) {
                   <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
                     ₦50.
                   </Text>{' '}
-                  {/* This money goes towards your rent savings. */}
+                  This money goes towards your wallet.
                 </Text>
               </View>
 
