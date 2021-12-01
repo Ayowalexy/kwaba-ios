@@ -268,7 +268,7 @@ export default function NewHome({navigation}) {
       amount: rentalFinance
         ? formatNumber(Number(rentalFinance).toFixed(2))
         : '0.00',
-      color: COLORS.dark,
+      color: '#5A4CB1',
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
         !isProfileComplete

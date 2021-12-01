@@ -8,10 +8,13 @@ import {
   TouchableOpacity,
   StatusBar,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JoinChallengeModal from './JoinChallengeModal';
+import {useDispatch, useSelector} from 'react-redux';
+import {getSavingsChallengeList} from '../../redux/actions/savingsChallengeAction';
 
 const data = [
   {
@@ -53,19 +56,55 @@ const img = require('../../assets/images/high-five.png');
 const snowflake = require('../../assets/images/snowflake.png');
 const snow = require('../../assets/images/snow.png');
 
+const target1 = require('../../assets/images/target3.png');
+const target2 = require('../../assets/images/target2.png');
+const target3 = require('../../assets/images/target.png');
+
 export default function JoinChallengeList({navigation}) {
+  const dispatch = useDispatch();
+  const challengeList = useSelector(
+    (state) => state.getSavingsChallengeReducer,
+  );
   const [showModal, setShowModal] = useState(false);
+  const [resData, setResData] = useState('');
+
+  useEffect(() => {
+    dispatch(getSavingsChallengeList());
+    // console.log('Data: ', challengeList?.data);
+  }, []);
+
+  const handleNavigate = (data) => {
+    setShowModal(true);
+    setResData(data);
+  };
+
   const renderItem = ({item, index}) => {
-    const {name, description, img} = item;
+    const {name, description} = item;
     return (
-      <TouchableOpacity onPress={() => setShowModal(true)} style={styles.card}>
+      <TouchableOpacity
+        onPress={() => handleNavigate(item)}
+        style={[
+          styles.card,
+          {
+            display:
+              name.toLowerCase() == 'december charledge' ? 'none' : 'flex',
+          },
+        ]}>
         <View style={styles.cardContent}>
           <Text style={styles.cardTitle}>{name}</Text>
-          <Text style={styles.cardBody}>{description}</Text>
+          <Text style={styles.cardBody} numberOfLines={2}>
+            {description}
+          </Text>
         </View>
         <View style={styles.cardImageContainer}>
           <Image
-            source={img}
+            source={
+              name == 'Double December 25k Challenge'
+                ? target1
+                : name == 'Double December 50k Challenge'
+                ? target2
+                : target3
+            }
             style={{
               height: 60,
             }}
@@ -83,7 +122,12 @@ export default function JoinChallengeList({navigation}) {
                     : '#5A4CB1',
               },
             ]}>
-            ₦{index == 0 ? '25,000' : index == 1 ? '50,000' : '100,000'}
+            ₦
+            {name == 'Double December 25k Challenge'
+              ? '25,000'
+              : name == 'Double December 50k Challenge'
+              ? '50,000'
+              : '100,000'}
           </Text>
         </View>
       </TouchableOpacity>
@@ -101,57 +145,70 @@ export default function JoinChallengeList({navigation}) {
           color={COLORS.white}
         />
         <Image
-        source={snowflake}
-        style={{
-          width: 100,
-          height: 100,
-          position: 'absolute',
-          right: 10,
-          top: 10,
-          opacity: 0.2,
-          zIndex: 0
-        }}
-        resizeMode="contain"
-      />
-       <Image
-        source={snow}
-        style={{
-          width: 100,
-          height: 100,
-          position: 'absolute',
-          left: 0,
-          bottom: 10,
-          opacity: 0.2,
-          zIndex: 0
-        }}
-        resizeMode="contain"
-      />
-      <Image
-        source={snow}
-        style={{
-          width: 50,
-          height: 50,
-          position: 'absolute',
-          right: 0,
-          bottom: 10,
-          opacity: 0.2,
-          zIndex: 0
-        }}
-        resizeMode="contain"
-      />
+          source={snowflake}
+          style={{
+            width: 100,
+            height: 100,
+            position: 'absolute',
+            right: 10,
+            top: 10,
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+          resizeMode="contain"
+        />
+        <Image
+          source={snow}
+          style={{
+            width: 100,
+            height: 100,
+            position: 'absolute',
+            left: 0,
+            bottom: 10,
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+          resizeMode="contain"
+        />
+        <Image
+          source={snow}
+          style={{
+            width: 50,
+            height: 50,
+            position: 'absolute',
+            right: 0,
+            bottom: 10,
+            opacity: 0.2,
+            zIndex: 0,
+          }}
+          resizeMode="contain"
+        />
         <View style={{marginTop: 10, marginBottom: 20, paddingLeft: 5}}>
           <Text style={styles.heading}>Join a Savings Challenge</Text>
         </View>
 
-        <View>
-          <FlatList
-            data={data}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id.toString()}
-            showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+        {!challengeList?.data && (
+          <View
+            style={{
+              flex: 1,
+              // justifyContent: 'center',
+              // alignItems: 'center'
+            }}>
+            <ActivityIndicator color={COLORS.white} />
+          </View>
+        )}
+
+        {challengeList?.data && (
+          <View style={{flex: 1}}>
+            <FlatList
+              data={challengeList?.data}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        )}
       </View>
 
       {showModal && (
@@ -159,6 +216,7 @@ export default function JoinChallengeList({navigation}) {
           onRequestClose={() => setShowModal(!showModal)}
           visible={showModal}
           navigation={navigation}
+          data={resData}
         />
       )}
     </>
@@ -168,7 +226,8 @@ export default function JoinChallengeList({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingTop: 20,
+    paddingHorizontal: 20,
     backgroundColor: '#5A4CB1',
   },
   heading: {
@@ -181,9 +240,9 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingVertical: 20,
     backgroundColor: '#FFFFFF',
-    marginBottom: 10,
+    marginBottom: 20,
     borderRadius: 10,
-    elevation: 0.5,
+    elevation: 8,
     borderColor: '#EFEFEF',
     borderWidth: 1,
     flexDirection: 'row',

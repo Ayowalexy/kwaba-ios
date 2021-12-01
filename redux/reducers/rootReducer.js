@@ -24,6 +24,8 @@ import {
   getUserWalletTransactionsReducer,
 } from './walletReducer';
 
+import {getSavingsChallengeReducer} from './savingsChallengeReducer';
+
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
   soloSavingReducer: soloSavingReducer,
@@ -45,4 +47,5 @@ export const rootReducer = combineReducers({
   getAirtimeReducer: getAirtimeReducer,
   getUserWalletReducer: getUserWalletReducer,
   getUserWalletTransactionsReducer: getUserWalletTransactionsReducer,
+  getSavingsChallengeReducer: getSavingsChallengeReducer,
 });

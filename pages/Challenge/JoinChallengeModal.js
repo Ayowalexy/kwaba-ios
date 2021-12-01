@@ -15,16 +15,20 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 const {width, height} = Dimensions.get('screen');
 
-const snow = require('../../assets/images/goal.png');
+const img = require('../../assets/images/high-five.png');
 
 export default function JoinChallengeModal(props) {
-  const {onRequestClose, visible, navigation} = props;
+  const {onRequestClose, visible, navigation, data} = props;
   const [spinner, setSpinner] = useState(false);
 
+  useEffect(() => {
+    console.log('The Data: ', data);
+  },[])
+
   const handleNavigate = () => {
-      onRequestClose()
-    navigation.navigate('JoinChallengeDashboard')
-  }
+    onRequestClose();
+    navigation.navigate('JoinChallengeDashboard');
+  };
 
   return (
     <>
@@ -44,7 +48,7 @@ export default function JoinChallengeModal(props) {
               lineHeight: 35,
               //   width: width / 1.5
             }}>
-            Double December 25k Challenge
+            {data?.name}
           </Text>
           <View style={styles.modalView}>
             <View
@@ -53,10 +57,10 @@ export default function JoinChallengeModal(props) {
                 // borderWidth: 1,
                 justifyContent: 'center',
                 alignItems: 'center',
-                paddingHorizontal: 50,
+                paddingHorizontal: 40,
               }}>
               <Image
-                source={snow}
+                source={img}
                 style={{
                   width: 100,
                   height: 100,
@@ -66,18 +70,20 @@ export default function JoinChallengeModal(props) {
               <Text
                 style={{
                   fontSize: 14,
-                  color: COLORS.black,
+                  color: COLORS.dark,
                   textAlign: 'center',
                   lineHeight: 25,
                   marginTop: 20,
                 }}>
-                Challenge other renters to save 25k in the month of December and
-                get double interest for the month
+                {data.description}
               </Text>
             </View>
 
             <TouchableOpacity style={[styles.btn]} onPress={handleNavigate}>
               <Text style={[styles.btnText]}>JOIN CHALLENGE</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.btn, {backgroundColor: 'transparent'}]} onPress={onRequestClose}>
+              <Text style={[styles.btnText, {color: '#5A4CB1'}]}>CANCEL</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -99,20 +105,23 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white,
     overflow: 'hidden',
     padding: 20,
-    // paddingHorizontal: 20,
+    paddingHorizontal: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     elevation: 50,
   },
   btn: {
     backgroundColor: '#5A4CB1',
+    // backgroundColor: COLORS.white,
     padding: 20,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
+    marginTop: 10
   },
   btnText: {
     color: COLORS.white,
+    // color: '#5A4CB1',
     fontSize: 12,
     fontWeight: 'bold',
   },
