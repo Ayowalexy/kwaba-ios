@@ -99,7 +99,7 @@ export default function JoinChallengeList({navigation}) {
   };
 
   const renderItem = ({item, index}) => {
-    const {name, description, id, savings} = item;
+    const {name, short_description, id, savings} = item;
 
     return (
       <>
@@ -117,7 +117,7 @@ export default function JoinChallengeList({navigation}) {
             <View style={{flexDirection: 'row', flex: 1}}>
               <View style={styles.cardContent}>
                 <Text style={styles.cardTitle}>{name}</Text>
-                <Text style={styles.cardBody}>{description}</Text>
+                <Text style={styles.cardBody}>{short_description}</Text>
               </View>
 
               <View style={styles.cardImageContainer}>
