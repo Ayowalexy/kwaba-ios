@@ -122,7 +122,7 @@ export default function JoinChallengeDashboard(props) {
               name: 'JoinChallengeDashboard',
               id: route?.params?.data?.id,
               content: 'Payment Successful',
-              subText: 'Awesome! You have successfully funded your saving',
+              subText: 'Awesome! You have successfully funded your savings',
             });
           } else {
             setSpinner(false);
@@ -244,7 +244,7 @@ export default function JoinChallengeDashboard(props) {
             </View>
           </View>
 
-          {getOneSavings.data?.members_joined != null && (
+          {/* {getOneSavings.data?.members_joined != null && (
             <View
               style={{
                 backgeoundColor: COLORS.orange,
@@ -265,7 +265,7 @@ export default function JoinChallengeDashboard(props) {
                   : `${getOneSavings.data?.members_joined} people are on this challenge`}
               </Text>
             </View>
-          )}
+          )} */}
         </View>
 
         <View style={{alignItems: 'center'}}>

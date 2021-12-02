@@ -84,9 +84,9 @@ export default function JoinChallengeModal(props) {
             console.log('Verify Successful');
             navigation.navigate('PaymentSuccessful', {
               name: 'JoinChallengeDashboard',
-              id: data?.id,
+              id: props?.data?.id,
               content: 'Payment Successful',
-              subText: 'Joined! You have successfully join the challenge',
+              subText: 'Awesome! You have successfully joined the challenge',
             });
           } else {
             setSpinner(false);
@@ -229,7 +229,7 @@ export default function JoinChallengeModal(props) {
           setPaymentType={(data) => {
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
-          disable="bank_transfer"
+          // disable="bank_transfer"
         />
       )}
 
