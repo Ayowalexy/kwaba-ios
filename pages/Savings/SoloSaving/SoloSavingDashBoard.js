@@ -195,6 +195,7 @@ export default function SoloSavingDashBoard(props) {
         setSpinner(false);
       }
     } catch (error) {
+      setSpinner(false);
       console.log('Error: ', error);
     }
   };

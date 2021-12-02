@@ -512,6 +512,19 @@ const getUserSavings = async () => {
   }
 };
 
+const getUserSavingsWithParam = async (type) => {
+  const url = apiUrl + `/api/v1/get_user_savings?savings_type=${type}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 const getOneUserSavings = async (id) => {
   const url = apiUrl + `/api/v1/get_one_savings/${id}`;
   const token = await getToken();
@@ -920,6 +933,23 @@ const verifyWalletTransaction = async (data) => {
   }
 };
 
+// Savings Challenge
+const joinSavingsChallenge = async (data) => {
+  const url = apiUrl + '/api/v1/user_join_savings_charledge';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -956,6 +986,7 @@ export {
   InviteBuddy,
   userCreateSavings,
   getUserSavings,
+  getUserSavingsWithParam,
   getOneUserSavings,
   getSavingsHistory,
   addFundsToSavings,
@@ -984,4 +1015,5 @@ export {
   getInterestRate,
   changeSavingsMethod,
   verifyWalletTransaction,
+  joinSavingsChallenge,
 };

@@ -19,7 +19,15 @@ import {
 } from '../../redux/actions/savingsActions';
 import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
 import {useDispatch, useSelector} from 'react-redux';
-import {getUserWallet} from '../../redux/actions/walletAction';
+import {
+  getUserWallet,
+  getUserWalletTransactions,
+} from '../../redux/actions/walletAction';
+
+import {
+  getUserSavingsChallenge,
+  getOneUserSavingsChallenge,
+} from '../../redux/actions/savingsChallengeAction';
 
 export default function PaymentSuccessful(props) {
   const dispatch = useDispatch();
@@ -45,6 +53,9 @@ export default function PaymentSuccessful(props) {
     dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
     dispatch(getAirtimeBillTrans());
     dispatch(getUserWallet());
+    dispatch(getUserWalletTransactions());
+    dispatch(getUserSavingsChallenge());
+    dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
 
     // call fnc to send notification locally
     // props?.route?.params?.onNotify();
@@ -57,6 +68,9 @@ export default function PaymentSuccessful(props) {
     dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
     dispatch(getAirtimeBillTrans());
     dispatch(getUserWallet());
+    dispatch(getUserWalletTransactions());
+    dispatch(getUserSavingsChallenge());
+    dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
 
     console.log('Payment ID: ', props?.route?.params?.id);
 

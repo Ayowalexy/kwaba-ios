@@ -132,8 +132,8 @@ export default function WithdrawalForm(props) {
         //   {text: 'Close', onPress: () => navigation.navigate('Home')},
         // ]);
         setMessage({
-          title: '',
-          body: 'Withdrawal request successfully issued.',
+          title: 'Withdrawal request initiated',
+          body: 'Your request will be processed in 24 hours.',
           visible: true,
           success: true,
         });
@@ -308,11 +308,23 @@ export default function WithdrawalForm(props) {
           </View>
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 14,
               color: COLORS.primary,
               textAlign: 'center',
               lineHeight: 22,
               paddingHorizontal: 20,
+            }}>
+            {message?.title}
+          </Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 'bold',
+              color: COLORS.primary,
+              textAlign: 'center',
+              lineHeight: 22,
+              paddingHorizontal: 10,
+              marginTop: 10,
             }}>
             {message?.body}
           </Text>
@@ -706,7 +718,34 @@ export default function WithdrawalForm(props) {
                 </View>
 
                 <TouchableOpacity
-                  style={[styles.button]}
+                  disabled={
+                    Number(unFormatNumber(amountValue)) >
+                    Number(unFormatNumber(fullAmount))
+                      ? true
+                      : selectedAmountIndex == 0
+                      ? Number(unFormatNumber(fullAmount)) < 1000
+                        ? true
+                        : false
+                      : Number(unFormatNumber(amountValue)) < 1000
+                      ? true
+                      : false
+                  }
+                  style={[
+                    styles.button,
+                    {
+                      backgroundColor:
+                        Number(unFormatNumber(amountValue)) >
+                        Number(unFormatNumber(fullAmount))
+                          ? '#00DC9950'
+                          : selectedAmountIndex == 0
+                          ? Number(unFormatNumber(fullAmount)) < 1000
+                            ? '#00DC9950'
+                            : COLORS.secondary
+                          : Number(unFormatNumber(amountValue)) < 1000
+                          ? '#00DC9950'
+                          : COLORS.secondary,
+                    },
+                  ]}
                   onPress={handleSubmit}>
                   <Text
                     style={{
@@ -719,7 +758,12 @@ export default function WithdrawalForm(props) {
                     WITHDRAW
                   </Text>
                 </TouchableOpacity>
-                {/* </View> */}
+                <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                  <Text
+                    style={{fontSize: 12, color: COLORS.dark, marginLeft: 5}}>
+                    The minimum amount you can withdraw is ₦{formatNumber(1000)}
+                  </Text>
+                </View>
 
                 <SelectSavingsOptionModal
                   onRequestClose={() =>
@@ -737,11 +781,11 @@ export default function WithdrawalForm(props) {
                     }
 
                     if (value.toLowerCase() == 'wallets') {
-                      setFullAmount(getWallet.available_balances);
+                      setFullAmount(getWallet?.data?.available_balances);
                       // setValues({...values, })
                       console.log(
                         'Option Value Right Here.',
-                        getWallet.available_balances,
+                        getWallet?.data?.available_balances,
                       );
                     }
                   }}
@@ -827,7 +871,7 @@ const styles = StyleSheet.create({
     opacity: 1,
     backgroundColor: '#00DC99',
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 10,
   },
 
   customInput: {

@@ -57,6 +57,7 @@ import analytics from '@segment/analytics-react-native';
 import PushNotification from 'react-native-push-notification';
 
 import {TrackEvent} from '../../util/segmentEvents';
+import moment from 'moment';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -65,6 +66,9 @@ export default function NewHome({navigation}) {
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const getWallet = useSelector((state) => state.getUserWalletReducer);
+  const getWalletTransactions = useSelector(
+    (state) => state.getUserWalletTransactionsReducer,
+  );
 
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -193,8 +197,8 @@ export default function NewHome({navigation}) {
   }, [getMaxLoanCap1]);
 
   useEffect(() => {
-    // console.log('The Wallet: ', getWallet);
-    setWallet(getWallet.available_balances);
+    console.log('The Wallet: ', getWallet);
+    setWallet(getWallet?.data?.available_balances);
   }, [getWallet]);
 
   const slides = [
@@ -378,11 +382,77 @@ export default function NewHome({navigation}) {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   const TransactionHistory = () => {
+    const slicedTransaction = getWalletTransactions?.data?.slice(0, 4);
     return (
-      <View style={{paddingHorizontal: 20, paddingBottom: 20}}>
+      <View style={{paddingHorizontal: 20, paddingBottom: 20, marginTop: 20}}>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
-          Latest Transaction
+          Recent Transactions
         </Text>
+        <View
+          style={{
+            marginTop: 30,
+            paddingHorizontal: 20,
+          }}>
+          {slicedTransaction?.map((item, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  borderLeftWidth: 2,
+                  borderLeftColor:
+                    index == slicedTransaction.length - 1
+                      ? 'transparent'
+                      : '#46596950',
+                  paddingBottom: 30,
+                }}>
+                <View
+                  style={{
+                    width: 15,
+                    height: 15,
+                    backgroundColor: COLORS.dark,
+                    borderRadius: 15,
+                    position: 'absolute',
+                    left: -9,
+                    top: 0,
+                  }}
+                />
+                <View style={{paddingLeft: 40, marginTop: -5}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      // alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        color: COLORS.dark,
+                      }}>
+                      ₦{formatNumber(Number(item.amount).toFixed(2))}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: COLORS.dark,
+                      }}>
+                      {moment(item.updated_at).format('DD MMM YYYY')}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLORS.dark,
+                      marginTop: 20,
+                      lineHeight: 20,
+                    }}>
+                    {item.narration}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
       </View>
     );
   };
@@ -923,10 +993,10 @@ export default function NewHome({navigation}) {
           </View>
         </View>
 
-        <>
-          {/* Transactions History Here */}
-          <TransactionHistory />
-        </>
+        {/* {getWalletTransactions &&
+          getWalletTransactions?.data &&
+          getWalletTransactions?.data?.length && <TransactionHistory />} */}
+        <TransactionHistory />
       </ScrollView>
 
       {quickSaveModal && (

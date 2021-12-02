@@ -49,7 +49,7 @@ export const getUserWalletTransactions = () => {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      dispatch(setUserWalletTransactions(response.data.data));
+      dispatch(setUserWalletTransactions(response.data.data.reverse()));
       // console.log('Wallet Transaction: ', response.data.data);
       return response.data.data;
     } catch (error) {

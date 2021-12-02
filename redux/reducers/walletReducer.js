@@ -6,7 +6,7 @@ export const getUserWalletReducer = (state = [], action) => {
     case types.GET_USER_WALLET:
       return {
         ...state,
-        ...action.payload,
+        data: action.payload,
       };
     default:
       return state;
@@ -18,7 +18,7 @@ export const getUserWalletTransactionsReducer = (state = [], action) => {
     case types.GET_USER_WALLET_TRANSACTIONS:
       return {
         ...state,
-        ...action.payload,
+        data: action.payload,
       };
     default:
       return state;

@@ -14,7 +14,13 @@ import {COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JoinChallengeModal from './JoinChallengeModal';
 import {useDispatch, useSelector} from 'react-redux';
-import {getSavingsChallengeList} from '../../redux/actions/savingsChallengeAction';
+import {
+  getSavingsChallengeList,
+  getSavingsUnderChallengeList,
+  getUserSavingsChallenge,
+} from '../../redux/actions/savingsChallengeAction';
+import Joined from './Joined';
+import {formatNumber} from '../../util/numberFormatter';
 
 const data = [
   {
@@ -62,75 +68,91 @@ const target3 = require('../../assets/images/target.png');
 
 export default function JoinChallengeList({navigation}) {
   const dispatch = useDispatch();
-  const challengeList = useSelector(
-    (state) => state.getSavingsChallengeReducer,
+  // const challengeList = useSelector(
+  //   (state) => state.getSavingsChallengeReducer,
+  // );
+  // const savingsUnderChallenge = useSelector(
+  //   (state) => state.getSavingsUnderChallengeReducer,
+  // );
+  const userChallenge = useSelector(
+    (state) => state.getUserSavingsChallengeReducer,
   );
   const [showModal, setShowModal] = useState(false);
   const [resData, setResData] = useState('');
 
+  const [joinData, setJoinData] = useState('');
+
   useEffect(() => {
-    dispatch(getSavingsChallengeList());
-    // console.log('Data: ', challengeList?.data);
+    // dispatch(getSavingsChallengeList());
+    dispatch(getUserSavingsChallenge());
+    // dispatch(getSavingsUnderChallengeList());
+    // challengeList?.data.map((item, index) => {
+    //   dispatch(getSavingsUnderChallengeList(item.id));
+    // });
+    // getJoinSavings();
   }, []);
 
   const handleNavigate = (data) => {
     setShowModal(true);
     setResData(data);
+    // navigation.navigate('JoinChallengeDashboard');
   };
 
   const renderItem = ({item, index}) => {
-    const {name, description} = item;
+    const {name, description, id, savings} = item;
+
     return (
-      <TouchableOpacity
-        onPress={() => handleNavigate(item)}
-        style={[
-          styles.card,
-          {
-            display:
-              name.toLowerCase() == 'december charledge' ? 'none' : 'flex',
-          },
-        ]}>
-        <View style={styles.cardContent}>
-          <Text style={styles.cardTitle}>{name}</Text>
-          <Text style={styles.cardBody} numberOfLines={2}>
-            {description}
-          </Text>
-        </View>
-        <View style={styles.cardImageContainer}>
-          <Image
-            source={
-              name == 'Double December 25k Challenge'
-                ? target1
-                : name == 'Double December 50k Challenge'
-                ? target2
-                : target3
-            }
-            style={{
-              height: 60,
-            }}
-            resizeMode="contain"
+      <>
+        {savings.length ? (
+          <Joined
+            id={id}
+            data={savings}
+            allData={item}
+            navigation={navigation}
           />
-          <Text
-            style={[
-              styles.targetText,
-              {
-                color:
-                  index == 0
-                    ? COLORS.black
-                    : index == 1
-                    ? COLORS.red
-                    : '#5A4CB1',
-              },
-            ]}>
-            ₦
-            {name == 'Double December 25k Challenge'
-              ? '25,000'
-              : name == 'Double December 50k Challenge'
-              ? '50,000'
-              : '100,000'}
-          </Text>
-        </View>
-      </TouchableOpacity>
+        ) : (
+          <TouchableOpacity
+            onPress={() => handleNavigate(item)}
+            style={[styles.card]}>
+            <View style={{flexDirection: 'row', flex: 1}}>
+              <View style={styles.cardContent}>
+                <Text style={styles.cardTitle}>{name}</Text>
+                <Text style={styles.cardBody}>{description}</Text>
+              </View>
+
+              <View style={styles.cardImageContainer}>
+                <Image
+                  source={
+                    name == 'Double December 25k Challenge'
+                      ? target1
+                      : name == 'Double December 50k Challenge'
+                      ? target2
+                      : target3
+                  }
+                  style={{
+                    height: 60,
+                  }}
+                  resizeMode="contain"
+                />
+                <Text
+                  style={[
+                    styles.targetText,
+                    {
+                      color:
+                        index == 0
+                          ? COLORS.black
+                          : index == 1
+                          ? COLORS.red
+                          : '#5A4CB1',
+                    },
+                  ]}>
+                  ₦{formatNumber(item.tartget_per_member)}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        )}
+      </>
     );
   };
   return (
@@ -187,7 +209,7 @@ export default function JoinChallengeList({navigation}) {
           <Text style={styles.heading}>Join a Savings Challenge</Text>
         </View>
 
-        {!challengeList?.data && (
+        {!userChallenge?.data && (
           <View
             style={{
               flex: 1,
@@ -198,10 +220,10 @@ export default function JoinChallengeList({navigation}) {
           </View>
         )}
 
-        {challengeList?.data && (
+        {userChallenge?.data && (
           <View style={{flex: 1}}>
             <FlatList
-              data={challengeList?.data}
+              data={userChallenge?.data}
               renderItem={renderItem}
               keyExtractor={(item) => item.id.toString()}
               showsHorizontalScrollIndicator={false}
@@ -245,9 +267,9 @@ const styles = StyleSheet.create({
     elevation: 8,
     borderColor: '#EFEFEF',
     borderWidth: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: 'column',
+    // alignItems: 'center',
+    // justifyContent: 'space-between',
   },
   cardContent: {
     flex: 1,
