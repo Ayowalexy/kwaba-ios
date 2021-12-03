@@ -174,119 +174,119 @@ export default function SavingsChallengeSummary(props) {
             color={COLORS.white}
           />
 
-          {/* <ScrollView
+          <ScrollView
             showsHorizontalScrollIndicator={false}
-            showsVerticalScrollIndicator={false}> */}
-          <View style={{flex: 1}}>
-            <View style={[styles.title]}>
-              <Text style={[styles.titleText]}>Challenge Breakdown</Text>
-            </View>
-            <View style={[styles.card]}>
-              <View style={[styles.banner]}>
-                <View style={{flex: 1, paddingRight: 30}}>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: 'bold',
-                      color: COLORS.dark,
-                      lineHeight: 25,
-                    }}>
-                    {data?.name}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      lineHeight: 20,
-                      marginTop: 10,
-                      color: COLORS.dark,
-                    }}>
-                    {data?.description}
-                  </Text>
-                </View>
-                <View>
-                  <Image
-                    source={naira}
-                    style={{
-                      width: 50,
-                      height: 50,
-                    }}
-                    resizeMode="contain"
-                  />
-                </View>
+            showsVerticalScrollIndicator={false}>
+            <View style={{flex: 1}}>
+              <View style={[styles.title]}>
+                <Text style={[styles.titleText]}>Challenge Breakdown</Text>
               </View>
+              <View style={[styles.card]}>
+                <View style={[styles.banner]}>
+                  <View style={{flex: 1, paddingRight: 30}}>
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: 'bold',
+                        color: COLORS.dark,
+                        lineHeight: 25,
+                      }}>
+                      {data?.name}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        lineHeight: 20,
+                        marginTop: 10,
+                        color: COLORS.dark,
+                      }}>
+                      {data?.description}
+                    </Text>
+                  </View>
+                  <View>
+                    <Image
+                      source={naira}
+                      style={{
+                        width: 50,
+                        height: 50,
+                      }}
+                      resizeMode="contain"
+                    />
+                  </View>
+                </View>
 
-              <View style={[styles.preset]}>
-                <View style={styles.dataInfo}>
-                  <Text style={styles.key}>Amount to Save Daily</Text>
-                  <Text style={styles.value}>₦{formatNumber(amount)}</Text>
-                </View>
-                <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
-                  <Text style={styles.key}>Target Amount</Text>
-                  <Text style={styles.value}>
-                    ₦{formatNumber(data.tartget_per_member)}
-                  </Text>
-                </View>
-                <View style={styles.dataInfo}>
-                  <Text style={styles.key}>Start Date</Text>
-                  <Text style={styles.value}>
-                    {moment(data?.start_date).format('Do MMM YYYY')}
-                  </Text>
-                </View>
-                <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
-                  <Text style={styles.key}>End Date</Text>
-                  <Text style={styles.value}>
-                    {moment(data?.end_date).format('Do MMM YYYY')}
-                  </Text>
-                </View>
+                <View style={[styles.preset]}>
+                  <View style={styles.dataInfo}>
+                    <Text style={styles.key}>Amount to Save Daily</Text>
+                    <Text style={styles.value}>₦{formatNumber(amount)}</Text>
+                  </View>
+                  <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
+                    <Text style={styles.key}>Target Amount</Text>
+                    <Text style={styles.value}>
+                      ₦{formatNumber(data.tartget_per_member)}
+                    </Text>
+                  </View>
+                  <View style={styles.dataInfo}>
+                    <Text style={styles.key}>Start Date</Text>
+                    <Text style={styles.value}>
+                      {moment(data?.start_date).format('Do MMM YYYY')}
+                    </Text>
+                  </View>
+                  <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
+                    <Text style={styles.key}>End Date</Text>
+                    <Text style={styles.value}>
+                      {moment(data?.end_date).format('Do MMM YYYY')}
+                    </Text>
+                  </View>
 
-                <View style={[styles.dataInfo]}>
-                  <Text style={styles.key}>Frequency</Text>
-                  <Text style={styles.value}>{data.fequency}</Text>
-                </View>
+                  <View style={[styles.dataInfo]}>
+                    <Text style={styles.key}>Frequency</Text>
+                    <Text style={styles.value}>{data.fequency}</Text>
+                  </View>
 
-                {/* <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
+                  {/* <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
                   <Text style={styles.key}>Amount at Maturity</Text>
                   <Text style={styles.value}>₦{amountAtMaturity}</Text>
                 </View> */}
-              </View>
+                </View>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  marginTop: 10,
-                  paddingHorizontal: 20,
-                  backgroundColor: '#5A4CB110',
-                  paddingVertical: 5,
-                  borderRadius: 0,
-                }}>
-                <Text
+                <View
                   style={{
-                    color: COLORS.dark,
-                    fontSize: 13,
-                    lineHeight: 15,
-                    marginRight: 23,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    marginTop: 10,
+                    paddingHorizontal: 20,
+                    backgroundColor: '#5A4CB110',
+                    paddingVertical: 5,
+                    borderRadius: 0,
                   }}>
-                  Switch to {savingsType ? 'Manual' : 'Automatic'} Savings
-                </Text>
-                <Switch
-                  trackColor={{false: '#ddd', true: '#ddd'}}
-                  thumbColor={savingsType ? COLORS.secondary : '#ADADAD'}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleSwitch}
-                  value={savingsType}
-                />
+                  <Text
+                    style={{
+                      color: COLORS.dark,
+                      fontSize: 13,
+                      lineHeight: 15,
+                      marginRight: 23,
+                    }}>
+                    Switch to {savingsType ? 'Manual' : 'Automatic'} Savings
+                  </Text>
+                  <Switch
+                    trackColor={{false: '#ddd', true: '#ddd'}}
+                    thumbColor={savingsType ? COLORS.secondary : '#ADADAD'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={savingsType}
+                  />
+                </View>
               </View>
             </View>
-          </View>
 
-          <TouchableOpacity
-            onPress={handleSubmit}
-            style={[styles.btn, {elevation: 0}]}>
-            <Text style={[styles.btnText]}>JOIN CHALLENGE</Text>
-          </TouchableOpacity>
-          {/* </ScrollView> */}
+            <TouchableOpacity
+              onPress={handleSubmit}
+              style={[styles.btn, {elevation: 0}]}>
+              <Text style={[styles.btnText]}>JOIN CHALLENGE</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </Modal>
 

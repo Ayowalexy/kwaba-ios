@@ -23,7 +23,11 @@ import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../components/amountModal';
 
 import Spinner from 'react-native-loading-spinner-overlay';
-import {addFundsToSavings, verifySavingsPayment} from '../../services/network';
+import {
+  addFundsToSavings,
+  verifySavingsPayment,
+  verifyWalletTransaction,
+} from '../../services/network';
 
 export default function QuickSaveListModal(props) {
   const dispatch = useDispatch();
@@ -77,25 +81,29 @@ export default function QuickSaveListModal(props) {
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 
           setSpinner(true);
-          const verify = await verifySavingsPayment(data);
+          // const verify = await verifySavingsPayment(data);
+          const verify = await verifyWalletTransaction(data);
 
           if (verify.status == 200) {
             onRequestClose();
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
-              id: verify?.data?.data?.id,
+              id: id,
+              content: 'Payment Successful',
+              subText: 'Awesome! You have successfully funded your wallet.',
             });
           } else {
             // onRequestClose();
             setSpinner(false);
             console.log('Verify Error: ', verify.response.data);
-            // Alert.alert('Error', verify.response.data.data.statusMsg);
+
+            Alert.alert('Oops!', verify?.response?.data?.response_message);
           }
         } else {
           setChannel(value);
