@@ -502,7 +502,7 @@ export default function NewHome({navigation}) {
                 'You just clicked on invite friends, do you want to invite your friends?',
             });
           }}>
-          {/* <Icon name="people-sharp" color={COLORS.dark} size={25} /> */}
+          <Icon name="people-sharp" color={COLORS.dark} size={25} />
 
           <Text
             style={{
