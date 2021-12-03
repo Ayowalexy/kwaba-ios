@@ -137,7 +137,7 @@ export default function Screen2(props) {
             onChangeText={(text) => {
               const n = unFormatNumber(text);
               console.log('N: ', n);
-              onChange(name)(n);
+              onChange(name)(n.replace(/\D/g, ''));
             }}
             {...inputProps}
           />

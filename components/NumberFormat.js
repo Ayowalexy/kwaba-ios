@@ -31,7 +31,7 @@ export default function NumberFormat(props, {navigation}) {
         keyboardType="number-pad"
         // keyboardType="decimal-pad"
         value={formatNumber(value)}
-        onChangeText={onChangeText}
+        onChangeText={(text) => onChangeText(text.replace(/\D/g, ''))}
         editable={editable}
         // {...props}
       />

@@ -129,7 +129,7 @@ export default function AmountModalWallet(props) {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => onChange(name)(text.replace(/\D/g, ''))}
             {...inputProps}
           />
         </View>
