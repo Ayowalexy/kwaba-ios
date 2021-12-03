@@ -9,7 +9,7 @@
     "test": "jest",
     "lint": "eslint .",
     "CodePush:ios": "appcenter CodePush release-react -a Kwabauser/Kwaba-App -d Production",
-    "CodePush:android": "appcenter codepush release-react -a Kwabauser/Kwaba-App -d Production --target-binary-version ~1.8.4"
+    "CodePush:android": "appcenter codepush release-react -a Kwabauser/Kwaba-App -d Production"
   },
   "dependencies": {
     "@mono.co/connect-react-native": "^0.1.3",
