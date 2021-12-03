@@ -96,7 +96,7 @@ export default function QuickSaveListModal(props) {
               name: 'SoloSavingDashBoard',
               id: id,
               content: 'Payment Successful',
-              subText: 'Awesome! You have successfully funded your wallet.',
+              subText: 'Awesome! You have successfully funded your savings.',
             });
           } else {
             // onRequestClose();

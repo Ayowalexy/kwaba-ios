@@ -182,6 +182,8 @@ export default function SoloSavingDashBoard(props) {
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
               id: route?.params?.id,
+              content: 'Payment Successful',
+              subText: 'Awesome! You have successfully funded your savings.',
             });
           } else {
             setSpinner(false);
