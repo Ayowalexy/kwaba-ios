@@ -31,6 +31,8 @@ RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
+// text.replace(/[- #+*;,.<>\{\}\[\]\\\/]/gi, '')
+
 const amountSchema = yup.object().shape({
   amount: yup.string().required('Please provide amount'),
 });
@@ -93,14 +95,16 @@ export default function AmountModalChallenge(props) {
               paddingLeft: 50,
               paddingVertical: 16,
             }}
-            keyboardType="number-pad"
+            // keyboardType="number-pad"
+            keyboardType="numeric"
             value={formatNumber(value)}
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => onChange(name)(text.replace(/\D/g, ''))}
             {...inputProps}
+            maxLength={10}
           />
         </View>
 
@@ -171,7 +175,7 @@ export default function AmountModalChallenge(props) {
                             fontSize: 12,
                             lineHeight: 30,
                           }}>
-                          PROCEED
+                          PROCEED {values.amount}
                         </Text>
                       </TouchableOpacity>
                     </>

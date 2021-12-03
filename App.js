@@ -245,12 +245,14 @@ const linking = {
 };
 
 let CodePushOptions = {
+  // checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+  // mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+  // updateDialog: {
+  //   appendReleaseDescription: true,
+  //   title: 'A new update is available!',
+  // },
   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
-  mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
-  updateDialog: {
-    appendReleaseDescription: true,
-    title: 'A new update is available!',
-  },
+  installMode: CodePush.InstallMode.IMMEDIATE,
 };
 
 const App = () => {
@@ -822,9 +824,15 @@ const App = () => {
 
               <Stack.Screen name="AppUpdate" component={AppUpdate} />
 
-              <Stack.Screen name="JoinChallengeList" component={JoinChallengeList} />
-              
-              <Stack.Screen name="JoinChallengeDashboard" component={JoinChallengeDashboard} />
+              <Stack.Screen
+                name="JoinChallengeList"
+                component={JoinChallengeList}
+              />
+
+              <Stack.Screen
+                name="JoinChallengeDashboard"
+                component={JoinChallengeDashboard}
+              />
             </>
           )}
         </Stack.Navigator>

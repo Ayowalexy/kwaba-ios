@@ -132,7 +132,7 @@ export default function EmergencyLoanHome({navigation}) {
               checIfLoanable(value);
             }}
             onChangeText={(text) => {
-              onChange(name)(text);
+              onChange(name)(text.replace(/\D/g, ''));
             }}
             {...inputProps}
           />
