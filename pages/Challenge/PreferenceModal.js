@@ -32,6 +32,9 @@ export default function PreferenceModal(props) {
   const [frequency, setFrequency] = useState('daily');
 
   const handleSubmit = async () => {
+    useEffect(() => {
+      console.log('The Data: ', data);
+    }, []);
     const joinData = {
       savings_challenge_id: data?.id,
       savings_amount: unFormatNumber(amount),
@@ -138,6 +141,15 @@ export default function PreferenceModal(props) {
                     </TouchableOpacity>
                   );
                 })}
+              </View>
+            </View>
+
+            <View>
+              <Text style={[styles.title, {marginTop: 20}]}>
+                Your savings frequency
+              </Text>
+              <View style={[styles.savingsType, {marginTop: 10}]}>
+                <Text style={[styles.savingsTypeText]}>{data?.fequency}</Text>
               </View>
             </View>
 

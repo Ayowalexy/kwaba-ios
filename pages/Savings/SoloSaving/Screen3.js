@@ -166,8 +166,8 @@ export default function Screen3({navigation, route}) {
           console.log(data);
 
           setSpinner(true);
-          const verify = await verifySavingsPayment(data);
-          // const verify = await verifyWalletTransaction(data);
+          // const verify = await verifySavingsPayment(data);
+          const verify = await verifyWalletTransaction(data);
           console.log('The Verify: ', verify);
 
           if (verify.status == 200) {
@@ -231,7 +231,7 @@ export default function Screen3({navigation, route}) {
             });
           } else {
             setSpinner(false);
-            Alert.alert('Insufficient fund', 'Please fund your wallet');
+            Alert.alert('Oops', verify?.response?.data?.response_message);
           }
         } else {
           setSpinner(false);
@@ -268,11 +268,11 @@ export default function Screen3({navigation, route}) {
         });
       } else {
         setSpinner(false);
-        Alert.alert('Error', 'something went wrong');
+        Alert.alert('Oops', response.response.data.data.statusMsg);
       }
     } catch (error) {
       console.log('The Error: ', error);
-      Alert.alert('Error', 'An error occured, please retry');
+      Alert.alert('Error', error.response.data.data.statusMsg);
       setSpinner(false);
     }
   };

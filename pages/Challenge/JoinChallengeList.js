@@ -21,6 +21,7 @@ import {
 } from '../../redux/actions/savingsChallengeAction';
 import Joined from './Joined';
 import {formatNumber} from '../../util/numberFormatter';
+import SavingsChallengeSummary from './SavingsChallengeSummary';
 
 const data = [
   {
@@ -68,12 +69,6 @@ const target3 = require('../../assets/images/target.png');
 
 export default function JoinChallengeList({navigation}) {
   const dispatch = useDispatch();
-  // const challengeList = useSelector(
-  //   (state) => state.getSavingsChallengeReducer,
-  // );
-  // const savingsUnderChallenge = useSelector(
-  //   (state) => state.getSavingsUnderChallengeReducer,
-  // );
   const userChallenge = useSelector(
     (state) => state.getUserSavingsChallengeReducer,
   );
@@ -82,14 +77,16 @@ export default function JoinChallengeList({navigation}) {
 
   const [joinData, setJoinData] = useState('');
 
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const [dataValue, setDataValue] = useState('');
+
+  const [channel, setChannel] = useState('');
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
   useEffect(() => {
-    // dispatch(getSavingsChallengeList());
     dispatch(getUserSavingsChallenge());
-    // dispatch(getSavingsUnderChallengeList());
-    // challengeList?.data.map((item, index) => {
-    //   dispatch(getSavingsUnderChallengeList(item.id));
-    // });
-    // getJoinSavings();
   }, []);
 
   const handleNavigate = (data) => {
@@ -233,12 +230,25 @@ export default function JoinChallengeList({navigation}) {
         )}
       </View>
 
-      {showModal && (
+      {/* {showModal && (
         <JoinChallengeModal
           onRequestClose={() => setShowModal(!showModal)}
           visible={showModal}
           navigation={navigation}
           data={resData}
+        />
+      )} */}
+
+      {showModal && (
+        <SavingsChallengeSummary
+          onRequestClose={() => setShowModal(!showModal)}
+          visible={showModal}
+          navigation={navigation}
+          data={resData}
+          // onSubmit={() => {
+          //   setShowPaymentModal(true);
+          // }}
+          // setJoinData={(value) => setDataValue(value)}
         />
       )}
     </>
