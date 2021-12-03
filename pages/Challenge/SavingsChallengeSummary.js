@@ -244,10 +244,10 @@ export default function SavingsChallengeSummary(props) {
                   <Text style={styles.value}>{data.fequency}</Text>
                 </View>
 
-                <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
+                {/* <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
                   <Text style={styles.key}>Amount at Maturity</Text>
                   <Text style={styles.value}>₦{amountAtMaturity}</Text>
-                </View>
+                </View> */}
               </View>
 
               <View
