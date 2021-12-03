@@ -19,20 +19,165 @@ import {
 } from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
+import {FlatList} from 'react-native-gesture-handler';
+
+const Item = ({item, navigation}) => {
+  return (
+    <TouchableOpacity
+      style={[styles.card]}
+      onPress={() => {
+        dispatch(getOneSoloSavings(item.id));
+        dispatch(getOneSoloSavingsTransaction(item.id));
+        navigation.navigate('SoloSavingDashBoard', {id: item.id});
+        console.log('The ID: ', item.id);
+      }}>
+      <View style={[styles.cardFlex]}>
+        <View style={[styles.progressContainer]}>
+          <AnimatedCircularProgress
+            size={60}
+            width={5}
+            rotation={0}
+            style={{zIndex: 9, position: 'relative'}}
+            fill={(Number(item.amount_save) / Number(item.target_amount)) * 100}
+            tintColor={COLORS.light}
+            backgroundColor="#2A286A10">
+            {(fill) => (
+              <View
+                style={{
+                  backgroundColor: COLORS.white,
+                  height: 40,
+                  width: 40,
+                  borderRadius: 50,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'CircularStd',
+                    fontSize: 14,
+                    fontWeight: 'bold',
+                    color: COLORS.dark,
+                    textAlign: 'center',
+                  }}>
+                  {fill.toFixed(0)}%
+                </Text>
+              </View>
+            )}
+          </AnimatedCircularProgress>
+        </View>
+        <View style={[styles.cardText]}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Text style={[styles.cardTitle]}>{item.name}</Text>
+          </View>
+
+          <View style={[styles.cardAmount]}>
+            <View>
+              <Text style={[styles.amountText]}>Amount Saved</Text>
+              <Text style={[styles.amountText]}>
+                ₦{formatNumber(item.amount_save) || '0.00'}
+              </Text>
+            </View>
+
+            <View>
+              <Text style={[styles.amountText]}>Target Amount</Text>
+              <Text style={[styles.amountText]}>
+                ₦{formatNumber(item.target_amount)}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 export default function SavingLists({navigation}) {
   const dispatch = useDispatch();
   const allSavings = useSelector((state) => state.getSoloSavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
-  // useEffect(() => {
-  //   console.log('From the store Max Loan Cap: ', getMaxLoanCap1);
-  // }, []);
-
   useEffect(() => {
     dispatch(getMaxLoanCap());
     console.log('Length: ', allSavings?.data?.length);
   }, []);
+
+  const renderItem = ({item}) => {
+    return (
+      <TouchableOpacity
+        style={[styles.card]}
+        onPress={() => {
+          dispatch(getOneSoloSavings(item.id));
+          dispatch(getOneSoloSavingsTransaction(item.id));
+          navigation.navigate('SoloSavingDashBoard', {id: item.id});
+          console.log('The ID: ', item.id);
+        }}>
+        <View style={[styles.cardFlex]}>
+          <View style={[styles.progressContainer]}>
+            <AnimatedCircularProgress
+              size={60}
+              width={5}
+              rotation={0}
+              style={{zIndex: 9, position: 'relative'}}
+              fill={
+                (Number(item.amount_save) / Number(item.target_amount)) * 100
+              }
+              tintColor={COLORS.light}
+              backgroundColor="#2A286A10">
+              {(fill) => (
+                <View
+                  style={{
+                    backgroundColor: COLORS.white,
+                    height: 40,
+                    width: 40,
+                    borderRadius: 50,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: 'CircularStd',
+                      fontSize: 14,
+                      fontWeight: 'bold',
+                      color: COLORS.dark,
+                      textAlign: 'center',
+                    }}>
+                    {fill.toFixed(0)}%
+                  </Text>
+                </View>
+              )}
+            </AnimatedCircularProgress>
+          </View>
+          <View style={[styles.cardText]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={[styles.cardTitle]}>{item.name}</Text>
+            </View>
+
+            <View style={[styles.cardAmount]}>
+              <View>
+                <Text style={[styles.amountText, {opacity: 0.5}]}>
+                  Amount Saved
+                </Text>
+                <Text style={[styles.amountText]}>
+                  ₦{formatNumber(item.amount_save) || '0.00'}
+                </Text>
+              </View>
+
+              <View>
+                <Text style={[styles.amountText, {opacity: 0.5}]}>
+                  Target Amount
+                </Text>
+                <Text style={[styles.amountText]}>
+                  ₦{formatNumber(item.target_amount)}
+                </Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={[styles.container]}>
@@ -107,94 +252,13 @@ export default function SavingLists({navigation}) {
         />
       </View>
       <View style={[styles.cardContainer]}>
-        <ScrollView
-          contentContainerStyle={{
-            paddingBottom: 80,
-          }}
-          scrollEnabled
-          showsVerticalScrollIndicator={false}>
-          {allSavings?.data?.map((item, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                style={[styles.card]}
-                onPress={() => {
-                  dispatch(getOneSoloSavings(item.id));
-                  dispatch(getOneSoloSavingsTransaction(item.id));
-                  navigation.navigate('SoloSavingDashBoard', {id: item.id});
-                  console.log('The ID: ', item.id);
-                }}>
-                <View style={[styles.cardFlex]}>
-                  <View style={[styles.progressContainer]}>
-                    <AnimatedCircularProgress
-                      size={60}
-                      width={5}
-                      rotation={0}
-                      style={{zIndex: 9, position: 'relative'}}
-                      fill={
-                        (Number(item.amount_save) /
-                          Number(item.target_amount)) *
-                        100
-                      }
-                      tintColor={COLORS.light}
-                      backgroundColor="#2A286A10">
-                      {(fill) => (
-                        <View
-                          style={{
-                            backgroundColor: COLORS.white,
-                            height: 40,
-                            width: 40,
-                            borderRadius: 50,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            // elevation: 2,
-                          }}>
-                          <Text
-                            style={{
-                              fontFamily: 'CircularStd',
-                              fontSize: 14,
-                              fontWeight: 'bold',
-                              color: COLORS.dark,
-                              textAlign: 'center',
-                            }}>
-                            {fill.toFixed(0)}%
-                          </Text>
-                        </View>
-                      )}
-                    </AnimatedCircularProgress>
-                  </View>
-                  <View style={[styles.cardText]}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Text style={[styles.cardTitle]}>{item.name}</Text>
-                      {/* <Icon
-                        name={item.locked ? 'lock-closed' : 'lock-open'}
-                        size={12}
-                        color={COLORS.light}
-                      /> */}
-                    </View>
-
-                    <View style={[styles.cardAmount]}>
-                      <View>
-                        <Text style={[styles.amountText]}>Amount Saved</Text>
-                        <Text style={[styles.amountText]}>
-                          ₦{formatNumber(item.amount_save) || '0.00'}
-                        </Text>
-                      </View>
-
-                      <View>
-                        <Text style={[styles.amountText]}>Target Amount</Text>
-                        <Text style={[styles.amountText]}>
-                          ₦{formatNumber(item.target_amount)}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
+        <FlatList
+          data={allSavings?.data}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id.toString()}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        />
       </View>
       <TouchableOpacity
         onPress={() => navigation.navigate('SoloSaving1')}

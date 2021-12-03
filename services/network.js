@@ -291,8 +291,9 @@ const resolveCardDetails = async (data) => {
   }
 };
 
-const tokenizeCard = async (data) => {
-  const url = apiUrl + '/api/v1/cardtokenize';
+// amount (#50)
+const tokenizePayment = async (data) => {
+  const url = apiUrl + '/api/v1/paycardtokenize';
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -307,8 +308,9 @@ const tokenizeCard = async (data) => {
   }
 };
 
-const tokenizePayment = async (data) => {
-  const url = apiUrl + '/api/v1/paycardtokenize';
+// reference
+const tokenizeCard = async (data) => {
+  const url = apiUrl + '/api/v1/cardtokenize';
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -499,6 +501,19 @@ const userCreateSavings = async (data) => {
 
 const getUserSavings = async () => {
   const url = apiUrl + '/api/v1/get_user_savings';
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const getUserSavingsWithParam = async (type) => {
+  const url = apiUrl + `/api/v1/get_user_savings?savings_type=${type}`;
   const token = await getToken();
   try {
     const response = await axios.get(url, {
@@ -900,12 +915,30 @@ const changeSavingsMethod = async (data) => {
   }
 };
 
-const verifyWalletTransaction = async () => {
+// Verify wallet Transaction
+const verifyWalletTransaction = async (data) => {
   const url =
     'https://kwaba-php-api-bpplt.ondigitalocean.app/api/verify_wallet_transaction';
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Savings Challenge
+const joinSavingsChallenge = async (data) => {
+  const url = apiUrl + '/api/v1/user_join_savings_charledge';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
@@ -953,6 +986,7 @@ export {
   InviteBuddy,
   userCreateSavings,
   getUserSavings,
+  getUserSavingsWithParam,
   getOneUserSavings,
   getSavingsHistory,
   addFundsToSavings,
@@ -981,4 +1015,5 @@ export {
   getInterestRate,
   changeSavingsMethod,
   verifyWalletTransaction,
+  joinSavingsChallenge,
 };

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Kwaba</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">yXqm_XNiOmWvp36syrruucYulRJI5Fs0qnAM1</string>
 </resources>

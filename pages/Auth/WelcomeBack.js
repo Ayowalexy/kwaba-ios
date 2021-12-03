@@ -74,6 +74,8 @@ export default function WelcomeBack({navigation, route}) {
 
   const [invalidPin, setInvalidPin] = useState(false);
 
+  const [message, setMessage] = useState('');
+
   const renderCell = ({index, symbol, isFocused}) => {
     const hasValue = Boolean(symbol);
     const animatedCellStyle = {
@@ -193,12 +195,15 @@ export default function WelcomeBack({navigation, route}) {
       } else {
         setSpinner(false);
         setInvalidPin(true);
-        console.log('Something went wrong...');
+        // console.log('Something went wrong...');
+        console.log('Error', res.response.data.statusMsg);
+        setMessage(res.response.data.statusMsg);
       }
     } catch (error) {
       setSpinner(false);
-      console.log('Error: ', error);
       setInvalidPin(true);
+      console.log('Error: ', error.response);
+      setMessage(error.response.data.statusMsg);
     }
   };
 
@@ -280,7 +285,8 @@ export default function WelcomeBack({navigation, route}) {
                       marginTop: 20,
                     },
                   ]}>
-                  Incorrect Pin
+                  {/* Incorrect Pin */}
+                  {message}
                 </Text>
               )}
               <TouchableOpacity
@@ -392,7 +398,7 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
 
     // Android
-    elevation: 3,
+    elevation: 1,
   },
 
   // =======================
@@ -467,6 +473,7 @@ const styles = StyleSheet.create({
   profile_text_user: {
     fontSize: 16,
     fontWeight: 'normal',
-    opacity: 0.5,
+    marginTop: 5,
+    // opacity: 0.5,
   },
 });

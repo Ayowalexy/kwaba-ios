@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -23,6 +23,8 @@ import {login} from '../../services/network';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import analytics from '@segment/analytics-react-native';
+
+import PushNotification from 'react-native-push-notification';
 
 const CustomInput = (props) => {
   const {
@@ -160,13 +162,26 @@ export default function Login({navigation}) {
       } else {
         setSpinner(false);
         console.log('Invalid, please provide a valid email and password');
+        console.log('Res Error', res.response);
         setErrorMsg('Please provide a valid email or password');
       }
     } catch (error) {
       setSpinner(false);
       console.log('Error, An error occured, please retry');
+      console.log('Error', error);
       setErrorMsg('An error occured, please retry');
     }
+  };
+
+  useEffect(() => {
+    createChannel();
+  }, []);
+
+  const createChannel = () => {
+    PushNotification.createChannel({
+      channelId: 'test-channel',
+      channelName: 'Test Channel',
+    });
   };
 
   return (

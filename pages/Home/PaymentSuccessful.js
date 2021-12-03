@@ -19,7 +19,15 @@ import {
 } from '../../redux/actions/savingsActions';
 import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
 import {useDispatch, useSelector} from 'react-redux';
-import {getUserWallet} from '../../redux/actions/walletAction';
+import {
+  getUserWallet,
+  getUserWalletTransactions,
+} from '../../redux/actions/walletAction';
+
+import {
+  getUserSavingsChallenge,
+  getOneUserSavingsChallenge,
+} from '../../redux/actions/savingsChallengeAction';
 
 export default function PaymentSuccessful(props) {
   const dispatch = useDispatch();
@@ -45,6 +53,12 @@ export default function PaymentSuccessful(props) {
     dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
     dispatch(getAirtimeBillTrans());
     dispatch(getUserWallet());
+    dispatch(getUserWalletTransactions());
+    dispatch(getUserSavingsChallenge());
+    dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
+
+    // call fnc to send notification locally
+    // props?.route?.params?.onNotify();
   }, []);
 
   const handlePress = () => {
@@ -54,6 +68,9 @@ export default function PaymentSuccessful(props) {
     dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
     dispatch(getAirtimeBillTrans());
     dispatch(getUserWallet());
+    dispatch(getUserWalletTransactions());
+    dispatch(getUserSavingsChallenge());
+    dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
 
     console.log('Payment ID: ', props?.route?.params?.id);
 
@@ -68,41 +85,48 @@ export default function PaymentSuccessful(props) {
   };
 
   return (
-    <View style={[styles.content]}>
-      <Icon
-        onPress={handlePress}
-        name="arrow-back-outline"
-        size={25}
-        style={{padding: 18, paddingHorizontal: 10}}
-        color="#2A286A"
-      />
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
+    <View style={[styles.container]}>
+      <View style={[styles.content]}>
         <Image
-          style={{width: 200, height: 200}}
+          style={[styles.img]}
           source={images.congratulation}
+          resizeMode="contain"
         />
-        <Text style={{fontSize: 20, fontWeight: 'bold', color: COLORS.primary}}>
+        <Text style={[styles.title]}>
           {props?.route?.params?.content || 'Payment Successful'}
         </Text>
+        <Text style={[styles.subText]}>
+          {props?.route?.params?.subText ||
+            'Done! You have successfully made payment'}
+        </Text>
       </View>
+      <TouchableOpacity style={[styles.btn]} onPress={handlePress}>
+        <Text style={[styles.btnText]}>Okay</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  content: {
+  container: {
     flex: 1,
     backgroundColor: 'white',
     padding: 20,
   },
 
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // borderWidth: 1,
+    paddingHorizontal: 20,
+  },
+
+  img: {height: 150},
+
   btn: {
     width: '100%',
+    backgroundColor: COLORS.secondary,
     // height: 70,
     borderRadius: 10,
     marginTop: 18,
@@ -111,9 +135,30 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
-    paddingLeft: 16,
-    paddingRight: 16,
+    alignItems: 'center',
     elevation: 1,
-    paddingVertical: 15,
+    paddingVertical: 20,
+  },
+
+  btnText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.white,
+  },
+
+  title: {
+    fontSize: 25,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+    textAlign: 'center',
+  },
+
+  subText: {
+    fontSize: 15,
+    marginTop: 10,
+    color: COLORS.dark,
+    textAlign: 'center',
+    lineHeight: 25,
+    paddingHorizontal: 20,
   },
 });

@@ -24,6 +24,13 @@ import {
   getUserWalletTransactionsReducer,
 } from './walletReducer';
 
+import {
+  getSavingsChallengeReducer,
+  getSavingsUnderChallengeReducer,
+  getUserSavingsChallengeReducer,
+  getOneUserSavingsChallengeReducer,
+} from './savingsChallengeReducer';
+
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
   soloSavingReducer: soloSavingReducer,
@@ -45,4 +52,8 @@ export const rootReducer = combineReducers({
   getAirtimeReducer: getAirtimeReducer,
   getUserWalletReducer: getUserWalletReducer,
   getUserWalletTransactionsReducer: getUserWalletTransactionsReducer,
+  getSavingsChallengeReducer: getSavingsChallengeReducer,
+  getSavingsUnderChallengeReducer: getSavingsUnderChallengeReducer,
+  getUserSavingsChallengeReducer: getUserSavingsChallengeReducer,
+  getOneUserSavingsChallengeReducer: getOneUserSavingsChallengeReducer,
 });

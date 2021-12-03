@@ -85,17 +85,17 @@ export default function QuickSaveListModal(props) {
           const verify = await verifySavingsPayment(data);
 
           if (verify.status == 200) {
+            onRequestClose();
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
-              id: resData?.id,
+              id: verify?.data?.data?.id,
             });
           } else {
+            // onRequestClose();
             setSpinner(false);
-            Alert.alert(
-              'Error',
-              'Something went wrong, please try again later.',
-            );
+            console.log('Verify Error: ', verify.response.data);
+            // Alert.alert('Error', verify.response.data.data.statusMsg);
           }
         } else {
           setChannel(value);
@@ -104,12 +104,13 @@ export default function QuickSaveListModal(props) {
         }
       } else {
         setSpinner(false);
-        Alert.alert('Error', 'Something went wrong, please try again later.');
+        // Alert.alert('Error', 'Something went wrong, please try again later.');
+        console.log('Response Error: ', response.response.data);
       }
     } catch (error) {
       setSpinner(false);
-      console.log('Error: ', error);
-      Alert.alert('Error', 'Something went wrong, please try again later.');
+      // Alert.alert('Error', 'Something went wrong, please try again later.');
+      console.log('Error error: ', error.response.data);
     }
   };
 
@@ -293,7 +294,11 @@ export default function QuickSaveListModal(props) {
 
                                 <View style={[styles.cardAmount]}>
                                   <View>
-                                    <Text style={[styles.amountText]}>
+                                    <Text
+                                      style={[
+                                        styles.amountText,
+                                        {opacity: 0.5},
+                                      ]}>
                                       Amount Saved
                                     </Text>
                                     <Text style={[styles.amountText]}>
@@ -303,7 +308,11 @@ export default function QuickSaveListModal(props) {
                                   </View>
 
                                   <View>
-                                    <Text style={[styles.amountText]}>
+                                    <Text
+                                      style={[
+                                        styles.amountText,
+                                        {opacity: 0.5},
+                                      ]}>
                                       Target Amount
                                     </Text>
                                     <Text style={[styles.amountText]}>

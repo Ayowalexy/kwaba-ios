@@ -167,13 +167,15 @@ export default function SoloSavingDashBoard(props) {
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 
+          console.log('The Data: ', data);
+
           setSpinner(true);
-          const verify = await verifySavingsPayment(data);
-          // const verify = await verifyWalletTransaction(data);
+          // const verify = await verifySavingsPayment(data);
+          const verify = await verifyWalletTransaction(data);
 
           if (verify.status == 200) {
             setSpinner(false);
@@ -183,8 +185,8 @@ export default function SoloSavingDashBoard(props) {
             });
           } else {
             setSpinner(false);
-            // Alert.alert('Insufficient fund', 'Please fund your wallet');
-            // console.log('Response: ', verify.response);
+            Alert.alert('Oops', verify.response.data.response_message);
+            // console.log('Response: ', verify.response.data);
           }
         } else {
           setChannel(value);
@@ -195,7 +197,9 @@ export default function SoloSavingDashBoard(props) {
         setSpinner(false);
       }
     } catch (error) {
+      setSpinner(false);
       console.log('Error: ', error);
+      Alert.alert('Error', 'Something went wrong, please try again later');
     }
   };
 

@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import {COLORS} from '../../util';
 import {formatNumber} from '../../util/numberFormatter';
@@ -15,7 +16,7 @@ import {SwipeablePanel} from 'rn-swipeable-panel';
 import AddFundToWalletModal from './AddFundToWalletModal';
 import {
   getUserWallet,
-  // getUserWalletTransactions,
+  getUserWalletTransactions,
 } from '../../redux/actions/walletAction';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -66,45 +67,103 @@ export default function Wallet(props) {
 
   useEffect(() => {
     dispatch(getUserWallet());
-    // dispatch(getUserWalletTransactions());
+    dispatch(getUserWalletTransactions());
     // dispatch(getBillsCategory('airtime'));
   }, []);
 
   useEffect(() => {
-    setAmount(getWallet.available_balances);
+    setAmount(getWallet?.data?.available_balances);
+    // console.log('Hello....', getWalletTransactions);
   }, [getWallet]);
 
-  // useEffect(() => {
-  //   // console.log(getWalletTransactions);
-  // }, [getWalletTransactions]);
-
-  const getToken = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const token = JSON.parse(userData).token;
-    return token;
+  const renderItem = ({item, index}) => {
+    return (
+      <TouchableOpacity
+        // key={index}
+        style={[
+          styles.lists,
+          {
+            borderLeftColor:
+              item.transaction_type == 'credit'
+                ? COLORS.success
+                : COLORS.warning,
+            borderLeftColor: COLORS.primary,
+          },
+        ]}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View
+            style={{
+              width: 50,
+              height: 50,
+              // padding: 10,
+              backgroundColor:
+                item.transaction_type == 'credit'
+                  ? COLORS.success
+                  : COLORS.warning,
+              backgroundColor: '#f7f8fd',
+              marginRight: 20,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              {moment(item.updated_at).format('DD')}
+            </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                fontWeight: 'normal',
+                lineHeight: 10,
+                color: COLORS.primary,
+                // opacity: 0.5,
+              }}>
+              {moment(item.updated_at).format('MMM')}
+            </Text>
+          </View>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+            }}>
+            <View style={{flex: 1, paddingRight: 20}}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                  textTransform: 'capitalize',
+                }}
+                numberOfLines={1}>
+                {item.narration}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: COLORS.dark,
+                  marginTop: 5,
+                }}>
+                {moment(item.updated_at).format('DD MMM YYYY')}
+              </Text>
+            </View>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: COLORS.dark,
+              }}>
+              ₦{formatNumber(Number(item.amount).toFixed(2))}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
   };
-
-  const getUserWalletTransactions = async () => {
-    const token = await getToken();
-    const url =
-      `https://kwaba-main-api-3-cp4jm.ondigitalocean.app` +
-      '/api/v1/get_wallet_transactions';
-    try {
-      const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      setTransactions(response.data.data);
-      // console.log('Wallet Transaction New: ', response.data.data);
-      // return response.data.data;
-    } catch (error) {
-      console.log(error);
-      // return error.message;
-    }
-  };
-
-  useEffect(() => {
-    getUserWalletTransactions();
-  }, []);
 
   return (
     <>
@@ -136,7 +195,6 @@ export default function Wallet(props) {
           <View />
 
           {/* <TouchableOpacity
-            onPress={openPanel}
             style={{
               backgroundColor: '#ffffff20',
               width: 40,
@@ -355,7 +413,7 @@ export default function Wallet(props) {
             // paddingVertical: 20,
             paddingHorizontal: 20,
           }}>
-          {!transactions?.length ? (
+          {!getWalletTransactions?.data?.length ? (
             <View
               style={{
                 justifyContent: 'center',
@@ -373,7 +431,7 @@ export default function Wallet(props) {
               </Text>
             </View>
           ) : (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{flex: 1}}>
               <View>
                 <Text
                   style={{
@@ -384,96 +442,15 @@ export default function Wallet(props) {
                   }}>
                   Transaction history
                 </Text>
-                {transactions?.reverse().map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      style={[
-                        styles.lists,
-                        {
-                          borderLeftColor:
-                            item.transaction_type == 'credit'
-                              ? COLORS.success
-                              : COLORS.warning,
-                          borderLeftColor: COLORS.primary,
-                        },
-                      ]}>
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <View
-                          style={{
-                            width: 50,
-                            height: 50,
-                            // padding: 10,
-                            backgroundColor:
-                              item.transaction_type == 'credit'
-                                ? COLORS.success
-                                : COLORS.warning,
-                            backgroundColor: '#f7f8fd',
-                            marginRight: 20,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <Text
-                            style={{
-                              fontSize: 16,
-                              fontWeight: 'bold',
-                              color: COLORS.primary,
-                            }}>
-                            {moment(item.updated_at).format('DD')}
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 10,
-                              fontWeight: 'normal',
-                              lineHeight: 10,
-                              color: COLORS.primary,
-                              // opacity: 0.5,
-                            }}>
-                            {moment(item.updated_at).format('MMM')}
-                          </Text>
-                        </View>
-                        <View
-                          style={{
-                            flex: 1,
-                            flexDirection: 'row',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                          }}>
-                          <View style={{flex: 1, paddingRight: 20}}>
-                            <Text
-                              style={{
-                                fontSize: 14,
-                                color: COLORS.primary,
-                                textTransform: 'capitalize',
-                              }}
-                              numberOfLines={1}>
-                              {item.narration}
-                            </Text>
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                color: COLORS.grey,
-                                marginTop: 5,
-                              }}>
-                              {moment(item.updated_at).format('DD MMM YYYY')}
-                            </Text>
-                          </View>
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              fontWeight: 'bold',
-                              color: COLORS.primary,
-                            }}>
-                            ₦{item.amount}
-                          </Text>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
               </View>
-            </ScrollView>
+              <FlatList
+                data={getWalletTransactions?.data}
+                renderItem={renderItem}
+                keyExtractor={(item) => item.id.toString()}
+                showsHorizontalScrollIndicator={false}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
           )}
         </View>
       </View>
@@ -557,8 +534,9 @@ export default function Wallet(props) {
 
             if (verify.status == 200) {
               navigation.navigate('PaymentSuccessful', {
-                content: 'Funds Add To Your Wallet Successfully',
                 name: 'Home',
+                content: 'Payment Successful',
+                subText: 'Awesome! You have successfully funded your wallet',
               });
               setSpinner(false);
               // setShowQuickSaveListModal(false);
@@ -597,9 +575,9 @@ const styles = StyleSheet.create({
   lists: {
     backgroundColor: COLORS.white,
     paddingHorizontal: 20,
-    paddingVertical: 20,
-    borderRadius: 5,
-    elevation: 1,
+    paddingVertical: 10,
+    // borderRadius: 5,
+    // elevation: 1,
     marginBottom: 10,
     borderLeftWidth: 5,
   },

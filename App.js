@@ -187,6 +187,10 @@ import {LoanScreen1} from './pages/Loans';
 // Wallet
 import Wallet from './pages/Wallet/Wallet';
 
+// Challenge
+import JoinChallengeList from './pages/Challenge/JoinChallengeList';
+import JoinChallengeDashboard from './pages/Challenge/JoinChallengeDashboard';
+
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
@@ -197,7 +201,7 @@ import {
   StatusBar,
   Linking,
   AppState,
-  Platform,
+  LogBox,
 } from 'react-native';
 import {COLORS} from './util/index';
 import {signIn} from './util/icons';
@@ -214,8 +218,16 @@ import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
 
+import PushNotification from 'react-native-push-notification';
+
+import CodePush from 'react-native-code-push';
+
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
+
+LogBox.ignoreLogs([
+  'Non-serializable values were found in the navigation state',
+]);
 
 const Stack = createStackNavigator();
 
@@ -229,6 +241,15 @@ const linking = {
       SavingLists: 'SavingLists',
       AirtimeHome: 'AirtimeHome',
     },
+  },
+};
+
+let CodePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+  mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
+  updateDialog: {
+    appendReleaseDescription: true,
+    title: 'A new update is available!',
   },
 };
 
@@ -383,6 +404,17 @@ const App = () => {
   //     console.log('Error: ', error);
   //   }
   // };
+
+  useEffect(() => {
+    createChannel();
+  }, []);
+
+  const createChannel = () => {
+    PushNotification.createChannel({
+      channelId: 'test-channel',
+      channelName: 'Test Channel',
+    });
+  };
 
   return (
     <>
@@ -807,6 +839,16 @@ const App = () => {
               <Stack.Screen name="PinPassword" component={PinPassword} />
 
               <Stack.Screen name="AppUpdate" component={AppUpdate} />
+
+              <Stack.Screen
+                name="JoinChallengeList"
+                component={JoinChallengeList}
+              />
+
+              <Stack.Screen
+                name="JoinChallengeDashboard"
+                component={JoinChallengeDashboard}
+              />
             </>
           )}
         </Stack.Navigator>
@@ -817,4 +859,5 @@ const App = () => {
   );
 };
 
-export default App;
+// export default App;
+export default CodePush(CodePushOptions)(App);

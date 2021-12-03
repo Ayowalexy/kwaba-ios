@@ -180,7 +180,7 @@ export default function AirtimeHistory(props) {
                   <ScrollView
                     scrollEnabled
                     showsVerticalScrollIndicator={false}>
-                    {groupArrays.map((item, index) => {
+                    {groupArrays?.reverse()?.map((item, index) => {
                       return (
                         <View key={index}>
                           <View

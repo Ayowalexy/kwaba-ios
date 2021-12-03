@@ -54,7 +54,10 @@ import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
 import analytics from '@segment/analytics-react-native';
 
+import PushNotification from 'react-native-push-notification';
+
 import {TrackEvent} from '../../util/segmentEvents';
+import moment from 'moment';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -63,6 +66,9 @@ export default function NewHome({navigation}) {
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const getWallet = useSelector((state) => state.getUserWalletReducer);
+  const getWalletTransactions = useSelector(
+    (state) => state.getUserWalletTransactionsReducer,
+  );
 
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -191,8 +197,8 @@ export default function NewHome({navigation}) {
   }, [getMaxLoanCap1]);
 
   useEffect(() => {
-    // console.log('The Wallet: ', getWallet);
-    setWallet(getWallet.available_balances);
+    console.log('The Wallet: ', getWallet);
+    setWallet(getWallet?.data?.available_balances);
   }, [getWallet]);
 
   const slides = [
@@ -202,7 +208,7 @@ export default function NewHome({navigation}) {
         savings <= 0
           ? 'Save now to make your rent work for you'
           : 'Great job on your rent savings',
-      amount: formatNumber(Number(savings).toFixed(2)),
+      amount: savings ? formatNumber(Number(savings).toFixed(2)) : '0.00',
       color: COLORS.primary,
       actionText: savings == 0 ? 'Save Now' : 'Fund savings',
       actionClick: () =>
@@ -223,7 +229,7 @@ export default function NewHome({navigation}) {
         wallet <= 0
           ? 'Fund your wallet to transact on Kwaba'
           : 'Save and pay bills from your wallet',
-      amount: formatNumber(Number(wallet).toFixed(2)) || '0.00',
+      amount: wallet ? formatNumber(Number(wallet).toFixed(2)) : '0.00',
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () => {
@@ -240,7 +246,9 @@ export default function NewHome({navigation}) {
       title: 'Emergency Fund',
       subtitle:
         instantLoan <= 0 ? 'Access instant loans' : 'Total amount to repay',
-      amount: formatNumber(Number(instantLoan).toFixed(2)),
+      amount: instantLoan
+        ? formatNumber(Number(instantLoan).toFixed(2))
+        : '0.00',
       color: '#222',
       actionText: instantLoan == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
@@ -261,8 +269,10 @@ export default function NewHome({navigation}) {
         rentalFinance <= 0
           ? "Let's help you pay your rent"
           : 'Next payment amount',
-      amount: formatNumber(Number(rentalFinance).toFixed(2)),
-      color: COLORS.dark,
+      amount: rentalFinance
+        ? formatNumber(Number(rentalFinance).toFixed(2))
+        : '0.00',
+      color: '#5A4CB1',
       actionText: rentalFinance == 0 ? 'Apply Now' : 'Pay Now',
       actionClick: () =>
         !isProfileComplete
@@ -281,9 +291,9 @@ export default function NewHome({navigation}) {
     },
   ];
 
-  // useEffect(() => {
-  //   console.log('The Wallet: ', wallet);
-  // }, []);
+  useEffect(() => {
+    console.log('The Wallet: ', wallet);
+  }, []);
 
   const quickActions = [
     {
@@ -331,36 +341,121 @@ export default function NewHome({navigation}) {
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
     },
+    {
+      title: 'Join a Savings Challenge',
+      body:
+        'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
+      img: images.maskGroup29,
+      route: () => navigation.navigate('JoinChallengeList'),
+    },
     // {
-    //   title: 'Join a savings challenge',
+    //   title: 'Home Loans',
     //   body:
-    //     'Get instant loans from Kwaba when you need to sort out life emergencies or unexpected expenses.',
-    //   img: images.maskGroup14,
+    //     'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
+    //   img: images.maskGroup29,
+    //   route: () =>
+    //     isProfileComplete
+    //       ? navigation.navigate('LoanScreen1')
+    //       : setCompleteProfileModal(true),
+    // },
+    // {
+    //   title: 'Refer and Earn',
+    //   body:
+    //     'Invite your friends and family to use  Kwaba and earn from every referral ',
+    //   img: images.giftPackage,
     //   route: () => navigation.navigate('Referral'),
     // },
-    {
-      title: 'Home Loans',
-      body:
-        'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
-      img: images.maskGroup29,
-      route: () =>
-        isProfileComplete
-          ? navigation.navigate('LoanScreen1')
-          : setCompleteProfileModal(true),
-    },
-    {
-      title: 'Refer and Earn',
-      body:
-        'Invite your friends and family to use  Kwaba and earn from every referral ',
-      img: images.giftPackage,
-      route: () => navigation.navigate('Referral'),
-    },
   ];
+
+  const handleNotification = (item) => {
+    PushNotification.localNotification({
+      channelId: 'test-channel',
+      title: 'Notification',
+      message:
+        '<strong>This is a very big test can will span more than one line in the notification panel. You need to expand the notification to see all.</strong>',
+    });
+  };
 
   const OFFSET = 30;
   const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;
   const ITEM_HEIGHT = 180;
   const scrollX = React.useRef(new Animated.Value(0)).current;
+
+  const TransactionHistory = () => {
+    const slicedTransaction = getWalletTransactions?.data?.slice(0, 4);
+    return (
+      <View style={{paddingHorizontal: 20, paddingBottom: 20, marginTop: 20}}>
+        <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
+          Recent Transactions
+        </Text>
+        <View
+          style={{
+            marginTop: 30,
+            paddingHorizontal: 20,
+          }}>
+          {slicedTransaction?.map((item, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  borderLeftWidth: 2,
+                  borderLeftColor:
+                    index == slicedTransaction.length - 1
+                      ? 'transparent'
+                      : '#46596950',
+                  paddingBottom: 30,
+                }}>
+                <View
+                  style={{
+                    width: 15,
+                    height: 15,
+                    backgroundColor: COLORS.dark,
+                    borderRadius: 15,
+                    position: 'absolute',
+                    left: -9,
+                    top: 0,
+                  }}
+                />
+                <View style={{paddingLeft: 40, marginTop: -5}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      // alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        color: COLORS.dark,
+                      }}>
+                      ₦{formatNumber(Number(item.amount).toFixed(2))}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: COLORS.dark,
+                      }}>
+                      {moment(item.updated_at).format('DD MMM YYYY')}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLORS.dark,
+                      marginTop: 20,
+                      lineHeight: 20,
+                    }}>
+                    {item.narration}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -398,9 +493,14 @@ export default function NewHome({navigation}) {
           onPress={async () => {
             // navigation.navigate('BuddyPaymentScreen');
             // navigation.navigate('Notifications');
-            navigation.navigate('Referral');
+            // navigation.navigate('Referral');
             // navigation.navigate('AppUpdate');
-            TrackEvent('Invite Friends');
+            // TrackEvent('Invite Friends');
+            handleNotification({
+              name: 'Invite Frineds',
+              sub:
+                'You just clicked on invite friends, do you want to invite your friends?',
+            });
           }}>
           <Icon name="people-sharp" color={COLORS.dark} size={25} />
 
@@ -774,7 +874,11 @@ export default function NewHome({navigation}) {
                   key={index}
                   style={{
                     backgroundColor:
-                      index == 0 ? '#EDECFC' : index == 1 ? 'white' : '#01A573',
+                      index == 0
+                        ? '#EDECFC'
+                        : index != bottomCards.length - 1
+                        ? COLORS.white
+                        : '#5A4CB1',
                     marginBottom: 10,
                     borderRadius: 10,
                     elevation: 0.5,
@@ -794,7 +898,10 @@ export default function NewHome({navigation}) {
                     <View style={{padding: 20}}>
                       <Text
                         style={{
-                          color: index == 2 ? 'white' : COLORS.dark,
+                          color:
+                            index == bottomCards.length - 1
+                              ? 'white'
+                              : COLORS.dark,
                           fontFamily: 'CircularStd',
                           fontSize: 15,
                           lineHeight: 23,
@@ -806,7 +913,10 @@ export default function NewHome({navigation}) {
                         style={{
                           width: '75%',
                           marginTop: 9,
-                          color: index == 2 ? 'white' : COLORS.dark,
+                          color:
+                            index == bottomCards.length - 1
+                              ? 'white'
+                              : COLORS.dark,
                           fontFamily: 'CircularStd',
                           fontSize: 12,
                           lineHeight: 20,
@@ -882,6 +992,11 @@ export default function NewHome({navigation}) {
             })}
           </View>
         </View>
+
+        {/* {getWalletTransactions &&
+          getWalletTransactions?.data &&
+          getWalletTransactions?.data?.length && <TransactionHistory />} */}
+        <TransactionHistory />
       </ScrollView>
 
       {quickSaveModal && (
