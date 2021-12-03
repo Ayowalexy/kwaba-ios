@@ -156,8 +156,14 @@ export default function AmountModalChallenge(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={isValid ? false : true}
-                        style={[styles.button]}>
+                        disabled={values.amount < 100 ? true : false}
+                        style={[
+                          styles.button,
+                          {
+                            backgroundColor:
+                              values.amount < 100 ? '#5A4CB150' : '#5A4CB1',
+                          },
+                        ]}>
                         <Text
                           style={{
                             color: 'white',

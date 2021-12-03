@@ -416,12 +416,20 @@ export default function EmergencyLoanHome({navigation}) {
                     </View>
                   </View>
                   <TouchableOpacity
-                    disabled={errorMsg != '' ? true : false}
+                    disabled={
+                      errorMsg != '' ||
+                      unFormatNumber(values.requestAmount) < 1000
+                        ? true
+                        : false
+                    }
                     style={[
                       designs.buttonStyleB,
                       {
                         backgroundColor:
-                          errorMsg != '' ? '#00DC9950' : '#00DC99',
+                          errorMsg != '' ||
+                          unFormatNumber(values.requestAmount) < 1000
+                            ? '#00DC9950'
+                            : '#00DC99',
                         width: '100%',
                       },
                     ]}

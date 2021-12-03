@@ -244,7 +244,7 @@ export default function JoinChallengeDashboard(props) {
             </View>
           </View>
 
-          {/* {getOneSavings.data?.members_joined != null && (
+          {getOneSavings.data?.members_joined != null && (
             <View
               style={{
                 backgeoundColor: COLORS.orange,
@@ -265,7 +265,7 @@ export default function JoinChallengeDashboard(props) {
                   : `${getOneSavings.data?.members_joined} people are on this challenge`}
               </Text>
             </View>
-          )} */}
+          )}
         </View>
 
         <View style={{alignItems: 'center'}}>
@@ -349,29 +349,37 @@ export default function JoinChallengeDashboard(props) {
               marginTop: 20,
               paddingHorizontal: 20,
             }}>
-            {getOneTransaction?.data?.slice(0, 3)?.map((item, index, arr) => {
+            {getOneTransaction?.data?.slice(0, 10)?.map((item, index, arr) => {
               return (
                 <View
                   key={index}
                   style={{
                     borderLeftWidth: 2,
                     borderLeftColor:
-                      index == arr.length - 1
-                        ? 'transparent'
-                        : COLORS.secondary,
+                      index == arr.length - 1 ? 'transparent' : COLORS.white,
                     paddingBottom: 40,
                   }}>
                   <View
                     style={{
                       width: 20,
                       height: 20,
-                      backgroundColor: COLORS.secondary,
+                      backgroundColor:
+                        item.status == 1 ? COLORS.secondary : COLORS.red,
                       borderRadius: 20,
                       position: 'absolute',
                       left: -12,
                       top: 0,
-                    }}
-                  />
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      // borderWidth: 1,
+                    }}>
+                    <Icon
+                      name={item.status == 1 ? 'checkmark' : 'close'}
+                      size={15}
+                      // style={{fontWeight: '900', paddingBottom: 20}}
+                      color={COLORS.white}
+                    />
+                  </View>
                   <View style={{paddingLeft: 40}}>
                     <Text
                       style={{
