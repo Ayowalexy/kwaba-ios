@@ -288,12 +288,12 @@ const PurchaseAirtime = ({navigation, route}) => {
           onPress={() => {
             setConfirmModalVisible(!confirmModalVisible);
           }}
-          disabled={amount == ''}
+          disabled={amount < 100}
           style={[
             styles.btn,
             {
               backgroundColor:
-                phoneNumber.length < 10 || amount == ''
+                phoneNumber.length < 10 || amount < 100
                   ? '#00DC9950'
                   : '#00DC99',
               width: '100%',
