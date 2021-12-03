@@ -175,7 +175,7 @@ export default function AmountModalChallenge(props) {
                             fontSize: 12,
                             lineHeight: 30,
                           }}>
-                          PROCEED {values.amount}
+                          PROCEED
                         </Text>
                       </TouchableOpacity>
                     </>
