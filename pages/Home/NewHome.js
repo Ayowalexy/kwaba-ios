@@ -371,8 +371,7 @@ export default function NewHome({navigation}) {
     PushNotification.localNotification({
       channelId: 'test-channel',
       title: 'Notification',
-      message:
-        '<strong>This is a very big test can will span more than one line in the notification panel. You need to expand the notification to see all.</strong>',
+      message: '',
     });
   };
 
@@ -493,14 +492,14 @@ export default function NewHome({navigation}) {
           onPress={async () => {
             // navigation.navigate('BuddyPaymentScreen');
             // navigation.navigate('Notifications');
-            // navigation.navigate('Referral');
+            navigation.navigate('Referral');
             // navigation.navigate('AppUpdate');
             // TrackEvent('Invite Friends');
-            handleNotification({
-              name: 'Invite Frineds',
-              sub:
-                'You just clicked on invite friends, do you want to invite your friends?',
-            });
+            // handleNotification({
+            //   name: 'Invite Frineds',
+            //   sub:
+            //     'You just clicked on invite friends, do you want to invite your friends?',
+            // });
           }}>
           <Icon name="people-sharp" color={COLORS.dark} size={25} />
 
