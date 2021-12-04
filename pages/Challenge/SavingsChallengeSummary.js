@@ -244,13 +244,15 @@ export default function SavingsChallengeSummary(props) {
                   <View style={styles.dataInfo}>
                     <Text style={styles.key}>Start Date</Text>
                     <Text style={styles.value}>
-                      {moment(startDate).format('Do MMM YYYY')}
+                      {/* {moment(startDate).format('Do MMM YYYY')} */}
+                      {moment(startDate).format('MMM D, YYYY')}
                     </Text>
                   </View>
                   <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
                     <Text style={styles.key}>End Date</Text>
                     <Text style={styles.value}>
-                      {moment(endDate).format('Do MMM YYYY')}
+                      {/* {moment(endDate).format('Do MMM YYYY')} */}
+                      {moment(endDate).format('MMM D, YYYY')}
                     </Text>
                   </View>
 
