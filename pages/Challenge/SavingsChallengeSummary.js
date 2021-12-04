@@ -52,6 +52,9 @@ export default function SavingsChallengeSummary(props) {
 
   const [amountAtMaturity, setAmountAtMaturity] = useState(0);
 
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
   const [message, setMessage] = useState({
     title: 'Title',
     body: 'Body',
@@ -74,14 +77,26 @@ export default function SavingsChallengeSummary(props) {
     // let annualInterestRate = 11;
     // let dailyInteresRate = annualInterestRate;
 
-    var start = moment(data?.start_date, 'YYYY-MM-DD');
-    var end = moment(data?.end_date, 'YYYY-MM-DD');
+    var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
+    var challenge_end = moment(data?.end_date, 'YYYY-MM-DD');
 
-    var diff = end.diff(start, 'days');
+    var diff = challenge_end.diff(challenge_start, 'days');
+
+    var savingsStartDate = moment(); // today's date
+    var savingsEndDate = moment(savingsStartDate, 'DD-MM-YYYY').add(
+      diff,
+      'days',
+    ); // 25 days from today's date
 
     var amountToSavePerDay =
       Number(unFormatNumber(data?.tartget_per_member)) / diff;
 
+    // console.log('The S Data: ', savingsStartDate);
+    // console.log('The E Data: ', savingsEndDate);
+    // console.log('The Diff: ', diff);
+
+    setStartDate(savingsStartDate);
+    setEndDate(savingsEndDate);
     setAmount(amountToSavePerDay.toFixed(2));
   }, []);
 
@@ -229,13 +244,13 @@ export default function SavingsChallengeSummary(props) {
                   <View style={styles.dataInfo}>
                     <Text style={styles.key}>Start Date</Text>
                     <Text style={styles.value}>
-                      {moment(data?.start_date).format('Do MMM YYYY')}
+                      {moment(startDate).format('Do MMM YYYY')}
                     </Text>
                   </View>
                   <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
                     <Text style={styles.key}>End Date</Text>
                     <Text style={styles.value}>
-                      {moment(data?.end_date).format('Do MMM YYYY')}
+                      {moment(endDate).format('Do MMM YYYY')}
                     </Text>
                   </View>
 
