@@ -349,63 +349,65 @@ export default function JoinChallengeDashboard(props) {
               marginTop: 20,
               paddingHorizontal: 20,
             }}>
-            {getOneTransaction?.data?.slice(0, 10)?.map((item, index, arr) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    borderLeftWidth: 2,
-                    borderLeftColor:
-                      index == arr.length - 1 ? 'transparent' : COLORS.white,
-                    paddingBottom: 40,
-                  }}>
+            {getOneTransaction?.data
+              ?.slice(0, getOneTransaction?.data?.length)
+              ?.map((item, index, arr) => {
+                return (
                   <View
+                    key={index}
                     style={{
-                      width: 20,
-                      height: 20,
-                      backgroundColor:
+                      borderLeftWidth: index == arr.length - 1 ? 0 : 2,
+                      borderLeftColor:
                         item.status == 1 ? COLORS.secondary : COLORS.red,
-                      borderRadius: 20,
-                      position: 'absolute',
-                      left: -12,
-                      top: 0,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      // borderWidth: 1,
+                      paddingBottom: 40,
                     }}>
-                    <Icon
-                      name={item.status == 1 ? 'checkmark' : 'close'}
-                      size={15}
-                      // style={{fontWeight: '900', paddingBottom: 20}}
-                      color={COLORS.white}
-                    />
-                  </View>
-                  <View style={{paddingLeft: 40}}>
-                    <Text
+                    <View
                       style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: COLORS.white,
+                        width: 20,
+                        height: 20,
+                        backgroundColor:
+                          item.status == 1 ? COLORS.secondary : COLORS.red,
+                        borderRadius: 20,
+                        position: 'absolute',
+                        left: index == arr.length - 1 ? -10 : -11,
+                        top: 0,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        // borderWidth: 1,
                       }}>
-                      ₦{formatNumber(item.amount)}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: COLORS.light,
-                        marginTop: 10,
-                      }}>
-                      {item.reference}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: COLORS.light,
-                        marginTop: 10,
-                      }}>
-                      {item.updated_at}
-                    </Text>
-                    {/* <Text
+                      <Icon
+                        name={item.status == 1 ? 'checkmark' : 'close'}
+                        size={15}
+                        // style={{fontWeight: '900', paddingBottom: 20}}
+                        color={COLORS.white}
+                      />
+                    </View>
+                    <View style={{paddingLeft: 40}}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                          color: COLORS.white,
+                        }}>
+                        ₦{formatNumber(item.amount)}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: COLORS.light,
+                          marginTop: 10,
+                        }}>
+                        {item.reference}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: COLORS.light,
+                          marginTop: 10,
+                        }}>
+                        {item.updated_at}
+                      </Text>
+                      {/* <Text
                       style={{
                         fontSize: 12,
                         color: COLORS.light,
@@ -413,10 +415,10 @@ export default function JoinChallengeDashboard(props) {
                       }}>
                       {item.status}
                     </Text> */}
+                    </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              })}
           </View>
         </View>
       </ScrollView>
