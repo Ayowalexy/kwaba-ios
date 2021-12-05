@@ -159,7 +159,7 @@ export default function Screen3({navigation, route}) {
         setSpinner(false);
         if (value == 'wallet') {
           const data = {
-            channel: value,
+            payment_channel: value,
             reference: response?.data?.data?.reference,
           };
 
@@ -178,7 +178,7 @@ export default function Screen3({navigation, route}) {
             });
           } else {
             setSpinner(false);
-            // Alert.alert('Insufficient fund', 'Please fund your wallet');
+            Alert.alert('Oops', verify?.response?.data?.response_message);
             console.log('Error: ', verify.response);
           }
         } else {
@@ -557,6 +557,7 @@ export default function Screen3({navigation, route}) {
           }}
           setPaymentTypeValue={(value) => {
             setPaymentTypeValue(value); // paystack, bank, wallet
+            setShowConfirmModal(true);
           }}
           mandateType={mandateType}
           showConfirmModal={(bol) => {

@@ -107,8 +107,10 @@ export default function PaymentTypeModalSavings(props) {
                     }
                   }
                   if (show == 3) {
-                    showConfirmModal(true);
+                    // showConfirmModal(true);
                     setPaymentTypeValue(item.tag);
+                    // console.log('Hello', item.tag);
+                    // setPaymentType(item.tag);
                   }
                   if (show == 4) {
                     showConfirmModal(true);
