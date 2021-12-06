@@ -640,6 +640,7 @@ export default function Screen3({navigation, route}) {
               });
               setSpinner(false);
             } else {
+              console.log('Oops:', verify.response);
               setSpinner(false);
             }
           }}

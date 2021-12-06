@@ -349,7 +349,7 @@ export default function SoloSavingDashBoard(props) {
                     color={COLORS.primary}
                   />
                 </View>
-                {/* <View style={{display: 'flex', marginTop: 5}}>
+                <View style={{display: 'flex', marginTop: 5}}>
                   <Text style={{color: COLORS.white, fontSize: 10}}>
                     Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
                   </Text>
@@ -360,7 +360,7 @@ export default function SoloSavingDashBoard(props) {
                     onValueChange={toggleSwitch}
                     value={autoSaving}
                   />
-                </View> */}
+                </View>
               </View>
               <View
                 style={{
