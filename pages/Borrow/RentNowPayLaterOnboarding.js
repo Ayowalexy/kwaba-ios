@@ -138,53 +138,53 @@ export default RentNowPayLaterOnboarding = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      {getMaxLoanCap1?.data?.you_have_save <= 0 ? (
+      {/* {getMaxLoanCap1?.data?.you_have_save <= 0 ? (
         <NoSavingsHTML />
-      ) : (
-        <>
-          <TouchableOpacity
+      ) : ( */}
+      <>
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            zIndex: 1,
+            padding: 20,
+          }}
+          onPress={() => navigation.goBack()}>
+          <Icon
+            name="arrow-back-outline"
+            size={25}
             style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              zIndex: 1,
-              padding: 20,
+              fontWeight: '900',
             }}
-            onPress={() => navigation.goBack()}>
-            <Icon
-              name="arrow-back-outline"
-              size={25}
-              style={{
-                fontWeight: '900',
-              }}
-              color={COLORS.light}
-            />
-          </TouchableOpacity>
-          <ScrollView>
-            <Image
-              source={images.rentNowPayLaterOnboarding}
-              style={styles.image}
-            />
-            <View style={{paddingHorizontal: 20}}>
-              <View style={styles.textWrapper}>
-                <Text style={styles.heading}>Rent Now Pay Later</Text>
-                <Text style={styles.content}>
-                  Whether you are looking to renew your rent or pay for a new
-                  place, we can pay your bulk rent so you pay back in easy
-                  monthly payments
-                </Text>
-              </View>
-
-              <TouchableOpacity
-                onPress={() => navigation.navigate('EmploymentStatus')}>
-                <View style={styles.button}>
-                  <Text style={styles.buttonText}>GET STARTED</Text>
-                </View>
-              </TouchableOpacity>
+            color={COLORS.light}
+          />
+        </TouchableOpacity>
+        <ScrollView>
+          <Image
+            source={images.rentNowPayLaterOnboarding}
+            style={styles.image}
+          />
+          <View style={{paddingHorizontal: 20}}>
+            <View style={styles.textWrapper}>
+              <Text style={styles.heading}>Rent Now Pay Later</Text>
+              <Text style={styles.content}>
+                Whether you are looking to renew your rent or pay for a new
+                place, we can pay your bulk rent so you pay back in easy monthly
+                payments
+              </Text>
             </View>
-          </ScrollView>
-        </>
-      )}
+
+            <TouchableOpacity
+              onPress={() => navigation.navigate('EmploymentStatus')}>
+              <View style={styles.button}>
+                <Text style={styles.buttonText}>GET STARTED</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </>
+      {/* )} */}
     </View>
   );
 };

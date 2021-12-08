@@ -111,8 +111,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   const handlePaymentRoute = async (value) => {
     console.log('The Value: ', value);
-    setChannel(value);
-    setShowAmountModal(true);
+    // setChannel(value);
+    // setShowAmountModal(true);
   };
 
   return (
@@ -280,17 +280,18 @@ export default function EmergencyLoanDashBoard({navigation}) {
           navigation={navigation}
         />
       )} */}
-
+      {/* 
       {showPaymentModal && (
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
           setPaymentType={(data) => {
             console.log('Hello', data);
-            handlePaymentRoute(data); // paystack, bank, wallet
+            // handlePaymentRoute(data); // paystack, bank, wallet
           }}
+          disable="wallet"
         />
-      )}
+      )} */}
 
       {showAmountModal && (
         <AmountModalFunds

@@ -8,11 +8,16 @@ import {
   Animated,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
-import {getEmergencyLoans} from '../../../services/network';
+import {
+  getEmergencyLoans,
+  loanRepayment,
+  verifyWalletTransaction,
+} from '../../../services/network';
 import {useDispatch, useSelector} from 'react-redux';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import {COLORS} from '../../../util';
@@ -37,7 +42,11 @@ export default function LoanTabs(props) {
   const [loanRepaymentData, setLoanRepaymentData] = useState([]);
   const [showAmountModal, setShowAmountModal] = useState(false);
 
+  const [amount, setAmount] = useState('');
+
   const [channel, setChannel] = useState('');
+
+  const [resData, setResData] = useState('');
 
   useEffect(() => {
     handleFetchLoans();
@@ -65,8 +74,56 @@ export default function LoanTabs(props) {
 
   const handlePaymentRoute = async (value) => {
     console.log('The Value: ', value);
-    setChannel(value);
-    setShowAmountModal(true);
+    // setChannel(value);
+    // setShowAmountModal(true);
+
+    // console.log('ID: ', loanRepaymentData?.id);
+
+    try {
+      const data = {
+        loan_id: loanRepaymentData?.id,
+        amount: amount,
+      };
+
+      console.log('The Data loan: ', data);
+
+      setSpinner(true);
+      const response = await loanRepayment(data);
+      if (response.status == 200) {
+        if (value == 'wallet') {
+          const data = {
+            payment_channel: value,
+            reference: response?.data?.data?.reference,
+          };
+          console.log('The Datata: ', data);
+          setSpinner(true);
+          const verify = await verifyWalletTransaction(data);
+          if (verify.status == 200) {
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'Home',
+              content: 'Payment Successful',
+              subText: 'Awesome! Your payment was successful',
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Oops!', verify?.response?.data.response_message);
+            console.log('Oops!', verify.response);
+          }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+        // Alert.alert('Oops!', response.response.data)
+        console.log('Oops!', response.response.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Oops', error.response);
+    }
   };
 
   const filterLoans = (filter) => {
@@ -228,7 +285,8 @@ export default function LoanTabs(props) {
                       // onPress={() => handlePayNow(item)}
                       onPress={() => {
                         setLoanRepaymentData(item);
-                        setShowPaymentModal(true);
+                        // setShowPaymentModal(true);
+                        setShowAmountModal(true);
                       }}
                       style={{
                         backgroundColor: COLORS.primary,
@@ -312,7 +370,6 @@ export default function LoanTabs(props) {
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
           setPaymentType={(data) => {
-            console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
         />
@@ -322,12 +379,13 @@ export default function LoanTabs(props) {
         <AmountModalFunds
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
-          navigation={navigation}
+          setAmount={(d) => setAmount(d)}
+          showCard={() => setShowPaymentModal(true)}
           data={loanRepaymentData}
-          redirectTo="EmergencyLoanDashBoard"
-          channel={channel}
         />
       )}
+
+      <Spinner visible={spinner} size="small" />
     </>
   );
 }

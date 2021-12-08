@@ -21,18 +21,20 @@ export default function ManualNoPaymentModal(props) {
     try {
       const data = storeData;
 
+      console.log('The Data Here: ', data);
+
       setSpinner(true);
       const response = await userCreateSavings(data);
 
-      console.log('The Savings: ', response);
+      console.log('The Savings: ', response?.response?.data);
       if (response.status == 200) {
         setSpinner(false);
         // Alert.alert('Success', 'Savings created');
-        console.log('Response Data:', response?.data);
+        console.log('Response Data:', response?.response);
         navigation.navigate('PaymentSuccessful', {
           content: 'Savings Plan Created Successfully',
           name: 'SoloSavingDashBoard',
-          id: response?.data?.data?.id,
+          id: response?.response?.data?.data?.id,
         });
       } else {
         setSpinner(false);

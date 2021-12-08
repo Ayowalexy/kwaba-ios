@@ -153,7 +153,7 @@ export default function SoloSavingDashBoard(props) {
   };
 
   const handlePaymentRoute = async (value) => {
-    console.log('The Value: ', value);
+    console.log('The Value tttt: ', value);
     try {
       const data = {
         savings_id: route?.params?.id,
@@ -164,6 +164,8 @@ export default function SoloSavingDashBoard(props) {
 
       setSpinner(true);
       const response = await addFundsToSavings(data);
+
+      console.log('The Save: ', response?.response);
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {

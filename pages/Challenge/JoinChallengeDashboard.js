@@ -103,6 +103,8 @@ export default function JoinChallengeDashboard(props) {
 
       setSpinner(true);
       const response = await addFundsToSavings(data);
+
+      console.log('Add Funds To Savings Res: ', response);
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
@@ -118,6 +120,7 @@ export default function JoinChallengeDashboard(props) {
             setSpinner(false);
             // dispatch(getUserSavingsChallenge());
             // Alert.alert('Payment Successful', 'Your payment is done.');
+            console.log('Verify: ', verify.response.data);
             navigation.navigate('PaymentSuccessful', {
               name: 'JoinChallengeDashboard',
               id: route?.params?.data?.id,
@@ -290,7 +293,7 @@ export default function JoinChallengeDashboard(props) {
               progress={
                 (Number(getOneSavings.data?.savings[0]?.amount_save) /
                   Number(getOneSavings.data?.savings[0]?.target_amount)) *
-                100
+                  100 || 0
               }
               height={7}
               backgroundColor="#fff"

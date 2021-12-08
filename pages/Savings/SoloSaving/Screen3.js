@@ -146,7 +146,8 @@ export default function Screen3({navigation, route}) {
   // }, [locked]);
 
   const handlePaymentRoute = async (value) => {
-    // console.log('The Value: ', value);
+    console.log('We here 1');
+    console.log('The Res: ', resData);
     try {
       const data = storeData;
       console.log('What Store Data: ', data);
@@ -174,7 +175,7 @@ export default function Screen3({navigation, route}) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
-              id: verify?.data?.data?.id,
+              id: response?.data?.data.id,
             });
           } else {
             setSpinner(false);
@@ -190,6 +191,7 @@ export default function Screen3({navigation, route}) {
       } else {
         setSpinner(false);
         Alert.alert('Error', 'something went wrong');
+        console.log('Error: ', response.response);
       }
     } catch (error) {
       console.log('The Error: ', error);
@@ -198,13 +200,10 @@ export default function Screen3({navigation, route}) {
   };
 
   const handlePaymentRoute2 = async (value, amount) => {
-    // console.log('The Value: ', value);
+    console.log('We here 2');
     const data = {...storeData, savings_amount: amount};
     console.log('What Store Data: ', data);
     try {
-      // const data = {...storeData, savings_amount: amount};
-      // console.log('What Store Data: ', data);
-
       setSpinner(true);
       const response = await userCreateSavings(data);
 
@@ -227,7 +226,7 @@ export default function Screen3({navigation, route}) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               name: 'SoloSavingDashBoard',
-              id: resData?.id,
+              id: response?.data?.data?.id,
             });
           } else {
             setSpinner(false);
@@ -250,13 +249,13 @@ export default function Screen3({navigation, route}) {
   };
 
   const handleCreateSavings = async () => {
+    const data = storeData;
+    console.log('DD: ', data);
     try {
-      const data = storeData;
-
       setSpinner(true);
       const response = await userCreateSavings(data);
 
-      console.log('The Savings: ', response);
+      console.log('The Savings: ', response.response);
       if (response.status == 200) {
         setSpinner(false);
         // Alert.alert('Success', 'Savings created');
@@ -329,7 +328,7 @@ export default function Screen3({navigation, route}) {
       const response = await getInterestRate();
       if (response.status == 200) {
         const data = response.data.data;
-        console.log('The Res Data Interest Rate: ', data?.data);
+        console.log('The Res Data Interest Rate: ', data);
 
         data?.forEach((item) => {
           if (item.id == 1) setUnlockedSavingsInterestValue(item.value);
@@ -440,7 +439,7 @@ export default function Screen3({navigation, route}) {
               </Text>
             </View>
           </View>
-          <View
+          {/* <View
             style={{
               display: 'flex',
               flexDirection: 'row',
@@ -465,7 +464,7 @@ export default function Screen3({navigation, route}) {
               onValueChange={toggleSwitch}
               value={locked}
             />
-          </View>
+          </View> */}
           <View
             style={{
               display: 'flex',
@@ -492,9 +491,11 @@ export default function Screen3({navigation, route}) {
                 fontFamily: 'Circular Std',
                 textAlign: 'center',
               }}>
-              {locked
+              {/* {locked
                 ? ' Keep your rent savings locked to earn higher interest.'
-                : 'You will get a lower interest rate if you unlock your rent savings. However, you can withdraw your funds anytime for free'}
+                : 'You will get a lower interest rate if you unlock your rent savings. However, you can withdraw your funds anytime for free'} */}
+              To help you not miss your rent payment, withdrawals can only be
+              done at your maturity date
             </Text>
           </View>
         </View>
@@ -640,7 +641,7 @@ export default function Screen3({navigation, route}) {
               });
               setSpinner(false);
             } else {
-              console.log('Oops:', verify.response);
+              console.log('Oops:', verify.response.data);
               setSpinner(false);
             }
           }}

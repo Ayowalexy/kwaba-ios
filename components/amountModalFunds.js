@@ -34,14 +34,7 @@ RNPaystack.init({
 });
 
 export default function AmountModalFunds(props) {
-  const {
-    onRequestClose,
-    visible,
-    data,
-    navigation,
-    redirectTo,
-    channel,
-  } = props;
+  const {onRequestClose, visible, data, setAmount, showCard} = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -52,15 +45,14 @@ export default function AmountModalFunds(props) {
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
-  const repay = Number(data?.repayment_amount) - Number(data?.amount_paid);
+  // const repay = Number(data?.repayment_amount) - Number(data?.amount_paid);
 
-  useEffect(() => {
-    console.log('The Repay: ', repay);
-  }, []);
+  // useEffect(() => {
+  //   console.log('The Repay: ', repay);
+  // }, []);
 
   const amountSchema = yup.object().shape({
-    // amount: yup.string().required('Please provide amount'),
-    amount: yup.number().integer().max(repay).required(),
+    amount: yup.string().required('Please provide amount'),
   });
 
   const handleClose = () => {
@@ -105,34 +97,44 @@ export default function AmountModalFunds(props) {
   //   }
   // };
 
+  // const handleSubmit = async (values) => {
+  //   console.log('Emeregency funds: ', data);
+
+  //   const repaymentData = {
+  //     loan_id: data.id,
+  //     amount: values.amount,
+  //     channel: channel,
+  //   };
+  //   // console.log('Pay Now', repaymentData);
+  //   // console.log('The Res: ', data);
+
+  //   setSpinner(true);
+  //   try {
+  //     const response = await loanRepayment(repaymentData);
+  //     console.log('RRR: ', response);
+  //     if (response.status == 200) {
+  //       setSpinner(false);
+  //       setResData(response?.data.data);
+  //       setID(repaymentData?.loanId);
+  //       setModal(true);
+  //     } else {
+  //       setSpinner(false);
+  //       console.log('Error: ', response.response);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     console.log('The Error: ', error.response);
+  //   }
+  // };
+
   const handleSubmit = async (values) => {
-    console.log('Emeregency funds: ', data);
-
-    const repaymentData = {
-      loan_id: data.id,
-      amount: values.amount,
-      channel: channel,
+    let data = {
+      amount: Number(unFormatNumber(values.amount)),
     };
-    // console.log('Pay Now', repaymentData);
-    // console.log('The Res: ', data);
 
-    setSpinner(true);
-    try {
-      const response = await loanRepayment(repaymentData);
-      console.log('RRR: ', response);
-      if (response.status == 200) {
-        setSpinner(false);
-        setResData(response?.data.data);
-        setID(repaymentData?.loanId);
-        setModal(true);
-      } else {
-        setSpinner(false);
-        console.log('Error: ', 'An error occured.');
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('The Error: ', error);
-    }
+    setAmount(data?.amount);
+    onRequestClose();
+    showCard();
   };
 
   const NumberInput = (props) => {
@@ -176,7 +178,7 @@ export default function AmountModalFunds(props) {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => onChange(name)(text.replace(/\D/g, ''))}
             {...inputProps}
           />
         </View>
@@ -233,8 +235,16 @@ export default function AmountModalFunds(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={isValid ? false : true}
-                        style={[styles.button]}>
+                        disabled={values.amount < 50 ? true : false}
+                        style={[
+                          styles.button,
+                          {
+                            backgroundColor:
+                              values.amount < 50
+                                ? '#00DC9950'
+                                : COLORS.secondary,
+                          },
+                        ]}>
                         <Text
                           style={{
                             color: 'white',
@@ -254,7 +264,7 @@ export default function AmountModalFunds(props) {
         </Modal>
       </View>
 
-      {modal && (
+      {/* {modal && (
         <CreditCardModalFunds
           onRequestClose={() => setModal(!modal)}
           visible={modal}
@@ -265,7 +275,7 @@ export default function AmountModalFunds(props) {
         />
       )}
 
-      <Spinner visible={spinner} size="large" />
+      <Spinner visible={spinner} size="large" /> */}
     </>
   );
 }
