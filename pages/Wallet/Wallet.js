@@ -326,7 +326,7 @@ export default function Wallet(props) {
               style={{
                 // borderWidth: 1,
                 // borderColor: 'red',
-                marginTop: 20,
+                marginTop: 10,
                 width: '100%',
                 // flex: 1,
                 paddingTop: 20,
@@ -335,8 +335,8 @@ export default function Wallet(props) {
                 justifyContent: 'space-evenly',
                 alignItems: 'center',
                 flexDirection: 'row',
-                borderTopWidth: 1,
-                borderTopColor: '#FFFFFF20',
+                // borderTopWidth: 1,
+                // borderTopColor: '#FFFFFF20',
               }}>
               {['Fund Savings', 'Pay Bills'].map((item, index) => {
                 return (
@@ -401,6 +401,19 @@ export default function Wallet(props) {
                   </TouchableOpacity>
                 );
               })}
+            </View>
+
+            <View
+              style={{
+                backgroundColor: '#00000020',
+                padding: 10,
+                paddingHorizontal: 20,
+                marginTop: 10,
+              }}>
+              <Text style={{color: COLORS.grey, fontSize: 10, lineHeight: 17}}>
+                You can fund your savings, buy airtime and pay bills from your
+                wallet. Please note, you can’t withdraw from your wallet
+              </Text>
             </View>
           </View>
         </View>
@@ -559,9 +572,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F8FD',
   },
   content: {
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
     paddingTop: 20,
-    paddingBottom: 10,
+    // paddingBottom: 10,
     backgroundColor: COLORS.primary,
     borderTopWidth: 1,
     borderTopColor: COLORS.primary,
