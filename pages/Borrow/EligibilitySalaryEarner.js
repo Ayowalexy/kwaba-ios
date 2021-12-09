@@ -175,6 +175,7 @@ export default function EligibilitySalaryEarner({navigation}) {
                 'Have received salary for at least 6 months',
                 'Have no bad loans and a clean credit history',
                 'Be above 21 years of age',
+                'Only available to Lagos residents for now',
               ].map((text, index) => (
                 <View style={[styles.list]} key={index}>
                   <View
