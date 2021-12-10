@@ -494,8 +494,10 @@ export default function Screen3({navigation, route}) {
               {/* {locked
                 ? ' Keep your rent savings locked to earn higher interest.'
                 : 'You will get a lower interest rate if you unlock your rent savings. However, you can withdraw your funds anytime for free'} */}
+              {/* To help you not miss your rent payment, withdrawals can only be
+              done at your maturity date */}
               To help you not miss your rent payment, withdrawals can only be
-              done at your maturity date
+              done at the end date of your savings plan
             </Text>
           </View>
         </View>
