@@ -26,6 +26,7 @@ import ActiveLoanModal from './ActiveLoanModal';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModalFunds from '../../../components/amountModalFunds';
+import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 
 export default function LoanTabs(props) {
   const dispatch = useDispatch();
@@ -41,6 +42,8 @@ export default function LoanTabs(props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [loanRepaymentData, setLoanRepaymentData] = useState([]);
   const [showAmountModal, setShowAmountModal] = useState(false);
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
   const [amount, setAmount] = useState('');
 
@@ -89,6 +92,8 @@ export default function LoanTabs(props) {
 
       setSpinner(true);
       const response = await loanRepayment(data);
+      console.log('That Resp: ', response);
+
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
@@ -98,6 +103,8 @@ export default function LoanTabs(props) {
           console.log('The Datata: ', data);
           setSpinner(true);
           const verify = await verifyWalletTransaction(data);
+
+          console.log('Verify: ', verify.response);
           if (verify.status == 200) {
             setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
@@ -382,6 +389,55 @@ export default function LoanTabs(props) {
           setAmount={(d) => setAmount(d)}
           showCard={() => setShowPaymentModal(true)}
           data={loanRepaymentData}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            // Do something
+
+            const data = {
+              payment_channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifyWalletTransaction(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              navigation.navigate('PaymentSuccessful', {
+                name: 'EmergencyLoanDashBoard',
+                content: 'Payment Successful',
+                subText: 'Awesome! You have successfully made payment',
+                // onNotify: () => {
+                //   PushNotification.localNotification({
+                //     channelId: 'test-channel',
+                //     title: 'Airtime Recharge',
+                //     message: 'You just recharged',
+                //   });
+                // },
+              });
+              setSpinner(false);
+              Alert.alert('Oops! ', verify?.response?.data?.response_message);
+            } else {
+              setSpinner(false);
+            }
+          }}
         />
       )}
 
