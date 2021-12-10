@@ -399,6 +399,8 @@ export default function LoanTabs(props) {
           channel={channel}
           paymentCanceled={(e) => {
             console.log('Pay cancel', e);
+            Alert.alert(e.status);
+            setSpinner(false);
             // Do something
           }}
           paymentSuccessful={async (res) => {
