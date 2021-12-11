@@ -41,29 +41,6 @@ const coin = require('../../assets/images/nairas.png');
 const snowflake = require('../../assets/images/snowflake.png');
 const snow = require('../../assets/images/snow.png');
 
-const transactions = [
-  {
-    amount: 100,
-    time: 'Monday, 8 2021',
-    name: 'Double December 25k Challenge',
-  },
-  {
-    amount: 25000,
-    time: 'Monday, 8 2021',
-    name: 'Double December 25k Challenge',
-  },
-  // {
-  //   amount: 10000,
-  //   time: 'Monday, 8 2021',
-  //   name: 'Double December 25k Challenge',
-  // },
-  // {
-  //   amount: 5000,
-  //   time: 'Monday, 8 2021',
-  //   name: 'Double December 25k Challenge',
-  // },
-];
-
 export default function JoinChallengeDashboard(props) {
   const dispatch = useDispatch();
   const getOneSavings = useSelector(
@@ -79,6 +56,9 @@ export default function JoinChallengeDashboard(props) {
   const [resData, setResData] = useState('');
   const [channel, setChannel] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [minimumAmount, setMinimumAmount] = useState(0);
+
+  const [targetAmount, setTargetAmount] = useState();
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
@@ -87,7 +67,21 @@ export default function JoinChallengeDashboard(props) {
     dispatch(getOneSoloSavingsTransaction(route?.params?.data?.savings[0].id));
     console.log('SOmething: ', getOneSavings);
     console.log('SOmething Transact: ', getOneTransaction);
+
     // console.log(route?.params?.data?.id);
+    // console.log('Route:', route?.params?.data?.savings[0].target_amount);
+    let amount = route?.params?.data?.tartget_per_member;
+    setTargetAmount(getOneSavings.data?.savings[0]?.amount_save);
+
+    if (amount == '100000') {
+      setMinimumAmount(4000);
+    }
+    if (amount == '50000') {
+      setMinimumAmount(2000);
+    }
+    if (amount == '25000') {
+      setMinimumAmount(1000);
+    }
   }, []);
 
   const handlePaymentRoute = async (value) => {
@@ -146,6 +140,10 @@ export default function JoinChallengeDashboard(props) {
     }
   };
 
+  const handleMoveToSaving = () => {
+    Alert.alert('Moving..', 'Holding on we are still working on it.');
+  };
+
   return (
     <View style={[styles.container]}>
       <Icon
@@ -201,9 +199,9 @@ export default function JoinChallengeDashboard(props) {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
         <View style={[styles.heading]}>
-          <Text style={[styles.headingTitle]}>{getOneSavings.data?.name}</Text>
+          <Text style={[styles.headingTitle]}>{route?.params?.data?.name}</Text>
           <Text style={[styles.headingSub]}>
-            {getOneSavings.data?.description}
+            {route?.params?.data?.description}
           </Text>
         </View>
 
@@ -222,7 +220,9 @@ export default function JoinChallengeDashboard(props) {
             <View style={{flex: 1}}>
               <Text
                 style={{fontSize: 15, fontWeight: 'bold', color: COLORS.black}}>
-                High-five!
+                {targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  ? 'Awe-some!'
+                  : 'High-five!'}
               </Text>
               <Text
                 style={{
@@ -232,12 +232,18 @@ export default function JoinChallengeDashboard(props) {
                   color: COLORS.black,
                   opacity: 0.9,
                 }}>
-                You are doing just fine, keep up with the good work!
+                {targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  ? 'You have successfully completed your savings challenege!'
+                  : 'You are doing just fine, keep up with the good work!'}
               </Text>
             </View>
             <View style={{justifyContent: 'center', paddingLeft: 20}}>
               <Image
-                source={piggyBank}
+                source={
+                  targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                    ? naira
+                    : piggyBank
+                }
                 style={{
                   width: 50,
                   height: 50,
@@ -324,24 +330,39 @@ export default function JoinChallengeDashboard(props) {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={[styles.btn]}
-              onPress={() => setShowAmountModal(true)}>
-              <Image
-                source={snow}
-                style={{
-                  width: 50,
-                  height: 50,
-                  position: 'absolute',
-                  left: 0,
-                  bottom: 0,
-                  opacity: 0.8,
-                  zIndex: 0,
-                }}
-                resizeMode="contain"
-              />
-              <Text style={[styles.btnText]}>Add Money</Text>
-            </TouchableOpacity>
+            {targetAmount != getOneSavings.data?.savings[0]?.target_amount && (
+              <TouchableOpacity
+                style={[styles.btn]}
+                onPress={() => {
+                  if (
+                    targetAmount ==
+                    getOneSavings.data?.savings[0]?.target_amount
+                  ) {
+                    handleMoveToSaving();
+                  } else {
+                    setShowAmountModal(true);
+                  }
+                }}>
+                <Image
+                  source={snow}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    position: 'absolute',
+                    left: 0,
+                    bottom: 0,
+                    opacity: 0.8,
+                    zIndex: 0,
+                  }}
+                  resizeMode="contain"
+                />
+                <Text style={[styles.btnText]}>
+                  {targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                    ? 'Move to savings'
+                    : 'Add Money'}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -433,6 +454,7 @@ export default function JoinChallengeDashboard(props) {
           setAmount={(d) => setAmount(d)}
           // setData={(d) => setResData(d)}
           showCard={() => setShowPaymentModal(true)}
+          minimumAmount={minimumAmount}
         />
       )}
 

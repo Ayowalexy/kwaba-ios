@@ -38,7 +38,14 @@ const amountSchema = yup.object().shape({
 });
 
 export default function AmountModalChallenge(props) {
-  const {onRequestClose, visible, setAmount, setData, showCard} = props;
+  const {
+    onRequestClose,
+    visible,
+    setAmount,
+    setData,
+    showCard,
+    minimumAmount,
+  } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -123,12 +130,12 @@ export default function AmountModalChallenge(props) {
           onRequestClose={onRequestClose}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              {/* <Icon
+              <Icon
                 onPress={handleClose}
                 name="close-outline"
                 size={25}
                 style={{
-                  right: 5,
+                  right: 10,
                   top: 5,
                   position: 'absolute',
                   zIndex: 2,
@@ -136,7 +143,7 @@ export default function AmountModalChallenge(props) {
                   padding: 10,
                   //   borderWidth: 1,
                 }}
-              /> */}
+              />
               <Animatable.View
                 duration={300}
                 delay={100}
@@ -160,12 +167,14 @@ export default function AmountModalChallenge(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={values.amount < 100 ? true : false}
+                        disabled={values.amount < minimumAmount ? true : false}
                         style={[
                           styles.button,
                           {
                             backgroundColor:
-                              values.amount < 100 ? '#5A4CB150' : '#5A4CB1',
+                              values.amount < minimumAmount
+                                ? '#5A4CB150'
+                                : '#5A4CB1',
                           },
                         ]}>
                         <Text
@@ -178,6 +187,18 @@ export default function AmountModalChallenge(props) {
                           PROCEED
                         </Text>
                       </TouchableOpacity>
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: COLORS.primary,
+                            marginTop: 5,
+                            textAlign: 'center',
+                          }}>
+                          The minimum amount you can save is ₦
+                          {formatNumber(minimumAmount)}
+                        </Text>
+                      </View>
                     </>
                   )}
                 </Formik>
