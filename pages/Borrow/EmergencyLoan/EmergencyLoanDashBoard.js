@@ -69,6 +69,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
+  const [showBanner, setShowBanner] = useState(false);
+
   useEffect(() => {
     (async () => {
       const loans = await getEmergencyLoans();
@@ -88,6 +90,16 @@ export default function EmergencyLoanDashBoard({navigation}) {
       setLoanId(activeLoan != undefined ? activeLoan.id : '');
 
       console.log('The active loan: ', activeLoan);
+
+      console.log('That loan: ', loans?.data?.data);
+
+      loans?.data?.data?.filter((item) => {
+        if (item.status.toLowerCase() == 'pending') {
+          setShowBanner(true);
+        } else {
+          setShowBanner(false);
+        }
+      });
     })();
   }, []);
 
@@ -144,7 +156,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
         </Text>
         {/* </View> */}
       </View>
-      {repaymentAmount > 0 && (
+      {showBanner && (
         <View style={[styles.banner]}>
           <View style={{flexDirection: 'row', width: '80%'}}>
             <Icon name="alert-circle" size={25} color={COLORS.dark} />
