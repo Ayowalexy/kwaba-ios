@@ -71,7 +71,7 @@ export default function JoinChallengeDashboard(props) {
     // console.log(route?.params?.data?.id);
     // console.log('Route:', route?.params?.data?.savings[0].target_amount);
     let amount = route?.params?.data?.tartget_per_member;
-    setTargetAmount(getOneSavings.data?.savings[0]?.amount_save);
+    setTargetAmount(route?.params?.data?.savings[0]?.amount_save);
 
     if (amount == '100000') {
       setMinimumAmount(4000);
