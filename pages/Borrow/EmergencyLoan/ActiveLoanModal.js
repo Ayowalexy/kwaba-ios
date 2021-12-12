@@ -6,24 +6,39 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {COLORS} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {getSingleLoan, loanRepayment} from '../../../services/network';
+import {
+  getSingleLoan,
+  loanRepayment,
+  verifyWalletTransaction,
+} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 import moment from 'moment';
 import axios from 'axios';
 import AmountModalFunds from '../../../components/amountModalFunds';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
+import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 
 export default function ActiveLoanModal(props) {
   const {visible, onRequestClose, loanID, navigation, loanData} = props;
   const [spinner, setSpinner] = useState(false);
-  const [showAmountModal, setShowAmountModal] = useState(false);
   const [data, setData] = useState('');
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [loanRepaymentData, setLoanRepaymentData] = useState([]);
+  const [showAmountModal, setShowAmountModal] = useState(false);
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
+  const [amount, setAmount] = useState('');
+
   const [channel, setChannel] = useState('');
+
+  const [resData, setResData] = useState('');
 
   const [dataValue, setDataValue] = useState({
     loanId: '',
@@ -41,6 +56,7 @@ export default function ActiveLoanModal(props) {
   useEffect(() => {
     // console.log('Loan Data: ', loanData);
     getOne();
+    setLoanRepaymentData(loanData);
   }, []);
 
   const getOne = async () => {
@@ -78,33 +94,57 @@ export default function ActiveLoanModal(props) {
   };
 
   const handlePaymentRoute = async (value) => {
-    // const data = {
-    //   serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
-    //   amount: unFormatNumber(amount), // e.g 100
-    //   recepient: phoneNumber, // e.g 08011111111
-    // };
+    try {
+      const data = {
+        loan_id: loanRepaymentData?.id,
+        amount: amount,
+      };
 
-    // setSpinner(true);
-    // if (value == 'paystack') {
-    //   const response = await BuyPurchaseAirtime(data);
-    //   console.log('The buy response: ', response);
-    //   if (response.status == 200) {
-    //     setSpinner(false);
-    //     setShowCardModal(true); // show card modal
-    //     setResData(response?.data?.data);
-    //     setChannel(value); //paystack
-    //   } else {
-    //     setSpinner(false);
-    //   }
-    // } else if (value == 'bank') {
-    //   console.log(value);
-    // } else {
-    //   console.log(value); // wallet
-    // }
+      console.log('The Data loan: ', data);
+      console.log('The Value: ', value);
 
-    console.log('The Value: ', value);
-    setChannel(value);
-    setShowAmountModal(true);
+      setSpinner(true);
+      const response = await loanRepayment(data);
+      console.log('That Resp: ', response);
+
+      if (response.status == 200) {
+        if (value == 'wallet') {
+          const data = {
+            payment_channel: value,
+            reference: response?.data?.data?.reference,
+          };
+          console.log('The Datata: ', data);
+          setSpinner(true);
+          const verify = await verifyWalletTransaction(data);
+
+          console.log('Verify: ', verify.response);
+          if (verify.status == 200) {
+            onRequestClose();
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'Home',
+              content: 'Payment Successful',
+              subText: 'Awesome! Your payment was successful',
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Oops!', verify?.response?.data.response_message);
+            console.log('Oops!', verify.response);
+          }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+        // Alert.alert('Oops!', response.response.data)
+        console.log('Oops!', response.response.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Oops', error.response);
+    }
   };
 
   return (
@@ -181,8 +221,8 @@ export default function ActiveLoanModal(props) {
 
                   <TouchableOpacity
                     onPress={() => {
-                      // setShowAmountModal(true); // show amount modal
-                      setShowPaymentModal(true); // show payment type
+                      setShowAmountModal(true); // show amount modal
+                      // setShowPaymentModal(true); // show payment type
                     }}
                     disabled={
                       dataValue.status.toLowerCase() == 'pending' ||
@@ -295,7 +335,7 @@ export default function ActiveLoanModal(props) {
         </View>
       </Modal>
 
-      {showPaymentModal && (
+      {/* {showPaymentModal && (
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
@@ -315,9 +355,73 @@ export default function ActiveLoanModal(props) {
           redirectTo="EmergencyLoanDashBoard"
           channel={channel}
         />
+      )} */}
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
       )}
 
-      <Spinner visible={spinner} size="large" />
+      {showAmountModal && (
+        <AmountModalFunds
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          setAmount={(d) => setAmount(d)}
+          showCard={() => setShowPaymentModal(true)}
+          data={loanRepaymentData}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            Alert.alert(e.status);
+            setSpinner(false);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            // Do something
+
+            const data = {
+              payment_channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifyWalletTransaction(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              onRequestClose();
+              navigation.navigate('PaymentSuccessful', {
+                name: 'EmergencyLoanDashBoard',
+                content: 'Payment Successful',
+                subText: 'Awesome! You have successfully made payment',
+              });
+              setSpinner(false);
+              Alert.alert('Oops! ', verify?.response?.data?.response_message);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
+
+      <Spinner visible={spinner} size="small" />
     </>
   );
 }
