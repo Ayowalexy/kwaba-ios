@@ -235,12 +235,12 @@ export default function AmountModalFunds(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={values.amount < 100 ? true : false}
+                        disabled={values.amount < 1 ? true : false}
                         style={[
                           styles.button,
                           {
                             backgroundColor:
-                              values.amount < 100
+                              values.amount < 1
                                 ? '#00DC9950'
                                 : COLORS.secondary,
                           },
@@ -255,7 +255,7 @@ export default function AmountModalFunds(props) {
                           PROCEED
                         </Text>
                       </TouchableOpacity>
-                      <View>
+                      {/* <View>
                         <Text
                           style={{
                             fontSize: 12,
@@ -265,7 +265,7 @@ export default function AmountModalFunds(props) {
                           }}>
                           The minimum amount you can pay is ₦100
                         </Text>
-                      </View>
+                      </View> */}
                     </>
                   )}
                 </Formik>
