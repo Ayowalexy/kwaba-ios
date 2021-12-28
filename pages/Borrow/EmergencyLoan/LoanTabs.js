@@ -16,6 +16,7 @@ import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {
   getEmergencyLoans,
   loanRepayment,
+  verifySavingsPayment,
   verifyWalletTransaction,
 } from '../../../services/network';
 import {useDispatch, useSelector} from 'react-redux';
@@ -254,35 +255,45 @@ export default function LoanTabs(props) {
                   </View>
                 </View>
 
-                <View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'flex-end',
-                    }}>
-                    <Text
-                      style={[
-                        styles.repaymentText,
-                        {
-                          color: COLORS.secondary,
-                        },
-                      ]}>
-                      View
-                    </Text>
-                    <Icon
-                      name="arrow-forward"
-                      color={COLORS.secondary}
-                      size={12}
-                      style={{marginLeft: 5}}
-                    />
-                  </View>
-                  <Text style={[styles.repaymentText]}>
+                {/* <View> */}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-end',
+                  }}>
+                  <Text
+                    style={[
+                      styles.repaymentText,
+                      {
+                        color: COLORS.secondary,
+                      },
+                    ]}>
+                    View
+                  </Text>
+                  <Icon
+                    name="arrow-forward"
+                    color={COLORS.secondary}
+                    size={12}
+                    style={{marginLeft: 5}}
+                  />
+                </View>
+                {/* <View style={{marginTop: 10, alignItems: 'flex-end'}}> */}
+                {/* <Text style={[styles.repaymentText]}>
                     {item.disbursement_status == 1
                       ? moment(item.disbursement_date).format('DD MMM YYYY')
                       : moment(item.created_at).format('DD MMM YYYY')}
-                  </Text>
-                </View>
+                  </Text> */}
+                {/* <Text style={[styles.repaymentText]}>
+                      Disbursement Date:{' '}
+                      {moment(item.disbursement_date).format('DD MMM YYYY')}
+                    </Text>
+                    <Text style={[styles.repaymentText]}>
+                      Repayment Date:{' '}
+                      {moment(item.repayment_date).format('DD MMM YYYY')}
+                    </Text> */}
+                {/* </View> */}
+                {/* </View> */}
               </View>
 
               {status == 'pending' ||
@@ -409,14 +420,14 @@ export default function LoanTabs(props) {
             // Do something
 
             const data = {
-              payment_channel: 'paystack',
+              channel: 'paystack',
               reference: res.data.transactionRef.reference,
             };
 
             console.log('the dataatatta: ', data);
 
             setSpinner(true);
-            const verify = await verifyWalletTransaction(data);
+            const verify = await verifySavingsPayment(data);
 
             console.log('the verifyyyyy: ', verify);
 

@@ -303,18 +303,20 @@ export default function SoloSavingDashBoard(props) {
                 style={{
                   position: 'absolute',
                   right: 5,
-                  top: 5,
+                  top: 10,
                   zIndex: 5,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                 }}
-                onPress={() => setShowAmountModal(true)}
-                // onPress={() => setShowPaymentModal(true)}
-                // onPress={() => setShowPaymentType(true)}
-                // onPress={() => setQuickSaveModal(true)}
-              >
+                onPress={() => setShowAmountModal(true)}>
+                <Text style={{fontSize: 12, color: COLORS.white}}>
+                  Add Funds
+                </Text>
                 <Image
                   style={{
                     width: 50,
                     height: 50,
+                    marginTop: 5,
                   }}
                   source={icons.addIcon}
                 />
@@ -351,7 +353,7 @@ export default function SoloSavingDashBoard(props) {
                     color={COLORS.primary}
                   />
                 </View>
-                <View style={{display: 'flex', marginTop: 5}}>
+                {/* <View style={{display: 'flex', marginTop: 5}}>
                   <Text style={{color: COLORS.white, fontSize: 10}}>
                     Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
                   </Text>
@@ -362,13 +364,14 @@ export default function SoloSavingDashBoard(props) {
                     onValueChange={toggleSwitch}
                     value={autoSaving}
                   />
-                </View>
+                </View> */}
               </View>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   marginTop: 10,
+                  alignItems: 'center',
                 }}>
                 <View
                   style={{
@@ -399,14 +402,26 @@ export default function SoloSavingDashBoard(props) {
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={{fontSize: 10, color: COLORS.white}}>
+                  {/* <Text style={{fontSize: 10, color: COLORS.white}}>
                     View savings history
                   </Text>
                   <Icon
                     name="chevron-forward-outline"
                     size={15}
                     style={{color: COLORS.white, marginLeft: 10}}
-                  />
+                  /> */}
+                  <View style={{flexDirection: 'column'}}>
+                    <Text style={{color: COLORS.white, fontSize: 10}}>
+                      Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
+                    </Text>
+                    <Switch
+                      trackColor={{false: 'white', true: 'white'}}
+                      thumbColor={autoSaving ? COLORS.secondary : '#ddd'}
+                      ios_backgroundColor="#3e3e3e"
+                      onValueChange={toggleSwitch}
+                      value={autoSaving}
+                    />
+                  </View>
                 </View>
               </View>
             </View>
@@ -415,6 +430,7 @@ export default function SoloSavingDashBoard(props) {
                 backgroundColor: '#ffffff20',
                 flex: 1,
                 paddingHorizontal: 20,
+                paddingVertical: 10,
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
@@ -466,7 +482,7 @@ export default function SoloSavingDashBoard(props) {
               // borderWidth: 1,
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: -60,
+              marginTop: -70,
               elevation: 10,
             }}>
             <AnimatedCircularProgress

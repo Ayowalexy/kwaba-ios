@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {
   getSingleLoan,
   loanRepayment,
+  verifySavingsPayment,
   verifyWalletTransaction,
 } from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -304,6 +305,14 @@ export default function ActiveLoanModal(props) {
                   </View>
                 )}
                 <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>
+                    Loan Disbursement Date:
+                  </Text>
+                  <Text style={[styles.tableValue]}>
+                    {moment(dataValue.disbursement_date).format('MMM DD YYYY')}
+                  </Text>
+                </View>
+                <View style={[styles.table]}>
                   <Text style={[styles.tableLabel]}>Loan Repayment Date:</Text>
                   <Text style={[styles.tableValue]}>
                     {moment(dataValue.repayment_date).format('MMM DD YYYY')}
@@ -393,14 +402,14 @@ export default function ActiveLoanModal(props) {
             // Do something
 
             const data = {
-              payment_channel: 'paystack',
+              channel: 'paystack',
               reference: res.data.transactionRef.reference,
             };
 
             console.log('the dataatatta: ', data);
 
             setSpinner(true);
-            const verify = await verifyWalletTransaction(data);
+            const verify = await verifySavingsPayment(data);
 
             console.log('the verifyyyyy: ', verify);
 

@@ -23,10 +23,10 @@ export default function Transactions(props) {
     setSpinner(true);
     try {
       const response = await getAllEmergencyLoansRepayment();
-      // console.log('All Loans Response: ', response);
+      console.log('All Loans Response: ', response?.data);
       if (response.status == 200) {
         setSpinner(false);
-        setRepayments(response.data.repayments);
+        setRepayments(response?.data?.data);
       } else {
         setSpinner(false);
       }
@@ -90,7 +90,7 @@ export default function Transactions(props) {
                   <TouchableOpacity
                     key={index}
                     style={{
-                      paddingHorizontal: 30,
+                      paddingHorizontal: 50,
                       paddingVertical: 15,
                       borderBottomColor: '#BFBFBF50',
                       borderBottomWidth: 1,
@@ -107,7 +107,11 @@ export default function Transactions(props) {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}>
-                      <Icon name="alarm" size={20} color={COLORS.dark} />
+                      <Icon
+                        name="checkmark-done-sharp"
+                        size={20}
+                        color={COLORS.dark}
+                      />
                     </View>
                     <View style={{flex: 1}}>
                       <View

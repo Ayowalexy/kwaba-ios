@@ -191,7 +191,7 @@ const loanPaymentVerification = async (data) => {
   const token = await getToken();
   const url = apiUrl + '/api/v1/emergency_loan/payment/verify';
   try {
-    const response = await axios.put(url, JSON.stringify(data), {
+    const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,

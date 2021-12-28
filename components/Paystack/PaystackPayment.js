@@ -45,7 +45,7 @@ export default function PaystackPayment(props) {
         billingEmail={user?.email}
         billingMobile={user?.phone}
         amount={data?.amount}
-        channels={[channel]}
+        channels={[channel]} // card, bank_transfer
         onCancel={(e) => {
           onRequestClose();
           paymentCanceled(e);

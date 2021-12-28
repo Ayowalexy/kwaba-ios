@@ -303,10 +303,10 @@ export default function NewHome({navigation}) {
       route: () => {
         TrackEvent('Emergency Funds Home Quick Action');
 
-        if (savings == 0) {
+        if (instantLoan == 0) {
           navigation.navigate('EmergencyFundOnboarding');
         } else {
-          navigation.navigate('EmergencyLoanHome');
+          navigation.navigate('EmergencyLoanDashBoard');
         }
       },
     },

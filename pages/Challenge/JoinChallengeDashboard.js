@@ -63,10 +63,14 @@ export default function JoinChallengeDashboard(props) {
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
   useEffect(() => {
+    console.log(route?.params?.data);
+  }, []);
+
+  useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));
     dispatch(getOneSoloSavingsTransaction(route?.params?.data?.savings[0].id));
-    console.log('SOmething: ', getOneSavings);
-    console.log('SOmething Transact: ', getOneTransaction);
+    // console.log('SOmething: ', getOneSavings);
+    // console.log('SOmething Transact: ', getOneTransaction);
 
     // console.log(route?.params?.data?.id);
     // console.log('Route:', route?.params?.data?.savings[0].target_amount);
