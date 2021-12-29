@@ -81,32 +81,34 @@ export default function JoinChallengeDashboard(props) {
     console.log('The Today', today);
   }, []);
 
-  useEffect(() => {
-    const data = route?.params?.data;
-
-    let challenge_end = moment(data?.end_date, 'DD-MM-YYYY');
-    let today = moment().format('DD-MM-YY');
-
-    if (challenge_end >= today) {
-      setChallengeEnd(true);
-    } else {
-      setChallengeEnd(false);
-    }
-  }, []);
-
   // useEffect(() => {
   //   const data = route?.params?.data;
 
-  //   var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
-  //   var today = moment();
-  //   var numberOfDays = today.diff(challenge_start, 'days');
+  //   let challenge_end = moment(data?.end_date, 'DD-MM-YYYY');
+  //   let today = moment().format('DD-MM-YYYY');
 
-  //   if (numberOfDays >= 25) {
+  //   if (challenge_end >= today) {
   //     setChallengeEnd(true);
   //   } else {
   //     setChallengeEnd(false);
   //   }
   // }, []);
+
+  useEffect(() => {
+    const data = route?.params?.data;
+
+    var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
+    var today = moment();
+    var numberOfDays = today.diff(challenge_start, 'days');
+
+    console.log('Number Of Days: ', challenge_start, today, numberOfDays);
+
+    if (numberOfDays >= 25) {
+      setChallengeEnd(true);
+    } else {
+      setChallengeEnd(false);
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));

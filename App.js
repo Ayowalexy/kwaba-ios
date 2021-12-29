@@ -431,9 +431,8 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={'JoinChallengeDashboard'}
-          // initialRouteName={'Welcome'}
-        >
+          // initialRouteName={'JoinChallengeDashboard'}
+          initialRouteName={'Welcome'}>
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
