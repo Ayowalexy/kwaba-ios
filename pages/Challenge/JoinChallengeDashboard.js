@@ -260,7 +260,7 @@ export default function JoinChallengeDashboard(props) {
                 {
                   // targetAmount == getOneSavings.data?.savings[0]?.target_amount
                   challengeEnd
-                    ? 'You have successfully completed your savings challenege!'
+                    ? 'You have successfully completed your savings challenge!'
                     : 'You are doing just fine, keep up with the good work!'
                 }
               </Text>
@@ -544,6 +544,8 @@ export default function JoinChallengeDashboard(props) {
         <MoveMoneyModal
           onRequestClose={() => setShowMoveMoneyModal(!showMoveMoneyModal)}
           visible={showMoveMoneyModal}
+          savingsData={route?.params?.data}
+          navigation={navigation}
         />
       )}
 

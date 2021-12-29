@@ -7,6 +7,7 @@ import {
   View,
   ScrollView,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../util';
@@ -14,17 +15,74 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
+import moment from 'moment';
+import {moveMoneyToSavingsPlan} from '../../services/network';
 
 const moveMoneyFormSchema = yup.object().shape({
   title: yup.string().required('Please provide title'),
   frequency: yup.string().required('Please select frequency'),
   targetAmount: yup.string().required('Please provide target amount'),
   savingsMethod: yup.string().required('Please select method'),
+  savingDuration: yup.string().required('Please select duration'),
 });
 
 export default function MoveMoneyModal(props) {
-  const {onRequestClose, visible} = props;
+  const {onRequestClose, visible, savingsData, navigation} = props;
   const [spinner, setSpinner] = useState(false);
+
+  const handleSubmit = async (values) => {
+    let chosenDuration =
+      values.savingDuration == '3 Months'
+        ? '3months'
+        : values.savingDuration == '6 Months'
+        ? '6months'
+        : '1years';
+
+    let endDate = moment(savingsData?.savings[0].start_date)
+      .add(Number(chosenDuration[0]), chosenDuration[1].toUpperCase())
+      .format('YYYY-MM-DD');
+
+    const data = {
+      name: values.title,
+      frequency: values.frequency,
+      target_amount: values.targetAmount,
+      how_long: chosenDuration,
+      savings_method: values.savingsMethod,
+      interest_rate: savingsData?.savings[0].locked ? '11' : '10', // we can get the interest from api
+      savings_amount: savingsData?.savings[0].amount,
+      savings_id: savingsData?.savings[0].id,
+      locked: savingsData?.savings[0].locked,
+      auto_save: values.savingOption == 'auto' ? true : false,
+      end_date: endDate,
+    };
+
+    try {
+      setSpinner(true);
+
+      const res = await moveMoneyToSavingsPlan(data);
+      console.log('The Res: ', res);
+
+      if (res.status == 200) {
+        setSpinner(false);
+        onRequestClose();
+        navigation.navigate('PaymentSuccessful', {
+          name: 'Home',
+          content: 'Successful',
+          subText: `Your money has been moved to ${values.title}.`,
+        });
+      } else {
+        setSpinner(false);
+        Alert.alert('Oops!', 'Something went wrong, please try again later.');
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
+      Alert.alert('Oops!', 'An error occured, please try again later.');
+    }
+
+    // console.log('The Value Here: ', values);
+    // console.log('The Move Data Here: ', data);
+  };
 
   const CustomInput = (props) => {
     const {
@@ -299,14 +357,6 @@ export default function MoveMoneyModal(props) {
     );
   };
 
-  const handleSubmit = (values) => {
-    // const data = {
-
-    // }
-
-    console.log('The Value Here: ', values);
-  };
-
   return (
     <>
       <Modal
@@ -344,12 +394,12 @@ export default function MoveMoneyModal(props) {
                 <Text
                   style={{
                     color: COLORS.primary,
-                    fontSize: 14,
+                    fontSize: 12,
                     fontWeight: '600',
                     opacity: 0.5,
                     paddingBottom: 10,
                   }}>
-                  Move your money to savings
+                  Move your money to savings plan
                 </Text>
               </View>
 
