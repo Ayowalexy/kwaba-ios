@@ -69,21 +69,44 @@ export default function JoinChallengeDashboard(props) {
   const [showMoveMoneyModal, setShowMoveMoneyModal] = useState(false);
 
   useEffect(() => {
-    console.log('Tahtah: ', route?.params?.data);
+    let end = moment('02-01-2022').format('YYYY-MM-DD');
+    let today = moment().format('DD-MM-YYYY');
 
+    let e = '02-01-2022';
+    let t = '02-01-2022';
+
+    console.log(e >= t);
+
+    console.log('The End', end);
+    console.log('The Today', today);
+  }, []);
+
+  useEffect(() => {
     const data = route?.params?.data;
 
-    var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
-    var today = moment();
-    var numberOfDays = today.diff(challenge_start, 'days');
+    let challenge_end = moment(data?.end_date, 'DD-MM-YYYY');
+    let today = moment().format('DD-MM-YY');
 
-    if (numberOfDays >= 25) {
-      // console.log('Challenge End: ', numberOfDays);
+    if (challenge_end >= today) {
       setChallengeEnd(true);
     } else {
       setChallengeEnd(false);
     }
   }, []);
+
+  // useEffect(() => {
+  //   const data = route?.params?.data;
+
+  //   var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
+  //   var today = moment();
+  //   var numberOfDays = today.diff(challenge_start, 'days');
+
+  //   if (numberOfDays >= 25) {
+  //     setChallengeEnd(true);
+  //   } else {
+  //     setChallengeEnd(false);
+  //   }
+  // }, []);
 
   useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));

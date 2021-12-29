@@ -431,8 +431,9 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'PaymentSuccessful'}
-          initialRouteName={'Welcome'}>
+          initialRouteName={'JoinChallengeDashboard'}
+          // initialRouteName={'Welcome'}
+        >
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
