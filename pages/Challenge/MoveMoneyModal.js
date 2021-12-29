@@ -13,6 +13,7 @@ import {COLORS, images} from '../../util';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 
 const moveMoneyFormSchema = yup.object().shape({
   title: yup.string().required('Please provide title'),
@@ -239,6 +240,65 @@ export default function MoveMoneyModal(props) {
     );
   };
 
+  const NumberInput = (props) => {
+    const {
+      field: {name, onBlur, onChange, value},
+      form: {errors, touched, setFieldTouched, values},
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    const duration = values?.savingDuration.toString().charAt(0).split('');
+
+    return (
+      <>
+        <Text style={[styles.boldText, {marginTop: 18}]}>
+          How much do you want to save in {duration}{' '}
+          {duration == '1' ? 'Year' : duration == '6' ? 'Months' : 'Months'}
+        </Text>
+        <View
+          style={[
+            styles.customInput,
+            props.multiline && {height: props.numberOfLines * 40},
+            hasError && styles.errorInput,
+          ]}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              position: 'absolute',
+              left: 15,
+              color: COLORS.dark,
+            }}>
+            ₦
+          </Text>
+          <TextInput
+            style={{
+              width: '100%',
+              paddingLeft: 50,
+              paddingVertical: 16,
+            }}
+            keyboardType="number-pad"
+            value={formatNumber(value)}
+            onBlur={() => {
+              setFieldTouched(name);
+              onBlur(name);
+            }}
+            onChangeText={(text) => {
+              const n = unFormatNumber(text);
+              console.log('N: ', n);
+              onChange(name)(n.replace(/\D/g, ''));
+            }}
+            {...inputProps}
+          />
+        </View>
+
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+      </>
+    );
+  };
+
   const handleSubmit = (values) => {
     // const data = {
 
@@ -266,34 +326,45 @@ export default function MoveMoneyModal(props) {
             </TouchableOpacity>
           </View>
           <View style={styles.modalView}>
-            <View style={{flex: 1, paddingHorizontal: 20}}>
-              <Text
+            <View style={{flex: 1}}>
+              <View
                 style={{
-                  fontSize: 18,
-                  fontWeight: 'bold',
-                  color: COLORS.primary,
+                  borderBottomColor: '#eee',
+                  borderBottomWidth: 1,
+                  paddingHorizontal: 30,
                 }}>
-                Create Savings Plan
-              </Text>
-              <Text
-                style={{
-                  color: COLORS.primary,
-                  fontSize: 14,
-                  fontWeight: '600',
-                  opacity: 0.5,
-                }}>
-                Move your money to savings
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: COLORS.primary,
+                  }}>
+                  Create Savings Plan
+                </Text>
+                <Text
+                  style={{
+                    color: COLORS.primary,
+                    fontSize: 14,
+                    fontWeight: '600',
+                    opacity: 0.5,
+                    paddingBottom: 10,
+                  }}>
+                  Move your money to savings
+                </Text>
+              </View>
 
-              <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
+              <ScrollView
+                contentContainerStyle={{paddingHorizontal: 30}}
+                showsVerticalScrollIndicator={false}
+                scrollEnabled>
                 <Formik
                   validationSchema={moveMoneyFormSchema}
                   initialValues={{
                     title: '',
-                    frequency: '',
-                    targetAmount: '',
                     savingsMethod: '',
+                    frequency: '',
                     savingDuration: '',
+                    targetAmount: '',
                   }}
                   onSubmit={(values) => {
                     handleSubmit(values);
@@ -317,6 +388,14 @@ export default function MoveMoneyModal(props) {
                         component={HowLongSelection}
                         name="savingDuration"
                       />
+
+                      {values.savingDuration != '' && (
+                        <Field
+                          component={NumberInput}
+                          name="targetAmount"
+                          placeholder="Amount"
+                        />
+                      )}
 
                       <TouchableOpacity
                         onPress={handleSubmit}
