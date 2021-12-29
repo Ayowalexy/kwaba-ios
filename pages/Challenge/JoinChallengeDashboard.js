@@ -30,6 +30,8 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import {getOneSoloSavingsTransaction} from '../../redux/actions/savingsActions';
+import moment from 'moment';
+import MoveMoneyModal from './MoveMoneyModal';
 
 const {width} = Dimensions.get('screen');
 
@@ -62,8 +64,25 @@ export default function JoinChallengeDashboard(props) {
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
+  const [challengeEnd, setChallengeEnd] = useState(false);
+
+  const [showMoveMoneyModal, setShowMoveMoneyModal] = useState(false);
+
   useEffect(() => {
-    console.log(route?.params?.data);
+    console.log('Tahtah: ', route?.params?.data);
+
+    const data = route?.params?.data;
+
+    var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
+    var today = moment();
+    var numberOfDays = today.diff(challenge_start, 'days');
+
+    if (numberOfDays >= 25) {
+      // console.log('Challenge End: ', numberOfDays);
+      setChallengeEnd(true);
+    } else {
+      setChallengeEnd(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -145,7 +164,8 @@ export default function JoinChallengeDashboard(props) {
   };
 
   const handleMoveToSaving = () => {
-    Alert.alert('Moving..', 'Holding on we are still working on it.');
+    // Alert.alert('Moving..', 'Holding on we are still working on it.');
+    setShowMoveMoneyModal(true);
   };
 
   return (
@@ -224,9 +244,10 @@ export default function JoinChallengeDashboard(props) {
             <View style={{flex: 1}}>
               <Text
                 style={{fontSize: 15, fontWeight: 'bold', color: COLORS.black}}>
-                {targetAmount == getOneSavings.data?.savings[0]?.target_amount
-                  ? 'Awe-some!'
-                  : 'High-five!'}
+                {
+                  // targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd ? 'Awe-some!' : 'High-five!'
+                }
               </Text>
               <Text
                 style={{
@@ -236,17 +257,19 @@ export default function JoinChallengeDashboard(props) {
                   color: COLORS.black,
                   opacity: 0.9,
                 }}>
-                {targetAmount == getOneSavings.data?.savings[0]?.target_amount
-                  ? 'You have successfully completed your savings challenege!'
-                  : 'You are doing just fine, keep up with the good work!'}
+                {
+                  // targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd
+                    ? 'You have successfully completed your savings challenege!'
+                    : 'You are doing just fine, keep up with the good work!'
+                }
               </Text>
             </View>
             <View style={{justifyContent: 'center', paddingLeft: 20}}>
               <Image
                 source={
-                  targetAmount == getOneSavings.data?.savings[0]?.target_amount
-                    ? naira
-                    : piggyBank
+                  // targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd ? naira : piggyBank
                 }
                 style={{
                   width: 50,
@@ -339,8 +362,9 @@ export default function JoinChallengeDashboard(props) {
                 style={[styles.btn]}
                 onPress={() => {
                   if (
-                    targetAmount ==
-                    getOneSavings.data?.savings[0]?.target_amount
+                    // targetAmount ==
+                    // getOneSavings.data?.savings[0]?.target_amount
+                    challengeEnd
                   ) {
                     handleMoveToSaving();
                   } else {
@@ -361,9 +385,7 @@ export default function JoinChallengeDashboard(props) {
                   resizeMode="contain"
                 />
                 <Text style={[styles.btnText]}>
-                  {targetAmount == getOneSavings.data?.savings[0]?.target_amount
-                    ? 'Move to savings'
-                    : 'Add Money'}
+                  {challengeEnd ? 'Move Money to savings' : 'Add Money'}
                 </Text>
               </TouchableOpacity>
             )}
@@ -515,6 +537,13 @@ export default function JoinChallengeDashboard(props) {
               setSpinner(false);
             }
           }}
+        />
+      )}
+
+      {showMoveMoneyModal && (
+        <MoveMoneyModal
+          onRequestClose={() => setShowMoveMoneyModal(!showMoveMoneyModal)}
+          visible={showMoveMoneyModal}
         />
       )}
 
