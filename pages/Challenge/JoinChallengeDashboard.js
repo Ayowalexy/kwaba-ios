@@ -346,6 +346,80 @@ export default function JoinChallengeDashboard(props) {
           </Text>
         </View>
 
+        <View
+          style={{
+            // borderWidth: 1,
+            // borderColor: 'red',
+            // padding: 20,
+            paddingHorizontal: 20,
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+          }}>
+          <View
+            style={{
+              width: 70,
+              height: 50,
+              backgroundColor: COLORS.white,
+              borderRadius: 5,
+              borderTopWidth: 5,
+              borderTopColor: COLORS.secondary,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
+              {moment(
+                route?.params?.data?.savings[0].start_date,
+                'MM-DD-YYYY',
+              ).format('DD')}
+            </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                color: COLORS.light,
+                fontWeight: 'bold',
+                opacity: 0.5,
+              }}>
+              {moment(
+                route?.params?.data?.savings[0].start_date,
+                'MM-DD-YYYY',
+              ).format('MMM YYYY')}
+            </Text>
+          </View>
+
+          <View
+            style={{
+              width: 70,
+              height: 50,
+              backgroundColor: COLORS.white,
+              borderRadius: 5,
+              borderTopWidth: 5,
+              borderTopColor: COLORS.red,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
+              {moment(
+                route?.params?.data?.savings[0].end_date,
+                'MM-DD-YYYY',
+              ).format('DD')}
+            </Text>
+            <Text
+              style={{
+                fontSize: 10,
+                color: COLORS.light,
+                fontWeight: 'bold',
+                opacity: 0.5,
+              }}>
+              {moment(
+                route?.params?.data?.savings[0].end_date,
+                'MM-DD-YYYY',
+              ).format('MMM YYYY')}
+            </Text>
+          </View>
+        </View>
+
         <View style={[styles.card]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <View style={{justifyContent: 'center', paddingRight: 20}}>
@@ -679,9 +753,9 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    paddingBottom: 20,
+    paddingBottom: 10,
     paddingLeft: 5,
-    width: width / 1.5,
+    width: width / 1.2,
   },
 
   headingTitle: {

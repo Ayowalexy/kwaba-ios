@@ -295,6 +295,36 @@ export default function SavingsChallengeSummary(props) {
                     value={savingsType}
                   />
                 </View>
+
+                <View
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '100%',
+                    // height: 26,
+                    borderRadius: 5,
+                    backgroundColor: '#00000022',
+                    // backgroundColor: '#5A4CB110',
+                    padding: 5,
+                    paddingVertical: 10,
+                    marginTop: 15,
+                    // marginBottom: -20,
+                  }}>
+                  <Text
+                    style={{
+                      color: COLORS.dark,
+                      fontSize: 10,
+                      lineHeight: 13,
+                      fontWeight: 'bold',
+                      fontFamily: 'Circular Std',
+                      textAlign: 'center',
+                    }}>
+                    To help you reach your rent goal, upon completion of this
+                    challenge, you will have to move your money to a savings
+                    plan
+                  </Text>
+                </View>
               </View>
             </View>
 
