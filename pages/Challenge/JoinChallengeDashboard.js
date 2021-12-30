@@ -43,6 +43,8 @@ const coin = require('../../assets/images/nairas.png');
 const snowflake = require('../../assets/images/snowflake.png');
 const snow = require('../../assets/images/snow.png');
 
+moment.locale();
+
 export default function JoinChallengeDashboard(props) {
   const dispatch = useDispatch();
   const getOneSavings = useSelector(
@@ -68,42 +70,132 @@ export default function JoinChallengeDashboard(props) {
 
   const [showMoveMoneyModal, setShowMoveMoneyModal] = useState(false);
 
-  useEffect(() => {
-    let end = moment('02-01-2022').format('YYYY-MM-DD');
-    let today = moment().format('DD-MM-YYYY');
-
-    let e = '02-01-2022';
-    let t = '02-01-2022';
-
-    console.log(e >= t);
-
-    console.log('The End', end);
-    console.log('The Today', today);
-  }, []);
-
   // useEffect(() => {
-  //   const data = route?.params?.data;
-
-  //   let challenge_end = moment(data?.end_date, 'DD-MM-YYYY');
+  //   let end = moment('02-01-2022').format('YYYY-MM-DD');
   //   let today = moment().format('DD-MM-YYYY');
 
-  //   if (challenge_end >= today) {
-  //     setChallengeEnd(true);
-  //   } else {
-  //     setChallengeEnd(false);
-  //   }
+  //   let e = '02-01-2022';
+  //   let t = '02-01-2022';
+
+  //   console.log(e >= t);
+
+  //   console.log('The End', end);
+  //   console.log('The Today', today);
   // }, []);
 
   useEffect(() => {
     const data = route?.params?.data;
 
-    var challenge_start = moment(data?.start_date, 'YYYY-MM-DD');
-    var today = moment();
-    var numberOfDays = today.diff(challenge_start, 'days');
+    var s = data?.savings[0].start_date;
+    var e = data?.savings[0].end_date;
 
-    console.log('Number Of Days: ', challenge_start, today, numberOfDays);
+    var a = moment(s, 'DD-MM-YYYY').format('DD-MM-YYYY');
 
-    if (numberOfDays >= 25) {
+    var b = moment(e, 'DD-MM-YYYY').format('DD-MM-YYYY');
+
+    // var aFormat = moment(a).format('DD-MM-YYYY');
+
+    // var bFormat = moment(b).format('DD-MM-YYYY');
+
+    // 12-08-2021 01-02-2022
+
+    // var numberOfDays = moment(moment('2021-12-08').format('DD-MM-YYYY')).diff(
+    //   moment(moment('2021-01-02').format('DD-MM-YYYY')),
+    //   'days',
+    // );
+
+    // console.log('Old: ', s, e);
+    // console.log('New: ', moment(a).format('DD-MM-YYYY'), b);
+    // console.log('number of days: ', numberOfDays);
+    // console.log('Format: ', aFormat, bFormat);
+    // console.log('SE: ', s, e);
+    // console.log('AB: ', a, b);
+
+    // var date1 = new Date(data?.savings[0].start_date)
+    //   .toISOString()
+    //   .slice(0, 10);
+    // var date2 = new Date(data?.savings[0].end_date).toISOString().slice(0, 10);
+
+    // // To calculate the time difference of two dates
+    // var Difference_In_Time = date2.getTime() - date1.getTime();
+
+    // // To calculate the no. of days between two dates
+    // var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    // console.log('DDDDDD:', Difference_In_Days);
+
+    // var todayDate = new Date().toLocaleDateString();
+    // console.log('TDate: ', todayDate);
+
+    // if (challenge_start >= '01-01-2025') {
+    //   setChallengeEnd(true);
+    // } else {
+    //   setChallengeEnd(false);
+    // }
+  }, []);
+
+  // useEffect(() => {
+  // const data = route?.params?.data;
+
+  // console.log('Data: ', data);
+
+  // var challenge_start = moment(data?.savings[0].start_date, 'YYYY-MM-DD');
+  // var today = moment();
+  // var numberOfDays = today.diff(challenge_start, 'days');
+
+  // console.log('Number Of Days: ', challenge_start, today, numberOfDays);
+
+  // console.log('Days: ', numberOfDays);
+
+  // console.log('challenge start: ', challenge_start);
+
+  // if (numberOfDays >= 25) {
+  //   setChallengeEnd(true);
+  // } else {
+  //   setChallengeEnd(false);
+  // }
+  // }, []);
+
+  // function getNumberOfDays(start, end) {
+  //   const date1 = new Date(start);
+  //   const date2 = new Date(end);
+
+  //   // One day in milliseconds
+  //   const oneDay = 1000 * 60 * 60 * 24;
+
+  //   // Calculating the time difference between two dates
+  //   const diffInTime = date2.getTime() - date1.getTime();
+
+  //   // Calculating the no. of days between two dates
+  //   const diffInDays = Math.round(diffInTime / oneDay);
+
+  //   return diffInDays;
+  // }
+
+  // useEffect(() => {
+  //   const data = route?.params?.data;
+
+  //   var s = new Date(data?.savings[0].start_date).toLocaleDateString();
+  //   var e = new Date(data?.savings[0].end_date);
+
+  //   s.toISOString().split('T')[0];
+  //   e.toISOString().split('T')[0];
+
+  //   console.log(s, e);
+  //   // 12-08-2021 01-02-2022
+  //   console.log('Na am: ', getNumberOfDays('2021-12-08', '2022-01-02'));
+  // }, []);
+
+  useEffect(() => {
+    const data = route?.params?.data;
+    var endDate = moment(data?.savings[0].end_date, 'MM-DD-YYYY').format(
+      'YYYY-MM-DD',
+    );
+    var today = moment().format('yyyy-MM-DD');
+
+    console.log({today, endDate});
+
+    if (endDate <= today) {
       setChallengeEnd(true);
     } else {
       setChallengeEnd(false);

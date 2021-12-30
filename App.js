@@ -218,6 +218,8 @@ import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
 
+// import CreditScore from './pages/CreditScore/Screen1';
+
 import PushNotification from 'react-native-push-notification';
 
 import CodePush from 'react-native-code-push';
@@ -431,7 +433,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'JoinChallengeDashboard'}
+          // initialRouteName={'CreditScore'}
           initialRouteName={'Welcome'}>
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
@@ -833,6 +835,8 @@ const App = () => {
                 name="JoinChallengeDashboard"
                 component={JoinChallengeDashboard}
               />
+
+              {/* <Stack.Screen name="CreditScore" component={CreditScore} /> */}
             </>
           )}
         </Stack.Navigator>
