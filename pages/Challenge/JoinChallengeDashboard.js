@@ -399,73 +399,84 @@ export default function JoinChallengeDashboard(props) {
             justifyContent: 'space-between',
             flexDirection: 'row',
           }}>
-          <View
-            style={{
-              width: 70,
-              height: 50,
-              backgroundColor: COLORS.white,
-              borderRadius: 5,
-              borderTopWidth: 5,
-              borderTopColor: COLORS.secondary,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
-              {/* {moment(
-                route?.params?.data?.savings[0].start_date,
-                'MM-DD-YYYY',
-              ).format('DD')} */}
-
-              {moment(startDate).format('DD')}
-            </Text>
+          <View style={{alignItems: 'center'}}>
             <Text
               style={{
                 fontSize: 10,
-                color: COLORS.light,
                 fontWeight: 'bold',
-                opacity: 0.5,
+                color: COLORS.secondary,
+                marginBottom: 5,
+                textTransform: 'uppercase',
               }}>
-              {/* {moment(
-                route?.params?.data?.savings[0].start_date,
-                'MM-DD-YYYY',
-              ).format('MMM YYYY')} */}
-              {moment(startDate).format('MMM YYYY')}
+              Start Date
             </Text>
+            <View
+              style={{
+                width: 70,
+                height: 50,
+                backgroundColor: COLORS.white,
+                borderRadius: 5,
+                borderTopWidth: 5,
+                borderTopColor: COLORS.secondary,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
+                {moment(startDate).format('DD')}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: COLORS.light,
+                  fontWeight: 'bold',
+                  opacity: 0.5,
+                }}>
+                {moment(startDate).format('MMM YYYY')}
+              </Text>
+            </View>
           </View>
 
-          <View
-            style={{
-              width: 70,
-              height: 50,
-              backgroundColor: COLORS.white,
-              borderRadius: 5,
-              borderTopWidth: 5,
-              borderTopColor: COLORS.red,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text
-              style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
-              {/* {moment(
-                route?.params?.data?.savings[0].end_date,
-                'MM-DD-YYYY',
-              ).format('DD')} */}
-              {moment(endDate).format('DD')}
-            </Text>
+          <View style={{alignItems: 'center'}}>
             <Text
               style={{
                 fontSize: 10,
-                color: COLORS.light,
                 fontWeight: 'bold',
-                opacity: 0.5,
+                color: COLORS.orange,
+                marginBottom: 5,
+                textTransform: 'uppercase',
               }}>
-              {/* {moment(
-                route?.params?.data?.savings[0].end_date,
-                'MM-DD-YYYY',
-              ).format('MMM YYYY')} */}
-              {moment(endDate).format('MMM YYYY')}
+              End Date
             </Text>
+            <View
+              style={{
+                width: 70,
+                height: 50,
+                backgroundColor: COLORS.white,
+                borderRadius: 5,
+                borderTopWidth: 5,
+                borderTopColor: COLORS.orange,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  color: COLORS.light,
+                }}>
+                {moment(endDate).format('DD')}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: COLORS.light,
+                  fontWeight: 'bold',
+                  opacity: 0.5,
+                }}>
+                {moment(endDate).format('MMM YYYY')}
+              </Text>
+            </View>
           </View>
         </View>
 
