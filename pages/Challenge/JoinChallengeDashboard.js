@@ -70,6 +70,9 @@ export default function JoinChallengeDashboard(props) {
 
   const [showMoveMoneyModal, setShowMoveMoneyModal] = useState(false);
 
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
   // useEffect(() => {
   //   let end = moment('02-01-2022').format('YYYY-MM-DD');
   //   let today = moment().format('DD-MM-YYYY');
@@ -188,19 +191,60 @@ export default function JoinChallengeDashboard(props) {
 
   useEffect(() => {
     const data = route?.params?.data;
-    var endDate = moment(data?.savings[0].end_date, 'MM-DD-YYYY').format(
-      'YYYY-MM-DD',
-    );
+    // var endDate = moment(data?.savings[0].end_date, 'MM-DD-YYYY').format(
+    //   'YYYY-MM-DD',
+    // );
     var today = moment().format('yyyy-MM-DD');
 
-    console.log({today, endDate});
+    // console.log({today, endDate});
 
-    if (endDate <= today) {
+    // console.log(new Date());
+
+    // if (endDate <= today) {
+    //   setChallengeEnd(true);
+    // } else {
+    //   setChallengeEnd(false);
+    // }
+
+    console.log(
+      'The Real Format: ',
+      checkDateFormat(data?.savings[0].end_date),
+      checkDateFormat(data?.savings[0].start_date),
+    );
+
+    let challenge_start = checkDateFormat(data?.savings[0].start_date);
+    let challenge_end = checkDateFormat(data?.savings[0].end_date);
+
+    setStartDate(challenge_start);
+    setEndDate(challenge_end);
+
+    var numberOfDays = moment(today).diff(moment(challenge_start), 'days');
+    console.log('Number Of Days: ', numberOfDays);
+    // console.log('Challenge: ', challenge_start, challenge_end);
+
+    if (numberOfDays >= 25) {
       setChallengeEnd(true);
     } else {
       setChallengeEnd(false);
     }
+
+    // if (endDate <= today) {
+    //   setChallengeEnd(true);
+    // } else {
+    //   setChallengeEnd(false);
+    // }
   }, []);
+
+  function checkDateFormat(date) {
+    const firstPart = date.split('-')[0];
+    if (firstPart.length === 4) {
+      console.log('year');
+      return moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+    } else {
+      console.log('day');
+      return moment(date, 'MM-DD-YYYY').format('YYYY-MM-DD');
+    }
+  }
 
   useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));
@@ -368,10 +412,12 @@ export default function JoinChallengeDashboard(props) {
             }}>
             <Text
               style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
-              {moment(
+              {/* {moment(
                 route?.params?.data?.savings[0].start_date,
                 'MM-DD-YYYY',
-              ).format('DD')}
+              ).format('DD')} */}
+
+              {moment(startDate).format('DD')}
             </Text>
             <Text
               style={{
@@ -380,10 +426,11 @@ export default function JoinChallengeDashboard(props) {
                 fontWeight: 'bold',
                 opacity: 0.5,
               }}>
-              {moment(
+              {/* {moment(
                 route?.params?.data?.savings[0].start_date,
                 'MM-DD-YYYY',
-              ).format('MMM YYYY')}
+              ).format('MMM YYYY')} */}
+              {moment(startDate).format('MMM YYYY')}
             </Text>
           </View>
 
@@ -400,10 +447,11 @@ export default function JoinChallengeDashboard(props) {
             }}>
             <Text
               style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
-              {moment(
+              {/* {moment(
                 route?.params?.data?.savings[0].end_date,
                 'MM-DD-YYYY',
-              ).format('DD')}
+              ).format('DD')} */}
+              {moment(endDate).format('DD')}
             </Text>
             <Text
               style={{
@@ -412,10 +460,11 @@ export default function JoinChallengeDashboard(props) {
                 fontWeight: 'bold',
                 opacity: 0.5,
               }}>
-              {moment(
+              {/* {moment(
                 route?.params?.data?.savings[0].end_date,
                 'MM-DD-YYYY',
-              ).format('MMM YYYY')}
+              ).format('MMM YYYY')} */}
+              {moment(endDate).format('MMM YYYY')}
             </Text>
           </View>
         </View>
