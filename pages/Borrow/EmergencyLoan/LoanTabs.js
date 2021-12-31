@@ -296,34 +296,38 @@ export default function LoanTabs(props) {
                 {/* </View> */}
               </View>
 
-              {status == 'pending' ||
-                (status == 'active' && (
-                  <View style={{marginTop: -5}}>
-                    <TouchableOpacity
-                      // onPress={() => handlePayNow(item)}
-                      onPress={() => {
-                        setLoanRepaymentData(item);
-                        // setShowPaymentModal(true);
-                        setShowAmountModal(true);
-                      }}
-                      style={{
-                        backgroundColor: COLORS.primary,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                      }}>
-                      <Text
+              {
+                status == 'active' ||
+                  (status == 'overdued' && (
+                    // (status == 'active' && (
+                    <View style={{marginTop: -5}}>
+                      <TouchableOpacity
+                        // onPress={() => handlePayNow(item)}
+                        onPress={() => {
+                          setLoanRepaymentData(item);
+                          // setShowPaymentModal(true);
+                          setShowAmountModal(true);
+                        }}
                         style={{
-                          fontSize: 10,
-                          color: COLORS.white,
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          textAlign: 'center',
+                          backgroundColor: COLORS.primary,
+                          paddingVertical: 10,
+                          paddingHorizontal: 10,
                         }}>
-                        Pay Now
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-                ))}
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: COLORS.white,
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            textAlign: 'center',
+                          }}>
+                          Pay Now
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))
+                // ))
+              }
             </TouchableOpacity>
           );
         })}

@@ -49,6 +49,7 @@ export default function ActiveLoanModal(props) {
     loan_repayment_amount: '',
     loan_amount_paid: '',
     repayment_date: '',
+    disbursement_date: '',
     account_name: '',
     account_number: '',
     account_bank: '',
@@ -80,6 +81,7 @@ export default function ActiveLoanModal(props) {
           loan_repayment_amount: d.repayment_amount,
           loan_amount_paid: d.amount_paid,
           repayment_date: d.repayment_date,
+          disbursement_date: d.disbursement_date,
           account_name: d.disbursement_account_name,
           account_number: d.disbursement_account_number,
           account_bank: d.disbursement_account_bank,
@@ -274,7 +276,10 @@ export default function ActiveLoanModal(props) {
                 <View style={[styles.table]}>
                   <Text style={[styles.tableLabel]}>Loan Amount:</Text>
                   <Text style={[styles.tableValue]}>
-                    ₦{formatNumber(dataValue.loan_amount)}
+                    ₦
+                    {dataValue.loan_amount == ''
+                      ? '0.00'
+                      : formatNumber(dataValue.loan_amount)}
                   </Text>
                 </View>
 
@@ -283,7 +288,10 @@ export default function ActiveLoanModal(props) {
                     Loan Repayment Amount:
                   </Text>
                   <Text style={[styles.tableValue]}>
-                    ₦{formatNumber(dataValue.loan_repayment_amount)}
+                    ₦
+                    {dataValue.loan_repayment_amount == ''
+                      ? '0.00'
+                      : formatNumber(dataValue.loan_repayment_amount)}
                   </Text>
                 </View>
 
@@ -300,7 +308,10 @@ export default function ActiveLoanModal(props) {
                               : COLORS.dark,
                         },
                       ]}>
-                      ₦{formatNumber(dataValue.loan_amount_paid)}
+                      ₦
+                      {dataValue.loan_amount_paid == ''
+                        ? '0.00'
+                        : formatNumber(dataValue.loan_amount_paid)}
                     </Text>
                   </View>
                 )}
@@ -309,13 +320,17 @@ export default function ActiveLoanModal(props) {
                     Loan Disbursement Date:
                   </Text>
                   <Text style={[styles.tableValue]}>
-                    {moment(dataValue.disbursement_date).format('MMM DD YYYY')}
+                    {dataValue?.disbursement_date != '' &&
+                      moment(dataValue?.disbursement_date).format(
+                        'MMM DD YYYY',
+                      )}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
                   <Text style={[styles.tableLabel]}>Loan Repayment Date:</Text>
                   <Text style={[styles.tableValue]}>
-                    {moment(dataValue.repayment_date).format('MMM DD YYYY')}
+                    {dataValue?.repayment_date != '' &&
+                      moment(dataValue?.repayment_date).format('MMM DD YYYY')}
                   </Text>
                 </View>
 

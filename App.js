@@ -224,8 +224,8 @@ import PushNotification from 'react-native-push-notification';
 
 import CodePush from 'react-native-code-push';
 
-import Smartlook from 'smartlook-react-native-wrapper';
-Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
+// import Smartlook from 'smartlook-react-native-wrapper';
+// Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
 
 LogBox.ignoreLogs([
   'Non-serializable values were found in the navigation state',
