@@ -32,6 +32,8 @@ import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import {getOneSoloSavingsTransaction} from '../../redux/actions/savingsActions';
 import moment from 'moment';
 import MoveMoneyModal from './MoveMoneyModal';
+import MoveMoneyOptionModal from './MoveMoneyOptionModal';
+import MoveMoneyToExistingPlanModal from './MoveMoneyToExistingPlanModal';
 
 const {width} = Dimensions.get('screen');
 
@@ -72,6 +74,15 @@ export default function JoinChallengeDashboard(props) {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] = useState(
+    false,
+  );
+
+  const [
+    showMoveMoneyToExistingPlanModal,
+    setShowMoveMoneyToExistingPlanModal,
+  ] = useState(false);
 
   // useEffect(() => {
   //   let end = moment('02-01-2022').format('YYYY-MM-DD');
@@ -326,7 +337,8 @@ export default function JoinChallengeDashboard(props) {
 
   const handleMoveToSaving = () => {
     // Alert.alert('Moving..', 'Holding on we are still working on it.');
-    setShowMoveMoneyModal(true);
+    // setShowMoveMoneyModal(true);
+    setShowMoveMoneyOptionModal(true);
   };
 
   return (
@@ -797,6 +809,34 @@ export default function JoinChallengeDashboard(props) {
           visible={showMoveMoneyModal}
           savingsData={route?.params?.data}
           navigation={navigation}
+        />
+      )}
+
+      {showMoveMoneyOptionModal && (
+        <MoveMoneyOptionModal
+          onRequestClose={() =>
+            setShowMoveMoneyOptionModal(!showMoveMoneyOptionModal)
+          }
+          visible={showMoveMoneyOptionModal}
+          showWhereToMoveMoneyBasedOnID={(id) => {
+            console.log('The IDIID: ', id);
+            id == 0
+              ? setShowMoveMoneyToExistingPlanModal(true)
+              : id == 1
+              ? setShowMoveMoneyModal(true)
+              : null;
+          }}
+        />
+      )}
+
+      {showMoveMoneyToExistingPlanModal && (
+        <MoveMoneyToExistingPlanModal
+          onRequestClose={() =>
+            setShowMoveMoneyToExistingPlanModal(
+              !showMoveMoneyToExistingPlanModal,
+            )
+          }
+          visible={showMoveMoneyToExistingPlanModal}
         />
       )}
 
