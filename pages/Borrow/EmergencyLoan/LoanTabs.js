@@ -52,6 +52,13 @@ export default function LoanTabs(props) {
 
   const [resData, setResData] = useState('');
 
+  const sortStatus = {
+    overdued: 1,
+    pending: 2,
+    active: 3,
+    paid: 4,
+  };
+
   useEffect(() => {
     handleFetchLoans();
     console.log('Hello');
@@ -183,9 +190,13 @@ export default function LoanTabs(props) {
   };
 
   const RenderLoans = ({filter}) => {
-    let filteredLoan = repaymentList.filter(
-      (item) => item.status.toLowerCase() == filter || filter == 'all',
-    );
+    let filteredLoan = repaymentList
+      .filter((item) => item.status.toLowerCase() == filter || filter == 'all')
+      .sort(
+        (a, b) =>
+          sortStatus[a.status.toLowerCase()] -
+          sortStatus[b.status.toLowerCase()],
+      );
     return (
       <ScrollView
         scrollEnabled
@@ -248,6 +259,7 @@ export default function LoanTabs(props) {
                           marginLeft: 2,
                           fontStyle: 'italic',
                           textTransform: 'capitalize',
+                          marginTop: 5,
                         },
                       ]}>
                       {item.status}
@@ -256,78 +268,88 @@ export default function LoanTabs(props) {
                 </View>
 
                 {/* <View> */}
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                  }}>
-                  <Text
-                    style={[
-                      styles.repaymentText,
-                      {
-                        color: COLORS.secondary,
-                      },
-                    ]}>
-                    View
-                  </Text>
-                  <Icon
-                    name="arrow-forward"
-                    color={COLORS.secondary}
-                    size={12}
-                    style={{marginLeft: 5}}
-                  />
-                </View>
-                {/* <View style={{marginTop: 10, alignItems: 'flex-end'}}> */}
-                {/* <Text style={[styles.repaymentText]}>
-                    {item.disbursement_status == 1
-                      ? moment(item.disbursement_date).format('DD MMM YYYY')
-                      : moment(item.created_at).format('DD MMM YYYY')}
-                  </Text> */}
-                {/* <Text style={[styles.repaymentText]}>
-                      Disbursement Date:{' '}
-                      {moment(item.disbursement_date).format('DD MMM YYYY')}
+                <View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                    }}>
+                    <Text
+                      style={[
+                        styles.repaymentText,
+                        {
+                          color: COLORS.secondary,
+                        },
+                      ]}>
+                      View
                     </Text>
-                    <Text style={[styles.repaymentText]}>
-                      Repayment Date:{' '}
-                      {moment(item.repayment_date).format('DD MMM YYYY')}
-                    </Text> */}
-                {/* </View> */}
-                {/* </View> */}
+                    <Icon
+                      name="arrow-forward"
+                      color={COLORS.secondary}
+                      size={12}
+                      style={{marginLeft: 5}}
+                    />
+                  </View>
+
+                  {item.amount_paid != '0' && (
+                    <View style={{flexDirection: 'row'}}>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          fontStyle: 'italic',
+                          marginTop: 5,
+                          color: COLORS.dark,
+                        }}>
+                        Paid - ₦{formatNumber(item.amount_paid)},{'  '}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          fontStyle: 'italic',
+                          marginTop: 5,
+                          color: COLORS.dark,
+                        }}>
+                        To Balance - ₦
+                        {formatNumber(
+                          Number(item.repayment_amount) -
+                            Number(item.amount_paid),
+                        )}
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </View>
 
-              {
-                status == 'active' ||
-                  (status == 'overdued' && (
-                    // (status == 'active' && (
-                    <View style={{marginTop: -5}}>
-                      <TouchableOpacity
-                        // onPress={() => handlePayNow(item)}
-                        onPress={() => {
-                          setLoanRepaymentData(item);
-                          // setShowPaymentModal(true);
-                          setShowAmountModal(true);
-                        }}
+              {status == 'active' || status == 'overdued' ? (
+                <>
+                  <View style={{marginTop: -5}}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setLoanRepaymentData(item);
+                        setShowAmountModal(true);
+                      }}
+                      style={{
+                        backgroundColor: COLORS.primary,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10,
+                      }}>
+                      <Text
                         style={{
-                          backgroundColor: COLORS.primary,
-                          paddingVertical: 10,
-                          paddingHorizontal: 10,
+                          fontSize: 10,
+                          color: COLORS.white,
+                          fontWeight: 'bold',
+                          textTransform: 'uppercase',
+                          textAlign: 'center',
                         }}>
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            color: COLORS.white,
-                            fontWeight: 'bold',
-                            textTransform: 'uppercase',
-                            textAlign: 'center',
-                          }}>
-                          Pay Now
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  ))
-                // ))
-              }
+                        Pay Now
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </>
+              ) : (
+                <></>
+              )}
             </TouchableOpacity>
           );
         })}

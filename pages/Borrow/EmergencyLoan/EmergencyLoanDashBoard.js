@@ -93,13 +93,30 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
       console.log('That loan: ', loans?.data?.data);
 
-      loans?.data?.data?.filter((item) => {
-        if (item.status.toLowerCase() == 'active') {
-          setShowBanner(true);
-        } else {
-          setShowBanner(false);
-        }
-      });
+      if (
+        loans?.data?.data?.filter((item) => item.status == 'Active').length > 0
+      ) {
+        setShowBanner(true);
+      } else {
+        setShowBanner(false);
+      }
+
+      // loans?.data?.data?.map((item) => {
+      //   if (item.status == 'Active') {
+      //     setShowBanner(true);
+      //   } else {
+      //     setShowBanner(false);
+      //   }
+      // });
+
+      // loans?.data?.data?.filter((item) => {
+      //   if (item.status.toLowerCase() == 'active') {
+      //     setShowBanner(true);
+      //     console.log('Hellow wid world.');
+      //   } else {
+      //     setShowBanner(false);
+      //   }
+      // });
     })();
   }, []);
 

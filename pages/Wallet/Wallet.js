@@ -321,7 +321,7 @@ export default function Wallet(props) {
                     </View>
                   </View>
 
-                  <View>
+                  {/* <View>
                     <Text
                       style={{
                         fontSize: 12,
@@ -347,7 +347,7 @@ export default function Wallet(props) {
                         {formatNumber(Number(ledgerBalance).toFixed(2))}
                       </Text>
                     </View>
-                  </View>
+                  </View> */}
                 </View>
 
                 <TouchableOpacity
