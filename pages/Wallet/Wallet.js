@@ -38,6 +38,8 @@ export default function Wallet(props) {
 
   const [amount, setAmount] = useState(0);
 
+  const [ledgerBalance, setLedgerBalance] = useState(0);
+
   const [transactions, setTransactions] = useState([]);
 
   const [toggleAmount, setToggleAmount] = useState(true);
@@ -73,6 +75,7 @@ export default function Wallet(props) {
 
   useEffect(() => {
     setAmount(getWallet?.data?.available_balances || 0);
+    setLedgerBalance(getWallet?.data?.ledger_balances || 0);
     console.log('The Wallet Value: ', getWallet);
     // console.log('Hello....', getWalletTransactions);
   }, [getWallet]);
@@ -256,89 +259,128 @@ export default function Wallet(props) {
               style={{
                 width: '100%',
                 justifyContent: 'center',
-                alignItems: 'center',
+                // alignItems: 'center',
               }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: 'normal',
-                  textAlign: 'left',
-                  color: COLORS.white,
-                  // marginLeft: 25,
-                }}>
-                Your Balance:
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 10,
-                }}>
-                <Text
+              <View style={{paddingHorizontal: 40}}>
+                <View
                   style={{
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                    color: COLORS.white,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 5,
                   }}>
-                  <Text style={{fontSize: 15}}>₦ </Text>
-                  {toggleAmount
-                    ? formatNumber(Number(amount).toFixed(2))
-                    : formatNumber(Number(amount).toFixed(2)).replace(
-                        new RegExp('[0-9]', 'g'),
-                        'x',
-                      )}
-                </Text>
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 'normal',
+                        textAlign: 'left',
+                        color: COLORS.white,
+                      }}>
+                      Available Balance:
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 0,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 30,
+                          fontWeight: 'bold',
+                          color: COLORS.white,
+                        }}>
+                        <Text style={{fontSize: 15}}>₦ </Text>
+
+                        {toggleAmount
+                          ? formatNumber(Number(amount).toFixed(2))
+                          : formatNumber(Number(amount).toFixed(2)).replace(
+                              new RegExp('[0-9]', 'g'),
+                              'x',
+                            )}
+                      </Text>
+
+                      {/* <TouchableOpacity
+                    onPress={() => setToggleAmount(!toggleAmount)}
+                    style={{
+                      backgroundColor: '#ffffff20',
+                      width: 30,
+                      height: 30,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderRadius: 5,
+                      marginLeft: 10,
+                      marginRight: 10,
+                    }}>
+                    <Icon
+                      name={toggleAmount ? 'eye-off-outline' : 'eye-outline'}
+                      size={15}
+                      color={COLORS.white}
+                    />
+                  </TouchableOpacity> */}
+                    </View>
+                  </View>
+
+                  <View>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 'normal',
+                        textAlign: 'left',
+                        color: COLORS.white,
+                      }}>
+                      Ledger Balance:
+                    </Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        marginTop: 0,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 30,
+                          fontWeight: 'bold',
+                          color: COLORS.white,
+                        }}>
+                        <Text style={{fontSize: 15}}>₦ </Text>
+                        {formatNumber(Number(ledgerBalance).toFixed(2))}
+                      </Text>
+                    </View>
+                  </View>
+                </View>
 
                 <TouchableOpacity
-                  onPress={() => setToggleAmount(!toggleAmount)}
+                  onPress={() => setAddFundsModal(true)}
                   style={{
                     backgroundColor: '#ffffff20',
-                    width: 30,
-                    height: 30,
                     justifyContent: 'center',
                     alignItems: 'center',
                     borderRadius: 5,
-                    marginLeft: 10,
-                    marginRight: 10,
+                    paddingHorizontal: 20,
+                    paddingVertical: 10,
+                    marginTop: 20,
                   }}>
-                  <Icon
-                    name={toggleAmount ? 'eye-off-outline' : 'eye-outline'}
-                    size={15}
-                    color={COLORS.white}
-                  />
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'bold',
+                      color: COLORS.white,
+                    }}>
+                    Add Funds
+                  </Text>
                 </TouchableOpacity>
               </View>
-
-              <TouchableOpacity
-                onPress={() => setAddFundsModal(true)}
-                style={{
-                  backgroundColor: '#ffffff20',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 5,
-                  paddingHorizontal: 20,
-                  paddingVertical: 10,
-                  marginTop: 20,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 'bold',
-                    color: COLORS.white,
-                  }}>
-                  Add Funds
-                </Text>
-              </TouchableOpacity>
 
               <View
                 style={{
                   // borderWidth: 1,
                   // borderColor: 'red',
-                  marginTop: 10,
+                  marginTop: 15,
                   width: '100%',
                   // flex: 1,
-                  paddingTop: 20,
-                  paddingBottom: 10,
+                  // paddingTop: 20,
+                  // paddingBottom: 10,
                   paddingHorizontal: 40,
                   justifyContent: 'space-evenly',
                   alignItems: 'center',
