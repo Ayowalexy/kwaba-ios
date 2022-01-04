@@ -222,7 +222,7 @@ export default function JoinChallengeDashboard(props) {
     console.log('Number Of Days: ', numberOfDays);
     // console.log('Challenge: ', challenge_start, challenge_end);
 
-    if (numberOfDays >= 25) {
+    if (numberOfDays >= 30) {
       setChallengeEnd(true);
     } else {
       setChallengeEnd(false);

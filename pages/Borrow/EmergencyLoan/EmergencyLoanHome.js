@@ -367,7 +367,7 @@ export default function EmergencyLoanHome({navigation}) {
                           lineHeight: 29,
                           fontWeight: 'bold',
                         }}>
-                        ₦{formatNumber(maximumLoanAmount)}
+                        ₦{formatNumber(Number(maximumLoanAmount).toFixed(2))}
                       </Text>
                     </View>
 
