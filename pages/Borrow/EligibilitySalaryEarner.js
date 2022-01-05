@@ -174,8 +174,10 @@ export default function EligibilitySalaryEarner({navigation}) {
                 'Earn a minimum monthly income of ₦80,000',
                 'Have received salary for at least 6 months',
                 'Have no bad loans and a clean credit history',
-                'Be above 21 years of age',
-                'Only available to Lagos residents for now',
+                // 'Be above 21 years of age',
+                // 'Only available to Lagos residents for now',
+                `Have the necessary documents like your employment\nletter and staff ID`,
+                'Be a Lagos resident',
               ].map((text, index) => (
                 <View style={[styles.list]} key={index}>
                   <View
@@ -254,6 +256,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     marginTop: 10,
     backgroundColor: COLORS.white,
+    paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 40,
     // paddingLeft: 10,
