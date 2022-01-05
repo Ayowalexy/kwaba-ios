@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import {COLORS} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -48,6 +49,7 @@ export default function ActiveLoanModal(props) {
     loan_amount: '',
     loan_repayment_amount: '',
     loan_amount_paid: '',
+    loan_amount_due: '',
     repayment_date: '',
     disbursement_date: '',
     account_name: '',
@@ -80,6 +82,7 @@ export default function ActiveLoanModal(props) {
           loan_amount: d.loan_amount,
           loan_repayment_amount: d.repayment_amount,
           loan_amount_paid: d.amount_paid,
+          loan_amount_due: Number(d.repayment_amount) - Number(d.amount_paid),
           repayment_date: d.repayment_date,
           disbursement_date: d.created_at,
           account_name: d.disbursement_account_name,
@@ -180,6 +183,10 @@ export default function ActiveLoanModal(props) {
                 color={COLORS.white}
               />
             </View>
+            {/* <ScrollView
+              scrollEnabled
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}> */}
             <View
               style={{
                 paddingHorizontal: 20,
@@ -268,13 +275,13 @@ export default function ActiveLoanModal(props) {
                 }}>
                 <Text style={[styles.tableHeader]}>Loan Details</Text>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Purpose:</Text>
+                  <Text style={[styles.tableLabel]}>Purpose:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue.loan_purpose}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Amount:</Text>
+                  <Text style={[styles.tableLabel]}>Amount:</Text>
                   <Text style={[styles.tableValue]}>
                     ₦
                     {dataValue.loan_amount == ''
@@ -284,9 +291,7 @@ export default function ActiveLoanModal(props) {
                 </View>
 
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>
-                    Loan Repayment Amount:
-                  </Text>
+                  <Text style={[styles.tableLabel]}>Repayment Amount:</Text>
                   <Text style={[styles.tableValue]}>
                     ₦
                     {dataValue.loan_repayment_amount == ''
@@ -297,7 +302,7 @@ export default function ActiveLoanModal(props) {
 
                 {Number(dataValue.loan_amount_paid) > 0 && (
                   <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Loan Amount Paid:</Text>
+                    <Text style={[styles.tableLabel]}>Amount Paid:</Text>
                     <Text
                       style={[
                         styles.tableValue,
@@ -315,10 +320,28 @@ export default function ActiveLoanModal(props) {
                     </Text>
                   </View>
                 )}
+                {Number(dataValue.loan_amount_due) > 0 && (
+                  <View style={[styles.table]}>
+                    <Text style={[styles.tableLabel]}>Amount Due:</Text>
+                    <Text
+                      style={[
+                        styles.tableValue,
+                        {
+                          color:
+                            dataValue.loan_amount_due > 0
+                              ? COLORS.orange
+                              : COLORS.dark,
+                        },
+                      ]}>
+                      ₦
+                      {dataValue.loan_amount_due == ''
+                        ? '0.00'
+                        : formatNumber(dataValue.loan_amount_due)}
+                    </Text>
+                  </View>
+                )}
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>
-                    Loan Disbursement Date:
-                  </Text>
+                  <Text style={[styles.tableLabel]}>Disbursement Date:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue?.disbursement_date != '' &&
                       moment(dataValue?.disbursement_date).format(
@@ -327,7 +350,7 @@ export default function ActiveLoanModal(props) {
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Repayment Date:</Text>
+                  <Text style={[styles.tableLabel]}>Repayment Date:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue?.repayment_date != '' &&
                       moment(dataValue?.repayment_date).format('MMM DD YYYY')}
@@ -355,6 +378,7 @@ export default function ActiveLoanModal(props) {
                 </View>
               </View>
             </View>
+            {/* </ScrollView> */}
           </View>
         </View>
       </Modal>
