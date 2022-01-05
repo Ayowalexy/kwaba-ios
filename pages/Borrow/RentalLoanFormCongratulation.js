@@ -31,19 +31,19 @@ export default function RentalLoanFormCongratulation({navigation}) {
     })();
   }, []);
 
-  useEffect(() => {
-    const backAction = () => {
-      navigation.navigate('Borrow');
-      return true;
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     navigation.navigate('Borrow');
+  //     return true;
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction,
+  //   );
 
-    return () => backHandler.remove();
-  }, []);
+  //   return () => backHandler.remove();
+  // }, []);
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
