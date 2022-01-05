@@ -7,10 +7,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CompleteProfileModal from '../Home/CompleteProfileModal';
 import {TrackEvent} from '../../util/segmentEvents';
+import {useRoute} from '@react-navigation/native';
 
 const Borrow = ({navigation}) => {
   const [existingApplication, setExistingApplication] = useState('');
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
+  const route = useRoute();
 
   useEffect(() => {
     getApplicationData();
@@ -218,11 +220,14 @@ const Borrow = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <CompleteProfileModal
-        onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
-        visible={completeProfileModal}
-        navigation={navigation}
-      />
+      {completeProfileModal && (
+        <CompleteProfileModal
+          onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
+          visible={completeProfileModal}
+          navigation={navigation}
+          screenName={route.name}
+        />
+      )}
     </View>
   );
 };

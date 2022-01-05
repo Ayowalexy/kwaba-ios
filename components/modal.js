@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, icons} from '../util';
 
 export default function ConfirmModal(props) {
-  const {onRequestClose, visible, goHome} = props;
+  const {onRequestClose, visible, goNaviagte} = props;
   return (
     // <View style={styles.centeredView}>
     <Modal
@@ -77,7 +77,7 @@ export default function ConfirmModal(props) {
               Now you can access Kwaba's amazing features!!!
             </Text>
             <TouchableOpacity
-              onPress={goHome}
+              onPress={goNaviagte}
               style={[styles.btn, {backgroundColor: '#00DC99', marginTop: 20}]}>
               <Text
                 style={{

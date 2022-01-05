@@ -55,8 +55,29 @@ const Screen5 = (props) => {
   //   console.log('User: ', user);
   // }, [user]);
 
-  const handleGoHome = () => {
-    navigation.navigate('Home');
+  // const handlegoNaviagte = async () => {
+  //   const c = await AsyncStorage.getItem('completeProfileNextPage');
+  //   if (c) {
+  //     navigation.navigate(c);
+  //   } else {
+  //     navigation.navigate('Home');
+  //   }
+
+  // };
+
+  const getData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@completeProfilePage');
+      if (value !== null) {
+        // value previously stored
+        navigation.navigate(value);
+      } else {
+        navigation.navigate('Home');
+      }
+    } catch (e) {
+      // error reading value
+      navigation.navigate('Home');
+    }
   };
 
   const NumberInput = (props) => {
@@ -329,7 +350,7 @@ const Screen5 = (props) => {
       <ConfirmModal
         onRequestClose={() => setModalVisible(!modalVisible)}
         visible={modalVisible}
-        goHome={handleGoHome}
+        goNaviagte={getData}
       />
 
       <Spinner visible={spinner} size="large" />
