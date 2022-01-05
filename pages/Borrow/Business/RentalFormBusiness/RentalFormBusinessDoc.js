@@ -342,7 +342,7 @@ const RentalLoanFormDoc = ({navigation}) => {
                   justifyContent: 'space-between',
                   paddingVertical: 15,
                 }}>
-                <Text>Tenure</Text>
+                <Text>Duration</Text>
                 <Text style={{fontWeight: 'bold', fontSize: 12}}>
                   {selectedMonth} {selectedMonth <= 1 ? 'Month' : 'Months'}
                 </Text>
