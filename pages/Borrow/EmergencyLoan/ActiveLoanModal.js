@@ -81,7 +81,7 @@ export default function ActiveLoanModal(props) {
           loan_repayment_amount: d.repayment_amount,
           loan_amount_paid: d.amount_paid,
           repayment_date: d.repayment_date,
-          disbursement_date: d.disbursement_date,
+          disbursement_date: d.created_at,
           account_name: d.disbursement_account_name,
           account_number: d.disbursement_account_number,
           account_bank: d.disbursement_account_bank,

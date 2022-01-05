@@ -150,14 +150,15 @@ export default function EmergencyLoanDashBoard({navigation}) {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          paddingVertical: 10,
-          paddingLeft: 20,
+          // paddingVertical: 10,
+          // paddingLeft: 20,
         }}>
         <Icon
           onPress={() => navigation.navigate('Home')}
           name="arrow-back-outline"
           size={25}
           color={COLORS.primary}
+          style={{paddingVertical: 10, paddingHorizontal: 20}}
         />
         <Text
           style={[
@@ -166,7 +167,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
               textAlign: 'left',
               fontWeight: 'bold',
               fontSize: 14,
-              marginLeft: 20,
+              marginLeft: 10,
             },
           ]}>
           Emergency Fund
@@ -189,9 +190,9 @@ export default function EmergencyLoanDashBoard({navigation}) {
             onPress={() => dispatch(getMaxLoanCap())}
             style={{
               backgroundColor: '#FFFFFF50',
-              width: 30,
-              height: 30,
-              borderRadius: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 50,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -428,7 +429,7 @@ const styles = StyleSheet.create({
   banner: {
     width: '100%',
     backgroundColor: '#9D98EC40',
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 20,
     // marginTop: 10,
     flexDirection: 'row',

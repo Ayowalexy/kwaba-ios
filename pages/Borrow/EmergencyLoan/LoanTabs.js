@@ -175,7 +175,7 @@ export default function LoanTabs(props) {
                     {
                       textTransform: 'uppercase',
                       fontWeight: 'bold',
-                      fontSize: 10,
+                      fontSize: 8,
                       color: COLORS.primary,
                     },
                   ]}>
@@ -360,6 +360,9 @@ export default function LoanTabs(props) {
   const All = () => {
     return <RenderLoans filter="all" />;
   };
+  const Overdue = () => {
+    return <RenderLoans filter="overdued" />;
+  };
   const Pending = () => {
     return <RenderLoans filter="pending" />;
   };
@@ -373,16 +376,18 @@ export default function LoanTabs(props) {
   // These should be below the components
   const [routes] = useState([
     {key: 'one', title: 'All'},
-    {key: 'two', title: 'Pending'},
-    {key: 'three', title: 'Active'},
-    {key: 'four', title: 'Paid'},
+    {key: 'two', title: 'Over due'},
+    {key: 'three', title: 'Pending'},
+    {key: 'four', title: 'Active'},
+    {key: 'five', title: 'Paid'},
   ]);
 
   const renderScene = SceneMap({
     one: All,
-    two: Pending,
-    three: Active,
-    four: Paid,
+    two: Overdue,
+    three: Pending,
+    four: Active,
+    five: Paid,
   });
 
   return (
