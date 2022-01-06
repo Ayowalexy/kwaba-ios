@@ -22,6 +22,12 @@ export default RentNowPayLaterOnboarding = ({navigation}) => {
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   useEffect(() => {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
@@ -33,46 +39,68 @@ export default RentNowPayLaterOnboarding = ({navigation}) => {
     setSavings(data?.you_have_save);
   }, []);
 
-  const handleRentalLoanClick = async () => {
-    const borrwSteps = await AsyncStorage.getItem('borrwsteps');
-    const steps = JSON.parse(borrwSteps);
-
-    // let stepsdata={
-    //   documentdone:'',
-    //   propertydetail:'',
-    //   landlorddetail:'',
-    //   refree:'',
-    //   offeraccepted:'',
-    //   addressverification:'',
-    //   debitmandate:'',
-    //   awaitingdisbursment:'',
-    // };
-
-    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
-
-    if (steps == null) {
-      navigation.navigate('RentalLoanForm1');
-    } else if (steps.documentdone == '') {
-      navigation.navigate('UploadDocuments');
-    } else if (steps.propertydetail == '') {
-      navigation.navigate('PostPaymentForm1');
-    } else if (steps.landlorddetail == '') {
-      navigation.navigate('PostPaymentForm2');
-    } else if (steps.refree == '') {
-      navigation.navigate('PostPaymentForm3');
-    } else if (steps.offeraccepted == '') {
-      navigation.navigate('RentalLoanOfferTest');
-    } else if (steps.addressverification == '') {
-      navigation.navigate('AddressVerificationPayment');
-    } else if (steps.debitmandate == '') {
-      navigation.navigate('OkraDebitMandate');
-    } else if (steps.awaitingdisbursment == '') {
-      navigation.navigate('AwaitingDisbursement');
+  const handleRentalLoanNavigate = async () => {
+    const user = await getUser();
+    if (user.profile_complete == 0) {
+      setCompleteProfileModal(true);
     } else {
-      navigation.navigate('RentalLoanForm1');
-      //navigation.navigate('EmergencyLoanRequestDashBoard');
+      // await AsyncStorage.removeItem(`rentalSteps-${user.id}`);
+
+      const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
+      const steps = JSON.parse(rentalSteps);
+      console.log('The stepp:', steps);
+
+      // TODO function check if payment disbusrsed,
+      // TODO function check if payment address payment,
+      // TODO function check if payment document verification,
+
+      if (steps != null) {
+        if (steps == null) {
+          navigation.navigate('RentalLoanForm1');
+        } else if (steps.congratulation == '') {
+          navigation.navigate('RentalLoanFormCongratulation');
+        } else if (steps.all_documents == '') {
+          navigation.navigate('NewAllDocuments');
+        } else if (steps.verifying_documents == '') {
+          navigation.navigate('VerifyingDocuments');
+        } else if (steps.offer_breakdown == '') {
+          navigation.navigate('OfferApprovalBreakDown');
+        } else if (steps.property_detail == '') {
+          navigation.navigate('PostPaymentForm1');
+        } else if (steps.landlord_detail == '') {
+          navigation.navigate('PostPaymentForm2');
+        } else if (steps.referee_detail == '') {
+          navigation.navigate('PostPaymentForm3');
+        } else if (steps.offer_letter == '') {
+          navigation.navigate('PTMFB');
+        } else if (steps.address_verification == '') {
+          navigation.navigate('AddressVerificationPayment');
+        } else if (steps.debitmandate == '') {
+          navigation.navigate('OkraDebitMandate');
+        } else if (steps.awaiting_disbursement == '') {
+          navigation.navigate('AwaitingDisbursement');
+        } else if (steps.dashboard == '') {
+          navigation.navigate('RentNowPayLaterDashboard');
+        } else {
+          navigation.navigate('RentNowPayLaterDashboard');
+        }
+      } else {
+        navigation.navigate('RentNowPayLaterOnboarding');
+      }
+
+      // //QUICK NAVIGATIONS
+      // navigation.navigate('RentalFormBusiness1');
+      // navigation.navigate('BusinessForm1');
+      // navigation.navigate('BusinessDocumentUpload');
+      // navigation.navigate('OkraDebitMandate');
+      // navigation.navigate('AddressVerificationPayment');
+      // navigation.navigate('RentalLoanFormBankStatementUploadEmail');
     }
   };
+
+  useEffect(() => {
+    handleRentalLoanNavigate();
+  }, []);
 
   const NoSavingsHTML = () => {
     return (

@@ -278,14 +278,14 @@ export default function NewHome({navigation}) {
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('RentNowPayLaterOnboarding')
+          ? navigation.navigate('Borrow') //RentNowPayLaterOnboarding
           : navigation.navigate('RentNowPayLaterDashboard'),
       cardClick: () => {
         TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('RentNowPayLaterOnboarding')
+          ? navigation.navigate('Borrow') //RentNowPayLaterOnboarding
           : navigation.navigate('RentNowPayLaterDashboard');
       },
     },
