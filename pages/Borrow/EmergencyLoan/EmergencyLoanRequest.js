@@ -287,9 +287,21 @@ const EmergencyLoanRequest = ({route, navigation}) => {
           <TouchableOpacity
             style={[
               designs.buttonStyleB,
-              {backgroundColor: '#00DC99', width: '100%'},
+              // {backgroundColor: '#00DC99', width: '100%'},
+              {
+                backgroundColor:
+                  loanPurpose == '' && userSelectedBankAccount?.user_bank_name
+                    ? '#00DC9950'
+                    : '#00DC99',
+                width: '100%',
+              },
             ]}
             onPress={() => setVisible(true)}
+            disabled={
+              loanPurpose == '' && userSelectedBankAccount?.user_bank_name
+                ? true
+                : false
+            }
             // onPress={() => navigation.navigate('EmergencyLoanDashBoard')}
           >
             <Text
