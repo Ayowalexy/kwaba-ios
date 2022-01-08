@@ -118,6 +118,8 @@ const mortgages_1 = require('../assets/images/mortgages_1.png');
 
 const appUpdate = require('../assets/images/Group43387.png');
 
+const speedometer = require('../assets/images/speedometer-1.png');
+
 export {
   logo,
   applicationReview,
@@ -227,4 +229,5 @@ export {
   saveToOwn,
   mortgages_1,
   appUpdate,
+  speedometer,
 };

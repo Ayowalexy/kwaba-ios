@@ -218,11 +218,13 @@ import analytics from '@segment/analytics-react-native';
 
 import AppUpdate from './pages/AppUpdate/AppUpdate';
 
-import CreditScore from './pages/CreditScore/Screen1';
+import CreditScoreDashboard from './pages/CreditScore/CreditScoreDashboard';
 
 import PushNotification from 'react-native-push-notification';
 
 import CodePush from 'react-native-code-push';
+import CreditScoreOnboarding from './pages/CreditScore/CreditScoreOnboarding';
+import CreditScoreForm from './pages/CreditScore/CreditScoreForm';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
@@ -433,8 +435,8 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'CreditScore'}
-          initialRouteName={'Welcome'}
+          initialRouteName={'CreditScoreOnboarding'}
+          // initialRouteName={'Welcome'}
           // initialRouteName={'Welcome'}
         >
           {/* {test != '' ? ( */}
@@ -838,7 +840,20 @@ const App = () => {
                 component={JoinChallengeDashboard}
               />
 
-              <Stack.Screen name="CreditScore" component={CreditScore} />
+              <Stack.Screen
+                name="CreditScoreOnboarding"
+                component={CreditScoreOnboarding}
+              />
+
+              <Stack.Screen
+                name="CreditScoreForm"
+                component={CreditScoreForm}
+              />
+
+              <Stack.Screen
+                name="CreditScoreDashboard"
+                component={CreditScoreDashboard}
+              />
             </>
           )}
         </Stack.Navigator>

@@ -94,7 +94,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
       console.log('That loan: ', loans?.data?.data);
 
       if (
-        loans?.data?.data?.filter((item) => item.status == 'Active').length > 0
+        loans?.data?.data?.filter((item) => item.status == 'Pending').length > 0
       ) {
         setShowBanner(true);
       } else {
