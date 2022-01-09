@@ -6,12 +6,17 @@ import {
   StatusBar,
   TouchableOpacity,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../util';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import AcceptModal from './AcceptModal';
+import {creditScorePurchase} from '../../services/network';
+import Spinner from 'react-native-loading-spinner-overlay';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
+import PaystackPaymentCobble from '../../components/Paystack/PaystackPaymentCobble';
 
 const CreditScoreValidationSchema = yup.object().shape({
   email: yup
@@ -66,6 +71,9 @@ const CustomInput = (props) => {
 export default function CreditScoreForm({navigation}) {
   const [spinner, setSpinner] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+  const [resData, setResData] = useState([]);
+  const [formValue, setFormValue] = useState('');
 
   const handleSubmit = async (values) => {
     const data = {
@@ -74,8 +82,24 @@ export default function CreditScoreForm({navigation}) {
       company: 'Kwaba',
     };
 
+    setFormValue(data);
+
+    setSpinner(true);
+
+    try {
+      const res = await creditScorePurchase(data);
+      if (res.status == 200) {
+        // console.log('Here is the response: ', res.data.data);
+        setResData(res?.data?.data);
+        setSpinner(false);
+        setShowAcceptModal(true);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error.response);
+    }
+
     console.log('The Data: ', data);
-    setShowAcceptModal(true);
   };
 
   return (
@@ -133,8 +157,36 @@ export default function CreditScoreForm({navigation}) {
             onRequestClose={() => setShowAcceptModal(!showAcceptModal)}
             visible={showAcceptModal}
             navigation={navigation}
+            onConfirm={() => setShowPaystackPayment(true)}
           />
         )}
+
+        {showPaystackPayment && (
+          <PaystackPaymentCobble
+            onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+            data={resData}
+            channel={'card'}
+            paymentCanceled={(e) => {
+              console.log('Pay cancel', e);
+              Alert.alert(e.status);
+              setSpinner(false);
+              // Do something
+            }}
+            paymentSuccessful={async (res) => {
+              console.log('Pay done', res);
+              if (res.status == 'success') {
+                // Alert.alert('Awesome!', 'Navigation to checking score!!!!');
+                navigation.navigate('CreditScoreAwaiting', formValue);
+              } else {
+                Alert.alert('Oops', 'Something went wrong');
+              }
+
+              // Do something
+            }}
+          />
+        )}
+
+        <Spinner visible={spinner} size="small" />
       </View>
     </>
   );

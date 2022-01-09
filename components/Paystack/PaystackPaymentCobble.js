@@ -16,7 +16,7 @@ const userData = async () => {
   return JSON.parse(userData).user;
 };
 
-export default function PaystackPayment(props) {
+export default function PaystackPaymentCobble(props) {
   const [user, setUser] = useState({email: '', phone: ''});
   const paystackWebViewRef = useRef();
   const {
@@ -41,12 +41,13 @@ export default function PaystackPayment(props) {
   return (
     <View style={{flex: 1}}>
       <Paystack
-        // paystackKey="pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef"
-        paystackKey="pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb"
+        paystackKey="pk_live_c0696f831843dd83db93fb594c62c2d10be73f0b"
+        // paystackKey="pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb"
         billingEmail={user?.email}
         billingMobile={user?.phone}
         amount={data?.amount || '2000'}
-        channels={[channel]} // card, bank_transfer
+        // channels={[channel]} // card, bank_transfer
+        channels={['card', 'bank_transfer']} // card, bank_transfer
         onCancel={(e) => {
           onRequestClose();
           paymentCanceled(e);

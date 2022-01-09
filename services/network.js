@@ -968,6 +968,36 @@ const moveMoneyToSavingsPlan = async (data) => {
   }
 };
 
+// endpoint powered by Cobble
+// test endpoints from cobble for credit score
+const creditScorePurchase = async (data) => {
+  const url = 'http://cobblescore.herokuapp.com/Integration/purchase';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const creditScoreFetch = async (data) => {
+  const url = 'http://cobblescore.herokuapp.com/Integration/fetch';
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -1035,4 +1065,6 @@ export {
   verifyWalletTransaction,
   joinSavingsChallenge,
   moveMoneyToSavingsPlan,
+  creditScorePurchase,
+  creditScoreFetch,
 };

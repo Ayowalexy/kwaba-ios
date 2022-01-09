@@ -12,11 +12,12 @@ import {images, icons, COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function AcceptModal(props) {
-  const {onRequestClose, visible, navigation} = props;
+  const {onRequestClose, visible, navigation, onConfirm} = props;
 
   const handleNavigate = () => {
+    onConfirm();
     onRequestClose();
-    navigation.navigate('CreditScoreDashboard');
+    // navigation.navigate('CreditScoreDashboard');
   };
   return (
     <>
@@ -53,8 +54,8 @@ export default function AcceptModal(props) {
                     paddingHorizontal: 20,
                     textAlign: 'center',
                   }}>
-                  You will be charged the sum of ₦2,000 to check you Credit
-                  Score History.
+                  You will be charged the sum of ₦2,000 to check your credit
+                  report.
                 </Text>
 
                 <TouchableOpacity onPress={handleNavigate}>

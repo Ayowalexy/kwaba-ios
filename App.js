@@ -225,6 +225,7 @@ import PushNotification from 'react-native-push-notification';
 import CodePush from 'react-native-code-push';
 import CreditScoreOnboarding from './pages/CreditScore/CreditScoreOnboarding';
 import CreditScoreForm from './pages/CreditScore/CreditScoreForm';
+import CreditScoreAwaiting from './pages/CreditScore/CreditScoreAwaiting';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
@@ -853,6 +854,11 @@ const App = () => {
               <Stack.Screen
                 name="CreditScoreDashboard"
                 component={CreditScoreDashboard}
+              />
+
+              <Stack.Screen
+                name="CreditScoreAwaiting"
+                component={CreditScoreAwaiting}
               />
             </>
           )}

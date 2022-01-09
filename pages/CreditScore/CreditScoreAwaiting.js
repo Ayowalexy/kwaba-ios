@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,41 @@ import {
   StatusBar,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {creditScoreFetch} from '../../services/network';
 import {COLORS, images} from '../../util';
+import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function CreditScoreOnboarding({navigation}) {
+export default function CreditScoreAwaiting({navigation, route}) {
+  const [spinner, setSpinner] = useState(false);
+
+  useEffect(() => {
+    handleFetch();
+  }, []);
+
+  const handleFetch = async () => {
+    setSpinner(true);
+
+    try {
+      const res = await creditScoreFetch(route?.params);
+      console.log('The Res: ', res.data);
+      if (res?.history) {
+        setSpinner(false);
+        navigation.navigate('CreditScoreDashboard');
+      } else {
+        setSpinner(false);
+        Alert.alert(
+          'Credit history',
+          'Please wait, no history report yet. Check again later',
+        );
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
+    }
+  };
   return (
     <>
       <StatusBar backgroundColor={'#10131B'} />
@@ -23,13 +53,12 @@ export default function CreditScoreOnboarding({navigation}) {
             alignItems: 'center',
             paddingVertical: 20,
             paddingHorizontal: 20,
-            // borderBottomColor: '#2b273550',
-            // borderBottomWidth: 1,
+            borderBottomColor: '#2b273550',
+            borderBottomWidth: 1,
           }}>
           <Icon
             name="chevron-back"
-            // color={COLORS.white}
-            color={COLORS.dark}
+            color={COLORS.white}
             size={20}
             onPress={() => navigation.navigate('Home')}
           />
@@ -37,24 +66,25 @@ export default function CreditScoreOnboarding({navigation}) {
         </View>
 
         <View style={[styles.content]}>
-          <Image source={images.speedometer} style={styles.image} />
+          {/* <Image source={images.speedometer} style={styles.image} /> */}
 
           <View style={styles.textWrapper}>
-            <Text style={styles.title}>Check Your Credit Report</Text>
+            <Text style={styles.title}>Credit Report...</Text>
             <Text style={styles.subText}>
-              To successfully apply to rent now-pay later, we need to check your
-              credit report to get to know you a little bit more.
+              We are current processing your report, It takes up to 5 minutes.
+              please check back later.
             </Text>
           </View>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('CreditScoreForm')}>
+          <TouchableOpacity onPress={handleFetch}>
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Check credit report</Text>
+              <Text style={styles.buttonText}>Refresh</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
+
+      <Spinner visible={spinner} size="small" />
     </>
   );
 }
@@ -63,7 +93,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#000',
     backgroundColor: '#10131B',
-    backgroundColor: COLORS.white,
     flex: 1,
   },
   content: {
@@ -76,7 +105,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 200,
     resizeMode: 'contain',
-    // opacity: 0.5,
+    opacity: 0.5,
   },
   textWrapper: {
     alignItems: 'center',
@@ -86,12 +115,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.light,
-    // color: '#a5c2d1',
+    color: '#a5c2d1',
   },
   subText: {
     fontSize: 14,
-    color: COLORS.dark,
-    // color: '#a5c2d180',
+    color: COLORS.white,
+    color: '#a5c2d180',
     lineHeight: 22,
     textAlign: 'center',
     marginTop: 10,
@@ -101,19 +130,18 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     backgroundColor: '#212a33',
-    backgroundColor: COLORS.light,
     padding: 23,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
-    // elevation: 2,
+    elevation: 2,
   },
   buttonText: {
     fontSize: 12,
     fontWeight: 'bold',
     color: COLORS.white,
-    // color: '#536470',
+    color: '#536470',
     textTransform: 'capitalize',
   },
 });
