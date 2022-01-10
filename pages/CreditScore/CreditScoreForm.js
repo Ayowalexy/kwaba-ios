@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -17,6 +17,8 @@ import {creditScorePurchase} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import PaystackPaymentCobble from '../../components/Paystack/PaystackPaymentCobble';
+import {InAppBrowser} from 'react-native-inappbrowser-reborn';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const CreditScoreValidationSchema = yup.object().shape({
   email: yup
@@ -49,9 +51,9 @@ const CustomInput = (props) => {
             // paddingLeft: 50,
             paddingHorizontal: 16,
             paddingVertical: 16,
-            color: COLORS.white,
+            color: COLORS.dark,
           }}
-          placeholderTextColor={'#a5c2d180'}
+          //   placeholderTextColor={'#a5c2d180'}
           keyboardType="default"
           value={value}
           onBlur={() => {
@@ -73,7 +75,12 @@ export default function CreditScoreForm({navigation}) {
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
   const [resData, setResData] = useState([]);
-  const [formValue, setFormValue] = useState('');
+  const [formValue, setFormValue] = useState([]);
+
+  const userData = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    return JSON.parse(userData).user;
+  };
 
   const handleSubmit = async (values) => {
     const data = {
@@ -102,9 +109,64 @@ export default function CreditScoreForm({navigation}) {
     console.log('The Data: ', data);
   };
 
+  const handleConnection = async () => {
+    setSpinner(true);
+    const url = resData?.authorization_url;
+    try {
+      const result = await openInAppBrowser(url);
+      console.log('The Result: ', result);
+      setSpinner(false);
+      if (result.type == 'cancel') {
+        navigation.navigate('CreditScoreAwaiting', formValue);
+      }
+    } catch (error) {
+      setSpinner(false);
+      Alert.alert('Oops', 'Something went wrong');
+    }
+  };
+
+  const openInAppBrowser = async (url) => {
+    try {
+      if (await InAppBrowser.isAvailable()) {
+        const result = await InAppBrowser.open(url, {
+          // iOS Properties
+          dismissButtonStyle: 'done',
+          preferredBarTintColor: '#453AA4',
+          preferredControlTintColor: 'white',
+          readerMode: false,
+          animated: true,
+          modalPresentationStyle: 'fullScreen',
+          modalTransitionStyle: 'coverVertical',
+          modalEnabled: true,
+          enableBarCollapsing: false,
+          // Android Properties
+          showTitle: true,
+          toolbarColor: '#2A286A',
+          secondaryToolbarColor: 'black',
+          enableUrlBarHiding: true,
+          enableDefaultShare: true,
+          forceCloseOnRedirection: false,
+          hasBackButton: true,
+          // Specify full animation resource identifier(package:anim/name)
+          // or only resource name(in case of animation bundled with app).
+          animations: {
+            startEnter: 'slide_in_right',
+            startExit: 'slide_out_left',
+            endEnter: 'slide_in_left',
+            endExit: 'slide_out_right',
+          },
+        });
+
+        return result;
+      } else Linking.openURL(url);
+    } catch (error) {
+      return error.message;
+    }
+  };
+
   return (
     <>
-      <StatusBar backgroundColor={'#10131B'} />
+      <StatusBar barStyle="dark-content" backgroundColor={'#F7F8FD'} />
       <View style={[styles.container]}>
         <View
           style={{
@@ -113,12 +175,12 @@ export default function CreditScoreForm({navigation}) {
             alignItems: 'center',
             paddingVertical: 20,
             paddingHorizontal: 20,
-            borderBottomColor: '#2b273550',
+            borderBottomColor: '#eee',
             borderBottomWidth: 1,
           }}>
           <Icon
             name="chevron-back"
-            color={COLORS.white}
+            color={COLORS.dark}
             size={20}
             onPress={() => navigation.goBack()}
           />
@@ -130,25 +192,38 @@ export default function CreditScoreForm({navigation}) {
             onSubmit={(values) => {
               handleSubmit(values);
             }}>
-            {({handleSubmit, isValid, values, setValues}) => (
-              <>
-                <View style={{flex: 1}}>
-                  <Field
-                    component={CustomInput}
-                    name="email"
-                    placeholder="Email Address"
-                  />
+            {({handleSubmit, isValid, values, setValues}) => {
+              useEffect(() => {
+                (async () => {
+                  const user = await userData();
+                  setValues({email: user.email});
+                })();
+              }, []);
 
-                  <Field component={CustomInput} name="bvn" placeholder="BVN" />
-                </View>
+              return (
+                <>
+                  <View style={{flex: 1}}>
+                    <Field
+                      component={CustomInput}
+                      name="email"
+                      placeholder="Email Address"
+                    />
 
-                <TouchableOpacity onPress={handleSubmit} disabled={!isValid}>
-                  <View style={styles.button}>
-                    <Text style={styles.buttonText}>Continue</Text>
+                    <Field
+                      component={CustomInput}
+                      name="bvn"
+                      placeholder="BVN"
+                    />
                   </View>
-                </TouchableOpacity>
-              </>
-            )}
+
+                  <TouchableOpacity onPress={handleSubmit} disabled={!isValid}>
+                    <View style={styles.button}>
+                      <Text style={styles.buttonText}>Continue</Text>
+                    </View>
+                  </TouchableOpacity>
+                </>
+              );
+            }}
           </Formik>
         </View>
 
@@ -158,17 +233,18 @@ export default function CreditScoreForm({navigation}) {
             visible={showAcceptModal}
             navigation={navigation}
             onConfirm={() => setShowPaystackPayment(true)}
+            // onConfirm={handleConnection}
           />
         )}
 
         {showPaystackPayment && (
           <PaystackPaymentCobble
             onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-            data={resData}
+            data={{...resData, ...formValue, amount: 2000}}
             channel={'card'}
             paymentCanceled={(e) => {
               console.log('Pay cancel', e);
-              Alert.alert(e.status);
+              Alert.alert(`Payment ${e.status}`);
               setSpinner(false);
               // Do something
             }}
@@ -195,6 +271,8 @@ export default function CreditScoreForm({navigation}) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#10131B',
+    backgroundColor: COLORS.white,
+    backgroundColor: '#F7F8FD',
     flex: 1,
   },
 
@@ -202,8 +280,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#FFFFFF',
     borderColor: '#212a33',
-    backgroundColor: '#2b283550',
-    backgroundColor: 'transparent',
+    borderColor: '#ADADAD50',
+    // backgroundColor: '#2b283550',
+    // backgroundColor: 'transparent',
     borderWidth: 1,
     marginTop: 10,
     width: '100%',
@@ -234,18 +313,19 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     backgroundColor: '#212a33',
+    backgroundColor: COLORS.light,
     padding: 23,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
-    elevation: 2,
+    // elevation: 2,
   },
   buttonText: {
     fontSize: 12,
     fontWeight: 'bold',
     color: COLORS.white,
-    color: '#536470',
+    // color: '#536470',
     textTransform: 'capitalize',
   },
 });

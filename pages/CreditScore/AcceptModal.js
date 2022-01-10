@@ -31,7 +31,7 @@ export default function AcceptModal(props) {
           <View style={styles.wrapper}>
             <View style={styles.content}>
               <TouchableOpacity onPress={onRequestClose} style={styles.close}>
-                <Icon name="close" size={25} color={COLORS.dark} />
+                <Icon name="close" size={20} color={COLORS.white} />
               </TouchableOpacity>
 
               <View style={{marginTop: 50, padding: 20}}>
@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
     width: '100%',
     minHeight: 200,
     backgroundColor: '#fff',
-    backgroundColor: '#10131B',
-    backgroundColor: '#212a33',
+    // backgroundColor: '#10131B',
+    // backgroundColor: '#212a33',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     height: 30,
     backgroundColor: COLORS.grey,
     backgroundColor: '#10131B',
+    backgroundColor: COLORS.light,
     borderRadius: 30,
     position: 'absolute',
     right: 20,
@@ -131,6 +132,7 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#212a33',
     backgroundColor: '#10131B',
+    backgroundColor: COLORS.light,
     padding: 23,
     borderRadius: 10,
     justifyContent: 'center',
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: COLORS.white,
-    color: '#536470',
+    // color: '#536470',
     // textTransform: 'capitalize',
   },
 });

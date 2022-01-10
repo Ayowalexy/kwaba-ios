@@ -457,145 +457,72 @@ export default function NewHome({navigation}) {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={designs.topBar}>
-        <View style={designs.user}>
-          <View
-            style={{
-              width: 30,
-              height: 30,
-              borderRadius: 30,
-              backgroundColor: COLORS.dark,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginRight: 10,
-            }}>
-            <Text
-              style={{fontWeight: 'bold', fontSize: 15, color: COLORS.white}}>
-              {name.charAt(0)}
-            </Text>
-          </View>
-          <Text
-            numberOfLines={1}
-            style={{
-              color: COLORS.dark,
-              fontSize: 14,
-              fontWeight: 'bold',
-              lineHeight: 19,
-            }}>
-            {/* Hi {name}, {greeting} */}
-            Hi, {name}
-          </Text>
-        </View>
-        <TouchableOpacity
-          style={{paddingLeft: 20, flexDirection: 'row', alignItems: 'center'}}
-          onPress={async () => {
-            // navigation.navigate('BuddyPaymentScreen');
-            // navigation.navigate('Notifications');
-            navigation.navigate('Referral');
-            // navigation.navigate('AppUpdate');
-            // TrackEvent('Invite Friends');
-            // handleNotification({
-            //   name: 'Invite Frineds',
-            //   sub:
-            //     'You just clicked on invite friends, do you want to invite your friends?',
-            // });
-          }}>
-          <Icon name="people-sharp" color={COLORS.dark} size={25} />
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
 
-          <Text
-            style={{
-              fontSize: 14,
-              color: COLORS.dark,
-              marginLeft: 5,
-              marginTop: 0,
-            }}>
-            Invite friends
-          </Text>
-        </TouchableOpacity>
-      </View>
-      {!isProfileComplete && (
-        <View style={designs.secondBar}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}>
-            <Image
-              style={{width: 25, marginRight: 11}}
-              source={icons.profile}
-              resizeMode="contain"
-            />
-            <Text
+      <View style={styles.container}>
+        <View style={designs.topBar}>
+          <View style={designs.user}>
+            <View
               style={{
-                fontFamily: 'CircularStd',
-                fontSize: 10,
-                lineHeight: 12,
-                color: '#FB8B24',
-                fontWeight: 'bold',
+                width: 30,
+                height: 30,
+                borderRadius: 30,
+                backgroundColor: COLORS.dark,
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginRight: 10,
               }}>
-              Complete your profile{' '}
-              <Text style={{color: COLORS.dark}}>
-                to unlock the full {'\n'}power of Kwaba.
+              <Text
+                style={{fontWeight: 'bold', fontSize: 15, color: COLORS.white}}>
+                {name.charAt(0)}
               </Text>
+            </View>
+            <Text
+              numberOfLines={1}
+              style={{
+                color: COLORS.dark,
+                fontSize: 14,
+                fontWeight: 'bold',
+                lineHeight: 19,
+              }}>
+              {/* Hi {name}, {greeting} */}
+              Hi, {name}
             </Text>
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('CompleteProfile2')}>
-            <View
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text
-                style={{
-                  fontFamily: 'CircularStd',
-                  fontSize: 10,
-                  fontWeight: 'bold',
-                  lineHeight: 13,
-                  color: '#00DC99',
-                }}>
-                Complete Profile
-              </Text>
-              <Icon name="chevron-forward" color="#00DC99" size={15} />
-            </View>
-          </TouchableOpacity>
-        </View>
-      )}
-      {!isEmailVerified && (
-        <View style={designs.secondBar}>
-          <View
             style={{
-              display: 'flex',
+              paddingLeft: 20,
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center',
+            }}
+            onPress={async () => {
+              // navigation.navigate('BuddyPaymentScreen');
+              // navigation.navigate('Notifications');
+              navigation.navigate('Referral');
+              // navigation.navigate('AppUpdate');
+              // TrackEvent('Invite Friends');
+              // handleNotification({
+              //   name: 'Invite Frineds',
+              //   sub:
+              //     'You just clicked on invite friends, do you want to invite your friends?',
+              // });
             }}>
-            <Icon
-              name="md-mail-unread"
-              size={26}
-              color={COLORS.orange}
-              style={{marginRight: 11}}
-            />
+            <Icon name="people-sharp" color={COLORS.dark} size={25} />
+
             <Text
               style={{
-                fontFamily: 'CircularStd',
-                fontSize: 10,
-                lineHeight: 12,
-                color: '#FB8B24',
-                fontWeight: 'bold',
+                fontSize: 14,
+                color: COLORS.dark,
+                marginLeft: 5,
+                marginTop: 0,
               }}>
-              Verify your E-mail{' '}
-              <Text style={{color: COLORS.dark}}>
-                to better secure{'\n'}your account.
-              </Text>
+              Invite friends
             </Text>
-          </View>
-          <TouchableOpacity onPress={() => setEmailVerificationModal(true)}>
+          </TouchableOpacity>
+        </View>
+        {!isProfileComplete && (
+          <View style={designs.secondBar}>
             <View
               style={{
                 display: 'flex',
@@ -603,115 +530,196 @@ export default function NewHome({navigation}) {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
+              <Image
+                style={{width: 25, marginRight: 11}}
+                source={icons.profile}
+                resizeMode="contain"
+              />
               <Text
                 style={{
                   fontFamily: 'CircularStd',
                   fontSize: 10,
+                  lineHeight: 12,
+                  color: '#FB8B24',
                   fontWeight: 'bold',
-                  lineHeight: 13,
-                  color: '#00DC99',
                 }}>
-                Verify Email
+                Complete your profile{' '}
+                <Text style={{color: COLORS.dark}}>
+                  to unlock the full {'\n'}power of Kwaba.
+                </Text>
               </Text>
-              <Icon name="chevron-forward" color="#00DC99" size={15} />
             </View>
-          </TouchableOpacity>
-        </View>
-      )}
-      <ScrollView
-        scrollEnabled
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            colors={[COLORS.primary, COLORS.secondary]}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }>
-        <View style={{width: '100%', marginVertical: 10}}>
-          <ScrollView
-            horizontal={true}
-            decelerationRate={'normal'}
-            snapToInterval={ITEM_WIDTH}
-            style={{paddingHorizontal: 0}}
-            showsHorizontalScrollIndicator={false}
-            bounces={false}
-            disableIntervalMomentum
-            onScroll={Animated.event(
-              [{nativeEvent: {contentOffset: {x: scrollX}}}],
-              {useNativeDriver: false},
-            )}
-            scrollEventThrottle={12}>
-            {slides.map((item, idx) => {
-              const inputRange = [
-                (idx - 1) * ITEM_WIDTH,
-                idx * ITEM_WIDTH,
-                (idx + 1) * ITEM_WIDTH,
-              ];
-              const translate = scrollX.interpolate({
-                inputRange,
-                outputRange: [0.95, 1, 0.95],
-              });
-              const opacity = scrollX.interpolate({
-                inputRange,
-                outputRange: [1, 1, 1],
-              });
-              return (
-                <Animated.View
-                  key={idx}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('CompleteProfile2')}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
                   style={{
-                    width: ITEM_WIDTH,
-                    height: ITEM_HEIGHT - 30,
-                    marginLeft: idx === 0 ? OFFSET : undefined,
-                    marginRight: idx === slides.length - 1 ? OFFSET : undefined,
-                    opacity: opacity,
-                    transform: [{scale: translate}],
+                    fontFamily: 'CircularStd',
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    lineHeight: 13,
+                    color: '#00DC99',
                   }}>
-                  <TouchableOpacity
-                    activeOpacity={0.9}
-                    onPress={item.cardClick}
+                  Complete Profile
+                </Text>
+                <Icon name="chevron-forward" color="#00DC99" size={15} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+        {!isEmailVerified && (
+          <View style={designs.secondBar}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Icon
+                name="md-mail-unread"
+                size={26}
+                color={COLORS.orange}
+                style={{marginRight: 11}}
+              />
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 10,
+                  lineHeight: 12,
+                  color: '#FB8B24',
+                  fontWeight: 'bold',
+                }}>
+                Verify your E-mail{' '}
+                <Text style={{color: COLORS.dark}}>
+                  to better secure{'\n'}your account.
+                </Text>
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => setEmailVerificationModal(true)}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'CircularStd',
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    lineHeight: 13,
+                    color: '#00DC99',
+                  }}>
+                  Verify Email
+                </Text>
+                <Icon name="chevron-forward" color="#00DC99" size={15} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
+        <ScrollView
+          scrollEnabled
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              colors={[COLORS.primary, COLORS.secondary]}
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }>
+          <View style={{width: '100%', marginVertical: 10}}>
+            <ScrollView
+              horizontal={true}
+              decelerationRate={'normal'}
+              snapToInterval={ITEM_WIDTH}
+              style={{paddingHorizontal: 0}}
+              showsHorizontalScrollIndicator={false}
+              bounces={false}
+              disableIntervalMomentum
+              onScroll={Animated.event(
+                [{nativeEvent: {contentOffset: {x: scrollX}}}],
+                {useNativeDriver: false},
+              )}
+              scrollEventThrottle={12}>
+              {slides.map((item, idx) => {
+                const inputRange = [
+                  (idx - 1) * ITEM_WIDTH,
+                  idx * ITEM_WIDTH,
+                  (idx + 1) * ITEM_WIDTH,
+                ];
+                const translate = scrollX.interpolate({
+                  inputRange,
+                  outputRange: [0.95, 1, 0.95],
+                });
+                const opacity = scrollX.interpolate({
+                  inputRange,
+                  outputRange: [1, 1, 1],
+                });
+                return (
+                  <Animated.View
+                    key={idx}
                     style={{
-                      backgroundColor: item.color,
-                      // backgroundColor: COLORS.primary,
-                      width: '100%',
-                      height: '100%',
-                      paddingHorizontal: 30,
-                      paddingVertical: 10,
-                      borderRadius: 10,
-                      overflow: 'hidden',
-                      borderColor: '#9D98EC',
-                      borderWidth: 1,
-                      elevation: 5,
-                      justifyContent: 'center',
+                      width: ITEM_WIDTH,
+                      height: ITEM_HEIGHT - 30,
+                      marginLeft: idx === 0 ? OFFSET : undefined,
+                      marginRight:
+                        idx === slides.length - 1 ? OFFSET : undefined,
+                      opacity: opacity,
+                      transform: [{scale: translate}],
                     }}>
-                    <Image
-                      source={images.frame}
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={item.cardClick}
                       style={{
-                        width: 200,
-                        height: 180,
-                        position: 'absolute',
-                        right: -5,
-                        top: 0,
-                      }}
-                      resizeMode="contain"
-                    />
-                    <View>
-                      <View
+                        backgroundColor: item.color,
+                        // backgroundColor: COLORS.primary,
+                        width: '100%',
+                        height: '100%',
+                        paddingHorizontal: 30,
+                        paddingVertical: 10,
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        borderColor: '#9D98EC',
+                        borderWidth: 1,
+                        elevation: 5,
+                        justifyContent: 'center',
+                      }}>
+                      <Image
+                        source={images.frame}
                         style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                        }}>
-                        <Text
+                          width: 200,
+                          height: 180,
+                          position: 'absolute',
+                          right: -5,
+                          top: 0,
+                        }}
+                        resizeMode="contain"
+                      />
+                      <View>
+                        <View
                           style={{
-                            fontSize: 14,
-                            color: COLORS.white,
-                            fontWeight: 'bold',
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
                           }}>
-                          {item.title}
-                        </Text>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: COLORS.white,
+                              fontWeight: 'bold',
+                            }}>
+                            {item.title}
+                          </Text>
 
-                        {/* <TouchableOpacity
+                          {/* <TouchableOpacity
                           onPress={item.actionClick}
                           style={{
                             flexDirection: 'row',
@@ -744,43 +752,43 @@ export default function NewHome({navigation}) {
                             />
                           </View>
                         </TouchableOpacity> */}
-                      </View>
+                        </View>
 
-                      <View style={{marginTop: 10}}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'flex-start',
-                          }}>
+                        <View style={{marginTop: 10}}>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'flex-start',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                color: COLORS.white,
+                                marginRight: 20,
+                              }}>
+                              {item.subtitle}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View style={{marginTop: 10}}>
                           <Text
                             style={{
-                              fontSize: 12,
+                              fontSize: 20,
+                              fontWeight: 'bold',
                               color: COLORS.white,
-                              marginRight: 20,
                             }}>
-                            {item.subtitle}
+                            ₦{item.amount || '0.00'}
                           </Text>
                         </View>
                       </View>
-
-                      <View style={{marginTop: 10}}>
-                        <Text
-                          style={{
-                            fontSize: 20,
-                            fontWeight: 'bold',
-                            color: COLORS.white,
-                          }}>
-                          ₦{item.amount || '0.00'}
-                        </Text>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                </Animated.View>
-              );
-            })}
-          </ScrollView>
-          {/* <View
+                    </TouchableOpacity>
+                  </Animated.View>
+                );
+              })}
+            </ScrollView>
+            {/* <View
             style={{
               flex: 1,
               width: '100%',
@@ -803,212 +811,212 @@ export default function NewHome({navigation}) {
               );
             })}
           </View> */}
-        </View>
+          </View>
 
-        <View style={{width: '100%', flex: 1}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              // paddingVertical: 10,
-              marginBottom: 20,
-            }}>
-            {quickActions.map((item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    //   marginHorizontal: 10,
-                    width: 80,
-                    //   justifyContent: 'flex-start',
-                    //   borderWidth: 1,
-                  }}>
-                  <TouchableOpacity
-                    onPress={item.route}
+          <View style={{width: '100%', flex: 1}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+                // paddingVertical: 10,
+                marginBottom: 20,
+              }}>
+              {quickActions.map((item, index) => {
+                return (
+                  <View
+                    key={index}
                     style={{
-                      width: 50,
-                      height: 50,
-                      backgroundColor: '#EDECFC',
-                      padding: 10,
-                      borderRadius: 10,
-                      justifyContent: 'center',
+                      flexDirection: 'column',
                       alignItems: 'center',
+                      //   marginHorizontal: 10,
+                      width: 80,
+                      //   justifyContent: 'flex-start',
+                      //   borderWidth: 1,
                     }}>
-                    {item.name == 'Wallets' ? (
-                      <Icon name="wallet" size={25} color={COLORS.light} />
-                    ) : (
-                      <Image
-                        resizeMode="contain"
-                        source={item.image}
-                        style={{width: 25, height: 25}}
-                      />
-                    )}
-                  </TouchableOpacity>
-                  <Text
-                    style={{
-                      color: COLORS.dark,
-                      fontSize: 10,
-                      //   fontWeight: 'bold',
-                      textAlign: 'center',
-                      marginTop: 5,
-                    }}>
-                    {item.name}
-                  </Text>
-                </View>
-              );
-            })}
-          </View>
-
-          <View
-            style={{
-              paddingHorizontal: 10,
-              overflow: 'hidden',
-            }}>
-            {bottomCards.map((item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    backgroundColor:
-                      index == 0
-                        ? '#EDECFC'
-                        : index != bottomCards.length - 1
-                        ? COLORS.white
-                        : '#5A4CB1',
-                    marginBottom: 10,
-                    borderRadius: 10,
-                    elevation: 0.5,
-                    borderWidth: 1,
-                    borderColor: '#EDECFC',
-                  }}>
-                  <TouchableOpacity
-                    onPress={item.route}
-                    // onPress={() => {
-                    //   if (item.route) {
-                    //     item.route();
-                    //   } else {
-                    //     setCompleteProfileModal(true);
-                    //   }
-                    // }}
-                    style={{overflow: 'hidden', borderRadius: 10}}>
-                    <View style={{padding: 20}}>
-                      <Text
-                        style={{
-                          color:
-                            index == bottomCards.length - 1
-                              ? 'white'
-                              : COLORS.dark,
-                          fontFamily: 'CircularStd',
-                          fontSize: 15,
-                          lineHeight: 23,
-                          fontWeight: 'bold',
-                        }}>
-                        {item.title}
-                      </Text>
-                      <Text
-                        style={{
-                          width: '75%',
-                          marginTop: 9,
-                          color:
-                            index == bottomCards.length - 1
-                              ? 'white'
-                              : COLORS.dark,
-                          fontFamily: 'CircularStd',
-                          fontSize: 12,
-                          lineHeight: 20,
-                          fontWeight: '600',
-                        }}>
-                        {item.body}
-                      </Text>
-                      {index == 0 && (
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginTop: 20,
-                          }}>
-                          <TouchableOpacity
-                            onPress={async () => {
-                              navigation.navigate('SavingsHome');
-
-                              TrackEvent('Rent Savings From Home Screen');
-                            }}
-                            style={{
-                              backgroundColor: COLORS.primary,
-                              borderRadius: 5,
-                              paddingVertical: 15,
-                              paddingHorizontal: 25,
-                              marginRight: 10,
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                fontWeight: 'normal',
-                                color: COLORS.white,
-                              }}>
-                              Rent Savings
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            onPress={() => navigation.navigate('SaveToOwn')}
-                            style={{
-                              backgroundColor: COLORS.white,
-                              borderRadius: 5,
-                              paddingVertical: 15,
-                              paddingHorizontal: 25,
-                              marginRight: 10,
-                            }}>
-                            <Text
-                              style={{
-                                fontSize: 12,
-                                fontWeight: 'normal',
-                                color: COLORS.dark,
-                              }}>
-                              Save to own
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                    </View>
-
-                    <Image
+                    <TouchableOpacity
+                      onPress={item.route}
                       style={{
-                        width: '40%',
-                        height: 100,
-                        position: 'absolute',
-                        right: -40,
-                        bottom: -8,
-                      }}
-                      source={item.img}
-                      resizeMode="contain"
-                    />
-                  </TouchableOpacity>
-                </View>
-              );
-            })}
-          </View>
-        </View>
+                        width: 50,
+                        height: 50,
+                        backgroundColor: '#EDECFC',
+                        padding: 10,
+                        borderRadius: 10,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      {item.name == 'Wallets' ? (
+                        <Icon name="wallet" size={25} color={COLORS.light} />
+                      ) : (
+                        <Image
+                          resizeMode="contain"
+                          source={item.image}
+                          style={{width: 25, height: 25}}
+                        />
+                      )}
+                    </TouchableOpacity>
+                    <Text
+                      style={{
+                        color: COLORS.dark,
+                        fontSize: 10,
+                        //   fontWeight: 'bold',
+                        textAlign: 'center',
+                        marginTop: 5,
+                      }}>
+                      {item.name}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
 
-        {/* {getWalletTransactions &&
+            <View
+              style={{
+                paddingHorizontal: 10,
+                overflow: 'hidden',
+              }}>
+              {bottomCards.map((item, index) => {
+                return (
+                  <View
+                    key={index}
+                    style={{
+                      backgroundColor:
+                        index == 0
+                          ? '#EDECFC'
+                          : index != bottomCards.length - 1
+                          ? COLORS.white
+                          : '#5A4CB1',
+                      marginBottom: 10,
+                      borderRadius: 10,
+                      elevation: 0.5,
+                      borderWidth: 1,
+                      borderColor: '#EDECFC',
+                    }}>
+                    <TouchableOpacity
+                      onPress={item.route}
+                      // onPress={() => {
+                      //   if (item.route) {
+                      //     item.route();
+                      //   } else {
+                      //     setCompleteProfileModal(true);
+                      //   }
+                      // }}
+                      style={{overflow: 'hidden', borderRadius: 10}}>
+                      <View style={{padding: 20}}>
+                        <Text
+                          style={{
+                            color:
+                              index == bottomCards.length - 1
+                                ? 'white'
+                                : COLORS.dark,
+                            fontFamily: 'CircularStd',
+                            fontSize: 15,
+                            lineHeight: 23,
+                            fontWeight: 'bold',
+                          }}>
+                          {item.title}
+                        </Text>
+                        <Text
+                          style={{
+                            width: '75%',
+                            marginTop: 9,
+                            color:
+                              index == bottomCards.length - 1
+                                ? 'white'
+                                : COLORS.dark,
+                            fontFamily: 'CircularStd',
+                            fontSize: 12,
+                            lineHeight: 20,
+                            fontWeight: '600',
+                          }}>
+                          {item.body}
+                        </Text>
+                        {index == 0 && (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginTop: 20,
+                            }}>
+                            <TouchableOpacity
+                              onPress={async () => {
+                                navigation.navigate('SavingsHome');
+
+                                TrackEvent('Rent Savings From Home Screen');
+                              }}
+                              style={{
+                                backgroundColor: COLORS.primary,
+                                borderRadius: 5,
+                                paddingVertical: 15,
+                                paddingHorizontal: 25,
+                                marginRight: 10,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  fontWeight: 'normal',
+                                  color: COLORS.white,
+                                }}>
+                                Rent Savings
+                              </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              onPress={() => navigation.navigate('SaveToOwn')}
+                              style={{
+                                backgroundColor: COLORS.white,
+                                borderRadius: 5,
+                                paddingVertical: 15,
+                                paddingHorizontal: 25,
+                                marginRight: 10,
+                              }}>
+                              <Text
+                                style={{
+                                  fontSize: 12,
+                                  fontWeight: 'normal',
+                                  color: COLORS.dark,
+                                }}>
+                                Save to own
+                              </Text>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                      </View>
+
+                      <Image
+                        style={{
+                          width: '40%',
+                          height: 100,
+                          position: 'absolute',
+                          right: -40,
+                          bottom: -8,
+                        }}
+                        source={item.img}
+                        resizeMode="contain"
+                      />
+                    </TouchableOpacity>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+
+          {/* {getWalletTransactions &&
           getWalletTransactions?.data &&
           getWalletTransactions?.data?.length && <TransactionHistory />} */}
-        <TransactionHistory />
-      </ScrollView>
+          <TransactionHistory />
+        </ScrollView>
 
-      {quickSaveModal && (
-        <QuickSaveModal
-          onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
-          visible={quickSaveModal}
-          navigation={navigation}
-          redirectTo="Home"
-          ID={clickedID}
-        />
-      )}
+        {quickSaveModal && (
+          <QuickSaveModal
+            onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
+            visible={quickSaveModal}
+            navigation={navigation}
+            redirectTo="Home"
+            ID={clickedID}
+          />
+        )}
 
-      {/* <AddFundsToSavingsModal
+        {/* <AddFundsToSavingsModal
         onRequestClose={() =>
           setAddFundsToSavingsModal(!addFundsToSavingsModal)
         }
@@ -1022,64 +1030,65 @@ export default function NewHome({navigation}) {
         }}
       /> */}
 
-      <EmailVerificationModal
-        onRequestClose={() =>
-          setEmailVerificationModal(!emailVerificationModal)
-        }
-        visible={emailVerificationModal}
-        email={login?.user?.email}
-      />
-
-      <CompleteProfileModal
-        onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
-        visible={completeProfileModal}
-        navigation={navigation}
-      />
-
-      <SavingsOptionModal
-        onRequestClose={() =>
-          setAddFundsToSavingsModal(!addFundsToSavingsModal)
-        }
-        visible={addFundsToSavingsModal}
-        // setShowPaymentType={(bol) => setShowPaymentType(bol)}
-        showSavingType={(data) => {
-          // console.log('Done: ', data);
-          setSavingType(data);
-          setShowQuickSaveListModal(true);
-        }}
-      />
-
-      <QuickSaveListModal
-        onRequestClose={() =>
-          setShowQuickSaveListModal(!showQuickSaveListModal)
-        }
-        visible={showQuickSaveListModal}
-        type={savingType}
-        navigation={navigation}
-      />
-
-      <PaymentTypeModal
-        onRequestClose={() => setShowPaymentType(!showPaymentType)}
-        visible={showPaymentType}
-        setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
-        setShowAmountModal={(bol) => setShowAmountModal(bol)}
-      />
-
-      <AmountModal
-        onRequestClose={() => setShowAmountModal(!showAmountModal)}
-        visible={showAmountModal}
-        // setShowPaymentType={(bol) => setShowPaymentType(bol)}
-      />
-
-      {showWalletModal && (
-        <WalletPaymentModal
-          onRequestClose={() => setShowWalletModal(!showWalletModal)}
-          visible={showWalletModal}
-          // setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
-          // setShowAmountModal={(bol) => setShowAmountModal(bol)}
+        <EmailVerificationModal
+          onRequestClose={() =>
+            setEmailVerificationModal(!emailVerificationModal)
+          }
+          visible={emailVerificationModal}
+          email={login?.user?.email}
         />
-      )}
-    </View>
+
+        <CompleteProfileModal
+          onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
+          visible={completeProfileModal}
+          navigation={navigation}
+        />
+
+        <SavingsOptionModal
+          onRequestClose={() =>
+            setAddFundsToSavingsModal(!addFundsToSavingsModal)
+          }
+          visible={addFundsToSavingsModal}
+          // setShowPaymentType={(bol) => setShowPaymentType(bol)}
+          showSavingType={(data) => {
+            // console.log('Done: ', data);
+            setSavingType(data);
+            setShowQuickSaveListModal(true);
+          }}
+        />
+
+        <QuickSaveListModal
+          onRequestClose={() =>
+            setShowQuickSaveListModal(!showQuickSaveListModal)
+          }
+          visible={showQuickSaveListModal}
+          type={savingType}
+          navigation={navigation}
+        />
+
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentType(!showPaymentType)}
+          visible={showPaymentType}
+          setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
+          setShowAmountModal={(bol) => setShowAmountModal(bol)}
+        />
+
+        <AmountModal
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          // setShowPaymentType={(bol) => setShowPaymentType(bol)}
+        />
+
+        {showWalletModal && (
+          <WalletPaymentModal
+            onRequestClose={() => setShowWalletModal(!showWalletModal)}
+            visible={showWalletModal}
+            // setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
+            // setShowAmountModal={(bol) => setShowAmountModal(bol)}
+          />
+        )}
+      </View>
+    </>
   );
 }
 

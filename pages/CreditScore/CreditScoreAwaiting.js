@@ -26,9 +26,9 @@ export default function CreditScoreAwaiting({navigation, route}) {
     try {
       const res = await creditScoreFetch(route?.params);
       console.log('The Res: ', res.data);
-      if (res?.history) {
+      if (res?.data?.history?.length) {
         setSpinner(false);
-        navigation.navigate('CreditScoreDashboard');
+        navigation.navigate('CreditScoreDashboard', route?.params);
       } else {
         setSpinner(false);
         Alert.alert(
@@ -43,7 +43,7 @@ export default function CreditScoreAwaiting({navigation, route}) {
   };
   return (
     <>
-      <StatusBar backgroundColor={'#10131B'} />
+      <StatusBar barStyle="dark-content" backgroundColor={'#F7F8FD'} />
 
       <View style={[styles.container]}>
         <View
@@ -54,11 +54,12 @@ export default function CreditScoreAwaiting({navigation, route}) {
             paddingVertical: 20,
             paddingHorizontal: 20,
             borderBottomColor: '#2b273550',
+            borderBottomColor: '#eee',
             borderBottomWidth: 1,
           }}>
           <Icon
             name="chevron-back"
-            color={COLORS.white}
+            color={COLORS.dark}
             size={20}
             onPress={() => navigation.navigate('Home')}
           />
@@ -71,14 +72,14 @@ export default function CreditScoreAwaiting({navigation, route}) {
           <View style={styles.textWrapper}>
             <Text style={styles.title}>Credit Report...</Text>
             <Text style={styles.subText}>
-              We are current processing your report, It takes up to 5 minutes.
-              please check back later.
+              We are currently processing your report, It takes up to 5 minutes.
+              please click the button below to refresh.
             </Text>
           </View>
 
           <TouchableOpacity onPress={handleFetch}>
             <View style={styles.button}>
-              <Text style={styles.buttonText}>Refresh</Text>
+              <Text style={styles.buttonText}>Check again</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#000',
     backgroundColor: '#10131B',
+    backgroundColor: '#F7F8FD',
     flex: 1,
   },
   content: {
@@ -115,12 +117,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.light,
-    color: '#a5c2d1',
+    // color: '#a5c2d1',
   },
   subText: {
     fontSize: 14,
     color: COLORS.white,
     color: '#a5c2d180',
+    color: COLORS.dark,
     lineHeight: 22,
     textAlign: 'center',
     marginTop: 10,
@@ -130,6 +133,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     backgroundColor: '#212a33',
+    backgroundColor: COLORS.light,
     padding: 23,
     borderRadius: 10,
     justifyContent: 'center',
@@ -142,6 +146,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.white,
     color: '#536470',
-    textTransform: 'capitalize',
+    color: COLORS.white,
+    // textTransform: 'capitalize',
   },
 });

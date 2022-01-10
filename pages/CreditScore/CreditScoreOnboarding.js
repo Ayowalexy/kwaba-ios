@@ -13,8 +13,7 @@ import {COLORS, images} from '../../util';
 export default function CreditScoreOnboarding({navigation}) {
   return (
     <>
-      <StatusBar backgroundColor={'#10131B'} />
-
+      <StatusBar barStyle="dark-content" backgroundColor={'#F7F8FD'} />
       <View style={[styles.container]}>
         <View
           style={{
@@ -23,8 +22,8 @@ export default function CreditScoreOnboarding({navigation}) {
             alignItems: 'center',
             paddingVertical: 20,
             paddingHorizontal: 20,
-            // borderBottomColor: '#2b273550',
-            // borderBottomWidth: 1,
+            borderBottomColor: '#eee',
+            borderBottomWidth: 1,
           }}>
           <Icon
             name="chevron-back"
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#000',
     backgroundColor: '#10131B',
     backgroundColor: COLORS.white,
+    backgroundColor: '#F7F8FD',
     flex: 1,
   },
   content: {

@@ -436,8 +436,8 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={'CreditScoreOnboarding'}
-          // initialRouteName={'Welcome'}
+          // initialRouteName={'CreditScoreDashboard'}
+          initialRouteName={'Welcome'}
           // initialRouteName={'Welcome'}
         >
           {/* {test != '' ? ( */}

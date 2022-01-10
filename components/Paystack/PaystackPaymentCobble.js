@@ -41,13 +41,20 @@ export default function PaystackPaymentCobble(props) {
   return (
     <View style={{flex: 1}}>
       <Paystack
-        paystackKey="pk_live_c0696f831843dd83db93fb594c62c2d10be73f0b"
-        // paystackKey="pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb"
-        billingEmail={user?.email}
+        // paystackKey="pk_live_c0696f831843dd83db93fb594c62c2d10be73f0b"
+        paystackKey="pk_test_bed6df47476940d982adbde8d69c2a3c0bdf4060"
+        billingEmail={data?.email}
         billingMobile={user?.phone}
-        amount={data?.amount || '2000'}
+        amount={data?.amount}
         // channels={[channel]} // card, bank_transfer
-        channels={['card', 'bank_transfer']} // card, bank_transfer
+        channels={[
+          'card',
+          'bank',
+          'ussd',
+          'qr',
+          'mobile_money',
+          'bank_transfer',
+        ]}
         onCancel={(e) => {
           onRequestClose();
           paymentCanceled(e);
@@ -57,7 +64,7 @@ export default function PaystackPaymentCobble(props) {
           paymentSuccessful(res);
         }}
         ref={paystackWebViewRef}
-        refNumber={data?.reference}
+        // refNumber={data?.reference}
       />
     </View>
   );

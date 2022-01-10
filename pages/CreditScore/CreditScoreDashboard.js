@@ -16,14 +16,55 @@ import {COLORS} from '../../util';
 import {formatNumber} from '../../util/numberFormatter';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AnimatedGaugeProgress} from 'react-native-simple-gauge';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {creditScoreFetch} from '../../services/network';
 
-export default function CreditScoreDashboard({navigation}) {
+export default function CreditScoreDashboard({navigation, route}) {
   const [spinner, setSpinner] = useState(false);
-  const scoreMark = 80;
+  const [creditScore, setCreditScore] = useState('');
+  const [creditRating, setCreditRating] = useState('');
+  const [percentage, setPercentage] = useState(0);
+
+  useEffect(() => {
+    handleFetch();
+  }, []);
+
+  const handleFetch = async () => {
+    setSpinner(true);
+
+    const data = {
+      bvn: '22262641382',
+      company: 'Kwaba',
+      email: 'joshuanwosu078@gmail.com',
+    };
+
+    try {
+      const res = await creditScoreFetch(route?.params || data);
+      if (res?.data?.history?.length) {
+        setSpinner(false);
+        const summary =
+          res.data.history[0]?.meta?.CREDIT_SCORE_DETAILS?.CREDIT_SCORE_SUMMARY;
+
+        console.log(
+          'SUMMARY: ',
+          res.data.history[0]?.meta?.CREDIT_MICRO_SUMMARY?.CURRENCY?.SUMMARY,
+        );
+
+        setCreditScore(summary?.CREDIT_SCORE);
+        setCreditRating(summary?.CREDIT_RATING);
+        setPercentage(
+          (Number(summary?.CREDIT_SCORE - 300) * 100) / (850 - 300),
+        );
+      }
+    } catch (error) {
+      console.log('The Error: ', error);
+      setSpinner(false);
+    }
+  };
 
   return (
     <>
-      <StatusBar backgroundColor={'#10131B'} />
+      <StatusBar barStyle="light-content" backgroundColor={'#10131B'} />
       <View style={[styles.container]}>
         <View
           style={{
@@ -71,7 +112,7 @@ export default function CreditScoreDashboard({navigation}) {
               style={{
                 fontSize: 14,
                 fontWeight: 'bold',
-                color: '#2b2735',
+                color: '#999',
                 paddingBottom: 50,
               }}>
               300
@@ -79,15 +120,15 @@ export default function CreditScoreDashboard({navigation}) {
             <AnimatedGaugeProgress
               size={200}
               width={15}
-              fill={scoreMark}
+              fill={percentage}
               rotation={90}
               cropDegree={180}
               tintColor={
-                scoreMark < 50
+                percentage < 50
                   ? COLORS.red
-                  : scoreMark < 70 && scoreMark >= 50
+                  : percentage < 70 && percentage >= 50
                   ? COLORS.light
-                  : COLORS.secondary //'#55588d'
+                  : COLORS.red
               }
               delay={0}
               backgroundColor="#2b2835"
@@ -98,7 +139,7 @@ export default function CreditScoreDashboard({navigation}) {
               style={{
                 fontSize: 14,
                 fontWeight: 'bold',
-                color: '#2b2735',
+                color: '#999',
                 paddingBottom: 50,
               }}>
               850
@@ -106,7 +147,7 @@ export default function CreditScoreDashboard({navigation}) {
           </View>
           <View style={{position: 'absolute', alignItems: 'center'}}>
             <Text style={{fontSize: 30, fontWeight: 'bold', color: '#87cec8'}}>
-              800
+              {creditScore}
             </Text>
             <Text
               style={{
@@ -119,7 +160,10 @@ export default function CreditScoreDashboard({navigation}) {
               }}>
               Credit Score!
             </Text>
-            {scoreMark < 50 ? (
+            <Text style={[styles.status, {backgroundColor: '#2b2735'}]}>
+              {creditRating}
+            </Text>
+            {/* {scoreMark < 50 ? (
               <Text style={[styles.status, {backgroundColor: COLORS.red}]}>
                 Poor
               </Text>
@@ -131,7 +175,7 @@ export default function CreditScoreDashboard({navigation}) {
               <Text style={[styles.status, {backgroundColor: '#2b2735'}]}>
                 Excellent
               </Text>
-            )}
+            )} */}
           </View>
         </View>
 
@@ -142,11 +186,11 @@ export default function CreditScoreDashboard({navigation}) {
             marginTop: -10,
             paddingBottom: 30,
           }}>
-          <Text style={{fontSize: 12, color: '#2b2735'}}>
+          {/* <Text style={{fontSize: 12, color: '#2b2735'}}>
             updated 2 months ago
-          </Text>
+          </Text> */}
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleFetch}>
               <View
                 style={[
                   styles.button,
@@ -173,7 +217,7 @@ export default function CreditScoreDashboard({navigation}) {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={[styles.infoContent_title]}>Your credit score is</Text>
             <View style={[styles.band]}>
-              <Text style={[styles.bandText]}>excellent</Text>
+              <Text style={[styles.bandText]}>{creditRating}</Text>
             </View>
           </View>
           <Text style={[styles.infoContent_body]}>
@@ -183,8 +227,7 @@ export default function CreditScoreDashboard({navigation}) {
           </Text>
 
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('CreditScoreDashboard')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Borrow')}>
               <View style={styles.button}>
                 <Text style={styles.buttonText}>Apply now</Text>
                 <Icon
@@ -198,6 +241,8 @@ export default function CreditScoreDashboard({navigation}) {
           </View>
         </View>
       </View>
+
+      <Spinner visible={spinner} size="small" />
     </>
   );
 }
@@ -258,7 +303,7 @@ const styles = StyleSheet.create({
   bandText: {
     fontSize: 12,
     color: '#a5c2d1',
-    color: '#b2b3b650',
+    // color: '#b2b3b650',
     fontWeight: 'bold',
     textTransform: 'capitalize',
   },
