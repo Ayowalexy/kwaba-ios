@@ -138,11 +138,35 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   const requestLoan = async () => {
     if (allLoans.filter((item) => item.status == 'Pending').length > 0) {
-      Alert.alert('Oops!', 'You have already requested for a loan.');
+      Alert.alert(
+        'Oops!',
+        `You can't apply for another loan because you still have a pending loan request.`,
+      );
+    } else if (allLoans.filter((item) => item.status == 'Active').length > 0) {
+      Alert.alert(
+        'Oops!',
+        `You currently have an active loan. Repay this loan to request for another loan.`,
+      );
+    } else if (allLoans.filter((item) => item.status == 'Overdue').length > 0) {
+      Alert.alert(
+        'Oops!',
+        `You need to repay your last loan before you can access another loan.`,
+      );
     } else {
       navigation.navigate('EmergencyLoanHome');
       dispatch(getMaxLoanCap());
     }
+
+    // if (
+    //   allLoans.filter((item) => item.status == 'Pending').length > 0 ||
+    //   allLoans.filter((item) => item.status == 'Active').length > 0 ||
+    //   allLoans.filter((item) => item.status == 'Overdue').length > 0
+    // ) {
+    //   Alert.alert('Oops!', 'You have already requested for a loan.');
+    // } else {
+    //   navigation.navigate('EmergencyLoanHome');
+    //   dispatch(getMaxLoanCap());
+    // }
   };
 
   const handlePaymentRoute = async (value) => {
