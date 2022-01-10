@@ -262,7 +262,9 @@ export default function LoanTabs(props) {
                           marginTop: 5,
                         },
                       ]}>
-                      {item.status}
+                      {Number(item.amount_paid) >= Number(item.repayment_amount)
+                        ? 'Paid'
+                        : item.status}
                     </Text>
                   </View>
                 </View>
@@ -292,36 +294,81 @@ export default function LoanTabs(props) {
                     />
                   </View>
 
-                  {item.amount_paid != '0' && (
-                    <View style={{flexDirection: 'row'}}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontStyle: 'italic',
-                          marginTop: 5,
-                          color: COLORS.dark,
-                        }}>
-                        Paid - ₦{formatNumber(item.amount_paid)},{'  '}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          fontStyle: 'italic',
-                          marginTop: 5,
-                          color: COLORS.dark,
-                        }}>
-                        To Balance - ₦
-                        {formatNumber(
-                          Number(item.repayment_amount) -
-                            Number(item.amount_paid),
-                        )}
-                      </Text>
-                    </View>
+                  {Number(item.amount_paid) >= Number(item.repayment_amount) ? (
+                    <></>
+                  ) : (
+                    <>
+                      {item.amount_paid != '0' && (
+                        <View style={{flexDirection: 'row'}}>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontStyle: 'italic',
+                              marginTop: 5,
+                              color: COLORS.dark,
+                            }}>
+                            Paid - ₦{formatNumber(item.amount_paid)},{'  '}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontStyle: 'italic',
+                              marginTop: 5,
+                              color: COLORS.dark,
+                            }}>
+                            To Balance - ₦
+                            {formatNumber(
+                              Number(item.repayment_amount) -
+                                Number(item.amount_paid),
+                            )}
+                          </Text>
+                        </View>
+                      )}
+                    </>
                   )}
                 </View>
               </View>
 
-              {status == 'active' || status == 'overdued' ? (
+              {/* Using amount */}
+              {item.status != 'Pending' ? (
+                <>
+                  {Number(item.amount_paid) >= Number(item.repayment_amount) ? (
+                    <></>
+                  ) : (
+                    <>
+                      <View style={{marginTop: -5}}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setLoanRepaymentData(item);
+                            setShowAmountModal(true);
+                          }}
+                          style={{
+                            backgroundColor: COLORS.primary,
+                            paddingVertical: 10,
+                            paddingHorizontal: 10,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: COLORS.white,
+                              fontWeight: 'bold',
+                              textTransform: 'uppercase',
+                              textAlign: 'center',
+                            }}>
+                            Pay Now
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+
+              {/* Using status */}
+
+              {/* {status == 'active' || status == 'overdued' ? (
                 <>
                   <View style={{marginTop: -5}}>
                     <TouchableOpacity
@@ -349,7 +396,7 @@ export default function LoanTabs(props) {
                 </>
               ) : (
                 <></>
-              )}
+              )} */}
             </TouchableOpacity>
           );
         })}

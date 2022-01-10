@@ -70,6 +70,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const [showBanner, setShowBanner] = useState(false);
+  const [allLoans, setAllLoans] = useState('');
 
   useEffect(() => {
     (async () => {
@@ -92,6 +93,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
       console.log('The active loan: ', activeLoan);
 
       console.log('That loan: ', loans?.data?.data);
+
+      setAllLoans(loans?.data?.data);
 
       if (
         loans?.data?.data?.filter((item) => item.status == 'Pending').length > 0
@@ -134,8 +137,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
   }, [getMaxLoanCap1]);
 
   const requestLoan = async () => {
-    navigation.navigate('EmergencyLoanHome');
-    dispatch(getMaxLoanCap());
+    if (allLoans.filter((item) => item.status == 'Pending').length > 0) {
+      Alert.alert('Oops!', 'You have already requested for a loan.');
+    } else {
+      navigation.navigate('EmergencyLoanHome');
+      dispatch(getMaxLoanCap());
+    }
   };
 
   const handlePaymentRoute = async (value) => {
