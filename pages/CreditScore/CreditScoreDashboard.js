@@ -9,6 +9,7 @@ import {
   ScrollView,
   Alert,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -24,6 +25,11 @@ export default function CreditScoreDashboard({navigation, route}) {
   const [creditScore, setCreditScore] = useState('');
   const [creditRating, setCreditRating] = useState('');
   const [percentage, setPercentage] = useState(0);
+
+  const [creditScoreDetails, setCreditScoreDetails] = useState({});
+  const [creditScoreMessage, setCreditScoreMessage] = useState('');
+
+  const [canApply, setCanApply] = useState(false);
 
   useEffect(() => {
     handleFetch();
@@ -42,19 +48,75 @@ export default function CreditScoreDashboard({navigation, route}) {
       const res = await creditScoreFetch(route?.params || data);
       if (res?.data?.history?.length) {
         setSpinner(false);
-        const summary =
+        const cs =
           res.data.history[0]?.meta?.CREDIT_SCORE_DETAILS?.CREDIT_SCORE_SUMMARY;
 
         console.log(
           'SUMMARY: ',
-          res.data.history[0]?.meta?.CREDIT_MICRO_SUMMARY?.CURRENCY?.SUMMARY,
+          res.data.history[0]?.meta?.CREDIT_MICRO_SUMMARY?.CURRENCY?.DUESUMMARY,
         );
 
-        setCreditScore(summary?.CREDIT_SCORE);
-        setCreditRating(summary?.CREDIT_RATING);
-        setPercentage(
-          (Number(summary?.CREDIT_SCORE - 300) * 100) / (850 - 300),
-        );
+        setCreditScore(cs?.CREDIT_SCORE);
+        setCreditRating(cs?.CREDIT_RATING);
+        setPercentage((Number(cs?.CREDIT_SCORE - 300) * 100) / (850 - 300));
+
+        const summary =
+          res.data.history[0]?.meta?.CREDIT_MICRO_SUMMARY?.CURRENCY?.SUMMARY;
+        const duesummary =
+          res.data.history[0]?.meta?.CREDIT_MICRO_SUMMARY?.CURRENCY?.DUESUMMARY;
+
+        // setCreditScoreDetails({
+        //   ...summary,
+        //   ...duesummary,
+        // });
+
+        // console.log('The summary: ', summary);
+        // console.log('The due summary: ', duesummary);
+
+        // console.log('The summary: ', summary.slice(-1)[0]);
+        // console.log('The due summary: ', duesummary.slice(-1)[0]);
+
+        console.log('The All: ', {
+          ...summary.slice(-1)[0],
+          ...duesummary.slice(-1)[0],
+        });
+
+        setCreditScoreDetails({
+          ...summary.slice(-1)[0],
+          ...duesummary.slice(-1)[0],
+        });
+
+        const csDetails = {
+          ...summary.slice(-1)[0],
+          ...duesummary.slice(-1)[0],
+        };
+
+        if (csDetails?.NO_OF_DELINQCREDITFACILITIES > 0) {
+          setCreditScoreMessage(`You have ${csDetails?.NO_OF_DELINQCREDITFACILITIES} bad loans valued at ${csDetails?.TOT_DUE}. You are also currently servicing ${csDetails?.NO_OF_DELINQCREDITFACILITIES} loans with an outstanding balance of ${csDetails?.TOTAL_OUTSTANDING}. Unfortunately, you are not qualified for rent finance. However you can save for your rent to build your credit 
+          `);
+          setCanApply(false);
+        } else if (
+          csDetails?.NO_OF_DELINQCREDITFACILITIES <= 0 &&
+          csDetails?.NO_OF_OPENEDCREDITFACILITIES <= 0
+        ) {
+          setCreditScoreMessage(
+            'Great job, you have no bad loans. You can proceed to apply for rent finance',
+          );
+          setCanApply(true);
+        } else if (
+          csDetails?.NO_OF_DELINQCREDITFACILITIES <= 0 &&
+          csDetails?.NO_OF_OPENEDCREDITFACILITIES > 0
+        ) {
+          setCreditScoreMessage(
+            `You have no bad loans. However you are currently servicing ${csDetails?.NO_OF_OPENEDCREDITFACILITIES} loans with an outstanding balance of ${csDetails?.TOTAL_OUTSTANDING}`,
+          );
+          setCanApply(true);
+        } else if (cs?.CREDIT_SCORE == '') {
+          setCreditScoreMessage(
+            "It seems you have not taken a loan from a financial institution before or we just can't find any record of your credit history. However you can proceed to apply for rent finance.",
+          );
+          setCanApply(true);
+        }
       }
     } catch (error) {
       console.log('The Error: ', error);
@@ -80,7 +142,7 @@ export default function CreditScoreDashboard({navigation, route}) {
             name="chevron-back"
             color={COLORS.white}
             size={20}
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate('Home')}
           />
           <Text
             style={{
@@ -147,7 +209,11 @@ export default function CreditScoreDashboard({navigation, route}) {
           </View>
           <View style={{position: 'absolute', alignItems: 'center'}}>
             <Text style={{fontSize: 30, fontWeight: 'bold', color: '#87cec8'}}>
-              {creditScore}
+              {spinner ? (
+                <ActivityIndicator size="small" color={COLORS.secondary} />
+              ) : (
+                creditScore
+              )}
             </Text>
             <Text
               style={{
@@ -161,7 +227,11 @@ export default function CreditScoreDashboard({navigation, route}) {
               Credit Score!
             </Text>
             <Text style={[styles.status, {backgroundColor: '#2b2735'}]}>
-              {creditRating}
+              {spinner ? (
+                <ActivityIndicator size="small" color={COLORS.secondary} />
+              ) : (
+                creditRating
+              )}
             </Text>
             {/* {scoreMark < 50 ? (
               <Text style={[styles.status, {backgroundColor: COLORS.red}]}>
@@ -217,19 +287,38 @@ export default function CreditScoreDashboard({navigation, route}) {
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Text style={[styles.infoContent_title]}>Your credit score is</Text>
             <View style={[styles.band]}>
-              <Text style={[styles.bandText]}>{creditRating}</Text>
+              <Text style={[styles.bandText]}>
+                {spinner ? (
+                  <ActivityIndicator size="small" color={COLORS.secondary} />
+                ) : (
+                  creditRating
+                )}
+              </Text>
             </View>
           </View>
           <Text style={[styles.infoContent_body]}>
-            It seems you have not taken a loan from a financial institution
-            before or we just can't find any record of your credit history.
-            However you can proceed to apply for rent finance.
+            {/* {spinner ? (
+              <ActivityIndicator size="small" color={COLORS.secondary} />
+            ) : ( */}
+            {creditScoreMessage}
+            {/* )} */}
           </Text>
 
           <View style={{flexDirection: 'row'}}>
-            <TouchableOpacity onPress={() => navigation.navigate('Borrow')}>
+            <TouchableOpacity
+              onPress={() => {
+                {
+                  canApply
+                    ? navigation.navigate('Borrow')
+                    : navigation.navigate('SavingsHome');
+                }
+              }}>
               <View style={styles.button}>
-                <Text style={styles.buttonText}>Apply now</Text>
+                {canApply ? (
+                  <Text style={styles.buttonText}>Apply now</Text>
+                ) : (
+                  <Text style={styles.buttonText}>Build credit score</Text>
+                )}
                 <Icon
                   name="chevron-forward"
                   color={'#536470'}
@@ -240,9 +329,11 @@ export default function CreditScoreDashboard({navigation, route}) {
             </TouchableOpacity>
           </View>
         </View>
+
+        {spinner && <ActivityIndicator size="small" color={COLORS.secondary} />}
       </View>
 
-      <Spinner visible={spinner} size="small" />
+      {/* <Spinner visible={spinner} size="small" /> */}
     </>
   );
 }
@@ -288,8 +379,8 @@ const styles = StyleSheet.create({
   infoContent_body: {
     fontSize: 14,
     marginTop: 20,
-    lineHeight: 25,
-    color: '#b2b3b680',
+    lineHeight: 30,
+    color: '#b2b3b690',
   },
 
   band: {
@@ -323,6 +414,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: COLORS.white,
     color: '#536470',
+    color: '#b2b3b690',
     textTransform: 'capitalize',
   },
 });
