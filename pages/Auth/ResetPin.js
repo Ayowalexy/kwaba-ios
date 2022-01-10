@@ -109,6 +109,8 @@ export default function ResetPin({navigation, route}) {
     setValue,
   });
 
+  const [errorMsg, setErrorMsg] = useState('');
+
   const handleSubmit = async (values) => {
     const data = {
       pin: value,
@@ -120,20 +122,24 @@ export default function ResetPin({navigation, route}) {
     setSpinner(true);
     try {
       const resp = await setPin(data);
+      console.log('The Outside RESP: ', resp);
       // if(resp.status )
       if (resp.status == 200) {
         console.log('The RESP: ', resp.data);
         navigation.navigate('EnterPin');
         setSpinner(false);
+        setErrorMsg('');
         await analytics.track('Reset-Pin', {
           email: values.email,
         });
       } else {
         setSpinner(false);
+        setErrorMsg('Please provide a valid email or password');
       }
     } catch (error) {
       console.log('The Error: ', error);
       setSpinner(false);
+      setErrorMsg('An error occured, please retry');
     }
   };
 
@@ -211,6 +217,20 @@ export default function ResetPin({navigation, route}) {
                   </View>
 
                   <View style={{marginTop: 40}}>
+                    {errorMsg != '' && (
+                      <Text
+                        style={{
+                          fontSize: 10,
+                          color: '#f00',
+                          marginTop: 20,
+                          backgroundColor: '#EDCDC250',
+                          paddingHorizontal: 20,
+                          paddingVertical: 15,
+                          borderRadius: 5,
+                        }}>
+                        {errorMsg}
+                      </Text>
+                    )}
                     <Field
                       component={CustomInput}
                       name="email"

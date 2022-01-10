@@ -437,6 +437,7 @@ const App = () => {
             headerShown: false,
           }}
           // initialRouteName={'CreditScoreDashboard'}
+          // initialRouteName={'CreditScoreOnboarding'}
           initialRouteName={'Welcome'}
           // initialRouteName={'Welcome'}
         >

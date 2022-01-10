@@ -64,7 +64,7 @@ export default function PaystackPaymentCobble(props) {
           paymentSuccessful(res);
         }}
         ref={paystackWebViewRef}
-        // refNumber={data?.reference}
+        refNumber={data?.reference}
       />
     </View>
   );
