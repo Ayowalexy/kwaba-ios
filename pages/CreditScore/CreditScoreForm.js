@@ -28,7 +28,7 @@ const CreditScoreValidationSchema = yup.object().shape({
     .required('Email is required'),
   bvn: yup
     .string()
-    .test('bvn', 'Must be exactly 11 characters', (val) => val.length === 11)
+    .test('bvn', 'Must be exactly 11 characters', (val) => val?.length === 11)
     .required('BVN is required'),
 });
 

@@ -438,8 +438,9 @@ const App = () => {
           }}
           // initialRouteName={'CreditScoreDashboard'}
           // initialRouteName={'CreditScoreOnboarding'}
+          initialRouteName={'Welcome'}
           // initialRouteName={'Welcome'}
-          initialRouteName={'Welcome'}>
+        >
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
