@@ -436,11 +436,10 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          initialRouteName={'CreditScoreDashboard'}
+          // initialRouteName={'CreditScoreDashboard'}
           // initialRouteName={'CreditScoreOnboarding'}
           // initialRouteName={'Welcome'}
-          // initialRouteName={'Welcome'}
-        >
+          initialRouteName={'Welcome'}>
           {/* {test != '' ? ( */}
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>

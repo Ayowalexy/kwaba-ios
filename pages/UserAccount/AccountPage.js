@@ -412,21 +412,31 @@ const AccountPage = ({navigation}) => {
                   N/A
                 </Text>
 
-                <View style={{flexDirection: 'column', flex: 1}}>
+                <View style={{flexDirection: 'row', flex: 1}}>
                   <Text
                     style={[
                       FONTS.body1FontStyling,
                       {
                         color: COLORS.light,
                         textAlign: 'right',
-                        fontSize: 9,
+                        fontSize: 11,
                         flexShrink: 1,
                         lineHeight: 12,
                       },
                     ]}>
-                    You can build your credit score by saving and paying your
-                    rent with Kwaba - coming soon
+                    {/* You can build your credit score by saving and paying your
+                    rent with Kwaba - coming soon */}
+                    View and build your credit score.
                   </Text>
+                  <View style={{paddingLeft: 20, justifyContent: 'center'}}>
+                    <Icon
+                      name="arrow-forward"
+                      style={{
+                        fontSize: 18,
+                        color: COLORS.white,
+                      }}
+                    />
+                  </View>
                 </View>
               </View>
             </View>

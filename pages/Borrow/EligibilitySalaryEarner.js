@@ -83,7 +83,8 @@ export default function EligibilitySalaryEarner({navigation}) {
     // }
 
     // navigation.navigate('AddressVerificationPayment');
-    navigation.navigate('RentalLoanForm1');
+    // navigation.navigate('RentalLoanForm1');
+    navigation.navigate('CreditScoreOnboarding');
 
     //   let stepsdata={
     //   documentdone:'',

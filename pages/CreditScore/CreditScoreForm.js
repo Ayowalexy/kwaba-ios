@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   TextInput,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../util';
@@ -25,7 +26,10 @@ const CreditScoreValidationSchema = yup.object().shape({
     .string()
     .email('Please enter a valid email')
     .required('Email is required'),
-  bvn: yup.string().required('BVN is required'),
+  bvn: yup
+    .string()
+    .test('bvn', 'Must be exactly 11 characters', (val) => val.length === 11)
+    .required('BVN is required'),
 });
 
 const CustomInput = (props) => {
@@ -218,7 +222,11 @@ export default function CreditScoreForm({navigation}) {
 
                   <TouchableOpacity onPress={handleSubmit} disabled={!isValid}>
                     <View style={styles.button}>
-                      <Text style={styles.buttonText}>Continue</Text>
+                      {spinner ? (
+                        <ActivityIndicator size="small" color={COLORS.white} />
+                      ) : (
+                        <Text style={styles.buttonText}>Continue</Text>
+                      )}
                     </View>
                   </TouchableOpacity>
                 </>
@@ -262,7 +270,7 @@ export default function CreditScoreForm({navigation}) {
           />
         )}
 
-        <Spinner visible={spinner} size="small" />
+        {/* <Spinner visible={spinner} size="small" /> */}
       </View>
     </>
   );

@@ -12,6 +12,7 @@ import {
   useWindowDimensions,
   RefreshControl,
   Animated,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -256,10 +257,15 @@ export default function NewHome({navigation}) {
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
-        TrackEvent('Home-Card-Emergencyloan');
-        instantLoan == 0
-          ? navigation.navigate('EmergencyLoanHome')
-          : navigation.navigate('EmergencyLoanDashBoard');
+        // TrackEvent('Home-Card-Emergencyloan');
+        // instantLoan == 0
+        //   ? navigation.navigate('EmergencyLoanHome')
+        //   : navigation.navigate('EmergencyLoanDashBoard');
+
+        Alert.alert(
+          'Feature currently unavailable',
+          'We are working hard to make this available as soon as we can.',
+        );
       },
     },
 
@@ -303,11 +309,16 @@ export default function NewHome({navigation}) {
       route: () => {
         TrackEvent('Emergency Funds Home Quick Action');
 
-        if (instantLoan == 0) {
-          navigation.navigate('EmergencyFundOnboarding');
-        } else {
-          navigation.navigate('EmergencyLoanDashBoard');
-        }
+        // if (instantLoan == 0) {
+        //   navigation.navigate('EmergencyFundOnboarding');
+        // } else {
+        //   navigation.navigate('EmergencyLoanDashBoard');
+        // }
+
+        Alert.alert(
+          'Feature currently unavailable',
+          'We are working hard to make this available as soon as we can.',
+        );
       },
     },
     {
