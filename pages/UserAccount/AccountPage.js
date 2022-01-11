@@ -347,7 +347,9 @@ const AccountPage = ({navigation}) => {
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() => navigation.navigate('CreditScoreDashboard')}>
+                onPress={() =>
+                  navigation.navigate('CreditScoreForAccountOnboarding')
+                }>
                 <View
                   style={{
                     flexDirection: 'row',

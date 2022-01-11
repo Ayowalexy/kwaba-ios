@@ -227,6 +227,11 @@ import CreditScoreOnboarding from './pages/CreditScore/CreditScoreOnboarding';
 import CreditScoreForm from './pages/CreditScore/CreditScoreForm';
 import CreditScoreAwaiting from './pages/CreditScore/CreditScoreAwaiting';
 
+import {
+  CreditScoreCheckFormForAccount,
+  CreditScoreForAccountOnboarding,
+} from './pages/CreditScore/ForAccount';
+
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
 
@@ -860,6 +865,16 @@ const App = () => {
               <Stack.Screen
                 name="CreditScoreAwaiting"
                 component={CreditScoreAwaiting}
+              />
+
+              <Stack.Screen
+                name="CreditScoreForAccountOnboarding"
+                component={CreditScoreForAccountOnboarding}
+              />
+
+              <Stack.Screen
+                name="CreditScoreCheckFormForAccount"
+                component={CreditScoreCheckFormForAccount}
               />
             </>
           )}
