@@ -153,7 +153,7 @@ const BottomNavigator = ({navigation}) => {
         tabBar={(props) => <MyTabBar {...props} />}
         initialRouteName="Home">
         <Tab.Screen name="Home" component={NewHome} />
-        <Tab.Screen name="Wallet" component={Wallet} />
+        {/* <Tab.Screen name="Wallet" component={Wallet} /> */}
         <Tab.Screen name="Rent" component={Borrow} />
         <Tab.Screen name="Mortgages" component={Mortgages} />
         <Tab.Screen name="More" component={AccountPage} />

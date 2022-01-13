@@ -229,6 +229,7 @@ import CreditScoreAwaiting from './pages/CreditScore/CreditScoreAwaiting';
 
 import {
   CreditScoreCheckFormForAccount,
+  CreditScoreCheckFormForAwaiting,
   CreditScoreForAccountOnboarding,
 } from './pages/CreditScore/ForAccount';
 
@@ -875,6 +876,11 @@ const App = () => {
               <Stack.Screen
                 name="CreditScoreCheckFormForAccount"
                 component={CreditScoreCheckFormForAccount}
+              />
+
+              <Stack.Screen
+                name="CreditScoreCheckFormForAwaiting"
+                component={CreditScoreCheckFormForAwaiting}
               />
             </>
           )}

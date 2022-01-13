@@ -164,7 +164,7 @@ export default function Screen3({navigation, route}) {
             reference: response?.data?.data?.reference,
           };
 
-          console.log(data);
+          console.log('Payment Data: ', data);
 
           setSpinner(true);
           // const verify = await verifySavingsPayment(data);

@@ -41,7 +41,7 @@ export default function CreditScoreDashboard({navigation, route}) {
     const data = {
       bvn: '22262641382',
       company: 'Kwaba',
-      email: 'joshuanwosu078@gmail.com',
+      email: 'joshnwosu888@gmail.com',
     };
 
     console.log('The Param: ', route?.params);
@@ -77,10 +77,19 @@ export default function CreditScoreDashboard({navigation, route}) {
           ...duesummary?.slice(-1)[0],
         };
 
+        console.log('csD: ', csDetails);
+
         if (csDetails?.NO_OF_DELINQCREDITFACILITIES > 0) {
-          setCreditScoreMessage(`You have ${csDetails?.NO_OF_DELINQCREDITFACILITIES} bad loans valued at ${csDetails?.TOT_DUE}. You are also currently servicing ${csDetails?.NO_OF_DELINQCREDITFACILITIES} loans with an outstanding balance of ₦${csDetails?.TOTAL_OUTSTANDING}. Unfortunately, you are not qualified for rent finance. However you can save for your rent to build your credit
-          `);
-          setCanApply(false);
+          if (Number(csDetails?.TOT_DUE) < 20000) {
+            setCreditScoreMessage(
+              `You have ${csDetails?.NO_OF_DELINQCREDITFACILITIES} bad loans valued at ${csDetails?.TOT_DUE}. You are also currently servicing ${csDetails?.NO_OF_OPENEDCREDITFACILITIES} loans with an outstanding balance of ${csDetails?.TOTAL_OUTSTANDING}. You may still apply for a rental loan.`,
+            );
+            setCanApply(true);
+          } else {
+            setCreditScoreMessage(`You have ${csDetails?.NO_OF_DELINQCREDITFACILITIES} bad loans valued at ${csDetails?.TOT_DUE}. You are also currently servicing ${csDetails?.NO_OF_DELINQCREDITFACILITIES} loans with an outstanding balance of ₦${csDetails?.TOTAL_OUTSTANDING}. Unfortunately, you are not qualified for rent finance. However you can save for your rent to build your credit
+            `);
+            setCanApply(false);
+          }
         } else if (
           csDetails?.NO_OF_DELINQCREDITFACILITIES <= 0 &&
           csDetails?.NO_OF_OPENEDCREDITFACILITIES <= 0

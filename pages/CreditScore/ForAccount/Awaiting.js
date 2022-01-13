@@ -9,11 +9,11 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {creditScoreFetch} from '../../services/network';
-import {COLORS, images} from '../../util';
+import {creditScoreFetch} from '../../../services/network';
+import {COLORS, images} from '../../../util';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-export default function CreditScoreAwaiting({navigation, route}) {
+export default function CreditScoreCheckFormForAwaiting({navigation, route}) {
   const [spinner, setSpinner] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,8 @@ export default function CreditScoreAwaiting({navigation, route}) {
       // console.log('The Res: ', res.data);
       if (res?.data?.history?.length) {
         setSpinner(false);
-        navigation.navigate('CreditScoreDashboard', route?.params);
+        // navigation.navigate('CreditScoreDashboard', route?.params);
+        console.log('The Res: ', res.data);
       } else {
         setSpinner(false);
         Alert.alert(
@@ -116,7 +117,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.light,
+    color: COLORS.secondary,
     // color: '#a5c2d1',
   },
   subText: {
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     backgroundColor: '#212a33',
-    backgroundColor: COLORS.light,
+    backgroundColor: COLORS.secondary,
     padding: 23,
     borderRadius: 10,
     justifyContent: 'center',

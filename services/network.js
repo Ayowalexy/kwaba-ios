@@ -970,8 +970,14 @@ const moveMoneyToSavingsPlan = async (data) => {
 
 // endpoint powered by Cobble
 // test endpoints from cobble for credit score
+
+const cobbleEndpoint = {
+  test: 'http://cobblescore.herokuapp.com/Integration',
+  live: 'https://api.getcobble.net/integration',
+};
+
 const creditScorePurchase = async (data) => {
-  const url = 'http://cobblescore.herokuapp.com/Integration/purchase';
+  const url = `${cobbleEndpoint.test}/purchase`;
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
@@ -985,7 +991,7 @@ const creditScorePurchase = async (data) => {
 };
 
 const creditScoreFetch = async (data) => {
-  const url = 'http://cobblescore.herokuapp.com/Integration/fetch';
+  const url = `${cobbleEndpoint.test}/fetch`;
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {

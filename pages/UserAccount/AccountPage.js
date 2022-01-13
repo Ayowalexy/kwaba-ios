@@ -76,14 +76,14 @@ const AccountPage = ({navigation}) => {
   };
 
   const accountTabsAndSettings = [
-    {
-      iconName: 'wallet',
-      tabTitle: 'Wallet',
-      onClickFunction: function openCardAndBank() {
-        // setWithrawModalVisible(true);
-        navigation.navigate('Wallet');
-      },
-    },
+    // {
+    //   iconName: 'wallet',
+    //   tabTitle: 'Wallet',
+    //   onClickFunction: function openCardAndBank() {
+    //     // setWithrawModalVisible(true);
+    //     navigation.navigate('Wallet');
+    //   },
+    // },
     {
       iconName: 'md-create-sharp',
       tabTitle: 'Withdraw',
@@ -347,9 +347,10 @@ const AccountPage = ({navigation}) => {
                 </View>
               </View>
               <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('CreditScoreForAccountOnboarding')
-                }>
+              // onPress={() =>
+              //   navigation.navigate('CreditScoreForAccountOnboarding')
+              // }
+              >
                 <View
                   style={{
                     flexDirection: 'row',

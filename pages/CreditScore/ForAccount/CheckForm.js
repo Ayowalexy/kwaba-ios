@@ -98,7 +98,6 @@ export default function CreditScoreCheckFormForAccount({navigation}) {
     try {
       const res = await creditScorePurchase(data);
       if (res.status == 200) {
-        // console.log('Here is the response: ', res.data.data);
         setResData(res?.data?.data);
         setSpinner(false);
         setShowAcceptModal(true);
@@ -109,61 +108,6 @@ export default function CreditScoreCheckFormForAccount({navigation}) {
     }
 
     console.log('The Data: ', data);
-  };
-
-  const handleConnection = async () => {
-    setSpinner(true);
-    const url = resData?.authorization_url;
-    try {
-      const result = await openInAppBrowser(url);
-      console.log('The Result: ', result);
-      setSpinner(false);
-      if (result.type == 'cancel') {
-        navigation.navigate('CreditScoreAwaiting', formValue);
-      }
-    } catch (error) {
-      setSpinner(false);
-      Alert.alert('Oops', 'Something went wrong');
-    }
-  };
-
-  const openInAppBrowser = async (url) => {
-    try {
-      if (await InAppBrowser.isAvailable()) {
-        const result = await InAppBrowser.open(url, {
-          // iOS Properties
-          dismissButtonStyle: 'done',
-          preferredBarTintColor: '#453AA4',
-          preferredControlTintColor: 'white',
-          readerMode: false,
-          animated: true,
-          modalPresentationStyle: 'fullScreen',
-          modalTransitionStyle: 'coverVertical',
-          modalEnabled: true,
-          enableBarCollapsing: false,
-          // Android Properties
-          showTitle: true,
-          toolbarColor: '#2A286A',
-          secondaryToolbarColor: 'black',
-          enableUrlBarHiding: true,
-          enableDefaultShare: true,
-          forceCloseOnRedirection: false,
-          hasBackButton: true,
-          // Specify full animation resource identifier(package:anim/name)
-          // or only resource name(in case of animation bundled with app).
-          animations: {
-            startEnter: 'slide_in_right',
-            startExit: 'slide_out_left',
-            endEnter: 'slide_in_left',
-            endExit: 'slide_out_right',
-          },
-        });
-
-        return result;
-      } else Linking.openURL(url);
-    } catch (error) {
-      return error.message;
-    }
   };
 
   return (
@@ -239,7 +183,6 @@ export default function CreditScoreCheckFormForAccount({navigation}) {
             visible={showAcceptModal}
             navigation={navigation}
             onConfirm={() => setShowPaystackPayment(true)}
-            // onConfirm={handleConnection}
           />
         )}
 
@@ -252,18 +195,17 @@ export default function CreditScoreCheckFormForAccount({navigation}) {
               console.log('Pay cancel', e);
               Alert.alert(`Payment ${e.status}`);
               setSpinner(false);
-              // Do something
             }}
             paymentSuccessful={async (res) => {
               console.log('Pay done', res);
               if (res.status == 'success') {
-                // Alert.alert('Awesome!', 'Navigation to checking score!!!!');
-                navigation.navigate('CreditScoreAwaiting', formValue);
+                navigation.navigate(
+                  'CreditScoreCheckFormForAwaiting',
+                  formValue,
+                );
               } else {
                 Alert.alert('Oops', 'Something went wrong');
               }
-
-              // Do something
             }}
           />
         )}
