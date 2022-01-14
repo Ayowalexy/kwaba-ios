@@ -46,42 +46,6 @@ const login = async (data) => {
   }
 };
 
-// creating/Reseting PIN
-const setPin = async (data) => {
-  try {
-    const url = apiUrl + '/api/v1/user_set_pin';
-    const response = await axios.post(urls.auth.USER_SET_PIN, data, {
-      headers: {'Content-Type': 'application/json'},
-    });
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
-const enterPinToLogin = async (data) => {
-  try {
-    const url = apiUrl + '/api/v1/user_login_verify_pin';
-    const response = await axios.post(urls.auth.USER_LOGIN_VERIFY_PIN, data, {
-      headers: {'Content-Type': 'application/json'},
-    });
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
-const forgotPassword = async (data) => {
-  try {
-    const response = await axios.put(urls.auth.FORGORT_PASSWORD, data, {
-      headers: {'Content-Type': 'application/json'},
-    });
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
 const sendVerificationCode = async (data) => {
   const authData = await AsyncStorage.getItem('authData');
   const token = authData;
@@ -113,6 +77,18 @@ const verifyPhone = async (data) => {
     return response;
   } catch (error) {
     return error.message;
+  }
+};
+
+const forgotPassword = async (data) => {
+  const url = apiUrl + '/api/v1/user/forgot_password';
+  try {
+    const response = await axios.put(url, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
   }
 };
 
@@ -779,6 +755,37 @@ const buyOtherBills = async (data) => {
   try {
     const response = await axios.post(url, data, {
       headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// creating/Reseting PIN
+/**
+ *
+ * @param {pin, email, password} data
+ * @returns
+ */
+const setPin = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user_set_pin';
+    const response = await axios.post(url, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// Enter Pin To Login
+const enterPinToLogin = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user_login_verify_pin';
+    const response = await axios.post(url, data, {
+      headers: {'Content-Type': 'application/json'},
     });
     return response;
   } catch (error) {

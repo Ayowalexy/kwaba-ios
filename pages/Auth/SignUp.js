@@ -6,6 +6,7 @@ import {
   Image,
   TextInput,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images, icons} from '../../util/index';
@@ -200,20 +201,15 @@ export default function SignUp({navigation}) {
       telephone: formattedValue,
       where_did_you_hear_about_us: values.selectHandle,
     };
-
-    // console.log(data);
-    // console.log('Formattted Number: ', formattedValue);
+    console.log('The Data: ', data);
 
     setSpinner(true);
     const res = await signUp(data);
 
-    console.log(res.status);
-    console.log('The RES', res.status);
-
     if (res.status == 201) {
       setSpinner(false);
       await AsyncStorage.setItem('authData', res.data.authData);
-      navigation.navigate('Login'); // Login after signup
+      navigation.navigate('Login');
 
       await analytics.track('User-Signup', {
         email: values.email,
@@ -228,6 +224,38 @@ export default function SignUp({navigation}) {
         console.log(errorMsg);
       }
     }
+
+    // setSpinner(true);
+    // const res = await signUp(data);
+
+    // try {
+    //   if (res.status == 201) {
+    //     setSpinner(false);
+    //     console.log('Res: ', res);
+    //   }
+    // } catch (error) {
+    //   setSpinner(false);
+    //   console.log('The Error: ', error);
+    // }
+
+    // if (res.status == 201) {
+    //   setSpinner(false);
+    //   await AsyncStorage.setItem('authData', res.data.authData);
+    //   navigation.navigate('Login');
+
+    //   await analytics.track('User-Signup', {
+    //     email: values.email,
+    //   });
+    // } else {
+    //   setSpinner(false);
+    //   if (res == 'Request failed with status code 409') {
+    //     setErrors({email: 'Email is already taken'});
+    //   } else {
+    //     let errorMsg =
+    //       'An error occurred, please check you internet connection or try again';
+    //     console.log(errorMsg);
+    //   }
+    // }
   };
   return (
     <View style={[designs.container]}>
@@ -435,7 +463,7 @@ export default function SignUp({navigation}) {
                 ))}
               </View>
 
-              <Spinner visible={spinner} animation="fade" size="large" />
+              {/* <Spinner visible={spinner} animation="fade" size="large" /> */}
 
               <TouchableOpacity
                 onPress={handleSubmit}
@@ -449,7 +477,11 @@ export default function SignUp({navigation}) {
                     fontWeight: 'bold',
                     textTransform: 'uppercase',
                   }}>
-                  Sign Up
+                  {spinner ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    'Sign Up'
+                  )}
                 </Text>
               </TouchableOpacity>
 
