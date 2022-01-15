@@ -12,7 +12,14 @@ const urls = {
     FORGORT_PASSWORD: `${baseUrl}/api/v1/user/forgot_password`,
   },
 
-  savings: {},
+  savings: {
+    USER_CREATE_SAVINGS: `${baseUrl}/api/v1/savings/user_create_savings`,
+    GET_SINGLE_USER_SAVINGS: `${baseUrl}/api/v1/savings/get_user_savings`,
+    ADD_PAYMENT_TO_SAVINGS: `${baseUrl}/api/v1/savings/add_payment_to_savings`,
+    VERIFY_SAVINGS_PAYMENT: `${baseUrl}/api/v1/savings/verify_savings_payment`,
+    GET_SAVINGS_PAYMENT_HISTOERY: `${baseUrl}/api/v1/savings/get_savings_payment_history`,
+    GET_SAVINGS_INTEREST_RATE: `${baseUrl}/api/v1/savings/get_savings_interest`,
+  },
 };
 
 export default urls;
