@@ -3,9 +3,6 @@ import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer} from '@react-navigation/native';
 
-import {store} from './redux/store';
-import {Provider} from 'react-redux';
-
 import SplashScreen from 'react-native-splash-screen';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -194,21 +191,10 @@ import JoinChallengeDashboard from './pages/Challenge/JoinChallengeDashboard';
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
 import EmergencyLoanHome from './pages/Borrow/EmergencyLoan/EmergencyLoanHome';
-import {
-  View,
-  Text,
-  RefreshControl,
-  StatusBar,
-  Linking,
-  AppState,
-  LogBox,
-} from 'react-native';
+import {View, Text, StatusBar, Linking, AppState, LogBox} from 'react-native';
 import {COLORS} from './util/index';
-import {signIn} from './util/icons';
 
 import NetInfo from '@react-native-community/netinfo';
-
-import MCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Instabug from 'instabug-reactnative';
 
@@ -256,12 +242,6 @@ const linking = {
 };
 
 let CodePushOptions = {
-  // checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
-  // mandatoryInstallMode: CodePush.InstallMode.IMMEDIATE,
-  // updateDialog: {
-  //   appendReleaseDescription: true,
-  //   title: 'A new update is available!',
-  // },
   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
   installMode: CodePush.InstallMode.IMMEDIATE,
 };
@@ -275,50 +255,13 @@ const App = () => {
   const store2 = useSelector((state) => state.loginReducer);
 
   const appState = useRef(AppState.currentState);
-  const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
-  // This user is inactive we want to log
-  // them out of the app
-  const login = useSelector((state) => state.loginReducer);
-  const LogOut = async () => {
-    await AsyncStorage.removeItem('userData');
-
-    dispatch(
-      setLoginState({
-        ...login,
-        isLoggedIn: false,
-        token: '',
-      }),
-    );
+  const createChannel = () => {
+    PushNotification.createChannel({
+      channelId: 'test-channel',
+      channelName: 'Test Channel',
+    });
   };
-
-  // useEffect(() => {
-  //   AppState.addEventListener('change', _handleAppStateChange);
-
-  //   return () => {
-  //     AppState.removeEventListener('change', _handleAppStateChange);
-  //   };
-  // }, []);
-
-  const _handleAppStateChange = (nextAppState) => {
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      console.log('App has come to the foreground!');
-    }
-
-    appState.current = nextAppState;
-    setAppStateVisible(appState.current);
-  };
-
-  // useEffect(() => {
-  //   console.log('The AppState', appStateVisible);
-  //   if (appStateVisible.match(/inactive|background/)) {
-  //     console.log('Log Out Now');
-  //     LogOut();
-  //   }
-  // }, [appStateVisible]);
 
   useEffect(() => {
     (async () => {
@@ -327,40 +270,37 @@ const App = () => {
         trackAppLifecycleEvents: true,
       });
     })();
-  }, []);
 
-  useEffect(() => {
-    // console.log('Instabug: ', Instabug);
     Instabug.startWithToken('b47303822745b8ff58541cc8f3a54f23', [
       Instabug.invocationEvent.shake,
     ]);
-  }, []);
 
-  useEffect(() => {
-    const getuser = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const token = userData != null ? JSON.parse(userData).token : null;
-
-      dispatch(setLoginState(JSON.parse(userData)));
-      // console.log('here is the store', store2.token);
-      const loggedInStatus =
-        userData != null ? JSON.parse(userData)?.isLoggedIn : false;
-      setIsLoggedIn(loggedInStatus);
-      setUserToken(token);
-
-      // console.log('USERDATA: ', userData);
-      // if (userData) SplashScreen.hide();
-    };
-    getuser();
-  }, [store2.token]);
-
-  useEffect(() => {
-    // if (store2.isLoggedIn) {
     setTimeout(function () {
       SplashScreen.hide();
     }, 1000);
-    // }
+
+    var pkg = require('./package.json');
+    console.log('pkg: ', pkg.version);
+
+    createChannel();
+
+    // logCurrentStorage();
   }, []);
+
+  const getuser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = userData != null ? JSON.parse(userData).token : null;
+
+    dispatch(setLoginState(JSON.parse(userData)));
+    const loggedInStatus =
+      userData != null ? JSON.parse(userData)?.isLoggedIn : false;
+    setIsLoggedIn(loggedInStatus);
+    setUserToken(token);
+  };
+
+  useEffect(() => {
+    getuser();
+  }, [store2.token]);
 
   useEffect(() => {
     const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
@@ -370,8 +310,6 @@ const App = () => {
 
     return () => removeNetInfoSubscription();
   }, []);
-
-  logCurrentStorage();
 
   const toastConfig = {
     success: ({text1, text2, props, ...rest}) => (
@@ -395,59 +333,19 @@ const App = () => {
     any_custom_type: () => {},
   };
 
-  useEffect(() => {
-    var pkg = require('./package.json');
-    console.log('pkg: ', pkg.version);
-  }, []);
-
-  useEffect(() => {
-    createChannel();
-  }, []);
-
-  const createChannel = () => {
-    PushNotification.createChannel({
-      channelId: 'test-channel',
-      channelName: 'Test Channel',
-    });
-  };
-
   return (
     <>
-      {/* {isOffline && (
-        <View
-          style={{
-            padding: 5,
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: COLORS.primary,
-            flexDirection: 'row',
-          }}>
-          <MCIcon
-            name="signal-off"
-            style={{color: COLORS.white, marginRight: 5, fontSize: 20}}
-          />
-          <Text style={{color: COLORS.white, fontWeight: '900', fontSize: 12}}>
-            No Internet Connection
-          </Text>
-        </View>
-      )} */}
       <NavigationContainer linking={linking}>
         <StatusBar
           backgroundColor={COLORS.primary}
-          // backgroundColor={'#00000080'}
           barStyle={'light-content'}
-          // translucent={true}
         />
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
           }}
           // initialRouteName={'CreditScoreDashboard'}
-          // initialRouteName={'CreditScoreOnboarding'}
-          initialRouteName={'Welcome'}
-          // initialRouteName={'Welcome'}
-        >
-          {/* {test != '' ? ( */}
+          initialRouteName={'Welcome'}>
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
               <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
@@ -811,8 +709,6 @@ const App = () => {
 
               <Stack.Screen name="Decline" component={Decline} />
               <Stack.Screen name="Reject" component={Reject} />
-
-              {/* Offer Letter screen */}
 
               <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
               <Stack.Screen name="AddosserLetter" component={AddosserLetter} />
