@@ -218,6 +218,7 @@ import {
   CreditScoreCheckFormForAwaiting,
   CreditScoreForAccountOnboarding,
 } from './pages/CreditScore/ForAccount';
+import {RnplSteps, RnplViews} from './pages/screens/rnpl';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
@@ -344,7 +345,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'CreditScoreDashboard'}
+          // initialRouteName={'RnplSteps'}
           initialRouteName={'Welcome'}>
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
@@ -778,6 +779,9 @@ const App = () => {
                 name="CreditScoreCheckFormForAwaiting"
                 component={CreditScoreCheckFormForAwaiting}
               />
+
+              <Stack.Screen name="RnplSteps" component={RnplSteps} />
+              <Stack.Screen name="RnplViews" component={RnplViews} />
             </>
           )}
         </Stack.Navigator>
