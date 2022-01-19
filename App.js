@@ -218,7 +218,13 @@ import {
   CreditScoreCheckFormForAwaiting,
   CreditScoreForAccountOnboarding,
 } from './pages/CreditScore/ForAccount';
-import {RnplSteps, RnplViews} from './pages/screens/rnpl';
+import {
+  RnplEligibility,
+  RnplOnboard,
+  RnplSteps,
+  RnplViews,
+} from './pages/screens/rnpl';
+import {CreditOnboard} from './pages/screens/rnpl/creditscore';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
@@ -780,8 +786,14 @@ const App = () => {
                 component={CreditScoreCheckFormForAwaiting}
               />
 
+              <Stack.Screen name="RnplOnboard" component={RnplOnboard} />
+              <Stack.Screen
+                name="RnplEligibility"
+                component={RnplEligibility}
+              />
               <Stack.Screen name="RnplSteps" component={RnplSteps} />
               <Stack.Screen name="RnplViews" component={RnplViews} />
+              <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
             </>
           )}
         </Stack.Navigator>

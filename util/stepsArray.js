@@ -1,4 +1,9 @@
 const stepsArray = [
+  //   {
+  //     title: 'Onboarding',
+  //     subTitle: '',
+  //     status: 'complete',
+  //   },
   {
     title: 'Credit score',
     subTitle: '',
@@ -9,21 +14,21 @@ const stepsArray = [
     subTitle: '',
     status: 'complete',
   },
-  {
-    title: 'Pre-approval',
-    subTitle: '',
-    status: 'complete',
-  },
+  //   {
+  //     title: 'Pre-approval',
+  //     subTitle: '',
+  //     status: 'complete',
+  //   },
   {
     title: 'Documents upload',
     subTitle: '',
     status: 'start',
   },
-  {
-    title: 'Verify documents',
-    subTitle: '',
-    status: 'locked',
-  },
+  //   {
+  //     title: 'Verify documents',
+  //     subTitle: '',
+  //     status: 'locked',
+  //   },
   {
     title: 'Offer approval breakdown',
     subTitle: '',
@@ -34,11 +39,11 @@ const stepsArray = [
     subTitle: '',
     status: 'locked',
   },
-  {
-    title: 'Offer letter',
-    subTitle: '',
-    status: 'locked',
-  },
+  //   {
+  //     title: 'Offer letter',
+  //     subTitle: '',
+  //     status: 'locked',
+  //   },
   {
     title: 'Address verification',
     subTitle: '',
@@ -54,11 +59,11 @@ const stepsArray = [
     subTitle: '',
     status: 'locked',
   },
-  {
-    title: 'Dashboard',
-    subTitle: '',
-    status: 'locked',
-  },
+  //   {
+  //     title: 'Dashboard',
+  //     subTitle: '',
+  //     status: 'locked',
+  //   },
 ];
 
 export default stepsArray;
