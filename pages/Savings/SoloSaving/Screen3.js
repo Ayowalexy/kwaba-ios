@@ -439,7 +439,7 @@ export default function Screen3({navigation, route}) {
               </Text>
             </View>
           </View>
-          {/* <View
+          <View
             style={{
               display: 'flex',
               flexDirection: 'row',
@@ -464,7 +464,7 @@ export default function Screen3({navigation, route}) {
               onValueChange={toggleSwitch}
               value={locked}
             />
-          </View> */}
+          </View>
           <View
             style={{
               display: 'flex',

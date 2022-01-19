@@ -75,7 +75,7 @@ export default function CreditForm(props) {
   const {visible, onRequestClose} = props;
 
   const [spinner, setSpinner] = useState(false);
-  const [showAcceptModal, setShowAcceptModal] = useState(true);
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
   const [resData, setResData] = useState([]);
   const [formValue, setFormValue] = useState([]);
@@ -98,19 +98,24 @@ export default function CreditForm(props) {
 
     Keyboard.dismiss();
 
+    const res = await creditScorePurchase(data);
+
+    // console.log('The Res: ', res);
+
     try {
-      const res = await creditScorePurchase(data);
       if (res.status == 200) {
         setResData(res?.data?.data);
         setSpinner(false);
         setShowAcceptModal(true);
+
+        console.log('The Res: ', res?.data?.data);
       }
     } catch (error) {
       setSpinner(false);
       console.log('The Error: ', error.response);
     }
 
-    console.log('The Data: ', data);
+    // console.log('The Data: ', data);
   };
 
   return (
@@ -195,7 +200,7 @@ export default function CreditForm(props) {
         <CreditAccept
           onRequestClose={() => setShowAcceptModal(!showAcceptModal)}
           visible={showAcceptModal}
-          onConfirm={() => console.log('true')}
+          onConfirm={() => setShowPaystackPayment(true)}
         />
       )}
 

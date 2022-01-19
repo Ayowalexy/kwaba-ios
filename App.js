@@ -351,7 +351,7 @@ const App = () => {
           screenOptions={{
             headerShown: false,
           }}
-          // initialRouteName={'RnplSteps'}
+          // initialRouteName={'CreditScoreAwaiting'}
           initialRouteName={'Welcome'}>
           {!store2?.isLoggedIn && store2?.token == '' ? (
             <>
