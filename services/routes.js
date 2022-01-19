@@ -1,7 +1,7 @@
 const stageUrl = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app';
 const liveUrl = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app';
 
-const baseUrl = stageUrl;
+const baseUrl = liveUrl;
 
 const urls = {
   auth: {
