@@ -1,9 +1,10 @@
 const stageUrl = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app';
 const liveUrl = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app';
 
-const baseUrl = liveUrl;
+const baseUrl = stageUrl;
 
 const urls = {
+  // For live
   auth: {
     LOGIN: `${baseUrl}/api/v1/user/login`,
     REGISTER: `${baseUrl}/api/v1/user/register`,
@@ -11,6 +12,14 @@ const urls = {
     USER_LOGIN_VERIFY_PIN: `${baseUrl}/api/v1/user/user_login_verify_pin`,
     FORGORT_PASSWORD: `${baseUrl}/api/v1/user/forgot_password`,
   },
+
+  // auth: {
+  //   LOGIN: `${baseUrl}/api/v1/users/login`,
+  //   REGISTER: `${baseUrl}/api/v1/users/register`,
+  //   USER_SET_PIN: `${baseUrl}/api/v1/users/set_pin`,
+  //   USER_LOGIN_VERIFY_PIN: `${baseUrl}/api/v1/users/verify_pin`,
+  //   FORGORT_PASSWORD: `${baseUrl}/api/v1/users/forgot_password`,
+  // },
 
   savings: {
     USER_CREATE_SAVINGS: `${baseUrl}/api/v1/savings/user_create_savings`,
