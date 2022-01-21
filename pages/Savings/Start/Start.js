@@ -214,6 +214,7 @@ export default function Start({navigation}) {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
+                    // console.log(store?.data);
                     TrackEvent('Solo Saving');
                     navigation.navigate(
                       // soloSaving == 0 ? 'SoloSaving1' : 'SavingLists',
@@ -234,7 +235,7 @@ export default function Start({navigation}) {
                       paddingHorizontal: 10,
                     },
                   ]}>
-                  {soloSaving == 0 ? (
+                  {soloSaving == 0 || !soloSaving ? (
                     <Text
                       style={[
                         designs.bodyText,
@@ -308,7 +309,7 @@ export default function Start({navigation}) {
                       padding: 5,
                     },
                   ]}>
-                  {buddySaving == 0 ? (
+                  {buddySaving == 0 || !buddySaving ? (
                     <Text
                       style={[
                         designs.bodyText,

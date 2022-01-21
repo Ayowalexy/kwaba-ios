@@ -197,21 +197,21 @@ export default function SignUp({navigation}) {
       email: values.email,
       password: values.password,
       gender: values.gender,
-      referral_code: values.referral_code,
-      telephone: formattedValue,
-      where_did_you_hear_about_us: values.selectHandle,
+      // referral_code: values.referral_code,
+      // telephone: formattedValue,
+      // where_did_you_hear_about_us: values.selectHandle,
     };
 
     console.log('The Data: ', data);
 
-    // setSpinner(true);
+    setSpinner(true);
     const res = await signUp(data);
 
     console.log('The Response: ', res);
 
     if (res.status == 201) {
       setSpinner(false);
-      await AsyncStorage.setItem('authData', res.data.data);
+      // await AsyncStorage.setItem('authData', res.data.data);
       navigation.navigate('Login');
 
       await analytics.track('User-Signup', {

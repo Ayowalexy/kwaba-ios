@@ -7,7 +7,6 @@ import {
   Switch,
   ScrollView,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -25,7 +24,6 @@ import DepositWalletModal from './DepositWalletModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
-  completeSavingsPayment,
   getInterestRate,
   userCreateSavings,
   verifySavingsPayment,
@@ -90,8 +88,6 @@ export default function Screen3({navigation, route}) {
   );
 
   const [showAutoNoPaymentModal, setShowAutoNoPaymentModal] = useState(false);
-
-  const [verifyData, setVerifyData] = useState('');
 
   const addCardAndBankModal = () => {
     setModal(true);
@@ -330,91 +326,19 @@ export default function Screen3({navigation, route}) {
   //   }
   // };
 
+  const createSavings = () => {};
+
   const handleContinue = () => {
     const data = route?.params;
+    // console.log('The Data: ', data);
 
     if (data?.amount == 0) {
       console.log('No Payment');
     } else {
-      createSavings();
+      // console.log('Yes Payment');
+      setShowPaymentModal(true);
     }
   };
-
-  const createSavings = async () => {
-    const data = {
-      auto_save: route?.params?.auto_save,
-      savings_frequency: route?.params?.savings_frequency,
-      savings_name: route?.params?.savings_name,
-      savings_period: route?.params?.savings_period,
-      start_date: route?.params?.start_date,
-      target_amount: route?.params?.target_amount,
-      savings_amount: Number(savingsAmount).toFixed(2),
-      locked: true,
-    };
-
-    try {
-      setSpinner(true);
-      const response = await userCreateSavings(data);
-      if (response.status == 201) {
-        setSpinner(false);
-
-        const data = response?.data?.data;
-
-        await verifyPaymentRequest(data);
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      console.log('The Error: ', error);
-      setSpinner(false);
-    }
-  };
-
-  const verifyPaymentRequest = async (data) => {
-    const verifyData = {
-      amount: route?.params?.amount,
-      savings_id: data.id,
-      channel: 'paystack',
-      reference: data.reference,
-    };
-
-    try {
-      setSpinner(true);
-      const verify = await verifySavingsPayment(verifyData);
-      if (verify.status == 200) {
-        setSpinner(false);
-
-        const verifyData = verify?.data?.data;
-        setVerifyData({...verifyData, id: data.id});
-
-        console.log('Verifyyyy ififififi nananan: ', verify?.data?.data);
-
-        setShowPaystackPayment(true);
-
-        // await completePayment(data);
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
-    }
-  };
-
-  // const completePayment = async (data) => {
-  //   console.log('The Dataaa: ', data);
-  //   try {
-  //     setSpinner(true);
-  //     const res = await completeSavingsPayment(data);
-  //     console.log('Complete Out: ', res);
-
-  //     if (res.status == 201) {
-  //       setSpinner(false);
-  //       console.log('Complete: ', res);
-  //     }
-  //   } catch (error) {
-  //     setSpinner(false);
-  //   }
-  // };
 
   // const fetchInterestData = async () => {
   //   setSpinner(true);
@@ -628,21 +552,19 @@ export default function Screen3({navigation, route}) {
             designs.button,
             {
               marginTop: 15,
-              backgroundColor: spinner ? '#00DC9950' : '#00DC99',
+              // backgroundColor: toggleCheckBox ? '#00DC99' : '#EAEAEA',
+              backgroundColor: '#00DC99',
             },
           ]}>
           <Text
             style={{
+              // color: toggleCheckBox ? 'white' : '#000',
               color: toggleCheckBox ? '#fff' : '#ffffff50',
               fontWeight: 'bold',
               fontSize: 12,
               lineHeight: 30,
             }}>
-            {spinner ? (
-              <ActivityIndicator size="small" color={'#fff'} />
-            ) : (
-              'CONTINUE'
-            )}
+            CONTINUE
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -710,45 +632,38 @@ export default function Screen3({navigation, route}) {
       {showPaystackPayment && (
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={verifyData}
-          channel={'bank_transfer'}
+          data={resData}
+          channel={channel}
           paymentCanceled={(e) => {
-            Alert.alert('Payment cancelled');
+            console.log('Pay cancel', e);
+            // Do something
           }}
           paymentSuccessful={async (res) => {
             const data = {
-              amount: verifyData.amount,
-              savings_id: verifyData.id,
               channel: 'paystack',
-              reference: verifyData.paymentReference,
+              reference: res.data.transactionRef.reference,
             };
 
-            console.log('This complete data: ', data);
-            try {
-              setSpinner(true);
-              const res = await completeSavingsPayment(data);
-              // console.log('Complete Out: ', res);
+            console.log('the dataatatta: ', data);
 
-              if (res.status == 201) {
-                setSpinner(false);
-                console.log('Complete Payment: ', res.data.data);
+            setSpinner(true);
+            const verify = await verifySavingsPayment(data);
 
-                navigation.navigate('PaymentSuccessful', {
-                  content: 'Savings Plan Created Successfully',
-                  name: 'SoloSavingDashBoard',
-                  id: verifyData.id,
-                });
-              } else {
-                setSpinner(false);
-              }
-            } catch (error) {
+            if (verify.status == 200) {
+              navigation.navigate('PaymentSuccessful', {
+                name: 'SoloSavingDashBoard',
+                id: resData?.id,
+              });
+              setSpinner(false);
+            } else {
+              console.log('Oops:', verify.response.data);
               setSpinner(false);
             }
           }}
         />
       )}
 
-      {/* <Spinner visible={spinner} size="large" /> */}
+      <Spinner visible={spinner} size="large" />
     </View>
   );
 }

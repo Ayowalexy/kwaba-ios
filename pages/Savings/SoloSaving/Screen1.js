@@ -31,19 +31,23 @@ export default function Screen1({navigation}) {
     try {
       let chosenDuration =
         values.savingDuration == '3 Months'
-          ? '3months'
+          ? 3
           : values.savingDuration == '6 Months'
-          ? '6months'
-          : '1years';
+          ? 6
+          : 12;
       const data = {
-        name: values.savingTitle,
+        savings_name: values.savingTitle,
         auto_save: values.savingOption == 'auto' ? true : false,
-        target_amount: Number(unFormatNumber(values.targetAmount)),
-        frequency: values.savingFrequency,
-        how_long: chosenDuration,
+        savings_frequency:
+          values.savingFrequency == 'Daily'
+            ? 1
+            : values.savingFrequency == 'Weekly'
+            ? 7
+            : 30,
+        savings_period: chosenDuration,
       };
-      // console.log('SOLO SAVING DATA: ', data);
       navigation.navigate('SoloSaving2', data);
+      // console.log('The Data: ', data);
     } catch (error) {}
   };
 

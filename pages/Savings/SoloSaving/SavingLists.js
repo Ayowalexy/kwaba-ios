@@ -108,9 +108,9 @@ export default function SavingLists({navigation}) {
         style={[styles.card]}
         onPress={() => {
           dispatch(getOneSoloSavings(item.id));
-          dispatch(getOneSoloSavingsTransaction(item.id));
+          // dispatch(getOneSoloSavingsTransaction(item.id));
           navigation.navigate('SoloSavingDashBoard', {id: item.id});
-          console.log('The ID: ', item.id);
+          // console.log('The ID: ', item.id);
         }}>
         <View style={[styles.cardFlex]}>
           <View style={[styles.progressContainer]}>
@@ -120,7 +120,7 @@ export default function SavingLists({navigation}) {
               rotation={0}
               style={{zIndex: 9, position: 'relative'}}
               fill={
-                (Number(item.amount_save) / Number(item.target_amount)) * 100
+                (Number(item.amount_saved) / Number(item.target_amount)) * 100
               }
               tintColor={COLORS.light}
               backgroundColor="#2A286A10">
@@ -160,7 +160,7 @@ export default function SavingLists({navigation}) {
                   Amount Saved
                 </Text>
                 <Text style={[styles.amountText]}>
-                  ₦{formatNumber(item.amount_save) || '0.00'}
+                  ₦{formatNumber(item.amount_saved) || '0.00'}
                 </Text>
               </View>
 

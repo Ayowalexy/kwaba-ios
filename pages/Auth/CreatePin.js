@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
@@ -57,8 +57,9 @@ export default function CreatePin({navigation, route}) {
     console.log('The Data 2: ', route?.params?.data);
     try {
       const resp = await setPin(data);
-      // if(resp.status )
-      if (resp.status == 200) {
+      console.log('The Res: ', resp);
+      // if(resp.status )r
+      if (resp.status == 201) {
         console.log('The RESP: ', resp.data);
         // navigation.navigate('EnterPin');
         navigation.navigate('WelcomeBack', {data: route?.params?.data});
@@ -145,12 +146,16 @@ export default function CreatePin({navigation, route}) {
               lineHeight: 30,
               fontWeight: 'bold',
             }}>
-            SET PIN
+            {spinner ? (
+              <ActivityIndicator size="small" color={COLORS.white} />
+            ) : (
+              'SET PIN'
+            )}
           </Text>
         </TouchableOpacity>
       </View>
 
-      <Spinner visible={spinner} size="large" />
+      {/* <Spinner visible={spinner} size="large" /> */}
     </>
   );
 }

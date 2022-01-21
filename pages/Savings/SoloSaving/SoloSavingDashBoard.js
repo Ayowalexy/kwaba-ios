@@ -45,7 +45,7 @@ export default function SoloSavingDashBoard(props) {
   const dispatch = useDispatch();
   // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   // const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
-  const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
+  // const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
   const getOneTransaction = useSelector(
     (state) => state.getOneSoloSavingsTransactionReducer,
   );
@@ -103,45 +103,135 @@ export default function SoloSavingDashBoard(props) {
   //   })();
   // }, [autoSaving]);
 
+  // useEffect(() => {
+  //   dispatch(getOneSoloSavingsTransaction(route.params.id));
+  //   console.log('The ID: ', route.params.id);
+  // }, []);
+
+  // useEffect(() => {
+  //   // console.log('Hello world.....');
+  //   // if (getOneSavings?.data?.length > 0) {
+  //   setDashboardData();
+  //   // console.log('Hello world Inner.....');
+  //   // }
+  // }, [getOneSavings]);
+
+  // const setDashboardData = () => {
+  //   console.log('The get one: ', getOneSavings);
+  //   if (getOneSavings && getOneSavings.data != undefined) {
+  //     const data = getOneSavings.data[0];
+  //     const amount_saved = Number(data?.amount_save);
+
+  //     console.log('Data: ', data);
+
+  //     setDate({
+  //       startDate: data?.start_date,
+  //       endDate: data?.end_date,
+  //     });
+
+  //     setAutoSaving(data?.auto_save);
+
+  //     setTotalInterest(data?.interest);
+  //     setLocked(data?.locked);
+  //     setSavingTitle(data?.name);
+  //     setSavingsTarget(data?.target_amount);
+  //     setPercentAchieved(
+  //       (
+  //         (Number(data?.amount_save) / Number(data?.target_amount)) *
+  //         100
+  //       ).toFixed(0),
+  //     );
+  //     setTotalSaving(amount_saved || 0);
+  //   }
+  // };
+
+  // const handlePaymentRoute = async (value) => {
+  //   console.log('The Value tttt: ', value);
+  //   try {
+  //     const data = {
+  //       savings_id: route?.params?.id,
+  //       amount: amount,
+  //     };
+
+  //     console.log('The Dataaaaaa: ', data);
+
+  //     setSpinner(true);
+  //     const response = await addFundsToSavings(data);
+
+  //     console.log('The Save: ', response?.response);
+  //     if (response.status == 200) {
+  //       if (value == 'wallet') {
+  //         const data = {
+  //           payment_channel: value,
+  //           reference: response?.data?.data?.reference,
+  //         };
+
+  //         console.log('The Data: ', data);
+
+  //         setSpinner(true);
+  //         // const verify = await verifySavingsPayment(data);
+  //         const verify = await verifyWalletTransaction(data);
+
+  //         if (verify.status == 200) {
+  //           setSpinner(false);
+  //           navigation.navigate('PaymentSuccessful', {
+  //             name: 'SoloSavingDashBoard',
+  //             id: route?.params?.id,
+  //             content: 'Payment Successful',
+  //             subText: 'Awesome! You have successfully funded your savings.',
+  //           });
+  //         } else {
+  //           setSpinner(false);
+  //           Alert.alert('Oops', verify.response.data.response_message);
+  //           // console.log('Response: ', verify.response.data);
+  //         }
+  //       } else {
+  //         setChannel(value);
+  //         setResData(response?.data?.data);
+  //         setShowPaystackPayment(true); // show paystack
+  //       }
+  //     } else {
+  //       setSpinner(false);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     console.log('Error: ', error);
+  //     Alert.alert('Error', 'Something went wrong, please try again later');
+  //   }
+  // };
+
   useEffect(() => {
-    dispatch(getOneSoloSavingsTransaction(route.params.id));
-    console.log('The ID: ', route.params.id);
+    getOneSavings();
   }, []);
 
-  useEffect(() => {
-    // console.log('Hello world.....');
-    // if (getOneSavings?.data?.length > 0) {
-    setDashboardData();
-    // console.log('Hello world Inner.....');
-    // }
-  }, [getOneSavings]);
+  const getOneSavings = async () => {
+    setSpinner(true);
+    const response = await getOneUserSavings(route.params.id);
 
-  const setDashboardData = () => {
-    if (getOneSavings && getOneSavings.data != undefined) {
-      const data = getOneSavings.data[0];
-      const amount_saved = Number(data?.amount_save);
-
-      console.log('Data: ', data);
-
-      setDate({
-        startDate: data?.start_date,
-        endDate: data?.end_date,
-      });
-
-      setAutoSaving(data?.auto_save);
-
-      setTotalInterest(data?.interest);
-      setLocked(data?.locked);
-      setSavingTitle(data?.name);
-      setSavingsTarget(data?.target_amount);
-      setPercentAchieved(
-        (
-          (Number(data?.amount_save) / Number(data?.target_amount)) *
-          100
-        ).toFixed(0),
-      );
-      setTotalSaving(amount_saved || 0);
+    setSpinner(false);
+    if (!response) {
+      return [];
     }
+
+    console.log('The Res: ', response.data.data);
+    const data = response.data.data;
+    const amount_saved = Number(data?.amount_saved);
+
+    setDate({
+      startDate: data?.start_date,
+      endDate: data?.end_date,
+    });
+    setAutoSaving(data?.auto_save);
+    setTotalInterest(data?.interest);
+    setSavingTitle(data?.name);
+    setSavingsTarget(data?.target_amount);
+    setPercentAchieved(
+      (
+        (Number(data?.amount_saved) / Number(data?.target_amount)) *
+        100
+      ).toFixed(0),
+    );
+    setTotalSaving(amount_saved || 0);
   };
 
   const goback = () => {
@@ -152,59 +242,8 @@ export default function SoloSavingDashBoard(props) {
     setTotalSaving(0);
   };
 
-  const handlePaymentRoute = async (value) => {
-    console.log('The Value tttt: ', value);
-    try {
-      const data = {
-        savings_id: route?.params?.id,
-        amount: amount,
-      };
-
-      console.log('The Dataaaaaa: ', data);
-
-      setSpinner(true);
-      const response = await addFundsToSavings(data);
-
-      console.log('The Save: ', response?.response);
-      if (response.status == 200) {
-        if (value == 'wallet') {
-          const data = {
-            payment_channel: value,
-            reference: response?.data?.data?.reference,
-          };
-
-          console.log('The Data: ', data);
-
-          setSpinner(true);
-          // const verify = await verifySavingsPayment(data);
-          const verify = await verifyWalletTransaction(data);
-
-          if (verify.status == 200) {
-            setSpinner(false);
-            navigation.navigate('PaymentSuccessful', {
-              name: 'SoloSavingDashBoard',
-              id: route?.params?.id,
-              content: 'Payment Successful',
-              subText: 'Awesome! You have successfully funded your savings.',
-            });
-          } else {
-            setSpinner(false);
-            Alert.alert('Oops', verify.response.data.response_message);
-            // console.log('Response: ', verify.response.data);
-          }
-        } else {
-          setChannel(value);
-          setResData(response?.data?.data);
-          setShowPaystackPayment(true); // show paystack
-        }
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Error: ', error);
-      Alert.alert('Error', 'Something went wrong, please try again later');
-    }
+  const handlePaymentRoute = (value) => {
+    console.log('Value: ', value);
   };
 
   return (

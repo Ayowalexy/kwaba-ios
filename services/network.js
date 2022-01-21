@@ -514,12 +514,16 @@ const userCreateSavings = async (data) => {
   const url = apiUrl + '/api/v1/user_create_savings';
   const token = await getToken();
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
+    const response = await axios.post(
+      urls.savings.USER_CREATE_SAVINGS,
+      JSON.stringify(data),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
       },
-    });
+    );
     return response;
   } catch (error) {
     return error;
@@ -556,9 +560,12 @@ const getOneUserSavings = async (id) => {
   const url = apiUrl + `/api/v1/get_one_savings/${id}`;
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
-      headers: {'Content-Type': 'application/json', Authorization: token},
-    });
+    const response = await axios.get(
+      urls.savings.GET_ALL_USER_SAVINGS + `/${id}`,
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
@@ -595,9 +602,29 @@ const verifySavingsPayment = async (data) => {
   const url = apiUrl + '/api/v1/verify_savings_payment';
   const token = await getToken();
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {'Content-Type': 'application/json', Authorization: token},
-    });
+    const response = await axios.post(
+      urls.savings.VERIFY_SAVINGS_PAYMENT,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const completeSavingsPayment = async (data) => {
+  const token = await getToken();
+  try {
+    const response = await axios.post(
+      urls.savings.COMPLETE_SAVINGS_PAYMENT,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
@@ -1069,4 +1096,5 @@ export {
   moveMoneyToSavingsPlan,
   creditScorePurchase,
   creditScoreFetch,
+  completeSavingsPayment,
 };

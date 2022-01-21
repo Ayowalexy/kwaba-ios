@@ -3,6 +3,7 @@ import apiUrl from '../../services/api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getOneUserSavings, getUserSavings} from '../../services/network';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -35,7 +36,7 @@ export const getTotalSoloSavings = () => {
     const token = await getToken();
     const url = apiUrl + '/api/v1/get_user_savings';
     try {
-      const response = await axios.get(url, {
+      const response = await axios.get(urls.savings.GET_ALL_USER_SAVINGS, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       dispatch(setTotalSoloSavings(response.data.data));
@@ -129,12 +130,14 @@ export const setOneSoloSavings = (data) => {
 export const getOneSoloSavings = (id) => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + `/api/v1/get_one_savings/${id}`;
+    // const url = apiUrl + `/api/v1/get_one_savings/${id}`;
+    const url = urls.savings.GET_ALL_USER_SAVINGS;
     try {
-      const response = await axios.get(url, {
+      const response = await axios.get(url`/${id}`, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      dispatch(setOneSoloSavings(response.data.data));
+      console.log('One savings: ', response);
+      dispatch(setOneSoloSavings(response));
       return response.data.data;
     } catch (error) {
       return error;

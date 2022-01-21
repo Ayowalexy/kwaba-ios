@@ -6,6 +6,7 @@ const designs = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F7F8FD',
     padding: 15,
+    paddingHorizontal: 20,
     fontFamily: 'CircularStd',
   },
   header: {
@@ -90,14 +91,13 @@ const designs = StyleSheet.create({
     marginTop: 20,
     paddingLeft: 6,
     paddingRight: 6,
-    // borderWidth: 2,
-    // display: 'none',
   },
   key: {
     fontSize: 12,
     fontWeight: '500',
     lineHeight: 15,
     color: 'white',
+    textTransform: 'capitalize',
     // backgroundColor: 'red',
   },
   value: {
