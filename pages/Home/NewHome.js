@@ -241,11 +241,11 @@ export default function NewHome({navigation}) {
       },
       cardClick: () => {
         TrackEvent('Home-Card-Wallet');
-        // navigation.navigate('Wallet');
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        navigation.navigate('Wallet');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
 

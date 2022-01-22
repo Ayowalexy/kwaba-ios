@@ -575,6 +575,7 @@ export default function Wallet(props) {
           visible={showAmountModal}
           setData={(d) => setResData(d)}
           showCard={() => setShowPaystackPayment(true)}
+          channel={'paystack'} //TODO
         />
       )}
 
