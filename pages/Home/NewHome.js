@@ -118,8 +118,8 @@ export default function NewHome({navigation}) {
         const userData = await getUserData();
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
-        dispatch(getTotalBuddySavings());
-        dispatch(getUserWallet());
+        // dispatch(getTotalBuddySavings());
+        // dispatch(getUserWallet());
 
         dispatch(
           setLoginState({
@@ -193,16 +193,18 @@ export default function NewHome({navigation}) {
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
       setSavings(getMaxLoanCap1?.data?.total_savings);
-      setInstantLoan(
-        Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
-      );
+      setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
+
+      // setInstantLoan(
+      //   Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
+      // );
     }
   }, [getMaxLoanCap1]);
 
-  useEffect(() => {
-    console.log('The Wallet: ', getWallet);
-    setWallet(getWallet?.data?.available_balances);
-  }, [getWallet]);
+  // useEffect(() => {
+  //   console.log('The Wallet: ', getWallet);
+  //   setWallet(getWallet?.data?.available_balances);
+  // }, [getWallet]);
 
   const slides = [
     {

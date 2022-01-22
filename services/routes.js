@@ -34,7 +34,7 @@ const urls = {
   },
 
   wallet: {
-    GET_USER_WALLET_TRANSACTIONS: `${baseUrl}/wallet/get-all-wallet-transaction`,
+    GET_USER_WALLET_TRANSACTIONS: `${baseUrl}/wallets/get-user-wallet-transactions`,
   },
 };
 

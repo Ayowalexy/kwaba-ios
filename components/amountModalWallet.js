@@ -26,6 +26,7 @@ import {
   getUserSavings,
   loanPaymentVerification,
   loanRepayment,
+  verifySavingsPayment,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector, useDispatch} from 'react-redux';
@@ -57,7 +58,7 @@ export default function AmountModalWallet(props) {
     onRequestClose();
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (values) => {
     const data = {
       amount: unFormatNumber(values.amount),
       channel: channel, //paystack

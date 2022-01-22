@@ -1,10 +1,27 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
 import {images, icons, COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {getMaxLoanCap} from '../../redux/actions/savingsActions';
+import {useSelector, useDispatch} from 'react-redux';
+import {formatNumber} from '../../util/numberFormatter';
 
 export default function PaymentTypeModal(props) {
+  const dispatch = useDispatch();
   const {visible, onRequestClose, setPaymentType, disable} = props;
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    dispatch(getMaxLoanCap());
+  }, []);
+
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
+
   return (
     <>
       <Modal
@@ -73,7 +90,7 @@ export default function PaymentTypeModal(props) {
                 {[
                   {name: 'Debit Card', icon: 'card', tag: 'card'},
                   {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
-                  // {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
+                  {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
                 ].map((item, index) => {
                   return (
                     <TouchableOpacity
@@ -109,14 +126,37 @@ export default function PaymentTypeModal(props) {
                           color={COLORS.secondary}
                         />
                       </View>
-                      <Text
+                      <View
                         style={{
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                          color: COLORS.dark,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          flex: 1,
                         }}>
-                        {item.name}
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: COLORS.dark,
+                          }}>
+                          {item.name}
+                        </Text>
+                        {item.tag == 'wallet' && (
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 'bold',
+                              marginLeft: 20,
+                              color: COLORS.dark,
+                              backgroundColor: '#BFBFBF20',
+                              paddingVertical: 5,
+                              paddingHorizontal: 7,
+                              borderRadius: 3,
+                            }}>
+                            ₦{formatNumber(Number(walletBalance))}
+                          </Text>
+                        )}
+                      </View>
                     </TouchableOpacity>
                   );
                 })}

@@ -48,7 +48,7 @@ export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
   // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  // const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const getOne = useSelector((state) => state.getOneSoloSavingsReducer);
   const getOneTransaction = useSelector(
     (state) => state.getOneSoloSavingsTransactionReducer,
@@ -116,13 +116,42 @@ export default function SoloSavingDashBoard(props) {
 
   const goback = () => {
     navigation.navigate('SavingLists');
-    setSavingTitle('');
-    setSavingsTarget(0);
-    setPercentAchieved(0);
-    setTotalSaving(0);
+    // setSavingTitle('');
+    // setSavingsTarget(0);
+    // setPercentAchieved(0);
+    // setTotalSaving(0);
   };
 
-  const verifyPaymentRequest = async (data) => {
+  const savingsPayment = async (data) => {
+    setSpinner2(true);
+
+    // console.log('The Res: ', res.response.data);
+
+    try {
+      const res = await completeSavingsPayment(data);
+
+      if (res.status == 201) {
+        setSpinner2(false);
+
+        console.log('Complete Paymentttttttttt: ', res.data.data);
+
+        navigation.navigate('PaymentSuccessful', {
+          content: 'Payment successful',
+          name: 'SoloSavingDashBoard',
+          id: verifyData.id,
+        });
+
+        console.log('Verify: ', verifyData.id);
+      } else {
+        setSpinner2(false);
+      }
+    } catch (error) {
+      setSpinner2(false);
+      console.log('The Error: ', error.response.data);
+    }
+  };
+
+  const verifyPaymentRequest = async (data, paymentChannel) => {
     console.log('The Data: ', data);
 
     setSpinner2(true);
@@ -135,15 +164,56 @@ export default function SoloSavingDashBoard(props) {
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
+      console.log('Verifying data....: ', verifyData);
       setVerifyData({...verifyData, id: data.savings_id});
-      setShowPaystackPayment(true);
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: verifyData.amount,
+          savings_id: data.savings_id,
+          channel: 'wallet',
+          reference: verifyData.paymentReference,
+        };
+
+        // console.log('Dang: ', payload);
+
+        await savingsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      console.log('Error: ', res.response.data);
+
+      if (
+        res.response?.data?.meta?.error ==
+        'The maximum savings amount for this savings is execeded'
+      ) {
+        Alert.alert(
+          'Payment unsuccessful',
+          `You've exceeded the target amount for this savings plan`,
+        );
+      } else if (
+        res.response?.data?.meta?.error == 'Insufficient wallet balance'
+      ) {
+        Alert.alert(
+          'Payment unsuccessful',
+          'You do not have enough money in your wallet',
+        );
+      }
     }
   };
 
   const handlePaymentRoute = async (value) => {
-    // console.log('Value: ', value);
+    console.log('Value: ', value);
 
-    if (value == 'Wallet') {
+    if (value == 'wallet') {
+      const verifyPayload = {
+        amount: amount,
+        savings_id: route?.params?.id,
+        channel: 'wallet',
+      };
+
+      setChannel(value); // wallet
+      await verifyPaymentRequest(verifyPayload, value);
     } else {
       const verifyPayload = {
         amount: amount,
@@ -151,11 +221,8 @@ export default function SoloSavingDashBoard(props) {
         channel: 'paystack',
       };
 
-      setChannel(value);
-
-      console.log('The value: ', value);
-
-      await verifyPaymentRequest(verifyPayload);
+      setChannel(value); // card or bank_transfer
+      await verifyPaymentRequest(verifyPayload, value);
     }
   };
 
@@ -651,26 +718,8 @@ export default function SoloSavingDashBoard(props) {
 
             console.log('the dataatatta: ', data);
             console.log('This complete data: ', data);
-            try {
-              setSpinner2(true);
-              const res = await completeSavingsPayment(data);
-              // console.log('Complete Out: ', res);
 
-              if (res.status == 201) {
-                setSpinner2(false);
-                console.log('Complete Payment: ', res.data.data);
-
-                navigation.navigate('PaymentSuccessful', {
-                  content: 'Payment successful',
-                  name: 'SoloSavingDashBoard',
-                  id: verifyData.id,
-                });
-              } else {
-                setSpinner2(false);
-              }
-            } catch (error) {
-              setSpinner2(false);
-            }
+            await savingsPayment(data);
           }}
         />
       )}

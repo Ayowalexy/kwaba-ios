@@ -2,6 +2,7 @@ import * as types from './types';
 import apiUrl from '../../services/api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -44,11 +45,14 @@ export const setUserWalletTransactions = (data) => {
 export const getUserWalletTransactions = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + '/api/v1/get_wallet_transactions';
+    // const url = apiUrl + '/api/v1/get_wallet_transactions';
     try {
-      const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
+      const response = await axios.get(
+        urls.wallet.GET_USER_WALLET_TRANSACTIONS,
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
       dispatch(setUserWalletTransactions(response.data.data.reverse()));
       // console.log('Wallet Transaction: ', response.data.data);
       return response.data.data;

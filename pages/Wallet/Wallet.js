@@ -24,7 +24,10 @@ import moment from 'moment';
 import AmountModalWallet from '../../components/amountModalWallet';
 import BankTransferModal from './BankTransferModal';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
-import {verifyAddFundToWallet} from '../../services/network';
+import {
+  completeSavingsPayment,
+  verifyAddFundToWallet,
+} from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import QuickSaveListModal from '../Home/QuickSaveListModal';
 import QuickSaveModal from '../../components/QuickSaveModal';
@@ -66,19 +69,26 @@ export default function Wallet(props) {
   const getWalletTransactions = useSelector(
     (state) => state.getUserWalletTransactionsReducer,
   );
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
   useEffect(() => {
-    dispatch(getUserWallet());
+    // dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
-    // dispatch(getBillsCategory('airtime'));
+    dispatch(getMaxLoanCap());
   }, []);
 
   useEffect(() => {
-    setAmount(getWallet?.data?.available_balances || 0);
-    setLedgerBalance(getWallet?.data?.ledger_balances || 0);
-    console.log('The Wallet Value: ', getWallet);
-    // console.log('Hello....', getWalletTransactions);
-  }, [getWallet]);
+    // setAmount(getWallet?.data?.available_balances || 0);
+    // setLedgerBalance(getWallet?.data?.ledger_balances || 0);
+    // console.log('The Wallet Value: ', getWallet);
+    console.log('Hello....', getWalletTransactions);
+  }, []);
+
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setAmount(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
 
   const renderItem = ({item, index}) => {
     return (
@@ -259,13 +269,14 @@ export default function Wallet(props) {
               style={{
                 width: '100%',
                 justifyContent: 'center',
-                // alignItems: 'center',
+                alignItems: 'center',
               }}>
               <View style={{paddingHorizontal: 40}}>
                 <View
                   style={{
                     flexDirection: 'row',
-                    justifyContent: 'space-between',
+                    // justifyContent: 'space-between',
+                    justifyContent: 'center',
                     paddingHorizontal: 5,
                   }}>
                   <View>
@@ -282,6 +293,7 @@ export default function Wallet(props) {
                       style={{
                         flexDirection: 'row',
                         alignItems: 'center',
+                        justifyContent: 'center',
                         marginTop: 0,
                       }}>
                       <Text
@@ -299,55 +311,8 @@ export default function Wallet(props) {
                               'x',
                             )}
                       </Text>
-
-                      {/* <TouchableOpacity
-                    onPress={() => setToggleAmount(!toggleAmount)}
-                    style={{
-                      backgroundColor: '#ffffff20',
-                      width: 30,
-                      height: 30,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      borderRadius: 5,
-                      marginLeft: 10,
-                      marginRight: 10,
-                    }}>
-                    <Icon
-                      name={toggleAmount ? 'eye-off-outline' : 'eye-outline'}
-                      size={15}
-                      color={COLORS.white}
-                    />
-                  </TouchableOpacity> */}
                     </View>
                   </View>
-
-                  {/* <View>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'normal',
-                        textAlign: 'left',
-                        color: COLORS.white,
-                      }}>
-                      Ledger Balance:
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 0,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 30,
-                          fontWeight: 'bold',
-                          color: COLORS.white,
-                        }}>
-                        <Text style={{fontSize: 15}}>₦ </Text>
-                        {formatNumber(Number(ledgerBalance).toFixed(2))}
-                      </Text>
-                    </View>
-                  </View> */}
                 </View>
 
                 <TouchableOpacity
@@ -359,7 +324,8 @@ export default function Wallet(props) {
                     borderRadius: 5,
                     paddingHorizontal: 20,
                     paddingVertical: 10,
-                    marginTop: 20,
+                    marginTop: 10,
+                    // width: 200,
                   }}>
                   <Text
                     style={{
@@ -374,19 +340,13 @@ export default function Wallet(props) {
 
               <View
                 style={{
-                  // borderWidth: 1,
-                  // borderColor: 'red',
-                  marginTop: 15,
+                  marginTop: 30,
                   width: '100%',
-                  // flex: 1,
-                  // paddingTop: 20,
-                  // paddingBottom: 10,
+
                   paddingHorizontal: 40,
                   justifyContent: 'space-evenly',
                   alignItems: 'center',
                   flexDirection: 'row',
-                  // borderTopWidth: 1,
-                  // borderTopColor: '#FFFFFF20',
                 }}>
                 {['Fund Savings', 'Pay Bills'].map((item, index) => {
                   return (
@@ -600,28 +560,33 @@ export default function Wallet(props) {
           }}
           paymentSuccessful={async (res) => {
             const data = {
+              amount: resData.amount,
               channel: 'paystack',
-              reference: res.data.transactionRef.reference,
+              reference: resData.paymentReference,
+              wallet: true,
             };
 
             console.log('the dataatatta: ', data);
+            console.log('This complete data: ', data);
+            try {
+              setSpinner(true);
+              const res = await completeSavingsPayment(data);
+              // console.log('Complete Out: ', res);
 
-            setSpinner(true);
-            const verify = await verifyAddFundToWallet(data);
+              if (res.status == 201) {
+                setSpinner(false);
+                console.log('Complete Payment: ', res.data.data);
 
-            console.log('the verifyyyyy: ', verify);
-
-            if (verify.status == 200) {
-              navigation.navigate('PaymentSuccessful', {
-                name: 'Home',
-                content: 'Payment Successful',
-                subText: 'Awesome! You have successfully funded your wallet',
-              });
+                navigation.navigate('PaymentSuccessful', {
+                  content: 'Payment Successful',
+                  subText: 'You have successfully funded your wallet',
+                  name: 'Home',
+                });
+              } else {
+                setSpinner(false);
+              }
+            } catch (error) {
               setSpinner(false);
-              // setShowQuickSaveListModal(false);
-            } else {
-              setSpinner(false);
-              // setShowQuickSaveListModal(false);
             }
           }}
         />
