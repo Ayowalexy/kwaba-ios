@@ -35,12 +35,14 @@ import {
   verifyWalletTransaction,
   changeSavingsMethod,
   completeSavingsPayment,
+  getSavingsHistory,
 } from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
 import AmountModal from '../../../components/amountModal';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
+import axios from 'axios';
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;

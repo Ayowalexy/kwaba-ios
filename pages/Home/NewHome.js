@@ -26,6 +26,7 @@ import {
   getMaxLoanCap,
   getTotalSoloSavings,
   getTotalBuddySavings,
+  getOneSoloSavingsTransaction,
 } from '../../redux/actions/savingsActions';
 import {
   getBillServices,
@@ -185,6 +186,8 @@ export default function NewHome({navigation}) {
     dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
     // dispatch(getBillsCategory('airtime'));
+
+    // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
 
   useEffect(() => {

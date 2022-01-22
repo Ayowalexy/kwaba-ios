@@ -25,7 +25,7 @@ const urls = {
     USER_CREATE_SAVINGS: `${baseUrl}/api/v1/savings/user-create-savings`,
     GET_ALL_USER_SAVINGS: `${baseUrl}/api/v1/savings/get-all-user-savings`,
     ADD_PAYMENT_TO_SAVINGS: `${baseUrl}/api/v1/savings/add-payment-to-savings`,
-    GET_SAVINGS_PAYMENT_HISTORY: `${baseUrl}/api/v1/savings/get-savings-payment-history`,
+    GET_SAVINGS_PAYMENT_HISTORY: `${baseUrl}/api/v1/payments/get-savings-payment-history`,
     GET_SAVINGS_INTEREST_RATE: `${baseUrl}/api/v1/savings/get-savings-interest`,
 
     VERIFY_SAVINGS_PAYMENT: `${baseUrl}/api/v1/payments/verify-payment-request`,

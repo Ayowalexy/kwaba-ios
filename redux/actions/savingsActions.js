@@ -177,9 +177,10 @@ export const getOneSoloSavingsTransaction = (id) => {
     // const url = apiUrl + `/api/v1/get_savings_history/${id}`;
     const url = urls.savings.GET_SAVINGS_PAYMENT_HISTORY;
     try {
-      const response = await axios.get(`${url}/{id}`, {
+      const response = await axios.get(`${url}/${id}`, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
+      console.log('Payment History Here: ', response.data);
       dispatch(setOneSoloSavingsTransaction(response.data.data));
       return response.data.data;
     } catch (error) {

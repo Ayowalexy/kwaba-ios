@@ -573,12 +573,15 @@ const getOneUserSavings = async (id) => {
 };
 
 const getSavingsHistory = async (id) => {
-  const url = apiUrl + `/api/v1/get_savings_history/${id}`;
+  // const url = apiUrl + `/api/v1/get_savings_history/${id}`;
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
-      headers: {Authorization: token},
-    });
+    const response = await axios.get(
+      `${urls.savings.GET_SAVINGS_PAYMENT_HISTORY}/${id}`,
+      {
+        headers: {Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
