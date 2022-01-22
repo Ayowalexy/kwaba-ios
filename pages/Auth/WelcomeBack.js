@@ -198,7 +198,8 @@ export default function WelcomeBack({navigation, route}) {
         setInvalidPin(true);
         // console.log('Something went wrong...');
         console.log('Error', res.response.data.statusMsg);
-        setMessage(res.response.data.statusMsg);
+        // setMessage(res.response.data.statusMsg);
+        setMessage('Invalid credentials');
       }
     } catch (error) {
       setSpinner(false);
