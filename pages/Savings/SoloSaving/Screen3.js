@@ -330,17 +330,8 @@ export default function Screen3({navigation, route}) {
   //   }
   // };
 
-  const handleContinue = () => {
-    const data = route?.params;
-
-    if (data?.amount == 0) {
-      console.log('No Payment');
-    } else {
-      createSavings();
-    }
-  };
-
   const createSavings = async () => {
+    setSpinner(true);
     const data = {
       auto_save: route?.params?.auto_save,
       savings_frequency: route?.params?.savings_frequency,
@@ -352,51 +343,45 @@ export default function Screen3({navigation, route}) {
       locked: true,
     };
 
-    try {
-      setSpinner(true);
-      const response = await userCreateSavings(data);
-      if (response.status == 201) {
-        setSpinner(false);
+    const response = await userCreateSavings(data);
 
-        const data = response?.data?.data;
+    setSpinner(false);
+    if (!response) return [];
 
-        await verifyPaymentRequest(data);
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      console.log('The Error: ', error);
-      setSpinner(false);
-    }
+    const vData = response?.data?.data;
+    await verifyPaymentRequest(vData);
+
+    console.log('Hello hereee', vData);
   };
 
   const verifyPaymentRequest = async (data) => {
-    const verifyData = {
+    setSpinner(true);
+    const verifyPayload = {
       amount: route?.params?.amount,
       savings_id: data.id,
       channel: 'paystack',
-      reference: data.reference,
+      // reference: data.reference,
     };
 
-    try {
-      setSpinner(true);
-      const verify = await verifySavingsPayment(verifyData);
-      if (verify.status == 200) {
-        setSpinner(false);
+    console.log('Payload: ', verifyPayload);
 
-        const verifyData = verify?.data?.data;
-        setVerifyData({...verifyData, id: data.id});
+    const verify = await verifySavingsPayment(verifyPayload);
 
-        console.log('Verifyyyy ififififi nananan: ', verify?.data?.data);
+    setSpinner(false);
+    if (!verify) return [];
 
-        setShowPaystackPayment(true);
+    const verifyData = verify?.data?.data;
+    setVerifyData({...verifyData, id: data.id});
+    setShowPaystackPayment(true);
+  };
 
-        // await completePayment(data);
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
+  const handleContinue = () => {
+    const data = route?.params;
+
+    if (data?.amount == 0) {
+      console.log('No Payment');
+    } else {
+      createSavings();
     }
   };
 

@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../util';
@@ -120,13 +126,13 @@ export default function ResetPin({navigation, route}) {
     // console.log('The Reset Data: ', data);
 
     setSpinner(true);
+    const resp = await setPin(data);
+    console.log('The Outside RESP: ', resp);
+
     try {
-      const resp = await setPin(data);
-      console.log('The Outside RESP: ', resp);
-      // if(resp.status )
-      if (resp.status == 200) {
+      if (resp.status == 201) {
         console.log('The RESP: ', resp.data);
-        navigation.navigate('EnterPin');
+        navigation.navigate('WelcomeBack');
         setSpinner(false);
         setErrorMsg('');
         await analytics.track('Reset-Pin', {
@@ -247,7 +253,7 @@ export default function ResetPin({navigation, route}) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={value.toString().length <= 3}
+                disabled={value.toString().length <= 3 || spinner}
                 style={[
                   designs.btn,
                   {
@@ -264,7 +270,11 @@ export default function ResetPin({navigation, route}) {
                     lineHeight: 30,
                     fontWeight: 'bold',
                   }}>
-                  UPDATE PIN
+                  {spinner ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    'UPDATE PIN'
+                  )}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -272,7 +282,7 @@ export default function ResetPin({navigation, route}) {
         )}
       </Formik>
 
-      <Spinner visible={spinner} size="large" />
+      {/* <Spinner visible={spinner} size="large" /> */}
     </>
   );
 }

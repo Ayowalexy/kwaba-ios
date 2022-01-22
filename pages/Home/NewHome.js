@@ -189,8 +189,7 @@ export default function NewHome({navigation}) {
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
-      setSavings(getMaxLoanCap1.data.you_have_save);
-      // setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
+      setSavings(getMaxLoanCap1?.data?.total_savings);
       setInstantLoan(
         Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
       );

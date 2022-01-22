@@ -57,12 +57,14 @@ export const setMaxLoanCap = (data) => {
 export const getMaxLoanCap = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + '/api/v1/get_max_loan_cap';
+    // const url = apiUrl + '/api/v1/get_max_loan_cap';
+    const url = urls.savings.GET_TOTAL_USER_SAVINGS_AMOUNT;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      dispatch(setMaxLoanCap(response.data.data));
+      console.log('Max Loan: ', response?.data?.data);
+      dispatch(setMaxLoanCap(response?.data?.data));
       return response.data.data;
     } catch (error) {
       return error.message;
@@ -133,10 +135,10 @@ export const getOneSoloSavings = (id) => {
     // const url = apiUrl + `/api/v1/get_one_savings/${id}`;
     const url = urls.savings.GET_ALL_USER_SAVINGS;
     try {
-      const response = await axios.get(url`/${id}`, {
+      const response = await axios.get(`${url}/${id}`, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      console.log('One savings: ', response);
+      // console.log('One savings: ', response);
       dispatch(setOneSoloSavings(response));
       return response.data.data;
     } catch (error) {
@@ -172,9 +174,10 @@ export const setOneSoloSavingsTransaction = (data) => {
 export const getOneSoloSavingsTransaction = (id) => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + `/api/v1/get_savings_history/${id}`;
+    // const url = apiUrl + `/api/v1/get_savings_history/${id}`;
+    const url = urls.savings.GET_SAVINGS_PAYMENT_HISTORY;
     try {
-      const response = await axios.get(url, {
+      const response = await axios.get(`${url}/{id}`, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       dispatch(setOneSoloSavingsTransaction(response.data.data));

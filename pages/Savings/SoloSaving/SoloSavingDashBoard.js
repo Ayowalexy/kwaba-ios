@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Switch,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../../util/index';
@@ -33,6 +34,7 @@ import {
   addFundsToSavings,
   verifyWalletTransaction,
   changeSavingsMethod,
+  completeSavingsPayment,
 } from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
@@ -45,7 +47,7 @@ export default function SoloSavingDashBoard(props) {
   const dispatch = useDispatch();
   // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   // const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
-  // const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
+  const getOne = useSelector((state) => state.getOneSoloSavingsReducer);
   const getOneTransaction = useSelector(
     (state) => state.getOneSoloSavingsTransactionReducer,
   );
@@ -63,6 +65,9 @@ export default function SoloSavingDashBoard(props) {
   const [channel, setChannel] = useState('');
 
   const [spinner, setSpinner] = useState(false);
+  const [spinner2, setSpinner2] = useState(false);
+
+  const [verifyData, setVerifyData] = useState('');
 
   const [date, setDate] = useState({
     startDate: '',
@@ -83,138 +88,11 @@ export default function SoloSavingDashBoard(props) {
     setAutoSaving((previousState) => !previousState);
   };
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const data = {
-  //       savings_id: route.params.id,
-  //       action: autoSaving ? 'auto' : 'manual',
-  //     };
-  //     console.log('The Data: ', data);
-
-  //     setSpinner(true);
-  //     try {
-  //       const response = await changeSavingsMethod(data);
-  //       if (response.status == 200) {
-  //         setSpinner(false);
-  //       }
-  //     } catch (error) {
-  //       setSpinner(false);
-  //     }
-  //   })();
-  // }, [autoSaving]);
-
-  // useEffect(() => {
-  //   dispatch(getOneSoloSavingsTransaction(route.params.id));
-  //   console.log('The ID: ', route.params.id);
-  // }, []);
-
-  // useEffect(() => {
-  //   // console.log('Hello world.....');
-  //   // if (getOneSavings?.data?.length > 0) {
-  //   setDashboardData();
-  //   // console.log('Hello world Inner.....');
-  //   // }
-  // }, [getOneSavings]);
-
-  // const setDashboardData = () => {
-  //   console.log('The get one: ', getOneSavings);
-  //   if (getOneSavings && getOneSavings.data != undefined) {
-  //     const data = getOneSavings.data[0];
-  //     const amount_saved = Number(data?.amount_save);
-
-  //     console.log('Data: ', data);
-
-  //     setDate({
-  //       startDate: data?.start_date,
-  //       endDate: data?.end_date,
-  //     });
-
-  //     setAutoSaving(data?.auto_save);
-
-  //     setTotalInterest(data?.interest);
-  //     setLocked(data?.locked);
-  //     setSavingTitle(data?.name);
-  //     setSavingsTarget(data?.target_amount);
-  //     setPercentAchieved(
-  //       (
-  //         (Number(data?.amount_save) / Number(data?.target_amount)) *
-  //         100
-  //       ).toFixed(0),
-  //     );
-  //     setTotalSaving(amount_saved || 0);
-  //   }
-  // };
-
-  // const handlePaymentRoute = async (value) => {
-  //   console.log('The Value tttt: ', value);
-  //   try {
-  //     const data = {
-  //       savings_id: route?.params?.id,
-  //       amount: amount,
-  //     };
-
-  //     console.log('The Dataaaaaa: ', data);
-
-  //     setSpinner(true);
-  //     const response = await addFundsToSavings(data);
-
-  //     console.log('The Save: ', response?.response);
-  //     if (response.status == 200) {
-  //       if (value == 'wallet') {
-  //         const data = {
-  //           payment_channel: value,
-  //           reference: response?.data?.data?.reference,
-  //         };
-
-  //         console.log('The Data: ', data);
-
-  //         setSpinner(true);
-  //         // const verify = await verifySavingsPayment(data);
-  //         const verify = await verifyWalletTransaction(data);
-
-  //         if (verify.status == 200) {
-  //           setSpinner(false);
-  //           navigation.navigate('PaymentSuccessful', {
-  //             name: 'SoloSavingDashBoard',
-  //             id: route?.params?.id,
-  //             content: 'Payment Successful',
-  //             subText: 'Awesome! You have successfully funded your savings.',
-  //           });
-  //         } else {
-  //           setSpinner(false);
-  //           Alert.alert('Oops', verify.response.data.response_message);
-  //           // console.log('Response: ', verify.response.data);
-  //         }
-  //       } else {
-  //         setChannel(value);
-  //         setResData(response?.data?.data);
-  //         setShowPaystackPayment(true); // show paystack
-  //       }
-  //     } else {
-  //       setSpinner(false);
-  //     }
-  //   } catch (error) {
-  //     setSpinner(false);
-  //     console.log('Error: ', error);
-  //     Alert.alert('Error', 'Something went wrong, please try again later');
-  //   }
-  // };
-
   useEffect(() => {
-    getOneSavings();
-  }, []);
+    const data = getOne?.data?.data.data;
+    console.log('Tahtah: ', data);
+    console.log('Dat sound: ', getOneTransaction);
 
-  const getOneSavings = async () => {
-    setSpinner(true);
-    const response = await getOneUserSavings(route.params.id);
-
-    setSpinner(false);
-    if (!response) {
-      return [];
-    }
-
-    console.log('The Res: ', response.data.data);
-    const data = response.data.data;
     const amount_saved = Number(data?.amount_saved);
 
     setDate({
@@ -232,7 +110,7 @@ export default function SoloSavingDashBoard(props) {
       ).toFixed(0),
     );
     setTotalSaving(amount_saved || 0);
-  };
+  }, [getOne]);
 
   const goback = () => {
     navigation.navigate('SavingLists');
@@ -242,8 +120,41 @@ export default function SoloSavingDashBoard(props) {
     setTotalSaving(0);
   };
 
-  const handlePaymentRoute = (value) => {
-    console.log('Value: ', value);
+  const verifyPaymentRequest = async (data) => {
+    console.log('The Data: ', data);
+
+    setSpinner2(true);
+    const res = await verifySavingsPayment(data);
+
+    setSpinner2(false);
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+      setVerifyData({...verifyData, id: data.savings_id});
+      setShowPaystackPayment(true);
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    // console.log('Value: ', value);
+
+    if (value == 'Wallet') {
+    } else {
+      const verifyPayload = {
+        amount: amount,
+        savings_id: route?.params?.id,
+        channel: 'paystack',
+      };
+
+      setChannel(value);
+
+      console.log('The value: ', value);
+
+      await verifyPaymentRequest(verifyPayload);
+    }
   };
 
   return (
@@ -388,9 +299,12 @@ export default function SoloSavingDashBoard(props) {
                   <Icon
                     name={locked ? 'lock-closed' : 'lock-open'}
                     size={15}
-                    style={{marginLeft: 10}}
+                    style={{marginLeft: 10, marginRight: 10}}
                     color={COLORS.primary}
                   />
+                  {spinner && (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  )}
                 </View>
                 {/* <View style={{display: 'flex', marginTop: 5}}>
                   <Text style={{color: COLORS.white, fontSize: 10}}>
@@ -711,7 +625,6 @@ export default function SoloSavingDashBoard(props) {
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
           setPaymentType={(data) => {
-            console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
         />
@@ -720,43 +633,48 @@ export default function SoloSavingDashBoard(props) {
       {showPaystackPayment && (
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={resData}
+          data={verifyData}
           channel={channel}
           paymentCanceled={(e) => {
             setSpinner(false);
-            console.log('Pay cancel', e);
-            // Do something
+            Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            // console.log('Pay done', res);
-
             const data = {
+              amount: verifyData.amount,
+              savings_id: verifyData.id,
               channel: 'paystack',
-              reference: res.data.transactionRef.reference,
+              reference: verifyData.paymentReference,
             };
 
             console.log('the dataatatta: ', data);
+            console.log('This complete data: ', data);
+            try {
+              setSpinner2(true);
+              const res = await completeSavingsPayment(data);
+              // console.log('Complete Out: ', res);
 
-            setSpinner(true);
-            const verify = await verifySavingsPayment(data);
+              if (res.status == 201) {
+                setSpinner2(false);
+                console.log('Complete Payment: ', res.data.data);
 
-            // console.log('the verifyyyyy: ', verify);
-
-            if (verify.status == 200) {
-              // console.log('Success: Bills Payment Verified', res);
-              navigation.navigate('PaymentSuccessful', {
-                name: 'SoloSavingDashBoard',
-                id: resData?.id,
-              });
-              setSpinner(false);
-            } else {
-              setSpinner(false);
+                navigation.navigate('PaymentSuccessful', {
+                  content: 'Payment successful',
+                  name: 'SoloSavingDashBoard',
+                  id: verifyData.id,
+                });
+              } else {
+                setSpinner2(false);
+              }
+            } catch (error) {
+              setSpinner2(false);
             }
           }}
         />
       )}
 
-      <Spinner visible={spinner} size="large" />
+      {/* {spinner && <ActivityIndicator size="small" color={COLORS.secondary} />} */}
+      <Spinner visible={spinner2} size="large" />
     </View>
   );
 }

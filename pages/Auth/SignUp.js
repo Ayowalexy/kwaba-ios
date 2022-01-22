@@ -197,17 +197,17 @@ export default function SignUp({navigation}) {
       email: values.email,
       password: values.password,
       gender: values.gender,
-      // referral_code: values.referral_code,
-      // telephone: formattedValue,
-      // where_did_you_hear_about_us: values.selectHandle,
+      telephone: formattedValue,
+      referral_code: values.referral_code,
+      where_did_you_hear_about_us: values.selectHandle,
     };
 
-    console.log('The Data: ', data);
+    // console.log('The Data: ', data);
 
     setSpinner(true);
     const res = await signUp(data);
 
-    console.log('The Response: ', res);
+    console.log('The Responseeeeee: ', res);
 
     if (res.status == 201) {
       setSpinner(false);
