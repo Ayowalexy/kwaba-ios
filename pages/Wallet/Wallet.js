@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  SafeAreaView,
 } from 'react-native';
 import {COLORS} from '../../util';
 import {formatNumber} from '../../util/numberFormatter';
@@ -93,7 +94,6 @@ export default function Wallet(props) {
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
-        // key={index}
         style={[
           styles.lists,
           {
@@ -179,6 +179,228 @@ export default function Wallet(props) {
     );
   };
 
+  const getHeader = () => {
+    return (
+      <View style={[styles.content]}>
+        <View
+          style={{
+            width: '100%',
+            flex: 1,
+            position: 'absolute',
+            opacity: 0.05,
+            backgroundColor: COLORS.primary,
+          }}>
+          <Icon
+            name="wallet"
+            size={200}
+            color={COLORS.light}
+            style={{
+              position: 'absolute',
+              right: -20,
+              transform: [{rotate: '10deg'}],
+            }}
+          />
+          <Icon
+            name="wallet"
+            size={100}
+            color={COLORS.light}
+            style={{
+              position: 'absolute',
+              left: -10,
+              top: 50,
+              transform: [{rotate: '-10deg'}],
+            }}
+          />
+          <Icon
+            name="wallet"
+            size={50}
+            color={COLORS.light}
+            style={{
+              position: 'absolute',
+              left: 100,
+              top: 100,
+              transform: [{rotate: '-10deg'}],
+            }}
+          />
+        </View>
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View style={{paddingHorizontal: 40}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                // justifyContent: 'space-between',
+                justifyContent: 'center',
+                paddingHorizontal: 5,
+              }}>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 'normal',
+                    textAlign: 'left',
+                    color: COLORS.white,
+                  }}>
+                  Available Balance:
+                </Text>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginTop: 0,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 30,
+                      fontWeight: 'bold',
+                      color: COLORS.white,
+                    }}>
+                    <Text style={{fontSize: 15}}>₦ </Text>
+
+                    {toggleAmount
+                      ? formatNumber(Number(amount).toFixed(2))
+                      : formatNumber(Number(amount).toFixed(2)).replace(
+                          new RegExp('[0-9]', 'g'),
+                          'x',
+                        )}
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              onPress={() => setAddFundsModal(true)}
+              style={{
+                backgroundColor: '#ffffff20',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderRadius: 5,
+                paddingHorizontal: 20,
+                paddingVertical: 10,
+                marginTop: 10,
+                // width: 200,
+              }}>
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.white,
+                }}>
+                Add Funds
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          <View
+            style={{
+              marginTop: 30,
+              width: '100%',
+
+              paddingHorizontal: 40,
+              justifyContent: 'space-evenly',
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}>
+            {['Fund Savings', 'Pay Bills'].map((item, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={{marginHorizontal: 5, alignItems: 'center'}}
+                  onPress={() => {
+                    if (item == 'Fund Savings') {
+                      // navigation.navigate('SavingsHome');
+                      setShowQuickSaveModal(true);
+                    } else if (item == 'Pay Bills') {
+                      navigation.navigate('BillsHome');
+                    }
+                    // else {
+                    //   navigation.navigate('EmergencyLoanHome');
+                    // }
+                    console.log('Clicked');
+                  }}>
+                  <View
+                    style={{
+                      width: 60,
+                      height: 40,
+                      // borderWidth: 1,
+                      // borderColor: COLORS.white,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      borderRadius: 5,
+                      padding: 2,
+                    }}>
+                    <View
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: COLORS.white,
+                        borderRadius: 5,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}>
+                      <Icon
+                        name={
+                          item == 'Fund Savings'
+                            ? 'duplicate'
+                            : item == 'Pay Bills'
+                            ? 'apps'
+                            : 'enter-sharp'
+                        }
+                        size={20}
+                        color={COLORS.light}
+                      />
+                    </View>
+                  </View>
+
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'normal',
+                      marginTop: 5,
+                      color: COLORS.white,
+                    }}>
+                    {item}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          <View
+            style={{
+              backgroundColor: '#00000020',
+              padding: 10,
+              paddingHorizontal: 20,
+              marginTop: 10,
+            }}>
+            <Text style={{color: COLORS.grey, fontSize: 10, lineHeight: 17}}>
+              You can fund your savings, buy airtime and pay bills from your
+              wallet. Please note, you can’t withdraw from your wallet
+            </Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const getFooter = () => {
+    return (
+      <TouchableOpacity
+        style={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingVertical: 10,
+        }}>
+        <Text style={{color: COLORS.primary}}>View all Transactions</Text>
+      </TouchableOpacity>
+    );
+  };
+
   return (
     <>
       <View style={[styles.container]}>
@@ -193,8 +415,6 @@ export default function Wallet(props) {
             paddingVertical: 15,
             borderBottomWidth: 1,
             borderBottomColor: '#FFFFFF20',
-            // borderTopWidth: 1,
-            // borderTopColor: '#FFFFFF20',
           }}>
           <View />
           <Text
@@ -207,290 +427,37 @@ export default function Wallet(props) {
             My Wallet
           </Text>
           <View />
-
-          {/* <TouchableOpacity
-            style={{
-              backgroundColor: '#ffffff20',
-              width: 40,
-              height: 40,
-              justifyContent: 'center',
-              alignItems: 'center',
-              borderRadius: 50,
-            }}>
-            <Icon name="list-sharp" size={20} color={COLORS.white} />
-          </TouchableOpacity> */}
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
-          <View style={[styles.content]}>
+        <SafeAreaView style={{flex: 1}}>
+          {!getWalletTransactions?.data?.length ? (
             <View
               style={{
-                width: '100%',
-                flex: 1,
-                position: 'absolute',
-                opacity: 0.05,
-                backgroundColor: COLORS.primary,
-              }}>
-              <Icon
-                name="wallet"
-                size={200}
-                color={COLORS.light}
-                style={{
-                  position: 'absolute',
-                  right: -20,
-                  transform: [{rotate: '10deg'}],
-                }}
-              />
-              <Icon
-                name="wallet"
-                size={100}
-                color={COLORS.light}
-                style={{
-                  position: 'absolute',
-                  left: -10,
-                  top: 50,
-                  transform: [{rotate: '-10deg'}],
-                }}
-              />
-              <Icon
-                name="wallet"
-                size={50}
-                color={COLORS.light}
-                style={{
-                  position: 'absolute',
-                  left: 100,
-                  top: 100,
-                  transform: [{rotate: '-10deg'}],
-                }}
-              />
-            </View>
-            <View
-              style={{
-                width: '100%',
                 justifyContent: 'center',
                 alignItems: 'center',
+                paddingVertical: 20,
+                flex: 1,
               }}>
-              <View style={{paddingHorizontal: 40}}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    // justifyContent: 'space-between',
-                    justifyContent: 'center',
-                    paddingHorizontal: 5,
-                  }}>
-                  <View>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 'normal',
-                        textAlign: 'left',
-                        color: COLORS.white,
-                      }}>
-                      Available Balance:
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: 0,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 30,
-                          fontWeight: 'bold',
-                          color: COLORS.white,
-                        }}>
-                        <Text style={{fontSize: 15}}>₦ </Text>
-
-                        {toggleAmount
-                          ? formatNumber(Number(amount).toFixed(2))
-                          : formatNumber(Number(amount).toFixed(2)).replace(
-                              new RegExp('[0-9]', 'g'),
-                              'x',
-                            )}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-
-                <TouchableOpacity
-                  onPress={() => setAddFundsModal(true)}
-                  style={{
-                    backgroundColor: '#ffffff20',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 5,
-                    paddingHorizontal: 20,
-                    paddingVertical: 10,
-                    marginTop: 10,
-                    // width: 200,
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 'bold',
-                      color: COLORS.white,
-                    }}>
-                    Add Funds
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
-              <View
+              <Text
                 style={{
-                  marginTop: 30,
-                  width: '100%',
-
-                  paddingHorizontal: 40,
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                  flexDirection: 'row',
+                  fontSize: 15,
+                  fontWeight: 'bold',
+                  color: COLORS.grey,
                 }}>
-                {['Fund Savings', 'Pay Bills'].map((item, index) => {
-                  return (
-                    <TouchableOpacity
-                      key={index}
-                      style={{marginHorizontal: 5, alignItems: 'center'}}
-                      onPress={() => {
-                        if (item == 'Fund Savings') {
-                          // navigation.navigate('SavingsHome');
-                          setShowQuickSaveModal(true);
-                        } else if (item == 'Pay Bills') {
-                          navigation.navigate('BillsHome');
-                        }
-                        // else {
-                        //   navigation.navigate('EmergencyLoanHome');
-                        // }
-                        console.log('Clicked');
-                      }}>
-                      <View
-                        style={{
-                          width: 60,
-                          height: 40,
-                          // borderWidth: 1,
-                          // borderColor: COLORS.white,
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          borderRadius: 5,
-                          padding: 2,
-                        }}>
-                        <View
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            backgroundColor: COLORS.white,
-                            borderRadius: 5,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}>
-                          <Icon
-                            name={
-                              item == 'Fund Savings'
-                                ? 'duplicate'
-                                : item == 'Pay Bills'
-                                ? 'apps'
-                                : 'enter-sharp'
-                            }
-                            size={20}
-                            color={COLORS.light}
-                          />
-                        </View>
-                      </View>
-
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 'normal',
-                          marginTop: 5,
-                          color: COLORS.white,
-                        }}>
-                        {item}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
-
-              <View
-                style={{
-                  backgroundColor: '#00000020',
-                  padding: 10,
-                  paddingHorizontal: 20,
-                  marginTop: 10,
-                }}>
-                <Text
-                  style={{color: COLORS.grey, fontSize: 10, lineHeight: 17}}>
-                  You can fund your savings, buy airtime and pay bills from your
-                  wallet. Please note, you can’t withdraw from your wallet
-                </Text>
-              </View>
+                No Transactions
+              </Text>
             </View>
-          </View>
-
-          <View
-            style={{
-              flex: 1,
-              // justifyContent: 'center',
-              // alignItems: 'center',
-              // paddingVertical: 20,
-              paddingHorizontal: 20,
-              marginBottom: 40,
-            }}>
-            {!getWalletTransactions?.data?.length ? (
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  paddingVertical: 20,
-                  flex: 1,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    fontWeight: 'bold',
-                    color: COLORS.grey,
-                  }}>
-                  No Transactions
-                </Text>
-              </View>
-            ) : (
-              <View style={{flex: 1}}>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      marginVertical: 15,
-                      color: COLORS.primary,
-                    }}>
-                    Transaction history
-                  </Text>
-                </View>
-                <FlatList
-                  data={getWalletTransactions?.data?.slice(0, 5)}
-                  renderItem={renderItem}
-                  keyExtractor={(item) => item.id.toString()}
-                  showsHorizontalScrollIndicator={false}
-                  showsVerticalScrollIndicator={false}
-                />
-                {getWalletTransactions?.data?.length > 5 && (
-                  <TouchableOpacity
-                    style={{
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      paddingVertical: 10,
-                    }}>
-                    <Text style={{color: COLORS.primary}}>
-                      View all Transactions
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            )}
-          </View>
-        </ScrollView>
+          ) : (
+            <FlatList
+              data={getWalletTransactions?.data?.slice(0, 5)}
+              renderItem={renderItem}
+              keyExtractor={(item) => item.id.toString()}
+              showsHorizontalScrollIndicator={false}
+              showsVerticalScrollIndicator={false}
+              ListHeaderComponent={getHeader}
+              ListFooterComponent={getFooter}
+            />
+          )}
+        </SafeAreaView>
       </View>
 
       {showQuickSaveModal && (
@@ -622,7 +589,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     // borderRadius: 5,
     // elevation: 1,
-    marginBottom: 10,
+    marginTop: 10,
     borderLeftWidth: 5,
+    marginHorizontal: 20,
   },
 });

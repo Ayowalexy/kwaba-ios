@@ -473,7 +473,7 @@ const me = async () => {
   const url = apiUrl + '/api/v1/me';
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
+    const response = await axios.get(urls.auth.ME, {
       headers: {Authorization: token},
     });
     return response.data;

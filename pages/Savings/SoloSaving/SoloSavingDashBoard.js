@@ -136,7 +136,8 @@ export default function SoloSavingDashBoard(props) {
         console.log('Complete Paymentttttttttt: ', res.data.data);
 
         navigation.navigate('PaymentSuccessful', {
-          content: 'Payment successful',
+          content: 'Payment Successful',
+          subText: 'You have successfully funded your savings',
           name: 'SoloSavingDashBoard',
           id: verifyData.id,
         });
@@ -176,7 +177,7 @@ export default function SoloSavingDashBoard(props) {
 
         // console.log('Dang: ', payload);
 
-        await savingsPayment(payload);
+        savingsPayment(payload);
       } else {
         setShowPaystackPayment(true);
       }

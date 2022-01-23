@@ -114,7 +114,8 @@ export default function NewHome({navigation}) {
     setRefreshing(true);
     try {
       const res = await me();
-      if (res?.user) {
+      console.log('The me res: ', res.data);
+      if (res?.data) {
         const userData = await getUserData();
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
@@ -124,8 +125,8 @@ export default function NewHome({navigation}) {
         dispatch(
           setLoginState({
             ...userData,
-            user: res.user,
-            username: res.user.firstname,
+            user: res.data,
+            username: res.data.firstname,
           }),
         );
 

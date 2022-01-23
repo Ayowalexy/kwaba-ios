@@ -19,6 +19,7 @@ const urls = {
     USER_SET_PIN: `${baseUrl}/users/set-pin`,
     USER_LOGIN_VERIFY_PIN: `${baseUrl}/users/verify-pin`,
     FORGORT_PASSWORD: `${baseUrl}/users/forgot-password`,
+    ME: `${baseUrl}/users/me`,
   },
 
   savings: {

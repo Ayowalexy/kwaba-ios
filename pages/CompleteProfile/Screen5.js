@@ -221,25 +221,25 @@ const Screen5 = (props) => {
         const userData = await getUserData();
 
         console.log('USERDATA: ', userData);
-        console.log('RESPONSE DATA: ', res.user);
+        console.log('RESPONSE DATA: ', res.data);
 
         console.log('Logged Data:', {
           ...userData,
-          user: res.user,
-          username: res.user.firstname,
+          user: res.data,
+          username: res.data.firstname,
         });
 
         saveLoginToStorage({
           ...userData,
-          user: res.user,
-          username: res.user.firstname,
+          user: res.data,
+          username: res.data.firstname,
         });
 
         dispatch(
           setLoginState({
             ...userData,
-            user: res.user,
-            username: res.user.firstname,
+            user: res.data,
+            username: res.data.firstname,
           }),
         );
 
