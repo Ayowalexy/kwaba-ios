@@ -90,7 +90,7 @@ export default function SoloSavingDashBoard(props) {
     setAutoSaving((previousState) => !previousState);
   };
 
-  useEffect(() => {
+  const setDashboardValue = () => {
     const data = getOne?.data?.data.data;
     console.log('Tahtah: ', data);
     console.log('Dat sound: ', getOneTransaction);
@@ -112,20 +112,36 @@ export default function SoloSavingDashBoard(props) {
       ).toFixed(0),
     );
     setTotalSaving(amount_saved || 0);
+  };
+
+  useEffect(() => {
+    setDashboardValue();
   }, [getOne]);
+
+  useEffect(() => {
+    console.log('Realoading....');
+    setDashboardValue();
+  }, [getMaxLoanCap1]);
 
   const goback = () => {
     navigation.navigate('SavingLists');
-    // setSavingTitle('');
-    // setSavingsTarget(0);
-    // setPercentAchieved(0);
-    // setTotalSaving(0);
+    setSavingTitle('');
+    setSavingsTarget(0);
+    setPercentAchieved(0);
+    setTotalSaving(0);
+  };
+
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: verifyData.id,
+    });
   };
 
   const savingsPayment = async (data) => {
     setSpinner2(true);
-
-    // console.log('The Res: ', res.response.data);
 
     try {
       const res = await completeSavingsPayment(data);
@@ -134,15 +150,7 @@ export default function SoloSavingDashBoard(props) {
         setSpinner2(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
-
-        navigation.navigate('PaymentSuccessful', {
-          content: 'Payment Successful',
-          subText: 'You have successfully funded your savings',
-          name: 'SoloSavingDashBoard',
-          id: verifyData.id,
-        });
-
-        console.log('Verify: ', verifyData.id);
+        await showSuccess();
       } else {
         setSpinner2(false);
       }
@@ -175,9 +183,7 @@ export default function SoloSavingDashBoard(props) {
           reference: verifyData.paymentReference,
         };
 
-        // console.log('Dang: ', payload);
-
-        savingsPayment(payload);
+        await savingsPayment(payload);
       } else {
         setShowPaystackPayment(true);
       }
