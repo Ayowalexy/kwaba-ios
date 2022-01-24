@@ -42,9 +42,13 @@ export default function EligibilitySalaryEarner({navigation}) {
             <View style={[styles.listText]}>
               {[
                 'Generate a minimum monthly revenue of\n₦200,000.',
-                'Have being in business for at least 3 months',
+                // 'Have being in business for at least 3 months',
                 'Have no bad loans and a clean credit history',
-                'Be above 21 years of age',
+                // 'Be above 21 years of age',
+                'Have been in business for at least 1 year',
+                'Be able to provide a guarantor',
+                // 'Only available to Lagos residents for now',
+                'Be a Lagos resident',
               ].map((text, index) => (
                 <View style={[styles.list]} key={index}>
                   <View

@@ -9,6 +9,7 @@ import {
   Dimensions,
   ScrollView,
   ToastAndroid,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {images, icons} from '../../util/index';
@@ -25,6 +26,7 @@ import * as yup from 'yup';
 import analytics from '@segment/analytics-react-native';
 
 import PushNotification from 'react-native-push-notification';
+import {COLORS} from '../../util';
 
 const CustomInput = (props) => {
   const {
@@ -131,14 +133,12 @@ export default function Login({navigation}) {
       if (res.status == 200) {
         setSpinner(false);
         setErrorMsg('');
-        console.log('Res: ', res.data); // log out response
-        if (res.data.authData.haveSetPin) {
-          // navigation.navigate('EnterPin', {email: res.data.authData.email});
-          navigation.navigate('WelcomeBack', {data: res.data.authData});
+        if (res.data.data.haveSetPin) {
+          navigation.navigate('WelcomeBack', {data: res.data.data});
           console.log('He get pin');
         } else {
           navigation.navigate('CreatePin', {
-            data: res.data.authData,
+            data: res.data.data,
             login: data,
           });
           console.log('He no get pin');
@@ -147,17 +147,14 @@ export default function Login({navigation}) {
         // store email locally
         await AsyncStorage.setItem(
           'loginEmail',
-          JSON.stringify(res.data.authData.email),
+          JSON.stringify(res.data.data.email),
         );
 
         // welcome back userInfo
-        await AsyncStorage.setItem(
-          'loginInfo',
-          JSON.stringify(res.data.authData),
-        );
+        await AsyncStorage.setItem('loginInfo', JSON.stringify(res.data.data));
 
         await analytics.track('User-Login', {
-          email: res.data.authData.email,
+          email: res.data.data.email,
         });
       } else {
         setSpinner(false);
@@ -336,7 +333,7 @@ export default function Login({navigation}) {
                 </View>
               </View>
 
-              <Spinner visible={spinner} animation="fade" size="large" />
+              {/* <Spinner visible={spinner} animation="fade" size="large" /> */}
 
               <TouchableOpacity
                 onPress={handleSubmit}
@@ -356,7 +353,11 @@ export default function Login({navigation}) {
                     lineHeight: 30,
                     fontWeight: 'bold',
                   }}>
-                  LOG IN
+                  {spinner ? (
+                    <ActivityIndicator size="small" color={COLORS.white} />
+                  ) : (
+                    'Log In'
+                  )}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity

@@ -69,6 +69,9 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
+  const [showBanner, setShowBanner] = useState(false);
+  const [allLoans, setAllLoans] = useState('');
+
   useEffect(() => {
     (async () => {
       const loans = await getEmergencyLoans();
@@ -88,6 +91,35 @@ export default function EmergencyLoanDashBoard({navigation}) {
       setLoanId(activeLoan != undefined ? activeLoan.id : '');
 
       console.log('The active loan: ', activeLoan);
+
+      console.log('That loan: ', loans?.data?.data);
+
+      setAllLoans(loans?.data?.data);
+
+      if (
+        loans?.data?.data?.filter((item) => item.status == 'Pending').length > 0
+      ) {
+        setShowBanner(true);
+      } else {
+        setShowBanner(false);
+      }
+
+      // loans?.data?.data?.map((item) => {
+      //   if (item.status == 'Active') {
+      //     setShowBanner(true);
+      //   } else {
+      //     setShowBanner(false);
+      //   }
+      // });
+
+      // loans?.data?.data?.filter((item) => {
+      //   if (item.status.toLowerCase() == 'active') {
+      //     setShowBanner(true);
+      //     console.log('Hellow wid world.');
+      //   } else {
+      //     setShowBanner(false);
+      //   }
+      // });
     })();
   }, []);
 
@@ -105,14 +137,42 @@ export default function EmergencyLoanDashBoard({navigation}) {
   }, [getMaxLoanCap1]);
 
   const requestLoan = async () => {
-    navigation.navigate('EmergencyLoanHome');
-    dispatch(getMaxLoanCap());
+    if (allLoans.filter((item) => item.status == 'Pending').length > 0) {
+      Alert.alert(
+        'Oops!',
+        `You can't apply for another loan because you still have a pending loan request.`,
+      );
+    } else if (allLoans.filter((item) => item.status == 'Active').length > 0) {
+      Alert.alert(
+        'Oops!',
+        `You currently have an active loan. Repay this loan to request for another loan.`,
+      );
+    } else if (allLoans.filter((item) => item.status == 'Overdue').length > 0) {
+      Alert.alert(
+        'Oops!',
+        `You need to repay your last loan before you can access another loan.`,
+      );
+    } else {
+      navigation.navigate('EmergencyLoanHome');
+      dispatch(getMaxLoanCap());
+    }
+
+    // if (
+    //   allLoans.filter((item) => item.status == 'Pending').length > 0 ||
+    //   allLoans.filter((item) => item.status == 'Active').length > 0 ||
+    //   allLoans.filter((item) => item.status == 'Overdue').length > 0
+    // ) {
+    //   Alert.alert('Oops!', 'You have already requested for a loan.');
+    // } else {
+    //   navigation.navigate('EmergencyLoanHome');
+    //   dispatch(getMaxLoanCap());
+    // }
   };
 
   const handlePaymentRoute = async (value) => {
     console.log('The Value: ', value);
-    setChannel(value);
-    setShowAmountModal(true);
+    // setChannel(value);
+    // setShowAmountModal(true);
   };
 
   return (
@@ -121,14 +181,15 @@ export default function EmergencyLoanDashBoard({navigation}) {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          paddingVertical: 10,
-          paddingLeft: 20,
+          // paddingVertical: 10,
+          // paddingLeft: 20,
         }}>
         <Icon
           onPress={() => navigation.navigate('Home')}
           name="arrow-back-outline"
           size={25}
           color={COLORS.primary}
+          style={{paddingVertical: 10, paddingHorizontal: 20}}
         />
         <Text
           style={[
@@ -137,14 +198,14 @@ export default function EmergencyLoanDashBoard({navigation}) {
               textAlign: 'left',
               fontWeight: 'bold',
               fontSize: 14,
-              marginLeft: 20,
+              marginLeft: 10,
             },
           ]}>
           Emergency Fund
         </Text>
         {/* </View> */}
       </View>
-      {repaymentAmount > 0 && (
+      {showBanner && (
         <View style={[styles.banner]}>
           <View style={{flexDirection: 'row', width: '80%'}}>
             <Icon name="alert-circle" size={25} color={COLORS.dark} />
@@ -160,9 +221,9 @@ export default function EmergencyLoanDashBoard({navigation}) {
             onPress={() => dispatch(getMaxLoanCap())}
             style={{
               backgroundColor: '#FFFFFF50',
-              width: 30,
-              height: 30,
-              borderRadius: 30,
+              width: 50,
+              height: 50,
+              borderRadius: 50,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
@@ -280,17 +341,18 @@ export default function EmergencyLoanDashBoard({navigation}) {
           navigation={navigation}
         />
       )} */}
-
+      {/* 
       {showPaymentModal && (
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
           setPaymentType={(data) => {
             console.log('Hello', data);
-            handlePaymentRoute(data); // paystack, bank, wallet
+            // handlePaymentRoute(data); // paystack, bank, wallet
           }}
+          disable="wallet"
         />
-      )}
+      )} */}
 
       {showAmountModal && (
         <AmountModalFunds
@@ -398,7 +460,7 @@ const styles = StyleSheet.create({
   banner: {
     width: '100%',
     backgroundColor: '#9D98EC40',
-    paddingVertical: 10,
+    paddingVertical: 5,
     paddingHorizontal: 20,
     // marginTop: 10,
     flexDirection: 'row',

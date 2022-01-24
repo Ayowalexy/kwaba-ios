@@ -33,7 +33,7 @@ const Welcome = ({navigation}) => {
   useEffect(() => {
     (async () => {
       const e = await AsyncStorage.getItem('loginEmail');
-      // console.log('Na im be dis: ', JSON.parse(e));
+      console.log('Na im be dis: ', JSON.parse(e));
       setEmail(JSON.parse(e));
     })();
   }, []);
@@ -138,7 +138,7 @@ const Welcome = ({navigation}) => {
             </Text>
           </TouchableOpacity>
 
-          {email == '' ? (
+          {email == null ? (
             <TouchableOpacity
               style={{marginTop: 15}}
               onPress={() => navigation.navigate('Login')}>

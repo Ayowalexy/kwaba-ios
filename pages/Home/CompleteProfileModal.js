@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -8,12 +8,23 @@ import {
   Image,
 } from 'react-native';
 import {COLORS, icons} from '../../util';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CompleteProfileModal(props) {
-  const {onRequestClose, visible, navigation, openSuccessModal} = props;
-  const [start, setStart] = useState(false);
-  const [proceed, setProceed] = useState(false);
-  const [amount, setAmount] = useState('');
+  const {onRequestClose, visible, navigation, screenName} = props;
+
+  useEffect(() => {
+    storeData();
+  }, []);
+
+  const storeData = async () => {
+    try {
+      await AsyncStorage.setItem('@completeProfilePage', screenName);
+    } catch (e) {
+      // saving error
+    }
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -32,27 +43,6 @@ export default function CompleteProfileModal(props) {
               style={{color: COLORS.orange, fontWeight: 'bold', fontSize: 20}}>
               Complete Profile
             </Text>
-            {/* <Text
-              style={{
-                fontSize: 14,
-                color: COLORS.dark,
-                lineHeight: 25,
-                marginTop: 10,
-                textAlign: 'center',
-              }}>
-              Complete your profile to access{' '}
-              <Text
-                style={
-                  {
-                    // fontWeight: 'bold',
-                    // fontSize: 13,
-                    // color: COLORS.primary,
-                  }
-                }>
-                Rent Now Pay Later
-              </Text>{' '}
-              and other amazing features.
-            </Text> */}
             <Text
               style={{
                 fontSize: 14,

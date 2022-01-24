@@ -8,6 +8,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 
@@ -174,14 +175,14 @@ export default function WelcomeBack({navigation, route}) {
       if (res.status == 200) {
         setSpinner(false);
         saveLoginToStorage({
-          ...res.data.authData,
-          username: res.data.authData.user.firstname,
+          ...res.data.data,
+          username: res.data.data.user.firstname,
           isLoggedIn: true,
         });
         dispatch(
           setLoginState({
-            ...res.data.authData,
-            username: res.data.authData.user.firstname,
+            ...res.data.data,
+            username: res.data.data.user.firstname,
             isLoggedIn: true,
           }),
         );
@@ -197,7 +198,8 @@ export default function WelcomeBack({navigation, route}) {
         setInvalidPin(true);
         // console.log('Something went wrong...');
         console.log('Error', res.response.data.statusMsg);
-        setMessage(res.response.data.statusMsg);
+        // setMessage(res.response.data.statusMsg);
+        setMessage('Invalid credentials');
       }
     } catch (error) {
       setSpinner(false);
@@ -330,7 +332,11 @@ export default function WelcomeBack({navigation, route}) {
                   lineHeight: 30,
                   fontWeight: 'bold',
                 }}>
-                CONFIRM
+                {spinner ? (
+                  <ActivityIndicator size="small" color={COLORS.white} />
+                ) : (
+                  'CONFIRM'
+                )}
               </Text>
             </TouchableOpacity>
 
@@ -358,7 +364,7 @@ export default function WelcomeBack({navigation, route}) {
         </ScrollView>
       </View>
 
-      <Spinner visible={spinner} size="large" />
+      {/* <Spinner visible={spinner} size="large" /> */}
     </>
   );
 }

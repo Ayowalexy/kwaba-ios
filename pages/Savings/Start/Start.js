@@ -37,10 +37,10 @@ export default function Start({navigation}) {
   useEffect(() => {
     const data = getMaxLoanCap1?.data;
 
-    setTotalBalance(data?.you_have_save);
-    setTotalSaving(data?.you_have_save);
+    setTotalBalance(data?.total_savings);
+    setTotalSaving(data?.total_savings);
     setSoloSaving(data?.total_solo_savings);
-    setBuddySaving(data?.total_buddy_savings || 0);
+    setBuddySaving(data?.total_buddy_savings);
   }, [store]);
 
   return (
@@ -72,7 +72,7 @@ export default function Start({navigation}) {
         scrollEnabled
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingHorizontal: 20,
+          paddingHorizontal: 30,
         }}>
         {/* <ImageBackground style={designs.backgroundImg} source={images.group4585}> */}
 
@@ -214,6 +214,7 @@ export default function Start({navigation}) {
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
+                    // console.log(store?.data);
                     TrackEvent('Solo Saving');
                     navigation.navigate(
                       // soloSaving == 0 ? 'SoloSaving1' : 'SavingLists',
@@ -234,7 +235,7 @@ export default function Start({navigation}) {
                       paddingHorizontal: 10,
                     },
                   ]}>
-                  {soloSaving == 0 ? (
+                  {soloSaving == 0 || !soloSaving ? (
                     <Text
                       style={[
                         designs.bodyText,
@@ -308,7 +309,7 @@ export default function Start({navigation}) {
                       padding: 5,
                     },
                   ]}>
-                  {buddySaving == 0 ? (
+                  {buddySaving == 0 || !buddySaving ? (
                     <Text
                       style={[
                         designs.bodyText,

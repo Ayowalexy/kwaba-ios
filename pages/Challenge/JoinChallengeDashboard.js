@@ -30,6 +30,10 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import {getOneSoloSavingsTransaction} from '../../redux/actions/savingsActions';
+import moment from 'moment';
+import MoveMoneyModal from './MoveMoneyModal';
+import MoveMoneyOptionModal from './MoveMoneyOptionModal';
+import MoveMoneyToExistingPlanModal from './MoveMoneyToExistingPlanModal';
 
 const {width} = Dimensions.get('screen');
 
@@ -41,28 +45,7 @@ const coin = require('../../assets/images/nairas.png');
 const snowflake = require('../../assets/images/snowflake.png');
 const snow = require('../../assets/images/snow.png');
 
-const transactions = [
-  {
-    amount: 100,
-    time: 'Monday, 8 2021',
-    name: 'Double December 25k Challenge',
-  },
-  {
-    amount: 25000,
-    time: 'Monday, 8 2021',
-    name: 'Double December 25k Challenge',
-  },
-  // {
-  //   amount: 10000,
-  //   time: 'Monday, 8 2021',
-  //   name: 'Double December 25k Challenge',
-  // },
-  // {
-  //   amount: 5000,
-  //   time: 'Monday, 8 2021',
-  //   name: 'Double December 25k Challenge',
-  // },
-];
+moment.locale();
 
 export default function JoinChallengeDashboard(props) {
   const dispatch = useDispatch();
@@ -79,15 +62,221 @@ export default function JoinChallengeDashboard(props) {
   const [resData, setResData] = useState('');
   const [channel, setChannel] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [minimumAmount, setMinimumAmount] = useState(0);
+
+  const [targetAmount, setTargetAmount] = useState();
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
+  const [challengeEnd, setChallengeEnd] = useState(false);
+
+  const [showMoveMoneyModal, setShowMoveMoneyModal] = useState(false);
+
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
+  const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] = useState(
+    false,
+  );
+
+  const [
+    showMoveMoneyToExistingPlanModal,
+    setShowMoveMoneyToExistingPlanModal,
+  ] = useState(false);
+
+  // useEffect(() => {
+  //   let end = moment('02-01-2022').format('YYYY-MM-DD');
+  //   let today = moment().format('DD-MM-YYYY');
+
+  //   let e = '02-01-2022';
+  //   let t = '02-01-2022';
+
+  //   console.log(e >= t);
+
+  //   console.log('The End', end);
+  //   console.log('The Today', today);
+  // }, []);
+
+  useEffect(() => {
+    const data = route?.params?.data;
+
+    var s = data?.savings[0].start_date;
+    var e = data?.savings[0].end_date;
+
+    var a = moment(s, 'DD-MM-YYYY').format('DD-MM-YYYY');
+
+    var b = moment(e, 'DD-MM-YYYY').format('DD-MM-YYYY');
+
+    // var aFormat = moment(a).format('DD-MM-YYYY');
+
+    // var bFormat = moment(b).format('DD-MM-YYYY');
+
+    // 12-08-2021 01-02-2022
+
+    // var numberOfDays = moment(moment('2021-12-08').format('DD-MM-YYYY')).diff(
+    //   moment(moment('2021-01-02').format('DD-MM-YYYY')),
+    //   'days',
+    // );
+
+    // console.log('Old: ', s, e);
+    // console.log('New: ', moment(a).format('DD-MM-YYYY'), b);
+    // console.log('number of days: ', numberOfDays);
+    // console.log('Format: ', aFormat, bFormat);
+    // console.log('SE: ', s, e);
+    // console.log('AB: ', a, b);
+
+    // var date1 = new Date(data?.savings[0].start_date)
+    //   .toISOString()
+    //   .slice(0, 10);
+    // var date2 = new Date(data?.savings[0].end_date).toISOString().slice(0, 10);
+
+    // // To calculate the time difference of two dates
+    // var Difference_In_Time = date2.getTime() - date1.getTime();
+
+    // // To calculate the no. of days between two dates
+    // var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+
+    // console.log('DDDDDD:', Difference_In_Days);
+
+    // var todayDate = new Date().toLocaleDateString();
+    // console.log('TDate: ', todayDate);
+
+    // if (challenge_start >= '01-01-2025') {
+    //   setChallengeEnd(true);
+    // } else {
+    //   setChallengeEnd(false);
+    // }
+  }, []);
+
+  // useEffect(() => {
+  // const data = route?.params?.data;
+
+  // console.log('Data: ', data);
+
+  // var challenge_start = moment(data?.savings[0].start_date, 'YYYY-MM-DD');
+  // var today = moment();
+  // var numberOfDays = today.diff(challenge_start, 'days');
+
+  // console.log('Number Of Days: ', challenge_start, today, numberOfDays);
+
+  // console.log('Days: ', numberOfDays);
+
+  // console.log('challenge start: ', challenge_start);
+
+  // if (numberOfDays >= 25) {
+  //   setChallengeEnd(true);
+  // } else {
+  //   setChallengeEnd(false);
+  // }
+  // }, []);
+
+  // function getNumberOfDays(start, end) {
+  //   const date1 = new Date(start);
+  //   const date2 = new Date(end);
+
+  //   // One day in milliseconds
+  //   const oneDay = 1000 * 60 * 60 * 24;
+
+  //   // Calculating the time difference between two dates
+  //   const diffInTime = date2.getTime() - date1.getTime();
+
+  //   // Calculating the no. of days between two dates
+  //   const diffInDays = Math.round(diffInTime / oneDay);
+
+  //   return diffInDays;
+  // }
+
+  // useEffect(() => {
+  //   const data = route?.params?.data;
+
+  //   var s = new Date(data?.savings[0].start_date).toLocaleDateString();
+  //   var e = new Date(data?.savings[0].end_date);
+
+  //   s.toISOString().split('T')[0];
+  //   e.toISOString().split('T')[0];
+
+  //   console.log(s, e);
+  //   // 12-08-2021 01-02-2022
+  //   console.log('Na am: ', getNumberOfDays('2021-12-08', '2022-01-02'));
+  // }, []);
+
+  useEffect(() => {
+    const data = route?.params?.data;
+    // var endDate = moment(data?.savings[0].end_date, 'MM-DD-YYYY').format(
+    //   'YYYY-MM-DD',
+    // );
+    var today = moment().format('yyyy-MM-DD');
+
+    // console.log({today, endDate});
+
+    // console.log(new Date());
+
+    // if (endDate <= today) {
+    //   setChallengeEnd(true);
+    // } else {
+    //   setChallengeEnd(false);
+    // }
+
+    console.log(
+      'The Real Format: ',
+      checkDateFormat(data?.savings[0].end_date),
+      checkDateFormat(data?.savings[0].start_date),
+    );
+
+    let challenge_start = checkDateFormat(data?.savings[0].start_date);
+    let challenge_end = checkDateFormat(data?.savings[0].end_date);
+
+    setStartDate(challenge_start);
+    setEndDate(challenge_end);
+
+    var numberOfDays = moment(today).diff(moment(challenge_start), 'days');
+    console.log('Number Of Days: ', numberOfDays);
+    // console.log('Challenge: ', challenge_start, challenge_end);
+
+    if (numberOfDays >= 30) {
+      setChallengeEnd(true);
+    } else {
+      setChallengeEnd(false);
+    }
+
+    // if (endDate <= today) {
+    //   setChallengeEnd(true);
+    // } else {
+    //   setChallengeEnd(false);
+    // }
+  }, []);
+
+  function checkDateFormat(date) {
+    const firstPart = date.split('-')[0];
+    if (firstPart.length === 4) {
+      console.log('year');
+      return moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD');
+    } else {
+      console.log('day');
+      return moment(date, 'MM-DD-YYYY').format('YYYY-MM-DD');
+    }
+  }
 
   useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));
     dispatch(getOneSoloSavingsTransaction(route?.params?.data?.savings[0].id));
-    console.log('SOmething: ', getOneSavings);
-    console.log('SOmething Transact: ', getOneTransaction);
+    // console.log('SOmething: ', getOneSavings);
+    // console.log('SOmething Transact: ', getOneTransaction);
+
     // console.log(route?.params?.data?.id);
+    // console.log('Route:', route?.params?.data?.savings[0].target_amount);
+    let amount = route?.params?.data?.tartget_per_member;
+    setTargetAmount(route?.params?.data?.savings[0]?.amount_save);
+
+    if (amount == '100000') {
+      setMinimumAmount(4000);
+    }
+    if (amount == '50000') {
+      setMinimumAmount(2000);
+    }
+    if (amount == '25000') {
+      setMinimumAmount(1000);
+    }
   }, []);
 
   const handlePaymentRoute = async (value) => {
@@ -103,6 +292,8 @@ export default function JoinChallengeDashboard(props) {
 
       setSpinner(true);
       const response = await addFundsToSavings(data);
+
+      console.log('Add Funds To Savings Res: ', response);
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
@@ -118,6 +309,7 @@ export default function JoinChallengeDashboard(props) {
             setSpinner(false);
             // dispatch(getUserSavingsChallenge());
             // Alert.alert('Payment Successful', 'Your payment is done.');
+            console.log('Verify: ', verify.response.data);
             navigation.navigate('PaymentSuccessful', {
               name: 'JoinChallengeDashboard',
               id: route?.params?.data?.id,
@@ -141,6 +333,12 @@ export default function JoinChallengeDashboard(props) {
       setSpinner(false);
       console.log('Error: ', error);
     }
+  };
+
+  const handleMoveToSaving = () => {
+    // Alert.alert('Moving..', 'Holding on we are still working on it.');
+    // setShowMoveMoneyModal(true);
+    setShowMoveMoneyOptionModal(true);
   };
 
   return (
@@ -198,10 +396,100 @@ export default function JoinChallengeDashboard(props) {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
         <View style={[styles.heading]}>
-          <Text style={[styles.headingTitle]}>{getOneSavings.data?.name}</Text>
+          <Text style={[styles.headingTitle]}>{route?.params?.data?.name}</Text>
           <Text style={[styles.headingSub]}>
-            {getOneSavings.data?.description}
+            {route?.params?.data?.description}
           </Text>
+        </View>
+
+        <View
+          style={{
+            // borderWidth: 1,
+            // borderColor: 'red',
+            // padding: 20,
+            paddingHorizontal: 20,
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+          }}>
+          <View style={{alignItems: 'center'}}>
+            <Text
+              style={{
+                fontSize: 10,
+                fontWeight: 'bold',
+                color: COLORS.secondary,
+                marginBottom: 5,
+                textTransform: 'uppercase',
+              }}>
+              Start Date
+            </Text>
+            <View
+              style={{
+                width: 70,
+                height: 50,
+                backgroundColor: COLORS.white,
+                borderRadius: 5,
+                borderTopWidth: 5,
+                borderTopColor: COLORS.secondary,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
+                {moment(startDate).format('DD')}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: COLORS.light,
+                  fontWeight: 'bold',
+                  opacity: 0.5,
+                }}>
+                {moment(startDate).format('MMM YYYY')}
+              </Text>
+            </View>
+          </View>
+
+          <View style={{alignItems: 'center'}}>
+            <Text
+              style={{
+                fontSize: 10,
+                fontWeight: 'bold',
+                color: COLORS.orange,
+                marginBottom: 5,
+                textTransform: 'uppercase',
+              }}>
+              End Date
+            </Text>
+            <View
+              style={{
+                width: 70,
+                height: 50,
+                backgroundColor: COLORS.white,
+                borderRadius: 5,
+                borderTopWidth: 5,
+                borderTopColor: COLORS.orange,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  color: COLORS.light,
+                }}>
+                {moment(endDate).format('DD')}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 10,
+                  color: COLORS.light,
+                  fontWeight: 'bold',
+                  opacity: 0.5,
+                }}>
+                {moment(endDate).format('MMM YYYY')}
+              </Text>
+            </View>
+          </View>
         </View>
 
         <View style={[styles.card]}>
@@ -219,7 +507,10 @@ export default function JoinChallengeDashboard(props) {
             <View style={{flex: 1}}>
               <Text
                 style={{fontSize: 15, fontWeight: 'bold', color: COLORS.black}}>
-                High-five!
+                {
+                  // targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd ? 'Awe-some!' : 'High-five!'
+                }
               </Text>
               <Text
                 style={{
@@ -229,12 +520,20 @@ export default function JoinChallengeDashboard(props) {
                   color: COLORS.black,
                   opacity: 0.9,
                 }}>
-                You are doing just fine, keep up with the good work!
+                {
+                  // targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd
+                    ? 'You have successfully completed your savings challenge!'
+                    : 'You are doing just fine, keep up with the good work!'
+                }
               </Text>
             </View>
             <View style={{justifyContent: 'center', paddingLeft: 20}}>
               <Image
-                source={piggyBank}
+                source={
+                  // targetAmount == getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd ? naira : piggyBank
+                }
                 style={{
                   width: 50,
                   height: 50,
@@ -244,7 +543,7 @@ export default function JoinChallengeDashboard(props) {
             </View>
           </View>
 
-          {/* {getOneSavings.data?.members_joined != null && (
+          {getOneSavings.data?.members_joined != null && (
             <View
               style={{
                 backgeoundColor: COLORS.orange,
@@ -265,7 +564,7 @@ export default function JoinChallengeDashboard(props) {
                   : `${getOneSavings.data?.members_joined} people are on this challenge`}
               </Text>
             </View>
-          )} */}
+          )}
         </View>
 
         <View style={{alignItems: 'center'}}>
@@ -290,7 +589,7 @@ export default function JoinChallengeDashboard(props) {
               progress={
                 (Number(getOneSavings.data?.savings[0]?.amount_save) /
                   Number(getOneSavings.data?.savings[0]?.target_amount)) *
-                100
+                  100 || 0
               }
               height={7}
               backgroundColor="#fff"
@@ -321,24 +620,38 @@ export default function JoinChallengeDashboard(props) {
               </Text>
             </View>
 
-            <TouchableOpacity
-              style={[styles.btn]}
-              onPress={() => setShowAmountModal(true)}>
-              <Image
-                source={snow}
-                style={{
-                  width: 50,
-                  height: 50,
-                  position: 'absolute',
-                  left: 0,
-                  bottom: 0,
-                  opacity: 0.8,
-                  zIndex: 0,
-                }}
-                resizeMode="contain"
-              />
-              <Text style={[styles.btnText]}>Add Money</Text>
-            </TouchableOpacity>
+            {targetAmount != getOneSavings.data?.savings[0]?.target_amount && (
+              <TouchableOpacity
+                style={[styles.btn]}
+                onPress={() => {
+                  if (
+                    // targetAmount ==
+                    // getOneSavings.data?.savings[0]?.target_amount
+                    challengeEnd
+                  ) {
+                    handleMoveToSaving();
+                  } else {
+                    setShowAmountModal(true);
+                  }
+                }}>
+                <Image
+                  source={snow}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    position: 'absolute',
+                    left: 0,
+                    bottom: 0,
+                    opacity: 0.8,
+                    zIndex: 0,
+                  }}
+                  resizeMode="contain"
+                />
+                <Text style={[styles.btnText]}>
+                  {challengeEnd ? 'Move Money to savings' : 'Add Money'}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -349,55 +662,65 @@ export default function JoinChallengeDashboard(props) {
               marginTop: 20,
               paddingHorizontal: 20,
             }}>
-            {getOneTransaction?.data?.slice(0, 3)?.map((item, index, arr) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    borderLeftWidth: 2,
-                    borderLeftColor:
-                      index == arr.length - 1
-                        ? 'transparent'
-                        : COLORS.secondary,
-                    paddingBottom: 40,
-                  }}>
+            {getOneTransaction?.data
+              ?.slice(0, getOneTransaction?.data?.length)
+              ?.map((item, index, arr) => {
+                return (
                   <View
+                    key={index}
                     style={{
-                      width: 20,
-                      height: 20,
-                      backgroundColor: COLORS.secondary,
-                      borderRadius: 20,
-                      position: 'absolute',
-                      left: -12,
-                      top: 0,
-                    }}
-                  />
-                  <View style={{paddingLeft: 40}}>
-                    <Text
+                      borderLeftWidth: index == arr.length - 1 ? 0 : 2,
+                      borderLeftColor:
+                        item.status == 1 ? COLORS.secondary : COLORS.red,
+                      paddingBottom: 40,
+                    }}>
+                    <View
                       style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: COLORS.white,
+                        width: 20,
+                        height: 20,
+                        backgroundColor:
+                          item.status == 1 ? COLORS.secondary : COLORS.red,
+                        borderRadius: 20,
+                        position: 'absolute',
+                        left: index == arr.length - 1 ? -10 : -11,
+                        top: 0,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        // borderWidth: 1,
                       }}>
-                      ₦{formatNumber(item.amount)}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: COLORS.light,
-                        marginTop: 10,
-                      }}>
-                      {item.reference}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: COLORS.light,
-                        marginTop: 10,
-                      }}>
-                      {item.updated_at}
-                    </Text>
-                    {/* <Text
+                      <Icon
+                        name={item.status == 1 ? 'checkmark' : 'close'}
+                        size={15}
+                        // style={{fontWeight: '900', paddingBottom: 20}}
+                        color={COLORS.white}
+                      />
+                    </View>
+                    <View style={{paddingLeft: 40}}>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          fontWeight: 'bold',
+                          color: COLORS.white,
+                        }}>
+                        ₦{formatNumber(item.amount)}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                          color: COLORS.light,
+                          marginTop: 10,
+                        }}>
+                        {item.reference}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: COLORS.light,
+                          marginTop: 10,
+                        }}>
+                        {item.updated_at}
+                      </Text>
+                      {/* <Text
                       style={{
                         fontSize: 12,
                         color: COLORS.light,
@@ -405,10 +728,10 @@ export default function JoinChallengeDashboard(props) {
                       }}>
                       {item.status}
                     </Text> */}
+                    </View>
                   </View>
-                </View>
-              );
-            })}
+                );
+              })}
           </View>
         </View>
       </ScrollView>
@@ -420,6 +743,7 @@ export default function JoinChallengeDashboard(props) {
           setAmount={(d) => setAmount(d)}
           // setData={(d) => setResData(d)}
           showCard={() => setShowPaymentModal(true)}
+          minimumAmount={minimumAmount}
         />
       )}
 
@@ -479,6 +803,43 @@ export default function JoinChallengeDashboard(props) {
         />
       )}
 
+      {showMoveMoneyModal && (
+        <MoveMoneyModal
+          onRequestClose={() => setShowMoveMoneyModal(!showMoveMoneyModal)}
+          visible={showMoveMoneyModal}
+          savingsData={route?.params?.data}
+          navigation={navigation}
+        />
+      )}
+
+      {showMoveMoneyOptionModal && (
+        <MoveMoneyOptionModal
+          onRequestClose={() =>
+            setShowMoveMoneyOptionModal(!showMoveMoneyOptionModal)
+          }
+          visible={showMoveMoneyOptionModal}
+          showWhereToMoveMoneyBasedOnID={(id) => {
+            console.log('The IDIID: ', id);
+            id == 0
+              ? setShowMoveMoneyToExistingPlanModal(true)
+              : id == 1
+              ? setShowMoveMoneyModal(true)
+              : null;
+          }}
+        />
+      )}
+
+      {showMoveMoneyToExistingPlanModal && (
+        <MoveMoneyToExistingPlanModal
+          onRequestClose={() =>
+            setShowMoveMoneyToExistingPlanModal(
+              !showMoveMoneyToExistingPlanModal,
+            )
+          }
+          visible={showMoveMoneyToExistingPlanModal}
+        />
+      )}
+
       <Spinner visible={spinner} size={'small'} />
     </View>
   );
@@ -492,9 +853,9 @@ const styles = StyleSheet.create({
   },
 
   heading: {
-    paddingBottom: 20,
+    paddingBottom: 10,
     paddingLeft: 5,
-    width: width / 1.5,
+    width: width / 1.2,
   },
 
   headingTitle: {

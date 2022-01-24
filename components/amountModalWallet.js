@@ -26,13 +26,14 @@ import {
   getUserSavings,
   loanPaymentVerification,
   loanRepayment,
+  verifySavingsPayment,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector, useDispatch} from 'react-redux';
 
 // import CreditCardModalFunds from './CreditCard/CreditCardModalFunds';
 export default function AmountModalWallet(props) {
-  const {onRequestClose, visible, setData, showCard} = props;
+  const {onRequestClose, visible, channel, setData, showCard} = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -44,10 +45,6 @@ export default function AmountModalWallet(props) {
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
   const repay = 100;
-
-  // useEffect(() => {
-  //   console.log('The Repay: ', repay);
-  // }, []);
 
   const amountSchema = yup.object().shape({
     amount: yup
@@ -64,29 +61,58 @@ export default function AmountModalWallet(props) {
   const handleSubmit = async (values) => {
     const data = {
       amount: unFormatNumber(values.amount),
+      channel: channel, //paystack
     };
 
-    console.log('The amount: ', data);
+    await verifyPaymentRequest(data);
+  };
+
+  const verifyPaymentRequest = async (data) => {
+    console.log('The Data: ', data);
 
     setSpinner(true);
-    const res = await addFundsToWallet(data);
-    console.log('The Res: ', res);
-    try {
-      if (res.status == 200) {
-        setSpinner(false);
-        // console.log('The Res Card Wallet: ', res.data.data);
-        setData(res.data.data);
-        onRequestClose();
-        showCard();
-        // setInfo(res.data.data);
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('The Error Card Wallet: ', error);
+    const res = await verifySavingsPayment(data);
+
+    setSpinner(false);
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+
+      setData(verifyData);
+      onRequestClose();
+      showCard();
     }
   };
+
+  // const handleSubmit = async (values) => {
+  //   const data = {
+  //     amount: unFormatNumber(values.amount),
+  //   };
+
+  //   console.log('The amount: ', data);
+
+  //   setSpinner(true);
+  //   const res = await addFundsToWallet(data);
+  //   console.log('The Res: ', res.response.data);
+  //   try {
+  //     if (res.status == 200) {
+  //       setSpinner(false);
+  //       // console.log('The Res Card Wallet: ', res.data.data);
+  //       setData(res.data.data);
+  //       onRequestClose();
+  //       showCard();
+  //       // setInfo(res.data.data);
+  //     } else {
+  //       setSpinner(false);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     console.log('The Error Card Wallet: ', error.response);
+  //   }
+  // };
 
   const NumberInput = (props) => {
     const {
@@ -129,7 +155,7 @@ export default function AmountModalWallet(props) {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => onChange(name)(text.replace(/\D/g, ''))}
             {...inputProps}
           />
         </View>

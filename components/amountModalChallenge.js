@@ -31,12 +31,21 @@ RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 
+// text.replace(/[- #+*;,.<>\{\}\[\]\\\/]/gi, '')
+
 const amountSchema = yup.object().shape({
   amount: yup.string().required('Please provide amount'),
 });
 
 export default function AmountModalChallenge(props) {
-  const {onRequestClose, visible, setAmount, setData, showCard} = props;
+  const {
+    onRequestClose,
+    visible,
+    setAmount,
+    setData,
+    showCard,
+    minimumAmount,
+  } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -93,14 +102,16 @@ export default function AmountModalChallenge(props) {
               paddingLeft: 50,
               paddingVertical: 16,
             }}
-            keyboardType="number-pad"
+            // keyboardType="number-pad"
+            keyboardType="numeric"
             value={formatNumber(value)}
             onBlur={() => {
               setFieldTouched(name);
               onBlur(name);
             }}
-            onChangeText={(text) => onChange(name)(text)}
+            onChangeText={(text) => onChange(name)(text.replace(/\D/g, ''))}
             {...inputProps}
+            maxLength={10}
           />
         </View>
 
@@ -119,12 +130,12 @@ export default function AmountModalChallenge(props) {
           onRequestClose={onRequestClose}>
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              {/* <Icon
+              <Icon
                 onPress={handleClose}
                 name="close-outline"
                 size={25}
                 style={{
-                  right: 5,
+                  right: 10,
                   top: 5,
                   position: 'absolute',
                   zIndex: 2,
@@ -132,7 +143,7 @@ export default function AmountModalChallenge(props) {
                   padding: 10,
                   //   borderWidth: 1,
                 }}
-              /> */}
+              />
               <Animatable.View
                 duration={300}
                 delay={100}
@@ -156,8 +167,16 @@ export default function AmountModalChallenge(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={isValid ? false : true}
-                        style={[styles.button]}>
+                        disabled={values.amount < minimumAmount ? true : false}
+                        style={[
+                          styles.button,
+                          {
+                            backgroundColor:
+                              values.amount < minimumAmount
+                                ? '#5A4CB150'
+                                : '#5A4CB1',
+                          },
+                        ]}>
                         <Text
                           style={{
                             color: 'white',
@@ -168,6 +187,18 @@ export default function AmountModalChallenge(props) {
                           PROCEED
                         </Text>
                       </TouchableOpacity>
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: COLORS.primary,
+                            marginTop: 5,
+                            textAlign: 'center',
+                          }}>
+                          The minimum amount you can save is ₦
+                          {formatNumber(minimumAmount)}
+                        </Text>
+                      </View>
                     </>
                   )}
                 </Formik>

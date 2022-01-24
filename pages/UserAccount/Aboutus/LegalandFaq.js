@@ -56,8 +56,8 @@ const General = () => {
     },
     {
       title: 'What city do I have to reside in to use Kwaba’s rental finance?',
-      body:
-        'Residents of Lagos, Abuja and Port-Harcourt can use our rental finance feature',
+      body: 'Residents of Lagos can use our rental finance feature',
+      // 'Residents of Lagos, Abuja and Port-Harcourt can use our rental finance feature',
     },
     {
       title: 'Can I speak to a customer care representative?',

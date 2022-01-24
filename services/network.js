@@ -1,6 +1,7 @@
 import apiUrl from './api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import urls from './routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -20,11 +21,14 @@ const fetchBanks = async () => {
 };
 
 const signUp = async (data) => {
-  const url = apiUrl + '/api/v1/user/register';
   try {
-    const register = await axios.post(url, JSON.stringify(data), {
-      headers: {'Content-Type': 'application/json'},
-    });
+    const register = await axios.post(
+      urls.auth.REGISTER,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json'},
+      },
+    );
     return register;
   } catch (error) {
     return error.message;
@@ -32,14 +36,49 @@ const signUp = async (data) => {
 };
 
 const login = async (data) => {
-  const url = apiUrl + '/api/v1/user/login';
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
+    const response = await axios.post(urls.auth.LOGIN, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json'},
     });
     return response;
   } catch (error) {
     return error.message;
+  }
+};
+
+// creating/Reseting PIN
+const setPin = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user_set_pin';
+    const response = await axios.post(urls.auth.USER_SET_PIN, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const enterPinToLogin = async (data) => {
+  try {
+    const url = apiUrl + '/api/v1/user_login_verify_pin';
+    const response = await axios.post(urls.auth.USER_LOGIN_VERIFY_PIN, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const forgotPassword = async (data) => {
+  try {
+    const response = await axios.put(urls.auth.FORGORT_PASSWORD, data, {
+      headers: {'Content-Type': 'application/json'},
+    });
+    return response;
+  } catch (error) {
+    return error;
   }
 };
 
@@ -74,18 +113,6 @@ const verifyPhone = async (data) => {
     return response;
   } catch (error) {
     return error.message;
-  }
-};
-
-const forgotPassword = async (data) => {
-  const url = apiUrl + '/api/v1/user/forgot_password';
-  try {
-    const response = await axios.put(url, data, {
-      headers: {'Content-Type': 'application/json'},
-    });
-    return response;
-  } catch (error) {
-    return error;
   }
 };
 
@@ -191,7 +218,7 @@ const loanPaymentVerification = async (data) => {
   const token = await getToken();
   const url = apiUrl + '/api/v1/emergency_loan/payment/verify';
   try {
-    const response = await axios.put(url, JSON.stringify(data), {
+    const response = await axios.post(url, JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
         Authorization: token,
@@ -446,7 +473,7 @@ const me = async () => {
   const url = apiUrl + '/api/v1/me';
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
+    const response = await axios.get(urls.auth.ME, {
       headers: {Authorization: token},
     });
     return response.data;
@@ -487,12 +514,16 @@ const userCreateSavings = async (data) => {
   const url = apiUrl + '/api/v1/user_create_savings';
   const token = await getToken();
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
+    const response = await axios.post(
+      urls.savings.USER_CREATE_SAVINGS,
+      JSON.stringify(data),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
       },
-    });
+    );
     return response;
   } catch (error) {
     return error;
@@ -529,9 +560,12 @@ const getOneUserSavings = async (id) => {
   const url = apiUrl + `/api/v1/get_one_savings/${id}`;
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
-      headers: {'Content-Type': 'application/json', Authorization: token},
-    });
+    const response = await axios.get(
+      urls.savings.GET_ALL_USER_SAVINGS + `/${id}`,
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
@@ -539,12 +573,15 @@ const getOneUserSavings = async (id) => {
 };
 
 const getSavingsHistory = async (id) => {
-  const url = apiUrl + `/api/v1/get_savings_history/${id}`;
+  // const url = apiUrl + `/api/v1/get_savings_history/${id}`;
   const token = await getToken();
   try {
-    const response = await axios.get(url, {
-      headers: {Authorization: token},
-    });
+    const response = await axios.get(
+      `${urls.savings.GET_SAVINGS_PAYMENT_HISTORY}/${id}`,
+      {
+        headers: {Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
@@ -568,9 +605,29 @@ const verifySavingsPayment = async (data) => {
   const url = apiUrl + '/api/v1/verify_savings_payment';
   const token = await getToken();
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {'Content-Type': 'application/json', Authorization: token},
-    });
+    const response = await axios.post(
+      urls.savings.VERIFY_SAVINGS_PAYMENT,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const completeSavingsPayment = async (data) => {
+  const token = await getToken();
+  try {
+    const response = await axios.post(
+      urls.savings.COMPLETE_SAVINGS_PAYMENT,
+      JSON.stringify(data),
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
@@ -759,37 +816,6 @@ const buyOtherBills = async (data) => {
   }
 };
 
-// creating/Reseting PIN
-/**
- *
- * @param {pin, email, password} data
- * @returns
- */
-const setPin = async (data) => {
-  try {
-    const url = apiUrl + '/api/v1/user_set_pin';
-    const response = await axios.post(url, data, {
-      headers: {'Content-Type': 'application/json'},
-    });
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
-// Enter Pin To Login
-const enterPinToLogin = async (data) => {
-  try {
-    const url = apiUrl + '/api/v1/user_login_verify_pin';
-    const response = await axios.post(url, data, {
-      headers: {'Content-Type': 'application/json'},
-    });
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
 // /api/v1/add_funds_to_wallet_initiate
 const addFundsToWallet = async (data) => {
   const url = apiUrl + '/api/v1/add_funds_to_wallet_initiate';
@@ -950,6 +976,60 @@ const joinSavingsChallenge = async (data) => {
   }
 };
 
+// Move money to savings plan
+
+const moveMoneyToSavingsPlan = async (data) => {
+  const url = apiUrl + '/api/v1/move_savings_challenge';
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token,
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+// endpoint powered by Cobble
+// test endpoints from cobble for credit score
+
+const cobbleEndpoint = {
+  test: 'http://cobblescore.herokuapp.com/Integration',
+  live: 'https://api.getcobble.net/integration',
+};
+
+const creditScorePurchase = async (data) => {
+  const url = `${cobbleEndpoint.test}/purchase`;
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const creditScoreFetch = async (data) => {
+  const url = `${cobbleEndpoint.test}/fetch`;
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -1016,4 +1096,8 @@ export {
   changeSavingsMethod,
   verifyWalletTransaction,
   joinSavingsChallenge,
+  moveMoneyToSavingsPlan,
+  creditScorePurchase,
+  creditScoreFetch,
+  completeSavingsPayment,
 };

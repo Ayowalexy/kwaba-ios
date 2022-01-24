@@ -33,12 +33,10 @@ export default function Screen2(props) {
 
   const instantSavingMinimumAmount = 100;
 
-  const hl = howLong.toString().charAt(0).split('');
-
   const minAmount =
-    props.route.params?.how_long == '3months'
+    props.route.params?.savings_period == 3
       ? 10000
-      : props.route.params?.how_long == '6months'
+      : props.route.params?.savings_period == 6
       ? 20000
       : 40000;
 
@@ -49,8 +47,8 @@ export default function Screen2(props) {
       name: 'min',
       exclusive: false,
       params: {},
-      message: `The minimum amount you can save in ${hl} ${
-        hl == '1' ? 'year' : hl == '6' ? 'months' : 'months'
+      message: `The minimum amount you can save in ${howLong} ${
+        howLong == 1 ? 'year' : howLong == 6 ? 'months' : 'months'
       } Is ₦${formatNumber(minAmount)}`,
       test: function (value) {
         return value >= minAmount;
@@ -71,22 +69,26 @@ export default function Screen2(props) {
     try {
       const data = {
         ...props.route.params,
-        target_amount: Number(unFormatNumber(values.targetAmount)),
+        target_amount: Number(unFormatNumber(values.targetAmount)).toFixed(2),
+        amount:
+          values.savingStartOption == 'today'
+            ? Number(instantSaving).toFixed(2)
+            : 0,
         start_date:
           values.savingStartOption == 'today'
             ? moment().format('YYYY-MM-DD')
             : moment(date).format('YYYY-MM-DD'),
-        savings_amount:
-          values.question == 'No' ? 0 : Number(unFormatNumber(instantSaving)),
+        // savings_amount:
+        //   values.question == 'No' ? 0 : Number(unFormatNumber(instantSaving)),
       };
-      // console.log(data);
+      // console.log('The Data 2:', data);
       props.navigation.navigate('SoloSaving3', data);
     } catch (error) {}
   };
 
   useEffect(() => {
-    console.log('How Long?: ', props.route.params?.how_long);
-    setHowLong(props.route.params?.how_long);
+    console.log('How Long?: ', props.route.params?.savings_period);
+    setHowLong(props.route.params?.savings_period);
   }, []);
 
   const NumberInput = (props) => {
@@ -98,13 +100,11 @@ export default function Screen2(props) {
 
     const hasError = errors[name] && touched[name];
 
-    const hl = howLong.toString().charAt(0).split(''); //
-
     return (
       <>
         <Text style={[designs.boldText, {marginTop: 18}]}>
-          How much do you want to save in {hl}{' '}
-          {hl == '1' ? 'Year' : hl == '6' ? 'Months' : 'Months'}
+          How much do you want to save in {howLong}{' '}
+          {howLong == 1 ? 'Year' : howLong == 6 ? 'Months' : 'Months'}
         </Text>
         <View
           style={[
@@ -137,7 +137,7 @@ export default function Screen2(props) {
             onChangeText={(text) => {
               const n = unFormatNumber(text);
               console.log('N: ', n);
-              onChange(name)(n);
+              onChange(name)(n.replace(/\D/g, ''));
             }}
             {...inputProps}
           />
@@ -210,68 +210,68 @@ export default function Screen2(props) {
     );
   };
 
-  const Question = (props) => {
-    const startOptionList = [
-      {
-        title: 'Yes',
-        tag: 'today',
-      },
-      {
-        title: 'No',
-        tag: 'pick_date',
-      },
-    ];
-    const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched, setFieldValue},
-      ...inputProps
-    } = props;
+  // const Question = (props) => {
+  //   const startOptionList = [
+  //     {
+  //       title: 'Yes',
+  //       tag: 'today',
+  //     },
+  //     {
+  //       title: 'No',
+  //       tag: 'pick_date',
+  //     },
+  //   ];
+  //   const {
+  //     field: {name, onBlur, onChange, value},
+  //     form: {errors, touched, setFieldTouched, setFieldValue},
+  //     ...inputProps
+  //   } = props;
 
-    const hasError = errors[name] && touched[name];
-    return (
-      <>
-        <Text style={[designs.boldText, {marginTop: 26}]}>
-          Do you want to deposit some money today?
-        </Text>
-        <View style={designs.options}>
-          {startOptionList.map(({title, tag}, index) => {
-            return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => {
-                  setFieldValue('question', title);
+  //   const hasError = errors[name] && touched[name];
+  //   return (
+  //     <>
+  //       <Text style={[designs.boldText, {marginTop: 26}]}>
+  //         Do you want to deposit some money today?
+  //       </Text>
+  //       <View style={designs.options}>
+  //         {startOptionList.map(({title, tag}, index) => {
+  //           return (
+  //             <TouchableOpacity
+  //               key={index}
+  //               onPress={() => {
+  //                 setFieldValue('question', title);
 
-                  // if (title == 'pick_date') setShowDate(true);
-                  // else setDate(moment().toDate());
-                  console.log('Title: ', title);
-                }}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderRadius: 5,
-                  width: '49%',
-                  height: 54,
-                  backgroundColor: value == title ? '#9D98EC' : 'white',
-                }}>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    fontWeight: '600',
-                    color: value == title ? 'white' : '#465969',
-                    lineHeight: 15,
-                  }}>
-                  {title}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
+  //                 // if (title == 'pick_date') setShowDate(true);
+  //                 // else setDate(moment().toDate());
+  //                 console.log('Title: ', title);
+  //               }}
+  //               style={{
+  //                 display: 'flex',
+  //                 alignItems: 'center',
+  //                 justifyContent: 'center',
+  //                 borderRadius: 5,
+  //                 width: '49%',
+  //                 height: 54,
+  //                 backgroundColor: value == title ? '#9D98EC' : 'white',
+  //               }}>
+  //               <Text
+  //                 style={{
+  //                   fontSize: 12,
+  //                   fontWeight: '600',
+  //                   color: value == title ? 'white' : '#465969',
+  //                   lineHeight: 15,
+  //                 }}>
+  //                 {title}
+  //               </Text>
+  //             </TouchableOpacity>
+  //           );
+  //         })}
+  //       </View>
 
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
+  //       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+  //     </>
+  //   );
+  // };
 
   return (
     <View style={designs.container}>
@@ -288,7 +288,7 @@ export default function Screen2(props) {
           initialValues={{
             targetAmount: '',
             savingStartOption: '',
-            question: '',
+            // question: '',
           }}
           onSubmit={(values) => {
             handleSubmit(values);
@@ -320,11 +320,11 @@ export default function Screen2(props) {
                   new Date(date.toISOString()).toDateString().slice(4)}
               </Text>
 
-              {values.savingStartOption != '' && (
+              {/* {values.savingStartOption != '' && (
                 <Field component={Question} name="question" />
-              )}
+              )} */}
 
-              {values.question == 'Yes' && (
+              {values.savingStartOption == 'today' && (
                 <>
                   <View style={{overflow: 'hidden'}}>
                     <Animatable.View
@@ -368,12 +368,12 @@ export default function Screen2(props) {
               <TouchableOpacity
                 onPress={handleSubmit}
                 disabled={
-                  isValid &&
-                  values.savingStartOption != '' &&
-                  values.question != '' &&
-                  unFormatNumber(instantSaving) >= instantSavingMinimumAmount
-                    ? false
-                    : values.question == 'No'
+                  isValid && values.savingStartOption == 'today'
+                    ? unFormatNumber(instantSaving) >=
+                      instantSavingMinimumAmount
+                      ? false
+                      : true
+                    : values.savingStartOption != 'today'
                     ? false
                     : true
                 }
@@ -381,13 +381,12 @@ export default function Screen2(props) {
                   designs.button,
                   {
                     backgroundColor:
-                      isValid &&
-                      values.savingStartOption != '' &&
-                      values.question != '' &&
-                      unFormatNumber(instantSaving) >=
-                        instantSavingMinimumAmount
-                        ? '#00DC99'
-                        : values.question == 'No'
+                      isValid && values.savingStartOption == 'today'
+                        ? unFormatNumber(instantSaving) >=
+                          instantSavingMinimumAmount
+                          ? '#00DC99'
+                          : '#00DC9950'
+                        : values.savingStartOption != 'today'
                         ? '#00DC99'
                         : '#00DC9950',
                   },

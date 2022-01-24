@@ -85,15 +85,15 @@ export default function TabThree(props) {
 
         saveLoginToStorage({
           ...userData,
-          user: res.user,
-          username: res.user.firstname,
+          user: res.data,
+          username: res.data.firstname,
         });
 
         dispatch(
           setLoginState({
             ...userData,
-            user: res.user,
-            username: res.user.firstname,
+            user: res.data,
+            username: res.data.firstname,
           }),
         );
       }

@@ -57,11 +57,11 @@ export default function PaymentTypeModalSavings(props) {
       tag: 'card',
     },
     {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
-    {
-      name: 'Your Wallet',
-      icon: 'wallet',
-      tag: 'wallet',
-    },
+    // {
+    //   name: 'Your Wallet',
+    //   icon: 'wallet',
+    //   tag: 'wallet',
+    // },
   ];
 
   const RenderItem = ({data, show}) => {
@@ -107,8 +107,10 @@ export default function PaymentTypeModalSavings(props) {
                     }
                   }
                   if (show == 3) {
-                    showConfirmModal(true);
+                    // showConfirmModal(true);
                     setPaymentTypeValue(item.tag);
+                    // console.log('Hello', item.tag);
+                    // setPaymentType(item.tag);
                   }
                   if (show == 4) {
                     showConfirmModal(true);

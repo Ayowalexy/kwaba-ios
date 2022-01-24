@@ -622,7 +622,9 @@ export default function WithdrawalForm(props) {
                         }}
                         keyboardType="number-pad"
                         value={formatNumber(amountValue)}
-                        onChangeText={(text) => setAmountValue(text)}
+                        onChangeText={(text) =>
+                          setAmountValue(text.replace(/\D/g, ''))
+                        }
                         //   autoFocus={selectedAmountIndex == 0}
                         //   focusable={selectedAmountIndex == 1}
                       />

@@ -9,19 +9,12 @@ const initialLoginState = {
 export const loginReducer = (state = initialLoginState, action) => {
   switch (action.type) {
     case types.LOGIN:
-      // console.log('The Action 2: ', {
-      //   ...state,
-      //   ...action.payload,
-      //   isLoggedIn: action.payload.isLoggedIn,
-      //   username: action.payload.username,
-      //   token: action.payload.token,
-      // });
       return {
         ...state,
         ...action.payload,
-        isLoggedIn: action.payload.isLoggedIn,
-        username: action.payload.username,
-        token: action.payload.token,
+        // isLoggedIn: action.payload.isLoggedIn,
+        // username: action.payload.username,
+        // token: action.payload.token,
       };
     default:
       return state;

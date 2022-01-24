@@ -97,7 +97,7 @@ export default function PaymentSuccessful(props) {
         </Text>
         <Text style={[styles.subText]}>
           {props?.route?.params?.subText ||
-            'Done! You have successfully made payment'}
+            'You have successfully made payment'}
         </Text>
       </View>
       <TouchableOpacity style={[styles.btn]} onPress={handlePress}>

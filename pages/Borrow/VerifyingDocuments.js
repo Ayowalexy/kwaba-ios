@@ -53,6 +53,7 @@ const VerifyingDocuments = ({navigation, route}) => {
         },
       );
       console.log('APp status: ', applicationIDCallRes.data.data.status);
+      console.log('APp: ', applicationIDCallRes.data.data);
 
       const applicationStatus = applicationIDCallRes.data.data.status;
 
@@ -60,7 +61,7 @@ const VerifyingDocuments = ({navigation, route}) => {
       // console.log('here', applicationIDCallRes.data.data.approvedamount);
       // setSpinner(false);
 
-      if (applicationStatus >= 3) {
+      if (applicationStatus == 3) {
         setSpinner(false);
         let stepsData = {
           application_form: 'done',

@@ -181,7 +181,7 @@ export default function AddPaymentCardModal(props) {
         />
       )}
 
-      <Spinner visible={spinner} size="large" />
+      <Spinner visible={spinner} size="small" cancelable={true} />
     </>
   );
 }

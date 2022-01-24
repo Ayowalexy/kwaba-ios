@@ -76,14 +76,14 @@ const AccountPage = ({navigation}) => {
   };
 
   const accountTabsAndSettings = [
-    {
-      iconName: 'wallet',
-      tabTitle: 'Wallet',
-      onClickFunction: function openCardAndBank() {
-        // setWithrawModalVisible(true);
-        navigation.navigate('Wallet');
-      },
-    },
+    // {
+    //   iconName: 'wallet',
+    //   tabTitle: 'Wallet',
+    //   onClickFunction: function openCardAndBank() {
+    //     // setWithrawModalVisible(true);
+    //     navigation.navigate('Wallet');
+    //   },
+    // },
     {
       iconName: 'md-create-sharp',
       tabTitle: 'Withdraw',
@@ -346,89 +346,78 @@ const AccountPage = ({navigation}) => {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  // marginTop: 22,
-                  borderBottomLeftRadius: 10,
-                  borderBottomRightRadius: 10,
-                  backgroundColor: '#2A286A',
-                  // height: 40,
-                  flexDirection: 'row',
-                  padding: 10,
-                }}>
-                <Image
-                  style={{width: 25, height: 25, marginRight: 5}}
-                  source={icons.star}
-                />
-                <Text
-                  style={[
-                    FONTS.body1FontStyling,
-                    {color: COLORS.white, fontSize: 12},
-                  ]}>
-                  credit score
-                </Text>
-                {/* <View>
-                <TouchableOpacity
+              <TouchableOpacity
+              // onPress={() =>
+              //   navigation.navigate('CreditScoreForAccountOnboarding')
+              // }
+              >
+                <View
                   style={{
-                    backgroundColor: COLORS.secondary,
-                    borderRadius: 20,
-                    marginLeft: 5,
-                    height: 25,
-                    width: 36,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    // marginTop: 22,
+                    borderBottomLeftRadius: 10,
+                    borderBottomRightRadius: 10,
+                    backgroundColor: '#2A286A',
+                    // height: 40,
+                    flexDirection: 'row',
+                    padding: 10,
+                    // display: 'none',
                   }}>
+                  <Image
+                    style={{width: 25, height: 25, marginRight: 5}}
+                    source={icons.star}
+                  />
                   <Text
                     style={[
-                      FONTS.h3FontStyling,
-                      {
-                        color: COLORS.primary,
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                      },
+                      FONTS.body1FontStyling,
+                      {color: COLORS.white, fontSize: 12},
                     ]}>
-                    65
+                    credit score
                   </Text>
-                </TouchableOpacity>
-              </View> */}
-                {/* <Text
-                style={[
-                  FONTS.body1FontStyling,
-                  {color: COLORS.white, textAlign: 'center', fontSize: 14},
-                ]}>
-                /100
-              </Text> */}
-                <Text
-                  style={[
-                    FONTS.body1FontStyling,
-                    {
-                      color: COLORS.white,
-                      textAlign: 'center',
-                      fontWeight: 'bold',
-                      fontSize: 14,
-                      marginHorizontal: 10,
-                    },
-                  ]}>
-                  N/A
-                </Text>
 
-                <View style={{flexDirection: 'column', flex: 1}}>
                   <Text
                     style={[
                       FONTS.body1FontStyling,
                       {
-                        color: COLORS.light,
-                        textAlign: 'right',
-                        fontSize: 9,
-                        flexShrink: 1,
-                        lineHeight: 12,
+                        color: COLORS.white,
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                        marginHorizontal: 10,
                       },
                     ]}>
-                    You can build your credit score by saving and paying your
-                    rent with Kwaba - coming soon
+                    N/A
                   </Text>
+
+                  <View style={{flexDirection: 'row', flex: 1}}>
+                    <Text
+                      style={[
+                        FONTS.body1FontStyling,
+                        {
+                          color: COLORS.light,
+                          textAlign: 'right',
+                          fontSize: 11,
+                          flexShrink: 1,
+                          lineHeight: 12,
+                        },
+                      ]}>
+                      {/* You can build your credit score by saving and paying your
+                    rent with Kwaba - coming soon */}
+                      View and build your credit score.
+                    </Text>
+                    <View style={{paddingLeft: 20, justifyContent: 'center'}}>
+                      <Icon
+                        name="arrow-forward"
+                        style={{
+                          fontSize: 18,
+                          color: COLORS.white,
+                        }}
+                      />
+                    </View>
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
 

@@ -6,24 +6,41 @@ import {
   StyleSheet,
   StatusBar,
   TouchableOpacity,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import {COLORS} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {getSingleLoan, loanRepayment} from '../../../services/network';
+import {
+  getSingleLoan,
+  loanRepayment,
+  verifySavingsPayment,
+  verifyWalletTransaction,
+} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
 import moment from 'moment';
 import axios from 'axios';
 import AmountModalFunds from '../../../components/amountModalFunds';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
+import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 
 export default function ActiveLoanModal(props) {
   const {visible, onRequestClose, loanID, navigation, loanData} = props;
   const [spinner, setSpinner] = useState(false);
-  const [showAmountModal, setShowAmountModal] = useState(false);
   const [data, setData] = useState('');
+
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [loanRepaymentData, setLoanRepaymentData] = useState([]);
+  const [showAmountModal, setShowAmountModal] = useState(false);
+
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+
+  const [amount, setAmount] = useState('');
+
   const [channel, setChannel] = useState('');
+
+  const [resData, setResData] = useState('');
 
   const [dataValue, setDataValue] = useState({
     loanId: '',
@@ -32,7 +49,9 @@ export default function ActiveLoanModal(props) {
     loan_amount: '',
     loan_repayment_amount: '',
     loan_amount_paid: '',
+    loan_amount_due: '',
     repayment_date: '',
+    disbursement_date: '',
     account_name: '',
     account_number: '',
     account_bank: '',
@@ -41,6 +60,7 @@ export default function ActiveLoanModal(props) {
   useEffect(() => {
     // console.log('Loan Data: ', loanData);
     getOne();
+    setLoanRepaymentData(loanData);
   }, []);
 
   const getOne = async () => {
@@ -62,7 +82,9 @@ export default function ActiveLoanModal(props) {
           loan_amount: d.loan_amount,
           loan_repayment_amount: d.repayment_amount,
           loan_amount_paid: d.amount_paid,
+          loan_amount_due: Number(d.repayment_amount) - Number(d.amount_paid),
           repayment_date: d.repayment_date,
+          disbursement_date: d.created_at,
           account_name: d.disbursement_account_name,
           account_number: d.disbursement_account_number,
           account_bank: d.disbursement_account_bank,
@@ -78,33 +100,57 @@ export default function ActiveLoanModal(props) {
   };
 
   const handlePaymentRoute = async (value) => {
-    // const data = {
-    //   serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
-    //   amount: unFormatNumber(amount), // e.g 100
-    //   recepient: phoneNumber, // e.g 08011111111
-    // };
+    try {
+      const data = {
+        loan_id: loanRepaymentData?.id,
+        amount: amount,
+      };
 
-    // setSpinner(true);
-    // if (value == 'paystack') {
-    //   const response = await BuyPurchaseAirtime(data);
-    //   console.log('The buy response: ', response);
-    //   if (response.status == 200) {
-    //     setSpinner(false);
-    //     setShowCardModal(true); // show card modal
-    //     setResData(response?.data?.data);
-    //     setChannel(value); //paystack
-    //   } else {
-    //     setSpinner(false);
-    //   }
-    // } else if (value == 'bank') {
-    //   console.log(value);
-    // } else {
-    //   console.log(value); // wallet
-    // }
+      console.log('The Data loan: ', data);
+      console.log('The Value: ', value);
 
-    console.log('The Value: ', value);
-    setChannel(value);
-    setShowAmountModal(true);
+      setSpinner(true);
+      const response = await loanRepayment(data);
+      console.log('That Resp: ', response);
+
+      if (response.status == 200) {
+        if (value == 'wallet') {
+          const data = {
+            payment_channel: value,
+            reference: response?.data?.data?.reference,
+          };
+          console.log('The Datata: ', data);
+          setSpinner(true);
+          const verify = await verifyWalletTransaction(data);
+
+          console.log('Verify: ', verify.response);
+          if (verify.status == 200) {
+            onRequestClose();
+            setSpinner(false);
+            navigation.navigate('PaymentSuccessful', {
+              name: 'Home',
+              content: 'Payment Successful',
+              subText: 'Awesome! Your payment was successful',
+            });
+          } else {
+            setSpinner(false);
+            Alert.alert('Oops!', verify?.response?.data.response_message);
+            console.log('Oops!', verify.response);
+          }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+        // Alert.alert('Oops!', response.response.data)
+        console.log('Oops!', response.response.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Oops', error.response);
+    }
   };
 
   return (
@@ -137,6 +183,10 @@ export default function ActiveLoanModal(props) {
                 color={COLORS.white}
               />
             </View>
+            {/* <ScrollView
+              scrollEnabled
+              showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}> */}
             <View
               style={{
                 paddingHorizontal: 20,
@@ -181,8 +231,8 @@ export default function ActiveLoanModal(props) {
 
                   <TouchableOpacity
                     onPress={() => {
-                      // setShowAmountModal(true); // show amount modal
-                      setShowPaymentModal(true); // show payment type
+                      setShowAmountModal(true); // show amount modal
+                      // setShowPaymentModal(true); // show payment type
                     }}
                     disabled={
                       dataValue.status.toLowerCase() == 'pending' ||
@@ -225,30 +275,34 @@ export default function ActiveLoanModal(props) {
                 }}>
                 <Text style={[styles.tableHeader]}>Loan Details</Text>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Purpose:</Text>
+                  <Text style={[styles.tableLabel]}>Purpose:</Text>
                   <Text style={[styles.tableValue]}>
                     {dataValue.loan_purpose}
                   </Text>
                 </View>
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Amount:</Text>
+                  <Text style={[styles.tableLabel]}>Amount:</Text>
                   <Text style={[styles.tableValue]}>
-                    ₦{formatNumber(dataValue.loan_amount)}
+                    ₦
+                    {dataValue.loan_amount == ''
+                      ? '0.00'
+                      : formatNumber(dataValue.loan_amount)}
                   </Text>
                 </View>
 
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>
-                    Loan Repayment Amount:
-                  </Text>
+                  <Text style={[styles.tableLabel]}>Repayment Amount:</Text>
                   <Text style={[styles.tableValue]}>
-                    ₦{formatNumber(dataValue.loan_repayment_amount)}
+                    ₦
+                    {dataValue.loan_repayment_amount == ''
+                      ? '0.00'
+                      : formatNumber(dataValue.loan_repayment_amount)}
                   </Text>
                 </View>
 
                 {Number(dataValue.loan_amount_paid) > 0 && (
                   <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Loan Amount Paid:</Text>
+                    <Text style={[styles.tableLabel]}>Amount Paid:</Text>
                     <Text
                       style={[
                         styles.tableValue,
@@ -259,14 +313,47 @@ export default function ActiveLoanModal(props) {
                               : COLORS.dark,
                         },
                       ]}>
-                      ₦{formatNumber(dataValue.loan_amount_paid)}
+                      ₦
+                      {dataValue.loan_amount_paid == ''
+                        ? '0.00'
+                        : formatNumber(dataValue.loan_amount_paid)}
+                    </Text>
+                  </View>
+                )}
+                {Number(dataValue.loan_amount_due) > 0 && (
+                  <View style={[styles.table]}>
+                    <Text style={[styles.tableLabel]}>Amount Due:</Text>
+                    <Text
+                      style={[
+                        styles.tableValue,
+                        {
+                          color:
+                            dataValue.loan_amount_due > 0
+                              ? COLORS.orange
+                              : COLORS.dark,
+                        },
+                      ]}>
+                      ₦
+                      {dataValue.loan_amount_due == ''
+                        ? '0.00'
+                        : formatNumber(dataValue.loan_amount_due)}
                     </Text>
                   </View>
                 )}
                 <View style={[styles.table]}>
-                  <Text style={[styles.tableLabel]}>Loan Repayment Date:</Text>
+                  <Text style={[styles.tableLabel]}>Disbursement Date:</Text>
                   <Text style={[styles.tableValue]}>
-                    {moment(dataValue.repayment_date).format('MMM DD YYYY')}
+                    {dataValue?.disbursement_date != '' &&
+                      moment(dataValue?.disbursement_date).format(
+                        'MMM DD YYYY',
+                      )}
+                  </Text>
+                </View>
+                <View style={[styles.table]}>
+                  <Text style={[styles.tableLabel]}>Repayment Date:</Text>
+                  <Text style={[styles.tableValue]}>
+                    {dataValue?.repayment_date != '' &&
+                      moment(dataValue?.repayment_date).format('MMM DD YYYY')}
                   </Text>
                 </View>
 
@@ -291,11 +378,12 @@ export default function ActiveLoanModal(props) {
                 </View>
               </View>
             </View>
+            {/* </ScrollView> */}
           </View>
         </View>
       </Modal>
 
-      {showPaymentModal && (
+      {/* {showPaymentModal && (
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
@@ -315,9 +403,73 @@ export default function ActiveLoanModal(props) {
           redirectTo="EmergencyLoanDashBoard"
           channel={channel}
         />
+      )} */}
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
       )}
 
-      <Spinner visible={spinner} size="large" />
+      {showAmountModal && (
+        <AmountModalFunds
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          setAmount={(d) => setAmount(d)}
+          showCard={() => setShowPaymentModal(true)}
+          data={loanRepaymentData}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            Alert.alert(e.status);
+            setSpinner(false);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            // Do something
+
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifySavingsPayment(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              onRequestClose();
+              navigation.navigate('PaymentSuccessful', {
+                name: 'EmergencyLoanDashBoard',
+                content: 'Payment Successful',
+                subText: 'Awesome! You have successfully made payment',
+              });
+              setSpinner(false);
+              Alert.alert('Oops! ', verify?.response?.data?.response_message);
+            } else {
+              setSpinner(false);
+            }
+          }}
+        />
+      )}
+
+      <Spinner visible={spinner} size="small" />
     </>
   );
 }

@@ -67,14 +67,18 @@ export default function EmergencyLoanHome({navigation}) {
   };
 
   const checIfLoanable = (value) => {
-    if (Number(unFormatNumber(value)) > maximumLoanAmount) {
-      setErrorMsg(
-        'Set a loan amount less than or equal\nto your maximum loan amount',
-      );
-      setRepaymentAmount(0);
+    if (Number(unFormatNumber(value)) < 1000) {
+      setErrorMsg('The minimum amount you can request is ₦1,000');
     } else {
-      setErrorMsg('');
-      setRepaymentAmount(calculateRepayment(unFormatNumber(value)));
+      if (Number(unFormatNumber(value)) > maximumLoanAmount) {
+        setErrorMsg(
+          `The maximum amount you can get now is ₦${getMaxLoanCap1?.data?.max_loan_amount}`,
+        );
+        setRepaymentAmount(0);
+      } else {
+        setErrorMsg('');
+        setRepaymentAmount(calculateRepayment(unFormatNumber(value)));
+      }
     }
   };
 
@@ -132,7 +136,7 @@ export default function EmergencyLoanHome({navigation}) {
               checIfLoanable(value);
             }}
             onChangeText={(text) => {
-              onChange(name)(text);
+              onChange(name)(text.replace(/\D/g, ''));
             }}
             {...inputProps}
           />
@@ -151,7 +155,7 @@ export default function EmergencyLoanHome({navigation}) {
           backgroundColor: '#F7F8FD',
         },
       ]}>
-      {getMaxLoanCap1?.data?.you_have_save <= 0 ? (
+      {getMaxLoanCap1?.data?.you_have_save > 0 ? (
         <View style={{flex: 1, backgroundColor: COLORS.white}}>
           <Icon
             onPress={() => navigation.goBack()}
@@ -363,7 +367,7 @@ export default function EmergencyLoanHome({navigation}) {
                           lineHeight: 29,
                           fontWeight: 'bold',
                         }}>
-                        ₦{formatNumber(maximumLoanAmount)}
+                        ₦{formatNumber(Number(maximumLoanAmount).toFixed(2))}
                       </Text>
                     </View>
 
@@ -373,7 +377,11 @@ export default function EmergencyLoanHome({navigation}) {
                       placeholder="Amount"
                     />
                     {errorMsg != '' && (
-                      <Text style={[styles.errorText, {marginTop: 5}]}>
+                      <Text
+                        style={[
+                          styles.errorText,
+                          {marginTop: 5, fontSize: 12, lineHeight: 20},
+                        ]}>
                         {errorMsg}
                       </Text>
                     )}
@@ -416,12 +424,20 @@ export default function EmergencyLoanHome({navigation}) {
                     </View>
                   </View>
                   <TouchableOpacity
-                    disabled={errorMsg != '' ? true : false}
+                    disabled={
+                      errorMsg != '' ||
+                      unFormatNumber(values.requestAmount) < 1000
+                        ? true
+                        : false
+                    }
                     style={[
                       designs.buttonStyleB,
                       {
                         backgroundColor:
-                          errorMsg != '' ? '#00DC9950' : '#00DC99',
+                          errorMsg != '' ||
+                          unFormatNumber(values.requestAmount) < 1000
+                            ? '#00DC9950'
+                            : '#00DC99',
                         width: '100%',
                       },
                     ]}

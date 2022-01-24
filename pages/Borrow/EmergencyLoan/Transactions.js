@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {COLORS} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -23,10 +24,10 @@ export default function Transactions(props) {
     setSpinner(true);
     try {
       const response = await getAllEmergencyLoansRepayment();
-      // console.log('All Loans Response: ', response);
+      console.log('All Loans Response: ', response?.data);
       if (response.status == 200) {
         setSpinner(false);
-        setRepayments(response.data.repayments);
+        setRepayments(response?.data?.data);
       } else {
         setSpinner(false);
       }
@@ -76,81 +77,91 @@ export default function Transactions(props) {
                   fontWeight: 'bold',
                   color: COLORS.dark,
                   textAlign: 'center',
+                  marginBottom: 20,
                 }}>
                 No transactions yet
               </Text>
+              <ActivityIndicator size={'small'} color={COLORS.primary} />
             </View>
           ) : (
             <ScrollView
               scrollEnabled
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}>
-              {repayments?.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    key={index}
-                    style={{
-                      paddingHorizontal: 30,
-                      paddingVertical: 15,
-                      borderBottomColor: '#BFBFBF50',
-                      borderBottomWidth: 1,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <View
+              {repayments
+                ?.reverse()
+                ?.slice(0, 20)
+                ?.map((item, index) => {
+                  return (
+                    <TouchableOpacity
+                      key={index}
                       style={{
-                        width: 50,
-                        height: 50,
-                        backgroundColor: '#2A286A20',
-                        borderRadius: 10,
-                        marginRight: 15,
-                        justifyContent: 'center',
+                        paddingHorizontal: 30,
+                        paddingVertical: 15,
+                        borderBottomColor: '#BFBFBF50',
+                        borderBottomWidth: 1,
+                        flexDirection: 'row',
                         alignItems: 'center',
                       }}>
-                      <Icon name="alarm" size={20} color={COLORS.dark} />
-                    </View>
-                    <View style={{flex: 1}}>
                       <View
                         style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
+                          width: 30,
+                          height: 30,
+                          backgroundColor: '#2A286A20',
+                          borderRadius: 5,
+                          marginRight: 20,
+                          justifyContent: 'center',
                           alignItems: 'center',
                         }}>
+                        <Icon
+                          name="checkmark-done-sharp"
+                          size={15}
+                          color={COLORS.dark}
+                        />
+                      </View>
+                      <View style={{flex: 1}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                              textTransform: 'capitalize',
+                            }}>
+                            {item.reason || 'No description for this loan'}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                            }}>
+                            ₦{formatNumber(item.amount) || '0.00'}
+                          </Text>
+                        </View>
                         <Text
                           style={{
-                            fontSize: 14,
-                            fontWeight: 'bold',
+                            fontSize: 10,
                             color: COLORS.dark,
+                            marginTop: 5,
                           }}>
-                          {item.loan_purpose}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 'bold',
-                            color: COLORS.dark,
-                          }}>
-                          ₦{formatNumber(item.amount) || '0.00'}
+                          {moment(item.created_at).format('Do MMMM YYYY')}
                         </Text>
                       </View>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: COLORS.dark,
-                          marginTop: 5,
-                        }}>
-                        {moment(item.created_at).format('Do MMMM YYYY')}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                    </TouchableOpacity>
+                  );
+                })}
             </ScrollView>
           )}
         </View>
       </View>
 
-      <Spinner visible={spinner} size="large" />
+      {/* <Spinner visible={spinner} size="large" /> */}
     </Modal>
   );
 }

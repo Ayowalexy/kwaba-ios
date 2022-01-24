@@ -30,118 +30,8 @@ export default function EligibilitySalaryEarner({navigation}) {
   }, []);
 
   const handleProceedClick = async () => {
-    // await AsyncStorage.removeItem('rentalSteps');
-
-    // const token = await getToken();
-
-    // const rentalSteps = await AsyncStorage.getItem('rentalSteps');
-    // const steps = JSON.parse(rentalSteps);
-
-    // console.log(steps);
-
-    // if (steps == null) {
-    //   navigation.navigate('RentalLoanForm1');
-    // } else if (steps.congratulation == '') {
-    //   navigation.navigate('RentalLoanFormCongratulation');
-    // } else if (steps.bank_statement_upload == '') {
-    //   navigation.navigate('RentalLoanFormBankStatementUpload');
-    // } else if (steps.all_documents == '') {
-    //   navigation.navigate('NewAllDocuments');
-    // } else if ((steps.verifying_documents = '')) {
-    //   navigation.navigate('VerifyingDocuments');
-    // } else if (steps.offer_breakdown == '') {
-    //   navigation.navigate('OfferApprovalBreakDown');
-    // } else if (steps.property_detail == '') {
-    //   navigation.navigate('PostPaymentForm1');
-    // } else if (steps.landlord_detail == '') {
-    //   navigation.navigate('PostPaymentForm2');
-    // } else if (steps.referee_detail == '') {
-    //   navigation.navigate('PostPaymentForm3');
-    // } else if (steps.offer_letter == '') {
-    //   // navigation.navigate('OfferLetter');
-    //   const applicationIDCallRes = await axios.get(
-    //     'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-    //     {
-    //       headers: {'Content-Type': 'application/json', Authorization: token},
-    //     },
-    //   );
-    //   // console.log(applicationIDCallRes.data.data.assigned_to);
-
-    //   if (applicationIDCallRes.data.data.assigned_to == 'Kwaba') {
-    //     navigation.navigate('AcceptanceLetterKwaba');
-    //   } else {
-    //     navigation.navigate('AcceptanceLetterAddosser');
-    //   }
-    // } else if (steps.address_verification == '') {
-    //   navigation.navigate('AddressVerification');
-    //   navigation.navigate('AddressVerificationPayment');
-    // } else if (steps.debitmandate == '') {
-    //   navigation.navigate('DebitMandate');
-    //   navigation.navigate('OkraDebitMandate');
-    // } else if (steps.awaiting_disbursement) {
-    //   navigation.navigate('AwaitingDisbursement');
-    // }
-
-    // navigation.navigate('AddressVerificationPayment');
     navigation.navigate('RentalLoanForm1');
-
-    //   let stepsdata={
-    //   documentdone:'',
-    //   propertydetail:'',
-    //   landlorddetail:'',
-    //   refree:'',
-    //   offeraccepted:'',
-    //   addressverification:'',
-    //   debitmandate:'',
-    //   awaitingdisbursment:'',
-    // };
-
-    // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
-
-    // console.log('steps here' + steps);
-    // console.log(borrwSteps);
-
-    // try {
-    //   const applicationIDCallRes = await axios.get(
-    //     'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-    //     {
-    //       headers: {'Content-Type': 'application/json', Authorization: token},
-    //     },
-    //   );
-    //   let status = applicationIDCallRes.data.data.status;
-    //   if (status == 1) {
-    //     // application exists
-    //     navigation.navigate('RentalLoanFormCongratulation');
-    //   }else {
-
-    //   }
-    //   console.log(applicationIDCallRes.data);
-    // } catch (error) {
-    //   // error message
-    //   console.log(error.response.data);
-    // }
-
-    // if (steps == null) {
-    //   navigation.navigate('RentalLoanForm1');
-    // } else if (steps.documentdone == '') {
-    //   navigation.navigate('RentalLoanFormCongratulation');
-    // } else if (steps.propertydetail == '') {
-    //   navigation.navigate('PostPaymentForm1');
-    // } else if (steps.landlorddetail == '') {
-    //   navigation.navigate('PostPaymentForm2');
-    // } else if (steps.refree == '') {
-    //   navigation.navigate('PostPaymentForm3');
-    // } else if (steps.offeraccepted == '') {
-    //   navigation.navigate('RentalLoanOfferTest');
-    // } else if (steps.addressverification == '') {
-    //   navigation.navigate('AddressVerificationPayment');
-    // } else if (steps.debitmandate == '') {
-    //   navigation.navigate('OkraDebitMandate');
-    // } else if (steps.awaitingdisbursment == '') {
-    //   navigation.navigate('AwaitingDisbursement');
-    // } else {
-    //   navigation.navigate('RentalLoanForm1');
-    // }
+    // navigation.navigate('CreditScoreDashboard');
   };
 
   return (
@@ -174,7 +64,10 @@ export default function EligibilitySalaryEarner({navigation}) {
                 'Earn a minimum monthly income of ₦80,000',
                 'Have received salary for at least 6 months',
                 'Have no bad loans and a clean credit history',
-                'Be above 21 years of age',
+                // 'Be above 21 years of age',
+                // 'Only available to Lagos residents for now',
+                `Have the necessary documents like your employment\nletter and staff ID`,
+                'Be a Lagos resident',
               ].map((text, index) => (
                 <View style={[styles.list]} key={index}>
                   <View
@@ -253,6 +146,7 @@ const styles = StyleSheet.create({
     // alignItems: 'center',
     marginTop: 10,
     backgroundColor: COLORS.white,
+    paddingRight: 10,
     paddingTop: 20,
     paddingBottom: 40,
     // paddingLeft: 10,
