@@ -260,7 +260,7 @@ export default function Wallet(props) {
                       fontWeight: 'bold',
                       color: COLORS.white,
                     }}>
-                    <Text style={{fontSize: 30}}>{/* ₦  */}$</Text>
+                    <Text style={{fontSize: 30}}>₦</Text>
 
                     {toggleAmount
                       ? formatNumber(Number(amount).toFixed(2))

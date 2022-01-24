@@ -21,6 +21,7 @@ const urls = {
     FORGORT_PASSWORD: `${baseUrl}/users/forgot-password`,
     ME: `${baseUrl}/users/me`,
     COMPLETE_PROFILE: `${baseUrl}/users/update-profile`,
+    SEND_EMAIL_VERIFICATION: `${baseUrl}/users/send-email-verification`,
   },
 
   savings: {
