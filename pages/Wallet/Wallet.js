@@ -7,6 +7,7 @@ import {
   ScrollView,
   FlatList,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {COLORS} from '../../util';
 import {formatNumber} from '../../util/numberFormatter';
@@ -316,12 +317,13 @@ export default function Wallet(props) {
                       // navigation.navigate('SavingsHome');
                       setShowQuickSaveModal(true);
                     } else if (item == 'Pay Bills') {
-                      navigation.navigate('BillsHome');
+                      // navigation.navigate('BillsHome');
+
+                      Alert.alert(
+                        'Feature currently unavailable',
+                        'We are working hard to make this available as soon as we can.',
+                      );
                     }
-                    // else {
-                    //   navigation.navigate('EmergencyLoanHome');
-                    // }
-                    console.log('Clicked');
                   }}>
                   <View
                     style={{

@@ -155,8 +155,8 @@ const BottomNavigator = ({navigation}) => {
         initialRouteName="Home">
         <Tab.Screen name="Home" component={NewHome} />
         <Tab.Screen name="Wallet" component={Wallet} />
-        {/* <Tab.Screen name="Rent" component={Borrow} /> */}
-        <Tab.Screen name="Rent" component={RentHome} />
+        <Tab.Screen name="Rent" component={Borrow} />
+        {/* <Tab.Screen name="Rent" component={RentHome} /> */}
         <Tab.Screen name="Mortgages" component={Mortgages} />
         <Tab.Screen name="More" component={AccountPage} />
       </Tab.Navigator>

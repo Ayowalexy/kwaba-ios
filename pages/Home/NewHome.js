@@ -334,16 +334,24 @@ export default function NewHome({navigation}) {
       name: 'Buy Airtime',
       image: icons.ic1,
       route: () => {
-        navigation.navigate('AirtimeHome');
-        TrackEvent('Buy Airtime Home Quick Action');
+        // navigation.navigate('AirtimeHome');
+        // TrackEvent('Buy Airtime Home Quick Action');
+        Alert.alert(
+          'Feature currently unavailable',
+          'We are working hard to make this available as soon as we can.',
+        );
       },
     },
     {
       name: 'Pay Bills',
       image: icons.ic2,
       route: () => {
-        navigation.navigate('BillsHome');
-        TrackEvent('Pay Bills Home Quick Action');
+        // navigation.navigate('BillsHome');
+        // TrackEvent('Pay Bills Home Quick Action');
+        Alert.alert(
+          'Feature currently unavailable',
+          'We are working hard to make this available as soon as we can.',
+        );
       },
     },
     // {

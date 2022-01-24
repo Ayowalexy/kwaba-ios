@@ -137,7 +137,7 @@ const PurchaseAirtime = ({navigation, route}) => {
         }
       } else {
         setSpinner(false);
-        console.log('Response Error: ', response?.response);
+        console.log('Response Error: ', response?.response?.data);
         setMessage({
           visible: true,
           body: response?.response?.data?.statusMsg,
