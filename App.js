@@ -804,5 +804,5 @@ const App = () => {
   );
 };
 
-export default App;
-// export default CodePush(CodePushOptions)(App);
+// export default App;
+export default CodePush(CodePushOptions)(App);
