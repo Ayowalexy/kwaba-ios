@@ -495,7 +495,10 @@ export default function Wallet(props) {
           walletDetails={getWallet}
           showAmountModal={() => setShowAmountModal(true)}
           showBankTransferModal={() => setShowBankTransferModal(true)}
-          setChannel={(c) => setChannel(c)}
+          setChannel={(c) => {
+            console.log('C: ', c);
+            setChannel(c);
+          }}
         />
       )}
 

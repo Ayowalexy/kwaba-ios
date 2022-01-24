@@ -696,7 +696,7 @@ export default function Screen3({navigation, route}) {
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
           data={verifyData}
-          channel={'bank_transfer'}
+          channel={['card', 'bank_transfer']}
           paymentCanceled={(e) => {
             Alert.alert('Payment cancelled');
           }}
