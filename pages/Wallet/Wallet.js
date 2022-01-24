@@ -242,7 +242,7 @@ export default function Wallet(props) {
                   style={{
                     fontSize: 12,
                     fontWeight: 'normal',
-                    textAlign: 'left',
+                    textAlign: 'center',
                     color: COLORS.white,
                   }}>
                   Available Balance:
@@ -260,7 +260,7 @@ export default function Wallet(props) {
                       fontWeight: 'bold',
                       color: COLORS.white,
                     }}>
-                    <Text style={{fontSize: 15}}>₦ </Text>
+                    <Text style={{fontSize: 30}}>{/* ₦  */}$</Text>
 
                     {toggleAmount
                       ? formatNumber(Number(amount).toFixed(2))
@@ -390,14 +390,35 @@ export default function Wallet(props) {
 
   const getFooter = () => {
     return (
-      <TouchableOpacity
-        style={{
-          justifyContent: 'center',
-          alignItems: 'center',
-          paddingVertical: 10,
-        }}>
-        <Text style={{color: COLORS.primary}}>View all Transactions</Text>
-      </TouchableOpacity>
+      <>
+        {!getWalletTransactions?.data?.length ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 20,
+              flex: 1,
+            }}>
+            <Text
+              style={{
+                fontSize: 15,
+                fontWeight: 'bold',
+                color: COLORS.grey,
+              }}>
+              No Transactions
+            </Text>
+          </View>
+        ) : (
+          <TouchableOpacity
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingVertical: 10,
+            }}>
+            <Text style={{color: COLORS.primary}}>View all Transactions</Text>
+          </TouchableOpacity>
+        )}
+      </>
     );
   };
 
@@ -420,7 +441,6 @@ export default function Wallet(props) {
           <Text
             style={{
               fontSize: 14,
-              // marginLeft: 40,
               fontWeight: 'bold',
               color: COLORS.white,
             }}>
@@ -429,34 +449,15 @@ export default function Wallet(props) {
           <View />
         </View>
         <SafeAreaView style={{flex: 1}}>
-          {!getWalletTransactions?.data?.length ? (
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                paddingVertical: 20,
-                flex: 1,
-              }}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: 'bold',
-                  color: COLORS.grey,
-                }}>
-                No Transactions
-              </Text>
-            </View>
-          ) : (
-            <FlatList
-              data={getWalletTransactions?.data?.slice(0, 5)}
-              renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
-              showsHorizontalScrollIndicator={false}
-              showsVerticalScrollIndicator={false}
-              ListHeaderComponent={getHeader}
-              ListFooterComponent={getFooter}
-            />
-          )}
+          <FlatList
+            data={getWalletTransactions?.data?.slice(0, 5)}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id.toString()}
+            showsHorizontalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={getHeader}
+            ListFooterComponent={getFooter}
+          />
         </SafeAreaView>
       </View>
 

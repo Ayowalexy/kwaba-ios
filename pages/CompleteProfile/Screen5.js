@@ -26,6 +26,7 @@ import ConfirmModal from '../../components/modal';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {setLoginState} from '../../redux/actions/userActions';
+import urls from '../../services/routes';
 
 const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
@@ -209,12 +210,13 @@ const Screen5 = (props) => {
     const token = await getToken();
     try {
       setSpinner(true);
-      const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
+      // const url =
+      //   'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
+      const url = urls.auth.COMPLETE_PROFILE;
       const response = await axios.put(url, JSON.stringify(updateData), {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      if (response.status == 200) {
+      if (response.status == 201) {
         const res = await me();
         setSpinner(false);
         setModalVisible(true);
