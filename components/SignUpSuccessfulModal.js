@@ -25,8 +25,14 @@ export default function SignUpSuccessfulModal(props) {
         onRequestClose={onRequestClose}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <Image
+              source={images.success}
+              style={{width: 50, height: 50, marginBottom: 10}}
+              resizeMode="contain"
+            />
             <View style={[styles.content]}>
               <Text style={[styles.contentTitle]}>Successful</Text>
+
               <Text style={[styles.contentBody]}>
                 You have successfully created an account, please continue by
                 login in
@@ -67,9 +73,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: COLORS.dark,
     textAlign: 'center',
   },
   contentBody: {
