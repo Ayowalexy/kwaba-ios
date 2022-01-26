@@ -95,6 +95,7 @@ export default function Wallet(props) {
   const renderItem = ({item, index}) => {
     return (
       <TouchableOpacity
+        onPress={() => console.log('The Log Here: ', item)}
         style={[
           styles.lists,
           {
