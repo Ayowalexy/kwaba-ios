@@ -130,7 +130,7 @@ export default function PaymentTypeModal(props) {
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
-                          justifyContent: 'space-between',
+                          // justifyContent: 'space-between',
                           flex: 1,
                         }}>
                         <Text
