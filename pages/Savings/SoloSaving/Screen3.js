@@ -372,6 +372,7 @@ export default function Screen3({navigation, route}) {
 
     const verifyData = verify?.data?.data;
     setVerifyData({...verifyData, id: data.id});
+    console.log('Zay Tahtah: ', verify.response.data);
     setShowPaystackPayment(true);
   };
 

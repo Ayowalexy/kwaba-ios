@@ -318,7 +318,7 @@ export default function Login({navigation}) {
                     </Text>
                   </View>
                   <TouchableOpacity
-                    onPress={() => navigation.navigate('ForgotPassword')}>
+                    onPress={() => navigation.replace('ForgotPassword')}>
                     <Text
                       style={{
                         color: '#00DC99',
@@ -337,7 +337,8 @@ export default function Login({navigation}) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={!isValid}
+                // disabled={!spinner && !isValid}
+                disabled={spinner}
                 style={[
                   designs.btn,
                   {
@@ -361,7 +362,7 @@ export default function Login({navigation}) {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => navigation.navigate('SignUp')}
+                onPress={() => navigation.replace('SignUp')}
                 style={{
                   display: 'flex',
                   flexDirection: 'row',

@@ -292,7 +292,7 @@ export default function WelcomeBack({navigation, route}) {
                 </Text>
               )}
               <TouchableOpacity
-                onPress={() => navigation.navigate('ResetPin')}
+                onPress={() => navigation.replace('ResetPin')}
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -341,7 +341,7 @@ export default function WelcomeBack({navigation, route}) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.replace('Login')}
               style={{
                 display: 'flex',
                 flexDirection: 'column',

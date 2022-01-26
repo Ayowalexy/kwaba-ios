@@ -23,6 +23,7 @@ import PhoneInput from 'react-native-phone-number-input';
 
 import {COLORS} from '../../util';
 import SelectWhereDoYouHearAboutUsModal from '../../components/SelectWhereDoYouHearAboutUsModal';
+import SignUpSuccessfulModal from '../../components/SignUpSuccessfulModal';
 
 const CustomInput = (props) => {
   const {
@@ -128,6 +129,10 @@ export default function SignUp({navigation}) {
   const [formattedValue, setFormattedValue] = useState('');
   const [showModal, setShowModal] = useState(false);
 
+  const [showSignUpSuccessfulModal, setShowSignUpSuccessfulModal] = useState(
+    false,
+  );
+
   const SelectHandles = (props) => {
     const {
       field: {name, value},
@@ -212,7 +217,8 @@ export default function SignUp({navigation}) {
     if (res.status == 201) {
       setSpinner(false);
       // await AsyncStorage.setItem('authData', res.data.data);
-      navigation.navigate('Login');
+      // navigation.navigate('Login');
+      setShowSignUpSuccessfulModal(true);
 
       await analytics.track('User-Signup', {
         email: values.email,
@@ -470,7 +476,7 @@ export default function SignUp({navigation}) {
 
               <TouchableOpacity
                 onPress={handleSubmit}
-                disabled={!isValid}
+                disabled={spinner}
                 style={[designs.btn, {backgroundColor: '#00DC99'}]}>
                 <Text
                   style={{
@@ -499,7 +505,7 @@ export default function SignUp({navigation}) {
           )}
         </Formik>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
+          onPress={() => navigation.replace('Login')}
           style={{
             display: 'flex',
             flexDirection: 'row',
@@ -520,6 +526,14 @@ export default function SignUp({navigation}) {
           </Text>
         </TouchableOpacity>
       </ScrollView>
+
+      <SignUpSuccessfulModal
+        visible={showSignUpSuccessfulModal}
+        onRequestClose={() =>
+          setShowSignUpSuccessfulModal(!showSignUpSuccessfulModal)
+        }
+        navigate={() => navigation.navigate('Login')}
+      />
     </View>
   );
 }
