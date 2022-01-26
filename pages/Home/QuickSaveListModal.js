@@ -130,7 +130,7 @@ export default function QuickSaveListModal(props) {
       content: 'Payment Successful',
       subText: 'You have successfully funded your savings',
       name: 'SoloSavingDashBoard',
-      id: verifyData.id,
+      id: id,
     });
 
     onRequestClose();
