@@ -86,10 +86,11 @@ const Aboutus = ({navigation}) => {
             </View>
             <Text style={[styles.aboutusMinorText, {fontWeight: 'bold'}]}>
               Email us :{' '}
-              <Text style={{color: COLORS.light}}>hello@kwaba.ng</Text>
+              <Text style={{color: COLORS.light}}>hello@kwaba.africa</Text>
             </Text>
             <Text style={[styles.aboutusMinorText, {fontWeight: 'bold'}]}>
-              Website : <Text style={{color: COLORS.light}}>www.kwaba.ng</Text>
+              Website :{' '}
+              <Text style={{color: COLORS.light}}>www.kwaba.africa</Text>
             </Text>
           </View>
           <View style={{justifyContent: 'center', alignItems: 'center'}}>
