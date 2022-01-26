@@ -178,8 +178,16 @@ export default function AmountModal(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={isValid ? false : true}
-                        style={[styles.button]}>
+                        disabled={values.amount < 100 ? true : false}
+                        style={[
+                          styles.button,
+                          {
+                            backgroundColor:
+                              values.amount < 100
+                                ? '#2A286A50'
+                                : COLORS.primary,
+                          },
+                        ]}>
                         <Text
                           style={{
                             color: 'white',

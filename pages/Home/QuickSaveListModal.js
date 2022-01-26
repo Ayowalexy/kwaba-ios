@@ -125,7 +125,38 @@ export default function QuickSaveListModal(props) {
   //   }
   // };
 
-  const verifyPaymentRequest = async (data) => {
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: verifyData.id,
+    });
+
+    onRequestClose();
+  };
+
+  const savingsPayment = async (data) => {
+    setSpinner(true);
+
+    try {
+      const res = await completeSavingsPayment(data);
+
+      if (res.status == 201) {
+        setSpinner(false);
+
+        console.log('Complete Paymentttttttttt: ', res.data.data);
+        await showSuccess();
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error.response.data);
+    }
+  };
+
+  const verifyPaymentRequest = async (data, paymentChannel) => {
     console.log('The Data: ', data);
 
     setSpinner(true);
@@ -139,14 +170,50 @@ export default function QuickSaveListModal(props) {
     if (res.status == 200) {
       const verifyData = res?.data?.data;
       setVerifyData({...verifyData, id: data.savings_id});
-      setShowPaystackPayment(true);
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: verifyData.amount,
+          savings_id: data.savings_id,
+          channel: 'wallet',
+          reference: verifyData.paymentReference,
+        };
+
+        await savingsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      if (
+        res.response?.data?.meta?.error ==
+        'The maximum savings amount for this savings is execeded'
+      ) {
+        Alert.alert(
+          'Payment unsuccessful',
+          `You've exceeded the target amount for this savings plan`,
+        );
+      } else if (
+        res.response?.data?.meta?.error == 'Insufficient wallet balance'
+      ) {
+        Alert.alert(
+          'Payment unsuccessful',
+          'You do not have enough money in your wallet',
+        );
+      }
     }
   };
 
   const handlePaymentRoute = async (value) => {
     // console.log('Value: ', value);
 
-    if (value == 'Wallet') {
+    if (value == 'wallet') {
+      const verifyPayload = {
+        amount: amount,
+        savings_id: id,
+        channel: 'wallet',
+      };
+
+      setChannel(value); // wallet
+      await verifyPaymentRequest(verifyPayload, value);
     } else {
       const verifyPayload = {
         amount: amount,
@@ -158,7 +225,7 @@ export default function QuickSaveListModal(props) {
 
       console.log('The value: ', value);
 
-      await verifyPaymentRequest(verifyPayload);
+      await verifyPaymentRequest(verifyPayload, value);
     }
   };
 
@@ -416,7 +483,6 @@ export default function QuickSaveListModal(props) {
             // Do something
           }}
           paymentSuccessful={async (res) => {
-            console.log('That res: ', res);
             const data = {
               amount: verifyData.amount,
               savings_id: verifyData.id,
@@ -425,28 +491,8 @@ export default function QuickSaveListModal(props) {
             };
 
             console.log('the dataatatta: ', data);
-            // console.log('This complete data: ', data);
-            try {
-              setSpinner(true);
-              const res = await completeSavingsPayment(data);
-              // console.log('Complete Out: ', res);
 
-              if (res.status == 201) {
-                setSpinner(false);
-                console.log('Complete Payment: ', res.data.data);
-                onRequestClose();
-
-                navigation.navigate('PaymentSuccessful', {
-                  content: 'Payment successful',
-                  name: 'SoloSavingDashBoard',
-                  id: verifyData.id,
-                });
-              } else {
-                setSpinner(false);
-              }
-            } catch (error) {
-              setSpinner(false);
-            }
+            await savingsPayment(data);
           }}
         />
       )}

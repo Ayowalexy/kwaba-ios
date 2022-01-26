@@ -248,6 +248,27 @@ export default function ResetPin({navigation, route}) {
                       placeholder="Password"
                     />
                   </View>
+
+                  <TouchableOpacity
+                    onPress={() => navigation.replace('WelcomeBack')}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 10,
+                    }}>
+                    <Text
+                      style={{
+                        color: '#465969',
+                        fontSize: 12,
+                        lineHeight: 30,
+                        fontWeight: 'bold',
+                      }}>
+                      Remember you PIN?{' '}
+                      <Text style={{color: '#00DC99'}}>Enter</Text>
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </View>
 

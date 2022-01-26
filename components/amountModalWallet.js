@@ -125,7 +125,7 @@ export default function AmountModalWallet(props) {
 
     return (
       <>
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+        {/* {hasError && <Text style={styles.errorText}>{errors[name]}</Text>} */}
         <Text style={[styles.boldText, {marginTop: 10}]}>How much?</Text>
         <View
           style={[
@@ -160,7 +160,7 @@ export default function AmountModalWallet(props) {
           />
         </View>
 
-        {/* {hasError && <Text style={styles.errorText}>{errors[name]}</Text>} */}
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
     );
   };
@@ -212,8 +212,14 @@ export default function AmountModalWallet(props) {
 
                     <TouchableOpacity
                       onPress={handleSubmit}
-                      // disabled={isValid ? false : true}
-                      style={[styles.button]}>
+                      disabled={values.amount < 100 ? true : false}
+                      style={[
+                        styles.button,
+                        {
+                          backgroundColor:
+                            values.amount < 100 ? '#2A286A50' : COLORS.primary,
+                        },
+                      ]}>
                       <Text
                         style={{
                           color: 'white',
