@@ -431,15 +431,7 @@ export default function SoloSavingDashBoard(props) {
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {/* <Text style={{fontSize: 10, color: COLORS.white}}>
-                    View savings history
-                  </Text>
-                  <Icon
-                    name="chevron-forward-outline"
-                    size={15}
-                    style={{color: COLORS.white, marginLeft: 10}}
-                  /> */}
-                  <View style={{flexDirection: 'column'}}>
+                  {/* <View style={{flexDirection: 'column'}}>
                     <Text style={{color: COLORS.white, fontSize: 10}}>
                       Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
                     </Text>
@@ -450,7 +442,7 @@ export default function SoloSavingDashBoard(props) {
                       onValueChange={toggleSwitch}
                       value={autoSaving}
                     />
-                  </View>
+                  </View> */}
                 </View>
               </View>
             </View>
