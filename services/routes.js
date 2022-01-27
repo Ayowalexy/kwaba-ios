@@ -4,15 +4,6 @@ const liveUrl = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1';
 const baseUrl = liveUrl;
 
 const urls = {
-  // For live
-  // auth: {
-  //   LOGIN: `${baseUrl}/user/login`,
-  //   REGISTER: `${baseUrl}/user/register`,
-  //   USER_SET_PIN: `${baseUrl}/user/user_set_pin`,
-  //   USER_LOGIN_VERIFY_PIN: `${baseUrl}/user/user_login_verify_pin`,
-  //   FORGORT_PASSWORD: `${baseUrl}/user/forgot_password`,
-  // },
-
   auth: {
     LOGIN: `${baseUrl}/users/login`,
     REGISTER: `${baseUrl}/users/register`,

@@ -370,9 +370,10 @@ export default function Screen3({navigation, route}) {
     setSpinner(false);
     if (!verify) return [];
 
+    console.log('Zay Tahtah: ', verify);
+
     const verifyData = verify?.data?.data;
     setVerifyData({...verifyData, id: data.id});
-    console.log('Zay Tahtah: ', verify.response.data);
     setShowPaystackPayment(true);
   };
 
