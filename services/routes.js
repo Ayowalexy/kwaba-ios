@@ -1,7 +1,14 @@
-const stageUrl = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1';
-const liveUrl = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1';
+const kwaba = {
+  staging: 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1',
+  live: 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1',
+};
 
-const baseUrl = stageUrl;
+const cobble = {
+  test: 'http://cobblescore.herokuapp.com/Integration',
+  live: 'https://api.getcobble.net/integration',
+};
+
+const baseUrl = kwaba.staging;
 
 const urls = {
   auth: {
@@ -29,6 +36,33 @@ const urls = {
 
   wallet: {
     GET_USER_WALLET_TRANSACTIONS: `${baseUrl}/wallets/get-user-wallet-transactions`,
+  },
+
+  payments: {
+    TOKENIZED_CARDS: `${baseUrl}/payments/get-tokenized-cards`,
+  },
+
+  applications: {
+    NEW_APPLICATION: `${baseUrl}/application/new`,
+    UPLOAD_BANK_STATEMENT: `${baseUrl}/application/bank_statement`,
+    ACCEPT_OFFER: `${baseUrl}/application/accept_offer`,
+    GET_CURRENT_APPLICATION: `${baseUrl}/application/one`,
+    UPLOAD_DOCUMENTS: `${baseUrl}/application/documents`,
+    GET_DOCUMENTS: `${baseUrl}/application/documents`,
+    DELETE_APPLICATION_DOCUMENT: `${baseUrl}/document/delete`,
+    ADD_LANDLORD_AND_PROPERTY_DETAILS: `${baseUrl}/application/update/landlord_and_property`,
+    REJECT_OFFER: `${baseUrl}/application/reject`,
+    ADD_REFEREE_DETAILS: `${baseUrl}/application/update/referee`,
+    UPDATE_REMITA_DETAILS: `${baseUrl}/user/update/remita_details`,
+    ADD_REMITA_DIRECT_DEBIT: `${baseUrl}/application/update/remita_link`,
+    LINK_CUSTOMERS_BANK_ACCOUNT: `${baseUrl}/application/link_account`,
+    INITIALIZE_OKRA_DIRECT_DEBIT: `${baseUrl}/application/direct_debit`,
+    VERIFY_REPAYMENT: `${baseUrl}/application/repayment/verify`,
+  },
+
+  creditScore: {
+    PURCHASE: `${cobble.test}/purchase`,
+    FETCH: `${cobble.test}/fetch`,
   },
 };
 

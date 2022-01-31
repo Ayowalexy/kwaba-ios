@@ -12,7 +12,7 @@ const stepsArray = [
   {
     title: 'Applications',
     subTitle: '',
-    status: 'complete',
+    status: 'start',
   },
   //   {
   //     title: 'Pre-approval',
@@ -22,7 +22,7 @@ const stepsArray = [
   {
     title: 'Documents upload',
     subTitle: '',
-    status: 'start',
+    status: 'locked',
   },
   //   {
   //     title: 'Verify documents',

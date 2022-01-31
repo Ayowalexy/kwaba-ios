@@ -1,11 +1,15 @@
 import React, {useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {CreditForm} from '.';
+import {CreditForm, CreditAwaiting} from '.';
 import {COLORS, images} from '../../../../util';
+import CreditDashboard from './creditDashboard';
 
 export default function CreditOnboard({navigation}) {
+  const [formData, setFormData] = useState({});
   const [showCreditForm, setShowCreditForm] = useState(false);
+  const [showCreditAwaiting, setShowCreditAwaiting] = useState(false);
+  const [showCreditDashboard, setShowCreditDashboard] = useState(false);
   return (
     <>
       <View style={[styles.container]}>
@@ -50,6 +54,28 @@ export default function CreditOnboard({navigation}) {
         <CreditForm
           visible={showCreditForm}
           onRequestClose={() => setShowCreditForm(!showCreditForm)}
+          setFormData={(v) => {
+            setFormData(v);
+            setShowCreditAwaiting(true);
+          }}
+        />
+      )}
+
+      {showCreditAwaiting && (
+        <CreditAwaiting
+          visible={showCreditAwaiting}
+          onRequestClose={() => setShowCreditAwaiting(!showCreditAwaiting)}
+          data={formData}
+          showDashboard={() => setShowCreditDashboard(true)}
+        />
+      )}
+
+      {showCreditDashboard && (
+        <CreditDashboard
+          visible={showCreditDashboard}
+          onRequestClose={() => setShowCreditDashboard(!showCreditDashboard)}
+          data={formData}
+          navigation={navigation}
         />
       )}
     </>

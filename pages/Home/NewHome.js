@@ -60,6 +60,8 @@ import PushNotification from 'react-native-push-notification';
 
 import {TrackEvent} from '../../util/segmentEvents';
 import moment from 'moment';
+import {setSteps} from '../../redux/actions/rnplActions';
+import {initalState} from '../../redux/reducers/rnplReducer';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -103,6 +105,22 @@ export default function NewHome({navigation}) {
   const [savingType, setSavingType] = useState('');
 
   const layout = useWindowDimensions();
+
+  useEffect(() => {
+    async function fetchData() {
+      const storage = await AsyncStorage.getItem('RnplSteps');
+      if (storage !== null) {
+        const payload = JSON.parse(storage);
+        dispatch(setSteps(payload));
+        // console.log('Payload: ', payload);
+      } else {
+        await AsyncStorage.setItem('RnplSteps', JSON.stringify(initalState));
+        dispatch(setSteps(initalState));
+        // console.log('Initial: ', initalState);
+      }
+    }
+    fetchData();
+  }, []);
 
   const getUserData = async () => {
     const userData = await AsyncStorage.getItem('userData');

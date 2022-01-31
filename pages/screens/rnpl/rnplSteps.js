@@ -46,9 +46,6 @@ export default function RnplSteps({navigation}) {
                 onPress={() => navigation.navigate('RnplViews')}>
                 <View style={[styles.content]}>
                   <Text style={[styles.title]}>{item.title}</Text>
-                  {/* <Text style={[styles.subTitle]}>
-                    Estimated based on comps and home details
-                  </Text> */}
                 </View>
                 <View style={[styles.statusContent]}>
                   {item.status == 'start' && (
@@ -101,6 +98,17 @@ export default function RnplSteps({navigation}) {
           })}
         </View>
       </ScrollView>
+      <View style={[styles.buttonContainer]}>
+        <TouchableOpacity
+          style={[styles.button]}
+          onPress={() => console.log('Helloooo')}>
+          <Text style={[styles.buttonText]}>Go Back</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={[styles.button]}>
+          <Text style={[styles.buttonText]}>Continue</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -113,6 +121,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     paddingVertical: 20,
+    backgroundColor: '#eef7ff',
   },
   topView: {
     paddingHorizontal: 20,
@@ -134,6 +143,7 @@ const styles = StyleSheet.create({
     // borderTopLeftRadius: 30,
     // borderTopRightRadius: 30,
     backgroundColor: '#eef7ff',
+    paddingBottom: 100,
   },
   stepCard: {
     backgroundColor: COLORS.white,
@@ -197,5 +207,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#8fc1ed',
+  },
+  buttonContainer: {
+    paddingHorizontal: 50,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    elevation: 50,
+  },
+  button: {
+    backgroundColor: '#61cd8f',
+    width: '48%',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#fff',
   },
 });

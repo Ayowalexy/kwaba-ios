@@ -68,6 +68,24 @@ const designs = StyleSheet.create({
     color: COLORS.white,
     textTransform: 'capitalize',
   },
+
+  textWrapper: {
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.primary,
+  },
+  subText: {
+    fontSize: 14,
+    color: COLORS.dark,
+    lineHeight: 22,
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
 });
 
 export default designs;
