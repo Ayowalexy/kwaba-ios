@@ -19,11 +19,6 @@ export default function RnplSteps({navigation}) {
         <Icon name="arrow-back" color={COLORS.dark} size={24} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* <View style={[styles.topView]}>
-          <Text style={[styles.topViewText]}>
-            Hi Joshua, let's walk you through{'\n'}your offer
-          </Text>
-        </View> */}
         <View style={[styles.bottomView]}>
           {stepsArray.map((item, index) => {
             return (
@@ -43,7 +38,8 @@ export default function RnplSteps({navigation}) {
                       item.status == 'complete' ? '#effbf7' : COLORS.white,
                   },
                 ]}
-                onPress={() => navigation.navigate('RnplViews')}>
+                onPress={() => navigation.navigate('Form1')}>
+                {/* onPress={() => navigation.navigate('RnplViews')}> */}
                 <View style={[styles.content]}>
                   <Text style={[styles.title]}>{item.title}</Text>
                 </View>

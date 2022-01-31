@@ -223,6 +223,10 @@ import {
   RnplOnboard,
   RnplSteps,
   RnplViews,
+  Form1,
+  Form2,
+  Form3,
+  FormBreakdown,
 } from './pages/screens/rnpl';
 import {CreditOnboard} from './pages/screens/rnpl/creditscore';
 
@@ -794,6 +798,12 @@ const App = () => {
               <Stack.Screen name="RnplSteps" component={RnplSteps} />
               <Stack.Screen name="RnplViews" component={RnplViews} />
               <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
+
+              {/* applications */}
+              <Stack.Screen name="Form1" component={Form1} />
+              <Stack.Screen name="Form2" component={Form2} />
+              <Stack.Screen name="Form3" component={Form3} />
+              <Stack.Screen name="FormBreakdown" component={FormBreakdown} />
             </>
           )}
         </Stack.Navigator>
