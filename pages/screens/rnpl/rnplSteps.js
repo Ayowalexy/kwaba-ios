@@ -94,7 +94,7 @@ export default function RnplSteps({navigation}) {
           })}
         </View>
       </ScrollView>
-      <View style={[styles.buttonContainer]}>
+      {/* <View style={[styles.buttonContainer]}>
         <TouchableOpacity
           style={[styles.button]}
           onPress={() => console.log('Helloooo')}>
@@ -104,7 +104,7 @@ export default function RnplSteps({navigation}) {
         <TouchableOpacity style={[styles.button]}>
           <Text style={[styles.buttonText]}>Continue</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
