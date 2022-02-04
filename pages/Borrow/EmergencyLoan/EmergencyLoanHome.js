@@ -75,7 +75,7 @@ export default function EmergencyLoanHome({navigation}) {
     } else {
       if (Number(unFormatNumber(value)) > maximumLoanAmount) {
         setErrorMsg(
-          `The maximum amount you can get now is ₦${getMaxLoanCap1?.data?.max_loan_amount}`,
+          `The maximum amount you can get now is ₦${getMaxLoanCap1?.data?.maximumLoanAmount}`,
         );
         setRepaymentAmount(0);
       } else {

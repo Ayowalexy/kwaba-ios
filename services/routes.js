@@ -23,7 +23,7 @@ const urls = {
   },
 
   savings: {
-    USER_CREATE_SAVINGS: `${baseUrl}/savings/user-create-savings`,
+    USER_CREATE_SAVINGS: `${baseUrl}/savings/create-user-savings`,
     GET_ALL_USER_SAVINGS: `${baseUrl}/savings/get-all-user-savings`,
     ADD_PAYMENT_TO_SAVINGS: `${baseUrl}/savings/add-payment-to-savings`,
     GET_SAVINGS_INTEREST_RATE: `${baseUrl}/savings/get-savings-interest`,
