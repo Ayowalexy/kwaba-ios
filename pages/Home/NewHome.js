@@ -214,9 +214,9 @@ export default function NewHome({navigation}) {
       setSavings(getMaxLoanCap1?.data?.total_savings);
       setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
 
-      // setInstantLoan(
-      //   Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
-      // );
+      setInstantLoan(
+        Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
+      );
     }
   }, [getMaxLoanCap1]);
 
@@ -284,15 +284,17 @@ export default function NewHome({navigation}) {
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
-        // TrackEvent('Home-Card-Emergencyloan');
+        TrackEvent('Home-Card-Emergencyloan');
+        navigation.navigate('EmergencyLoanDashBoard');
+
         // instantLoan == 0
         //   ? navigation.navigate('EmergencyLoanHome')
         //   : navigation.navigate('EmergencyLoanDashBoard');
 
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
 
@@ -335,41 +337,40 @@ export default function NewHome({navigation}) {
       image: icons.ic3,
       route: () => {
         TrackEvent('Emergency Funds Home Quick Action');
+        if (instantLoan == 0) {
+          navigation.navigate('EmergencyFundOnboarding');
+        } else {
+          navigation.navigate('EmergencyLoanDashBoard');
+        }
 
-        // if (instantLoan == 0) {
-        //   navigation.navigate('EmergencyFundOnboarding');
-        // } else {
-        //   navigation.navigate('EmergencyLoanDashBoard');
-        // }
-
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     {
       name: 'Buy Airtime',
       image: icons.ic1,
       route: () => {
-        // navigation.navigate('AirtimeHome');
-        // TrackEvent('Buy Airtime Home Quick Action');
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        navigation.navigate('AirtimeHome');
+        TrackEvent('Buy Airtime Home Quick Action');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     {
       name: 'Pay Bills',
       image: icons.ic2,
       route: () => {
-        // navigation.navigate('BillsHome');
-        // TrackEvent('Pay Bills Home Quick Action');
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        navigation.navigate('BillsHome');
+        TrackEvent('Pay Bills Home Quick Action');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     // {

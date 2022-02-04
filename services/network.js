@@ -184,7 +184,8 @@ const verifyPayment = async (data) => {
 
 const applyForEmergencyLoan = async (data) => {
   const token = await getToken();
-  const url = apiUrl + '/api/v1/emergency_loan/apply';
+  // const url = apiUrl + '/api/v1/emergency_loan/apply';
+  const url = urls.emergencyfunds.APPLY;
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
@@ -232,7 +233,8 @@ const loanPaymentVerification = async (data) => {
 
 const getEmergencyLoans = async () => {
   const token = await getToken();
-  const url = apiUrl + '/api/v1/emergency_loan/all';
+  // const url = apiUrl + '/api/v1/emergency_loan/all';
+  const url = urls.emergencyfunds.GET_LOANS;
 
   try {
     const response = await axios.get(url, {
@@ -244,6 +246,20 @@ const getEmergencyLoans = async () => {
     return response;
   } catch (error) {
     return error.message;
+  }
+};
+
+const getOneLoan = async (id) => {
+  const token = await getToken();
+  const url = urls.emergencyfunds.GET_LOANS;
+
+  try {
+    const response = await axios.get(`${url}/${id}`, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
   }
 };
 
@@ -266,7 +282,8 @@ const getSingleLoan = async (data) => {
 
 const getAllEmergencyLoansRepayment = async () => {
   const token = await getToken();
-  const url = apiUrl + `/api/get_all_emergencyloans_repayments`;
+  // const url = apiUrl + `/api/get_all_emergencyloans_repayments`;
+  const url = urls.payments.EMERGENCY_FUNDS_GET_REPAYMENT;
   try {
     const response = await axios.get(url, {
       headers: {'Content-Type': 'application/json', Authorization: token},
@@ -606,7 +623,7 @@ const verifySavingsPayment = async (data) => {
   const token = await getToken();
   try {
     const response = await axios.post(
-      urls.savings.VERIFY_SAVINGS_PAYMENT,
+      urls.savings.VERIFY_PAYMENT,
       JSON.stringify(data),
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
@@ -622,7 +639,7 @@ const completeSavingsPayment = async (data) => {
   const token = await getToken();
   try {
     const response = await axios.post(
-      urls.savings.COMPLETE_SAVINGS_PAYMENT,
+      urls.savings.COMPLETE_PAYMENT,
       JSON.stringify(data),
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
@@ -1046,6 +1063,7 @@ export {
   loanPaymentVerification,
   getEmergencyLoans,
   getSingleLoan,
+  getOneLoan,
   getAllEmergencyLoansRepayment,
   getSingleEmergencyLoanRepayment,
   resolveBankAccount,

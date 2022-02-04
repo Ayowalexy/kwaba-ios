@@ -12,6 +12,7 @@ import {
 import {COLORS} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
+  getOneLoan,
   getSingleLoan,
   loanRepayment,
   verifySavingsPayment,
@@ -64,14 +65,12 @@ export default function ActiveLoanModal(props) {
   }, []);
 
   const getOne = async () => {
-    const data = {
-      loanId: loanID,
-    };
     try {
       setSpinner(true);
-      const resp = await getSingleLoan(data);
+      // const resp = await getSingleLoan(data);
+      const resp = await getOneLoan(loanID);
       if (resp.status == 200) {
-        // console.log('response get one loan: ', resp.data.data);
+        console.log('response get one loan: ', resp.data.data);
         setSpinner(false);
         const d = resp.data.data;
         setData(d);

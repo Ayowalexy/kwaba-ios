@@ -62,6 +62,7 @@ export default function AmountModalWallet(props) {
     const data = {
       amount: unFormatNumber(values.amount),
       channel: channel, //paystack
+      purpose: 'wallet',
     };
 
     await verifyPaymentRequest(data);

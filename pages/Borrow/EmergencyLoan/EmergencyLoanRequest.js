@@ -318,28 +318,34 @@ const EmergencyLoanRequest = ({route, navigation}) => {
 
       <Spinner visible={spinner} animation="fade" size="large" />
 
-      <LoanPurposeModal
-        visible={showLoanPurposeModal}
-        onRequestClose={() => setShowLoanPurposehModal(!showLoanPurposeModal)}
-        onClick={(value) => setLoanPurpose(value)}
-        loanPurpose={loanPurpose}
-        setLoanPurpose={setLoanPurpose}
-      />
+      {showLoanPurposeModal && (
+        <LoanPurposeModal
+          visible={showLoanPurposeModal}
+          onRequestClose={() => setShowLoanPurposehModal(!showLoanPurposeModal)}
+          onClick={(value) => setLoanPurpose(value)}
+          loanPurpose={loanPurpose}
+          setLoanPurpose={setLoanPurpose}
+        />
+      )}
 
-      <ConfirmModal
-        visible={modalVisible}
-        onRequestClose={() => setVisible(!modalVisible)}
-        data={{loanAmount, repaymentAmount, dueDate}}
-        onClick={handleSubmit}
-      />
+      {modalVisible && (
+        <ConfirmModal
+          visible={modalVisible}
+          onRequestClose={() => setVisible(!modalVisible)}
+          data={{loanAmount, repaymentAmount, dueDate}}
+          onClick={handleSubmit}
+        />
+      )}
 
-      <SuccessModal
-        visible={successModal}
-        navigation={navigation}
-        // onRequestClose={() => console.log('Joshua')}
-        onRequestClose={() => setSuccessModal(!successModal)}
-        // setSuccessModal={() => setSuccessModal(!successModal)}
-      />
+      {successModal && (
+        <SuccessModal
+          visible={successModal}
+          navigation={navigation}
+          // onRequestClose={() => console.log('Joshua')}
+          onRequestClose={() => setSuccessModal(!successModal)}
+          // setSuccessModal={() => setSuccessModal(!successModal)}
+        />
+      )}
 
       {disbursementModal && (
         <DisbursementModal

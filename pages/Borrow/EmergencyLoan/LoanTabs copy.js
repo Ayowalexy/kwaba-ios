@@ -9,13 +9,11 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import {
-  completeSavingsPayment,
   getEmergencyLoans,
   loanRepayment,
   verifySavingsPayment,
@@ -24,7 +22,7 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import {COLORS} from '../../../util';
-import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
+import {formatNumber} from '../../../util/numberFormatter';
 import ActiveLoanModal from './ActiveLoanModal';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
@@ -85,93 +83,7 @@ export default function LoanTabs(props) {
     filterLoans('pending');
   }, []);
 
-  const showSuccess = async () => {
-    navigation.navigate('PaymentSuccessful', {
-      name: 'Home',
-      content: 'Payment Successful',
-      subText: 'Awesome! Your payment was successful',
-    });
-  };
-
-  const completePayment = async (data) => {
-    setSpinner(true);
-    const res = await completeSavingsPayment(data);
-
-    try {
-      if (res.status == 201) {
-        setSpinner(false);
-
-        console.log('Complete Paymentttttttttt: ', res.data.data);
-        await showSuccess();
-      } else {
-        setSpinner(false);
-        console.log('Complete Paymentttttttttt: ', res.response.data);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('The Error: ', error.response);
-    }
-  };
-
-  const verifyPayment = async (data, paymentChannel) => {
-    setSpinner(true);
-    const res = await verifySavingsPayment(data);
-
-    setSpinner(false);
-    if (!res) {
-      return [];
-    }
-
-    if (res.status == 200) {
-      console.log('Verify Data: ', res?.data?.data);
-      setResData(res?.data?.data);
-      if (paymentChannel == 'wallet') {
-        const payload = {
-          amount: amount,
-          emergencyLoanId: loanRepaymentData?.id,
-          channel: 'wallet',
-          reference: res?.data?.data.paymentReference,
-          purpose: 'emergencyLoanRepayment',
-        };
-
-        console.log('That payload: ', payload);
-        await completePayment(payload);
-      } else {
-        setShowPaystackPayment(true);
-      }
-    } else {
-      setSpinner(false);
-      console.log('Error: ', res.response.data);
-    }
-  };
-
   const handlePaymentRoute = async (value) => {
-    console.log('Value: ', value);
-
-    if (value == 'wallet') {
-      const verifyPayload = {
-        amount: amount,
-        emergencyLoanId: loanRepaymentData?.id,
-        channel: 'wallet',
-        purpose: 'emergencyLoanRepayment',
-      };
-
-      setChannel(value); // wallet
-      await verifyPayment(verifyPayload, value);
-    } else {
-      const verifyPayload = {
-        amount: amount,
-        emergencyLoanId: loanRepaymentData?.id,
-        channel: 'paystack',
-        purpose: 'emergencyLoanRepayment',
-      };
-
-      setChannel(value); // card or bank_transfer
-      await verifyPayment(verifyPayload, value);
-    }
-  };
-
-  const handlePaymentRoute2 = async (value) => {
     console.log('The Value: ', value);
     // setChannel(value);
     // setShowAmountModal(true);
@@ -319,13 +231,11 @@ export default function LoanTabs(props) {
                       styles.repaymentStatus,
                       {
                         backgroundColor:
-                          status == 'active'
+                          status == 'active' || status == 'paid'
                             ? COLORS.secondary
-                            : status == 'paid'
-                            ? '#e6e6e6'
-                            : status == 'pending'
-                            ? 'orange'
-                            : 'red',
+                            : status == 'pending' || status == 'running'
+                            ? COLORS.orange
+                            : COLORS.red,
                       },
                     ]}
                   />
@@ -352,7 +262,9 @@ export default function LoanTabs(props) {
                           marginTop: 5,
                         },
                       ]}>
-                      {item.status}
+                      {Number(item.amount_paid) >= Number(item.repayment_amount)
+                        ? 'Paid'
+                        : item.status}
                     </Text>
                   </View>
                 </View>
@@ -381,36 +293,77 @@ export default function LoanTabs(props) {
                       style={{marginLeft: 5}}
                     />
                   </View>
+
+                  {/* {Number(item.amount_paid) >= Number(item.repayment_amount) ? (
+                    <></>
+                  ) : (
+                    <>
+                      {item.amount_paid != '0' && (
+                        <View style={{flexDirection: 'row'}}>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontStyle: 'italic',
+                              marginTop: 5,
+                              color: COLORS.dark,
+                            }}>
+                            Paid - ₦{formatNumber(item.amount_paid)},{'  '}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              fontStyle: 'italic',
+                              marginTop: 5,
+                              color: COLORS.dark,
+                            }}>
+                            To Balance - ₦
+                            {formatNumber(
+                              Number(item.repayment_amount) -
+                                Number(item.amount_paid),
+                            )}
+                          </Text>
+                        </View>
+                      )}
+                    </>
+                  )} */}
                 </View>
               </View>
 
               {/* Using amount */}
-              {item.status.toLowerCase() == 'active' && (
+              {item.status != 'Pending' ? (
                 <>
-                  <View style={{marginTop: -5}}>
-                    <TouchableOpacity
-                      onPress={() => {
-                        setLoanRepaymentData(item);
-                        setShowAmountModal(true);
-                      }}
-                      style={{
-                        backgroundColor: COLORS.primary,
-                        paddingVertical: 10,
-                        paddingHorizontal: 10,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: COLORS.white,
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase',
-                          textAlign: 'center',
-                        }}>
-                        Pay Now
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
+                  {Number(item.amount_paid) >= Number(item.repayment_amount) ? (
+                    <></>
+                  ) : (
+                    <>
+                      <View style={{marginTop: -5}}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setLoanRepaymentData(item);
+                            setShowAmountModal(true);
+                          }}
+                          style={{
+                            backgroundColor: COLORS.primary,
+                            paddingVertical: 10,
+                            paddingHorizontal: 10,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              color: COLORS.white,
+                              fontWeight: 'bold',
+                              textTransform: 'uppercase',
+                              textAlign: 'center',
+                            }}>
+                            Pay Now
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </>
+                  )}
                 </>
+              ) : (
+                <></>
               )}
 
               {/* Using status */}
@@ -540,21 +493,39 @@ export default function LoanTabs(props) {
             // Do something
           }}
           paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            // Do something
+
             const data = {
-              amount: amount,
-              emergencyLoanId: loanRepaymentData?.id,
               channel: 'paystack',
-              reference: resData.paymentReference,
-              purpose: 'emergencyLoanRepayment',
+              reference: res.data.transactionRef.reference,
             };
 
-            await completePayment(data);
+            console.log('the dataatatta: ', data);
+
+            setSpinner(true);
+            const verify = await verifySavingsPayment(data);
+
+            console.log('the verifyyyyy: ', verify);
+
+            if (verify.status == 200) {
+              // console.log('Success: Bills Payment Verified', res);
+              navigation.navigate('PaymentSuccessful', {
+                name: 'EmergencyLoanDashBoard',
+                content: 'Payment Successful',
+                subText: 'Awesome! You have successfully made payment',
+              });
+              setSpinner(false);
+              Alert.alert('Oops! ', verify?.response?.data?.response_message);
+            } else {
+              setSpinner(false);
+            }
           }}
         />
       )}
 
-      {/* <Spinner visible={spinner} size="small" /> */}
-      {spinner && <ActivityIndicator size={'large'} color={COLORS.primary} />}
+      <Spinner visible={spinner} size="small" />
     </>
   );
 }

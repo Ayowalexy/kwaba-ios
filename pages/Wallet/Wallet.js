@@ -532,21 +532,23 @@ export default function Wallet(props) {
             console.log('Pay cancel', e);
             // Do something
           }}
-          paymentSuccessful={async (res) => {
+          paymentSuccessful={async (paystackRes) => {
+            setSpinner(true);
+
             const data = {
               amount: resData.amount,
               channel: 'paystack',
               reference: resData.paymentReference,
-              wallet: true,
+              purpose: 'wallet',
+              // wallet: true,
             };
 
             console.log('the dataatatta: ', data);
             console.log('This complete data: ', data);
-            try {
-              setSpinner(true);
-              const res = await completeSavingsPayment(data);
-              // console.log('Complete Out: ', res);
+            const res = await completeSavingsPayment(data);
+            console.log('Complete Out: ', res.response);
 
+            try {
               if (res.status == 201) {
                 setSpinner(false);
                 console.log('Complete Payment: ', res.data.data);
@@ -558,9 +560,11 @@ export default function Wallet(props) {
                 });
               } else {
                 setSpinner(false);
+                console.log('Not Okay Res: ', res.response.data);
               }
             } catch (error) {
               setSpinner(false);
+              console.log('Error: ', error.response.data);
             }
           }}
         />

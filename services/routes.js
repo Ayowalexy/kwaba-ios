@@ -29,8 +29,8 @@ const urls = {
     GET_SAVINGS_INTEREST_RATE: `${baseUrl}/savings/get-savings-interest`,
     GET_TOTAL_USER_SAVINGS_AMOUNT: `${baseUrl}/savings/get-total-user-savings-amount`,
 
-    COMPLETE_SAVINGS_PAYMENT: `${baseUrl}/payments/complete-payment`,
-    VERIFY_SAVINGS_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
+    COMPLETE_PAYMENT: `${baseUrl}/payments/complete-payment`,
+    VERIFY_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
     GET_SAVINGS_PAYMENT_HISTORY: `${baseUrl}/payments/get-savings-payment-history`,
   },
 
@@ -40,6 +40,7 @@ const urls = {
 
   payments: {
     TOKENIZED_CARDS: `${baseUrl}/payments/get-tokenized-cards`,
+    EMERGENCY_FUNDS_GET_REPAYMENT: `${baseUrl}/payments/get-repayments`,
   },
 
   applications: {
@@ -63,6 +64,18 @@ const urls = {
   creditScore: {
     PURCHASE: `${cobble.test}/purchase`,
     FETCH: `${cobble.test}/fetch`,
+  },
+
+  emergencyfunds: {
+    APPLY: `${baseUrl}/emergency-loans/apply`,
+    GET_LOANS: `${baseUrl}/loans/get-loans`,
+  },
+
+  bills: {
+    GET_BILLS_SERVICES: `${baseUrl}/bills/get-bills-services`,
+    GET_BILLS_CATEGORY: `${baseUrl}/bills/get-bills-category`,
+    GET_BILLS_ITEMS: `${baseUrl}/bills/get-bills-items`,
+    GET_AIRTIME_BILLS: `${baseUrl}/bills/get-airtime-bills`,
   },
 };
 
