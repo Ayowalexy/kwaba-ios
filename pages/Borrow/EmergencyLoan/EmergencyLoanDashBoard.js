@@ -77,10 +77,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
     (async () => {
       const loans = await getEmergencyLoans();
       console.log('Loans Data: ', loans);
-      const activeLoan = loans.data.data.filter(
+      const activeLoan = loans?.data?.data.filter(
         (c) => c.repayment_status == 0,
       )[0];
-      const paidLoans = loans.data.data.filter((c) => c.repayment_status == 1);
+      const paidLoans = loans?.data?.data.filter(
+        (c) => c.repayment_status == 1,
+      );
       setRepaidLoans(paidLoans);
       setLoanAmount(activeLoan != undefined ? activeLoan.loan_amount : 0);
       setDueDate(
