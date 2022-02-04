@@ -87,12 +87,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
       setLoanAmount(activeLoan != undefined ? activeLoan.loan_amount : 0);
       setDueDate(
         activeLoan != undefined
-          ? moment(activeLoan.repayment_date.split(' ')[0]).format(
+          ? moment(activeLoan?.repayment_date?.split(' ')[0]).format(
               'DD, MMM YYYY',
             )
           : '',
       );
-      setLoanId(activeLoan != undefined ? activeLoan.id : '');
+      setLoanId(activeLoan != undefined ? activeLoan?.id : '');
 
       console.log('The active loan: ', activeLoan);
 

@@ -149,7 +149,7 @@ export default function Screen3({navigation, route}) {
     dispatch(soloSaving({locked: locked}));
   }, [locked]);
 
-  const createSavings = async () => {
+  const createSavings = async (bol) => {
     setSpinner(true);
     const data = {
       auto_save: route?.params?.auto_save,
@@ -167,10 +167,18 @@ export default function Screen3({navigation, route}) {
     setSpinner(false);
     if (!response) return [];
 
-    const vData = response?.data?.data;
-    await verifyPaymentRequest(vData);
-
-    console.log('Hello hereee', vData);
+    if (bol) {
+      const vData = response?.data?.data;
+      await verifyPaymentRequest(vData);
+      console.log('Hello hereee', vData);
+    } else {
+      navigation.navigate('PaymentSuccessful', {
+        content: 'Savings Created',
+        subText: 'Your savings plan has been created successfully',
+        name: 'SoloSavingDashBoard',
+        id: response?.data?.data.id,
+      });
+    }
   };
 
   const verifyPaymentRequest = async (data) => {
@@ -198,9 +206,9 @@ export default function Screen3({navigation, route}) {
     const data = route?.params;
 
     if (data?.amount == 0) {
-      console.log('No Payment');
+      createSavings(false); // no payemnt here, just create the savings thank you.
     } else {
-      createSavings();
+      createSavings(true);
     }
   };
 
