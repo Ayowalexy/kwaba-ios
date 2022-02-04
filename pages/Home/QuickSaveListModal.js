@@ -176,6 +176,7 @@ export default function QuickSaveListModal(props) {
           savings_id: data.savings_id,
           channel: 'wallet',
           reference: verifyData.paymentReference,
+          purpose: 'savings',
         };
 
         await savingsPayment(payload);
@@ -210,6 +211,7 @@ export default function QuickSaveListModal(props) {
         amount: amount,
         savings_id: id,
         channel: 'wallet',
+        purpose: 'savings',
       };
 
       setChannel(value); // wallet
@@ -219,6 +221,7 @@ export default function QuickSaveListModal(props) {
         amount: amount,
         savings_id: id,
         channel: 'paystack',
+        purpose: 'savings',
       };
 
       setChannel(value);
@@ -488,6 +491,7 @@ export default function QuickSaveListModal(props) {
               savings_id: verifyData.id,
               channel: 'paystack',
               reference: verifyData.paymentReference,
+              purpose: 'savings',
             };
 
             console.log('the dataatatta: ', data);
