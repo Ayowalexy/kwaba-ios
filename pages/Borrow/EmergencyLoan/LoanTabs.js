@@ -75,6 +75,8 @@ export default function LoanTabs(props) {
         // console.log('The Loan: ', loans);
         setRepaymentList(loans?.data?.data);
         // dispatch(getMaxLoanCap());
+      } else {
+        setSpinner(false);
       }
     } catch (error) {
       setSpinner(false);

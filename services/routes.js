@@ -8,7 +8,7 @@ const cobble = {
   live: 'https://api.getcobble.net/integration',
 };
 
-const baseUrl = kwaba.staging;
+const baseUrl = kwaba.live;
 
 const urls = {
   auth: {
@@ -62,8 +62,8 @@ const urls = {
   },
 
   creditScore: {
-    PURCHASE: `${cobble.test}/purchase`,
-    FETCH: `${cobble.test}/fetch`,
+    PURCHASE: `${cobble.live}/purchase`,
+    FETCH: `${cobble.live}/fetch`,
   },
 
   emergencyfunds: {
