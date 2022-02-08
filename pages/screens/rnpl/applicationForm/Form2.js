@@ -122,7 +122,7 @@ const Form2 = ({navigation}) => {
           style={{fontWeight: '900', padding: 15}}
           color={COLORS.primary}
         />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
               // marginVertical: 11,

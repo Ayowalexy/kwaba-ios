@@ -281,7 +281,7 @@ export default function Start({navigation}) {
             </View>
           </View>
 
-          <View style={designs.card}>
+          <View style={[designs.card, {display: 'none'}]}>
             <View style={designs.cardFlex}>
               <View>
                 <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>

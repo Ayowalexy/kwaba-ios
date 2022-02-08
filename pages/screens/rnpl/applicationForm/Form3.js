@@ -33,6 +33,10 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
 import RnplStepProgress from '../RnplStepProgress';
+import {
+  getCurrentApplication,
+  newApplication,
+} from '../../../../services/applications';
 
 const rentalLoanFormSchema = yup.object().shape({
   homeAddress: yup.string().required('Field required'),
@@ -102,49 +106,6 @@ const RentalLoanForm3 = ({navigation}) => {
     total_rent: '',
   };
 
-  const dummyData2 = {
-    bvn: '123456789',
-    dob: '1991-10-09',
-  };
-
-  const handleModalButtonPush = async () => {
-    setVisible(false);
-
-    const data = {
-      home_address: homeAddress,
-      home_stay_duration: lengthOfResidence,
-      last_rent_amount: unFormatNumber(lastRentAmount),
-      last_rent_paid_to: lastPaymentRecipient,
-      last_rent_payment_method: modeOfPayment,
-    };
-
-    console.log(lengthOfResidence);
-
-    const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
-    const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new';
-    const token = await getToken();
-    console.log(dummyData);
-    console.log(token);
-    console.log({...dummyData, ...JSON.parse(loanFormData), ...data});
-    try {
-      const response = await axios.post(
-        url,
-        {...dummyData, ...JSON.parse(loanFormData), ...data},
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      console.log(response);
-      setSuccessModal(true);
-
-      logCurrentStorage();
-    } catch (error) {
-      console.log(error.response.data);
-      Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
-    }
-  };
-
   const handleSubmit = async (values) => {
     const data = {
       home_address: values.homeAddress,
@@ -196,25 +157,22 @@ const RentalLoanForm3 = ({navigation}) => {
     setVisible(false);
     setSpinner(true);
 
-    const token = await getToken();
     let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     let parsedData = JSON.parse(loanFormData);
 
     let data = {...dummyData, ...parsedData};
     console.log('The Data: ', data);
 
+    const res = await newApplication(data);
+
     try {
-      const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new';
-      const response = await axios.post(url, data, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
-      // console.log('The response: ', response);
-      navigation.navigate('RentalLoanFormCongratulation');
-      setSpinner(false);
+      if (res.status == 200) {
+        navigation.navigate('RentalLoanFormCongratulation');
+        setSpinner(false);
+      } else {
+        setSpinner(false);
+      }
     } catch (error) {
-      setSpinner(false);
-      console.log(error.response.data);
       if (
         error?.response?.data?.statusMsg ==
         'You already have a pending application!'
@@ -226,36 +184,24 @@ const RentalLoanForm3 = ({navigation}) => {
   };
 
   const getApplicationData = async () => {
-    const getToken = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const token = JSON.parse(userData).token;
-      return token;
-    };
-    const token = await getToken();
-
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
 
     console.log('steps here' + steps);
+
+    const res = await getCurrentApplication();
+
     try {
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      // console.log(applicationIDCallRes.data.data.id);
-      console.log(applicationIDCallRes.data.data);
-      const applicationId = applicationIDCallRes.data.data.id;
-      const status = applicationIDCallRes.data.data.status;
-      // const statement = applicationIDCallRes.data.data.statement;
-      if (status !== 4) {
-        // setExistingApplication(applicationId);
-        console.log('here', applicationId);
-        console.log('status', applicationIDCallRes.data.data.status);
+      if (res.status == 200) {
+        const applicationId = res.data.data.id;
+        const status = res.data.data.status;
+        if (status !== 4) {
+          console.log('here', applicationId);
+          console.log('status', applicationIDCallRes.data.data.status);
+        }
       }
     } catch (error) {
-      console.log(error.response.data);
+      console.log('Error: ', error);
     }
   };
 
@@ -494,7 +440,7 @@ const RentalLoanForm3 = ({navigation}) => {
           style={{fontWeight: '900', padding: 15}}
           color={COLORS.primary}
         />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
               paddingHorizontal: 20,

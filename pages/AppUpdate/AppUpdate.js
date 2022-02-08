@@ -11,7 +11,7 @@ import {COLORS, images} from '../../util';
 
 const {width, height} = Dimensions.get('window');
 
-export default function AppUpdate({navigation}) {
+export default function AppUpdate({navigation, openStore}) {
   return (
     <View style={[styles.container]}>
       <View style={{flex: 1}}>
@@ -23,23 +23,23 @@ export default function AppUpdate({navigation}) {
         <View style={[styles.textContainer]}>
           <Text style={[styles.title]}>New Update Available</Text>
           <Text style={[styles.body]}>
-            To enjoy all the amazing services Kwaba has to offer you, we
-            strongly advise you to update your app
+            To enjoy all the amazing services Kwaba has to offer you, kindly
+            update your app.
           </Text>
         </View>
       </View>
 
       <View style={[styles.actionCenter]}>
-        <TouchableOpacity style={[styles.actionBtn]}>
+        <TouchableOpacity style={[styles.actionBtn]} onPress={openStore}>
           <Text style={[styles.actionBtnText, {color: COLORS.white}]}>
             UPDATE APP
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={[styles.actionBtn, {backgroundColor: 'transparent'}]}>
           <Text style={[styles.actionBtnText]}>I'LL UPDATE LATER</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

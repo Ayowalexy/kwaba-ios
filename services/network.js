@@ -1047,6 +1047,20 @@ const creditScoreFetch = async (data) => {
   }
 };
 
+const checkAppRelease = async () => {
+  const url = urls.app.CHECK_RELEASE;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -1118,4 +1132,5 @@ export {
   creditScorePurchase,
   creditScoreFetch,
   completeSavingsPayment,
+  checkAppRelease,
 };

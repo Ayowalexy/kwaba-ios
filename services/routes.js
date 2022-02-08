@@ -85,6 +85,10 @@ const urls = {
     // GET → /savings/buddy/get-user-buddy-invites
     // DELETE → /savings/buddy/deleteInvite/:id
   },
+
+  app: {
+    CHECK_RELEASE: `${baseUrl}/stable-front-end-version`,
+  },
 };
 
 export default urls;

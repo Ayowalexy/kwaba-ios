@@ -388,29 +388,12 @@ export default function NewHome({navigation}) {
         'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
       img: images.maskGroup30,
     },
-    {
-      title: 'Join a Savings Challenge',
-      body:
-        'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
-      img: images.maskGroup29,
-      route: () => navigation.navigate('JoinChallengeList'),
-    },
     // {
-    //   title: 'Home Loans',
+    //   title: 'Join a Savings Challenge',
     //   body:
-    //     'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
+    //     'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
     //   img: images.maskGroup29,
-    //   route: () =>
-    //     isProfileComplete
-    //       ? navigation.navigate('LoanScreen1')
-    //       : setCompleteProfileModal(true),
-    // },
-    // {
-    //   title: 'Refer and Earn',
-    //   body:
-    //     'Invite your friends and family to use  Kwaba and earn from every referral ',
-    //   img: images.giftPackage,
-    //   route: () => navigation.navigate('Referral'),
+    //   route: () => navigation.navigate('JoinChallengeList'),
     // },
   ];
 
@@ -430,7 +413,7 @@ export default function NewHome({navigation}) {
   const TransactionHistory = () => {
     const slicedTransaction = getWalletTransactions?.data?.slice(0, 4);
     return (
-      <View style={{paddingHorizontal: 20, paddingBottom: 20, marginTop: 20}}>
+      <View style={{paddingHorizontal: 25, paddingBottom: 20, marginTop: 20}}>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
           Recent Transactions
         </Text>
@@ -919,7 +902,7 @@ export default function NewHome({navigation}) {
 
             <View
               style={{
-                paddingHorizontal: 10,
+                paddingHorizontal: 20,
                 overflow: 'hidden',
               }}>
               {bottomCards.map((item, index) => {
@@ -927,12 +910,7 @@ export default function NewHome({navigation}) {
                   <View
                     key={index}
                     style={{
-                      backgroundColor:
-                        index == 0
-                          ? '#EDECFC'
-                          : index != bottomCards.length - 1
-                          ? COLORS.white
-                          : '#5A4CB1',
+                      backgroundColor: index == 0 ? '#EDECFC' : '#5A4CB1',
                       marginBottom: 10,
                       borderRadius: 10,
                       elevation: 0.5,
@@ -952,10 +930,7 @@ export default function NewHome({navigation}) {
                       <View style={{padding: 20}}>
                         <Text
                           style={{
-                            color:
-                              index == bottomCards.length - 1
-                                ? 'white'
-                                : COLORS.dark,
+                            color: index == 0 ? COLORS.dark : COLORS.white,
                             fontFamily: 'CircularStd',
                             fontSize: 15,
                             lineHeight: 23,
@@ -967,10 +942,7 @@ export default function NewHome({navigation}) {
                           style={{
                             width: '75%',
                             marginTop: 9,
-                            color:
-                              index == bottomCards.length - 1
-                                ? 'white'
-                                : COLORS.dark,
+                            color: index == 0 ? COLORS.dark : COLORS.white,
                             fontFamily: 'CircularStd',
                             fontSize: 12,
                             lineHeight: 20,

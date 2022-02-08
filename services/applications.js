@@ -56,7 +56,7 @@ export const acceptOffer = async (data) => {
   }
 };
 
-export const getCuurentApplication = async () => {
+export const getCurrentApplication = async () => {
   const token = await getToken();
   try {
     const response = await axios.get(
