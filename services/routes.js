@@ -77,6 +77,14 @@ const urls = {
     GET_BILLS_ITEMS: `${baseUrl}/bills/get-bills-items`,
     GET_AIRTIME_BILLS: `${baseUrl}/bills/get-airtime-bills`,
   },
+
+  buddySavings: {
+    // GET → /savings/buddy/dashboard/:id
+    // PUT → /savings/buddy/update-buddy
+    // PUT → /savings/buddy/accept-buddy-invite
+    // GET → /savings/buddy/get-user-buddy-invites
+    // DELETE → /savings/buddy/deleteInvite/:id
+  },
 };
 
 export default urls;
