@@ -115,13 +115,13 @@ const Form2 = ({navigation}) => {
   return (
     <RnplStepProgress>
       <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        <Icon
+        {/* <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
           size={25}
           style={{fontWeight: '900', padding: 15}}
           color={COLORS.primary}
-        />
+        /> */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -143,7 +143,7 @@ const Form2 = ({navigation}) => {
               }}>
               {({handleSubmit, isValid, values, setValues}) => (
                 <>
-                  <Text
+                  {/* <Text
                     style={[
                       FONTS.h1FontStyling,
                       {
@@ -154,7 +154,7 @@ const Form2 = ({navigation}) => {
                       },
                     ]}>
                     Rent Now Pay Later
-                  </Text>
+                  </Text> */}
                   <View style={designs.contentWrapper}>
                     <View style={designs.formHeader}>
                       <Text

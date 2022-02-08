@@ -4,10 +4,8 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
-import {ProgressSteps, ProgressStep} from 'react-native-progress-steps';
 import {COLORS} from '../../../util';
 import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -39,9 +37,14 @@ export default function RnplSteps({navigation}) {
                   },
                 ]}
                 onPress={() => navigation.navigate('Form1')}>
-                {/* onPress={() => navigation.navigate('RnplViews')}> */}
                 <View style={[styles.content]}>
-                  <Text style={[styles.title]}>{item.title}</Text>
+                  <Text
+                    style={[
+                      styles.title,
+                      {color: item.status == 'locked' ? '#999' : COLORS.dark},
+                    ]}>
+                    {item.title}
+                  </Text>
                 </View>
                 <View style={[styles.statusContent]}>
                   {item.status == 'start' && (
@@ -94,17 +97,6 @@ export default function RnplSteps({navigation}) {
           })}
         </View>
       </ScrollView>
-      {/* <View style={[styles.buttonContainer]}>
-        <TouchableOpacity
-          style={[styles.button]}
-          onPress={() => console.log('Helloooo')}>
-          <Text style={[styles.buttonText]}>Go Back</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button]}>
-          <Text style={[styles.buttonText]}>Continue</Text>
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 }
@@ -113,11 +105,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    backgroundColor: '#eef7ff',
+    backgroundColor: '#effbf7',
   },
   header: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: '#eef7ff',
   },
   topView: {
     paddingHorizontal: 20,
@@ -133,13 +126,8 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   bottomView: {
-    paddingVertical: 20,
     paddingHorizontal: 40,
     flex: 1,
-    // borderTopLeftRadius: 30,
-    // borderTopRightRadius: 30,
-    backgroundColor: '#eef7ff',
-    paddingBottom: 100,
   },
   stepCard: {
     backgroundColor: COLORS.white,
@@ -158,7 +146,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: COLORS.dark,
   },
   subTitle: {
