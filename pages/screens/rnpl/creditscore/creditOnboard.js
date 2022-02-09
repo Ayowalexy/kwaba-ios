@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {CreditForm, CreditAwaiting} from '.';
@@ -10,6 +11,20 @@ export default function CreditOnboard({navigation}) {
   const [showCreditForm, setShowCreditForm] = useState(false);
   const [showCreditAwaiting, setShowCreditAwaiting] = useState(false);
   const [showCreditDashboard, setShowCreditDashboard] = useState(false);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'false');
+    })();
+  }, []);
+
   return (
     <>
       <View style={[styles.container]}>

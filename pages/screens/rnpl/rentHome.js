@@ -18,6 +18,12 @@ export default function RentHome({navigation}) {
     getApplicationData();
   }, []);
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const getApplicationData = async () => {
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
@@ -25,6 +31,7 @@ export default function RentHome({navigation}) {
       return token;
     };
     const token = await getToken();
+    const user = await getUser();
 
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
@@ -47,12 +54,6 @@ export default function RentHome({navigation}) {
     }
   };
 
-  const getUser = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const user = JSON.parse(userData).user;
-    return user;
-  };
-
   useEffect(() => {
     (async () => {
       const user = await getUser();
@@ -65,10 +66,24 @@ export default function RentHome({navigation}) {
   const handleRentalLoanClick = async () => {
     TrackEvent('RNPL From Bottom Navigation');
     const user = await getUser();
+    const getCreditScoreDetails = await AsyncStorage.getItem(
+      `creditScoreDetail-${user.id}`,
+    );
+
+    console.log('DATATATATATTA: ', getCreditScoreDetails);
+
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
     } else {
-      navigation.navigate('RnplOnboard');
+      if (getCreditScoreDetails == null) {
+        navigation.navigate('RnplOnboard');
+      } else if (getCreditScoreDetails == 'true') {
+        navigation.navigate('RnplSteps');
+      } else if (getCreditScoreDetails == 'false') {
+        navigation.navigate('CreditOnboard');
+      } else {
+        navigation.navigate('RnplOnboard');
+      }
     }
   };
 

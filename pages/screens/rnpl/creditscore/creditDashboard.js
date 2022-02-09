@@ -19,6 +19,7 @@ import {formatNumber} from '../../../../util/numberFormatter';
 import {AnimatedGaugeProgress} from 'react-native-simple-gauge';
 import {fetch} from '../../../../services/creditScrore';
 import designs from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreditDashboard(props) {
   const {visible, onRequestClose, data, navigation} = props;
@@ -30,6 +31,19 @@ export default function CreditDashboard(props) {
   const [creditScoreDetails, setCreditScoreDetails] = useState({});
   const [creditScoreMessage, setCreditScoreMessage] = useState('');
   const [canApply, setCanApply] = useState(false);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'true');
+    })();
+  }, []);
 
   useEffect(() => {
     handleFetch();

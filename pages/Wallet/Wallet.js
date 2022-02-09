@@ -318,12 +318,12 @@ export default function Wallet(props) {
                       // navigation.navigate('SavingsHome');
                       setShowQuickSaveModal(true);
                     } else if (item == 'Pay Bills') {
-                      // navigation.navigate('BillsHome');
+                      navigation.navigate('BillsHome');
 
-                      Alert.alert(
-                        'Feature currently unavailable',
-                        'We are working hard to make this available as soon as we can.',
-                      );
+                      // Alert.alert(
+                      //   'Feature currently unavailable',
+                      //   'We are working hard to make this available as soon as we can.',
+                      // );
                     }
                   }}>
                   <View
