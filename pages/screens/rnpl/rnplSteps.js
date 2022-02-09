@@ -23,6 +23,7 @@ export default function RnplSteps({navigation}) {
       subTitle: '',
       status: 'start',
       navigate: () => navigation.navigate('Form1'),
+      // navigate: () => navigation.navigate('VerifyingDocuments'),
     },
     {
       title: 'Documents upload',
