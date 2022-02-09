@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -281,7 +282,7 @@ export default function Start({navigation}) {
             </View>
           </View>
 
-          <View style={[designs.card, {display: 'none'}]}>
+          <View style={[designs.card]}>
             <View style={designs.cardFlex}>
               <View>
                 <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
@@ -291,9 +292,14 @@ export default function Start({navigation}) {
                 <TouchableOpacity
                   onPress={() => {
                     TrackEvent('Buddy Saving');
-                    navigation.navigate(
-                      // buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
-                      store2?.data?.length == 0 ? 'BuddySaving1' : 'BuddyLists',
+                    // navigation.navigate(
+                    //   // buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
+                    //   store2?.data?.length == 0 ? 'BuddySaving1' : 'BuddyLists',
+                    // );
+
+                    Alert.alert(
+                      'Feature currently unavailable',
+                      'We are working hard to make this available as soon as we can.',
                     );
                   }}
                   style={[

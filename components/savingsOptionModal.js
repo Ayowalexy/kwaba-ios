@@ -22,7 +22,6 @@ export default function SavingsOptionModal(props) {
   const handleClick = (item) => {
     onRequestClose();
     showSavingType(item.name);
-    // console.log('Item: ', item);
   };
 
   const savings = [

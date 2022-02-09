@@ -470,9 +470,15 @@ export default function Wallet(props) {
           visible={showQuickSaveModal}
           // setShowPaymentType={(bol) => setShowPaymentType(bol)}
           showSavingType={(data) => {
-            // console.log('Done: ', data);
-            setSavingType(data);
-            setShowQuickSaveListModal(true);
+            if (data == 'Buddy Savings') {
+              Alert.alert(
+                'Feature currently unavailable',
+                'We are working hard to make this available as soon as we can.',
+              );
+            } else {
+              setSavingType(data);
+              setShowQuickSaveListModal(true);
+            }
           }}
         />
       )}

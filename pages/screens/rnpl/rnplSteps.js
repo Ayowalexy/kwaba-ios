@@ -7,10 +7,61 @@ import {
   ScrollView,
 } from 'react-native';
 import {COLORS} from '../../../util';
-import stepsArray from '../../../util/stepsArray';
+// import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function RnplSteps({navigation}) {
+  const stepsArray = [
+    {
+      title: 'Credit score',
+      subTitle: '',
+      status: 'complete',
+      navigate: () => console.log('Hello credit score here!'),
+    },
+    {
+      title: 'Applications',
+      subTitle: '',
+      status: 'start',
+      navigate: () => navigation.navigate('Form1'),
+    },
+    {
+      title: 'Documents upload',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('NewAllDocuments'),
+    },
+    {
+      title: 'Offer approval breakdown',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Property details',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Address verification',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Direct debit',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Disbursement',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+  ];
+
   return (
     <View style={[styles.container]}>
       <View style={[styles.header]}>
@@ -36,9 +87,7 @@ export default function RnplSteps({navigation}) {
                       item.status == 'complete' ? '#effbf7' : COLORS.white,
                   },
                 ]}
-                // onPress={() => navigation.navigate('Form1')}
-                // onPress={() => navigation.navigate('NewAllDocuments')}
-                onPress={() => navigation.navigate('RnplDirectdebit')}>
+                onPress={item.navigate}>
                 <View style={[styles.content]}>
                   <Text
                     style={[
