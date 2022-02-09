@@ -36,7 +36,9 @@ export default function RnplSteps({navigation}) {
                       item.status == 'complete' ? '#effbf7' : COLORS.white,
                   },
                 ]}
-                onPress={() => navigation.navigate('Form1')}>
+                // onPress={() => navigation.navigate('Form1')}
+                // onPress={() => navigation.navigate('NewAllDocuments')}
+                onPress={() => navigation.navigate('RnplDirectdebit')}>
                 <View style={[styles.content]}>
                   <Text
                     style={[

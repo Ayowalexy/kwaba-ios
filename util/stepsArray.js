@@ -7,12 +7,12 @@ const stepsArray = [
   {
     title: 'Applications',
     subTitle: '',
-    status: 'start',
+    status: 'complete',
   },
   {
     title: 'Documents upload',
     subTitle: '',
-    status: 'locked',
+    status: 'start',
   },
   {
     title: 'Offer approval breakdown',
@@ -32,7 +32,7 @@ const stepsArray = [
   {
     title: 'Direct debit',
     subTitle: '',
-    status: 'locked',
+    status: 'start',
   },
   {
     title: 'Disbursement',

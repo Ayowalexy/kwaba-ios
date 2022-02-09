@@ -156,7 +156,7 @@ const BottomNavigator = ({navigation}) => {
         <Tab.Screen name="Home" component={NewHome} />
         <Tab.Screen name="Wallet" component={Wallet} />
         {/* <Tab.Screen name="Rent" component={Borrow} /> */}
-        {true ? (
+        {false ? (
           <Tab.Screen name="Rent" component={RentHome} />
         ) : (
           <Tab.Screen name="Rent" component={RnplSteps} />

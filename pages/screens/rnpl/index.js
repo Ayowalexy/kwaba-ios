@@ -8,6 +8,7 @@ import Form1 from './applicationForm/Form1';
 import Form2 from './applicationForm/Form2';
 import Form3 from './applicationForm/Form3';
 import FormBreakdown from './applicationForm/FormBreakdown';
+import RnplDirectdebit from './RnplDirectdebit';
 
 export {
   RentHome,
@@ -20,4 +21,5 @@ export {
   Form2,
   Form3,
   FormBreakdown,
+  RnplDirectdebit,
 };
