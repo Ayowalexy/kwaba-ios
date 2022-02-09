@@ -160,8 +160,6 @@ export default function CreditDashboard(props) {
         <View style={[designs.modalView, {paddingBottom: 0}]}>
           <View
             style={{
-              // paddingHorizontal: 20,
-              // paddingVertical: 20,
               flex: 1,
             }}>
             <View
