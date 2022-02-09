@@ -41,7 +41,7 @@ export default function LoandPurposeModal(props) {
       style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text
+          {/* <Text
             style={{
               fontSize: 14,
               fontWeight: 'bold',
@@ -49,8 +49,8 @@ export default function LoandPurposeModal(props) {
               color: COLORS.dark,
               paddingBottom: 20,
             }}>
-            Select loan purpose
-          </Text>
+            Select purpose
+          </Text> */}
 
           <Icon
             onPress={onRequestClose}
@@ -62,12 +62,13 @@ export default function LoandPurposeModal(props) {
               position: 'absolute',
               top: 0,
               right: 0,
+              zIndex: 2,
             }}
           />
 
           <ScrollView
             scrollEnabled
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
             ref={scrollViewRef}
             style={{
               paddingHorizontal: 25,

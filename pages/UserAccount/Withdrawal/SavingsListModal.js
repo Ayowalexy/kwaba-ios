@@ -12,15 +12,22 @@ import {COLORS} from '../../../util';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
 import {useDispatch, useSelector} from 'react-redux';
+import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 
 export default function SavingsListModal(props) {
   const dispatch = useDispatch();
   const allSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   const allBuddySaving = useSelector((state) => state.getBuddySavingsReducer);
-  const {onRequestClose, visible, type, navigation, selectedItem} = props;
-  const [savingLists, setSavingLists] = useState([]);
 
+  const {onRequestClose, visible, type, navigation, selectedItem} = props;
+
+  const [savingLists, setSavingLists] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
+
+  useEffect(() => {
+    dispatch(getMaxLoanCap());
+    console.log('Length: ', allSoloSaving?.data?.length);
+  }, []);
 
   useEffect(() => {
     // console.log('The Type: ', type);
@@ -135,7 +142,7 @@ export default function SavingsListModal(props) {
                                 rotation={0}
                                 style={{zIndex: 9, position: 'relative'}}
                                 fill={
-                                  (Number(item.amount_save) /
+                                  (Number(item.amount_saved) /
                                     Number(item.target_amount)) *
                                   100
                                 }
@@ -179,13 +186,25 @@ export default function SavingsListModal(props) {
                               </View>
 
                               <View style={[styles.cardAmount]}>
-                                <Text style={[styles.amountText]}>
-                                  ₦{formatNumber(item.amount_save) || '0.00'}
-                                </Text>
-                                <Text
-                                  style={[styles.amountText, {opacity: 0.5}]}>
-                                  ₦{formatNumber(item.target_amount)}
-                                </Text>
+                                <View>
+                                  <Text
+                                    style={[styles.amountText, {opacity: 0.5}]}>
+                                    Amount Saved
+                                  </Text>
+                                  <Text style={[styles.amountText]}>
+                                    ₦{formatNumber(item.amount_saved) || '0.00'}
+                                  </Text>
+                                </View>
+
+                                <View>
+                                  <Text
+                                    style={[styles.amountText, {opacity: 0.5}]}>
+                                    Target Amount
+                                  </Text>
+                                  <Text style={[styles.amountText]}>
+                                    ₦{formatNumber(item.target_amount)}
+                                  </Text>
+                                </View>
                               </View>
                             </View>
                           </View>
