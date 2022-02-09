@@ -227,6 +227,7 @@ import {
   Form2,
   Form3,
   FormBreakdown,
+  RnplEmploymentStatus,
 } from './pages/screens/rnpl';
 import {CreditOnboard} from './pages/screens/rnpl/creditscore';
 import {checkAppRelease} from './services/network';
@@ -840,6 +841,11 @@ const App = () => {
                 />
                 <Stack.Screen name="RnplSteps" component={RnplSteps} />
                 <Stack.Screen name="RnplViews" component={RnplViews} />
+                <Stack.Screen
+                  name="RnplEmploymentStatus"
+                  component={RnplEmploymentStatus}
+                />
+
                 <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
 
                 {/* applications */}

@@ -153,7 +153,7 @@ export default function CreditDashboard(props) {
       <View style={[designs.centeredView]}>
         <View style={[designs.topNav]}>
           <TouchableOpacity onPress={onRequestClose}>
-            <Icon name="chevron-back" size={25} color={COLORS.primary} />
+            <Icon name="arrow-back-outline" size={25} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
 

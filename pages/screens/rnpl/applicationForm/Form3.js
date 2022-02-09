@@ -165,14 +165,17 @@ const RentalLoanForm3 = ({navigation}) => {
 
     const res = await newApplication(data);
 
+    console.log('The Res: ', res);
+
     try {
-      if (res.status == 200) {
+      if (res.status == 201) {
         navigation.navigate('RentalLoanFormCongratulation');
         setSpinner(false);
       } else {
         setSpinner(false);
       }
     } catch (error) {
+      setSpinner(false);
       if (
         error?.response?.data?.statusMsg ==
         'You already have a pending application!'
@@ -433,13 +436,13 @@ const RentalLoanForm3 = ({navigation}) => {
   return (
     <RnplStepProgress>
       <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        <Icon
+        {/* <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
           size={25}
           style={{fontWeight: '900', padding: 15}}
           color={COLORS.primary}
-        />
+        /> */}
         <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
@@ -459,7 +462,7 @@ const RentalLoanForm3 = ({navigation}) => {
               }}>
               {({handleSubmit, isValid, values, setValues}) => (
                 <>
-                  <Text
+                  {/* <Text
                     style={[
                       FONTS.h1FontStyling,
                       {
@@ -470,7 +473,7 @@ const RentalLoanForm3 = ({navigation}) => {
                       },
                     ]}>
                     Rent Now Pay Later
-                  </Text>
+                  </Text> */}
                   <View style={designs.contentWrapper}>
                     <View style={designs.formHeader}>
                       <Text

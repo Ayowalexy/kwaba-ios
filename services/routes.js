@@ -20,6 +20,7 @@ const urls = {
     ME: `${baseUrl}/users/me`,
     COMPLETE_PROFILE: `${baseUrl}/users/update-profile`,
     SEND_EMAIL_VERIFICATION: `${baseUrl}/users/send-email-verification`,
+    REFERRALS: `${baseUrl}/users/referrals`,
   },
 
   savings: {

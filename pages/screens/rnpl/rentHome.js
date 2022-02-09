@@ -63,53 +63,13 @@ export default function RentHome({navigation}) {
   }, []);
 
   const handleRentalLoanClick = async () => {
-    // TrackEvent('RNPL From Bottom Navigation');
-    // const user = await getUser();
-    // if (user.profile_complete == 0) {
-    //   setCompleteProfileModal(true);
-    // } else {
-    //   const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
-    //   const steps = JSON.parse(rentalSteps);
-    //   console.log('The stepp:', steps);
-
-    //   if (steps != null) {
-    //     if (steps == null) {
-    //       navigation.navigate('RentalLoanForm1');
-    //     } else if (steps.congratulation == '') {
-    //       navigation.navigate('RentalLoanFormCongratulation');
-    //     } else if (steps.all_documents == '') {
-    //       navigation.navigate('NewAllDocuments');
-    //     } else if (steps.verifying_documents == '') {
-    //       navigation.navigate('VerifyingDocuments');
-    //     } else if (steps.offer_breakdown == '') {
-    //       navigation.navigate('OfferApprovalBreakDown');
-    //     } else if (steps.property_detail == '') {
-    //       navigation.navigate('PostPaymentForm1');
-    //     } else if (steps.landlord_detail == '') {
-    //       navigation.navigate('PostPaymentForm2');
-    //     } else if (steps.referee_detail == '') {
-    //       navigation.navigate('PostPaymentForm3');
-    //     } else if (steps.offer_letter == '') {
-    //       navigation.navigate('PTMFB');
-    //     } else if (steps.address_verification == '') {
-    //       navigation.navigate('AddressVerificationPayment');
-    //     } else if (steps.debitmandate == '') {
-    //       navigation.navigate('OkraDebitMandate');
-    //     } else if (steps.awaiting_disbursement == '') {
-    //       navigation.navigate('AwaitingDisbursement');
-    //     } else if (steps.dashboard == '') {
-    //       navigation.navigate('RentNowPayLaterDashboard');
-    //     } else {
-    //       navigation.navigate('RentNowPayLaterDashboard');
-    //     }
-    //   } else {
-    //     navigation.navigate('RentNowPayLaterOnboarding');
-    //   }
-
-    // //QUICK NAVIGATIONS
-    // }
-
-    navigation.navigate('RnplOnboard');
+    TrackEvent('RNPL From Bottom Navigation');
+    const user = await getUser();
+    if (user.profile_complete == 0) {
+      setCompleteProfileModal(true);
+    } else {
+      navigation.navigate('RnplOnboard');
+    }
   };
 
   const handleSavingClick = async () => {

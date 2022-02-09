@@ -24,7 +24,7 @@ export default function CreditOnboard({navigation}) {
             borderBottomWidth: 1,
           }}>
           <Icon
-            name="chevron-back"
+            name="arrow-back-outline"
             color={COLORS.dark}
             size={25}
             onPress={() => navigation.navigate('Home')}

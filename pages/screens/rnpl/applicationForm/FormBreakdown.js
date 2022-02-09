@@ -167,39 +167,12 @@ const FormBreakdown = ({navigation}) => {
   return (
     <RnplStepProgress>
       <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{
-            fontWeight: '900',
-            paddingVertical: 20,
-            paddingHorizontal: 10,
-          }}
-          color={COLORS.primary}
-        />
         <ScrollView>
           <View
             style={{
               paddingHorizontal: 10,
             }}>
-            <Text
-              style={[
-                {
-                  color: '#2A286A',
-                  textAlign: 'left',
-                  fontWeight: 'bold',
-                  fontSize: 20,
-                },
-              ]}>
-              Rent Now Pay Later
-            </Text>
-
-            <View
-              style={[
-                designs.contentWrapper,
-                {borderWidth: 1, borderColor: COLORS.primary},
-              ]}>
+            <View style={[designs.contentWrapper, {paddingBottom: 0}]}>
               <View style={designs.formHeader}>
                 <Text
                   style={[
@@ -219,9 +192,7 @@ const FormBreakdown = ({navigation}) => {
                   FONTS.body1FontStyling,
                   {
                     color: COLORS.dark,
-                    // marginBottom: 8,
                     marginTop: 20,
-                    // fontWeight: 'bold',
                     fontSize: 14,
                   },
                 ]}>
