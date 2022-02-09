@@ -62,6 +62,7 @@ import {TrackEvent} from '../../util/segmentEvents';
 import moment from 'moment';
 import {setSteps} from '../../redux/actions/rnplActions';
 import {initalState} from '../../redux/reducers/rnplReducer';
+import {getUserReferrals} from '../../redux/actions/referralAction';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -204,6 +205,7 @@ export default function NewHome({navigation}) {
     dispatch(getAirtime());
     dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
+    dispatch(getUserReferrals());
     // dispatch(getBillsCategory('airtime'));
 
     // dispatch(getOneSoloSavingsTransaction(489));

@@ -9,38 +9,17 @@ import {
 import {COLORS, FONTS, images, icons} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import QuickSaveModal from '../../../components/QuickSaveModal';
-import Spinner from 'react-native-loading-spinner-overlay';
 import {useDispatch, useSelector} from 'react-redux';
 import {getUserReferrals} from '../../../redux/actions/referralAction';
 import {formatNumber} from '../../../util/numberFormatter';
 
 export default function ReferralDetails({navigation}) {
   const [quickSaveModal, setQuickSaveModal] = useState(false);
-  const [spinner, setSpinner] = useState(false);
-
-  const [earningPerReferral, setEarningPerReferral] = useState(500);
-
-  const [yourEarnings, setYourEarnings] = useState(0);
-  const [signUpCount, setSignUpCount] = useState(0);
-  const [unpaidEarnings, setUnpaidEarnings] = useState(0);
-  const [signUpWithSavingsCount, setSignUpWithSavingsCount] = useState(0);
-
   const dispatch = useDispatch();
   const referrals = useSelector((state) => state.getUserReferralsReducer);
 
   useEffect(() => {
     dispatch(getUserReferrals());
-  }, []);
-
-  useEffect(() => {
-    console.log('The Referrals: ', referrals);
-    const data = referrals.data;
-
-    setYourEarnings(data.total_earnings);
-    setSignUpCount(data.total_num_of_referrals);
-    setSignUpWithSavingsCount(data.total_num_of_valid_referrals);
-    setUnpaidEarnings(data.total_unpaid_earnings);
-    setEarningPerReferral(500); // hard coded
   }, []);
 
   return (
@@ -72,7 +51,7 @@ export default function ReferralDetails({navigation}) {
                     marginLeft: 5,
                     color: COLORS.dark,
                   }}>
-                  ₦{formatNumber(yourEarnings)}
+                  ₦{formatNumber(referrals.data.total_earnings)}
                 </Text>
               </View>
 
@@ -124,29 +103,32 @@ export default function ReferralDetails({navigation}) {
             <View style={[styles.bottomCard]}>
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Signups</Text>
-                <Text style={[styles.value]}>{signUpCount}</Text>
+                <Text style={[styles.value]}>
+                  {referrals?.data?.total_num_of_referrals || 0}
+                </Text>
               </View>
 
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Signups with savings</Text>
-                <Text style={[styles.value]}>{signUpWithSavingsCount}</Text>
+                <Text style={[styles.value]}>
+                  {referrals?.data?.total_num_of_valid_referrals || 0}
+                </Text>
               </View>
 
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Unpaid earning</Text>
-                <Text style={[styles.value]}>₦{unpaidEarnings || '0.00'}</Text>
+                <Text style={[styles.value]}>
+                  ₦
+                  {formatNumber(referrals.data.total_unpaid_earnings) || '0.00'}
+                </Text>
               </View>
 
               <View style={[styles.flexItem]}>
                 <Text style={[styles.text]}>Earnings per referral</Text>
                 <Text style={[styles.value]}>
-                  ₦{earningPerReferral || '0.00'}
+                  ₦{formatNumber(500) || '0.00'}
                 </Text>
               </View>
-              {/* <View style={[styles.flexItem]}>
-                <Text style={[styles.text]}>Referred users</Text>
-                <Text style={[styles.value]}>{userCount}</Text>
-              </View> */}
             </View>
           </View>
         </ScrollView>
@@ -157,8 +139,6 @@ export default function ReferralDetails({navigation}) {
           visible={quickSaveModal}
         />
       )}
-
-      <Spinner visible={spinner} size="large" />
     </>
   );
 }
