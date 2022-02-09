@@ -32,6 +32,7 @@ import {
 } from './savingsChallengeReducer';
 
 import {stepsReducer} from './rnplReducer';
+import {getUserReferralsReducer} from './referralReducer';
 
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
@@ -59,4 +60,5 @@ export const rootReducer = combineReducers({
   getUserSavingsChallengeReducer: getUserSavingsChallengeReducer,
   getOneUserSavingsChallengeReducer: getOneUserSavingsChallengeReducer,
   stepsReducer: stepsReducer,
+  getUserReferralsReducer: getUserReferralsReducer,
 });
