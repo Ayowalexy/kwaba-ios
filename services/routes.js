@@ -1,7 +1,8 @@
 const stageUrl = 'https://kwaba-main-api-2-cq4v8.ondigitalocean.app';
 const liveUrl = 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app';
+const localUrl = 'http://localhost:9000'
 
-const baseUrl = stageUrl;
+const baseUrl = localUrl;
 
 const urls = {
   // For live
