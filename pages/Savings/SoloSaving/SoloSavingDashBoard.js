@@ -578,7 +578,7 @@ export default function SoloSavingDashBoard(props) {
             }}>
             <TouchableOpacity
               // onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
-              onPress={() => navigation.navigate('Borrow')}
+              onPress={() => navigation.navigate('Rent')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -610,12 +610,12 @@ export default function SoloSavingDashBoard(props) {
 
             <TouchableOpacity
               onPress={() => {
-                // navigation.navigate('EmergencyFundOnboarding')
+                navigation.navigate('EmergencyFundOnboarding');
 
-                Alert.alert(
-                  'Feature currently unavailable',
-                  'We are working hard to make this available as soon as we can.',
-                );
+                // Alert.alert(
+                //   'Feature currently unavailable',
+                //   'We are working hard to make this available as soon as we can.',
+                // );
               }}
               style={{
                 width: '45%',

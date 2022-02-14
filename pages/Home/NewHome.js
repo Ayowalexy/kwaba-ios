@@ -206,7 +206,7 @@ export default function NewHome({navigation}) {
     dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
     dispatch(getUserReferrals());
-    // dispatch(getBillsCategory('airtime'));
+    dispatch(getBillsCategory('airtime'));
 
     // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
@@ -315,14 +315,14 @@ export default function NewHome({navigation}) {
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Borrow') //RentNowPayLaterOnboarding
+          ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
           : navigation.navigate('RentNowPayLaterDashboard'),
       cardClick: () => {
         TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Borrow') //RentNowPayLaterOnboarding
+          ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
           : navigation.navigate('RentNowPayLaterDashboard');
       },
     },

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState, useEffect} from 'react';
 import {
   Modal,
@@ -17,23 +18,43 @@ import designs from './styles';
 export default function CreditAwaiting(props) {
   const {visible, onRequestClose, data, showDashboard} = props;
   const [spinner, setSpinner] = useState(false);
+  const [scoreData, setScoreData] = useState({});
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
 
   useEffect(() => {
     handleFetch();
+  }, [scoreData]);
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'awaiting');
+
+      const creditScoreFormData = await AsyncStorage.getItem(
+        `creditScoreData-${user.id}`,
+      );
+      const parseData = JSON.parse(creditScoreFormData);
+      console.log('Parsed Data: ', parseData);
+      setScoreData(parseData);
+    })();
   }, []);
 
   const handleFetch = async () => {
     setSpinner(true);
     const payload = {
-      email: data?.email,
-      company: 'Kwaba',
+      email: scoreData?.email,
+      company: scoreData?.company,
     };
     try {
       const res = await fetch(payload);
       if (res.status == 200) {
         setSpinner(false);
         console.log('The Data: ', res.data);
-
         if (res?.data?.history?.length) {
           console.log('The Data: ', res.data);
           onRequestClose();

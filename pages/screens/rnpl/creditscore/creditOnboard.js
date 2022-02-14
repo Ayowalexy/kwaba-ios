@@ -21,7 +21,18 @@ export default function CreditOnboard({navigation}) {
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'false');
+      const checkIfAwaiting = await AsyncStorage.getItem(
+        `creditScoreDetail-${user.id}`,
+      );
+
+      console.log('DA: ', checkIfAwaiting);
+      if (checkIfAwaiting != null && checkIfAwaiting != 'false') {
+        console.log('loading up...');
+        setShowCreditAwaiting(true);
+      } else {
+        AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'false');
+        console.log('no load up');
+      }
     })();
   }, []);
 

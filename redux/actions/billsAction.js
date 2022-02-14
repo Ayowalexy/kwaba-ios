@@ -71,7 +71,8 @@ export const setAirtime = (data) => {
 export const getAirtime = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + `/api/v1/get_bills_category/airtime`;
+    // const url = apiUrl + `/api/v1/get_bills_category/airtime`;
+    const url = `${urls.bills.GET_BILLS_CATEGORY}/airtime`;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'applictaion/json', Authorization: token},

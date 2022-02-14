@@ -98,6 +98,7 @@ export default function CreditForm(props) {
 
     Keyboard.dismiss();
 
+    const user = await userData();
     const res = await purchase(data);
 
     // console.log('The Res: ', res);
@@ -109,6 +110,10 @@ export default function CreditForm(props) {
         setShowAcceptModal(true);
 
         console.log('The Res: ', res?.data?.data);
+        await AsyncStorage.setItem(
+          `creditScoreData-${user.id}`,
+          JSON.stringify(data),
+        );
       }
     } catch (error) {
       setSpinner(false);

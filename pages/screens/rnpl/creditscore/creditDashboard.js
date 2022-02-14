@@ -153,7 +153,7 @@ export default function CreditDashboard(props) {
         setSpinner(false);
       }
     } catch (error) {
-      console.log('The Error: ', error);
+      console.log('The Error: ', error.response);
       setSpinner(false);
     }
   };

@@ -78,11 +78,12 @@ export default function RentHome({navigation}) {
       if (getCreditScoreDetails == null) {
         navigation.navigate('RnplOnboard');
       } else if (getCreditScoreDetails == 'true') {
-        navigation.navigate('RnplSteps');
+        // navigation.navigate('RnplSteps');
+        navigation.navigate('CreditOnboard');
       } else if (getCreditScoreDetails == 'false') {
         navigation.navigate('CreditOnboard');
-      } else {
-        navigation.navigate('RnplOnboard');
+      } else if (getCreditScoreDetails == 'awaiting') {
+        navigation.navigate('CreditOnboard');
       }
     }
   };

@@ -49,7 +49,8 @@ const login = async (data) => {
 // creating/Reseting PIN
 const setPin = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user_set_pin';
+    // const url = apiUrl + '/api/v1/user_set_pin';
+    // const url = urls.auth.USER_SET_PIN
     const response = await axios.post(urls.auth.USER_SET_PIN, data, {
       headers: {'Content-Type': 'application/json'},
     });
@@ -851,7 +852,8 @@ const addFundsToWallet = async (data) => {
 
 const changePassword = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user/change_password';
+    // const url = apiUrl + '/api/v1/user/change_password';
+    const url = urls.auth.CHANGE_PASSWORD;
     const token = await getToken();
     const response = await axios.put(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},

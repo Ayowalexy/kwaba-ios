@@ -355,11 +355,13 @@ const App = () => {
 
   const appRelease = async () => {
     const res = await checkAppRelease();
+    console.log('Res: ', res);
 
     try {
       if (res.status == 200) {
         if (res?.data[0].version > '1.0.0') {
           setAppUpdateAvailable(true);
+          console.log('Banger: ', res?.data);
         } else {
           setAppUpdateAvailable(false);
         }

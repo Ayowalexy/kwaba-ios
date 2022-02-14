@@ -13,18 +13,28 @@ export default function ErrorModal(props) {
       visible={visible}
       onRequestClose={onRequestClose}>
       <View style={[designs.centeredView]}>
-        <View style={[designs.modalView, {backgroundColor: COLORS.error}]}>
+        <View style={[designs.modalView, {backgroundColor: COLORS.red}]}>
           <TouchableOpacity style={[designs.closeBtn]} onPress={onRequestClose}>
-            <Icon name="close" style={[designs.closeIcon]} />
+            <Icon
+              name="close"
+              style={[designs.closeIcon, {color: COLORS.white}]}
+            />
           </TouchableOpacity>
           <View>
             <View style={[designs.header]}>
-              <Icon style={[designs.headerIcon]} name="warning-outline" />
-              <Text style={[designs.headerTitle]}>Error</Text>
+              <Icon
+                style={[designs.headerIcon, {color: COLORS.white}]}
+                name="warning-outline"
+              />
+              <Text style={([designs.headerTitle], {color: COLORS.white})}>
+                Error!
+              </Text>
             </View>
 
             <View style={[designs.content]}>
-              <Text>An error occurred</Text>
+              <Text style={{color: COLORS.white}}>
+                An error occurred, please retry
+              </Text>
             </View>
           </View>
         </View>

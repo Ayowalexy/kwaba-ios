@@ -35,7 +35,7 @@ export default function SignUpSuccessfulModal(props) {
 
               <Text style={[styles.contentBody]}>
                 You have successfully created an account, please continue by
-                login in
+                logging in
               </Text>
             </View>
 
