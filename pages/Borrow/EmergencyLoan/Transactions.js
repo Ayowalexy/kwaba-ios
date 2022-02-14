@@ -22,9 +22,10 @@ export default function Transactions(props) {
 
   const getAllLoans = async () => {
     setSpinner(true);
+    const response = await getAllEmergencyLoansRepayment();
+    // console.log('All Loans Response: ', response);
+
     try {
-      const response = await getAllEmergencyLoansRepayment();
-      console.log('All Loans Response: ', response?.data);
       if (response.status == 200) {
         setSpinner(false);
         setRepayments(response?.data?.data);
@@ -33,7 +34,7 @@ export default function Transactions(props) {
       }
     } catch (error) {
       setSpinner(false);
-      console.log('All Loans Error: ', error);
+      console.log('All Loans Error: ', error.response);
     }
   };
 
@@ -81,7 +82,9 @@ export default function Transactions(props) {
                 }}>
                 No transactions yet
               </Text>
-              <ActivityIndicator size={'small'} color={COLORS.primary} />
+              {spinner && (
+                <ActivityIndicator size={'small'} color={COLORS.primary} />
+              )}
             </View>
           ) : (
             <ScrollView

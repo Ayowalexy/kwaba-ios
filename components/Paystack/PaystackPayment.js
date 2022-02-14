@@ -2,14 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState, useRef} from 'react';
 import {View} from 'react-native';
 import {Paystack} from 'react-native-paystack-webview';
-import {verifyBillsTransactions} from '../../services/network';
-
-// 'card',
-// 'bank',
-// 'ussd',
-// 'qr',
-// 'bank_transfer',
-// 'mobile_money',
 
 const userData = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -28,11 +20,9 @@ export default function PaystackPayment(props) {
   } = props;
 
   useEffect(() => {
-    // console.log('The Effect: ', data);
     paystackWebViewRef.current.startTransaction();
     (async () => {
       const user = await userData();
-      // console.log('The User: ', user);
       setUser({email: user.email, phone: user.telephone});
     })();
     console.log('Data: ', data);
@@ -46,7 +36,7 @@ export default function PaystackPayment(props) {
         billingEmail={user?.email}
         billingMobile={user?.phone}
         amount={data?.amount}
-        channels={['card', 'bank_transfer']} // card, bank_transfer
+        channels={[channel]} // channels={['card', 'bank_transfer']} // card, bank_transfer
         onCancel={(e) => {
           onRequestClose();
           paymentCanceled(e);

@@ -25,6 +25,7 @@ import AmountModal from '../../components/amountModal';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   addFundsToSavings,
+  completeSavingsPayment,
   verifySavingsPayment,
   verifyWalletTransaction,
 } from '../../services/network';
@@ -52,6 +53,8 @@ export default function QuickSaveListModal(props) {
 
   const [channel, setChannel] = useState('');
 
+  const [verifyData, setVerifyData] = useState('');
+
   useEffect(() => {
     console.log('The Type: ', type);
     checkType(); // Solo Saving or Buddy Saving
@@ -66,59 +69,166 @@ export default function QuickSaveListModal(props) {
     }
   };
 
-  const handlePaymentRoute = async (value) => {
-    console.log('The Value: ', value);
+  // const handlePaymentRoute = async (value) => {
+  //   console.log('The Value: ', value);
+  //   try {
+  //     const data = {
+  //       savings_id: id,
+  //       amount: amount,
+  //     };
+
+  //     console.log('The Dataaaaaa: ', data);
+
+  //     setSpinner(true);
+  //     const response = await addFundsToSavings(data);
+  //     if (response.status == 200) {
+  //       if (value == 'wallet') {
+  //         const data = {
+  //           payment_channel: value,
+  //           reference: response?.data?.data?.reference,
+  //         };
+
+  //         setSpinner(true);
+  //         // const verify = await verifySavingsPayment(data);
+  //         const verify = await verifyWalletTransaction(data);
+
+  //         if (verify.status == 200) {
+  //           onRequestClose();
+  //           setSpinner(false);
+  //           navigation.navigate('PaymentSuccessful', {
+  //             name: 'SoloSavingDashBoard',
+  //             id: id,
+  //             content: 'Payment Successful',
+  //             subText: 'Awesome! You have successfully funded your savings.',
+  //           });
+  //         } else {
+  //           // onRequestClose();
+  //           setSpinner(false);
+  //           console.log('Verify Error: ', verify.response.data);
+
+  //           Alert.alert('Oops!', verify?.response?.data?.response_message);
+  //         }
+  //       } else {
+  //         setChannel(value);
+  //         setResData(response?.data?.data);
+  //         setShowPaystackPayment(true); // show paystack
+  //       }
+  //     } else {
+  //       setSpinner(false);
+  //       // Alert.alert('Error', 'Something went wrong, please try again later.');
+  //       console.log('Response Error: ', response.response.data);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     // Alert.alert('Error', 'Something went wrong, please try again later.');
+  //     console.log('Error error: ', error.response.data);
+  //   }
+  // };
+
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: id,
+    });
+
+    onRequestClose();
+  };
+
+  const savingsPayment = async (data) => {
+    setSpinner(true);
+
     try {
-      const data = {
-        savings_id: id,
-        amount: amount,
-      };
+      const res = await completeSavingsPayment(data);
 
-      console.log('The Dataaaaaa: ', data);
+      if (res.status == 201) {
+        setSpinner(false);
 
-      setSpinner(true);
-      const response = await addFundsToSavings(data);
-      if (response.status == 200) {
-        if (value == 'wallet') {
-          const data = {
-            payment_channel: value,
-            reference: response?.data?.data?.reference,
-          };
-
-          setSpinner(true);
-          // const verify = await verifySavingsPayment(data);
-          const verify = await verifyWalletTransaction(data);
-
-          if (verify.status == 200) {
-            onRequestClose();
-            setSpinner(false);
-            navigation.navigate('PaymentSuccessful', {
-              name: 'SoloSavingDashBoard',
-              id: id,
-              content: 'Payment Successful',
-              subText: 'Awesome! You have successfully funded your savings.',
-            });
-          } else {
-            // onRequestClose();
-            setSpinner(false);
-            console.log('Verify Error: ', verify.response.data);
-
-            Alert.alert('Oops!', verify?.response?.data?.response_message);
-          }
-        } else {
-          setChannel(value);
-          setResData(response?.data?.data);
-          setShowPaystackPayment(true); // show paystack
-        }
+        console.log('Complete Paymentttttttttt: ', res.data.data);
+        await showSuccess();
       } else {
         setSpinner(false);
-        // Alert.alert('Error', 'Something went wrong, please try again later.');
-        console.log('Response Error: ', response.response.data);
       }
     } catch (error) {
       setSpinner(false);
-      // Alert.alert('Error', 'Something went wrong, please try again later.');
-      console.log('Error error: ', error.response.data);
+      console.log('The Error: ', error.response.data);
+    }
+  };
+
+  const verifyPaymentRequest = async (data, paymentChannel) => {
+    console.log('The Data: ', data);
+
+    setSpinner(true);
+    const res = await verifySavingsPayment(data);
+
+    setSpinner(false);
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+      setVerifyData({...verifyData, id: data.savings_id});
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: verifyData.amount,
+          savings_id: data.savings_id,
+          channel: 'wallet',
+          reference: verifyData.paymentReference,
+          purpose: 'savings',
+        };
+
+        await savingsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      if (
+        res.response?.data?.meta?.error ==
+        'The maximum savings amount for this savings is execeded'
+      ) {
+        Alert.alert(
+          'Payment unsuccessful',
+          `You've exceeded the target amount for this savings plan`,
+        );
+      } else if (
+        res.response?.data?.meta?.error == 'Insufficient wallet balance'
+      ) {
+        Alert.alert(
+          'Payment unsuccessful',
+          'You do not have enough money in your wallet',
+        );
+      }
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    // console.log('Value: ', value);
+
+    if (value == 'wallet') {
+      const verifyPayload = {
+        amount: amount,
+        savings_id: id,
+        channel: 'wallet',
+        purpose: 'savings',
+      };
+
+      setChannel(value); // wallet
+      await verifyPaymentRequest(verifyPayload, value);
+    } else {
+      const verifyPayload = {
+        amount: amount,
+        savings_id: id,
+        channel: 'paystack',
+        purpose: 'savings',
+      };
+
+      setChannel(value);
+
+      console.log('The value: ', value);
+
+      await verifyPaymentRequest(verifyPayload, value);
     }
   };
 
@@ -257,7 +367,7 @@ export default function QuickSaveListModal(props) {
                                   rotation={0}
                                   style={{zIndex: 9, position: 'relative'}}
                                   fill={
-                                    (Number(item.amount_save) /
+                                    (Number(item.amount_saved) /
                                       Number(item.target_amount)) *
                                     100
                                   }
@@ -311,7 +421,8 @@ export default function QuickSaveListModal(props) {
                                     </Text>
                                     <Text style={[styles.amountText]}>
                                       ₦
-                                      {formatNumber(item.amount_save) || '0.00'}
+                                      {formatNumber(item.amount_saved) ||
+                                        '0.00'}
                                     </Text>
                                   </View>
 
@@ -366,7 +477,7 @@ export default function QuickSaveListModal(props) {
       {showPaystackPayment && (
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={resData}
+          data={verifyData}
           channel={channel}
           paymentCanceled={(e) => {
             setSpinner(false);
@@ -375,33 +486,17 @@ export default function QuickSaveListModal(props) {
             // Do something
           }}
           paymentSuccessful={async (res) => {
-            // console.log('Pay done', res);
-
             const data = {
+              amount: verifyData.amount,
+              savings_id: verifyData.id,
               channel: 'paystack',
-              reference: res.data.transactionRef.reference,
+              reference: verifyData.paymentReference,
+              purpose: 'savings',
             };
 
             console.log('the dataatatta: ', data);
 
-            setSpinner(true);
-            const verify = await verifySavingsPayment(data);
-
-            // console.log('the verifyyyyy: ', verify);
-
-            if (verify.status == 200) {
-              // console.log('Success: Bills Payment Verified', res);
-              onRequestClose();
-              navigation.navigate('PaymentSuccessful', {
-                name: 'SoloSavingDashBoard',
-                id: resData?.id,
-              });
-              setSpinner(false);
-            } else {
-              onRequestClose();
-              setSpinner(false);
-              Alert.alert('uhmm..', 'Something went wrong, please retry.');
-            }
+            await savingsPayment(data);
           }}
         />
       )}

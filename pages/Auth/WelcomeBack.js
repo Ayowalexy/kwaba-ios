@@ -198,7 +198,8 @@ export default function WelcomeBack({navigation, route}) {
         setInvalidPin(true);
         // console.log('Something went wrong...');
         console.log('Error', res.response.data.statusMsg);
-        setMessage(res.response.data.statusMsg);
+        // setMessage(res.response.data.statusMsg);
+        setMessage('Invalid credentials');
       }
     } catch (error) {
       setSpinner(false);
@@ -211,7 +212,7 @@ export default function WelcomeBack({navigation, route}) {
   return (
     <>
       <View style={styles.container}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <Icon
             onPress={() => navigation.goBack()}
             name="arrow-back-outline"
@@ -227,7 +228,7 @@ export default function WelcomeBack({navigation, route}) {
             }}>
             Enter Pin
           </Text>
-        </View>
+        </View> */}
         <ScrollView
           scrollEnabled
           showsVerticalScrollIndicator={false}
@@ -265,7 +266,17 @@ export default function WelcomeBack({navigation, route}) {
             </View>
 
             {/* Pin */}
-            <View style={{marginTop: 20, alignItems: 'center'}}>
+
+            <View style={{marginTop: 50, alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                  // marginLeft: 20,
+                }}>
+                Enter Pin
+              </Text>
               <CodeField
                 ref={ref}
                 {...props}
@@ -291,7 +302,7 @@ export default function WelcomeBack({navigation, route}) {
                 </Text>
               )}
               <TouchableOpacity
-                onPress={() => navigation.navigate('ResetPin')}
+                onPress={() => navigation.replace('ResetPin')}
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -340,7 +351,7 @@ export default function WelcomeBack({navigation, route}) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.replace('Login')}
               style={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -378,7 +389,7 @@ const styles = StyleSheet.create({
   },
   codeFiledRoot: {
     height: CELL_SIZE,
-    marginTop: 30,
+    marginTop: 10,
     paddingHorizontal: 20,
     justifyContent: 'center',
   },

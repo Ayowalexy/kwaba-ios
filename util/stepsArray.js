@@ -1,69 +1,52 @@
 const stepsArray = [
-  //   {
-  //     title: 'Onboarding',
-  //     subTitle: '',
-  //     status: 'complete',
-  //   },
   {
     title: 'Credit score',
     subTitle: '',
     status: 'complete',
+    // navigate: () => console.log('Hello credit score here!'),
   },
   {
     title: 'Applications',
     subTitle: '',
-    status: 'complete',
+    status: 'start',
+    // navigate: () => navigation.navigate('Form1'),
   },
-  //   {
-  //     title: 'Pre-approval',
-  //     subTitle: '',
-  //     status: 'complete',
-  //   },
   {
     title: 'Documents upload',
     subTitle: '',
-    status: 'start',
+    status: 'locked',
+    // navigate: () => navigation.navigate('NewAllDocuments'),
   },
-  //   {
-  //     title: 'Verify documents',
-  //     subTitle: '',
-  //     status: 'locked',
-  //   },
   {
     title: 'Offer approval breakdown',
     subTitle: '',
     status: 'locked',
+    // navigate: () => navigation.navigate('RnplDirectdebit'),
   },
   {
     title: 'Property details',
     subTitle: '',
     status: 'locked',
+    // navigate: () => navigation.navigate('RnplDirectdebit'),
   },
-  //   {
-  //     title: 'Offer letter',
-  //     subTitle: '',
-  //     status: 'locked',
-  //   },
   {
     title: 'Address verification',
     subTitle: '',
     status: 'locked',
+    // navigate: () => navigation.navigate('RnplDirectdebit'),
   },
   {
     title: 'Direct debit',
     subTitle: '',
     status: 'locked',
+    // navigate: () => navigation.navigate('RnplDirectdebit'),
   },
   {
     title: 'Disbursement',
     subTitle: '',
     status: 'locked',
+    // navigate: () => navigation.navigate('RnplDirectdebit'),
   },
-  //   {
-  //     title: 'Dashboard',
-  //     subTitle: '',
-  //     status: 'locked',
-  //   },
 ];
 
 export default stepsArray;

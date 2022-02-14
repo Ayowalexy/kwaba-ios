@@ -26,13 +26,14 @@ import {
   getUserSavings,
   loanPaymentVerification,
   loanRepayment,
+  verifySavingsPayment,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {useSelector, useDispatch} from 'react-redux';
 
 // import CreditCardModalFunds from './CreditCard/CreditCardModalFunds';
 export default function AmountModalWallet(props) {
-  const {onRequestClose, visible, setData, showCard} = props;
+  const {onRequestClose, visible, channel, setData, showCard} = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -44,10 +45,6 @@ export default function AmountModalWallet(props) {
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
   const repay = 100;
-
-  // useEffect(() => {
-  //   console.log('The Repay: ', repay);
-  // }, []);
 
   const amountSchema = yup.object().shape({
     amount: yup
@@ -64,29 +61,59 @@ export default function AmountModalWallet(props) {
   const handleSubmit = async (values) => {
     const data = {
       amount: unFormatNumber(values.amount),
+      channel: channel, //paystack
+      purpose: 'wallet',
     };
 
-    console.log('The amount: ', data);
+    await verifyPaymentRequest(data);
+  };
+
+  const verifyPaymentRequest = async (data) => {
+    console.log('The Data: ', data);
 
     setSpinner(true);
-    const res = await addFundsToWallet(data);
-    console.log('The Res: ', res);
-    try {
-      if (res.status == 200) {
-        setSpinner(false);
-        // console.log('The Res Card Wallet: ', res.data.data);
-        setData(res.data.data);
-        onRequestClose();
-        showCard();
-        // setInfo(res.data.data);
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('The Error Card Wallet: ', error);
+    const res = await verifySavingsPayment(data);
+
+    setSpinner(false);
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+
+      setData(verifyData);
+      onRequestClose();
+      showCard();
     }
   };
+
+  // const handleSubmit = async (values) => {
+  //   const data = {
+  //     amount: unFormatNumber(values.amount),
+  //   };
+
+  //   console.log('The amount: ', data);
+
+  //   setSpinner(true);
+  //   const res = await addFundsToWallet(data);
+  //   console.log('The Res: ', res.response.data);
+  //   try {
+  //     if (res.status == 200) {
+  //       setSpinner(false);
+  //       // console.log('The Res Card Wallet: ', res.data.data);
+  //       setData(res.data.data);
+  //       onRequestClose();
+  //       showCard();
+  //       // setInfo(res.data.data);
+  //     } else {
+  //       setSpinner(false);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //     console.log('The Error Card Wallet: ', error.response);
+  //   }
+  // };
 
   const NumberInput = (props) => {
     const {
@@ -99,7 +126,7 @@ export default function AmountModalWallet(props) {
 
     return (
       <>
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+        {/* {hasError && <Text style={styles.errorText}>{errors[name]}</Text>} */}
         <Text style={[styles.boldText, {marginTop: 10}]}>How much?</Text>
         <View
           style={[
@@ -134,7 +161,7 @@ export default function AmountModalWallet(props) {
           />
         </View>
 
-        {/* {hasError && <Text style={styles.errorText}>{errors[name]}</Text>} */}
+        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
     );
   };
@@ -186,8 +213,14 @@ export default function AmountModalWallet(props) {
 
                     <TouchableOpacity
                       onPress={handleSubmit}
-                      // disabled={isValid ? false : true}
-                      style={[styles.button]}>
+                      disabled={values.amount < 100 ? true : false}
+                      style={[
+                        styles.button,
+                        {
+                          backgroundColor:
+                            values.amount < 100 ? '#2A286A50' : COLORS.primary,
+                        },
+                      ]}>
                       <Text
                         style={{
                           color: 'white',

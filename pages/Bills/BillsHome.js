@@ -80,7 +80,7 @@ const BillsHome = ({navigation}) => {
           paddingHorizontal: 20,
           marginTop: 20,
         }}>
-        {getBills?.data?.content.map((value, index) => {
+        {getBills?.data?.map((value, index) => {
           return (
             <TouchableOpacity
               disabled={

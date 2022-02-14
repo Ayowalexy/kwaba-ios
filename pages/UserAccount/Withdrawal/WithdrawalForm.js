@@ -397,7 +397,7 @@ export default function WithdrawalForm(props) {
                             rotation={0}
                             style={{zIndex: 9, position: 'relative'}}
                             fill={
-                              (Number(item.amount_save) /
+                              (Number(item.amount_saved) /
                                 Number(item.target_amount)) *
                               100
                             }
@@ -444,7 +444,7 @@ export default function WithdrawalForm(props) {
                                 Amount Saved
                               </Text>
                               <Text style={[styles.amountText]}>
-                                ₦{formatNumber(item.amount_save) || '0.00'}
+                                ₦{formatNumber(item.amount_saved) || '0.00'}
                               </Text>
                             </View>
                             <View>
@@ -815,7 +815,7 @@ export default function WithdrawalForm(props) {
                     type={values.savingsOption}
                     navigation={navigation}
                     selectedItem={(item) => {
-                      setFullAmount(item.amount_save);
+                      setFullAmount(item.amount_saved);
                       setItem(item);
                     }}
                   />

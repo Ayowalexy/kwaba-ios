@@ -2,6 +2,7 @@ import * as types from './types';
 import apiUrl from '../../services/api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -20,14 +21,14 @@ export const setBillServices = (data) => {
 export const getBillServices = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + '/api/v1/get_bills_services';
+    // const url = apiUrl + '/api/v1/get_bills_services';
+    const url = urls.bills.GET_BILLS_SERVICES;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
+      console.log('The Res: ', response.data);
       dispatch(setBillServices(response.data.data));
-      // console.log('Redux Bills Res: ', response.data);
-      // return response.data.userBanks;
     } catch (error) {
       return error;
     }
@@ -93,7 +94,8 @@ export const setAirtimeBillTrans = (data) => {
 export const getAirtimeBillTrans = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + `/api/v1/get_airtime_bills_trans`;
+    // const url = apiUrl + `/api/v1/get_airtime_bills_trans`;
+    const url = urls.bills.GET_AIRTIME_BILLS;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'applictaion/json', Authorization: token},

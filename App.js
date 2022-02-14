@@ -223,8 +223,15 @@ import {
   RnplOnboard,
   RnplSteps,
   RnplViews,
+  Form1,
+  Form2,
+  Form3,
+  FormBreakdown,
+  RnplEmploymentStatus,
+  RnplDirectdebit,
 } from './pages/screens/rnpl';
 import {CreditOnboard} from './pages/screens/rnpl/creditscore';
+import {checkAppRelease} from './services/network';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
@@ -258,6 +265,8 @@ const App = () => {
   const [userToken, setUserToken] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isOffline, setOfflineStatus] = useState(false);
+
+  const [appUpdateAvailable, setAppUpdateAvailable] = useState(false);
 
   const store2 = useSelector((state) => state.loginReducer);
 
@@ -340,469 +349,525 @@ const App = () => {
     any_custom_type: () => {},
   };
 
+  useEffect(() => {
+    appRelease();
+  }, []);
+
+  const appRelease = async () => {
+    const res = await checkAppRelease();
+
+    try {
+      if (res.status == 200) {
+        if (res?.data[0].version > '1.0.0') {
+          setAppUpdateAvailable(true);
+        } else {
+          setAppUpdateAvailable(false);
+        }
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+  };
+
   return (
     <>
-      <NavigationContainer linking={linking}>
-        <StatusBar
-          backgroundColor={COLORS.primary}
-          barStyle={'light-content'}
-        />
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
+      {appUpdateAvailable ? (
+        <AppUpdate
+          openStore={() => {
+            Linking.openURL('market://details?id=com.kwaba_mobile_app');
           }}
-          // initialRouteName={'CreditScoreAwaiting'}
-          initialRouteName={'Welcome'}>
-          {!store2?.isLoggedIn && store2?.token == '' ? (
-            <>
-              <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
-              <Stack.Screen
-                name="Onboarding"
-                component={Onboarding}></Stack.Screen>
-              <Stack.Screen name="Login" component={Login}></Stack.Screen>
-              <Stack.Screen
-                name="CreatePin"
-                component={CreatePin}></Stack.Screen>
-              <Stack.Screen name="EnterPin" component={EnterPin}></Stack.Screen>
-              <Stack.Screen
-                name="WelcomeBack"
-                component={WelcomeBack}></Stack.Screen>
-              <Stack.Screen name="ResetPin" component={ResetPin}></Stack.Screen>
-              <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
-              <Stack.Screen
-                name="VerifyNumber"
-                component={VerifyNumber}></Stack.Screen>
-              <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
-              <Stack.Screen
-                name="ForgotPassword"
-                component={ForgotPassword}></Stack.Screen>
-              <Stack.Screen
-                name="PasswordResetSuccess"
-                component={PasswordResetSuccess}></Stack.Screen>
-            </>
-          ) : (
-            <>
-              <Stack.Screen
-                name="Home"
-                component={BottomNavigator}></Stack.Screen>
-              <Stack.Screen
-                name="CompleteProfile1"
-                component={CompleteProfile1}></Stack.Screen>
-              <Stack.Screen
-                name="CompleteProfile2"
-                component={CompleteProfile2}></Stack.Screen>
-              <Stack.Screen
-                name="CompleteProfile3"
-                component={CompleteProfile3}></Stack.Screen>
-              <Stack.Screen
-                name="CompleteProfile4"
-                component={CompleteProfile4}></Stack.Screen>
-              <Stack.Screen
-                name="CompleteProfile5"
-                component={CompleteProfile5}></Stack.Screen>
-              <Stack.Screen
-                name="CompleteProfile6"
-                component={CompleteProfile6}></Stack.Screen>
-              <Stack.Screen
-                name="SavingsHome"
-                component={SavingsHome}></Stack.Screen>
-              <Stack.Screen
-                name="SoloSaving1"
-                component={SoloSaving1}></Stack.Screen>
-              <Stack.Screen
-                name="SoloSaving2"
-                component={SoloSaving2}></Stack.Screen>
-              <Stack.Screen
-                name="SoloSaving3"
-                component={SoloSaving3}></Stack.Screen>
-              <Stack.Screen
-                name="SoloSaving4"
-                component={SoloSaving4}></Stack.Screen>
-              <Stack.Screen
-                name="SavingLists"
-                component={SavingLists}></Stack.Screen>
-              <Stack.Screen
-                name="SoloSavingDashBoard"
-                component={SoloSavingDashBoard}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySaving1"
-                component={BuddySaving1}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySaving2"
-                component={BuddySaving2}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySaving3"
-                component={BuddySaving3}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySaving4"
-                component={BuddySaving4}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySaving5"
-                component={BuddySaving5}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySaving6"
-                component={BuddySaving6}></Stack.Screen>
-              <Stack.Screen
-                name="BuddyLists"
-                component={BuddyLists}></Stack.Screen>
-              <Stack.Screen
-                name="BuddySavingDashBoard"
-                component={BuddySavingDashBoard}></Stack.Screen>
-              <Stack.Screen
-                name="BuddyPaymentScreen"
-                component={BuddyPaymentScreen}></Stack.Screen>
+        />
+      ) : (
+        <NavigationContainer linking={linking}>
+          <StatusBar
+            backgroundColor={COLORS.primary}
+            barStyle={'light-content'}
+          />
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+            // initialRouteName={'CreditScoreAwaiting'}
+            initialRouteName={'Welcome'}>
+            {!store2?.isLoggedIn && store2?.token == '' ? (
+              <>
+                <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+                <Stack.Screen
+                  name="Onboarding"
+                  component={Onboarding}></Stack.Screen>
+                <Stack.Screen name="Login" component={Login}></Stack.Screen>
+                <Stack.Screen
+                  name="CreatePin"
+                  component={CreatePin}></Stack.Screen>
+                <Stack.Screen
+                  name="EnterPin"
+                  component={EnterPin}></Stack.Screen>
+                <Stack.Screen
+                  name="WelcomeBack"
+                  component={WelcomeBack}></Stack.Screen>
+                <Stack.Screen
+                  name="ResetPin"
+                  component={ResetPin}></Stack.Screen>
+                <Stack.Screen name="GetCode" component={GetCode}></Stack.Screen>
+                <Stack.Screen
+                  name="VerifyNumber"
+                  component={VerifyNumber}></Stack.Screen>
+                <Stack.Screen name="SignUp" component={SignUp}></Stack.Screen>
+                <Stack.Screen
+                  name="ForgotPassword"
+                  component={ForgotPassword}></Stack.Screen>
+                <Stack.Screen
+                  name="PasswordResetSuccess"
+                  component={PasswordResetSuccess}></Stack.Screen>
+              </>
+            ) : (
+              <>
+                <Stack.Screen
+                  name="Home"
+                  component={BottomNavigator}></Stack.Screen>
+                <Stack.Screen
+                  name="CompleteProfile1"
+                  component={CompleteProfile1}></Stack.Screen>
+                <Stack.Screen
+                  name="CompleteProfile2"
+                  component={CompleteProfile2}></Stack.Screen>
+                <Stack.Screen
+                  name="CompleteProfile3"
+                  component={CompleteProfile3}></Stack.Screen>
+                <Stack.Screen
+                  name="CompleteProfile4"
+                  component={CompleteProfile4}></Stack.Screen>
+                <Stack.Screen
+                  name="CompleteProfile5"
+                  component={CompleteProfile5}></Stack.Screen>
+                <Stack.Screen
+                  name="CompleteProfile6"
+                  component={CompleteProfile6}></Stack.Screen>
+                <Stack.Screen
+                  name="SavingsHome"
+                  component={SavingsHome}></Stack.Screen>
+                <Stack.Screen
+                  name="SoloSaving1"
+                  component={SoloSaving1}></Stack.Screen>
+                <Stack.Screen
+                  name="SoloSaving2"
+                  component={SoloSaving2}></Stack.Screen>
+                <Stack.Screen
+                  name="SoloSaving3"
+                  component={SoloSaving3}></Stack.Screen>
+                <Stack.Screen
+                  name="SoloSaving4"
+                  component={SoloSaving4}></Stack.Screen>
+                <Stack.Screen
+                  name="SavingLists"
+                  component={SavingLists}></Stack.Screen>
+                <Stack.Screen
+                  name="SoloSavingDashBoard"
+                  component={SoloSavingDashBoard}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySaving1"
+                  component={BuddySaving1}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySaving2"
+                  component={BuddySaving2}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySaving3"
+                  component={BuddySaving3}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySaving4"
+                  component={BuddySaving4}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySaving5"
+                  component={BuddySaving5}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySaving6"
+                  component={BuddySaving6}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddyLists"
+                  component={BuddyLists}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddySavingDashBoard"
+                  component={BuddySavingDashBoard}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddyPaymentScreen"
+                  component={BuddyPaymentScreen}></Stack.Screen>
 
-              <Stack.Screen
-                name="AcceptInvite"
-                component={AcceptInvite}></Stack.Screen>
+                <Stack.Screen
+                  name="AcceptInvite"
+                  component={AcceptInvite}></Stack.Screen>
 
-              <Stack.Screen
-                name="BuddyInviteLists"
-                component={BuddyInviteLists}></Stack.Screen>
+                <Stack.Screen
+                  name="BuddyInviteLists"
+                  component={BuddyInviteLists}></Stack.Screen>
 
-              <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
-              <Stack.Screen
-                name="RentNowPayLaterOnboarding"
-                component={RentNowPayLaterOnboarding}></Stack.Screen>
-              <Stack.Screen
-                name="EmploymentStatus"
-                component={EmploymentStatus}></Stack.Screen>
-              <Stack.Screen
-                name="EligibilitySalaryEarner"
-                component={EligibilitySalaryEarner}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanForm1"
-                component={RentalLoanForm1}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanFormDoc"
-                component={RentalLoanFormDoc}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanForm2"
-                component={RentalLoanForm2}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanForm3"
-                component={RentalLoanForm3}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanThirdPartyConnection"
-                component={RentalLoanThirdPartyConnection}></Stack.Screen>
-              <Stack.Screen
-                name="LinkingAccount"
-                component={LinkingAccount}></Stack.Screen>
-              <Stack.Screen
-                name="ThirdPartyLink"
-                component={ThirdPartyLink}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanRequestDashBoard"
-                component={RentalLoanRequestDashBoard}></Stack.Screen>
-              <Stack.Screen
-                name="PayWithSavings"
-                component={PayWithSavings}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanFormCongratulation"
-                component={RentalLoanFormCongratulation}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanFormBankStatementUpload"
-                component={RentalLoanFormBankStatementUpload}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanFormBankStatementUploadEmail"
-                component={
-                  RentalLoanFormBankStatementUploadEmail
-                }></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanFormBankStatementUploadMono"
-                component={
-                  RentalLoanFormBankStatementUploadMono
-                }></Stack.Screen>
-              <Stack.Screen
-                name="RentNowPayLaterDashboard"
-                component={RentNowPayLaterDashboard}></Stack.Screen>
-              <Stack.Screen
-                name="UploadBankStatement"
-                component={UploadBankStatement}></Stack.Screen>
-              <Stack.Screen
-                name="UploadDocuments"
-                component={UploadDocuments}></Stack.Screen>
-              <Stack.Screen
-                name="AllDocuments"
-                component={AllDocuments}></Stack.Screen>
-              <Stack.Screen
-                name="LoanRequestApproval"
-                component={LoanRequestApproval}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanOffer"
-                component={RentalLoanOffer}></Stack.Screen>
-              <Stack.Screen
-                name="SetUpPaymentPlan"
-                component={SetUpPaymentPlan}></Stack.Screen>
-              <Stack.Screen
-                name="PostPaymentForm1"
-                component={PostPaymentForm1}></Stack.Screen>
-              <Stack.Screen
-                name="PostPaymentForm2"
-                component={PostPaymentForm2}></Stack.Screen>
-              <Stack.Screen
-                name="PostPaymentForm3"
-                component={PostPaymentForm3}></Stack.Screen>
-              <Stack.Screen
-                name="PostPaymentForm4"
-                component={PostPaymentForm4}></Stack.Screen>
-              <Stack.Screen
-                name="OkraDebitMandate"
-                component={OkraDebitMandate}></Stack.Screen>
-              <Stack.Screen
-                name="LoanOfferContent"
-                component={LoanOfferContent}></Stack.Screen>
-              <Stack.Screen
-                name="AwaitingDisbursement"
-                component={AwaitingDisbursement}></Stack.Screen>
-              <Stack.Screen
-                name="AddressVerificationPayment"
-                component={AddressVerificationPayment}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanActiveDashBoard"
-                component={RentalLoanActiveDashBoard}></Stack.Screen>
-              <Stack.Screen
-                name="FileUploadTest"
-                component={FileUploadTest}></Stack.Screen>
-              <Stack.Screen
-                name="RentalLoanOfferTest"
-                component={RentalLoanOfferTest}></Stack.Screen>
-              <Stack.Screen
-                name="PrintOfferLetter"
-                component={PrintOfferLetter}></Stack.Screen>
-              <Stack.Screen
-                name="UploadDocumentsList"
-                component={UploadDocumentsList}></Stack.Screen>
-              <Stack.Screen
-                name="BottomNavigation"
-                component={BottomNavigator}></Stack.Screen>
-              <Stack.Screen
-                name="EligibilityBusinessOwner"
-                component={EligibilityBusinessOwner}></Stack.Screen>
-              <Stack.Screen
-                name="BusinessForm1"
-                component={BusinessForm1}></Stack.Screen>
-              <Stack.Screen
-                name="BusinessForm2"
-                component={BusinessForm2}></Stack.Screen>
-              <Stack.Screen
-                name="BusinessForm3"
-                component={BusinessForm3}></Stack.Screen>
-              <Stack.Screen
-                name="BusinessForm4"
-                component={BusinessForm4}></Stack.Screen>
-              <Stack.Screen
-                name="BusinessForm5"
-                component={BusinessForm5}></Stack.Screen>
-              <Stack.Screen
-                name="BusinessDocumentUpload"
-                component={BusinessDocumentUpload}></Stack.Screen>
-              <Stack.Screen
-                name="RentalFormBusinessCongratulation"
-                component={RentalFormBusinessCongratulation}></Stack.Screen>
-              <Stack.Screen
-                name="RentalFormBusiness1"
-                component={RentalFormBusiness1}
-              />
-              <Stack.Screen
-                name="RentalFormBusiness2"
-                component={RentalFormBusiness2}
-              />
-              <Stack.Screen
-                name="RentalFormBusinessDoc"
-                component={RentalFormBusinessDoc}
-              />
-              <Stack.Screen
-                name="EmergencyLoanHome"
-                component={EmergencyLoanHome}></Stack.Screen>
-              <Stack.Screen
-                name="EmergencyFundOnboarding"
-                component={EmergencyFundOnboarding}></Stack.Screen>
-              <Stack.Screen
-                name="EmergencyLoanRequestDashBoard"
-                component={EmergencyLoanRequestDashBoard}></Stack.Screen>
-              <Stack.Screen
-                name="EmergencyLoanRequest"
-                component={EmergencyLoanRequest}></Stack.Screen>
-              <Stack.Screen
-                name="EmergencyLoanDashBoard"
-                component={EmergencyLoanDashBoard}></Stack.Screen>
-              <Stack.Screen name="Account" component={Account}></Stack.Screen>
-              <Stack.Screen
-                name="FileViewAndDelete"
-                component={FileViewAndDelete}></Stack.Screen>
-              <Stack.Screen
-                name="AccountPage"
-                component={AccountPage}></Stack.Screen>
-              <Stack.Screen
-                name="CardAndBankDetails"
-                component={CardAndBankDetails}></Stack.Screen>
-              <Stack.Screen name="Withdraw" component={Withdraw}></Stack.Screen>
-              <Stack.Screen
-                name="BillsHome"
-                component={BillsHome}></Stack.Screen>
-              <Stack.Screen
-                name="CableTvBill"
-                component={CableTvBill}></Stack.Screen>
-              <Stack.Screen name="DataBill" component={DataBill}></Stack.Screen>
-              <Stack.Screen
-                name="ElectricityBill"
-                component={ElectricityBill}></Stack.Screen>
-              <Stack.Screen
-                name="PurchaseAirtime"
-                component={PurchaseAirtime}></Stack.Screen>
-              <Stack.Screen
-                name="AirtimeHome"
-                component={AirtimeHome}></Stack.Screen>
-              <Stack.Screen name="profile" component={profile}></Stack.Screen>
-              <Stack.Screen name="Referral" component={Referral}></Stack.Screen>
-              <Stack.Screen
-                name="ReferralDetails"
-                component={ReferralDetails}></Stack.Screen>
-              <Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
-              <Stack.Screen
-                name="LegalandFaq"
-                component={LegalandFaq}></Stack.Screen>
-              <Stack.Screen
-                name="OkraDebitMandate2"
-                component={OkraDebitMandate2}></Stack.Screen>
-              <Stack.Screen
-                name="MonoDebitMandate"
-                component={MonoDebitMandate}></Stack.Screen>
-              <Stack.Screen
-                name="ApplicationProgress"
-                component={ApplicationProgress}></Stack.Screen>
-              <Stack.Screen
-                name="UploadBankStatementDocument"
-                component={UploadBankStatementDocument}></Stack.Screen>
+                <Stack.Screen name="Borrow" component={Borrow}></Stack.Screen>
+                <Stack.Screen
+                  name="RentNowPayLaterOnboarding"
+                  component={RentNowPayLaterOnboarding}></Stack.Screen>
+                <Stack.Screen
+                  name="EmploymentStatus"
+                  component={EmploymentStatus}></Stack.Screen>
+                <Stack.Screen
+                  name="EligibilitySalaryEarner"
+                  component={EligibilitySalaryEarner}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanForm1"
+                  component={RentalLoanForm1}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanFormDoc"
+                  component={RentalLoanFormDoc}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanForm2"
+                  component={RentalLoanForm2}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanForm3"
+                  component={RentalLoanForm3}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanThirdPartyConnection"
+                  component={RentalLoanThirdPartyConnection}></Stack.Screen>
+                <Stack.Screen
+                  name="LinkingAccount"
+                  component={LinkingAccount}></Stack.Screen>
+                <Stack.Screen
+                  name="ThirdPartyLink"
+                  component={ThirdPartyLink}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanRequestDashBoard"
+                  component={RentalLoanRequestDashBoard}></Stack.Screen>
+                <Stack.Screen
+                  name="PayWithSavings"
+                  component={PayWithSavings}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanFormCongratulation"
+                  component={RentalLoanFormCongratulation}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanFormBankStatementUpload"
+                  component={RentalLoanFormBankStatementUpload}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanFormBankStatementUploadEmail"
+                  component={
+                    RentalLoanFormBankStatementUploadEmail
+                  }></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanFormBankStatementUploadMono"
+                  component={
+                    RentalLoanFormBankStatementUploadMono
+                  }></Stack.Screen>
+                <Stack.Screen
+                  name="RentNowPayLaterDashboard"
+                  component={RentNowPayLaterDashboard}></Stack.Screen>
+                <Stack.Screen
+                  name="UploadBankStatement"
+                  component={UploadBankStatement}></Stack.Screen>
+                <Stack.Screen
+                  name="UploadDocuments"
+                  component={UploadDocuments}></Stack.Screen>
+                <Stack.Screen
+                  name="AllDocuments"
+                  component={AllDocuments}></Stack.Screen>
+                <Stack.Screen
+                  name="LoanRequestApproval"
+                  component={LoanRequestApproval}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanOffer"
+                  component={RentalLoanOffer}></Stack.Screen>
+                <Stack.Screen
+                  name="SetUpPaymentPlan"
+                  component={SetUpPaymentPlan}></Stack.Screen>
+                <Stack.Screen
+                  name="PostPaymentForm1"
+                  component={PostPaymentForm1}></Stack.Screen>
+                <Stack.Screen
+                  name="PostPaymentForm2"
+                  component={PostPaymentForm2}></Stack.Screen>
+                <Stack.Screen
+                  name="PostPaymentForm3"
+                  component={PostPaymentForm3}></Stack.Screen>
+                <Stack.Screen
+                  name="PostPaymentForm4"
+                  component={PostPaymentForm4}></Stack.Screen>
+                <Stack.Screen
+                  name="OkraDebitMandate"
+                  component={OkraDebitMandate}></Stack.Screen>
+                <Stack.Screen
+                  name="LoanOfferContent"
+                  component={LoanOfferContent}></Stack.Screen>
+                <Stack.Screen
+                  name="AwaitingDisbursement"
+                  component={AwaitingDisbursement}></Stack.Screen>
+                <Stack.Screen
+                  name="AddressVerificationPayment"
+                  component={AddressVerificationPayment}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanActiveDashBoard"
+                  component={RentalLoanActiveDashBoard}></Stack.Screen>
+                <Stack.Screen
+                  name="FileUploadTest"
+                  component={FileUploadTest}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalLoanOfferTest"
+                  component={RentalLoanOfferTest}></Stack.Screen>
+                <Stack.Screen
+                  name="PrintOfferLetter"
+                  component={PrintOfferLetter}></Stack.Screen>
+                <Stack.Screen
+                  name="UploadDocumentsList"
+                  component={UploadDocumentsList}></Stack.Screen>
+                <Stack.Screen
+                  name="BottomNavigation"
+                  component={BottomNavigator}></Stack.Screen>
+                <Stack.Screen
+                  name="EligibilityBusinessOwner"
+                  component={EligibilityBusinessOwner}></Stack.Screen>
+                <Stack.Screen
+                  name="BusinessForm1"
+                  component={BusinessForm1}></Stack.Screen>
+                <Stack.Screen
+                  name="BusinessForm2"
+                  component={BusinessForm2}></Stack.Screen>
+                <Stack.Screen
+                  name="BusinessForm3"
+                  component={BusinessForm3}></Stack.Screen>
+                <Stack.Screen
+                  name="BusinessForm4"
+                  component={BusinessForm4}></Stack.Screen>
+                <Stack.Screen
+                  name="BusinessForm5"
+                  component={BusinessForm5}></Stack.Screen>
+                <Stack.Screen
+                  name="BusinessDocumentUpload"
+                  component={BusinessDocumentUpload}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalFormBusinessCongratulation"
+                  component={RentalFormBusinessCongratulation}></Stack.Screen>
+                <Stack.Screen
+                  name="RentalFormBusiness1"
+                  component={RentalFormBusiness1}
+                />
+                <Stack.Screen
+                  name="RentalFormBusiness2"
+                  component={RentalFormBusiness2}
+                />
+                <Stack.Screen
+                  name="RentalFormBusinessDoc"
+                  component={RentalFormBusinessDoc}
+                />
+                <Stack.Screen
+                  name="EmergencyLoanHome"
+                  component={EmergencyLoanHome}></Stack.Screen>
+                <Stack.Screen
+                  name="EmergencyFundOnboarding"
+                  component={EmergencyFundOnboarding}></Stack.Screen>
+                <Stack.Screen
+                  name="EmergencyLoanRequestDashBoard"
+                  component={EmergencyLoanRequestDashBoard}></Stack.Screen>
+                <Stack.Screen
+                  name="EmergencyLoanRequest"
+                  component={EmergencyLoanRequest}></Stack.Screen>
+                <Stack.Screen
+                  name="EmergencyLoanDashBoard"
+                  component={EmergencyLoanDashBoard}></Stack.Screen>
+                <Stack.Screen name="Account" component={Account}></Stack.Screen>
+                <Stack.Screen
+                  name="FileViewAndDelete"
+                  component={FileViewAndDelete}></Stack.Screen>
+                <Stack.Screen
+                  name="AccountPage"
+                  component={AccountPage}></Stack.Screen>
+                <Stack.Screen
+                  name="CardAndBankDetails"
+                  component={CardAndBankDetails}></Stack.Screen>
+                <Stack.Screen
+                  name="Withdraw"
+                  component={Withdraw}></Stack.Screen>
+                <Stack.Screen
+                  name="BillsHome"
+                  component={BillsHome}></Stack.Screen>
+                <Stack.Screen
+                  name="CableTvBill"
+                  component={CableTvBill}></Stack.Screen>
+                <Stack.Screen
+                  name="DataBill"
+                  component={DataBill}></Stack.Screen>
+                <Stack.Screen
+                  name="ElectricityBill"
+                  component={ElectricityBill}></Stack.Screen>
+                <Stack.Screen
+                  name="PurchaseAirtime"
+                  component={PurchaseAirtime}></Stack.Screen>
+                <Stack.Screen
+                  name="AirtimeHome"
+                  component={AirtimeHome}></Stack.Screen>
+                <Stack.Screen name="profile" component={profile}></Stack.Screen>
+                <Stack.Screen
+                  name="Referral"
+                  component={Referral}></Stack.Screen>
+                <Stack.Screen
+                  name="ReferralDetails"
+                  component={ReferralDetails}></Stack.Screen>
+                <Stack.Screen name="Aboutus" component={Aboutus}></Stack.Screen>
+                <Stack.Screen
+                  name="LegalandFaq"
+                  component={LegalandFaq}></Stack.Screen>
+                <Stack.Screen
+                  name="OkraDebitMandate2"
+                  component={OkraDebitMandate2}></Stack.Screen>
+                <Stack.Screen
+                  name="MonoDebitMandate"
+                  component={MonoDebitMandate}></Stack.Screen>
+                <Stack.Screen
+                  name="ApplicationProgress"
+                  component={ApplicationProgress}></Stack.Screen>
+                <Stack.Screen
+                  name="UploadBankStatementDocument"
+                  component={UploadBankStatementDocument}></Stack.Screen>
 
-              <Stack.Screen name="Notifications" component={Notifications} />
+                <Stack.Screen name="Notifications" component={Notifications} />
 
-              <Stack.Screen name="Signature" component={Signature} />
+                <Stack.Screen name="Signature" component={Signature} />
 
-              <Stack.Screen
-                name="NewAllDocuments"
-                component={NewAllDocuments}
-              />
+                <Stack.Screen
+                  name="NewAllDocuments"
+                  component={NewAllDocuments}
+                />
 
-              <Stack.Screen
-                name="OfferApprovalBreakDown"
-                component={OfferApprovalBreakDown}
-              />
+                <Stack.Screen
+                  name="OfferApprovalBreakDown"
+                  component={OfferApprovalBreakDown}
+                />
 
-              <Stack.Screen
-                name="VerifyingDocuments"
-                component={VerifyingDocuments}
-              />
+                <Stack.Screen
+                  name="VerifyingDocuments"
+                  component={VerifyingDocuments}
+                />
 
-              <Stack.Screen name="OfferLetter" component={OfferLetter} />
+                <Stack.Screen name="OfferLetter" component={OfferLetter} />
 
-              <Stack.Screen
-                name="GuarantorOnboarding"
-                component={GuarantorOnboarding}
-              />
+                <Stack.Screen
+                  name="GuarantorOnboarding"
+                  component={GuarantorOnboarding}
+                />
 
-              <Stack.Screen name="GuarantorForm" component={GuarantorForm} />
+                <Stack.Screen name="GuarantorForm" component={GuarantorForm} />
 
-              <Stack.Screen
-                name="AcceptanceLetterKwaba"
-                component={AcceptanceLetterKwaba}
-              />
+                <Stack.Screen
+                  name="AcceptanceLetterKwaba"
+                  component={AcceptanceLetterKwaba}
+                />
 
-              <Stack.Screen
-                name="AcceptanceLetterAddosser"
-                component={AcceptanceLetterAddosser}
-              />
+                <Stack.Screen
+                  name="AcceptanceLetterAddosser"
+                  component={AcceptanceLetterAddosser}
+                />
 
-              <Stack.Screen name="Decline" component={Decline} />
-              <Stack.Screen name="Reject" component={Reject} />
+                <Stack.Screen name="Decline" component={Decline} />
+                <Stack.Screen name="Reject" component={Reject} />
 
-              <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
-              <Stack.Screen name="AddosserLetter" component={AddosserLetter} />
-              <Stack.Screen name="PTMFB" component={PTMFB} />
+                <Stack.Screen name="KwabaLetter" component={KwabaLetter} />
+                <Stack.Screen
+                  name="AddosserLetter"
+                  component={AddosserLetter}
+                />
+                <Stack.Screen name="PTMFB" component={PTMFB} />
 
-              <Stack.Screen name="Disbursement" component={Disbursement} />
+                <Stack.Screen name="Disbursement" component={Disbursement} />
 
-              <Stack.Screen name="PaymentForm" component={PaymentForm} />
+                <Stack.Screen name="PaymentForm" component={PaymentForm} />
 
-              <Stack.Screen
-                name="PaymentSuccessful"
-                component={PaymentSuccessful}
-              />
+                <Stack.Screen
+                  name="PaymentSuccessful"
+                  component={PaymentSuccessful}
+                />
 
-              <Stack.Screen name="Mortgages" component={Mortgages} />
-              <Stack.Screen name="SaveToOwn" component={SaveToOwn} />
+                <Stack.Screen name="Mortgages" component={Mortgages} />
+                <Stack.Screen name="SaveToOwn" component={SaveToOwn} />
 
-              <Stack.Screen name="LoanScreen1" component={LoanScreen1} />
+                <Stack.Screen name="LoanScreen1" component={LoanScreen1} />
 
-              <Stack.Screen name="Wallet" component={Wallet} />
+                <Stack.Screen name="Wallet" component={Wallet} />
 
-              <Stack.Screen name="PinPassword" component={PinPassword} />
+                <Stack.Screen name="PinPassword" component={PinPassword} />
 
-              <Stack.Screen name="AppUpdate" component={AppUpdate} />
+                {/* <Stack.Screen name="AppUpdate" component={AppUpdate} /> */}
 
-              <Stack.Screen
-                name="JoinChallengeList"
-                component={JoinChallengeList}
-              />
+                <Stack.Screen
+                  name="JoinChallengeList"
+                  component={JoinChallengeList}
+                />
 
-              <Stack.Screen
-                name="JoinChallengeDashboard"
-                component={JoinChallengeDashboard}
-              />
+                <Stack.Screen
+                  name="JoinChallengeDashboard"
+                  component={JoinChallengeDashboard}
+                />
 
-              <Stack.Screen
-                name="CreditScoreOnboarding"
-                component={CreditScoreOnboarding}
-              />
+                <Stack.Screen
+                  name="CreditScoreOnboarding"
+                  component={CreditScoreOnboarding}
+                />
 
-              <Stack.Screen
-                name="CreditScoreForm"
-                component={CreditScoreForm}
-              />
+                <Stack.Screen
+                  name="CreditScoreForm"
+                  component={CreditScoreForm}
+                />
 
-              <Stack.Screen
-                name="CreditScoreDashboard"
-                component={CreditScoreDashboard}
-              />
+                <Stack.Screen
+                  name="CreditScoreDashboard"
+                  component={CreditScoreDashboard}
+                />
 
-              <Stack.Screen
-                name="CreditScoreAwaiting"
-                component={CreditScoreAwaiting}
-              />
+                <Stack.Screen
+                  name="CreditScoreAwaiting"
+                  component={CreditScoreAwaiting}
+                />
 
-              <Stack.Screen
-                name="CreditScoreForAccountOnboarding"
-                component={CreditScoreForAccountOnboarding}
-              />
+                <Stack.Screen
+                  name="CreditScoreForAccountOnboarding"
+                  component={CreditScoreForAccountOnboarding}
+                />
 
-              <Stack.Screen
-                name="CreditScoreCheckFormForAccount"
-                component={CreditScoreCheckFormForAccount}
-              />
+                <Stack.Screen
+                  name="CreditScoreCheckFormForAccount"
+                  component={CreditScoreCheckFormForAccount}
+                />
 
-              <Stack.Screen
-                name="CreditScoreCheckFormForAwaiting"
-                component={CreditScoreCheckFormForAwaiting}
-              />
+                <Stack.Screen
+                  name="CreditScoreCheckFormForAwaiting"
+                  component={CreditScoreCheckFormForAwaiting}
+                />
 
-              <Stack.Screen name="RnplOnboard" component={RnplOnboard} />
-              <Stack.Screen
-                name="RnplEligibility"
-                component={RnplEligibility}
-              />
-              <Stack.Screen name="RnplSteps" component={RnplSteps} />
-              <Stack.Screen name="RnplViews" component={RnplViews} />
-              <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
-            </>
-          )}
-        </Stack.Navigator>
+                <Stack.Screen name="RnplOnboard" component={RnplOnboard} />
+                <Stack.Screen
+                  name="RnplEligibility"
+                  component={RnplEligibility}
+                />
+                <Stack.Screen name="RnplSteps" component={RnplSteps} />
+                <Stack.Screen name="RnplViews" component={RnplViews} />
+                <Stack.Screen
+                  name="RnplEmploymentStatus"
+                  component={RnplEmploymentStatus}
+                />
 
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
-      </NavigationContainer>
+                <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
+
+                {/* applications */}
+                <Stack.Screen name="Form1" component={Form1} />
+                <Stack.Screen name="Form2" component={Form2} />
+                <Stack.Screen name="Form3" component={Form3} />
+                <Stack.Screen name="FormBreakdown" component={FormBreakdown} />
+                <Stack.Screen
+                  name="RnplDirectdebit"
+                  component={RnplDirectdebit}
+                />
+              </>
+            )}
+          </Stack.Navigator>
+
+          <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+        </NavigationContainer>
+      )}
     </>
   );
 };
 
-// export default App;
-export default CodePush(CodePushOptions)(App);
+export default App;
+// export default CodePush(CodePushOptions)(App);

@@ -433,7 +433,7 @@ const DataBill = ({navigation, route}) => {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
-          disable="wallet"
+          // disable="wallet"
         />
       )}
     </>

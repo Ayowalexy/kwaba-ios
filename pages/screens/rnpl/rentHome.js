@@ -18,6 +18,12 @@ export default function RentHome({navigation}) {
     getApplicationData();
   }, []);
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
   const getApplicationData = async () => {
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
@@ -25,6 +31,7 @@ export default function RentHome({navigation}) {
       return token;
     };
     const token = await getToken();
+    const user = await getUser();
 
     const borrwSteps = await AsyncStorage.getItem('borrwsteps');
     const steps = JSON.parse(borrwSteps);
@@ -47,12 +54,6 @@ export default function RentHome({navigation}) {
     }
   };
 
-  const getUser = async () => {
-    const userData = await AsyncStorage.getItem('userData');
-    const user = JSON.parse(userData).user;
-    return user;
-  };
-
   useEffect(() => {
     (async () => {
       const user = await getUser();
@@ -63,53 +64,27 @@ export default function RentHome({navigation}) {
   }, []);
 
   const handleRentalLoanClick = async () => {
-    // TrackEvent('RNPL From Bottom Navigation');
-    // const user = await getUser();
-    // if (user.profile_complete == 0) {
-    //   setCompleteProfileModal(true);
-    // } else {
-    //   const rentalSteps = await AsyncStorage.getItem(`rentalSteps-${user.id}`);
-    //   const steps = JSON.parse(rentalSteps);
-    //   console.log('The stepp:', steps);
+    TrackEvent('RNPL From Bottom Navigation');
+    const user = await getUser();
+    const getCreditScoreDetails = await AsyncStorage.getItem(
+      `creditScoreDetail-${user.id}`,
+    );
 
-    //   if (steps != null) {
-    //     if (steps == null) {
-    //       navigation.navigate('RentalLoanForm1');
-    //     } else if (steps.congratulation == '') {
-    //       navigation.navigate('RentalLoanFormCongratulation');
-    //     } else if (steps.all_documents == '') {
-    //       navigation.navigate('NewAllDocuments');
-    //     } else if (steps.verifying_documents == '') {
-    //       navigation.navigate('VerifyingDocuments');
-    //     } else if (steps.offer_breakdown == '') {
-    //       navigation.navigate('OfferApprovalBreakDown');
-    //     } else if (steps.property_detail == '') {
-    //       navigation.navigate('PostPaymentForm1');
-    //     } else if (steps.landlord_detail == '') {
-    //       navigation.navigate('PostPaymentForm2');
-    //     } else if (steps.referee_detail == '') {
-    //       navigation.navigate('PostPaymentForm3');
-    //     } else if (steps.offer_letter == '') {
-    //       navigation.navigate('PTMFB');
-    //     } else if (steps.address_verification == '') {
-    //       navigation.navigate('AddressVerificationPayment');
-    //     } else if (steps.debitmandate == '') {
-    //       navigation.navigate('OkraDebitMandate');
-    //     } else if (steps.awaiting_disbursement == '') {
-    //       navigation.navigate('AwaitingDisbursement');
-    //     } else if (steps.dashboard == '') {
-    //       navigation.navigate('RentNowPayLaterDashboard');
-    //     } else {
-    //       navigation.navigate('RentNowPayLaterDashboard');
-    //     }
-    //   } else {
-    //     navigation.navigate('RentNowPayLaterOnboarding');
-    //   }
+    console.log('DATATATATATTA: ', getCreditScoreDetails);
 
-    // //QUICK NAVIGATIONS
-    // }
-
-    navigation.navigate('RnplOnboard');
+    if (user.profile_complete == 0) {
+      setCompleteProfileModal(true);
+    } else {
+      if (getCreditScoreDetails == null) {
+        navigation.navigate('RnplOnboard');
+      } else if (getCreditScoreDetails == 'true') {
+        navigation.navigate('RnplSteps');
+      } else if (getCreditScoreDetails == 'false') {
+        navigation.navigate('CreditOnboard');
+      } else {
+        navigation.navigate('RnplOnboard');
+      }
+    }
   };
 
   const handleSavingClick = async () => {

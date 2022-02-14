@@ -26,6 +26,7 @@ import {
   getMaxLoanCap,
   getTotalSoloSavings,
   getTotalBuddySavings,
+  getOneSoloSavingsTransaction,
 } from '../../redux/actions/savingsActions';
 import {
   getBillServices,
@@ -59,6 +60,9 @@ import PushNotification from 'react-native-push-notification';
 
 import {TrackEvent} from '../../util/segmentEvents';
 import moment from 'moment';
+import {setSteps} from '../../redux/actions/rnplActions';
+import {initalState} from '../../redux/reducers/rnplReducer';
+import {getUserReferrals} from '../../redux/actions/referralAction';
 
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
@@ -103,6 +107,22 @@ export default function NewHome({navigation}) {
 
   const layout = useWindowDimensions();
 
+  useEffect(() => {
+    async function fetchData() {
+      const storage = await AsyncStorage.getItem('RnplSteps');
+      if (storage !== null) {
+        const payload = JSON.parse(storage);
+        dispatch(setSteps(payload));
+        // console.log('Payload: ', payload);
+      } else {
+        await AsyncStorage.setItem('RnplSteps', JSON.stringify(initalState));
+        dispatch(setSteps(initalState));
+        // console.log('Initial: ', initalState);
+      }
+    }
+    fetchData();
+  }, []);
+
   const getUserData = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const data = JSON.parse(userData);
@@ -113,18 +133,19 @@ export default function NewHome({navigation}) {
     setRefreshing(true);
     try {
       const res = await me();
-      if (res?.user) {
+      console.log('The me res: ', res.data);
+      if (res?.data) {
         const userData = await getUserData();
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
-        dispatch(getTotalBuddySavings());
-        dispatch(getUserWallet());
+        // dispatch(getTotalBuddySavings());
+        // dispatch(getUserWallet());
 
         dispatch(
           setLoginState({
             ...userData,
-            user: res.user,
-            username: res.user.firstname,
+            user: res.data,
+            username: res.data.firstname,
           }),
         );
 
@@ -184,23 +205,27 @@ export default function NewHome({navigation}) {
     dispatch(getAirtime());
     dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
+    dispatch(getUserReferrals());
     // dispatch(getBillsCategory('airtime'));
+
+    // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
-      setSavings(getMaxLoanCap1.data.you_have_save);
-      // setInstantLoan(getMaxLoanCap1.data.total_emmegency_loan_amount_taken);
+      setSavings(getMaxLoanCap1?.data?.total_savings);
+      setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
+
       setInstantLoan(
-        Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
+        Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
       );
     }
   }, [getMaxLoanCap1]);
 
-  useEffect(() => {
-    console.log('The Wallet: ', getWallet);
-    setWallet(getWallet?.data?.available_balances);
-  }, [getWallet]);
+  // useEffect(() => {
+  //   console.log('The Wallet: ', getWallet);
+  //   setWallet(getWallet?.data?.available_balances);
+  // }, [getWallet]);
 
   const slides = [
     {
@@ -239,11 +264,11 @@ export default function NewHome({navigation}) {
       },
       cardClick: () => {
         TrackEvent('Home-Card-Wallet');
-        // navigation.navigate('Wallet');
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        navigation.navigate('Wallet');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
 
@@ -261,15 +286,17 @@ export default function NewHome({navigation}) {
           ? navigation.navigate('EmergencyLoanHome')
           : navigation.navigate('EmergencyLoanDashBoard'),
       cardClick: () => {
-        // TrackEvent('Home-Card-Emergencyloan');
+        TrackEvent('Home-Card-Emergencyloan');
+        navigation.navigate('EmergencyLoanDashBoard');
+
         // instantLoan == 0
         //   ? navigation.navigate('EmergencyLoanHome')
         //   : navigation.navigate('EmergencyLoanDashBoard');
 
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
 
@@ -312,17 +339,16 @@ export default function NewHome({navigation}) {
       image: icons.ic3,
       route: () => {
         TrackEvent('Emergency Funds Home Quick Action');
+        if (instantLoan == 0) {
+          navigation.navigate('EmergencyFundOnboarding');
+        } else {
+          navigation.navigate('EmergencyLoanDashBoard');
+        }
 
-        // if (instantLoan == 0) {
-        //   navigation.navigate('EmergencyFundOnboarding');
-        // } else {
-        //   navigation.navigate('EmergencyLoanDashBoard');
-        // }
-
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     {
@@ -331,6 +357,10 @@ export default function NewHome({navigation}) {
       route: () => {
         navigation.navigate('AirtimeHome');
         TrackEvent('Buy Airtime Home Quick Action');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     {
@@ -339,6 +369,10 @@ export default function NewHome({navigation}) {
       route: () => {
         navigation.navigate('BillsHome');
         TrackEvent('Pay Bills Home Quick Action');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     // {
@@ -362,24 +396,13 @@ export default function NewHome({navigation}) {
         'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
       img: images.maskGroup29,
       route: () => navigation.navigate('JoinChallengeList'),
+      route: () => {
+        Alert.alert(
+          'Feature currently unavailable',
+          'We are working hard to make this available as soon as we can.',
+        );
+      },
     },
-    // {
-    //   title: 'Home Loans',
-    //   body:
-    //     'Get loans to pay your rent, rent deposit or buy a house. Let Kwaba sort you out.',
-    //   img: images.maskGroup29,
-    //   route: () =>
-    //     isProfileComplete
-    //       ? navigation.navigate('LoanScreen1')
-    //       : setCompleteProfileModal(true),
-    // },
-    // {
-    //   title: 'Refer and Earn',
-    //   body:
-    //     'Invite your friends and family to use  Kwaba and earn from every referral ',
-    //   img: images.giftPackage,
-    //   route: () => navigation.navigate('Referral'),
-    // },
   ];
 
   const handleNotification = (item) => {
@@ -398,7 +421,7 @@ export default function NewHome({navigation}) {
   const TransactionHistory = () => {
     const slicedTransaction = getWalletTransactions?.data?.slice(0, 4);
     return (
-      <View style={{paddingHorizontal: 20, paddingBottom: 20, marginTop: 20}}>
+      <View style={{paddingHorizontal: 25, paddingBottom: 20, marginTop: 20}}>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
           Recent Transactions
         </Text>
@@ -887,7 +910,7 @@ export default function NewHome({navigation}) {
 
             <View
               style={{
-                paddingHorizontal: 10,
+                paddingHorizontal: 20,
                 overflow: 'hidden',
               }}>
               {bottomCards.map((item, index) => {
@@ -895,12 +918,7 @@ export default function NewHome({navigation}) {
                   <View
                     key={index}
                     style={{
-                      backgroundColor:
-                        index == 0
-                          ? '#EDECFC'
-                          : index != bottomCards.length - 1
-                          ? COLORS.white
-                          : '#5A4CB1',
+                      backgroundColor: index == 0 ? '#EDECFC' : '#5A4CB1',
                       marginBottom: 10,
                       borderRadius: 10,
                       elevation: 0.5,
@@ -920,10 +938,7 @@ export default function NewHome({navigation}) {
                       <View style={{padding: 20}}>
                         <Text
                           style={{
-                            color:
-                              index == bottomCards.length - 1
-                                ? 'white'
-                                : COLORS.dark,
+                            color: index == 0 ? COLORS.dark : COLORS.white,
                             fontFamily: 'CircularStd',
                             fontSize: 15,
                             lineHeight: 23,
@@ -935,10 +950,7 @@ export default function NewHome({navigation}) {
                           style={{
                             width: '75%',
                             marginTop: 9,
-                            color:
-                              index == bottomCards.length - 1
-                                ? 'white'
-                                : COLORS.dark,
+                            color: index == 0 ? COLORS.dark : COLORS.white,
                             fontFamily: 'CircularStd',
                             fontSize: 12,
                             lineHeight: 20,

@@ -48,8 +48,11 @@ export default function EmergencyLoanHome({navigation}) {
   useEffect(() => {
     const data = getMaxLoanCap1?.data;
 
-    setSavings(data?.you_have_save);
-    setMaximumLoanAmount(data?.max_loan_amount);
+    console.log('The Data: ', data);
+
+    setSavings(data?.total_savings);
+    // setMaximumLoanAmount(data?.max_loan_amount || '0.00');
+    setMaximumLoanAmount(data?.maximumLoanAmount);
   }, []);
 
   const calculateRepayment = (amount) => {
@@ -72,7 +75,7 @@ export default function EmergencyLoanHome({navigation}) {
     } else {
       if (Number(unFormatNumber(value)) > maximumLoanAmount) {
         setErrorMsg(
-          `The maximum amount you can get now is ₦${getMaxLoanCap1?.data?.max_loan_amount}`,
+          `The maximum amount you can get now is ₦${getMaxLoanCap1?.data?.maximumLoanAmount}`,
         );
         setRepaymentAmount(0);
       } else {
@@ -293,7 +296,7 @@ export default function EmergencyLoanHome({navigation}) {
                             lineHeight: 29,
                             fontWeight: 'bold',
                           }}>
-                          ₦{formatNumber(savings)}
+                          ₦{formatNumber(Number(savings).toFixed(2))}
                         </Text>
                       </View>
                       <View

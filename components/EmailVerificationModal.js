@@ -18,6 +18,7 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {login} from '../services/network';
 import {useDispatch, useSelector} from 'react-redux';
+import urls from '../services/routes';
 
 const formSchema = yup.object().shape({
   email: yup
@@ -47,8 +48,9 @@ export default function EmailVerificationModal(props) {
     };
     setSpinner(true);
     try {
-      const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/sendmaillink';
+      // const url =
+      //   'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/sendmaillink';
+      const url = urls.auth.SEND_EMAIL_VERIFICATION;
       const token = await getToken();
       const response = await axios.post(url, JSON.stringify(data), {
         headers: {
@@ -73,7 +75,7 @@ export default function EmailVerificationModal(props) {
       // }
       setSpinner(false);
       setEmailSent(false);
-      console.log('Error', error);
+      console.log('Error', error.response);
     }
   };
 

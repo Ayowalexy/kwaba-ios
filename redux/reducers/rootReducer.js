@@ -31,6 +31,9 @@ import {
   getOneUserSavingsChallengeReducer,
 } from './savingsChallengeReducer';
 
+import {stepsReducer} from './rnplReducer';
+import {getUserReferralsReducer} from './referralReducer';
+
 export const rootReducer = combineReducers({
   loginReducer: loginReducer,
   soloSavingReducer: soloSavingReducer,
@@ -56,4 +59,6 @@ export const rootReducer = combineReducers({
   getSavingsUnderChallengeReducer: getSavingsUnderChallengeReducer,
   getUserSavingsChallengeReducer: getUserSavingsChallengeReducer,
   getOneUserSavingsChallengeReducer: getOneUserSavingsChallengeReducer,
+  stepsReducer: stepsReducer,
+  getUserReferralsReducer: getUserReferralsReducer,
 });

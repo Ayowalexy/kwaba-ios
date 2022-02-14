@@ -4,26 +4,71 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
-import {ProgressSteps, ProgressStep} from 'react-native-progress-steps';
 import {COLORS} from '../../../util';
-import stepsArray from '../../../util/stepsArray';
+// import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function RnplSteps({navigation}) {
+  const stepsArray = [
+    {
+      title: 'Credit score',
+      subTitle: '',
+      status: 'complete',
+      navigate: () => console.log('Hello credit score here!'),
+    },
+    {
+      title: 'Applications',
+      subTitle: '',
+      status: 'start',
+      navigate: () => navigation.navigate('Form1'),
+      // navigate: () => navigation.navigate('VerifyingDocuments'),
+    },
+    {
+      title: 'Documents upload',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('NewAllDocuments'),
+    },
+    {
+      title: 'Offer approval breakdown',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Property details',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Address verification',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Direct debit',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Disbursement',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+  ];
+
   return (
     <View style={[styles.container]}>
       <View style={[styles.header]}>
         <Icon name="arrow-back" color={COLORS.dark} size={24} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* <View style={[styles.topView]}>
-          <Text style={[styles.topViewText]}>
-            Hi Joshua, let's walk you through{'\n'}your offer
-          </Text>
-        </View> */}
         <View style={[styles.bottomView]}>
           {stepsArray.map((item, index) => {
             return (
@@ -43,12 +88,15 @@ export default function RnplSteps({navigation}) {
                       item.status == 'complete' ? '#effbf7' : COLORS.white,
                   },
                 ]}
-                onPress={() => navigation.navigate('RnplViews')}>
+                onPress={item.navigate}>
                 <View style={[styles.content]}>
-                  <Text style={[styles.title]}>{item.title}</Text>
-                  {/* <Text style={[styles.subTitle]}>
-                    Estimated based on comps and home details
-                  </Text> */}
+                  <Text
+                    style={[
+                      styles.title,
+                      {color: item.status == 'locked' ? '#999' : COLORS.dark},
+                    ]}>
+                    {item.title}
+                  </Text>
                 </View>
                 <View style={[styles.statusContent]}>
                   {item.status == 'start' && (
@@ -109,6 +157,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    backgroundColor: '#eef7ff',
+    backgroundColor: '#effbf7',
   },
   header: {
     paddingHorizontal: 20,
@@ -128,12 +178,8 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   bottomView: {
-    paddingVertical: 20,
     paddingHorizontal: 40,
     flex: 1,
-    // borderTopLeftRadius: 30,
-    // borderTopRightRadius: 30,
-    backgroundColor: '#eef7ff',
   },
   stepCard: {
     backgroundColor: COLORS.white,
@@ -152,7 +198,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: COLORS.dark,
   },
   subTitle: {
@@ -197,5 +243,31 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 'bold',
     color: '#8fc1ed',
+  },
+  buttonContainer: {
+    paddingHorizontal: 50,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    left: 0,
+    backgroundColor: '#fff',
+    elevation: 50,
+  },
+  button: {
+    backgroundColor: '#61cd8f',
+    width: '48%',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#fff',
   },
 });

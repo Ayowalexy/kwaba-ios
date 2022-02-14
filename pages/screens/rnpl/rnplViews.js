@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,10 +6,13 @@ import {
   StatusBar,
   ScrollView,
   FlatList,
+  Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {COLORS} from '../../../util';
 import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useSelector} from 'react-redux';
 
 const Item = ({item, index}) => (
   <View
@@ -65,6 +68,12 @@ const Item = ({item, index}) => (
 );
 
 export default function RnplViews() {
+  const steps = useSelector((state) => state.stepsReducer);
+
+  const handleClick = async () => {
+    console.log('The Step: ', steps);
+  };
+
   const renderItem = ({item, index}) => <Item item={item} index={index} />;
 
   return (
@@ -81,12 +90,11 @@ export default function RnplViews() {
           contentContainerStyle={{
             paddingLeft: 40,
             paddingRight: 20,
-            paddingVertical: 40,
+            paddingVertical: 30,
             borderWidth: 1,
           }}
         />
-
-        <View style={[styles.content]}>{/* <Text>Joshua Nwosu</Text> */}</View>
+        <View style={[styles.content]}></View>
       </View>
     </>
   );
@@ -100,8 +108,6 @@ const styles = StyleSheet.create({
 
   content: {
     backgroundColor: COLORS.white,
-    // borderTopLeftRadius: 30,
-    // borderTopRightRadius: 30,
     flex: 1,
     padding: 20,
     paddingVertical: 30,

@@ -63,7 +63,8 @@ export default function RnplOnboard({navigation}) {
           </View>
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('RnplEligibility')}>
+            // onPress={() => navigation.navigate('RnplEligibility')}
+            onPress={() => navigation.navigate('RnplEmploymentStatus')}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>GET STARTED</Text>
             </View>

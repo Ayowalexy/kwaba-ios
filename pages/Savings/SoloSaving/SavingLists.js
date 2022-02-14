@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -19,7 +20,6 @@ import {
 } from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
-import {FlatList} from 'react-native-gesture-handler';
 
 const Item = ({item, navigation}) => {
   return (
@@ -108,9 +108,8 @@ export default function SavingLists({navigation}) {
         style={[styles.card]}
         onPress={() => {
           dispatch(getOneSoloSavings(item.id));
-          // dispatch(getOneSoloSavingsTransaction(item.id));
+          dispatch(getOneSoloSavingsTransaction(item.id));
           navigation.navigate('SoloSavingDashBoard', {id: item.id});
-          // console.log('The ID: ', item.id);
         }}>
         <View style={[styles.cardFlex]}>
           <View style={[styles.progressContainer]}>

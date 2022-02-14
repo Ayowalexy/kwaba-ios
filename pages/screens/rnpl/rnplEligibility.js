@@ -89,7 +89,7 @@ export default function RnplEligibility({navigation}) {
           <Text style={[styles.btnText]}>Not Interested </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.btn, {backgroundColor: COLORS.secondary}]}
+          style={[styles.btn, {backgroundColor: COLORS.primary}]}
           onPress={() => {
             navigation.navigate('CreditOnboard');
           }}>

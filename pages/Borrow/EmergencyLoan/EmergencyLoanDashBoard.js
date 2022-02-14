@@ -10,6 +10,7 @@ import {
   FlatList,
   Alert,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../../util/index';
@@ -20,7 +21,7 @@ import {
   loanPaymentVerification,
   verifySavingsPayment,
 } from '../../../services/network';
-import Spinner from 'react-native-loading-spinner-overlay';
+// import Spinner from 'react-native-loading-spinner-overlay';
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import {currencyFormat, formatNumber} from '../../../util/numberFormatter';
 import moment from 'moment';
@@ -75,20 +76,23 @@ export default function EmergencyLoanDashBoard({navigation}) {
   useEffect(() => {
     (async () => {
       const loans = await getEmergencyLoans();
-      const activeLoan = loans.data.data.filter(
+      console.log('Loans Data: ', loans);
+      const activeLoan = loans?.data?.data.filter(
         (c) => c.repayment_status == 0,
       )[0];
-      const paidLoans = loans.data.data.filter((c) => c.repayment_status == 1);
+      const paidLoans = loans?.data?.data.filter(
+        (c) => c.repayment_status == 1,
+      );
       setRepaidLoans(paidLoans);
       setLoanAmount(activeLoan != undefined ? activeLoan.loan_amount : 0);
       setDueDate(
         activeLoan != undefined
-          ? moment(activeLoan.repayment_date.split(' ')[0]).format(
+          ? moment(activeLoan?.repayment_date?.split(' ')[0]).format(
               'DD, MMM YYYY',
             )
           : '',
       );
-      setLoanId(activeLoan != undefined ? activeLoan.id : '');
+      setLoanId(activeLoan != undefined ? activeLoan?.id : '');
 
       console.log('The active loan: ', activeLoan);
 
@@ -103,23 +107,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
       } else {
         setShowBanner(false);
       }
-
-      // loans?.data?.data?.map((item) => {
-      //   if (item.status == 'Active') {
-      //     setShowBanner(true);
-      //   } else {
-      //     setShowBanner(false);
-      //   }
-      // });
-
-      // loans?.data?.data?.filter((item) => {
-      //   if (item.status.toLowerCase() == 'active') {
-      //     setShowBanner(true);
-      //     console.log('Hellow wid world.');
-      //   } else {
-      //     setShowBanner(false);
-      //   }
-      // });
     })();
   }, []);
 
@@ -129,25 +116,32 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
-      setRepayment(
-        Number(getMaxLoanCap1?.data?.total_loan_amount_remain_to_pay),
-      );
-      setLoanPiad(getMaxLoanCap1?.data?.total_emmegency_loan_amount_repay);
+      setRepayment(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay || 0);
+      setLoanPiad(getMaxLoanCap1?.data?.emergency_loan_amount_paid || 0);
     }
   }, [getMaxLoanCap1]);
 
   const requestLoan = async () => {
-    if (allLoans.filter((item) => item.status == 'Pending').length > 0) {
+    if (
+      allLoans.filter((item) => item.status.toLowerCase() == 'pending').length >
+      0
+    ) {
       Alert.alert(
         'Oops!',
         `You can't apply for another loan because you still have a pending loan request.`,
       );
-    } else if (allLoans.filter((item) => item.status == 'Active').length > 0) {
+    } else if (
+      allLoans.filter((item) => item.status.toLowerCase() == 'active').length >
+      0
+    ) {
       Alert.alert(
         'Oops!',
         `You currently have an active loan. Repay this loan to request for another loan.`,
       );
-    } else if (allLoans.filter((item) => item.status == 'Overdue').length > 0) {
+    } else if (
+      allLoans.filter((item) => item.status.toLowerCase() == 'overdue').length >
+      0
+    ) {
       Alert.alert(
         'Oops!',
         `You need to repay your last loan before you can access another loan.`,
@@ -156,23 +150,10 @@ export default function EmergencyLoanDashBoard({navigation}) {
       navigation.navigate('EmergencyLoanHome');
       dispatch(getMaxLoanCap());
     }
-
-    // if (
-    //   allLoans.filter((item) => item.status == 'Pending').length > 0 ||
-    //   allLoans.filter((item) => item.status == 'Active').length > 0 ||
-    //   allLoans.filter((item) => item.status == 'Overdue').length > 0
-    // ) {
-    //   Alert.alert('Oops!', 'You have already requested for a loan.');
-    // } else {
-    //   navigation.navigate('EmergencyLoanHome');
-    //   dispatch(getMaxLoanCap());
-    // }
   };
 
   const handlePaymentRoute = async (value) => {
     console.log('The Value: ', value);
-    // setChannel(value);
-    // setShowAmountModal(true);
   };
 
   return (
@@ -332,28 +313,6 @@ export default function EmergencyLoanDashBoard({navigation}) {
         />
       )}
 
-      {/* {activeLoanModal && (
-        <ActiveLoanModal
-          onRequestClose={() => setActiveLoanModal(!activeLoanModal)}
-          visible={activeLoanModal}
-          loanID={loanID}
-          loanData={loanData}
-          navigation={navigation}
-        />
-      )} */}
-      {/* 
-      {showPaymentModal && (
-        <PaymentTypeModal
-          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
-          visible={showPaymentModal}
-          setPaymentType={(data) => {
-            console.log('Hello', data);
-            // handlePaymentRoute(data); // paystack, bank, wallet
-          }}
-          disable="wallet"
-        />
-      )} */}
-
       {showAmountModal && (
         <AmountModalFunds
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
@@ -365,7 +324,8 @@ export default function EmergencyLoanDashBoard({navigation}) {
         />
       )}
 
-      <Spinner visible={spinner} size="large" />
+      {/* <Spinner visible={spinner} size="large" /> */}
+      {spinner && <ActivityIndicator size={'large'} color={COLORS.primary} />}
     </View>
   );
 }

@@ -125,7 +125,9 @@ const Referral = ({navigation}) => {
               paddingHorizontal: 40,
             },
           ]}>
-          Earn N1,000 per referral when your friends and family save for their
+          {/* Earn N1,000 per referral when your friends and family save for their
+          rent with Kwaba */}
+          Earn N500 per referral when your friends and family save for their
           rent with Kwaba
         </Text>
         <View
@@ -150,7 +152,8 @@ const Referral = ({navigation}) => {
                 paddingVertical: 5,
               },
             ]}>
-            Your friends also get N1,000 when they make their first savings
+            {/* Your friends also get N1,000 when they make their first savings */}
+            You earn when the person you refer saves a minimum of N10,000
           </Text>
         </View>
         <Text

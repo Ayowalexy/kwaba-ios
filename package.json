@@ -82,6 +82,7 @@
     "react-native-toaster": "^1.2.2",
     "react-native-unordered-list": "^1.0.4",
     "react-native-vector-icons": "^8.0.0",
+    "react-native-version-check": "^3.4.2",
     "react-native-webview": "11.3.1",
     "react-redux": "^7.2.2",
     "redux": "^4.0.5",

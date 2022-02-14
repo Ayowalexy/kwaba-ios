@@ -12,13 +12,13 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../../../util';
 import designs from './styles';
-import {creditScorePurchase} from '../../../../services/network';
 import PaystackPaymentCobble from '../../../../components/Paystack/PaystackPaymentCobble';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import CreditAccept from './creditAccept';
+import {purchase} from '../../../../services/creditScrore';
 
 const CreditScoreValidationSchema = yup.object().shape({
   email: yup
@@ -72,7 +72,7 @@ const CustomInput = (props) => {
 };
 
 export default function CreditForm(props) {
-  const {visible, onRequestClose} = props;
+  const {visible, onRequestClose, setFormData} = props;
 
   const [spinner, setSpinner] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
@@ -98,7 +98,7 @@ export default function CreditForm(props) {
 
     Keyboard.dismiss();
 
-    const res = await creditScorePurchase(data);
+    const res = await purchase(data);
 
     // console.log('The Res: ', res);
 
@@ -128,7 +128,11 @@ export default function CreditForm(props) {
         <View style={[designs.centeredView]}>
           <View style={[designs.topNav]}>
             <TouchableOpacity onPress={onRequestClose}>
-              <Icon name="chevron-back" size={25} color={COLORS.primary} />
+              <Icon
+                name="arrow-back-outline"
+                size={25}
+                color={COLORS.primary}
+              />
             </TouchableOpacity>
           </View>
 
@@ -187,15 +191,6 @@ export default function CreditForm(props) {
         </View>
       </Modal>
 
-      {/* {showAcceptModal && (
-        <AcceptModal
-          onRequestClose={() => setShowAcceptModal(!showAcceptModal)}
-          visible={showAcceptModal}
-          navigation={navigation}
-          onConfirm={() => setShowPaystackPayment(true)}
-        />
-      )} */}
-
       {showAcceptModal && (
         <CreditAccept
           onRequestClose={() => setShowAcceptModal(!showAcceptModal)}
@@ -217,7 +212,9 @@ export default function CreditForm(props) {
           paymentSuccessful={async (res) => {
             console.log('Pay done', res);
             if (res.status == 'success') {
-              console.log('CreditScoreAwaiting', formValue);
+              // console.log('CreditScoreAwaiting', formValue);
+              setFormData(formValue);
+              onRequestClose();
             } else {
               Alert.alert('Oops', 'Something went wrong');
             }

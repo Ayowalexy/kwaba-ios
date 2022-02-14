@@ -14,15 +14,6 @@ target 'kwaba_mobile_app' do
 
   pod 'RNFS', :path => '../node_modules/react-native-fs'
 
-<<<<<<< HEAD
-  pod 'react-native-okra', :path => '../node_modules/react-native-okra'
-
-  pod 'react-native-webview', :path => '../node_modules/react-native-webview'
-
-  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
-
-=======
->>>>>>> 687522263dd8eb1e1c9abf9339f82ee89eac6a50
 
   target 'Kwaba_mobile_appTests' do
     inherit! :complete

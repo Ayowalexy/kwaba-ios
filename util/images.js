@@ -113,6 +113,8 @@ const mastercardIcon = require('../assets/images/icons/mastercard.png');
 const discovercardIcon = require('../assets/images/icons/discover.png');
 const amexcardIcon = require('../assets/images/icons/amex.png');
 
+const success = require('../assets/icons/tick.png');
+
 const saveToOwn = require('../assets/images/saveToOwn.png');
 const mortgages_1 = require('../assets/images/mortgages_1.png');
 
@@ -232,4 +234,5 @@ export {
   appUpdate,
   speedometer,
   progress,
+  success,
 };

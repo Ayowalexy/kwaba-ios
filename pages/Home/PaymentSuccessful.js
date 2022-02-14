@@ -47,30 +47,53 @@ export default function PaymentSuccessful(props) {
   }, []);
 
   useEffect(() => {
-    dispatch(getTotalSoloSavings());
-    dispatch(getMaxLoanCap());
-    dispatch(getOneSoloSavings(props?.route?.params?.id));
-    dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
-    dispatch(getAirtimeBillTrans());
-    dispatch(getUserWallet());
-    dispatch(getUserWalletTransactions());
-    dispatch(getUserSavingsChallenge());
-    dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
-
-    // call fnc to send notification locally
-    // props?.route?.params?.onNotify();
+    if (
+      props?.route?.params?.subText ==
+      'You have successfully funded your wallet'
+    ) {
+      // dispatch(getTotalSoloSavings());
+      dispatch(getMaxLoanCap());
+      console.log('Meow wallet');
+      // dispatch(getAirtimeBillTrans());
+      // dispatch(getUserWallet());
+      dispatch(getUserWalletTransactions());
+      // dispatch(getUserSavingsChallenge());
+    } else {
+      dispatch(getTotalSoloSavings());
+      dispatch(getMaxLoanCap());
+      dispatch(getOneSoloSavings(props?.route?.params?.id));
+      dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
+      dispatch(getAirtimeBillTrans());
+      dispatch(getUserWallet());
+      dispatch(getUserWalletTransactions());
+      dispatch(getUserSavingsChallenge());
+      // dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
+    }
   }, []);
 
   const handlePress = () => {
-    dispatch(getTotalSoloSavings());
-    dispatch(getMaxLoanCap());
-    dispatch(getOneSoloSavings(props?.route?.params?.id));
-    dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
-    dispatch(getAirtimeBillTrans());
-    dispatch(getUserWallet());
-    dispatch(getUserWalletTransactions());
-    dispatch(getUserSavingsChallenge());
-    dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
+    if (
+      props?.route?.params?.subText ==
+      'You have successfully funded your wallet'
+    ) {
+      // dispatch(getTotalSoloSavings());
+      dispatch(getMaxLoanCap());
+      console.log('Meow wallet');
+      // dispatch(getAirtimeBillTrans());
+      // dispatch(getUserWallet());
+      dispatch(getUserWalletTransactions());
+      // dispatch(getUserSavingsChallenge());
+    } else {
+      dispatch(getTotalSoloSavings());
+      dispatch(getMaxLoanCap());
+      dispatch(getOneSoloSavings(props?.route?.params?.id));
+      dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
+      dispatch(getAirtimeBillTrans());
+      dispatch(getUserWallet());
+      dispatch(getUserWalletTransactions());
+      dispatch(getUserSavingsChallenge());
+      // dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
+    }
 
     console.log('Payment ID: ', props?.route?.params?.id);
 
@@ -97,7 +120,7 @@ export default function PaymentSuccessful(props) {
         </Text>
         <Text style={[styles.subText]}>
           {props?.route?.params?.subText ||
-            'Done! You have successfully made payment'}
+            'You have successfully made payment'}
         </Text>
       </View>
       <TouchableOpacity style={[styles.btn]} onPress={handlePress}>

@@ -276,10 +276,10 @@ export default function AirtimeHistory(props) {
                                       }}>
                                       {item.status == 1
                                         ? `+ ${formatNumber(
-                                            Number(item.billsAmount).toFixed(2),
+                                            Number(item.amount).toFixed(2),
                                           )}`
                                         : formatNumber(
-                                            Number(item.billsAmount).toFixed(2),
+                                            Number(item.amount).toFixed(2),
                                           )}
                                     </Text>
                                     <Text

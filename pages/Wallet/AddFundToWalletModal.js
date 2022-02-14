@@ -127,9 +127,6 @@ export default function AddFundToWalletModal(props) {
                       style={{
                         paddingVertical: 15,
                         paddingHorizontal: 20,
-                        // backgroundColor: '#00DC9920',
-                        // backgroundColor: '#2A286A05',
-                        // backgroundColor: '#ffffff',
                         flexDirection: 'row',
                         alignItems: 'flex-start',
                         // marginVertical: 5,

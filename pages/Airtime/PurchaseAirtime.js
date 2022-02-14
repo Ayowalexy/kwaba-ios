@@ -20,7 +20,10 @@ import ConfirmModal from './ConfirmModal';
 import NumberFormat from '../../components/NumberFormat';
 import {
   BuyPurchaseAirtime,
+  completeSavingsPayment,
   verifyBillsTransactions,
+  verifyPayment,
+  verifySavingsPayment,
   verifyWalletTransaction,
 } from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -53,6 +56,8 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
+  const [verifyBillsData, setVerifyBillsData] = useState({});
+
   const [message, setMessage] = useState({
     title: 'Title',
     body: 'Body',
@@ -79,7 +84,96 @@ const PurchaseAirtime = ({navigation, route}) => {
     setShowPaymentModal(true);
   };
 
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      name: 'AirtimeHome',
+      content: 'Recharge Successful',
+      subText: 'Sent! You have successfully recharged the number',
+    });
+  };
+
+  const billsPayment = async (data) => {
+    setSpinner(true);
+
+    try {
+      const res = await completeSavingsPayment(data);
+      if (res.status == 201) {
+        setSpinner(false);
+        console.log('The Res: ', res);
+
+        await showSuccess();
+      } else {
+        setSpinner(false);
+        console.log('Not Okay Res: ', res.response.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error.response);
+    }
+  };
+
+  const verifyBillsPayment = async (data, paymentChannel) => {
+    setSpinner(true);
+    const res = await verifySavingsPayment(data);
+
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      setSpinner(false);
+      console.log('Verify Data: ', res?.data?.data);
+      setVerifyBillsData(res?.data?.data);
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: unFormatNumber(amount),
+          channel: 'wallet',
+          reference: res?.data?.data?.paymentReference, // from verifyBillsPayment
+          purpose: 'bills',
+          billsMethod: 'billsWithoutBillersCode',
+          billsData: {
+            amount: unFormatNumber(amount),
+            recepient: phoneNumber, //08011111111 for test
+            serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+          },
+        };
+
+        // console.log('That payload: ', payload);
+        await billsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      setSpinner(false);
+      Alert.alert('Error', 'something went wrong.');
+    }
+  };
+
   const handlePaymentRoute = async (value) => {
+    if (value == 'wallet') {
+      const data = {
+        amount: unFormatNumber(amount),
+        channel: 'wallet',
+        purpose: 'bills',
+        billsMethod: 'billsWithoutBillersCode',
+      };
+
+      setChannel(value); //wallet
+      await verifyBillsPayment(data, value);
+    } else {
+      const data = {
+        amount: unFormatNumber(amount),
+        channel: 'paystack',
+        purpose: 'bills',
+        billsMethod: 'billsWithoutBillersCode',
+      };
+
+      setChannel(value);
+      await verifyBillsPayment(data, value);
+    }
+  };
+
+  const handlePaymentRoute2 = async (value) => {
     try {
       const data = {
         serviceID: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
@@ -137,7 +231,7 @@ const PurchaseAirtime = ({navigation, route}) => {
         }
       } else {
         setSpinner(false);
-        console.log('Response Error: ', response?.response);
+        console.log('Response Error: ', response?.response?.data);
         setMessage({
           visible: true,
           body: response?.response?.data?.statusMsg,
@@ -367,47 +461,31 @@ const PurchaseAirtime = ({navigation, route}) => {
       {showPaystackPayment && (
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={resData}
+          data={verifyBillsData}
           channel={channel}
           paymentCanceled={(e) => {
             console.log('Pay cancel', e);
+            setSpinner(false);
             // Do something
           }}
           paymentSuccessful={async (res) => {
-            console.log('Pay done', res);
-
-            // Do something
-
+            setSpinner(false);
             const data = {
+              amount: unFormatNumber(amount),
               channel: 'paystack',
-              reference: res.data.transactionRef.reference,
+              reference: verifyBillsData?.paymentReference, // from verifyBillsPayment
+              purpose: 'bills',
+              billsMethod: 'billsWithoutBillersCode',
+              billsData: {
+                amount: unFormatNumber(amount),
+                recepient: phoneNumber, //08011111111 for test
+                serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+              },
             };
 
-            console.log('the dataatatta: ', data);
+            // console.log('We here: ', data);
 
-            setSpinner(true);
-            const verify = await verifyBillsTransactions(data);
-
-            console.log('the verifyyyyy: ', verify);
-
-            if (verify.status == 200) {
-              // console.log('Success: Bills Payment Verified', res);
-              navigation.navigate('PaymentSuccessful', {
-                name: 'AirtimeHome',
-                content: 'Recharge Successful',
-                subText: 'Sent! You have successfully recharged the number',
-                onNotify: () => {
-                  PushNotification.localNotification({
-                    channelId: 'test-channel',
-                    title: 'Airtime Recharge',
-                    message: 'You just recharged',
-                  });
-                },
-              });
-              setSpinner(false);
-            } else {
-              setSpinner(false);
-            }
+            await billsPayment(data);
           }}
         />
       )}
