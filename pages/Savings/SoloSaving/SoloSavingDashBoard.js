@@ -640,7 +640,7 @@ export default function SoloSavingDashBoard(props) {
 
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('EmergencyFundOnboarding');
+                navigation.navigate('EmergencyLoanDashBoard');
 
                 // Alert.alert(
                 //   'Feature currently unavailable',
