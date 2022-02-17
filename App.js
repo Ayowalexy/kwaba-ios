@@ -229,6 +229,7 @@ import {
   FormBreakdown,
   RnplEmploymentStatus,
   RnplDirectdebit,
+  RentHome,
 } from './pages/screens/rnpl';
 import {CreditOnboard} from './pages/screens/rnpl/creditscore';
 import {checkAppRelease} from './services/network';
@@ -860,6 +861,8 @@ const App = () => {
                   name="RnplDirectdebit"
                   component={RnplDirectdebit}
                 />
+
+                <Stack.Screen name="Rent" component={RentHome} />
               </>
             )}
           </Stack.Navigator>

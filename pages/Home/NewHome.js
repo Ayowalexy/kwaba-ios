@@ -407,7 +407,7 @@ export default function NewHome({navigation}) {
 
   const newCard = [
     {
-      img: images.maskGroup30,
+      img: images.maskGroup29,
       title: 'Save for rent',
       content: 'Save for rent with solo or buddy savings with friends',
       route: () => navigation.navigate('SavingsHome'),
