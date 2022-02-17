@@ -22,7 +22,7 @@ import designs from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreditDashboard(props) {
-  const {visible, onRequestClose, data, navigation} = props;
+  const {data, navigation} = props;
   const [spinner, setSpinner] = useState(false);
   const [creditScore, setCreditScore] = useState('');
   const [creditRating, setCreditRating] = useState('');
@@ -31,6 +31,8 @@ export default function CreditDashboard(props) {
   const [creditScoreDetails, setCreditScoreDetails] = useState({});
   const [creditScoreMessage, setCreditScoreMessage] = useState('');
   const [canApply, setCanApply] = useState(false);
+
+  const [scoreData, setScoreData] = useState({});
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -42,6 +44,13 @@ export default function CreditDashboard(props) {
     (async () => {
       const user = await getUser();
       AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'true');
+
+      const creditScoreFormData = await AsyncStorage.getItem(
+        `creditScoreData-${user.id}`,
+      );
+      const parseData = JSON.parse(creditScoreFormData);
+      console.log('Parsed Data: ', parseData);
+      setScoreData(parseData);
     })();
   }, []);
 
@@ -55,30 +64,21 @@ export default function CreditDashboard(props) {
     } else {
       navigation.navigate('SavingsHome');
     }
-
-    onRequestClose();
     console.log('Hellooo');
   };
 
   const handleFetch = async () => {
     setSpinner(true);
 
-    const dummyData = {
-      bvn: '22262641382',
-      company: 'Kwaba',
-      email: 'joshnwosu888@gmail.com',
-    };
-
     const payload = {
-      bvn: data.bvn,
-      company: data.company,
-      email: data.email,
+      email: scoreData?.email,
+      company: scoreData?.company,
     };
 
     console.log('The Param: ', payload);
 
     try {
-      const res = await fetch(payload || dummyData);
+      const res = await fetch(payload);
 
       let x = res?.data?.history?.filter(
         (item) => item?.meta?.CREDIT_MICRO_SUMMARY && item?.meta,
@@ -153,109 +153,157 @@ export default function CreditDashboard(props) {
         setSpinner(false);
       }
     } catch (error) {
-      console.log('The Error: ', error.response);
+      console.log('The Error: ', error);
       setSpinner(false);
     }
   };
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onRequestClose}>
-      <View style={[designs.centeredView]}>
-        <View style={[designs.topNav]}>
-          <TouchableOpacity onPress={onRequestClose}>
-            <Icon name="arrow-back-outline" size={25} color={COLORS.primary} />
-          </TouchableOpacity>
-        </View>
+    <View style={[designs.centeredView]}>
+      <View style={[designs.topNav]}>
+        <TouchableOpacity onPress={() => navigation.navigate('Rent')}>
+          <Icon name="arrow-back-outline" size={25} color={COLORS.primary} />
+        </TouchableOpacity>
+      </View>
 
-        <View style={[designs.modalView, {paddingBottom: 0}]}>
+      <View style={[designs.modalView, {paddingBottom: 0}]}>
+        <View
+          style={{
+            flex: 1,
+          }}>
           <View
             style={{
-              flex: 1,
+              marginTop: 20,
+              alignItems: 'center',
+              justifyContent: 'center',
+              // borderWidth: 1,
             }}>
             <View
               style={{
-                marginTop: 20,
-                alignItems: 'center',
-                justifyContent: 'center',
                 // borderWidth: 1,
+                // borderColor: 'red',
+                flexDirection: 'row',
+                alignItems: 'baseline',
               }}>
-              <View
+              <Text
                 style={{
-                  // borderWidth: 1,
-                  // borderColor: 'red',
-                  flexDirection: 'row',
-                  alignItems: 'baseline',
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  color: '#999',
+                  color: COLORS.dark,
+                  paddingBottom: 50,
                 }}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: '#999',
-                    color: COLORS.dark,
-                    paddingBottom: 50,
-                  }}>
-                  300
-                </Text>
-                <AnimatedGaugeProgress
-                  size={200}
-                  width={15}
-                  fill={percentage}
-                  rotation={90}
-                  cropDegree={180}
-                  tintColor={
-                    percentage < 50
-                      ? COLORS.orange
-                      : percentage < 70 && percentage >= 50
-                      ? COLORS.red
-                      : COLORS.light
-                  }
-                  delay={0}
-                  // backgroundColor="#2b2835"
-                  backgroundColor={'#999'}
-                  stroke={[10, 20]} //For a equaly dashed line
-                  // strokeCap="circle"
-                />
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: '#999',
-                    color: COLORS.dark,
-                    paddingBottom: 50,
-                  }}>
-                  850
-                </Text>
-              </View>
-              <View style={{position: 'absolute', alignItems: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                    color: COLORS.light,
-                  }}>
-                  {spinner ? (
-                    <ActivityIndicator size="small" color={COLORS.light} />
-                  ) : (
-                    creditScore
-                  )}
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: '#2b2735',
-                    color: '#87cec870',
-                    color: COLORS.dark,
-                    marginTop: -5,
-                    paddingBottom: 5,
-                    lineHeight: 20,
-                  }}>
-                  Credit Score!
-                </Text>
-                <Text style={[styles.status, {backgroundColor: COLORS.dark}]}>
+                300
+              </Text>
+              <AnimatedGaugeProgress
+                size={200}
+                width={15}
+                fill={percentage}
+                rotation={90}
+                cropDegree={180}
+                tintColor={
+                  percentage < 50
+                    ? COLORS.orange
+                    : percentage < 70 && percentage >= 50
+                    ? COLORS.red
+                    : COLORS.light
+                }
+                delay={0}
+                // backgroundColor="#2b2835"
+                backgroundColor={'#999'}
+                stroke={[10, 20]} //For a equaly dashed line
+                // strokeCap="circle"
+              />
+              <Text
+                style={{
+                  fontSize: 14,
+                  fontWeight: 'bold',
+                  color: '#999',
+                  color: COLORS.dark,
+                  paddingBottom: 50,
+                }}>
+                850
+              </Text>
+            </View>
+            <View style={{position: 'absolute', alignItems: 'center'}}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: 'bold',
+                  color: COLORS.light,
+                }}>
+                {spinner ? (
+                  <ActivityIndicator size="small" color={COLORS.light} />
+                ) : (
+                  creditScore
+                )}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: '#2b2735',
+                  color: '#87cec870',
+                  color: COLORS.dark,
+                  marginTop: -5,
+                  paddingBottom: 5,
+                  lineHeight: 20,
+                }}>
+                Credit Score!
+              </Text>
+              <Text style={[styles.status, {backgroundColor: COLORS.dark}]}>
+                {spinner ? (
+                  <ActivityIndicator size="small" color={COLORS.light} />
+                ) : (
+                  creditRating
+                )}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginTop: -10,
+              paddingBottom: 30,
+            }}>
+            {/* <Text style={{fontSize: 12, color: '#2b2735'}}>
+            updated 2 months ago
+          </Text> */}
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity onPress={handleFetch}>
+                <View
+                  style={[
+                    styles.button,
+                    {
+                      marginTop: 8,
+                      paddingVertical: 5,
+                      paddingHorizontal: 30,
+                      borderRadius: 20,
+                      backgroundColor: COLORS.light,
+                    },
+                  ]}>
+                  <Icon
+                    name="ios-shuffle-sharp"
+                    color={COLORS.white}
+                    size={25}
+                    style={{marginTop: 2, marginRight: 10}}
+                  />
+                  <Text style={[styles.buttonText, {color: COLORS.white}]}>
+                    Refresh Score
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={[styles.infoContent]}>
+            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <Text style={[styles.infoContent_title]}>
+                Your credit score is
+              </Text>
+              <View style={[styles.band]}>
+                <Text style={[styles.bandText]}>
                   {spinner ? (
                     <ActivityIndicator size="small" color={COLORS.light} />
                   ) : (
@@ -264,89 +312,35 @@ export default function CreditDashboard(props) {
                 </Text>
               </View>
             </View>
-
-            <View
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginTop: -10,
-                paddingBottom: 30,
-              }}>
-              {/* <Text style={{fontSize: 12, color: '#2b2735'}}>
-            updated 2 months ago
-          </Text> */}
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity onPress={handleFetch}>
-                  <View
-                    style={[
-                      styles.button,
-                      {
-                        marginTop: 8,
-                        paddingVertical: 5,
-                        paddingHorizontal: 30,
-                        borderRadius: 20,
-                        backgroundColor: COLORS.light,
-                      },
-                    ]}>
-                    <Icon
-                      name="ios-shuffle-sharp"
-                      color={COLORS.white}
-                      size={25}
-                      style={{marginTop: 2, marginRight: 10}}
-                    />
-                    <Text style={[styles.buttonText, {color: COLORS.white}]}>
-                      Refresh Score
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={[styles.infoContent]}>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                <Text style={[styles.infoContent_title]}>
-                  Your credit score is
-                </Text>
-                <View style={[styles.band]}>
-                  <Text style={[styles.bandText]}>
-                    {spinner ? (
-                      <ActivityIndicator size="small" color={COLORS.light} />
-                    ) : (
-                      creditRating
-                    )}
-                  </Text>
-                </View>
-              </View>
-              <Text style={[styles.infoContent_body]}>
-                {/* {spinner ? (
+            <Text style={[styles.infoContent_body]}>
+              {/* {spinner ? (
               <ActivityIndicator size="small" color={COLORS.secondary} />
             ) : ( */}
-                {creditScoreMessage}
-                {/* )} */}
-              </Text>
+              {creditScoreMessage}
+              {/* )} */}
+            </Text>
 
-              <View style={{flexDirection: 'row'}}>
-                <TouchableOpacity disabled={spinner} onPress={handleClick}>
-                  <View style={styles.button}>
-                    {canApply ? (
-                      <Text style={styles.buttonText}>Apply now</Text>
-                    ) : (
-                      <Text style={styles.buttonText}>Build credit score</Text>
-                    )}
-                    <Icon
-                      name="chevron-forward"
-                      color={COLORS.white}
-                      size={14}
-                      style={{marginTop: 2, marginLeft: 20}}
-                    />
-                  </View>
-                </TouchableOpacity>
-              </View>
+            <View style={{flexDirection: 'row'}}>
+              <TouchableOpacity disabled={spinner} onPress={handleClick}>
+                <View style={styles.button}>
+                  {canApply ? (
+                    <Text style={styles.buttonText}>Apply now</Text>
+                  ) : (
+                    <Text style={styles.buttonText}>Build credit score</Text>
+                  )}
+                  <Icon
+                    name="chevron-forward"
+                    color={COLORS.white}
+                    size={14}
+                    style={{marginTop: 2, marginLeft: 20}}
+                  />
+                </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
       </View>
-    </Modal>
+    </View>
   );
 }
 

@@ -53,7 +53,7 @@ export default function CreditOnboard({navigation}) {
             name="arrow-back-outline"
             color={COLORS.dark}
             size={25}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Rent')}
           />
         </View>
 
@@ -68,42 +68,13 @@ export default function CreditOnboard({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => setShowCreditForm(true)}>
+          <TouchableOpacity onPress={() => navigation.navigate('CreditForm')}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Check credit report</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
-
-      {showCreditForm && (
-        <CreditForm
-          visible={showCreditForm}
-          onRequestClose={() => setShowCreditForm(!showCreditForm)}
-          setFormData={(v) => {
-            setFormData(v);
-            setShowCreditAwaiting(true);
-          }}
-        />
-      )}
-
-      {showCreditAwaiting && (
-        <CreditAwaiting
-          visible={showCreditAwaiting}
-          onRequestClose={() => setShowCreditAwaiting(!showCreditAwaiting)}
-          data={formData}
-          showDashboard={() => setShowCreditDashboard(true)}
-        />
-      )}
-
-      {showCreditDashboard && (
-        <CreditDashboard
-          visible={showCreditDashboard}
-          onRequestClose={() => setShowCreditDashboard(!showCreditDashboard)}
-          data={formData}
-          navigation={navigation}
-        />
-      )}
     </>
   );
 }

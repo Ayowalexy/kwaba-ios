@@ -36,6 +36,7 @@ import {
 import {
   getUserWallet,
   getUserWalletTransactions,
+  getPaymentHistory,
 } from '../../redux/actions/walletAction';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -71,8 +72,8 @@ export default function NewHome({navigation}) {
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const getWallet = useSelector((state) => state.getUserWalletReducer);
-  const getWalletTransactions = useSelector(
-    (state) => state.getUserWalletTransactionsReducer,
+  const getPaymentHistoryReducer = useSelector(
+    (state) => state.getPaymentHistoryReducer,
   );
 
   const [isProfileComplete, setIsProfileComplete] = useState(false);
@@ -207,6 +208,7 @@ export default function NewHome({navigation}) {
     dispatch(getUserWalletTransactions());
     dispatch(getUserReferrals());
     dispatch(getBillsCategory('airtime'));
+    dispatch(getPaymentHistory());
 
     // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
@@ -436,7 +438,7 @@ export default function NewHome({navigation}) {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   const TransactionHistory = () => {
-    const slicedTransaction = getWalletTransactions?.data?.slice(0, 4);
+    const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 5);
     return (
       <View style={{paddingHorizontal: 25, paddingBottom: 20, marginTop: 20}}>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
@@ -500,7 +502,7 @@ export default function NewHome({navigation}) {
                       marginTop: 20,
                       lineHeight: 20,
                     }}>
-                    {item.narration}
+                    {item.reason}
                   </Text>
                 </View>
               </View>

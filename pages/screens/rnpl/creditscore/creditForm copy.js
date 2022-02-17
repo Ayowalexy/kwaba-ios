@@ -19,12 +19,6 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import CreditAccept from './creditAccept';
 import {purchase} from '../../../../services/creditScrore';
-import PaystackPayment from '../../../../components/Paystack/PaystackPayment';
-import {
-  completeSavingsPayment,
-  verifySavingsPayment,
-} from '../../../../services/network';
-import PaymentTypeModal from '../../../../components/PaymentType/PaymentTypeModal';
 
 const CreditScoreValidationSchema = yup.object().shape({
   email: yup
@@ -78,17 +72,13 @@ const CustomInput = (props) => {
 };
 
 export default function CreditForm(props) {
-  const {navigation} = props;
+  const {visible, onRequestClose, setFormData} = props;
 
   const [spinner, setSpinner] = useState(false);
   const [showAcceptModal, setShowAcceptModal] = useState(false);
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
   const [resData, setResData] = useState([]);
   const [formValue, setFormValue] = useState([]);
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const [channel, setChannel] = useState('');
-  const [verifyData, setVerifyData] = useState({});
-  const amount = 2000;
 
   const userData = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -111,12 +101,15 @@ export default function CreditForm(props) {
     const user = await userData();
     const res = await purchase(data);
 
+    console.log('The Res: ', res);
+
     try {
       if (res.status == 200) {
-        console.log('The Res: ', res?.data);
+        setResData(res?.data?.data);
         setSpinner(false);
         setShowAcceptModal(true);
 
+        console.log('The Res: ', res?.data?.data);
         await AsyncStorage.setItem(
           `creditScoreData-${user.id}`,
           JSON.stringify(data),
@@ -130,107 +123,11 @@ export default function CreditForm(props) {
     // console.log('The Data: ', data);
   };
 
-  const savingsPayment = async (data) => {
-    setSpinner(true);
-
-    try {
-      const res = await completeSavingsPayment(data);
-      console.log('Hello: ', res.response?.data);
-
-      if (res.status == 201) {
-        setSpinner(false);
-
-        console.log('Complete Paymentttttttttt: ', res.data.data);
-        // await showSuccess();
-        // setShowAcceptModal(true);
-        navigation.navigate('CreditAwaiting');
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('The Error: ', error.response.data);
-    }
-  };
-
-  const verifyPaymentRequest = async (data, paymentChannel) => {
-    console.log('The Data: ', data);
-
-    setSpinner(true);
-    const res = await verifySavingsPayment(data);
-
-    setSpinner(false);
-    if (!res) {
-      return [];
-    }
-
-    if (res.status == 200) {
-      const verifyData = res?.data?.data;
-      console.log('Verifying data....: ', verifyData);
-      setVerifyData(verifyData);
-      if (paymentChannel == 'wallet') {
-        const payload = {
-          amount: verifyData.amount,
-          channel: 'wallet',
-          reference: verifyData.paymentReference,
-          purpose: 'creditScoring',
-        };
-
-        await savingsPayment(payload);
-      } else {
-        setShowPaystackPayment(true);
-      }
-    } else {
-      console.log('Error: ', res.response.data);
-
-      if (
-        res.response?.data?.meta?.error ==
-        'The maximum savings amount for this savings is execeded'
-      ) {
-        Alert.alert(
-          'Payment unsuccessful',
-          `You've exceeded the target amount for this savings plan`,
-        );
-      } else if (
-        res.response?.data?.meta?.error == 'Insufficient wallet balance'
-      ) {
-        Alert.alert(
-          'Payment unsuccessful',
-          'You do not have enough money in your wallet',
-        );
-      }
-    }
-  };
-
-  const handlePaymentRoute = async (value) => {
-    console.log('Value: ', value);
-
-    if (value == 'wallet') {
-      const verifyPayload = {
-        amount: amount,
-        channel: 'wallet',
-        purpose: 'creditScoring',
-      };
-
-      setChannel(value); // wallet
-      await verifyPaymentRequest(verifyPayload, value);
-    } else {
-      const verifyPayload = {
-        amount: amount,
-        channel: 'paystack',
-        purpose: 'creditScoring',
-      };
-
-      setChannel(value); // card or bank_transfer
-      await verifyPaymentRequest(verifyPayload, value);
-    }
-  };
-
   return (
     <>
       <View style={[designs.centeredView]}>
         <View style={[designs.topNav]}>
-          <TouchableOpacity onPress={() => navigation.navigate('Rent')}>
+          <TouchableOpacity onPress={onRequestClose}>
             <Icon name="arrow-back-outline" size={25} color={COLORS.primary} />
           </TouchableOpacity>
         </View>
@@ -268,9 +165,7 @@ export default function CreditForm(props) {
                     </View>
 
                     <TouchableOpacity
-                      // onPress={handleSubmit}
-
-                      onPress={() => setShowAcceptModal(true)}
+                      onPress={handleSubmit}
                       disabled={!isValid}>
                       <View style={designs.button}>
                         {spinner ? (
@@ -295,48 +190,31 @@ export default function CreditForm(props) {
         <CreditAccept
           onRequestClose={() => setShowAcceptModal(!showAcceptModal)}
           visible={showAcceptModal}
-          // onConfirm={() => setShowPaystackPayment(true)}
-          onConfirm={() => {
-            setShowPaymentModal(true);
-          }}
+          onConfirm={() => setShowPaystackPayment(true)}
         />
       )}
 
-      {showPaymentModal && (
-        <PaymentTypeModal
-          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
-          visible={showPaymentModal}
-          setPaymentType={(data) => {
-            handlePaymentRoute(data); // paystack, bank, wallet
-          }}
-        />
-      )}
-
-      {showPaystackPayment && (
-        <PaystackPayment
+      {/* {showPaystackPayment && (
+        <PaystackPaymentCobble
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={verifyData}
-          channel={channel}
+          data={{...resData, ...formValue, amount: 2000}}
+          channel={'card'}
           paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            Alert.alert(`Payment ${e.status}`);
             setSpinner(false);
-            Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            console.log('The Res: ', res);
-            const data = {
-              amount: 2000,
-              channel: 'paystack',
-              reference: verifyData.paymentReference,
-              purpose: 'creditScoring',
-            };
-
-            // console.log('the dataatatta: ', data);
-            console.log('This complete data: ', data);
-
-            await savingsPayment(data);
+            console.log('Pay done', res);
+            if (res.status == 'success') {
+              setFormData(formValue);
+              onRequestClose();
+            } else {
+              Alert.alert('Oops', 'Something went wrong');
+            }
           }}
         />
-      )}
+      )} */}
     </>
   );
 }

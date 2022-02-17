@@ -81,9 +81,9 @@ export default function RentHome({navigation}) {
         // navigation.navigate('RnplSteps');
         navigation.navigate('CreditOnboard');
       } else if (getCreditScoreDetails == 'false') {
-        navigation.navigate('CreditOnboard');
+        navigation.navigate('CreditDashboard');
       } else if (getCreditScoreDetails == 'awaiting') {
-        navigation.navigate('CreditOnboard');
+        navigation.navigate('CreditAwaiting');
       }
     }
   };

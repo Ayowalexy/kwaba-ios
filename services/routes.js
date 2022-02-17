@@ -43,6 +43,7 @@ const urls = {
   payments: {
     TOKENIZED_CARDS: `${baseUrl}/payments/get-tokenized-cards`,
     EMERGENCY_FUNDS_GET_REPAYMENT: `${baseUrl}/payments/get-repayments`,
+    GET_PAYMENT_HISTORY: `${baseUrl}/payments/get-payment-history`,
   },
 
   applications: {

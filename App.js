@@ -231,7 +231,12 @@ import {
   RnplDirectdebit,
   RentHome,
 } from './pages/screens/rnpl';
-import {CreditOnboard} from './pages/screens/rnpl/creditscore';
+import {
+  CreditAwaiting,
+  CreditDashboard,
+  CreditForm,
+  CreditOnboard,
+} from './pages/screens/rnpl/creditscore';
 import {checkAppRelease} from './services/network';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
@@ -851,6 +856,15 @@ const App = () => {
                 />
 
                 <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
+                <Stack.Screen name="CreditForm" component={CreditForm} />
+                <Stack.Screen
+                  name="CreditDashboard"
+                  component={CreditDashboard}
+                />
+                <Stack.Screen
+                  name="CreditAwaiting"
+                  component={CreditAwaiting}
+                />
 
                 {/* applications */}
                 <Stack.Screen name="Form1" component={Form1} />

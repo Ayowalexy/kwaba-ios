@@ -22,6 +22,7 @@ import {
 import {
   getUserWalletReducer,
   getUserWalletTransactionsReducer,
+  getPaymentHistoryReducer,
 } from './walletReducer';
 
 import {
@@ -61,4 +62,5 @@ export const rootReducer = combineReducers({
   getOneUserSavingsChallengeReducer: getOneUserSavingsChallengeReducer,
   stepsReducer: stepsReducer,
   getUserReferralsReducer: getUserReferralsReducer,
+  getPaymentHistoryReducer: getPaymentHistoryReducer,
 });

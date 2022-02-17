@@ -24,3 +24,15 @@ export const getUserWalletTransactionsReducer = (state = [], action) => {
       return state;
   }
 };
+
+export const getPaymentHistoryReducer = (state = [], action) => {
+  switch (action.type) {
+    case types.GET_PAYMENT_HISTORY:
+      return {
+        ...state,
+        data: action.payload,
+      };
+    default:
+      return state;
+  }
+};
