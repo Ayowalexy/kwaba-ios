@@ -79,7 +79,7 @@ export const getPaymentHistory = () => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       // dispatch(setUserWalletTransactions(response.data.data.reverse()));
-      dispatch(setPaymentHistory(response?.data?.data));
+      dispatch(setPaymentHistory(response?.data?.data.reverse()));
       // console.log('Wallet Transaction: ', response.data.data);
       return response.data.data;
     } catch (error) {

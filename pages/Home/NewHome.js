@@ -438,7 +438,7 @@ export default function NewHome({navigation}) {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   const TransactionHistory = () => {
-    const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 5);
+    const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 7);
     return (
       <View style={{paddingHorizontal: 25, paddingBottom: 20, marginTop: 20}}>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>

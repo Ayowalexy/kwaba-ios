@@ -72,18 +72,25 @@ export default function RentHome({navigation}) {
 
     console.log('DATATATATATTA: ', getCreditScoreDetails);
 
+    // await AsyncStorage.removeItem(`creditScoreDetail-${user.id}`);
+
+    // navigation.navigate('RnplSteps');
+
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
     } else {
       if (getCreditScoreDetails == null) {
         navigation.navigate('RnplOnboard');
-      } else if (getCreditScoreDetails == 'true') {
-        // navigation.navigate('RnplSteps');
+      } else if (getCreditScoreDetails == 'creditOnboarding') {
         navigation.navigate('CreditOnboard');
-      } else if (getCreditScoreDetails == 'false') {
+      } else if (getCreditScoreDetails == 'creditForm') {
+        navigation.navigate('CreditForm');
+      } else if (getCreditScoreDetails == 'creditAwaiting') {
+        navigation.navigate('creditAwaiting');
+      } else if (getCreditScoreDetails == 'creditDashboard') {
         navigation.navigate('CreditDashboard');
-      } else if (getCreditScoreDetails == 'awaiting') {
-        navigation.navigate('CreditAwaiting');
+      } else {
+        navigation.navigate('RnplSteps');
       }
     }
   };

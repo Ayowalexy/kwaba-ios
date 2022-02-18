@@ -22,7 +22,7 @@ import designs from './styles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CreditDashboard(props) {
-  const {data, navigation} = props;
+  const {route, navigation} = props;
   const [spinner, setSpinner] = useState(false);
   const [creditScore, setCreditScore] = useState('');
   const [creditRating, setCreditRating] = useState('');
@@ -43,20 +43,109 @@ export default function CreditDashboard(props) {
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'true');
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditDashboard');
 
       const creditScoreFormData = await AsyncStorage.getItem(
         `creditScoreData-${user.id}`,
       );
-      const parseData = JSON.parse(creditScoreFormData);
+      const parseData = await JSON.parse(creditScoreFormData);
       console.log('Parsed Data: ', parseData);
       setScoreData(parseData);
+
+      setSpinner(true);
+
+      const payload = {
+        email: parseData?.email,
+        company: parseData?.company,
+      };
+
+      console.log('The Param: ', payload);
+
+      try {
+        const res = await fetch(payload);
+
+        let x = res?.data?.history?.filter(
+          (item) => item?.meta?.CREDIT_MICRO_SUMMARY && item?.meta,
+        );
+
+        let d = x[0]?.meta;
+
+        if (x.length) {
+          setSpinner(false);
+          const cs = d?.CREDIT_SCORE_DETAILS?.CREDIT_SCORE_SUMMARY;
+
+          setCreditScore(cs?.CREDIT_SCORE);
+          setCreditRating(cs?.CREDIT_RATING);
+          setPercentage((Number(cs?.CREDIT_SCORE - 300) * 100) / (850 - 300));
+
+          const summary = d?.CREDIT_MICRO_SUMMARY?.CURRENCY?.SUMMARY;
+          const duesummary = d?.CREDIT_MICRO_SUMMARY?.CURRENCY?.DUESUMMARY;
+
+          setCreditScoreDetails({
+            ...summary?.slice(-1)[0],
+            ...duesummary?.slice(-1)[0],
+          });
+
+          const csDetails = {
+            ...summary?.slice(-1)[0],
+            ...duesummary?.slice(-1)[0],
+          };
+
+          console.log('csD: ', csDetails);
+
+          if (csDetails?.NO_OF_DELINQCREDITFACILITIES > 0) {
+            if (Number(csDetails?.TOT_DUE) < 20000) {
+              setCreditScoreMessage(
+                `You have ${csDetails?.NO_OF_DELINQCREDITFACILITIES} bad loans valued at ${csDetails?.TOT_DUE}. You are also currently servicing ${csDetails?.NO_OF_OPENEDCREDITFACILITIES} loans with an outstanding balance of ${csDetails?.TOTAL_OUTSTANDING}. You may still apply for a rental loan.`,
+              );
+              setCanApply(true);
+            } else {
+              setCreditScoreMessage(`You have ${csDetails?.NO_OF_DELINQCREDITFACILITIES} bad loans valued at ${csDetails?.TOT_DUE}. You are also currently servicing ${csDetails?.NO_OF_DELINQCREDITFACILITIES} loans with an outstanding balance of ₦${csDetails?.TOTAL_OUTSTANDING}. Unfortunately, you are not qualified for rent finance. However you can save for your rent to build your credit
+            `);
+              setCanApply(false);
+            }
+          } else if (
+            csDetails?.NO_OF_DELINQCREDITFACILITIES <= 0 &&
+            csDetails?.NO_OF_OPENEDCREDITFACILITIES <= 0
+          ) {
+            setCreditScoreMessage(
+              'Great job, you have no bad loans. You can proceed to apply for rent finance',
+            );
+            setCanApply(true);
+          } else if (
+            csDetails?.NO_OF_DELINQCREDITFACILITIES <= 0 &&
+            csDetails?.NO_OF_OPENEDCREDITFACILITIES > 0
+          ) {
+            setCreditScoreMessage(
+              `You have no bad loans. However you are currently servicing ${csDetails?.NO_OF_OPENEDCREDITFACILITIES} loans with an outstanding balance of ₦${csDetails?.TOTAL_OUTSTANDING}`,
+            );
+            setCanApply(true);
+          } else if (cs?.CREDIT_SCORE == '') {
+            setCreditScoreMessage(
+              "It seems you have not taken a loan from a financial institution before or we just can't find any record of your credit history. However you can proceed to apply for rent finance.",
+            );
+            setCanApply(true);
+          }
+        } else {
+          setCreditScore(0);
+          setCreditRating('Not available');
+          setPercentage((Number(300 - 300) * 100) / (850 - 300));
+          setCreditScoreMessage(
+            "It seems you have not taken a loan from a financial institution before or we just can't find any record of your credit history. However you can proceed to apply for rent finance.",
+          );
+          setCanApply(true);
+          setSpinner(false);
+        }
+      } catch (error) {
+        console.log('The Error: ', error);
+        setSpinner(false);
+      }
     })();
   }, []);
 
   useEffect(() => {
-    handleFetch();
-  }, []);
+    // handleFetch();
+  }, [scoreData]);
 
   const handleClick = () => {
     if (canApply) {

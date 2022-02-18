@@ -16,7 +16,7 @@ import {COLORS} from '../../../../util';
 import designs from './styles';
 
 export default function CreditAwaiting(props) {
-  const {data, navigation} = props;
+  const {route, navigation} = props;
   const [spinner, setSpinner] = useState(false);
   const [scoreData, setScoreData] = useState({});
 
@@ -28,39 +28,48 @@ export default function CreditAwaiting(props) {
 
   useEffect(() => {
     handleFetch();
-  }, [scoreData]);
+  }, []);
 
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'awaiting');
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditForm');
 
-      const creditScoreFormData = await AsyncStorage.getItem(
+      let data = route?.params;
+
+      await AsyncStorage.setItem(
         `creditScoreData-${user.id}`,
+        JSON.stringify(data),
       );
-      const parseData = JSON.parse(creditScoreFormData);
-      console.log('Parsed Data: ', parseData);
-      setScoreData(parseData);
     })();
   }, []);
 
   const handleFetch = async () => {
     setSpinner(true);
     const payload = {
-      email: scoreData?.email,
-      company: scoreData?.company,
+      email: route?.params?.email,
+      company: route?.params?.company,
     };
 
-    console.log('The payload: ', payload);
+    const user = await getUser();
 
-    const res = await fetch(payload);
+    const storedPayload = await AsyncStorage.getItem(
+      `creditScoreData-${user.id}`,
+    );
+    const parseData = JSON.parse(storedPayload);
+
+    const res = await fetch(payload || parseData);
     console.log('Dat res: ', res);
+
     try {
       if (res.status == 200) {
         setSpinner(false);
         if (res.data.history.length) {
           setSpinner(false);
-          navigation.navigate('CreditDashboard');
+          navigation.navigate('CreditDashboard', {
+            history: JSON.stringify(res?.data?.histroy),
+          });
+          // console.log('History: ', res?.data?.history);
         } else {
           setSpinner(false);
           Alert.alert(
@@ -69,18 +78,6 @@ export default function CreditAwaiting(props) {
           );
         }
       }
-
-      // if (res.status == 200 && res.data.history.length) {
-      //   setSpinner(false);
-      //   navigation.navigate('CreditDashboard');
-      //   console.log('The Data: ', res.data);
-      // } else {
-      //   setSpinner(false);
-      //   Alert.alert(
-      //     'Credit history',
-      //     'We are still searching for your credit report, please check back later.',
-      //   );
-      // }
     } catch (error) {
       setSpinner(false);
       console.log('Errorrrrr: ', error.response);

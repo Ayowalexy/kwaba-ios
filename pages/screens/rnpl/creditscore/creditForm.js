@@ -90,10 +90,23 @@ export default function CreditForm(props) {
   const [verifyData, setVerifyData] = useState({});
   const amount = 2000;
 
-  const userData = async () => {
+  const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
-    return JSON.parse(userData).user;
+    const user = JSON.parse(userData).user;
+    return user;
   };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditForm');
+    })();
+  }, []);
+
+  // const userData = async () => {
+  //   const userData = await AsyncStorage.getItem('userData');
+  //   return JSON.parse(userData).user;
+  // };
 
   const handleSubmit = async (values) => {
     const data = {
@@ -103,12 +116,9 @@ export default function CreditForm(props) {
     };
 
     setFormValue(data);
+    console.log('DF: ', formValue);
 
     setSpinner(true);
-
-    Keyboard.dismiss();
-
-    const user = await userData();
     const res = await purchase(data);
 
     try {
@@ -116,18 +126,11 @@ export default function CreditForm(props) {
         console.log('The Res: ', res?.data);
         setSpinner(false);
         setShowAcceptModal(true);
-
-        await AsyncStorage.setItem(
-          `creditScoreData-${user.id}`,
-          JSON.stringify(data),
-        );
       }
     } catch (error) {
       setSpinner(false);
       console.log('The Error: ', error.response);
     }
-
-    // console.log('The Data: ', data);
   };
 
   const savingsPayment = async (data) => {
@@ -143,7 +146,8 @@ export default function CreditForm(props) {
         console.log('Complete Paymentttttttttt: ', res.data.data);
         // await showSuccess();
         // setShowAcceptModal(true);
-        navigation.navigate('CreditAwaiting');
+        navigation.navigate('CreditAwaiting', formValue);
+        // console.log('Form Value: ', formValue);
       } else {
         setSpinner(false);
       }
@@ -181,29 +185,14 @@ export default function CreditForm(props) {
         setShowPaystackPayment(true);
       }
     } else {
-      console.log('Error: ', res.response.data);
-
-      if (
-        res.response?.data?.meta?.error ==
-        'The maximum savings amount for this savings is execeded'
-      ) {
-        Alert.alert(
-          'Payment unsuccessful',
-          `You've exceeded the target amount for this savings plan`,
-        );
-      } else if (
-        res.response?.data?.meta?.error == 'Insufficient wallet balance'
-      ) {
-        Alert.alert(
-          'Payment unsuccessful',
-          'You do not have enough money in your wallet',
-        );
-      }
+      console.log('Errorrr: ', res.response.data.meta.error);
+      Alert.alert('Oops', res.response.data.meta.error);
     }
   };
 
   const handlePaymentRoute = async (value) => {
     console.log('Value: ', value);
+    console.log('Form Value: ', formValue);
 
     if (value == 'wallet') {
       const verifyPayload = {
@@ -246,7 +235,7 @@ export default function CreditForm(props) {
               {({handleSubmit, isValid, values, setValues}) => {
                 useEffect(() => {
                   (async () => {
-                    const user = await userData();
+                    const user = await getUser();
                     setValues({email: user.email});
                   })();
                 }, []);
@@ -268,9 +257,8 @@ export default function CreditForm(props) {
                     </View>
 
                     <TouchableOpacity
-                      // onPress={handleSubmit}
-
-                      onPress={() => setShowAcceptModal(true)}
+                      onPress={handleSubmit}
+                      // onPress={() => setShowAcceptModal(true)}
                       disabled={!isValid}>
                       <View style={designs.button}>
                         {spinner ? (
