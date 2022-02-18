@@ -16,7 +16,7 @@ import {
   getMaxLoanCap,
 } from '../../../redux/actions/savingsActions';
 
-export default function RnplOnboard({navigation}) {
+export default function RnplDirectdebit({navigation}) {
   const dispatch = useDispatch();
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
@@ -42,35 +42,43 @@ export default function RnplOnboard({navigation}) {
           padding: 20,
         }}
         onPress={() => navigation.goBack()}>
-        <Icon
+        {/* <Icon
           name="arrow-back-outline"
           size={25}
           style={{
             fontWeight: '900',
           }}
           color={COLORS.light}
-        />
+        /> */}
       </TouchableOpacity>
-      <ScrollView>
-        <Image source={images.rentNowPayLaterOnboarding} style={styles.image} />
-        <View style={{paddingHorizontal: 20}}>
-          <View style={styles.textWrapper}>
-            <Text style={styles.heading}>Rent Now Pay Later</Text>
-            <Text style={styles.content}>
-              Whether you are looking to renew your rent or pay for a new place,
-              we can pay your bulk rent so you pay back in easy monthly payments
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            // onPress={() => navigation.navigate('RnplEligibility')}
-            onPress={() => navigation.navigate('RnplEmploymentStatus')}>
-            <View style={styles.button}>
-              <Text style={styles.buttonText}>GET STARTED</Text>
-            </View>
-          </TouchableOpacity>
+      {/* <ScrollView style={{}}> */}
+      {/* <Image source={images.rentNowPayLaterOnboarding} style={styles.image} /> */}
+      <View
+        style={{
+          flex: 1,
+          paddingHorizontal: 20,
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+        }}>
+        <View style={styles.textWrapper}>
+          <Text style={styles.heading}>Direct Debit</Text>
+          <Text style={styles.content}>
+            You will receive an email from us on how to set up your mandate at
+            your bank.
+          </Text>
         </View>
-      </ScrollView>
+
+        <TouchableOpacity
+          style={{width: '100%'}}
+          // onPress={() => navigation.navigate('RnplEligibility')}
+          onPress={() => navigation.navigate('RnplEmploymentStatus')}>
+          <View style={styles.button}>
+            <Text style={styles.buttonText}>CONTINUE</Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+      {/* </ScrollView> */}
     </View>
   );
 }
@@ -90,6 +98,7 @@ const styles = StyleSheet.create({
   textWrapper: {
     alignItems: 'center',
     marginVertical: 20,
+    paddingHorizontal: 40,
   },
   heading: {
     fontSize: 25,

@@ -1,22 +1,91 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  Image,
   ScrollView,
 } from 'react-native';
-import {ProgressSteps, ProgressStep} from 'react-native-progress-steps';
 import {COLORS} from '../../../util';
-import stepsArray from '../../../util/stepsArray';
+// import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RnplSteps({navigation}) {
+  const stepsArray = [
+    {
+      title: 'Credit score',
+      subTitle: '',
+      status: 'complete',
+      navigate: () => console.log('Hello credit score here!'),
+    },
+    {
+      title: 'Applications',
+      subTitle: '',
+      status: 'start',
+      navigate: () => navigation.navigate('Form1'),
+      // navigate: () => navigation.navigate('VerifyingDocuments'),
+    },
+    {
+      title: 'Documents upload',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('NewAllDocuments'),
+    },
+    {
+      title: 'Offer approval breakdown',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Property details',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Address verification',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Direct debit',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+    {
+      title: 'Disbursement',
+      subTitle: '',
+      status: 'locked',
+      navigate: () => navigation.navigate('RnplDirectdebit'),
+    },
+  ];
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'rnplSteps');
+    })();
+  }, []);
+
   return (
     <View style={[styles.container]}>
       <View style={[styles.header]}>
-        <Icon name="arrow-back" color={COLORS.dark} size={24} />
+        <Icon
+          name="arrow-back"
+          color={COLORS.dark}
+          size={24}
+          onPress={() => navigation.navigate('Rent')}
+        />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[styles.bottomView]}>
@@ -38,10 +107,15 @@ export default function RnplSteps({navigation}) {
                       item.status == 'complete' ? '#effbf7' : COLORS.white,
                   },
                 ]}
-                onPress={() => navigation.navigate('Form1')}>
-                {/* onPress={() => navigation.navigate('RnplViews')}> */}
+                onPress={item.navigate}>
                 <View style={[styles.content]}>
-                  <Text style={[styles.title]}>{item.title}</Text>
+                  <Text
+                    style={[
+                      styles.title,
+                      {color: item.status == 'locked' ? '#999' : COLORS.dark},
+                    ]}>
+                    {item.title}
+                  </Text>
                 </View>
                 <View style={[styles.statusContent]}>
                   {item.status == 'start' && (
@@ -94,17 +168,6 @@ export default function RnplSteps({navigation}) {
           })}
         </View>
       </ScrollView>
-      {/* <View style={[styles.buttonContainer]}>
-        <TouchableOpacity
-          style={[styles.button]}
-          onPress={() => console.log('Helloooo')}>
-          <Text style={[styles.buttonText]}>Go Back</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.button]}>
-          <Text style={[styles.buttonText]}>Continue</Text>
-        </TouchableOpacity>
-      </View> */}
     </View>
   );
 }
@@ -113,11 +176,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.white,
+    backgroundColor: '#eef7ff',
+    backgroundColor: '#effbf7',
   },
   header: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    backgroundColor: '#eef7ff',
   },
   topView: {
     paddingHorizontal: 20,
@@ -133,13 +197,8 @@ const styles = StyleSheet.create({
     lineHeight: 25,
   },
   bottomView: {
-    paddingVertical: 20,
     paddingHorizontal: 40,
     flex: 1,
-    // borderTopLeftRadius: 30,
-    // borderTopRightRadius: 30,
-    backgroundColor: '#eef7ff',
-    paddingBottom: 100,
   },
   stepCard: {
     backgroundColor: COLORS.white,
@@ -158,7 +217,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     color: COLORS.dark,
   },
   subTitle: {

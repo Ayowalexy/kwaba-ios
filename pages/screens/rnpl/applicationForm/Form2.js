@@ -115,18 +115,9 @@ const Form2 = ({navigation}) => {
   return (
     <RnplStepProgress>
       <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{fontWeight: '900', padding: 15}}
-          color={COLORS.primary}
-        />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
-              // marginVertical: 11,
-              // marginHorizontal: 16,
               paddingHorizontal: 20,
             }}>
             <Formik
@@ -143,18 +134,6 @@ const Form2 = ({navigation}) => {
               }}>
               {({handleSubmit, isValid, values, setValues}) => (
                 <>
-                  <Text
-                    style={[
-                      FONTS.h1FontStyling,
-                      {
-                        color: '#2A286A',
-                        textAlign: 'left',
-                        fontWeight: 'bold',
-                        fontSize: 20,
-                      },
-                    ]}>
-                    Rent Now Pay Later
-                  </Text>
                   <View style={designs.contentWrapper}>
                     <View style={designs.formHeader}>
                       <Text

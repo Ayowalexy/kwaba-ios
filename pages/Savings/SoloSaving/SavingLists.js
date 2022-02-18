@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -19,7 +20,6 @@ import {
 } from '../../../redux/actions/savingsActions';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
-import {FlatList} from 'react-native-gesture-handler';
 
 const Item = ({item, navigation}) => {
   return (

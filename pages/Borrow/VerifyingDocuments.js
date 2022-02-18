@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -17,6 +18,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
+import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
+import urls from '../../services/routes';
 
 const VerifyingDocuments = ({navigation, route}) => {
   const response = route.params;
@@ -47,7 +50,8 @@ const VerifyingDocuments = ({navigation, route}) => {
 
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        urls.applications.GET_CURRENT_APPLICATION,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -56,10 +60,6 @@ const VerifyingDocuments = ({navigation, route}) => {
       console.log('APp: ', applicationIDCallRes.data.data);
 
       const applicationStatus = applicationIDCallRes.data.data.status;
-
-      // setExistingApplication(applicationId);
-      // console.log('here', applicationIDCallRes.data.data.approvedamount);
-      // setSpinner(false);
 
       if (applicationStatus == 3) {
         setSpinner(false);
@@ -142,126 +142,130 @@ const VerifyingDocuments = ({navigation, route}) => {
   // };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-      {/* <Icon
+    <RnplStepProgress>
+      <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+        {/* <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
         style={{padding: 15, paddingVertical: 15, fontWeight: '900'}}
         color={COLORS.primary}
       /> */}
-      <View
-        style={{
-          // marginVertical: 11,
-          marginHorizontal: 16,
-          marginTop: 20,
-        }}>
-        <Text
-          style={[
-            // FONTS.h1FontStyling,
-            {
-              color: '#2A286A',
-              textAlign: 'left',
-              fontWeight: 'bold',
-              marginBottom: 134,
-              fontSize: 18,
-            },
-          ]}>
-          Rent Now Pay Later
-        </Text>
-        {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
-        <Image
-          source={images.group3693}
-          style={{height: 100, width: 100, alignSelf: 'center'}}
-        />
-        <Text
-          style={[
-            // FONTS.h1FontStyling,
-            {
+        <View
+          style={{
+            // marginVertical: 11,
+            marginHorizontal: 16,
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          {/* <Text
+            style={[
+              // FONTS.h1FontStyling,
+              {
+                color: '#2A286A',
+                textAlign: 'left',
+                fontWeight: 'bold',
+                marginBottom: 134,
+                fontSize: 18,
+              },
+            ]}>
+            Rent Now Pay Later
+          </Text> */}
+          {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
+          <Image
+            source={images.group3693}
+            style={{height: 100, width: 100, alignSelf: 'center'}}
+          />
+          <Text
+            style={[
+              // FONTS.h1FontStyling,
+              {
+                marginTop: 10,
+                fontSize: 20,
+                color: '#2A286A',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                marginBottom: 10,
+              },
+            ]}>
+            Verifying Documents
+          </Text>
+          <Text
+            style={[
+              // FONTS.body2FontStyling,
+              {
+                color: COLORS.dark,
+                textAlign: 'center',
+                marginBottom: 26,
+                lineHeight: 25,
+                paddingHorizontal: 20,
+              },
+            ]}>
+            We are verifying your documents. Once we are done, you will be able
+            to proceed.
+          </Text>
+
+          <TouchableOpacity
+            onPress={getApplicationData}
+            style={{
+              width: '100%',
+              backgroundColor: COLORS.secondary,
+              padding: 20,
+              borderRadius: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                color: COLORS.white,
+              }}>
+              Check Verification Status
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => navigation.navigate('NewAllDocuments')}
+            style={{
+              width: '100%',
+              backgroundColor: COLORS.white,
+              padding: 20,
+              borderRadius: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
               marginTop: 10,
-              fontSize: 20,
-              color: '#2A286A',
-              textAlign: 'center',
-              fontWeight: 'bold',
-              marginBottom: 10,
-            },
-          ]}>
-          Verifying Documents
-        </Text>
-        <Text
-          style={[
-            // FONTS.body2FontStyling,
-            {
-              color: COLORS.dark,
-              textAlign: 'center',
-              marginBottom: 26,
-              lineHeight: 25,
-              paddingHorizontal: 20,
-            },
-          ]}>
-          We are verifying your documents. Once we are done, you will be able to
-          proceed.
-        </Text>
-
-        <TouchableOpacity
-          onPress={getApplicationData}
-          style={{
-            width: '100%',
-            backgroundColor: COLORS.secondary,
-            padding: 20,
-            borderRadius: 5,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              color: COLORS.white,
+              elevation: 1,
             }}>
-            Check Verification Status
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                color: COLORS.dark,
+              }}>
+              Edit Documents
+            </Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => navigation.navigate('NewAllDocuments')}
-          style={{
-            width: '100%',
-            backgroundColor: COLORS.white,
-            padding: 20,
-            borderRadius: 5,
-            justifyContent: 'center',
-            alignItems: 'center',
-            marginTop: 10,
-            elevation: 1,
-          }}>
-          <Text
-            style={{
-              fontSize: 12,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              color: COLORS.dark,
-            }}>
-            Edit Documents
-          </Text>
-        </TouchableOpacity>
-
-        {/* <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.navigate('AllDocuments', response)}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>UPLOAD DOCUMENTS</Text>
           </TouchableOpacity> */}
 
-        {/* <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => {handleNavigation}}
             style={[designs.button, {backgroundColor: COLORS.secondary}]}>
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>Check Status</Text>
           </TouchableOpacity> */}
 
-        <Spinner visible={spinner} size="large" />
+          <Spinner visible={spinner} size="small" />
+        </View>
       </View>
-    </View>
+    </RnplStepProgress>
   );
 };
 

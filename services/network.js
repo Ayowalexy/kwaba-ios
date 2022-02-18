@@ -49,7 +49,8 @@ const login = async (data) => {
 // creating/Reseting PIN
 const setPin = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user_set_pin';
+    // const url = apiUrl + '/api/v1/user_set_pin';
+    // const url = urls.auth.USER_SET_PIN
     const response = await axios.post(urls.auth.USER_SET_PIN, data, {
       headers: {'Content-Type': 'application/json'},
     });
@@ -851,7 +852,8 @@ const addFundsToWallet = async (data) => {
 
 const changePassword = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user/change_password';
+    // const url = apiUrl + '/api/v1/user/change_password';
+    const url = urls.auth.CHANGE_PASSWORD;
     const token = await getToken();
     const response = await axios.put(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},
@@ -1047,6 +1049,20 @@ const creditScoreFetch = async (data) => {
   }
 };
 
+const checkAppRelease = async () => {
+  const url = urls.app.CHECK_RELEASE;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
 export {
   fetchBanks,
   signUp,
@@ -1118,4 +1134,5 @@ export {
   creditScorePurchase,
   creditScoreFetch,
   completeSavingsPayment,
+  checkAppRelease,
 };

@@ -29,6 +29,8 @@ import {
   uploadFile,
 } from '../../redux/actions/documentUploadActions';
 import {useDispatch, useSelector} from 'react-redux';
+import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -46,7 +48,8 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      urls.applications.GET_DOCUMENTS,
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -99,14 +102,16 @@ export default function AllDocuments({navigation}) {
 
   const appendID = async (item) => {
     const documentsUpload = await getDocuments();
+
+    console.log('Documents: ', documentsUpload);
+
     const index = await documentsUpload.findIndex(
-      (document) => Number(document.document_type) == item.id,
+      (document) => Number(document?.document_type) == item?.id,
     );
-    const id = Number(documentsUpload[index].document_type);
-    // console.log('Document: ', documentsUpload);
+    const id = Number(documentsUpload[index]?.document_type);
     console.log('ID: ', id);
     try {
-      dispatch(showUploadedFiles(id, documentsUpload[index].id));
+      dispatch(showUploadedFiles(id, documentsUpload[index]?.id));
     } catch (error) {
       console.log('error', error);
     }
@@ -131,12 +136,9 @@ export default function AllDocuments({navigation}) {
   const countDocuments = async () => {
     const token = await getToken();
     try {
-      const resp = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const resp = await axios.get(urls.applications.GET_DOCUMENTS, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
 
       setCount(resp.data.data.length);
     } catch (error) {
@@ -170,12 +172,13 @@ export default function AllDocuments({navigation}) {
 
       const token = await getToken();
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        urls.applications.GET_CURRENT_APPLICATION,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      // console.log(applicationIDCallRes.data.data.id);
+      console.log('The Application ID: ', applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
 
       const formdata = new FormData();
@@ -195,7 +198,7 @@ export default function AllDocuments({navigation}) {
         filename: item.title,
       };
 
-      // console.log(data);
+      console.log('Cloudinary: ', data);
 
       try {
         dispatch(uploadFile(token, item, data));
@@ -255,209 +258,213 @@ export default function AllDocuments({navigation}) {
 
   return (
     <>
-      <View style={[styles.container]}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{
-            paddingVertical: 15,
-            paddingHorizontal: 15,
-          }}
-          color={COLORS.primary}
-        />
-        <Text style={[styles.heading]}>All Documents</Text>
-
-        {count == 0 ? (
-          <View
-            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Image
-              source={images.uploadDocument}
-              style={{
-                width: 100,
-                height: 100,
-              }}
-              resizeMode="contain"
-            />
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: 'bold',
-                color: COLORS.dark,
-                opacity: 0.5,
-                marginTop: 10,
-              }}>
-              UPLOAD YOUR DOCUMENTS
-            </Text>
-          </View>
-        ) : (
-          <Docs />
-        )}
-
-        {count >= 6 ? (
-          <View style={{paddingHorizontal: 20}}>
-            <TouchableOpacity onPress={handleProceed} style={[styles.btn, {}]}>
-              <Text
-                style={[
-                  {
-                    color: COLORS.white,
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    fontSize: 12,
-                    lineHeight: 60,
-                  },
-                ]}>
-                PROCEED
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <View style={{paddingHorizontal: 20}}>
-            <TouchableOpacity
-              onPress={() => {
-                setShowSelectDocumentsModal(true);
-              }}
-              style={[styles.btn, {}]}>
-              <Text
-                style={[
-                  {
-                    color: COLORS.white,
-                    textAlign: 'center',
-                    fontWeight: 'bold',
-                    fontSize: 12,
-                    lineHeight: 60,
-                  },
-                ]}>
-                ADD DOCUMENT
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
-
-      <Modal
-        isVisible={showSelectDocumentsModal}
-        onBackButtonPress={() => setShowSelectDocumentsModal(false)}
-        onBackdropPress={() => setShowSelectDocumentsModal(false)}
-        style={{paddingHorizontal: 20}}>
-        <View
-          style={{
-            backgroundColor: 'white',
-            padding: 20,
-            borderRadius: 5,
-            paddingBottom: 50,
-          }}>
-          <Icon
-            onPress={() => setShowSelectDocumentsModal(false)}
-            name="close"
+      <RnplStepProgress>
+        <View style={[styles.container]}>
+          {/* <Icon
+            onPress={() => navigation.goBack()}
+            name="arrow-back-outline"
             size={25}
             style={{
-              position: 'absolute',
-              right: 0,
-              padding: 20,
+              paddingVertical: 15,
+              paddingHorizontal: 15,
             }}
             color={COLORS.primary}
-          />
-          {/* <View
+          /> */}
+          {/* <Text style={[styles.heading, {marginTop: 10}]}>All Documents</Text> */}
+
+          {count == 0 ? (
+            <View
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Image
+                source={images.uploadDocument}
+                style={{
+                  width: 100,
+                  height: 100,
+                }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontSize: 12,
+                  fontWeight: 'bold',
+                  color: COLORS.dark,
+                  opacity: 0.5,
+                  marginTop: 10,
+                }}>
+                UPLOAD YOUR DOCUMENTS
+              </Text>
+            </View>
+          ) : (
+            <Docs />
+          )}
+
+          {count >= 6 ? (
+            <View style={{paddingHorizontal: 20}}>
+              <TouchableOpacity
+                onPress={handleProceed}
+                style={[styles.btn, {}]}>
+                <Text
+                  style={[
+                    {
+                      color: COLORS.white,
+                      textAlign: 'center',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 60,
+                    },
+                  ]}>
+                  PROCEED
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={{paddingHorizontal: 20}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setShowSelectDocumentsModal(true);
+                }}
+                style={[styles.btn, {}]}>
+                <Text
+                  style={[
+                    {
+                      color: COLORS.white,
+                      textAlign: 'center',
+                      fontWeight: 'bold',
+                      fontSize: 12,
+                      lineHeight: 60,
+                    },
+                  ]}>
+                  ADD DOCUMENT
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        <Modal
+          isVisible={showSelectDocumentsModal}
+          onBackButtonPress={() => setShowSelectDocumentsModal(false)}
+          onBackdropPress={() => setShowSelectDocumentsModal(false)}
+          style={{paddingHorizontal: 20}}>
+          <View
+            style={{
+              backgroundColor: 'white',
+              padding: 20,
+              borderRadius: 5,
+              paddingBottom: 50,
+            }}>
+            <Icon
+              onPress={() => setShowSelectDocumentsModal(false)}
+              name="close"
+              size={25}
+              style={{
+                position: 'absolute',
+                right: 0,
+                padding: 20,
+              }}
+              color={COLORS.primary}
+            />
+            {/* <View
             style={{
               flexDirection: 'row',
               justifyContent: 's',
               alignItems: 'center',
               marginTop: 40,
             }}> */}
-          <Text
-            style={{
-              color: COLORS.primary,
-              fontSize: 14,
-              fontWeight: 'bold',
-              // textTransform: 'uppercase',
-              textAlign: 'center',
-              marginTop: 50,
-            }}>
-            Select a document to upload
-          </Text>
-          {/* </View> */}
-          <View style={{marginTop: 10}}>
-            <View>
-              {Object.values(fileProgress).map(
-                (item, index) =>
-                  item.isUploaded == false &&
-                  item.id && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        if (item.title == 'Bank Statement') {
-                          // handleBankStatementUpload();
-                          setShowSelectDocumentsModal(false);
-                          navigation.navigate(
-                            'RentalLoanFormBankStatementUpload',
-                            {item},
-                          );
-                        } else {
+            <Text
+              style={{
+                color: COLORS.primary,
+                fontSize: 14,
+                fontWeight: 'bold',
+                // textTransform: 'uppercase',
+                textAlign: 'center',
+                marginTop: 50,
+              }}>
+              Select a document to upload
+            </Text>
+            {/* </View> */}
+            <View style={{marginTop: 10}}>
+              <View>
+                {Object.values(fileProgress).map(
+                  (item, index) =>
+                    item.isUploaded == false &&
+                    item.id && (
+                      <TouchableOpacity
+                        onPress={() => {
+                          // if (item.title == 'Bank Statement') {
+                          //   // handleBankStatementUpload();
+                          //   setShowSelectDocumentsModal(false);
+                          //   navigation.navigate(
+                          //     'RentalLoanFormBankStatementUpload',
+                          //     {item},
+                          //   );
+                          // } else {
                           handleDocumentType(item);
-                        }
-                      }}
-                      // onPress={() => {
-                      //   handleDocumentType(item);
-                      // }}
-                      key={index}
-                      style={[
-                        styles.selectBtn,
-                        {
-                          borderBottomColor: '#eee',
-                        },
-                      ]}>
-                      <Text>{item.title}</Text>
-                    </TouchableOpacity>
-                  ),
-              )}
+                          // }
+                        }}
+                        // onPress={() => {
+                        //   handleDocumentType(item);
+                        // }}
+                        key={index}
+                        style={[
+                          styles.selectBtn,
+                          {
+                            borderBottomColor: '#eee',
+                          },
+                        ]}>
+                        <Text>{item.title}</Text>
+                      </TouchableOpacity>
+                    ),
+                )}
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <Modal
-        isVisible={showChooseFileModal}
-        onBackButtonPress={() => setShowChooseFileModal(false)}
-        onBackdropPress={() => setShowChooseFileModal(false)}
-        style={{paddingHorizontal: 20}}>
-        <View
-          style={{
-            backgroundColor: 'white',
-            padding: 20,
-            borderRadius: 5,
-            paddingBottom: 0,
-          }}>
-          <Icon
-            onPress={() => setShowChooseFileModal(false)}
-            name="close"
-            size={25}
+        <Modal
+          isVisible={showChooseFileModal}
+          onBackButtonPress={() => setShowChooseFileModal(false)}
+          onBackdropPress={() => setShowChooseFileModal(false)}
+          style={{paddingHorizontal: 20}}>
+          <View
             style={{
-              position: 'absolute',
-              right: 0,
+              backgroundColor: 'white',
               padding: 20,
-            }}
-            color={COLORS.primary}
-          />
-          <View style={{marginTop: 40}}>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-              Choose a file to upload
-            </Text>
-            <TouchableOpacity style={[styles.btn]} onPress={handleBrowseFile}>
-              <Text
-                style={{
-                  lineHeight: 60,
-                  textTransform: 'uppercase',
-                  fontWeight: 'bold',
-                  color: COLORS.white,
-                }}>
-                Browse
+              borderRadius: 5,
+              paddingBottom: 0,
+            }}>
+            <Icon
+              onPress={() => setShowChooseFileModal(false)}
+              name="close"
+              size={25}
+              style={{
+                position: 'absolute',
+                right: 0,
+                padding: 20,
+              }}
+              color={COLORS.primary}
+            />
+            <View style={{marginTop: 40}}>
+              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+                Choose a file to upload
               </Text>
-            </TouchableOpacity>
+              <TouchableOpacity style={[styles.btn]} onPress={handleBrowseFile}>
+                <Text
+                  style={{
+                    lineHeight: 60,
+                    textTransform: 'uppercase',
+                    fontWeight: 'bold',
+                    color: COLORS.white,
+                  }}>
+                  Browse
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
 
-      <Spinner visible={spinner} size="large" />
+        <Spinner visible={spinner} size="large" />
+      </RnplStepProgress>
     </>
   );
 }

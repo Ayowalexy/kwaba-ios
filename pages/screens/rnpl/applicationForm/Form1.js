@@ -202,24 +202,10 @@ const Form1 = ({navigation}) => {
   return (
     <RnplStepProgress>
       <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
-        <Icon
-          onPress={() => navigation.goBack()}
-          name="arrow-back-outline"
-          size={25}
-          style={{
-            fontWeight: '900',
-            paddingVertical: 20,
-            paddingHorizontal: 10,
-          }}
-          color={COLORS.primary}
-        />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <View
             style={{
-              // marginVertical: 11,
-              // marginHorizontal: 16,
               paddingHorizontal: 20,
-              // justifyContent: 'flex-end',
             }}>
             <Formik
               validationSchema={rentalLoanFormSchema}
@@ -234,18 +220,6 @@ const Form1 = ({navigation}) => {
               }}>
               {({handleSubmit, isValid, values, setValues}) => (
                 <>
-                  <Text
-                    style={[
-                      FONTS.h1FontStyling,
-                      {
-                        color: '#2A286A',
-                        textAlign: 'left',
-                        fontWeight: 'bold',
-                        fontSize: 20,
-                      },
-                    ]}>
-                    Rent Now, Pay Later
-                  </Text>
                   <View style={designs.contentWrapper}>
                     <View style={designs.formHeader}>
                       <Text
@@ -286,7 +260,6 @@ const Form1 = ({navigation}) => {
                         What’s your accommodation status?{' '}
                       </Text>
 
-                      {/* <AccomodationOptions /> */}
                       <Field
                         component={AccommodationOptions}
                         name="accommodationStatus"
@@ -323,7 +296,6 @@ const Form1 = ({navigation}) => {
 
                   <TouchableOpacity
                     onPress={handleSubmit}
-                    // disabled={isValid}
                     style={[
                       designs.button,
                       {backgroundColor: COLORS.secondary},

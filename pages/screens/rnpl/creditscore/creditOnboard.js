@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {CreditForm, CreditAwaiting} from '.';
@@ -10,6 +11,38 @@ export default function CreditOnboard({navigation}) {
   const [showCreditForm, setShowCreditForm] = useState(false);
   const [showCreditAwaiting, setShowCreditAwaiting] = useState(false);
   const [showCreditDashboard, setShowCreditDashboard] = useState(false);
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditOnboarding');
+    })();
+  }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const user = await getUser();
+  //     const checkIfAwaiting = await AsyncStorage.getItem(
+  //       `creditScoreDetail-${user.id}`,
+  //     );
+
+  //     console.log('DA: ', checkIfAwaiting);
+  //     if (checkIfAwaiting != null && checkIfAwaiting != 'false') {
+  //       console.log('loading up...');
+  //       setShowCreditAwaiting(true);
+  //     } else {
+  //       AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'false');
+  //       console.log('no load up');
+  //     }
+  //   })();
+  // }, []);
+
   return (
     <>
       <View style={[styles.container]}>
@@ -24,10 +57,10 @@ export default function CreditOnboard({navigation}) {
             borderBottomWidth: 1,
           }}>
           <Icon
-            name="chevron-back"
+            name="arrow-back-outline"
             color={COLORS.dark}
             size={25}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Rent')}
           />
         </View>
 
@@ -42,42 +75,13 @@ export default function CreditOnboard({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => setShowCreditForm(true)}>
+          <TouchableOpacity onPress={() => navigation.navigate('CreditForm')}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Check credit report</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
-
-      {showCreditForm && (
-        <CreditForm
-          visible={showCreditForm}
-          onRequestClose={() => setShowCreditForm(!showCreditForm)}
-          setFormData={(v) => {
-            setFormData(v);
-            setShowCreditAwaiting(true);
-          }}
-        />
-      )}
-
-      {showCreditAwaiting && (
-        <CreditAwaiting
-          visible={showCreditAwaiting}
-          onRequestClose={() => setShowCreditAwaiting(!showCreditAwaiting)}
-          data={formData}
-          showDashboard={() => setShowCreditDashboard(true)}
-        />
-      )}
-
-      {showCreditDashboard && (
-        <CreditDashboard
-          visible={showCreditDashboard}
-          onRequestClose={() => setShowCreditDashboard(!showCreditDashboard)}
-          data={formData}
-          navigation={navigation}
-        />
-      )}
     </>
   );
 }

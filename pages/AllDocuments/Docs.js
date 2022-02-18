@@ -28,6 +28,7 @@ import {
   showUploadedFiles,
   uploadFile,
 } from '../../redux/actions/documentUploadActions';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -40,7 +41,8 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      urls.applications.GET_DOCUMENTS,
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -128,7 +130,8 @@ export default function Docs(props, {navigation}) {
     const token = await getToken();
     try {
       const response = await axios.delete(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/document/delete',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/document/delete',
+        urls.applications.DELETE_APPLICATION_DOCUMENT,
         {
           headers: {
             'Content-Type': 'application/json',

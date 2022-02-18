@@ -73,7 +73,11 @@ export default function LoanTabs(props) {
       if (loans.status == 200) {
         setSpinner(false);
         // console.log('The Loan: ', loans);
-        setRepaymentList(loans?.data?.data);
+        const emergencyLoans = loans?.data?.data.filter(
+          (loans) => loans.loan_type == 'emergency_loan',
+        );
+
+        setRepaymentList(emergencyLoans);
         // dispatch(getMaxLoanCap());
       } else {
         setSpinner(false);

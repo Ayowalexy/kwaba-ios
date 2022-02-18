@@ -20,6 +20,8 @@ const urls = {
     ME: `${baseUrl}/users/me`,
     COMPLETE_PROFILE: `${baseUrl}/users/update-profile`,
     SEND_EMAIL_VERIFICATION: `${baseUrl}/users/send-email-verification`,
+    REFERRALS: `${baseUrl}/users/referrals`,
+    CHANGE_PASSWORD: `${baseUrl}/user/change_password`,
   },
 
   savings: {
@@ -41,6 +43,7 @@ const urls = {
   payments: {
     TOKENIZED_CARDS: `${baseUrl}/payments/get-tokenized-cards`,
     EMERGENCY_FUNDS_GET_REPAYMENT: `${baseUrl}/payments/get-repayments`,
+    GET_PAYMENT_HISTORY: `${baseUrl}/payments/get-payment-history`,
   },
 
   applications: {
@@ -48,9 +51,9 @@ const urls = {
     UPLOAD_BANK_STATEMENT: `${baseUrl}/application/bank_statement`,
     ACCEPT_OFFER: `${baseUrl}/application/accept_offer`,
     GET_CURRENT_APPLICATION: `${baseUrl}/application/one`,
-    UPLOAD_DOCUMENTS: `${baseUrl}/application/documents`,
+    UPLOAD_DOCUMENTS: `${baseUrl}/application/documents/upload`,
     GET_DOCUMENTS: `${baseUrl}/application/documents`,
-    DELETE_APPLICATION_DOCUMENT: `${baseUrl}/document/delete`,
+    DELETE_APPLICATION_DOCUMENT: `${baseUrl}/application/document/delete`,
     ADD_LANDLORD_AND_PROPERTY_DETAILS: `${baseUrl}/application/update/landlord_and_property`,
     REJECT_OFFER: `${baseUrl}/application/reject`,
     ADD_REFEREE_DETAILS: `${baseUrl}/application/update/referee`,
@@ -76,6 +79,18 @@ const urls = {
     GET_BILLS_CATEGORY: `${baseUrl}/bills/get-bills-category`,
     GET_BILLS_ITEMS: `${baseUrl}/bills/get-bills-items`,
     GET_AIRTIME_BILLS: `${baseUrl}/bills/get-airtime-bills`,
+  },
+
+  buddySavings: {
+    // GET → /savings/buddy/dashboard/:id
+    // PUT → /savings/buddy/update-buddy
+    // PUT → /savings/buddy/accept-buddy-invite
+    // GET → /savings/buddy/get-user-buddy-invites
+    // DELETE → /savings/buddy/deleteInvite/:id
+  },
+
+  app: {
+    CHECK_RELEASE: `${baseUrl}/stable-front-end-version`,
   },
 };
 

@@ -73,9 +73,9 @@ const PurchaseAirtime = ({navigation, route}) => {
   });
 
   useEffect(() => {
-    // console.log('Params: ', route.params);
+    console.log('Params: ', route.params);
     const val = route?.params?.data?.filter((item) => item?.name == name);
-    // console.log('The Value: ', name);
+    // console.log('The Value: ', val);
     setAirtimeData(val);
   }, [name]);
 
@@ -95,6 +95,8 @@ const PurchaseAirtime = ({navigation, route}) => {
   const billsPayment = async (data) => {
     setSpinner(true);
 
+    // console.log('The Payload: ', data);
+
     try {
       const res = await completeSavingsPayment(data);
       if (res.status == 201) {
@@ -105,6 +107,7 @@ const PurchaseAirtime = ({navigation, route}) => {
       } else {
         setSpinner(false);
         console.log('Not Okay Res: ', res.response.data);
+        Alert.alert('Oops ', 'An error occured');
       }
     } catch (error) {
       setSpinner(false);
@@ -483,7 +486,7 @@ const PurchaseAirtime = ({navigation, route}) => {
               },
             };
 
-            // console.log('We here: ', data);
+            console.log('We here: ', data);
 
             await billsPayment(data);
           }}

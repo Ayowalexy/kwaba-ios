@@ -112,9 +112,9 @@ export default function Screen3({navigation, route}) {
     console.log('The Data: ', data);
 
     let frequency =
-      data.savings_period == 1
+      data.savings_frequency == 1
         ? 'daily'
-        : data?.savings_period == 7
+        : data?.savings_frequency == 7
         ? 'weekly'
         : 'monthly';
 
@@ -149,7 +149,16 @@ export default function Screen3({navigation, route}) {
     dispatch(soloSaving({locked: locked}));
   }, [locked]);
 
-  const createSavings = async () => {
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: verifyData.id,
+    });
+  };
+
+  const createSavings = async (bol, paymentChannel) => {
     setSpinner(true);
     const data = {
       auto_save: route?.params?.auto_save,
@@ -167,40 +176,91 @@ export default function Screen3({navigation, route}) {
     setSpinner(false);
     if (!response) return [];
 
-    const vData = response?.data?.data;
-    await verifyPaymentRequest(vData);
-
-    console.log('Hello hereee', vData);
+    if (bol) {
+      const vData = response?.data?.data;
+      const payloadData = {
+        amount: route.params.amount,
+        savings_id: vData.id,
+        channel: paymentChannel,
+        purpose: 'savings',
+      };
+      await verifyPaymentRequest(payloadData, paymentChannel);
+      // console.log('Hello hereee', payloadData);
+    } else {
+      navigation.navigate('PaymentSuccessful', {
+        content: 'Savings Created',
+        subText: 'Your savings plan has been created successfully',
+        name: 'SoloSavingDashBoard',
+        id: response?.data?.data.id,
+      });
+    }
   };
 
-  const verifyPaymentRequest = async (data) => {
+  const savingsPayment = async (data) => {
     setSpinner(true);
-    const verifyPayload = {
-      amount: route?.params?.amount,
-      savings_id: data.id,
-      channel: 'paystack',
-      purpose: 'savings',
-    };
 
-    console.log('Payload: ', verifyPayload);
+    try {
+      const res = await completeSavingsPayment(data);
 
-    const verify = await verifySavingsPayment(verifyPayload);
+      if (res.status == 201) {
+        setSpinner(false);
+
+        // console.log('Complete Paymentttttttttt: ', res?.data);
+        await showSuccess();
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error?.response?.data);
+    }
+  };
+
+  const verifyPaymentRequest = async (data, paymentChannel) => {
+    setSpinner(true);
+    const res = await verifySavingsPayment(data);
 
     setSpinner(false);
-    if (!verify) return [];
+    if (!res) return [];
 
-    const verifyData = verify?.data?.data;
-    setVerifyData({...verifyData, id: data.id});
-    setShowPaystackPayment(true);
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+      setVerifyData({...verifyData, id: data.savings_id});
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: verifyData.amount,
+          savings_id: data.savings_id,
+          channel: 'wallet',
+          reference: verifyData.paymentReference,
+          purpose: 'savings',
+        };
+        await savingsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+        console.log('Hello here');
+      }
+    } else {
+      console.log('Error pp: ', res?.response);
+    }
   };
 
   const handleContinue = () => {
     const data = route?.params;
 
     if (data?.amount == 0) {
-      console.log('No Payment');
+      createSavings(false); // no payemnt here, just create the savings thank you.
     } else {
-      createSavings();
+      setShowPaymentModal(true);
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    setSpinner(true);
+    if (value == 'wallet') {
+      createSavings(true, value);
+    } else {
+      setChannel(value);
+      createSavings(true, 'paystack');
     }
   };
 
@@ -386,6 +446,7 @@ export default function Screen3({navigation, route}) {
           disabled={!toggleCheckBox}
           // onPress={addCardAndBankModal}
           onPress={handleContinue}
+          // onPress={() => setShowPaymentModal(true)}
           style={[
             designs.button,
             {
@@ -410,6 +471,16 @@ export default function Screen3({navigation, route}) {
       </ScrollView>
 
       {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
+
+      {/* {showPaymentModal && (
         <PaymentTypeModalSavings
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
@@ -433,7 +504,7 @@ export default function Screen3({navigation, route}) {
             handleCreateSavings();
           }}
         />
-      )}
+      )} */}
 
       {showConfirmModal && (
         <ConfirmSave
@@ -473,8 +544,9 @@ export default function Screen3({navigation, route}) {
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
           data={verifyData}
-          channel={['card', 'bank_transfer']}
+          channel={channel}
           paymentCanceled={(e) => {
+            setSpinner(false);
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
@@ -486,27 +558,7 @@ export default function Screen3({navigation, route}) {
               purpose: 'savings',
             };
 
-            console.log('This complete data: ', data);
-            try {
-              setSpinner(true);
-              const res = await completeSavingsPayment(data);
-              // console.log('Complete Out: ', res);
-
-              if (res.status == 201) {
-                setSpinner(false);
-                console.log('Complete Payment: ', res.data.data);
-
-                navigation.navigate('PaymentSuccessful', {
-                  content: 'Savings Plan Created Successfully',
-                  name: 'SoloSavingDashBoard',
-                  id: verifyData.id,
-                });
-              } else {
-                setSpinner(false);
-              }
-            } catch (error) {
-              setSpinner(false);
-            }
+            await savingsPayment(data);
           }}
         />
       )}
