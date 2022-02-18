@@ -22,14 +22,14 @@ export default function RnplSteps({navigation}) {
     {
       title: 'Applications',
       subTitle: '',
-      status: 'start',
+      status: 'complete',
       navigate: () => navigation.navigate('Form1'),
       // navigate: () => navigation.navigate('VerifyingDocuments'),
     },
     {
       title: 'Documents upload',
       subTitle: '',
-      status: 'locked',
+      status: 'start',
       navigate: () => navigation.navigate('NewAllDocuments'),
     },
     {

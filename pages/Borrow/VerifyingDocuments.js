@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../util/index';
@@ -18,6 +19,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
+import urls from '../../services/routes';
 
 const VerifyingDocuments = ({navigation, route}) => {
   const response = route.params;
@@ -48,7 +50,8 @@ const VerifyingDocuments = ({navigation, route}) => {
 
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        urls.applications.GET_CURRENT_APPLICATION,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -57,10 +60,6 @@ const VerifyingDocuments = ({navigation, route}) => {
       console.log('APp: ', applicationIDCallRes.data.data);
 
       const applicationStatus = applicationIDCallRes.data.data.status;
-
-      // setExistingApplication(applicationId);
-      // console.log('here', applicationIDCallRes.data.data.approvedamount);
-      // setSpinner(false);
 
       if (applicationStatus == 3) {
         setSpinner(false);
@@ -263,7 +262,7 @@ const VerifyingDocuments = ({navigation, route}) => {
             <Text style={[designs.buttonText, {color: COLORS.white, textAlign: 'center', fontWeight: 'normal'}]}>Check Status</Text>
           </TouchableOpacity> */}
 
-          {/* <Spinner visible={spinner} size="large" /> */}
+          <Spinner visible={spinner} size="small" />
         </View>
       </View>
     </RnplStepProgress>

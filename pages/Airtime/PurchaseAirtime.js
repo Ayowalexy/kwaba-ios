@@ -105,6 +105,7 @@ const PurchaseAirtime = ({navigation, route}) => {
       } else {
         setSpinner(false);
         console.log('Not Okay Res: ', res.response.data);
+        Alert.alert('Oops ', 'An error occured');
       }
     } catch (error) {
       setSpinner(false);
