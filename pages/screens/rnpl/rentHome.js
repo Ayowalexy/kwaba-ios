@@ -76,26 +76,26 @@ export default function RentHome({navigation}) {
 
     // await AsyncStorage.clear();
 
-    navigation.navigate('RnplSteps');
+    // navigation.navigate('RnplSteps');
     // navigation.navigate('NewAllDocuments');
 
-    // if (user.profile_complete == 0) {
-    //   setCompleteProfileModal(true);
-    // } else {
-    //   if (getCreditScoreDetails == null) {
-    //     navigation.navigate('RnplOnboard');
-    //   } else if (getCreditScoreDetails == 'creditOnboarding') {
-    //     navigation.navigate('CreditOnboard');
-    //   } else if (getCreditScoreDetails == 'creditForm') {
-    //     navigation.navigate('CreditForm');
-    //   } else if (getCreditScoreDetails == 'creditAwaiting') {
-    //     navigation.navigate('creditAwaiting');
-    //   } else if (getCreditScoreDetails == 'creditDashboard') {
-    //     navigation.navigate('CreditDashboard');
-    //   } else {
-    //     navigation.navigate('RnplSteps');
-    //   }
-    // }
+    if (user.profile_complete == 0) {
+      setCompleteProfileModal(true);
+    } else {
+      if (getCreditScoreDetails == null) {
+        navigation.navigate('RnplOnboard');
+      } else if (getCreditScoreDetails == 'creditOnboarding') {
+        navigation.navigate('CreditOnboard');
+      } else if (getCreditScoreDetails == 'creditForm') {
+        navigation.navigate('CreditForm');
+      } else if (getCreditScoreDetails == 'creditAwaiting') {
+        navigation.navigate('creditAwaiting');
+      } else if (getCreditScoreDetails == 'creditDashboard') {
+        navigation.navigate('CreditDashboard');
+      } else {
+        navigation.navigate('RnplSteps');
+      }
+    }
   };
 
   const handleSavingClick = async () => {

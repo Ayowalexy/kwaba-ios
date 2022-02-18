@@ -95,6 +95,8 @@ const PurchaseAirtime = ({navigation, route}) => {
   const billsPayment = async (data) => {
     setSpinner(true);
 
+    // console.log('The Payload: ', data);
+
     try {
       const res = await completeSavingsPayment(data);
       if (res.status == 201) {

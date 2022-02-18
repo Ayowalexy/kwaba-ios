@@ -7,12 +7,12 @@ const stepsArray = [
   {
     title: 'Applications',
     subTitle: '',
-    status: 'complete',
+    status: 'start',
   },
   {
     title: 'Documents upload',
     subTitle: '',
-    status: 'start',
+    status: 'locked',
   },
   {
     title: 'Offer approval breakdown',
