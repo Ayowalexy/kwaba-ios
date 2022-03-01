@@ -8,7 +8,7 @@ const cobble = {
   live: 'https://api.getcobble.net/integration',
 };
 
-const baseUrl = kwaba.live;
+const baseUrl = kwaba.staging;
 
 const urls = {
   auth: {
