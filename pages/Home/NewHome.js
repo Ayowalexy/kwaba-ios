@@ -398,12 +398,12 @@ export default function NewHome({navigation}) {
         'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
       img: images.maskGroup29,
       route: () => navigation.navigate('JoinChallengeList'),
-      route: () => {
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
-      },
+      // route: () => {
+      //   Alert.alert(
+      //     'Feature currently unavailable',
+      //     'We are working hard to make this available as soon as we can.',
+      //   );
+      // },
     },
   ];
 

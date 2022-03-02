@@ -1,4 +1,3 @@
-import {all} from 'q';
 import React, {useState, useEffect} from 'react';
 import {View, Text, useWindowDimensions} from 'react-native';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';

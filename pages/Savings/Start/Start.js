@@ -292,15 +292,15 @@ export default function Start({navigation}) {
                 <TouchableOpacity
                   onPress={() => {
                     TrackEvent('Buddy Saving');
-                    // navigation.navigate(
-                    //   // buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
-                    //   store2?.data?.length == 0 ? 'BuddySaving1' : 'BuddyLists',
-                    // );
-
-                    Alert.alert(
-                      'Feature currently unavailable',
-                      'We are working hard to make this available as soon as we can.',
+                    navigation.navigate(
+                      buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
+                      // store2?.data?.length == 0 ? 'BuddySaving1' : 'BuddyLists',
                     );
+
+                    // Alert.alert(
+                    //   'Feature currently unavailable',
+                    //   'We are working hard to make this available as soon as we can.',
+                    // );
                   }}
                   style={[
                     designs.cardFlex,

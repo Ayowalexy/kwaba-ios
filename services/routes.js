@@ -31,9 +31,16 @@ const urls = {
     GET_SAVINGS_INTEREST_RATE: `${baseUrl}/savings/get-savings-interest`,
     GET_TOTAL_USER_SAVINGS_AMOUNT: `${baseUrl}/savings/get-total-user-savings-amount`,
 
+    // Payments
     COMPLETE_PAYMENT: `${baseUrl}/payments/complete-payment`,
     VERIFY_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
     GET_SAVINGS_PAYMENT_HISTORY: `${baseUrl}/payments/get-savings-payment-history`,
+
+    // Savings Challenge
+    CREATE_SAVINGS_CHALLENGE: `${baseUrl}/savings/challenges/create-savings-challenge`,
+    JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join-challenge`,
+    GET_CHALLENGE_BY_ID: `${baseUrl}/savings/challenges/get-all-challenges/`,
+    GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/get-all-challenges`,
   },
 
   wallet: {

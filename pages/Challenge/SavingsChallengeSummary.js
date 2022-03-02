@@ -159,18 +159,28 @@ export default function SavingsChallengeSummary(props) {
     }
   };
 
+  // const handleSubmit = async () => {
+  //   const joinData = {
+  //     savings_challenge_id: data?.id,
+  //     savings_amount: unFormatNumber(amount),
+  //     savings_method: savingsType ? 'auto' : 'manual',
+  //   };
+
+  //   // console.log('The Dats: ', joinData);
+
+  //   // setJoinData(joinData);
+  //   setDataValue(joinData);
+  //   setShowPaymentModal(true);
+  // };
+
   const handleSubmit = async () => {
-    const joinData = {
-      savings_challenge_id: data?.id,
-      savings_amount: unFormatNumber(amount),
-      savings_method: savingsType ? 'auto' : 'manual',
+    const payload = {
+      challenge_id: data?.id,
+      auto_save: false,
+      locked: false,
     };
 
-    // console.log('The Dats: ', joinData);
-
-    // setJoinData(joinData);
-    setDataValue(joinData);
-    setShowPaymentModal(true);
+    console.log('Payload: ', payload);
   };
 
   return (
@@ -233,12 +243,14 @@ export default function SavingsChallengeSummary(props) {
                 <View style={[styles.preset]}>
                   <View style={styles.dataInfo}>
                     <Text style={styles.key}>Amount to Save Daily</Text>
-                    <Text style={styles.value}>₦{formatNumber(amount)}</Text>
+                    <Text style={styles.value}>
+                      ₦{formatNumber(data?.periodic_savings_amount)}
+                    </Text>
                   </View>
                   <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
                     <Text style={styles.key}>Target Amount</Text>
                     <Text style={styles.value}>
-                      ₦{formatNumber(data.tartget_per_member)}
+                      ₦{formatNumber(data.target_amount)}
                     </Text>
                   </View>
                   <View style={styles.dataInfo}>
@@ -258,7 +270,9 @@ export default function SavingsChallengeSummary(props) {
 
                   <View style={[styles.dataInfo]}>
                     <Text style={styles.key}>Frequency</Text>
-                    <Text style={styles.value}>{data.fequency}</Text>
+                    <Text style={styles.value}>
+                      {data.frequency == 1 ? 'Daily' : ''}
+                    </Text>
                   </View>
 
                   {/* <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
