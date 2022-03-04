@@ -187,6 +187,7 @@ import Wallet from './pages/Wallet/Wallet';
 // Challenge
 import JoinChallengeList from './pages/Challenge/JoinChallengeList';
 import JoinChallengeDashboard from './pages/Challenge/JoinChallengeDashboard';
+import JoinedSuccessful from './pages/Challenge/JoinedSuccessful';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -806,6 +807,11 @@ const App = () => {
                 <Stack.Screen
                   name="JoinChallengeDashboard"
                   component={JoinChallengeDashboard}
+                />
+
+                <Stack.Screen
+                  name="JoinedSuccessful"
+                  component={JoinedSuccessful}
                 />
 
                 <Stack.Screen

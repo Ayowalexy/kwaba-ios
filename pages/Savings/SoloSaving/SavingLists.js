@@ -26,10 +26,10 @@ const Item = ({item, navigation}) => {
     <TouchableOpacity
       style={[styles.card]}
       onPress={() => {
-        dispatch(getOneSoloSavings(item.id));
-        dispatch(getOneSoloSavingsTransaction(item.id));
-        navigation.navigate('SoloSavingDashBoard', {id: item.id});
-        console.log('The ID: ', item.id);
+        dispatch(getOneSoloSavings(item?.id));
+        dispatch(getOneSoloSavingsTransaction(item?.id));
+        navigation.navigate('SoloSavingDashBoard', {id: item?.id});
+        console.log('The ID: ', item?.id);
       }}>
       <View style={[styles.cardFlex]}>
         <View style={[styles.progressContainer]}>
@@ -38,7 +38,9 @@ const Item = ({item, navigation}) => {
             width={5}
             rotation={0}
             style={{zIndex: 9, position: 'relative'}}
-            fill={(Number(item.amount_save) / Number(item.target_amount)) * 100}
+            fill={
+              (Number(item?.amount_save) / Number(item?.target_amount)) * 100
+            }
             tintColor={COLORS.light}
             backgroundColor="#2A286A10">
             {(fill) => (
@@ -68,21 +70,21 @@ const Item = ({item, navigation}) => {
         </View>
         <View style={[styles.cardText]}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={[styles.cardTitle]}>{item.name}</Text>
+            <Text style={[styles.cardTitle]}>{item?.name}</Text>
           </View>
 
           <View style={[styles.cardAmount]}>
             <View>
               <Text style={[styles.amountText]}>Amount Saved</Text>
               <Text style={[styles.amountText]}>
-                ₦{formatNumber(item.amount_save) || '0.00'}
+                ₦{formatNumber(item?.amount_save) || '0.00'}
               </Text>
             </View>
 
             <View>
               <Text style={[styles.amountText]}>Target Amount</Text>
               <Text style={[styles.amountText]}>
-                ₦{formatNumber(item.target_amount)}
+                ₦{formatNumber(item?.target_amount)}
               </Text>
             </View>
           </View>
@@ -107,9 +109,9 @@ export default function SavingLists({navigation}) {
       <TouchableOpacity
         style={[styles.card]}
         onPress={() => {
-          dispatch(getOneSoloSavings(item.id));
-          dispatch(getOneSoloSavingsTransaction(item.id));
-          navigation.navigate('SoloSavingDashBoard', {id: item.id});
+          dispatch(getOneSoloSavings(item?.id));
+          dispatch(getOneSoloSavingsTransaction(item?.id));
+          navigation.navigate('SoloSavingDashBoard', {id: item?.id});
         }}>
         <View style={[styles.cardFlex]}>
           <View style={[styles.progressContainer]}>
@@ -119,7 +121,7 @@ export default function SavingLists({navigation}) {
               rotation={0}
               style={{zIndex: 9, position: 'relative'}}
               fill={
-                (Number(item.amount_saved) / Number(item.target_amount)) * 100
+                (Number(item?.amount_saved) / Number(item?.target_amount)) * 100
               }
               tintColor={COLORS.light}
               backgroundColor="#2A286A10">
@@ -150,7 +152,7 @@ export default function SavingLists({navigation}) {
           </View>
           <View style={[styles.cardText]}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={[styles.cardTitle]}>{item.name}</Text>
+              <Text style={[styles.cardTitle]}>{item?.name}</Text>
             </View>
 
             <View style={[styles.cardAmount]}>
@@ -159,7 +161,7 @@ export default function SavingLists({navigation}) {
                   Amount Saved
                 </Text>
                 <Text style={[styles.amountText]}>
-                  ₦{formatNumber(item.amount_saved) || '0.00'}
+                  ₦{formatNumber(item?.amount_saved) || '0.00'}
                 </Text>
               </View>
 
@@ -168,7 +170,7 @@ export default function SavingLists({navigation}) {
                   Target Amount
                 </Text>
                 <Text style={[styles.amountText]}>
-                  ₦{formatNumber(item.target_amount)}
+                  ₦{formatNumber(item?.target_amount)}
                 </Text>
               </View>
             </View>
@@ -252,9 +254,11 @@ export default function SavingLists({navigation}) {
       </View>
       <View style={[styles.cardContainer]}>
         <FlatList
-          data={allSavings?.data}
+          data={allSavings?.data.filter(
+            (v) => v?.savings_type == 'solo_savings',
+          )}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item?.id?.toString()}
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
         />

@@ -41,6 +41,17 @@ const urls = {
     JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join-challenge`,
     GET_CHALLENGE_BY_ID: `${baseUrl}/savings/challenges/get-all-challenges/`,
     GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/get-all-challenges`,
+
+    // Buddy savings
+    CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
+    UPDATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/update-buddy-savings`,
+    DASHBOARD: `${baseUrl}/savings/buddy/dashboard`, // /:id
+    GET_BUDDIES: `${baseUrl}/savings/buddy/get-buddies`, // /:id
+    UPDATE_BUDDY: `${baseUrl}/savings/buddy/update-buddy`,
+    INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
+    ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/accept-buddy-invite`,
+    GET_USER_BUDDY_INVITES: `${baseUrl}/savings/buddy/get-user-buddy-invites`,
+    DELETE_INVITE: `${baseUrl} /savings/buddy/deleteInvite/`,
   },
 
   wallet: {
@@ -88,13 +99,17 @@ const urls = {
     GET_AIRTIME_BILLS: `${baseUrl}/bills/get-airtime-bills`,
   },
 
-  buddySavings: {
-    // GET → /savings/buddy/dashboard/:id
-    // PUT → /savings/buddy/update-buddy
-    // PUT → /savings/buddy/accept-buddy-invite
-    // GET → /savings/buddy/get-user-buddy-invites
-    // DELETE → /savings/buddy/deleteInvite/:id
-  },
+  // buddySavings: {
+  //   CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
+  //   UPDATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/update-buddy-savings`,
+  //   DASHBOARD: `${baseUrl}/savings/buddy/dashboard`, // /:id
+  //   GET_BUDDIES: `${baseUrl}/savings/buddy/get-buddies`, // /:id
+  //   UPDATE_BUDDY: `${baseUrl}/savings/buddy/update-buddy`,
+  //   INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
+  //   ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/accept-buddy-invite`,
+  //   GET_USER_BUDDY_INVITES: `${baseUrl}/savings/buddy/get-user-buddy-invites`,
+  //   DELETE_INVITE: `${baseUrl} /savings/buddy/deleteInvite/`,
+  // },
 
   app: {
     CHECK_RELEASE: `${baseUrl}/stable-front-end-version`,

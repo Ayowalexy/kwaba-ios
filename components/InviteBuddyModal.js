@@ -63,10 +63,11 @@ export default function InviteBuddyModal(props) {
     // console.log('user name: ', userName);
     // console.log('Param: ', resData.buddy_savings.id);
     // console.log('API: ', resData.buddylink);
-    console.log('The Props: ', resData.buddy_savings.frequency);
+    console.log('The Props: ', resData?.buddy_savings?.frequency);
   }, []);
 
-  const inviteLink = `https://kwaba.ng/BuddyInviteLists`;
+  // const inviteLink = `https://kwaba.ng/BuddyInviteLists`;
+  const inviteLink = resData?.buddylink;
 
   const copyToClipboard = async () => {
     const msg = `${userName.toString()} has Invited you to join them to save for rent on Kwaba - Join now\n\n${
@@ -142,15 +143,31 @@ export default function InviteBuddyModal(props) {
       // amount_to_save_monthly: savingAmount,
       // buddy_name: userName,
 
-      amount: savingAmount,
-      frequency: data.savings_frequency,
-      buddy_name: userName,
+      // {
+      //   "savings_id": 304,
+      //   "target_amount": 30000,
+      //   "amount_to_save_monthly": 1000,
+      //   "fullname": "John Doe",
+      //   "email": "John@Doe.com",
+      //   "phonenumber": "09074352474"
+      // }
+
+      // amount_to_save: savingAmount,
+      // frequency: data?.savings_frequency,
+      // buddy_name: userName,
+      // email: email,
+      // fullname: fullname,
+      // savings_id: resData?.buddy_savings.id,
+      // phonenumber: phone,
+      // target_amount: buddyTarget,
+      // buddy_target_amount: data?.target_amount,
+
+      amount_to_save_monthly: Number(savingAmount),
       email: email,
       fullname: fullname,
-      savings_id: resData.buddy_savings.id,
+      savings_id: resData?.buddy_savings.id,
       phonenumber: phone,
-      target_amount: buddyTarget,
-      buddy_target_amount: data.target_amount,
+      target_amount: Number(buddyTarget),
     };
 
     console.log('The Invite: ', invite_buddy_data);
@@ -158,7 +175,7 @@ export default function InviteBuddyModal(props) {
     try {
       const res = await InviteBuddy(invite_buddy_data);
 
-      if (res.status == 200) {
+      if (res.status == 201 || res.status == 200) {
         setSpinner(false);
 
         const inviteTemplate = {
@@ -175,7 +192,7 @@ export default function InviteBuddyModal(props) {
         // console.log('Send Invite Res: ', res);
       } else {
         setSpinner(false);
-        console.log('Error new: ', res);
+        console.log('Error new: ', res.response.data);
       }
     } catch (error) {
       setSpinner(false);
@@ -277,7 +294,11 @@ export default function InviteBuddyModal(props) {
                   <View style={[styles.amountBox]}>
                     <Text style={[styles.amountBoxTitle]}>
                       Amount to save{' '}
-                      {resData.buddy_savings.frequency.toLowerCase()}
+                      {resData?.buddy_savings?.frequency == 1
+                        ? 'daily'
+                        : resData?.buddy_savings?.frequency == 7
+                        ? 'weekly'
+                        : 'monthly'}
                     </Text>
                     <View style={[styles.amountBoxInput]}>
                       <Text style={[styles.amountBoxInputText]}>

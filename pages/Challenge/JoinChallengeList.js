@@ -81,6 +81,8 @@ export default function JoinChallengeList({navigation}) {
   const userChallenge = useSelector(
     (state) => state.getUserSavingsChallengeReducer,
   );
+  const allSavings = useSelector((state) => state.getSoloSavingsReducer);
+
   const [showModal, setShowModal] = useState(false);
   const [resData, setResData] = useState('');
   const [spinner, setSpinner] = useState(false);
@@ -97,6 +99,18 @@ export default function JoinChallengeList({navigation}) {
 
   const [allSavingsChallenges, setAllSavingschallenges] = useState([]);
 
+  const [joinSavings, setJoinedSavings] = useState([]);
+
+  // useEffect(() => {
+  //   const filter = allSavings?.data?.filter(
+  //     (item) => item.savings_type == 'savings_challenge',
+  //   );
+
+  //   setJoinedSavings(filter);
+
+  //   console.log('Filter: ', filter);
+  // }, []);
+
   useEffect(() => {
     dispatch(getUserSavingsChallenge());
   }, []);
@@ -107,9 +121,15 @@ export default function JoinChallengeList({navigation}) {
   }, []);
 
   const handleNavigate = (data) => {
-    setShowModal(true);
-    setResData(data);
-    // navigation.navigate('JoinChallengeDashboard');
+    if (
+      joinSavings.length &&
+      joinSavings?.filter((i) => i.challenge_id == data?.id)[0]
+    ) {
+      navigation.navigate('JoinChallengeDashboard', {id: data?.id});
+    } else {
+      setShowModal(true);
+      setResData(data);
+    }
   };
 
   const getAllSavingsChallenges = async () => {
@@ -126,6 +146,12 @@ export default function JoinChallengeList({navigation}) {
       // console.log('Challenges: ', resp?.data?.data);
       setSpinner(false);
       setAllSavingschallenges(resp?.data?.data);
+
+      const filter = allSavings?.data?.filter(
+        (item) => item.savings_type == 'savings_challenge',
+      );
+
+      setJoinedSavings(filter);
     } catch (error) {
       setSpinner(false);
       console.log('Error failed: ', error.response);
@@ -137,12 +163,41 @@ export default function JoinChallengeList({navigation}) {
 
     return (
       <TouchableOpacity
-        onPress={() => handleNavigate(item)}
+        onPress={() => {
+          handleNavigate(item, id);
+        }}
         style={[styles.card]}>
         <View style={{flexDirection: 'row', flex: 1}}>
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>{name}</Text>
             <Text style={styles.cardBody}>{short_description}</Text>
+
+            {joinSavings?.map(
+              (v, i) =>
+                v.challenge_id == id && (
+                  <View
+                    key={i}
+                    style={{
+                      marginTop: 10,
+                      width: 70,
+                      height: 30,
+                      backgroundColor: '#5A4CB110',
+                      padding: 10,
+                      borderRadius: 30,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: '#5A4CB1',
+                        fontWeight: 'bold',
+                      }}>
+                      Joined
+                    </Text>
+                  </View>
+                ),
+            )}
           </View>
 
           <View style={styles.cardImageContainer}>

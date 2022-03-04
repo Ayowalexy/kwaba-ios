@@ -25,7 +25,7 @@ const soloSavingFormSchema = yup.object().shape({
   savingOption: yup.string().required('Please select saving option'),
   savingFrequency: yup.string().required('Please select saving frequency'),
   // targetAmount: yup.string().required('Please provide saving amount'),
-  savingStartOption: yup.string().required('Field is required'),
+  // savingStartOption: yup.string().required('Field is required'),
 });
 
 export default function Screen1(props) {
@@ -298,7 +298,7 @@ export default function Screen1(props) {
         savingOption: '',
         savingFrequency: '',
         // targetAmount: '',
-        savingStartOption: '',
+        // savingStartOption: '',
       }}
       onSubmit={(values) => {
         handleSubmit(values);
@@ -337,12 +337,12 @@ export default function Screen1(props) {
                 </>
               )} */}
 
-              {values.savingFrequency != '' && (
+              {/* {values.savingFrequency != '' && (
                 <Field
                   component={StartOptionSelection}
                   name="savingStartOption"
                 />
-              )}
+              )} */}
 
               <Text
                 style={{
@@ -357,7 +357,7 @@ export default function Screen1(props) {
                   new Date(date.toISOString()).toDateString().slice(4)}
               </Text>
 
-              {values.savingStartOption == 'today' && (
+              {values.savingFrequency != '' && (
                 <>
                   <View style={{overflow: 'hidden'}}>
                     <Animatable.View

@@ -101,46 +101,203 @@ export default function SavingsChallengeSummary(props) {
     setAmount(amountToSavePerDay.toFixed(2));
   }, []);
 
+  // const handlePaymentRoute = async (value) => {
+  //   console.log('The Value: ', value);
+  //   console.log('The Data Value: ', dataValue);
+
+  //   setSpinner(true);
+  //   try {
+  //     const res = await joinSavingsChallenge(dataValue);
+  //     if (res.status == 200) {
+  //       setSpinner(false);
+  //       if (value == 'wallet') {
+  //         const data = {
+  //           payment_channel: value,
+  //           reference: res?.data?.data?.reference,
+  //         };
+
+  //         console.log('Na am:', data);
+
+  //         setSpinner(true);
+  //         // const verify = await verifySavingsPayment(data);
+  //         const verify = await verifyWalletTransaction(data);
+  //         if (verify.status == 200) {
+  //           onRequestClose(); // close the modal
+  //           setSpinner(false);
+  //           console.log('Verify Successful');
+  //           navigation.navigate('PaymentSuccessful', {
+  //             name: 'JoinChallengeDashboard',
+  //             id: props?.data?.id,
+  //             content: 'Payment Successful',
+  //             subText: 'Awesome! You have successfully joined the challenge',
+  //           });
+  //         } else {
+  //           setSpinner(false);
+  //           console.log(
+  //             'Verify Error: ',
+  //             verify?.response?.data?.response_message,
+  //           );
+  //           console.log('Verify Error 2: ', verify);
+  //           setMessage({
+  //             visible: true,
+  //             body:
+  //               verify?.response?.data?.response_message ||
+  //               'An error occurred, please try again later.',
+  //             success: false,
+  //           });
+  //           // Alert.alert('Oops', verify?.response?.data?.response_message);
+  //         }
+  //       } else {
+  //         setChannel(value);
+  //         setResData(res?.data?.data);
+  //         setShowPaystackPayment(true);
+  //       }
+  //     } else {
+  //       setSpinner(false);
+  //     }
+  //   } catch (error) {
+  //     setSpinner(false);
+  //   }
+  // };
+
   const showSuccess = async () => {
-    navigation.navigate('JoinedSuccessful', {
-      content: 'Savings Challenge Joined',
-      subText: `You have successfully joined ${data?.name}`,
-      name: 'JoinChallengeDashboard',
-      id: data.id,
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: verifyData.id,
     });
   };
 
-  const handleJoinChallenge = async () => {
+  const savingsPayment = async (data) => {
+    setSpinner(true);
+
+    try {
+      const res = await completeSavingsPayment(data);
+
+      if (res.status == 201) {
+        setSpinner(false);
+
+        console.log('Complete Paymentttttttttt: ', res.data.data);
+        await showSuccess();
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error.response.data);
+    }
+  };
+
+  const verifyPaymentRequest = async (data, paymentChannel) => {
+    console.log('The Data: ', data);
+
+    setSpinner(true);
+    const res = await verifySavingsPayment(data);
+
+    setSpinner(false);
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+      console.log('Verifying data....: ', verifyData);
+      setVerifyData({...verifyData, id: data.savings_id});
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: verifyData.amount,
+          channel: 'wallet',
+          reference: verifyData.paymentReference,
+          purpose: 'savings_challenge',
+        };
+
+        console.log('Payload Data: ', payload);
+
+        await savingsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      console.log('Errorrr: ', res.response.data);
+      // Alert.alert('Oops', res?.response?.data?.meta?.error);
+      Alert.alert(
+        'Oops',
+        'This challenge is not active yet. Please try again on the challenge start date',
+      );
+
+      // if (
+      //   res.response?.data?.meta?.error ==
+      //   'The maximum savings amount for this savings is execeded'
+      // ) {
+      //   Alert.alert(
+      //     'Payment unsuccessful',
+      //     `You've exceeded the target amount for this savings plan`,
+      //   );
+      // } else if (
+      //   res.response?.data?.meta?.error == 'Insufficient wallet balance'
+      // ) {
+      //   Alert.alert(
+      //     'Payment unsuccessful',
+      //     'You do not have enough money in your wallet',
+      //   );
+      // }
+    }
+  };
+
+  const handleJoinChallenge = async (paymentChannel) => {
     const payload = {
       challenge_id: data?.id,
       auto_save: savingsType,
       locked: true, // this is locked by default
     };
     console.log(payload);
+    // console.log(paymentChannel);
 
     setSpinner(true);
     const response = await joinSavingsChallenge(payload);
 
     try {
+      // console.log(response.response);
+
       setSpinner(false);
       if (
         response.status == 201 ||
         response.response.data.meta.error == 'User has already joined challenge'
       ) {
-        onRequestClose();
-        showSuccess();
+        const payloadData = {
+          amount: data?.periodic_savings_amount,
+          savings_id: data?.id,
+          channel: paymentChannel,
+          purpose: 'savings_challenge',
+          savingsChallengeData: {
+            savings_id: data.savings_id,
+            challenge_id: data?.id,
+          },
+        };
+
+        console.log('Data: ', payloadData);
+
+        // await verifyPaymentRequest(payloadData, paymentChannel);
       } else {
         console.log('Error Response: ', response.response.data);
       }
     } catch (error) {
       setSpinner(false);
-      console.log('error: ', error.response);
+      console.log('error: ', error);
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    if (value == 'wallet') {
+      handleJoinChallenge(value);
+    } else {
+      handleJoinChallenge(value);
     }
   };
 
   const handleSubmit = async () => {
-    // setShowPaymentModal(true);
-    handleJoinChallenge();
+    setShowPaymentModal(true);
   };
 
   return (
@@ -310,6 +467,73 @@ export default function SavingsChallengeSummary(props) {
           </ScrollView>
         </View>
       </Modal>
+
+      {message.visible && (
+        <ModalMessage
+          message={message}
+          navigation={navigation}
+          onClose={() => setMessage(!message.visible)}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            // console.log('DFDF: ', data);
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
+
+      {/* {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            const data = {
+              channel: 'paystack',
+              reference: res.data.transactionRef.reference,
+            };
+
+            console.log('the dataatatta: ', data);
+          }}
+        />
+      )} */}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            Alert.alert('Payment cancelled');
+          }}
+          paymentSuccessful={async (res) => {
+            const data = {
+              amount: verifyData.amount,
+              savings_id: verifyData.id,
+              channel: 'paystack',
+              reference: verifyData.paymentReference,
+              purpose: 'savings',
+            };
+
+            console.log('the dataatatta: ', data);
+            console.log('This complete data: ', data);
+
+            await savingsPayment(data);
+          }}
+        />
+      )}
 
       <Spinner visible={spinner} size="large" />
     </>

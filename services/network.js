@@ -502,7 +502,8 @@ const me = async () => {
 
 // Buddy saving API
 const createBuddySavings = async (data) => {
-  const url = apiUrl + '/api/v1/create_buddy_savings';
+  // const url = apiUrl + '/api/v1/create_buddy_savings';
+  const url = urls.savings.CREATE_BUDDY_SAVINGS;
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -515,7 +516,8 @@ const createBuddySavings = async (data) => {
 };
 
 const InviteBuddy = async (data) => {
-  const url = apiUrl + '/api/v1/invite_buddy';
+  // const url = apiUrl + '/api/v1/invite_buddy';
+  const url = urls.savings.INVITE_BUDDY;
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -695,7 +697,8 @@ const rejectOffer = async (data) => {
 
 // Delete Buddy Savings Invite
 const deleteBuddySavingsInvite = async (id) => {
-  const url = apiUrl + `/api/v1/buddy/deleteInvite/${id}`;
+  // const url = apiUrl + `/api/v1/buddy/deleteInvite/${id}`;
+  const url = urls.savings.DELETE_INVITE + id;
   const token = await getToken();
   try {
     const response = await axios.get(url, {
@@ -709,7 +712,8 @@ const deleteBuddySavingsInvite = async (id) => {
 
 // Send Buddy Savings Bulk Invite
 const sendBuddySavingsInvites = async (data) => {
-  const url = apiUrl + '/api/v1/buddy/sendinvites';
+  // const url = apiUrl + '/api/v1/buddy/sendinvites';
+  const url = urls.savings.INVITE_BUDDY;
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -980,15 +984,19 @@ const verifyWalletTransaction = async (data) => {
 
 // Savings Challenge
 const joinSavingsChallenge = async (data) => {
-  const url = apiUrl + '/api/v1/user_join_savings_charledge';
+  // const url = apiUrl + '/api/v1/user_join_savings_charledge';
   const token = await getToken();
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
+    const response = await axios.post(
+      urls.savings.JOIN_CHALLENGE,
+      JSON.stringify(data),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
       },
-    });
+    );
     return response;
   } catch (error) {
     return error;

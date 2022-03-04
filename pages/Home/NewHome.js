@@ -418,7 +418,8 @@ export default function NewHome({navigation}) {
       img: images.maskGroup30,
       title: 'Pay for rent',
       content:
-        'Apply for rental finanace and pay back in easy monthly installments',
+        // 'Apply for rental finanace and pay back in easy monthly installments',
+        'Split your bulk rent into easy monthly payments.',
       // route: () => navigation.navigate('SaveToOwn'),
       route: () => navigation.navigate('Rent'),
     },
@@ -963,7 +964,12 @@ export default function NewHome({navigation}) {
                       />
                     </View>
                     <View style={{marginTop: 20}}>
-                      <Text style={{fontSize: 16, color: COLORS.white}}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: COLORS.white,
+                          fontWeight: 'bold',
+                        }}>
                         {item.title}
                       </Text>
                       <Text
