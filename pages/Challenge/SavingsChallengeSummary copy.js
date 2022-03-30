@@ -208,7 +208,8 @@ export default function SavingsChallengeSummary(props) {
         const payload = {
           amount: verifyData.amount,
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          // reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'savings_challenge',
         };
 
@@ -523,7 +524,8 @@ export default function SavingsChallengeSummary(props) {
               amount: verifyData.amount,
               savings_id: verifyData.id,
               channel: 'paystack',
-              reference: verifyData.paymentReference,
+              // reference: verifyData.paymentReference,
+              reference: verifyData.reference,
               purpose: 'savings',
             };
 

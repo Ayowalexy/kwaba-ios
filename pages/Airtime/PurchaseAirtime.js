@@ -65,7 +65,8 @@ const PurchaseAirtime = ({navigation, route}) => {
     success: false,
   });
 
-  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  const phoneRegExp =
+    /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
   const airtimeSchema = yup.object().shape({
     phoneNumber: yup.string().matches(phoneRegExp, 'Phone number is not valid'),
@@ -95,11 +96,16 @@ const PurchaseAirtime = ({navigation, route}) => {
   const billsPayment = async (data) => {
     setSpinner(true);
 
-    // console.log('The Payload: ', data);
+    console.log('Airtime payload: ', data);
 
     try {
+      if (data.channel !== 'wallet') {
+        setSpinner(false);
+        return await showSuccess();
+      }
       const res = await completeSavingsPayment(data);
-      if (res.status == 201) {
+
+      if (res.status == 200) {
         setSpinner(false);
         console.log('The Res: ', res);
 
@@ -117,7 +123,14 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   const verifyBillsPayment = async (data, paymentChannel) => {
     setSpinner(true);
-    const res = await verifySavingsPayment(data);
+    const res = await verifySavingsPayment({
+      ...data,
+      billsData: {
+        amount: unFormatNumber(amount),
+        recepient: phoneNumber, //08011111111 for test
+        serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+      },
+    });
 
     if (!res) {
       return [];
@@ -125,13 +138,13 @@ const PurchaseAirtime = ({navigation, route}) => {
 
     if (res.status == 200) {
       setSpinner(false);
-      console.log('Verify Data: ', res?.data?.data);
       setVerifyBillsData(res?.data?.data);
       if (paymentChannel == 'wallet') {
         const payload = {
           amount: unFormatNumber(amount),
           channel: 'wallet',
-          reference: res?.data?.data?.paymentReference, // from verifyBillsPayment
+          // reference: res?.data?.data?.paymentReference, // from verifyBillsPayment
+          reference: res?.data?.data?.reference,
           purpose: 'bills',
           billsMethod: 'billsWithoutBillersCode',
           billsData: {
@@ -141,7 +154,7 @@ const PurchaseAirtime = ({navigation, route}) => {
           },
         };
 
-        // console.log('That payload: ', payload);
+        console.log('Billsssss: ', payload);
         await billsPayment(payload);
       } else {
         setShowPaystackPayment(true);
@@ -162,6 +175,7 @@ const PurchaseAirtime = ({navigation, route}) => {
       };
 
       setChannel(value); //wallet
+
       await verifyBillsPayment(data, value);
     } else {
       const data = {
@@ -172,6 +186,7 @@ const PurchaseAirtime = ({navigation, route}) => {
       };
 
       setChannel(value);
+
       await verifyBillsPayment(data, value);
     }
   };
@@ -476,7 +491,8 @@ const PurchaseAirtime = ({navigation, route}) => {
             const data = {
               amount: unFormatNumber(amount),
               channel: 'paystack',
-              reference: verifyBillsData?.paymentReference, // from verifyBillsPayment
+              // reference: verifyBillsData?.paymentReference, // from verifyBillsPayment
+              reference: verifyBillsData?.reference,
               purpose: 'bills',
               billsMethod: 'billsWithoutBillersCode',
               billsData: {

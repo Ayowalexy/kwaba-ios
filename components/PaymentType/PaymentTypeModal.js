@@ -96,6 +96,8 @@ export default function PaymentTypeModal(props) {
                     <TouchableOpacity
                       // disabled={item.icon == 'home'}
                       onPress={() => {
+                        console.log('getting to this payment son!!');
+                        console.log({item});
                         setPaymentType(item.tag);
                         onRequestClose();
                       }}

@@ -5,9 +5,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {formatNumber} from '../../../util/numberFormatter';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   completeSavingsPayment,
   verifySavingsPayment,
+  getOneBuddy,
 } from '../../../services/network';
 
 export default function BuddyPaymentScreen(props) {
@@ -18,18 +20,21 @@ export default function BuddyPaymentScreen(props) {
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
   const [verifyData, setVerifyData] = useState('');
   const [channel, setChannel] = useState('');
+  const [savingsId, setSavingsId] = useState('');
 
-  const savingsPayment = async (data) => {
+  const savingsPayment = async (data, savingsId) => {
     setSpinner(true);
-
     try {
       const res = await completeSavingsPayment(data);
 
-      if (res.status == 201) {
-        setSpinner(false);
-
-        // console.log('Complete Paymentttttttttt: ', res?.data);
-        await showSuccess();
+      if (res.status == 200) {
+        console.log('savings haidee', savingsId);
+        navigation.navigate('PaymentSuccessful', {
+          content: 'Payment Successful',
+          subText: 'You have successfully funded your savings',
+          name: 'BuddySavingDashBoard',
+          id: savingsId,
+        });
       } else {
         setSpinner(false);
       }
@@ -43,30 +48,31 @@ export default function BuddyPaymentScreen(props) {
     setSpinner(true);
     const res = await verifySavingsPayment(data);
 
-    setSpinner(false);
     if (!res) return [];
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
-      setVerifyData({...verifyData, id: data.savings_id});
+
+      setVerifyData({...verifyData, id: data.buddyData.savings_id});
       if (paymentChannel == 'wallet') {
         const payload = {
           amount: verifyData.amount,
           buddyData: {
-            savings_id: data.savings_id,
-            buddyId: 23,
+            savings_id: data.buddyData.savings_id,
+            buddyId: data.buddyData.buddyId,
           },
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'buddySavings',
         };
-        await savingsPayment(payload);
+        await savingsPayment(payload, savingsId);
       } else {
         setShowPaystackPayment(true);
         console.log('Hello here');
       }
     } else {
-      console.log('Error pp: ', res?.response);
+      setSpinner(false);
+      console.log('Error pp: ', res.response.data);
     }
   };
 
@@ -76,39 +82,54 @@ export default function BuddyPaymentScreen(props) {
 
     console.log('kole: ', data, res);
 
-    // if (value == 'wallet') {
-    //   const verifyPayload = {
-    //     amount: data.savings_amount,
-    //     buddyData: {
-    //       buddyData: {
-    //         savings_id: res.buddy_savings.id,
-    //         buddyId: 23,
-    //       },
-    //       buddyId: 23,
-    //     },
-    //     channel: 'wallet',
-    //     purpose: 'buddySavings',
-    //   };
+    try {
+      setSavingsId(res.buddy_savings_id);
+      const buddyBody = await getOneBuddy(res.buddy_savings_id);
+      const userData = await AsyncStorage.getItem('userData');
+      const mainUserEmail = JSON.parse(userData).user.email;
 
-    //   setChannel(value); // wallet
-    //   await verifyPaymentRequest(verifyPayload, value);
-    // } else {
-    //   const verifyPayload = {
-    //     amount: data.savings_amount,
-    //     buddyData: {
-    //       buddyData: {
-    //         savings_id: res.buddy_savings.id,
-    //         buddyId: 23,
-    //       },
-    //       buddyId: 23,
-    //     },
-    //     channel: 'wallet',
-    //     purpose: 'buddySavings',
-    //   };
+      if (buddyBody.status === 200) {
+        const currentBuddy = buddyBody.data.buddies.find(
+          (d) =>
+            d.email.trim().toLowerCase() === mainUserEmail.trim().toLowerCase(),
+        );
 
-    //   setChannel(value); // card or bank_transfer
-    //   await verifyPaymentRequest(verifyPayload, value);
-    // }
+        if (value == 'wallet') {
+          const verifyPayload = {
+            amount: data.savings_amount,
+            buddyData: {
+              savings_id: buddyBody.data.savings_plan.id,
+              buddyId: currentBuddy.id,
+            },
+            channel: 'wallet',
+            purpose: 'buddySavings',
+          };
+          console.log('verifyPayload', verifyPayload);
+          // setSavingsId(verifyPayload.buddyData.savings_id);
+
+          setChannel(value); // wallet
+          await verifyPaymentRequest(verifyPayload, value);
+        } else {
+          const verifyPayload = {
+            amount: data.savings_amount,
+            buddyData: {
+              savings_id: buddyBody.data.savings_plan.id,
+              buddyId: currentBuddy.id,
+            },
+            channel: 'paystack',
+            purpose: 'buddySavings',
+          };
+          console.log('verifyPayload', verifyPayload);
+          // setSavingsId(verifyPayload.buddyData.savings_id);
+          setChannel(value); // card or bank_transfer
+          await verifyPaymentRequest(verifyPayload, value);
+        }
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -166,15 +187,13 @@ export default function BuddyPaymentScreen(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            const data = {
-              amount: verifyData.amount,
-              savings_id: verifyData.id,
-              channel: 'paystack',
-              reference: verifyData.paymentReference,
-              purpose: 'savings',
-            };
-
-            await savingsPayment(data);
+            console.log('savings haidee', savingsId);
+            navigation.navigate('PaymentSuccessful', {
+              content: 'Payment Successful',
+              subText: 'You have successfully funded your savings',
+              name: 'BuddySavingDashBoard',
+              id: savingsId,
+            });
           }}
         />
       )}

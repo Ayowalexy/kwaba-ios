@@ -78,6 +78,7 @@ export default function RentHome({navigation}) {
 
     // navigation.navigate('RnplSteps');
     // navigation.navigate('NewAllDocuments');
+    // navigation.navigate('CreditOnboard');
 
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
@@ -85,9 +86,10 @@ export default function RentHome({navigation}) {
       if (getCreditScoreDetails == null) {
         navigation.navigate('RnplOnboard');
       } else if (getCreditScoreDetails == 'creditOnboarding') {
-        navigation.navigate('CreditOnboard');
+        navigation.navigate('RnplOnboard');
+        // navigation.navigate('CreditOnboard');
       } else if (getCreditScoreDetails == 'creditForm') {
-        navigation.navigate('CreditForm');
+        navigation.navigate('RnplOnboard');
       } else if (getCreditScoreDetails == 'creditAwaiting') {
         navigation.navigate('creditAwaiting');
       } else if (getCreditScoreDetails == 'creditDashboard') {

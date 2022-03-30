@@ -31,7 +31,7 @@ import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {getOneUserBuddySavings} from '../../../services/network';
+import {getOneUserBuddySavings, getOneBuddy} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import TransactionsTab from '../SoloSaving/TransactionTabs';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
@@ -42,13 +42,6 @@ export default function SoloSavingDashBoard(props) {
   const dispatch = useDispatch();
   const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
 
-  // const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
-  // const soloSaving = useSelector((state) => state.soloSavingReducer);
-  // const currentUser = useSelector((state) => state.getUserReducer);
-  // useSelector((state) => console.log('State:', state));
-  // const [activeTab, setActiveTab] = useState(0);
-  // const [today, setToday] = useState('');
-  // const [openQuickSave, setOpenQuickSave] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [totalSaving, setTotalSaving] = useState(0);
   const [totalInterest, setTotalInterest] = useState(0);
@@ -67,8 +60,30 @@ export default function SoloSavingDashBoard(props) {
 
   useEffect(() => {
     console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route?.params);
-    // pass the id
-    dispatch(getOneBuddySavings(route?.params?.id));
+    // dispatch(getOneBuddySavings(route?.params?.id));
+    // dispatch(getOneBuddySavings(24));
+
+    getOneBuddy(route?.params?.id)
+      .then((data) => {
+        console.log('data from buddy', Object.keys(data.data));
+        console.log(Object.keys(data.data?.savings_plan));
+        console.log(
+          (data.data?.savings_plan?.amount_saved /
+            data.data?.savings_plan?.target_amount) *
+            100,
+        );
+        setSavingsTarget(data.data?.savings_plan?.target_amount);
+        setSavingTitle(data.data?.savings_plan?.name);
+        setTotalSaving(data.data?.savings_plan?.amount_saved);
+        setYourSavings(data.data?.savings_plan?.amount);
+        setPercentAchieved(
+          (data.data?.savings_plan?.amount_saved /
+            data.data?.savings_plan?.target_amount) *
+            100,
+        );
+        setBuddies(data.data.buddies);
+      })
+      .catch(console.log);
   }, []);
 
   useEffect(() => {
@@ -77,16 +92,19 @@ export default function SoloSavingDashBoard(props) {
 
   const setDashboardData = () => {
     if (getOneSavings && getOneSavings.data != undefined) {
-      console.log('The Result From Dashboard: ', getOneSavings?.data);
+      console.log(
+        'The Result From Dashboard: ',
+        getOneSavings?.data?.data?.data[0],
+      );
       const data = getOneSavings.data[0];
 
-      setSavingsTarget(data?.target_amount);
-      setSavingTitle(data?.name);
-      setTotalSaving(data?.amount_save);
-      setYourSavings(data?.amount);
-      setPercentAchieved((data?.amount_save / data?.target_amount) * 100);
-      setBuddies(getOneSavings?.data?.buddies);
-      setTransactions(getOneSavings?.data?.transactions);
+      // setSavingsTarget(data?.target_amount);
+      // setSavingTitle(data?.name);
+      // setTotalSaving(data?.amount_save);
+      // setYourSavings(data?.amount);
+      // setPercentAchieved((data?.amount_save / data?.target_amount) * 100);
+      // setBuddies(getOneSavings?.data?.buddies);
+      // setTransactions(getOneSavings?.data?.transactions);
     }
   };
 

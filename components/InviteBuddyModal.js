@@ -31,16 +31,7 @@ export default function InviteBuddyModal(props) {
   const [referralCode, setReferralCode] = useState('');
   const [userName, setUserName] = useState('');
   const [spinner, setSpinner] = useState(false);
-  const {
-    onRequestClose,
-    visible,
-    data,
-    resData,
-    setBuddyInvite,
-    startDate,
-    endDate,
-  } = props;
-
+  const {onRequestClose, visible, data, resData, setBuddyInvite} = props;
   const getReferralCode = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const referral_code = JSON.parse(userData).user.referral_code;
@@ -134,56 +125,26 @@ export default function InviteBuddyModal(props) {
 
   const sendInvite = async () => {
     setSpinner(true);
-    const invite_buddy_data = {
-      // loan_id: resData.buddy_savings.id,
-      // fullname: fullname,
-      // email: email,
-      // phonenumber: phone,
-      // target_amount: buddyTarget,
-      // amount_to_save_monthly: savingAmount,
-      // buddy_name: userName,
 
-      // {
-      //   "savings_id": 304,
-      //   "target_amount": 30000,
-      //   "amount_to_save_monthly": 1000,
-      //   "fullname": "John Doe",
-      //   "email": "John@Doe.com",
-      //   "phonenumber": "09074352474"
-      // }
-
-      // amount_to_save: savingAmount,
-      // frequency: data?.savings_frequency,
-      // buddy_name: userName,
-      // email: email,
-      // fullname: fullname,
-      // savings_id: resData?.buddy_savings.id,
-      // phonenumber: phone,
-      // target_amount: buddyTarget,
-      // buddy_target_amount: data?.target_amount,
-
-      amount_to_save_monthly: Number(savingAmount),
-      email: email,
-      fullname: fullname,
-      savings_id: resData?.buddy_savings.id,
-      phonenumber: phone,
-      target_amount: Number(buddyTarget),
-    };
-
-    console.log('The Invite: ', invite_buddy_data);
-    // console.log('The Data: ', data);
     try {
+      const invite_buddy_data = {
+        email: email,
+        fullname: fullname,
+
+        buddy_savings_id: resData?.buddy_savings_id,
+      };
+      console.log('The Invite: ', invite_buddy_data);
       const res = await InviteBuddy(invite_buddy_data);
 
       if (res.status == 201 || res.status == 200) {
         setSpinner(false);
-
+        console.log('fresh res data', res.data);
         const inviteTemplate = {
           fullname: fullname,
           email: email,
           allocatedAmount: buddyTarget,
           savingAmount: savingAmount,
-          id: res.data.buddy.id,
+          // id: res.data.buddy.id,
         };
 
         setBuddyInvite(inviteTemplate);

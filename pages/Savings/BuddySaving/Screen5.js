@@ -143,14 +143,25 @@ export default function Screen5(props) {
       locked: locked,
     };
 
-    console.log('data: ', data);
-
     setSpinner(true);
 
     try {
-      const res = await createBuddySavings(data);
-      // console.log('Res: ', res.data);
+      const trueData = {
+        // ...data,
+        title: data.title,
+        periodic_savings_amount: data.savings_amount,
+        target_amount: data.target_amount,
+        num_of_buddies: data.num_of_buddies,
+        buddy_target: data.target_amount,
+        frequency: data.savings_frequency,
+        start_date: data.date_starting,
+        end_date: data.date_ending,
+        duration: data.savings_tenure,
+        auto_save: data.savings_method === 'auto' ? true : false,
+      };
 
+      const res = await createBuddySavings(trueData);
+      console.log(res.status);
       if (res.status == 201) {
         setSavingsCreated(true);
         console.log('Res: ', res.data);
@@ -171,6 +182,7 @@ export default function Screen5(props) {
   };
 
   const displayInviteModal = () => {
+    console.log('this is the invite modal');
     setShowInviteBuddyModal(true);
   };
 

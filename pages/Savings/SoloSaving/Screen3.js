@@ -85,9 +85,8 @@ export default function Screen3({navigation, route}) {
 
   const [paymentTypeValue, setPaymentTypeValue] = useState('');
 
-  const [showManualNoPaymentModal, setShowManualNoPaymanetModal] = useState(
-    false,
-  );
+  const [showManualNoPaymentModal, setShowManualNoPaymanetModal] =
+    useState(false);
 
   const [showAutoNoPaymentModal, setShowAutoNoPaymentModal] = useState(false);
 
@@ -98,13 +97,10 @@ export default function Screen3({navigation, route}) {
     // setShowPaymentModal(true);
   };
 
-  const [lockedSavingsInterestValue, setLockedSavingsInterestValue] = useState(
-    0,
-  );
-  const [
-    unlockedSavingsInterestValue,
-    setUnlockedSavingsInterestValue,
-  ] = useState(0);
+  const [lockedSavingsInterestValue, setLockedSavingsInterestValue] =
+    useState(0);
+  const [unlockedSavingsInterestValue, setUnlockedSavingsInterestValue] =
+    useState(0);
 
   useEffect(() => {
     const data = route.params;
@@ -159,6 +155,7 @@ export default function Screen3({navigation, route}) {
   };
 
   const createSavings = async (bol, paymentChannel) => {
+    // ebuka resume here
     setSpinner(true);
     const data = {
       auto_save: route?.params?.auto_save,
@@ -170,9 +167,9 @@ export default function Screen3({navigation, route}) {
       savings_amount: Number(savingsAmount).toFixed(2),
       locked: true,
     };
-
+    console.log('payload for savings creation', data);
     const response = await userCreateSavings(data);
-
+    console.log('this has created savings successfully');
     setSpinner(false);
     if (!response) return [];
 
@@ -185,7 +182,10 @@ export default function Screen3({navigation, route}) {
         purpose: 'savings',
       };
       await verifyPaymentRequest(payloadData, paymentChannel);
-      // console.log('Hello hereee', payloadData);
+      console.log(
+        'payment to create savings verified successfully',
+        payloadData,
+      );
     } else {
       navigation.navigate('PaymentSuccessful', {
         content: 'Savings Created',
@@ -200,19 +200,20 @@ export default function Screen3({navigation, route}) {
     setSpinner(true);
 
     try {
+      // ebuka hereeeee!!!
+      if (data?.channel === 'paystack') {
+        return await showSuccess();
+      }
       const res = await completeSavingsPayment(data);
 
-      if (res.status == 201) {
-        setSpinner(false);
-
+      if (res.status == 200) {
         // console.log('Complete Paymentttttttttt: ', res?.data);
         await showSuccess();
-      } else {
-        setSpinner(false);
       }
     } catch (error) {
-      setSpinner(false);
       console.log('The Error: ', error?.response?.data);
+    } finally {
+      setSpinner(false);
     }
   };
 
@@ -231,7 +232,8 @@ export default function Screen3({navigation, route}) {
           amount: verifyData.amount,
           savings_id: data.savings_id,
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          // reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'savings',
         };
         await savingsPayment(payload);
@@ -250,6 +252,7 @@ export default function Screen3({navigation, route}) {
     if (data?.amount == 0) {
       createSavings(false); // no payemnt here, just create the savings thank you.
     } else {
+      console.log('Showing payment modal');
       setShowPaymentModal(true);
     }
   };
@@ -475,6 +478,7 @@ export default function Screen3({navigation, route}) {
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
           setPaymentType={(data) => {
+            console.log(data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
         />
@@ -554,7 +558,8 @@ export default function Screen3({navigation, route}) {
               amount: verifyData.amount,
               savings_id: verifyData.id,
               channel: 'paystack',
-              reference: verifyData.paymentReference,
+              // reference: verifyData.paymentReference,
+              reference: verifyData.reference,
               purpose: 'savings',
             };
 

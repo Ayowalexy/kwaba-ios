@@ -544,7 +544,8 @@ export default function Wallet(props) {
             const data = {
               amount: resData.amount,
               channel: 'paystack',
-              reference: resData.paymentReference,
+              // reference: resData.paymentReference,
+              reference: resData.reference,
               purpose: 'wallet',
               // wallet: true,
             };

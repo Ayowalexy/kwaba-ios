@@ -27,9 +27,8 @@ export default function AddBankAccountModal(props) {
 
   // const [selectAccountType, setSelectAccountType] = useState('');
   const [showSelectBankModal, setShowSelectBankModal] = useState(false);
-  const [showSelectAccountTypeModal, setShowSelectAccountTypeModal] = useState(
-    false,
-  );
+  const [showSelectAccountTypeModal, setShowSelectAccountTypeModal] =
+    useState(false);
 
   const [spinner, setSpinner] = useState(false);
 

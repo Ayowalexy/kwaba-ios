@@ -136,8 +136,9 @@ export default function LoanTabs(props) {
           amount: amount,
           emergencyLoanId: loanRepaymentData?.id,
           channel: 'wallet',
-          reference: res?.data?.data.paymentReference,
+          // reference: res?.data?.data.paymentReference,
           purpose: 'emergencyLoanRepayment',
+          reference: res?.data?.data.reference,
         };
 
         console.log('That payload: ', payload);
@@ -550,7 +551,8 @@ export default function LoanTabs(props) {
               amount: amount,
               emergencyLoanId: loanRepaymentData?.id,
               channel: 'paystack',
-              reference: resData.paymentReference,
+              // reference: resData.paymentReference,
+              reference: resData.reference,
               purpose: 'emergencyLoanRepayment',
             };
 

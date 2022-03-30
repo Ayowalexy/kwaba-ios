@@ -118,15 +118,16 @@ export default function CreditForm(props) {
     setFormValue(data);
     console.log('DF: ', formValue);
 
-    setSpinner(true);
-    const res = await purchase(data);
-
+    // setSpinner(true);
+    // // const res = await purchase(data);
+    // setSpinner(false);
+    setShowAcceptModal(true);
     try {
-      if (res.status == 200) {
-        console.log('The Res: ', res?.data);
-        setSpinner(false);
-        setShowAcceptModal(true);
-      }
+      // if (res.status == 200) {
+      //   console.log('The Res: ', res?.data);
+      //   setSpinner(false);
+      //   setShowAcceptModal(true);
+      // }
     } catch (error) {
       setSpinner(false);
       console.log('The Error: ', error.response);
@@ -135,12 +136,15 @@ export default function CreditForm(props) {
 
   const savingsPayment = async (data) => {
     setSpinner(true);
-
+    console.log({data});
     try {
       const res = await completeSavingsPayment(data);
-      console.log('Hello: ', res.response?.data);
-
-      if (res.status == 201) {
+      console.log('Hello: ', res?.data);
+      if (res.status == 200) {
+        const scoreResponse = await purchase(formValue);
+        if (!scoreResponse?.data?.success) {
+          throw new Error({response: {data: 'Invalid BVN'}});
+        }
         setSpinner(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
@@ -176,7 +180,8 @@ export default function CreditForm(props) {
         const payload = {
           amount: verifyData.amount,
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          // reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'creditScoring',
         };
 
@@ -314,7 +319,8 @@ export default function CreditForm(props) {
             const data = {
               amount: 2000,
               channel: 'paystack',
-              reference: verifyData.paymentReference,
+              // reference: verifyData.paymentReference,
+              reference: verifyData.reference,
               purpose: 'creditScoring',
             };
 

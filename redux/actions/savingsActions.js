@@ -108,7 +108,8 @@ export const setOneBuddySavings = (data) => {
 export const getOneBuddySavings = (id) => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
+    // const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
+    const url = apiUrl + `/api/v1/savings/buddy/${id}`;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},

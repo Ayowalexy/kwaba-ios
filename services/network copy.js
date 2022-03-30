@@ -975,7 +975,7 @@ const moveMoneyToSavingsPlan = async (data) => {
 // test endpoints from cobble for credit score
 
 const cobbleEndpoint = {
-  test: 'http://cobblescore.herokuapp.com/Integration',
+  test: 'https://cobblescore-test.herokuapp.com/integration',
   live: 'https://api.getcobble.net/integration',
 };
 

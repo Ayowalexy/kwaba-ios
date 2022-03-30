@@ -26,6 +26,7 @@ import {
   addFundsToSavings,
   verifySavingsPayment,
   verifyWalletTransaction,
+  completeSavingsPayment,
 } from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
@@ -77,11 +78,11 @@ export default function JoinChallengeDashboard(props) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] = useState(
-    false,
-  );
+  const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] =
+    useState(false);
 
   const [dashboardData, setDashboardData] = useState({});
+  const [verifyData, setVerifyData] = useState('');
 
   const [
     showMoveMoneyToExistingPlanModal,
@@ -156,7 +157,68 @@ export default function JoinChallengeDashboard(props) {
     }
   }, []);
 
-  const handlePaymentRoute = async () => {};
+  // ebuka, here!!!!!
+  const showSuccess = () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: dashboardData.id,
+    });
+  };
+  const createSavings = async (paymentChannel) => {
+    setSpinner(true);
+    try {
+      const {challenge_id, id} = dashboardData;
+
+      const payloadData = {
+        channel: paymentChannel,
+        purpose: 'savingsChallenge',
+        amount: route?.params?.amount || amount,
+        savingsChallengeData: {
+          savings_id: id,
+          challenge_id,
+        },
+      };
+      const verifiedResponse = await verifySavingsPayment(payloadData);
+
+      if (verifiedResponse.status === 200) {
+        const tempData = verifiedResponse?.data?.data;
+
+        setVerifyData(tempData);
+        if (paymentChannel == 'wallet') {
+          const payload = {
+            // ...payloadData,
+            reference: tempData.reference,
+            channel: 'wallet',
+          };
+          console.log({payload});
+          const completedResponse = await completeSavingsPayment(payload);
+          console.log('completed payment response', completedResponse.data);
+          if (completedResponse.status == 200) {
+            console.log('Complete Paymentttttttttt: ', completedResponse?.data);
+            showSuccess();
+          }
+        } else {
+          setShowPaystackPayment(true);
+          console.log('Hello here');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setSpinner(false);
+    }
+  };
+  const handlePaymentRoute = async (value) => {
+    setSpinner(true);
+    if (value == 'wallet') {
+      createSavings(value);
+    } else {
+      setChannel(value);
+      createSavings('paystack');
+    }
+  };
 
   const handleMoveToSaving = () => {
     setShowMoveMoneyOptionModal(true);
@@ -604,7 +666,22 @@ export default function JoinChallengeDashboard(props) {
           visible={showMoveMoneyToExistingPlanModal}
         />
       )}
-
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            Alert.alert('Payment cancelled');
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('savings successful');
+            setSpinner(false);
+            showSuccess();
+          }}
+        />
+      )}
       <Spinner visible={spinner} size={'small'} />
     </View>
   );

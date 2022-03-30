@@ -175,7 +175,8 @@ export default function QuickSaveListModal(props) {
           amount: verifyData.amount,
           savings_id: data.savings_id,
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          // reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'savings',
         };
 
@@ -490,7 +491,8 @@ export default function QuickSaveListModal(props) {
               amount: verifyData.amount,
               savings_id: verifyData.id,
               channel: 'paystack',
-              reference: verifyData.paymentReference,
+              // reference: verifyData.paymentReference,
+              reference: verifyData.reference,
               purpose: 'savings',
             };
 

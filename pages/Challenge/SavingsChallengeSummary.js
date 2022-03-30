@@ -116,7 +116,6 @@ export default function SavingsChallengeSummary(props) {
       auto_save: savingsType,
       locked: true, // this is locked by default
     };
-    console.log(payload);
 
     setSpinner(true);
     const response = await joinSavingsChallenge(payload);

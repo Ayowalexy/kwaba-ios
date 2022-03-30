@@ -123,7 +123,7 @@ export default function WithdrawalForm(props) {
     setSpinner(true);
     try {
       const response = await requestWithdrawal(data);
-      // console.log('The Res: ', response);
+      console.log('The Res to request withdrawal: ', response);
       if (response.status == 200) {
         setSpinner(false);
 
@@ -143,6 +143,7 @@ export default function WithdrawalForm(props) {
         // Alert.alert('Oops!', response.response.data.statusMsg, [
         //   {text: 'Close', onPress: () => navigation.navigate('Home')},
         // ]);
+        console.log(response.response.data.meta);
         setMessage({
           body: response.response.data.statusMsg,
           visible: true,
@@ -779,6 +780,7 @@ export default function WithdrawalForm(props) {
                     setItem(false);
 
                     if (value == 'Solo Savings') {
+                      console.log('first stopper');
                       setShowSavingsListModal(true);
                     }
 

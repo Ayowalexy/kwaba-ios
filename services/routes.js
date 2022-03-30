@@ -4,7 +4,7 @@ const kwaba = {
 };
 
 const cobble = {
-  test: 'http://cobblescore.herokuapp.com/Integration',
+  test: 'https://cobblescore-test.herokuapp.com/integration',
   live: 'https://api.getcobble.net/integration',
 };
 
@@ -32,23 +32,29 @@ const urls = {
     GET_TOTAL_USER_SAVINGS_AMOUNT: `${baseUrl}/savings/get-total-user-savings-amount`,
 
     // Payments
-    COMPLETE_PAYMENT: `${baseUrl}/payments/complete-payment`,
-    VERIFY_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
+    // COMPLETE_PAYMENT: `${baseUrl}/payments/complete-payment`,
+    // VERIFY_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
+    COMPLETE_PAYMENT: `${baseUrl}/payments/complete`,
+    VERIFY_PAYMENT: `${baseUrl}/payments/verify`,
     GET_SAVINGS_PAYMENT_HISTORY: `${baseUrl}/payments/get-savings-payment-history`,
 
     // Savings Challenge
     CREATE_SAVINGS_CHALLENGE: `${baseUrl}/savings/challenges/create-savings-challenge`,
-    JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join-challenge`,
+    // JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join-challenge`,
+    JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join`,
     GET_CHALLENGE_BY_ID: `${baseUrl}/savings/challenges/get-all-challenges/`,
-    GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/get-all-challenges`,
+    // GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/get-all-challenges`,
+    GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/`,
 
     // Buddy savings
-    CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
+    // CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
+    CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/`,
     UPDATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/update-buddy-savings`,
     DASHBOARD: `${baseUrl}/savings/buddy/dashboard`, // /:id
     GET_BUDDIES: `${baseUrl}/savings/buddy/get-buddies`, // /:id
     UPDATE_BUDDY: `${baseUrl}/savings/buddy/update-buddy`,
-    INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
+    // INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
+    INVITE_BUDDY: `${baseUrl}/savings/buddy/invite`,
     ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/accept-buddy-invite`,
     GET_USER_BUDDY_INVITES: `${baseUrl}/savings/buddy/get-user-buddy-invites`,
     DELETE_INVITE: `${baseUrl} /savings/buddy/deleteInvite/`,
