@@ -658,7 +658,7 @@ const verifySavingsPayment = async (data) => {
 
 const completeSavingsPayment = async (data) => {
   const token = await getToken();
-  console.log(token);
+
   console.log('complete purchase', data);
   try {
     const response = await axios.post(

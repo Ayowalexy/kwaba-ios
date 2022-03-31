@@ -136,7 +136,7 @@ export default function CreditForm(props) {
 
   const savingsPayment = async (data) => {
     setSpinner(true);
-    console.log({data});
+
     try {
       const res = await completeSavingsPayment(data);
       console.log('Hello: ', res?.data);
@@ -315,19 +315,7 @@ export default function CreditForm(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            console.log('The Res: ', res);
-            const data = {
-              amount: 2000,
-              channel: 'paystack',
-              // reference: verifyData.paymentReference,
-              reference: verifyData.reference,
-              purpose: 'creditScoring',
-            };
-
-            // console.log('the dataatatta: ', data);
-            console.log('This complete data: ', data);
-
-            await savingsPayment(data);
+            navigation.navigate('CreditAwaiting', formValue);
           }}
         />
       )}

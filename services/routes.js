@@ -89,8 +89,8 @@ const urls = {
   },
 
   creditScore: {
-    PURCHASE: `${cobble.live}/purchase`,
-    FETCH: `${cobble.live}/fetch`,
+    PURCHASE: `${cobble.test}/purchase`,
+    FETCH: `${cobble.test}/fetch`,
   },
 
   emergencyfunds: {

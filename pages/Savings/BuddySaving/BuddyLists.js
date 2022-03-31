@@ -84,7 +84,7 @@ export default function BuddyLists({navigation}) {
                     onPress={() => {
                       dispatch(getOneSoloSavings(item.id));
                       navigation.navigate('BuddySavingDashBoard', {
-                        id: item.id,
+                        id: item.buddy_savings_id,
                       });
                     }}>
                     <View style={[styles.cardFlex]}>
@@ -95,7 +95,7 @@ export default function BuddyLists({navigation}) {
                           rotation={0}
                           style={{zIndex: 9, position: 'relative'}}
                           fill={
-                            (Number(item.amount_save) /
+                            (Number(item.amount_saved) /
                               Number(item.target_amount)) *
                             100
                           }
@@ -135,7 +135,7 @@ export default function BuddyLists({navigation}) {
 
                         <View style={[styles.cardAmount]}>
                           <Text style={[styles.amountText]}>
-                            ₦{formatNumber(item.amount_save) || '0.00'}
+                            ₦{formatNumber(item.amount_saved) || '0.00'}
                           </Text>
                           <Text style={[styles.amountText, {opacity: 0.5}]}>
                             ₦{formatNumber(item.target_amount)}

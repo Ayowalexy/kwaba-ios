@@ -6,6 +6,7 @@ import {formatNumber} from '../../../util/numberFormatter';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {
   completeSavingsPayment,
   verifySavingsPayment,
@@ -22,33 +23,14 @@ export default function BuddyPaymentScreen(props) {
   const [channel, setChannel] = useState('');
   const [savingsId, setSavingsId] = useState('');
 
-  const savingsPayment = async (data, savingsId) => {
-    setSpinner(true);
-    try {
-      const res = await completeSavingsPayment(data);
-
-      if (res.status == 200) {
-        console.log('savings haidee', savingsId);
-        navigation.navigate('PaymentSuccessful', {
-          content: 'Payment Successful',
-          subText: 'You have successfully funded your savings',
-          name: 'BuddySavingDashBoard',
-          id: savingsId,
-        });
-      } else {
-        setSpinner(false);
-      }
-    } catch (error) {
-      setSpinner(false);
-      console.log('The Error: ', error?.response?.data);
-    }
-  };
-
-  const verifyPaymentRequest = async (data, paymentChannel) => {
+  const verifyPaymentRequest = async (data, paymentChannel, buddySavingsId) => {
     setSpinner(true);
     const res = await verifySavingsPayment(data);
 
-    if (!res) return [];
+    if (!res) {
+      setSpinner(false);
+      return [];
+    }
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
@@ -65,10 +47,20 @@ export default function BuddyPaymentScreen(props) {
           reference: verifyData.reference,
           purpose: 'buddySavings',
         };
-        await savingsPayment(payload, savingsId);
+        const response = await completeSavingsPayment(payload);
+        if (response.status == 200) {
+          setSpinner(false);
+          navigation.navigate('PaymentSuccessful', {
+            content: 'Payment Successful',
+            subText: 'You have successfully funded your savings',
+            name: 'BuddySavingDashBoard',
+            id: buddySavingsId,
+          });
+        } else {
+          setSpinner(false);
+        }
       } else {
         setShowPaystackPayment(true);
-        console.log('Hello here');
       }
     } else {
       setSpinner(false);
@@ -79,8 +71,6 @@ export default function BuddyPaymentScreen(props) {
   const handlePaymentRoute = async (value) => {
     const data = route?.params?.data;
     const res = route?.params?.res;
-
-    console.log('kole: ', data, res);
 
     try {
       setSavingsId(res.buddy_savings_id);
@@ -108,7 +98,11 @@ export default function BuddyPaymentScreen(props) {
           // setSavingsId(verifyPayload.buddyData.savings_id);
 
           setChannel(value); // wallet
-          await verifyPaymentRequest(verifyPayload, value);
+          await verifyPaymentRequest(
+            verifyPayload,
+            value,
+            res.buddy_savings_id,
+          );
         } else {
           const verifyPayload = {
             amount: data.savings_amount,
@@ -122,7 +116,11 @@ export default function BuddyPaymentScreen(props) {
           console.log('verifyPayload', verifyPayload);
           // setSavingsId(verifyPayload.buddyData.savings_id);
           setChannel(value); // card or bank_transfer
-          await verifyPaymentRequest(verifyPayload, value);
+          await verifyPaymentRequest(
+            verifyPayload,
+            value,
+            res.buddy_savings_id,
+          );
         }
       } else {
         setSpinner(false);
@@ -165,6 +163,7 @@ export default function BuddyPaymentScreen(props) {
             </Text>
           </TouchableOpacity>
         </View>
+        <Spinner visible={spinner} size="large" />
       </View>
 
       {showPaymentModal && (
@@ -187,7 +186,7 @@ export default function BuddyPaymentScreen(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            console.log('savings haidee', savingsId);
+            setSpinner(false);
             navigation.navigate('PaymentSuccessful', {
               content: 'Payment Successful',
               subText: 'You have successfully funded your savings',

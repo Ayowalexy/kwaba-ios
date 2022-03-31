@@ -84,13 +84,16 @@ export const setTotalBuddySavings = (data) => {
 export const getTotalBuddySavings = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + '/api/v1/fetch_buddy_savings';
+    // const url = apiUrl + '/api/v1/fetch_buddy_savings';
+    const url = apiUrl + '/api/v1/savings/buddy';
+    console.log({url, token});
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      dispatch(setTotalBuddySavings(response.data.data));
-      return response.data.data;
+      console.log(response.data.data.all_buddy_savings);
+      dispatch(setTotalBuddySavings(response.data.data.all_buddy_savings));
+      return response.data.data.all_buddy_savings;
     } catch (error) {
       return error;
     }

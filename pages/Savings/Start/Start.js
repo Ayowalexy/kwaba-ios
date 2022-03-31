@@ -295,7 +295,6 @@ export default function Start({navigation}) {
                     // navigation.navigate('BuddySaving1');
                     // navigation.navigate(
                     //   buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
-                    //   // store2?.data?.length == 0 ? 'BuddySaving1' : 'BuddyLists',
                     // );
 
                     Alert.alert(

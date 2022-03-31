@@ -59,19 +59,11 @@ export default function SoloSavingDashBoard(props) {
   const [channel, setChannel] = useState('');
 
   useEffect(() => {
-    console.log('THIS IS THE ID FROM BUDDY SAVINGS DASHBOARD: ', route?.params);
     // dispatch(getOneBuddySavings(route?.params?.id));
     // dispatch(getOneBuddySavings(24));
 
     getOneBuddy(route?.params?.id)
       .then((data) => {
-        console.log('data from buddy', Object.keys(data.data));
-        console.log(Object.keys(data.data?.savings_plan));
-        console.log(
-          (data.data?.savings_plan?.amount_saved /
-            data.data?.savings_plan?.target_amount) *
-            100,
-        );
         setSavingsTarget(data.data?.savings_plan?.target_amount);
         setSavingTitle(data.data?.savings_plan?.name);
         setTotalSaving(data.data?.savings_plan?.amount_saved);
@@ -85,28 +77,6 @@ export default function SoloSavingDashBoard(props) {
       })
       .catch(console.log);
   }, []);
-
-  useEffect(() => {
-    setDashboardData();
-  }, [getOneSavings]);
-
-  const setDashboardData = () => {
-    if (getOneSavings && getOneSavings.data != undefined) {
-      console.log(
-        'The Result From Dashboard: ',
-        getOneSavings?.data?.data?.data[0],
-      );
-      const data = getOneSavings.data[0];
-
-      // setSavingsTarget(data?.target_amount);
-      // setSavingTitle(data?.name);
-      // setTotalSaving(data?.amount_save);
-      // setYourSavings(data?.amount);
-      // setPercentAchieved((data?.amount_save / data?.target_amount) * 100);
-      // setBuddies(getOneSavings?.data?.buddies);
-      // setTransactions(getOneSavings?.data?.transactions);
-    }
-  };
 
   return (
     <View style={styles.container}>
