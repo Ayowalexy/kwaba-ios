@@ -263,7 +263,7 @@ export default function Screen1({navigation}) {
             savingTitle: '',
             savingNumberOfBuddies: '',
             savingTargetAmount: '',
-            yesOrNo: '',
+            yesOrNo: 'Yes',
 
             // savingTitle: 'Savings for I and My Buddies',
             // savingNumberOfBuddies: '',
@@ -297,7 +297,7 @@ export default function Screen1({navigation}) {
                 />
               </>
 
-              <>
+              {/* <>
                 <Text style={[designs.boldText, {marginTop: 20}]}>
                   Do you and your buddies have a target{'\n'}amount?
                 </Text>
@@ -306,7 +306,7 @@ export default function Screen1({navigation}) {
                   name="yesOrNo"
                   // placeholder="Enter amount"
                 />
-              </>
+              </> */}
 
               {values.yesOrNo.toLocaleLowerCase() == 'yes' && (
                 <>

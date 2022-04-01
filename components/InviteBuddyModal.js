@@ -254,12 +254,7 @@ export default function InviteBuddyModal(props) {
 
                   <View style={[styles.amountBox]}>
                     <Text style={[styles.amountBoxTitle]}>
-                      Amount to save{' '}
-                      {resData?.buddy_savings?.frequency == 1
-                        ? 'daily'
-                        : resData?.buddy_savings?.frequency == 7
-                        ? 'weekly'
-                        : 'monthly'}
+                      Amount to save {data?.savings_frequency?.toLowerCase()}
                     </Text>
                     <View style={[styles.amountBoxInput]}>
                       <Text style={[styles.amountBoxInputText]}>

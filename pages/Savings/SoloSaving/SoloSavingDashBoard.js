@@ -154,7 +154,7 @@ export default function SoloSavingDashBoard(props) {
     try {
       const res = await completeSavingsPayment(data);
 
-      if (res.status == 201) {
+      if (String(res.status).startsWith('2')) {
         setSpinner2(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
@@ -742,19 +742,7 @@ export default function SoloSavingDashBoard(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            const data = {
-              amount: verifyData.amount,
-              savings_id: verifyData.id,
-              channel: 'paystack',
-              // reference: verifyData.paymentReference,
-              reference: verifyData.reference,
-              purpose: 'savings',
-            };
-
-            console.log('the dataatatta: ', data);
-            console.log('This complete data: ', data);
-
-            await savingsPayment(data);
+            showSuccess();
           }}
         />
       )}

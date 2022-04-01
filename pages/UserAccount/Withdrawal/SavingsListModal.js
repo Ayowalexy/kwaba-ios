@@ -30,7 +30,7 @@ export default function SavingsListModal(props) {
   }, []);
 
   useEffect(() => {
-    // console.log('The Type: ', type);
+    console.log('The Type: ', type);
     checkType(); // Solo Saving or Buddy Saving
   }, [type]);
 
@@ -39,7 +39,7 @@ export default function SavingsListModal(props) {
       setSavingLists(allSoloSaving);
     } else if (type == 'Buddy Savings') {
       setSavingLists(allBuddySaving);
-      //   console.log('All Buddy: ', allBuddySaving);
+      console.log('All Buddy: ', allBuddySaving);
     }
   };
 

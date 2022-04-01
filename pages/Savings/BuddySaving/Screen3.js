@@ -50,6 +50,7 @@ export default function Screen1(props) {
       savings_frequency: values.savingFrequency,
       // savings_startOption: values.savingsStartOption,
     };
+    console.log('savings method', values.savingOption);
     // console.log('Screen 3: ', Number(unFormatNumber(instantSaving)));
 
     navigation.navigate('BuddySaving4', data);

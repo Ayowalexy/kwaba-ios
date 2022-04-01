@@ -18,6 +18,7 @@ import {getAllBanks, getBankAccounts} from '../services/network';
 
 export default function AddBankAccountModal(props) {
   const {onRequestClose, visible, setDisplayAllBankAccounts} = props;
+
   const [selectedBank, setSelectedBank] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
   const [bankAccountNumber, setBankAccountNumber] = useState('');
@@ -42,13 +43,11 @@ export default function AddBankAccountModal(props) {
 
   // fetch banks via paystak
   const paystackBanks = async () => {
-    console.log('LLLL');
     try {
       const banks = await axios.get('https://api.paystack.co/bank', {
         headers: {'Content-Type': 'application/json'},
       });
       setBankData(banks?.data?.data);
-      console.log('Paystack banks: ', banks);
       // return banks;
     } catch (error) {
       console.log('The Big Bang Error: ', error);
@@ -148,9 +147,8 @@ export default function AddBankAccountModal(props) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      // console.log('The response: ', response.data);
-      if (response.status == 200) {
-        // if (response.data.accountStatus == true) {
+
+      if (String(response.status).startsWith('2')) {
         setSpinner(false);
 
         const {account_name, account_number} = response.data.data;
@@ -169,7 +167,7 @@ export default function AddBankAccountModal(props) {
       }
     } catch (error) {
       setSpinner(false);
-      console.log('The Error:', error.response);
+      console.log('The Error:', error.response.data);
       if (error.response.status == 500) {
         console.log('Error Bank Account not found...');
       }
@@ -179,21 +177,19 @@ export default function AddBankAccountModal(props) {
   const createBankAccount = async (data) => {
     let d = {
       ...data,
-      // created_at: '',
-      // updated_at: '',
     };
 
     console.log('Create Bank: ', d);
 
-    const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/createbankaccount';
-    const token = await getToken();
     try {
+      const url =
+        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/createbankaccount';
+      const token = await getToken();
       const response = await axios.post(url, JSON.stringify(d), {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      // console.log('Na the res: ', response);
-      if (response.status == 200) {
+      if (String(response.status).startsWith('2')) {
+        console.log('account successfully created');
         onRequestClose();
         setUserBankAccounts([...userBankAccounts, response.data.userBanks]);
       }
@@ -213,6 +209,7 @@ export default function AddBankAccountModal(props) {
     const getAllBanks = async () => {
       try {
         const res = await getBankAccounts();
+        console.log('existing banks', res.data);
         setUserBankAccounts(res.data.userBanks);
       } catch (error) {
         console.log(error);

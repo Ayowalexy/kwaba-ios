@@ -8,6 +8,7 @@ import {
   ScrollView,
   Modal,
   StyleSheet,
+  Alert,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -31,10 +32,16 @@ import moment from 'moment';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {getOneUserBuddySavings, getOneBuddy} from '../../../services/network';
+import {
+  getOneUserBuddySavings,
+  getOneBuddy,
+  verifySavingsPayment,
+  completeSavingsPayment,
+} from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import TransactionsTab from '../SoloSaving/TransactionTabs';
-import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
+import PaystackPayment from '../../../components/Paystack/PaystackPayment';
+import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../../components/amountModal';
 
 export default function SoloSavingDashBoard(props) {
@@ -53,21 +60,22 @@ export default function SoloSavingDashBoard(props) {
   const [spinner, setSpinner] = useState(false);
   const [yourSavings, setYourSavings] = useState(0);
   const [buddies, setBuddies] = useState([]);
-
-  const [showPaymentType, setShowPaymentType] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [savingsPlan, setSavingsPlan] = useState();
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+  const [amount, setAmount] = useState('');
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [channel, setChannel] = useState('');
+  const [verifyData, setVerifyData] = useState('');
 
   useEffect(() => {
-    // dispatch(getOneBuddySavings(route?.params?.id));
-    // dispatch(getOneBuddySavings(24));
-
     getOneBuddy(route?.params?.id)
       .then((data) => {
         setSavingsTarget(data.data?.savings_plan?.target_amount);
         setSavingTitle(data.data?.savings_plan?.name);
         setTotalSaving(data.data?.savings_plan?.amount_saved);
         setYourSavings(data.data?.savings_plan?.amount);
+        setSavingsPlan(data.data?.savings_plan);
         setPercentAchieved(
           (data.data?.savings_plan?.amount_saved /
             data.data?.savings_plan?.target_amount) *
@@ -77,7 +85,113 @@ export default function SoloSavingDashBoard(props) {
       })
       .catch(console.log);
   }, []);
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'BuddySavingDashBoard',
+      id: route?.params?.id,
+    });
+  };
 
+  const verifyPaymentRequest = async (data, paymentChannel) => {
+    try {
+      console.log('The Data: ', data);
+
+      setSpinner(true);
+      const res = await verifySavingsPayment(data);
+      console.log(res);
+      setSpinner(false);
+      if (!res) {
+        return [];
+      }
+
+      if (String(res.status).startsWith('2')) {
+        const verifyData = res?.data?.data;
+        setVerifyData({...verifyData, id: data.buddyData.savings_id});
+        if (paymentChannel == 'wallet') {
+          const payload = {
+            amount: verifyData.amount,
+            buddyData: {
+              savings_id: data.buddyData.savings_id,
+              buddyId: data.buddyData.buddyId,
+            },
+            channel: 'wallet',
+            reference: verifyData.reference,
+            purpose: 'buddySavings',
+          };
+          const completeResponse = await completeSavingsPayment(payload);
+          if (String(completeResponse.status).startsWith('2')) {
+            setSpinner(false);
+
+            showSuccess();
+          }
+        } else {
+          setShowPaystackPayment(true);
+        }
+      } else {
+        console.log('Error: ', res.response.data);
+
+        if (
+          res.response?.data?.meta?.error ==
+          'The maximum savings amount for this savings is execeded'
+        ) {
+          Alert.alert(
+            'Payment unsuccessful',
+            `You've exceeded the target amount for this savings plan`,
+          );
+        } else if (
+          res.response?.data?.meta?.error == 'Insufficient wallet balance'
+        ) {
+          Alert.alert(
+            'Payment unsuccessful',
+            'You do not have enough money in your wallet',
+          );
+        }
+      }
+    } catch (error) {
+      setSpinner(false);
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    const userData = await AsyncStorage.getItem('userData');
+    const mainUserEmail = JSON.parse(userData).user.email;
+    const currentBuddy = buddies.find(
+      (d) =>
+        d.email.trim().toLowerCase() === mainUserEmail.trim().toLowerCase(),
+    );
+
+    if (value == 'wallet') {
+      const verifyPayload = {
+        amount: amount,
+        buddyData: {
+          savings_id: savingsPlan?.id,
+          buddyId: currentBuddy?.id,
+        },
+
+        channel: 'wallet',
+        purpose: 'buddySavings',
+      };
+
+      setChannel(value); // wallet
+      await verifyPaymentRequest(verifyPayload, value);
+    } else {
+      const verifyPayload = {
+        amount: amount,
+        buddyData: {
+          savings_id: savingsPlan?.id,
+          buddyId: currentBuddy?.id,
+        },
+
+        channel: 'wallet',
+        purpose: 'buddySavings',
+      };
+
+      setChannel(value); // card or bank_transfer
+      await verifyPaymentRequest(verifyPayload, value);
+    }
+  };
   return (
     <View style={styles.container}>
       <Icon
@@ -123,7 +237,7 @@ export default function SoloSavingDashBoard(props) {
                   top: 0,
                   zIndex: 5,
                 }}
-                onPress={() => setShowPaymentType(true)}>
+                onPress={() => setShowAmountModal(true)}>
                 <Image
                   style={{
                     width: 50,
@@ -467,17 +581,47 @@ export default function SoloSavingDashBoard(props) {
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
       /> */}
-
-      {showPaymentType && (
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            Alert.alert('Payment cancelled');
+          }}
+          paymentSuccessful={async (res) => {
+            showSuccess();
+          }}
+        />
+      )}
+      {/* {showPaymentType && (
         <PaymentTypeModalForSavings
           onRequestClose={() => setShowPaymentType(!showPaymentType)}
           visible={showPaymentType}
           setShowAmountModal={(bol) => setShowAmountModal(bol)}
           setChannel={(value) => setChannel(value)}
         />
+      )} */}
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
       )}
-
       {showAmountModal && (
+        <AmountModal
+          onRequestClose={() => setShowAmountModal(!showAmountModal)}
+          visible={showAmountModal}
+          setAmount={(d) => setAmount(d)}
+          // setData={(d) => setResData(d)}
+          showCard={() => setShowPaymentModal(true)}
+        />
+      )}
+      {/* {showAmountModal && (
         <AmountModal
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
@@ -487,7 +631,7 @@ export default function SoloSavingDashBoard(props) {
           redirectTo="BuddySavingsDashBoard"
           from="buddy"
         />
-      )}
+      )} */}
 
       <Spinner visible={spinner} size="large" />
     </View>

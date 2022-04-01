@@ -783,7 +783,10 @@ export default function WithdrawalForm(props) {
                       console.log('first stopper');
                       setShowSavingsListModal(true);
                     }
-
+                    if (value == 'Buddy Savings') {
+                      console.log('Ebuka remove this');
+                      setShowSavingsListModal(true);
+                    }
                     if (value.toLowerCase() == 'wallets') {
                       setFullAmount(getWallet?.data?.available_balances);
                       // setValues({...values, })

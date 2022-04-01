@@ -115,51 +115,53 @@ export default function Screen5(props) {
   };
 
   const handleAddBuddy = async () => {
-    // let data = {
-    //   ...route.params,
-    //   locked: locked,
-    //   savings_tenure: route.params.duration,
-    //   num_of_buddies: route.params.number_of_buddies,
-    //   admin_target_amount: route.params.target_amount,
-    // };
-
-    const buddyData = route?.params;
-
-    const data = {
-      title: buddyData.title,
-      buddy_relationship: buddyData.buddy_relationship,
-      date_starting: moment(buddyData.date_starting).format('YYYY-MM-DD'),
-      date_ending: moment(buddyData.date_ending).format('YYYY-MM-DD'),
-      savings_tenure: Number(buddyData.duration),
-      num_of_buddies: Number(buddyData.number_of_buddies),
-      target_amount: Number(buddyData.target_amount),
-      savings_amount: Number(buddyData.savings_amount),
-      savings_frequency:
-        buddyData.savings_frequency == 'Daily'
-          ? 1
-          : buddyData.savings_frequency == 'Weekly'
-          ? 7
-          : 30,
-      locked: locked,
-    };
-
-    setSpinner(true);
-
     try {
+      const buddyData = route?.params;
+
+      const data = {
+        title: buddyData.title,
+        buddy_relationship: buddyData.buddy_relationship,
+        date_starting: moment(buddyData.date_starting).format('YYYY-MM-DD'),
+        date_ending: moment(buddyData.date_ending).format('YYYY-MM-DD'),
+        savings_tenure: Number(buddyData.duration),
+        num_of_buddies: Number(buddyData.number_of_buddies),
+        target_amount: Number(buddyData.target_amount),
+        savings_amount: Number(buddyData.savings_amount),
+        savings_frequency:
+          buddyData.savings_frequency == 'Daily'
+            ? 1
+            : buddyData.savings_frequency == 'Weekly'
+            ? 7
+            : 30,
+        locked: locked,
+      };
+
+      setSpinner(true);
+      const calc = (data.target_amount / (data.num_of_buddies + 1)).toFixed(0);
+
+      let start = moment(data.date_starting);
+      let end = moment(data.date_ending);
+
+      let diff = end.diff(
+        start,
+        buddyData.savings_frequency.toLowerCase() == 'daily'
+          ? 'days'
+          : buddyData.savings_frequency.replace('ly', 's'),
+      );
+      const saving_amount = (calc / diff).toFixed(0);
       const trueData = {
-        // ...data,
         title: data.title,
-        periodic_savings_amount: data.savings_amount,
-        target_amount: data.target_amount,
+        periodic_savings_amount: saving_amount,
+        target_amount: yourTarget,
         num_of_buddies: data.num_of_buddies,
         buddy_target: data.target_amount,
         frequency: data.savings_frequency,
         start_date: data.date_starting,
         end_date: data.date_ending,
         duration: data.savings_tenure,
-        auto_save: data.savings_method === 'auto' ? true : false,
+        auto_save: route.params.savings_method === 'auto' ? true : false,
       };
-
+      console.log({trueData});
       const res = await createBuddySavings(trueData);
       console.log(res.status);
       if (res.status == 201) {
