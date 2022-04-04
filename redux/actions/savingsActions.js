@@ -91,7 +91,6 @@ export const getTotalBuddySavings = () => {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      console.log(response.data.data.all_buddy_savings);
       dispatch(setTotalBuddySavings(response.data.data.all_buddy_savings));
       return response.data.data.all_buddy_savings;
     } catch (error) {

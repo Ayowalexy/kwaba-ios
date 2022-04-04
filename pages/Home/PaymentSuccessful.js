@@ -16,6 +16,8 @@ import {
   getTotalSoloSavings,
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
+  getTotalBuddySavings,
+  getOneBuddySavings,
 } from '../../redux/actions/savingsActions';
 import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
 import {useDispatch, useSelector} from 'react-redux';
@@ -59,15 +61,17 @@ export default function PaymentSuccessful(props) {
       dispatch(getUserWalletTransactions());
       // dispatch(getUserSavingsChallenge());
     } else {
+      dispatch(getTotalBuddySavings());
       dispatch(getTotalSoloSavings());
       dispatch(getMaxLoanCap());
+      dispatch(getOneBuddySavings(props?.route?.params?.id));
       dispatch(getOneSoloSavings(props?.route?.params?.id));
       dispatch(getOneSoloSavingsTransaction(props?.route?.params?.id));
       dispatch(getAirtimeBillTrans());
       dispatch(getUserWallet());
       dispatch(getUserWalletTransactions());
       dispatch(getUserSavingsChallenge());
-      // dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
+      dispatch(getOneUserSavingsChallenge(props?.route?.params?.id));
     }
   }, []);
 

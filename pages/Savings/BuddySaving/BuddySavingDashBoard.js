@@ -511,7 +511,7 @@ export default function SoloSavingDashBoard(props) {
               justifyContent: 'space-evenly',
             }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
+              onPress={() => navigation.navigate('EmergencyFundOnboarding')}
               style={{
                 width: '45%',
                 minHeight: 100,
