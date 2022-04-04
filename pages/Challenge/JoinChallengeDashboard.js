@@ -26,6 +26,7 @@ import {
   addFundsToSavings,
   verifySavingsPayment,
   verifyWalletTransaction,
+  completeSavingsPayment,
 } from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
@@ -49,6 +50,8 @@ moment.locale();
 
 export default function JoinChallengeDashboard(props) {
   const dispatch = useDispatch();
+  const allSavings = useSelector((state) => state.getSoloSavingsReducer);
+
   const getOneSavings = useSelector(
     (state) => state.getOneUserSavingsChallengeReducer,
   );
@@ -75,9 +78,11 @@ export default function JoinChallengeDashboard(props) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] = useState(
-    false,
-  );
+  const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] =
+    useState(false);
+
+  const [dashboardData, setDashboardData] = useState({});
+  const [verifyData, setVerifyData] = useState('');
 
   const [
     showMoveMoneyToExistingPlanModal,
@@ -85,186 +90,59 @@ export default function JoinChallengeDashboard(props) {
   ] = useState(false);
 
   // useEffect(() => {
-  //   let end = moment('02-01-2022').format('YYYY-MM-DD');
-  //   let today = moment().format('DD-MM-YYYY');
-
-  //   let e = '02-01-2022';
-  //   let t = '02-01-2022';
-
-  //   console.log(e >= t);
-
-  //   console.log('The End', end);
-  //   console.log('The Today', today);
-  // }, []);
-
-  useEffect(() => {
-    const data = route?.params?.data;
-
-    var s = data?.savings[0].start_date;
-    var e = data?.savings[0].end_date;
-
-    var a = moment(s, 'DD-MM-YYYY').format('DD-MM-YYYY');
-
-    var b = moment(e, 'DD-MM-YYYY').format('DD-MM-YYYY');
-
-    // var aFormat = moment(a).format('DD-MM-YYYY');
-
-    // var bFormat = moment(b).format('DD-MM-YYYY');
-
-    // 12-08-2021 01-02-2022
-
-    // var numberOfDays = moment(moment('2021-12-08').format('DD-MM-YYYY')).diff(
-    //   moment(moment('2021-01-02').format('DD-MM-YYYY')),
-    //   'days',
-    // );
-
-    // console.log('Old: ', s, e);
-    // console.log('New: ', moment(a).format('DD-MM-YYYY'), b);
-    // console.log('number of days: ', numberOfDays);
-    // console.log('Format: ', aFormat, bFormat);
-    // console.log('SE: ', s, e);
-    // console.log('AB: ', a, b);
-
-    // var date1 = new Date(data?.savings[0].start_date)
-    //   .toISOString()
-    //   .slice(0, 10);
-    // var date2 = new Date(data?.savings[0].end_date).toISOString().slice(0, 10);
-
-    // // To calculate the time difference of two dates
-    // var Difference_In_Time = date2.getTime() - date1.getTime();
-
-    // // To calculate the no. of days between two dates
-    // var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-
-    // console.log('DDDDDD:', Difference_In_Days);
-
-    // var todayDate = new Date().toLocaleDateString();
-    // console.log('TDate: ', todayDate);
-
-    // if (challenge_start >= '01-01-2025') {
-    //   setChallengeEnd(true);
-    // } else {
-    //   setChallengeEnd(false);
-    // }
-  }, []);
-
-  // useEffect(() => {
-  // const data = route?.params?.data;
-
-  // console.log('Data: ', data);
-
-  // var challenge_start = moment(data?.savings[0].start_date, 'YYYY-MM-DD');
-  // var today = moment();
-  // var numberOfDays = today.diff(challenge_start, 'days');
-
-  // console.log('Number Of Days: ', challenge_start, today, numberOfDays);
-
-  // console.log('Days: ', numberOfDays);
-
-  // console.log('challenge start: ', challenge_start);
-
-  // if (numberOfDays >= 25) {
-  //   setChallengeEnd(true);
-  // } else {
-  //   setChallengeEnd(false);
-  // }
-  // }, []);
-
-  // function getNumberOfDays(start, end) {
-  //   const date1 = new Date(start);
-  //   const date2 = new Date(end);
-
-  //   // One day in milliseconds
-  //   const oneDay = 1000 * 60 * 60 * 24;
-
-  //   // Calculating the time difference between two dates
-  //   const diffInTime = date2.getTime() - date1.getTime();
-
-  //   // Calculating the no. of days between two dates
-  //   const diffInDays = Math.round(diffInTime / oneDay);
-
-  //   return diffInDays;
-  // }
-
-  // useEffect(() => {
   //   const data = route?.params?.data;
+  //   var today = moment().format('yyyy-MM-DD');
 
-  //   var s = new Date(data?.savings[0].start_date).toLocaleDateString();
-  //   var e = new Date(data?.savings[0].end_date);
+  //   console.log(
+  //     'The Real Format: ',
+  //     checkDateFormat(data?.savings[0].end_date),
+  //     checkDateFormat(data?.savings[0].start_date),
+  //   );
 
-  //   s.toISOString().split('T')[0];
-  //   e.toISOString().split('T')[0];
+  //   let challenge_start = checkDateFormat(data?.savings[0].start_date);
+  //   let challenge_end = checkDateFormat(data?.savings[0].end_date);
 
-  //   console.log(s, e);
-  //   // 12-08-2021 01-02-2022
-  //   console.log('Na am: ', getNumberOfDays('2021-12-08', '2022-01-02'));
+  //   setStartDate(challenge_start);
+  //   setEndDate(challenge_end);
+
+  //   var numberOfDays = moment(today).diff(moment(challenge_start), 'days');
+  //   console.log('Number Of Days: ', numberOfDays);
+
+  //   if (numberOfDays >= 30) {
+  //     setChallengeEnd(true);
+  //   } else {
+  //     setChallengeEnd(false);
+  //   }
   // }, []);
 
   useEffect(() => {
-    const data = route?.params?.data;
-    // var endDate = moment(data?.savings[0].end_date, 'MM-DD-YYYY').format(
-    //   'YYYY-MM-DD',
-    // );
-    var today = moment().format('yyyy-MM-DD');
+    console.log('All Savings', allSavings);
 
-    // console.log({today, endDate});
-
-    // console.log(new Date());
-
-    // if (endDate <= today) {
-    //   setChallengeEnd(true);
-    // } else {
-    //   setChallengeEnd(false);
-    // }
-
-    console.log(
-      'The Real Format: ',
-      checkDateFormat(data?.savings[0].end_date),
-      checkDateFormat(data?.savings[0].start_date),
+    const filter = allSavings.data.filter(
+      (item) => item.savings_type == 'savings_challenge',
     );
 
-    let challenge_start = checkDateFormat(data?.savings[0].start_date);
-    let challenge_end = checkDateFormat(data?.savings[0].end_date);
+    const data = filter.filter(
+      (item) => item.challenge_id == props?.route?.params?.id,
+    )[0];
+    console.log('The ID: ', data);
+
+    let challenge_start = moment(data?.start_date, 'YYYY-MM-DD').format(
+      'YYYY-MM-DD',
+    );
+    let challenge_end = moment(data?.end_date, 'YYYY-MM-DD').format(
+      'YYYY-MM-DD',
+    );
 
     setStartDate(challenge_start);
     setEndDate(challenge_end);
-
-    var numberOfDays = moment(today).diff(moment(challenge_start), 'days');
-    console.log('Number Of Days: ', numberOfDays);
-    // console.log('Challenge: ', challenge_start, challenge_end);
-
-    if (numberOfDays >= 30) {
-      setChallengeEnd(true);
-    } else {
-      setChallengeEnd(false);
-    }
-
-    // if (endDate <= today) {
-    //   setChallengeEnd(true);
-    // } else {
-    //   setChallengeEnd(false);
-    // }
+    setDashboardData(data);
   }, []);
-
-  function checkDateFormat(date) {
-    const firstPart = date.split('-')[0];
-    if (firstPart.length === 4) {
-      console.log('year');
-      return moment(date, 'YYYY-MM-DD').format('YYYY-MM-DD');
-    } else {
-      console.log('day');
-      return moment(date, 'MM-DD-YYYY').format('YYYY-MM-DD');
-    }
-  }
 
   useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));
     dispatch(getOneSoloSavingsTransaction(route?.params?.data?.savings[0].id));
-    // console.log('SOmething: ', getOneSavings);
-    // console.log('SOmething Transact: ', getOneTransaction);
 
-    // console.log(route?.params?.data?.id);
-    // console.log('Route:', route?.params?.data?.savings[0].target_amount);
     let amount = route?.params?.data?.tartget_per_member;
     setTargetAmount(route?.params?.data?.savings[0]?.amount_save);
 
@@ -279,65 +157,70 @@ export default function JoinChallengeDashboard(props) {
     }
   }, []);
 
-  const handlePaymentRoute = async (value) => {
-    console.log('The Value: ', value);
-    console.log('The ID: ', route?.params?.data?.savings[0].id);
+  // ebuka, here!!!!!
+  const showSuccess = () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully funded your savings',
+      name: 'SoloSavingDashBoard',
+      id: dashboardData.id,
+    });
+  };
+  const createSavings = async (paymentChannel) => {
+    setSpinner(true);
     try {
-      const data = {
-        savings_id: route?.params?.data?.savings[0].id,
-        amount: amount,
+      const {challenge_id, id} = dashboardData;
+
+      const payloadData = {
+        channel: paymentChannel,
+        purpose: 'savingsChallenge',
+        amount: route?.params?.amount || amount,
+        savingsChallengeData: {
+          savings_id: id,
+          challenge_id,
+        },
       };
+      const verifiedResponse = await verifySavingsPayment(payloadData);
 
-      console.log('The Dataaaaaa: ', data);
+      if (verifiedResponse.status === 200) {
+        const tempData = verifiedResponse?.data?.data;
 
-      setSpinner(true);
-      const response = await addFundsToSavings(data);
-
-      console.log('Add Funds To Savings Res: ', response);
-      if (response.status == 200) {
-        if (value == 'wallet') {
-          const data = {
-            payment_channel: value,
-            reference: response?.data?.data?.reference,
+        setVerifyData(tempData);
+        if (paymentChannel == 'wallet') {
+          const payload = {
+            // ...payloadData,
+            reference: tempData.reference,
+            channel: 'wallet',
           };
-
-          setSpinner(true);
-          // const verify = await verifySavingsPayment(data);
-          const verify = await verifyWalletTransaction(data);
-
-          if (verify.status == 200) {
-            setSpinner(false);
-            // dispatch(getUserSavingsChallenge());
-            // Alert.alert('Payment Successful', 'Your payment is done.');
-            console.log('Verify: ', verify.response.data);
-            navigation.navigate('PaymentSuccessful', {
-              name: 'JoinChallengeDashboard',
-              id: route?.params?.data?.id,
-              content: 'Payment Successful',
-              subText: 'Awesome! You have successfully funded your savings',
-            });
-          } else {
-            setSpinner(false);
-            Alert.alert('Oops!', verify.response.data.response_message);
-            console.log('Response: ', verify.response.data);
+          console.log({payload});
+          const completedResponse = await completeSavingsPayment(payload);
+          console.log('completed payment response', completedResponse.data);
+          if (completedResponse.status == 200) {
+            console.log('Complete Paymentttttttttt: ', completedResponse?.data);
+            showSuccess();
           }
         } else {
-          setChannel(value);
-          setResData(response?.data?.data);
-          setShowPaystackPayment(true); // show paystack
+          setShowPaystackPayment(true);
+          console.log('Hello here');
         }
-      } else {
-        setSpinner(false);
       }
     } catch (error) {
+      console.log(error);
+    } finally {
       setSpinner(false);
-      console.log('Error: ', error);
+    }
+  };
+  const handlePaymentRoute = async (value) => {
+    setSpinner(true);
+    if (value == 'wallet') {
+      createSavings(value);
+    } else {
+      setChannel(value);
+      createSavings('paystack');
     }
   };
 
   const handleMoveToSaving = () => {
-    // Alert.alert('Moving..', 'Holding on we are still working on it.');
-    // setShowMoveMoneyModal(true);
     setShowMoveMoneyOptionModal(true);
   };
 
@@ -396,10 +279,8 @@ export default function JoinChallengeDashboard(props) {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
         <View style={[styles.heading]}>
-          <Text style={[styles.headingTitle]}>{route?.params?.data?.name}</Text>
-          <Text style={[styles.headingSub]}>
-            {route?.params?.data?.description}
-          </Text>
+          <Text style={[styles.headingTitle]}>{dashboardData?.name}</Text>
+          <Text style={[styles.headingSub]}>{dashboardData?.description}</Text>
         </View>
 
         <View
@@ -435,7 +316,7 @@ export default function JoinChallengeDashboard(props) {
               }}>
               <Text
                 style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
-                {moment(startDate).format('DD')}
+                {startDate ? moment(startDate).format('DD') : '--'}
               </Text>
               <Text
                 style={{
@@ -444,7 +325,7 @@ export default function JoinChallengeDashboard(props) {
                   fontWeight: 'bold',
                   opacity: 0.5,
                 }}>
-                {moment(startDate).format('MMM YYYY')}
+                {startDate ? moment(startDate).format('MMM YYYY') : '--'}
               </Text>
             </View>
           </View>
@@ -477,7 +358,7 @@ export default function JoinChallengeDashboard(props) {
                   fontWeight: 'bold',
                   color: COLORS.light,
                 }}>
-                {moment(endDate).format('DD')}
+                {endDate ? moment(endDate).format('DD') : '--'}
               </Text>
               <Text
                 style={{
@@ -486,7 +367,7 @@ export default function JoinChallengeDashboard(props) {
                   fontWeight: 'bold',
                   opacity: 0.5,
                 }}>
-                {moment(endDate).format('MMM YYYY')}
+                {endDate ? moment(endDate).format('MMM YYYY') : '--'}
               </Text>
             </View>
           </View>
@@ -587,9 +468,9 @@ export default function JoinChallengeDashboard(props) {
             */}
             <ProgressBar
               progress={
-                (Number(getOneSavings.data?.savings[0]?.amount_save) /
-                  Number(getOneSavings.data?.savings[0]?.target_amount)) *
-                  100 || 0
+                (Number(dashboardData?.amount_saved) /
+                  Number(dashboardData?.target_amount)) *
+                100
               }
               height={7}
               backgroundColor="#fff"
@@ -604,54 +485,44 @@ export default function JoinChallengeDashboard(props) {
               }}>
               <Text style={{fontSize: 12, color: COLORS.white}}>
                 ₦
-                {formatNumber(
-                  Number(getOneSavings.data?.savings[0]?.amount_save).toFixed(
-                    2,
-                  ),
-                )}
+                {formatNumber(Number(dashboardData?.amount_saved).toFixed(2)) ||
+                  '0.00'}
               </Text>
               <Text style={{fontSize: 12, color: COLORS.white}}>
-                ₦
-                {formatNumber(
-                  Number(getOneSavings.data?.savings[0]?.target_amount).toFixed(
-                    2,
-                  ),
-                )}
+                ₦{formatNumber(Number(dashboardData?.target_amount).toFixed(2))}
               </Text>
             </View>
 
-            {targetAmount != getOneSavings.data?.savings[0]?.target_amount && (
-              <TouchableOpacity
-                style={[styles.btn]}
-                onPress={() => {
-                  if (
-                    // targetAmount ==
-                    // getOneSavings.data?.savings[0]?.target_amount
-                    challengeEnd
-                  ) {
-                    handleMoveToSaving();
-                  } else {
-                    setShowAmountModal(true);
-                  }
-                }}>
-                <Image
-                  source={snow}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    position: 'absolute',
-                    left: 0,
-                    bottom: 0,
-                    opacity: 0.8,
-                    zIndex: 0,
-                  }}
-                  resizeMode="contain"
-                />
-                <Text style={[styles.btnText]}>
-                  {challengeEnd ? 'Move Money to savings' : 'Add Money'}
-                </Text>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              style={[styles.btn]}
+              onPress={() => {
+                if (
+                  // targetAmount ==
+                  // getOneSavings.data?.savings[0]?.target_amount
+                  challengeEnd
+                ) {
+                  handleMoveToSaving();
+                } else {
+                  setShowAmountModal(true);
+                }
+              }}>
+              <Image
+                source={snow}
+                style={{
+                  width: 50,
+                  height: 50,
+                  position: 'absolute',
+                  left: 0,
+                  bottom: 0,
+                  opacity: 0.8,
+                  zIndex: 0,
+                }}
+                resizeMode="contain"
+              />
+              <Text style={[styles.btnText]}>
+                {challengeEnd ? 'Move Money to savings' : 'Add Money'}
+              </Text>
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -743,7 +614,7 @@ export default function JoinChallengeDashboard(props) {
           setAmount={(d) => setAmount(d)}
           // setData={(d) => setResData(d)}
           showCard={() => setShowPaymentModal(true)}
-          minimumAmount={minimumAmount}
+          minimumAmount={dashboardData?.periodic_savings_amount}
         />
       )}
 
@@ -758,51 +629,7 @@ export default function JoinChallengeDashboard(props) {
         />
       )}
 
-      {showPaystackPayment && (
-        <PaystackPayment
-          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={resData}
-          channel={channel}
-          paymentCanceled={(e) => {
-            setSpinner(false);
-            console.log('Pay cancel', e);
-            // Do something
-          }}
-          paymentSuccessful={async (res) => {
-            // console.log('Pay done', res);
-
-            const data = {
-              channel: 'paystack',
-              reference: res.data.transactionRef.reference,
-            };
-
-            console.log('the dataatatta: ', data);
-
-            setSpinner(true);
-            const verify = await verifySavingsPayment(data);
-
-            // console.log('the verifyyyyy: ', verify);
-
-            if (verify.status == 200) {
-              // console.log('Success: Bills Payment Verified', res);
-              // navigation.navigate('PaymentSuccessful', {
-              //   name: 'SoloSavingDashBoard',
-              //   id: resData?.id,
-              // });
-              navigation.navigate('PaymentSuccessful', {
-                name: 'JoinChallengeDashboard',
-                id: route?.params?.data?.id,
-                content: 'Payment Successful',
-                subText: 'Awesome! You have successfully funded your saving',
-              });
-              setSpinner(false);
-            } else {
-              setSpinner(false);
-            }
-          }}
-        />
-      )}
-
+      {/*  */}
       {showMoveMoneyModal && (
         <MoveMoneyModal
           onRequestClose={() => setShowMoveMoneyModal(!showMoveMoneyModal)}
@@ -839,7 +666,22 @@ export default function JoinChallengeDashboard(props) {
           visible={showMoveMoneyToExistingPlanModal}
         />
       )}
-
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            Alert.alert('Payment cancelled');
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('savings successful');
+            setSpinner(false);
+            showSuccess();
+          }}
+        />
+      )}
       <Spinner visible={spinner} size={'small'} />
     </View>
   );

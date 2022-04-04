@@ -2,6 +2,7 @@ import apiUrl from './api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import urls from './routes';
+import parseErrorStack from 'react-native/Libraries/Core/Devtools/parseErrorStack';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -49,7 +50,8 @@ const login = async (data) => {
 // creating/Reseting PIN
 const setPin = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user_set_pin';
+    // const url = apiUrl + '/api/v1/user_set_pin';
+    // const url = urls.auth.USER_SET_PIN
     const response = await axios.post(urls.auth.USER_SET_PIN, data, {
       headers: {'Content-Type': 'application/json'},
     });
@@ -169,6 +171,7 @@ const oneOffPayment = async (data) => {
 const verifyPayment = async (data) => {
   const token = await getToken();
   const url = apiUrl + '/api/v1/payment/verify';
+
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
@@ -501,7 +504,8 @@ const me = async () => {
 
 // Buddy saving API
 const createBuddySavings = async (data) => {
-  const url = apiUrl + '/api/v1/create_buddy_savings';
+  // const url = apiUrl + '/api/v1/create_buddy_savings';
+  const url = urls.savings.CREATE_BUDDY_SAVINGS;
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -509,27 +513,38 @@ const createBuddySavings = async (data) => {
     });
     return response;
   } catch (error) {
+    console.log('here lies an error', error.response);
     return error;
   }
 };
 
 const InviteBuddy = async (data) => {
-  const url = apiUrl + '/api/v1/invite_buddy';
+  // const url = apiUrl + '/api/v1/invite_buddy';
+  const url = urls.savings.INVITE_BUDDY;
   const token = await getToken();
+  console.log(data);
+  console.log(url);
+  console.log(token);
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
+    console.log(error.response.data);
     return error;
   }
 };
 
 // SOLO SAVINGS
+// ebuka resume here
 const userCreateSavings = async (data) => {
-  const url = apiUrl + '/api/v1/user_create_savings';
+  console.log('from user create savings');
+  console.log(urls.savings.USER_CREATE_SAVINGS);
+
+  // const url = apiUrl + '/api/v1/user_create_savings';
   const token = await getToken();
+
   try {
     const response = await axios.post(
       urls.savings.USER_CREATE_SAVINGS,
@@ -541,8 +556,10 @@ const userCreateSavings = async (data) => {
         },
       },
     );
+
     return response;
   } catch (error) {
+    console.log(error);
     return error;
   }
 };
@@ -621,6 +638,8 @@ const addFundsToSavings = async (data) => {
 const verifySavingsPayment = async (data) => {
   const url = apiUrl + '/api/v1/verify_savings_payment';
   const token = await getToken();
+  console.log(urls.savings.VERIFY_PAYMENT);
+  console.log(token);
   try {
     const response = await axios.post(
       urls.savings.VERIFY_PAYMENT,
@@ -629,14 +648,18 @@ const verifySavingsPayment = async (data) => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
     );
+    console.log('payment response, delete later', response);
     return response;
   } catch (error) {
+    console.log(error.message);
     return error;
   }
 };
 
 const completeSavingsPayment = async (data) => {
   const token = await getToken();
+
+  console.log('complete purchase', data);
   try {
     const response = await axios.post(
       urls.savings.COMPLETE_PAYMENT,
@@ -694,7 +717,8 @@ const rejectOffer = async (data) => {
 
 // Delete Buddy Savings Invite
 const deleteBuddySavingsInvite = async (id) => {
-  const url = apiUrl + `/api/v1/buddy/deleteInvite/${id}`;
+  // const url = apiUrl + `/api/v1/buddy/deleteInvite/${id}`;
+  const url = urls.savings.DELETE_INVITE + id;
   const token = await getToken();
   try {
     const response = await axios.get(url, {
@@ -708,7 +732,8 @@ const deleteBuddySavingsInvite = async (id) => {
 
 // Send Buddy Savings Bulk Invite
 const sendBuddySavingsInvites = async (data) => {
-  const url = apiUrl + '/api/v1/buddy/sendinvites';
+  // const url = apiUrl + '/api/v1/buddy/sendinvites';
+  const url = urls.savings.INVITE_BUDDY;
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -733,7 +758,18 @@ const getOneUserBuddySavings = async (id) => {
     return error;
   }
 };
-
+const getOneBuddy = async (id) => {
+  const url = apiUrl + `/api/v1/savings/buddy/${id}`;
+  const token = await getToken();
+  try {
+    const response = await axios.get(url, {
+      headers: {'Content-Type': 'application/json', Authorization: token},
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
 // fetch user buddy invites
 const fetchUserBuddyInvites = async () => {
   const url = apiUrl + `/api/v1/fetch_user_buddy_invites`;
@@ -778,12 +814,15 @@ const AcceptBuddyInvite = async (data) => {
 
 // Buy Airtime
 const BuyPurchaseAirtime = async (data) => {
+  console.log('airtime purchase data', data);
   const url = apiUrl + '/api/v1/buy_aitime';
   const token = await getToken();
+  console.log(token);
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
+    console.log(response);
     return response;
   } catch (error) {
     return error;
@@ -851,7 +890,8 @@ const addFundsToWallet = async (data) => {
 
 const changePassword = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user/change_password';
+    // const url = apiUrl + '/api/v1/user/change_password';
+    const url = urls.auth.CHANGE_PASSWORD;
     const token = await getToken();
     const response = await axios.put(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},
@@ -864,11 +904,19 @@ const changePassword = async (data) => {
 
 const requestWithdrawal = async (data) => {
   try {
-    const url = apiUrl + '/api/v1/user_request_withdrawal';
+    const url = apiUrl + '/api/v1/users/withdrawal-request';
+    console.log(url);
+
     const token = await getToken();
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {'Content-Type': 'application/json', Authorization: token},
-    });
+    console.log(token);
+
+    const response = await axios.post(
+      url,
+      JSON.stringify({...data, source: data.option}),
+      {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      },
+    );
     return response;
   } catch (error) {
     return error;
@@ -978,15 +1026,21 @@ const verifyWalletTransaction = async (data) => {
 
 // Savings Challenge
 const joinSavingsChallenge = async (data) => {
-  const url = apiUrl + '/api/v1/user_join_savings_charledge';
+  // const url = apiUrl + '/api/v1/user_join_savings_charledge';
+  delete data.locked;
   const token = await getToken();
+  console.log(token);
   try {
-    const response = await axios.post(url, JSON.stringify(data), {
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: token,
+    const response = await axios.post(
+      urls.savings.JOIN_CHALLENGE,
+      JSON.stringify(data),
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
       },
-    });
+    );
     return response;
   } catch (error) {
     return error;
@@ -1015,7 +1069,7 @@ const moveMoneyToSavingsPlan = async (data) => {
 // test endpoints from cobble for credit score
 
 const cobbleEndpoint = {
-  test: 'http://cobblescore.herokuapp.com/Integration',
+  test: 'https://cobblescore-test.herokuapp.com/integration',
   live: 'https://api.getcobble.net/integration',
 };
 
@@ -1133,4 +1187,5 @@ export {
   creditScoreFetch,
   completeSavingsPayment,
   checkAppRelease,
+  getOneBuddy,
 };

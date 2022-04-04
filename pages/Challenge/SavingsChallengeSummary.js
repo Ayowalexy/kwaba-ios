@@ -44,6 +44,7 @@ export default function SavingsChallengeSummary(props) {
   const [dataValue, setDataValue] = useState('');
 
   const [resData, setResData] = useState('');
+  const [verifyData, setVerifyData] = useState('');
   const [channel, setChannel] = useState('');
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
@@ -100,77 +101,45 @@ export default function SavingsChallengeSummary(props) {
     setAmount(amountToSavePerDay.toFixed(2));
   }, []);
 
-  const handlePaymentRoute = async (value) => {
-    console.log('The Value: ', value);
-    console.log('The Data Value: ', dataValue);
+  const showSuccess = async () => {
+    navigation.navigate('JoinedSuccessful', {
+      content: 'Savings Challenge Joined',
+      subText: `You have successfully joined ${data?.name}`,
+      name: 'JoinChallengeDashboard',
+      id: data.id,
+    });
+  };
+
+  const handleJoinChallenge = async () => {
+    const payload = {
+      challenge_id: data?.id,
+      auto_save: savingsType,
+      locked: true, // this is locked by default
+    };
 
     setSpinner(true);
+    const response = await joinSavingsChallenge(payload);
+
     try {
-      const res = await joinSavingsChallenge(dataValue);
-      if (res.status == 200) {
-        setSpinner(false);
-        if (value == 'wallet') {
-          const data = {
-            payment_channel: value,
-            reference: res?.data?.data?.reference,
-          };
-
-          console.log('Na am:', data);
-
-          setSpinner(true);
-          // const verify = await verifySavingsPayment(data);
-          const verify = await verifyWalletTransaction(data);
-          if (verify.status == 200) {
-            onRequestClose(); // close the modal
-            setSpinner(false);
-            console.log('Verify Successful');
-            navigation.navigate('PaymentSuccessful', {
-              name: 'JoinChallengeDashboard',
-              id: props?.data?.id,
-              content: 'Payment Successful',
-              subText: 'Awesome! You have successfully joined the challenge',
-            });
-          } else {
-            setSpinner(false);
-            console.log(
-              'Verify Error: ',
-              verify?.response?.data?.response_message,
-            );
-            console.log('Verify Error 2: ', verify);
-            setMessage({
-              visible: true,
-              body:
-                verify?.response?.data?.response_message ||
-                'An error occurred, please try again later.',
-              success: false,
-            });
-            // Alert.alert('Oops', verify?.response?.data?.response_message);
-          }
-        } else {
-          setChannel(value);
-          setResData(res?.data?.data);
-          setShowPaystackPayment(true);
-        }
+      setSpinner(false);
+      if (
+        response.status == 201 ||
+        response.response.data.meta.error == 'User has already joined challenge'
+      ) {
+        onRequestClose();
+        showSuccess();
       } else {
-        setSpinner(false);
+        console.log('Error Response: ', response.response.data);
       }
     } catch (error) {
       setSpinner(false);
+      console.log('error: ', error.response);
     }
   };
 
   const handleSubmit = async () => {
-    const joinData = {
-      savings_challenge_id: data?.id,
-      savings_amount: unFormatNumber(amount),
-      savings_method: savingsType ? 'auto' : 'manual',
-    };
-
-    // console.log('The Dats: ', joinData);
-
-    // setJoinData(joinData);
-    setDataValue(joinData);
-    setShowPaymentModal(true);
+    // setShowPaymentModal(true);
+    handleJoinChallenge();
   };
 
   return (
@@ -233,12 +202,14 @@ export default function SavingsChallengeSummary(props) {
                 <View style={[styles.preset]}>
                   <View style={styles.dataInfo}>
                     <Text style={styles.key}>Amount to Save Daily</Text>
-                    <Text style={styles.value}>₦{formatNumber(amount)}</Text>
+                    <Text style={styles.value}>
+                      ₦{formatNumber(data?.periodic_savings_amount)}
+                    </Text>
                   </View>
                   <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
                     <Text style={styles.key}>Target Amount</Text>
                     <Text style={styles.value}>
-                      ₦{formatNumber(data.tartget_per_member)}
+                      ₦{formatNumber(data.target_amount)}
                     </Text>
                   </View>
                   <View style={styles.dataInfo}>
@@ -258,7 +229,9 @@ export default function SavingsChallengeSummary(props) {
 
                   <View style={[styles.dataInfo]}>
                     <Text style={styles.key}>Frequency</Text>
-                    <Text style={styles.value}>{data.fequency}</Text>
+                    <Text style={styles.value}>
+                      {data.frequency == 1 ? 'Daily' : ''}
+                    </Text>
                   </View>
 
                   {/* <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
@@ -336,47 +309,6 @@ export default function SavingsChallengeSummary(props) {
           </ScrollView>
         </View>
       </Modal>
-
-      {message.visible && (
-        <ModalMessage
-          message={message}
-          navigation={navigation}
-          onClose={() => setMessage(!message.visible)}
-        />
-      )}
-
-      {showPaymentModal && (
-        <PaymentTypeModal
-          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
-          visible={showPaymentModal}
-          setPaymentType={(data) => {
-            handlePaymentRoute(data); // paystack, bank, wallet
-          }}
-          // disable="bank_transfer"
-        />
-      )}
-
-      {showPaystackPayment && (
-        <PaystackPayment
-          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={resData}
-          channel={channel}
-          paymentCanceled={(e) => {
-            console.log('Pay cancel', e);
-            // Do something
-          }}
-          paymentSuccessful={async (res) => {
-            console.log('Pay done', res);
-
-            const data = {
-              channel: 'paystack',
-              reference: res.data.transactionRef.reference,
-            };
-
-            console.log('the dataatatta: ', data);
-          }}
-        />
-      )}
 
       <Spinner visible={spinner} size="large" />
     </>

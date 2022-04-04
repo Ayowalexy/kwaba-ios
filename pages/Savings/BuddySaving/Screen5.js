@@ -114,58 +114,60 @@ export default function Screen5(props) {
     setShowCardModal(true);
   };
 
-  // const handleSubmit = async () => {
-  //   let data = {
-  //     ...route.params,
-  //     locked: locked,
-  //     savings_tenure: route.params.duration,
-  //   };
-
-  //   // console.log('Props Data: ', data);
-  //   // navigation.navigate('BuddySaving6');
-  //   setSpinner(true);
-
-  //   try {
-  //     const res = await createBuddySavings(data);
-  //     // console.log('Res: ', res.data);
-
-  //     if (res.status == 201) {
-  //       setSavingsCreated(true);
-  //       console.log('Res: ', res.data.payment.amount);
-  //       setResData(res.data);
-  //       setSpinner(false);
-
-  //       // show buddy invite modal
-  //       setShowInviteBuddyModal(true);
-  //     }
-  //   } catch (error) {
-  //     console.log('Error: ', error);
-  //     setSavingsCreated(false);
-  //     setSpinner(false);
-  //   }
-  // };
-
   const handleAddBuddy = async () => {
-    let data = {
-      ...route.params,
-      locked: locked,
-      savings_tenure: route.params.duration,
-      num_of_buddies: route.params.number_of_buddies,
-      admin_target_amount: route.params.target_amount,
-    };
-
-    console.log('Data: ', data);
-
-    setSpinner(true);
-
     try {
-      const res = await createBuddySavings(data);
-      // console.log('Res: ', res.data);
+      const buddyData = route?.params;
 
+      const data = {
+        title: buddyData.title,
+        buddy_relationship: buddyData.buddy_relationship,
+        date_starting: moment(buddyData.date_starting).format('YYYY-MM-DD'),
+        date_ending: moment(buddyData.date_ending).format('YYYY-MM-DD'),
+        savings_tenure: Number(buddyData.duration),
+        num_of_buddies: Number(buddyData.number_of_buddies),
+        target_amount: Number(buddyData.target_amount),
+        savings_amount: Number(buddyData.savings_amount),
+        savings_frequency:
+          buddyData.savings_frequency == 'Daily'
+            ? 1
+            : buddyData.savings_frequency == 'Weekly'
+            ? 7
+            : 30,
+        locked: locked,
+      };
+
+      setSpinner(true);
+      const calc = (data.target_amount / (data.num_of_buddies + 1)).toFixed(0);
+
+      let start = moment(data.date_starting);
+      let end = moment(data.date_ending);
+
+      let diff = end.diff(
+        start,
+        buddyData.savings_frequency.toLowerCase() == 'daily'
+          ? 'days'
+          : buddyData.savings_frequency.replace('ly', 's'),
+      );
+      const saving_amount = (calc / diff).toFixed(0);
+      const trueData = {
+        title: data.title,
+        periodic_savings_amount: saving_amount,
+        target_amount: yourTarget,
+        num_of_buddies: data.num_of_buddies,
+        buddy_target: data.target_amount,
+        frequency: data.savings_frequency,
+        start_date: data.date_starting,
+        end_date: data.date_ending,
+        duration: data.savings_tenure,
+        auto_save: route.params.savings_method === 'auto' ? true : false,
+      };
+      console.log({trueData});
+      const res = await createBuddySavings(trueData);
+      console.log(res.status);
       if (res.status == 201) {
         setSavingsCreated(true);
-        console.log('Res: ', res.data.payment.amount);
-        setResData(res.data);
+        console.log('Res: ', res.data);
+        setResData(res?.data?.data);
         setSpinner(false);
 
         // show buddy invite modal
@@ -182,13 +184,14 @@ export default function Screen5(props) {
   };
 
   const displayInviteModal = () => {
+    console.log('this is the invite modal');
     setShowInviteBuddyModal(true);
   };
 
   const handleSendInvite = async () => {
     setSpinner(true);
     const data = {
-      id: resData.buddy_savings.id, // loan_id
+      id: resData?.buddy_savings?.id, // loan_id
     };
 
     // console.log('The Data: ', resData);
@@ -223,6 +226,7 @@ export default function Screen5(props) {
 
         // append remain buddies
         setBuddies(remainBuddies);
+      } else {
       }
     } catch (error) {
       setSpinner(false);
@@ -609,7 +613,13 @@ export default function Screen5(props) {
           </TouchableOpacity>
         ) : (
           <TouchableOpacity
-            onPress={handleSendInvite}
+            // onPress={handleSendInvite}
+            onPress={() => {
+              navigation.navigate('BuddyPaymentScreen', {
+                data: route?.params,
+                res: resData,
+              });
+            }}
             style={[
               designs.button,
               {
@@ -626,7 +636,7 @@ export default function Screen5(props) {
                 fontSize: 12,
                 lineHeight: 30,
               }}>
-              SEND INVITE
+              PAY NOW
             </Text>
           </TouchableOpacity>
         )}

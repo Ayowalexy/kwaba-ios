@@ -21,9 +21,27 @@ export default function CreditOnboard({navigation}) {
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'false');
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditOnboarding');
     })();
   }, []);
+
+  // useEffect(() => {
+  //   (async () => {
+  //     const user = await getUser();
+  //     const checkIfAwaiting = await AsyncStorage.getItem(
+  //       `creditScoreDetail-${user.id}`,
+  //     );
+
+  //     console.log('DA: ', checkIfAwaiting);
+  //     if (checkIfAwaiting != null && checkIfAwaiting != 'false') {
+  //       console.log('loading up...');
+  //       setShowCreditAwaiting(true);
+  //     } else {
+  //       AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'false');
+  //       console.log('no load up');
+  //     }
+  //   })();
+  // }, []);
 
   return (
     <>
@@ -42,7 +60,7 @@ export default function CreditOnboard({navigation}) {
             name="arrow-back-outline"
             color={COLORS.dark}
             size={25}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Rent')}
           />
         </View>
 
@@ -57,42 +75,13 @@ export default function CreditOnboard({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => setShowCreditForm(true)}>
+          <TouchableOpacity onPress={() => navigation.navigate('CreditForm')}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Check credit report</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
-
-      {showCreditForm && (
-        <CreditForm
-          visible={showCreditForm}
-          onRequestClose={() => setShowCreditForm(!showCreditForm)}
-          setFormData={(v) => {
-            setFormData(v);
-            setShowCreditAwaiting(true);
-          }}
-        />
-      )}
-
-      {showCreditAwaiting && (
-        <CreditAwaiting
-          visible={showCreditAwaiting}
-          onRequestClose={() => setShowCreditAwaiting(!showCreditAwaiting)}
-          data={formData}
-          showDashboard={() => setShowCreditDashboard(true)}
-        />
-      )}
-
-      {showCreditDashboard && (
-        <CreditDashboard
-          visible={showCreditDashboard}
-          onRequestClose={() => setShowCreditDashboard(!showCreditDashboard)}
-          data={formData}
-          navigation={navigation}
-        />
-      )}
     </>
   );
 }

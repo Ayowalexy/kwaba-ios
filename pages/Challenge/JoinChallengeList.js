@@ -22,6 +22,15 @@ import {
 import Joined from './Joined';
 import {formatNumber} from '../../util/numberFormatter';
 import SavingsChallengeSummary from './SavingsChallengeSummary';
+import axios from 'axios';
+import urls from '../../services/routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
 
 const data = [
   {
@@ -72,8 +81,11 @@ export default function JoinChallengeList({navigation}) {
   const userChallenge = useSelector(
     (state) => state.getUserSavingsChallengeReducer,
   );
+  const allSavings = useSelector((state) => state.getSoloSavingsReducer);
+
   const [showModal, setShowModal] = useState(false);
   const [resData, setResData] = useState('');
+  const [spinner, setSpinner] = useState(false);
 
   const [joinData, setJoinData] = useState('');
 
@@ -85,71 +97,134 @@ export default function JoinChallengeList({navigation}) {
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
+  const [allSavingsChallenges, setAllSavingschallenges] = useState([]);
+
+  const [joinSavings, setJoinedSavings] = useState([]);
+
+  // useEffect(() => {
+  //   const filter = allSavings?.data?.filter(
+  //     (item) => item.savings_type == 'savings_challenge',
+  //   );
+
+  //   setJoinedSavings(filter);
+
+  //   console.log('Filter: ', filter);
+  // }, []);
+
   useEffect(() => {
     dispatch(getUserSavingsChallenge());
   }, []);
 
+  useEffect(() => {
+    // console.log('user challenge: ', userChallenge);
+    getAllSavingsChallenges();
+  }, []);
+
   const handleNavigate = (data) => {
-    setShowModal(true);
-    setResData(data);
-    // navigation.navigate('JoinChallengeDashboard');
+    if (
+      joinSavings.length &&
+      joinSavings?.filter((i) => i.challenge_id == data?.id)[0]
+    ) {
+      navigation.navigate('JoinChallengeDashboard', {id: data?.id});
+    } else {
+      setShowModal(true);
+      setResData(data);
+    }
+  };
+
+  const getAllSavingsChallenges = async () => {
+    const token = await getToken();
+    // console.log('Token: ', token);
+    try {
+      setSpinner(true);
+      const resp = await axios.get(urls.savings.GET_ALL_CHALLENGES, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      // console.log('Challenges: ', resp?.data?.data);
+      setSpinner(false);
+      setAllSavingschallenges(resp?.data?.data);
+
+      const filter = allSavings?.data?.filter(
+        (item) => item.savings_type == 'savings_challenge',
+      );
+
+      setJoinedSavings(filter);
+    } catch (error) {
+      setSpinner(false);
+      console.log('Error failed: ', error.response);
+    }
   };
 
   const renderItem = ({item, index}) => {
-    const {name, short_description, id, savings} = item;
+    const {name, short_description, id, target_amount} = item;
 
     return (
-      <>
-        {savings.length ? (
-          <Joined
-            id={id}
-            data={savings}
-            allData={item}
-            navigation={navigation}
-          />
-        ) : (
-          <TouchableOpacity
-            onPress={() => handleNavigate(item)}
-            style={[styles.card]}>
-            <View style={{flexDirection: 'row', flex: 1}}>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{name}</Text>
-                <Text style={styles.cardBody}>{short_description}</Text>
-              </View>
+      <TouchableOpacity
+        onPress={() => {
+          handleNavigate(item, id);
+        }}
+        style={[styles.card]}>
+        <View style={{flexDirection: 'row', flex: 1}}>
+          <View style={styles.cardContent}>
+            <Text style={styles.cardTitle}>{name}</Text>
+            <Text style={styles.cardBody}>{short_description}</Text>
 
-              <View style={styles.cardImageContainer}>
-                <Image
-                  source={
-                    name == 'Double December 25k Challenge'
-                      ? target1
-                      : name == 'Double December 50k Challenge'
-                      ? target2
-                      : target3
-                  }
-                  style={{
-                    height: 60,
-                  }}
-                  resizeMode="contain"
-                />
-                <Text
-                  style={[
-                    styles.targetText,
-                    {
-                      color:
-                        index == 0
-                          ? COLORS.black
-                          : index == 1
-                          ? COLORS.red
-                          : '#5A4CB1',
-                    },
-                  ]}>
-                  ₦{formatNumber(item.tartget_per_member)}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
-      </>
+            {joinSavings?.map(
+              (v, i) =>
+                v.challenge_id == id && (
+                  <View
+                    key={i}
+                    style={{
+                      marginTop: 10,
+                      width: 70,
+                      height: 30,
+                      backgroundColor: '#5A4CB110',
+                      padding: 10,
+                      borderRadius: 30,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: '#5A4CB1',
+                        fontWeight: 'bold',
+                      }}>
+                      Joined
+                    </Text>
+                  </View>
+                ),
+            )}
+          </View>
+
+          <View style={styles.cardImageContainer}>
+            <Image
+              source={id == 1 ? target1 : id == 2 ? target2 : target3}
+              style={{
+                height: 60,
+              }}
+              resizeMode="contain"
+            />
+            <Text
+              style={[
+                styles.targetText,
+                {
+                  color:
+                    index == 0
+                      ? COLORS.black
+                      : index == 1
+                      ? COLORS.red
+                      : '#5A4CB1',
+                },
+              ]}>
+              ₦{formatNumber(target_amount)}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -205,22 +280,17 @@ export default function JoinChallengeList({navigation}) {
         <View style={{marginTop: 10, marginBottom: 20, paddingLeft: 5}}>
           <Text style={styles.heading}>Join a Savings Challenge</Text>
         </View>
-
-        {!userChallenge?.data && (
+        {spinner ? (
           <View
             style={{
               flex: 1,
-              // justifyContent: 'center',
-              // alignItems: 'center'
             }}>
             <ActivityIndicator color={COLORS.white} />
           </View>
-        )}
-
-        {userChallenge?.data && (
+        ) : (
           <View style={{flex: 1}}>
             <FlatList
-              data={userChallenge?.data}
+              data={allSavingsChallenges}
               renderItem={renderItem}
               keyExtractor={(item) => item.id.toString()}
               showsHorizontalScrollIndicator={false}

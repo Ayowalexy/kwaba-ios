@@ -4,7 +4,7 @@ const kwaba = {
 };
 
 const cobble = {
-  test: 'http://cobblescore.herokuapp.com/Integration',
+  test: 'https://cobblescore-test.herokuapp.com/integration',
   live: 'https://api.getcobble.net/integration',
 };
 
@@ -21,6 +21,7 @@ const urls = {
     COMPLETE_PROFILE: `${baseUrl}/users/update-profile`,
     SEND_EMAIL_VERIFICATION: `${baseUrl}/users/send-email-verification`,
     REFERRALS: `${baseUrl}/users/referrals`,
+    CHANGE_PASSWORD: `${baseUrl}/user/change_password`,
   },
 
   savings: {
@@ -30,9 +31,33 @@ const urls = {
     GET_SAVINGS_INTEREST_RATE: `${baseUrl}/savings/get-savings-interest`,
     GET_TOTAL_USER_SAVINGS_AMOUNT: `${baseUrl}/savings/get-total-user-savings-amount`,
 
-    COMPLETE_PAYMENT: `${baseUrl}/payments/complete-payment`,
-    VERIFY_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
+    // Payments
+    // COMPLETE_PAYMENT: `${baseUrl}/payments/complete-payment`,
+    // VERIFY_PAYMENT: `${baseUrl}/payments/verify-payment-request`,
+    COMPLETE_PAYMENT: `${baseUrl}/payments/complete`,
+    VERIFY_PAYMENT: `${baseUrl}/payments/verify`,
     GET_SAVINGS_PAYMENT_HISTORY: `${baseUrl}/payments/get-savings-payment-history`,
+
+    // Savings Challenge
+    CREATE_SAVINGS_CHALLENGE: `${baseUrl}/savings/challenges/create-savings-challenge`,
+    // JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join-challenge`,
+    JOIN_CHALLENGE: `${baseUrl}/savings/challenges/join`,
+    GET_CHALLENGE_BY_ID: `${baseUrl}/savings/challenges/get-all-challenges/`,
+    // GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/get-all-challenges`,
+    GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/`,
+
+    // Buddy savings
+    // CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
+    CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/`,
+    UPDATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/update-buddy-savings`,
+    DASHBOARD: `${baseUrl}/savings/buddy/dashboard`, // /:id
+    GET_BUDDIES: `${baseUrl}/savings/buddy/get-buddies`, // /:id
+    UPDATE_BUDDY: `${baseUrl}/savings/buddy/update-buddy`,
+    // INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
+    INVITE_BUDDY: `${baseUrl}/savings/buddy/invite`,
+    ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/accept-buddy-invite`,
+    GET_USER_BUDDY_INVITES: `${baseUrl}/savings/buddy/get-user-buddy-invites`,
+    DELETE_INVITE: `${baseUrl} /savings/buddy/deleteInvite/`,
   },
 
   wallet: {
@@ -42,6 +67,7 @@ const urls = {
   payments: {
     TOKENIZED_CARDS: `${baseUrl}/payments/get-tokenized-cards`,
     EMERGENCY_FUNDS_GET_REPAYMENT: `${baseUrl}/payments/get-repayments`,
+    GET_PAYMENT_HISTORY: `${baseUrl}/payments/get-payment-history`,
   },
 
   applications: {
@@ -49,9 +75,9 @@ const urls = {
     UPLOAD_BANK_STATEMENT: `${baseUrl}/application/bank_statement`,
     ACCEPT_OFFER: `${baseUrl}/application/accept_offer`,
     GET_CURRENT_APPLICATION: `${baseUrl}/application/one`,
-    UPLOAD_DOCUMENTS: `${baseUrl}/application/documents`,
+    UPLOAD_DOCUMENTS: `${baseUrl}/application/documents/upload`,
     GET_DOCUMENTS: `${baseUrl}/application/documents`,
-    DELETE_APPLICATION_DOCUMENT: `${baseUrl}/document/delete`,
+    DELETE_APPLICATION_DOCUMENT: `${baseUrl}/application/document/delete`,
     ADD_LANDLORD_AND_PROPERTY_DETAILS: `${baseUrl}/application/update/landlord_and_property`,
     REJECT_OFFER: `${baseUrl}/application/reject`,
     ADD_REFEREE_DETAILS: `${baseUrl}/application/update/referee`,
@@ -79,13 +105,17 @@ const urls = {
     GET_AIRTIME_BILLS: `${baseUrl}/bills/get-airtime-bills`,
   },
 
-  buddySavings: {
-    // GET → /savings/buddy/dashboard/:id
-    // PUT → /savings/buddy/update-buddy
-    // PUT → /savings/buddy/accept-buddy-invite
-    // GET → /savings/buddy/get-user-buddy-invites
-    // DELETE → /savings/buddy/deleteInvite/:id
-  },
+  // buddySavings: {
+  //   CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
+  //   UPDATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/update-buddy-savings`,
+  //   DASHBOARD: `${baseUrl}/savings/buddy/dashboard`, // /:id
+  //   GET_BUDDIES: `${baseUrl}/savings/buddy/get-buddies`, // /:id
+  //   UPDATE_BUDDY: `${baseUrl}/savings/buddy/update-buddy`,
+  //   INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
+  //   ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/accept-buddy-invite`,
+  //   GET_USER_BUDDY_INVITES: `${baseUrl}/savings/buddy/get-user-buddy-invites`,
+  //   DELETE_INVITE: `${baseUrl} /savings/buddy/deleteInvite/`,
+  // },
 
   app: {
     CHECK_RELEASE: `${baseUrl}/stable-front-end-version`,

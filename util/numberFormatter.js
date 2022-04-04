@@ -39,6 +39,9 @@ export const formatNumber = (valString, mode = false) => {
 };
 
 export const unFormatNumber = (val) => {
+  if (typeof val === 'number') {
+    return val;
+  }
   if (!val) {
     return '';
   }

@@ -11,13 +11,8 @@ const userData = async () => {
 export default function PaystackPayment(props) {
   const [user, setUser] = useState({email: '', phone: ''});
   const paystackWebViewRef = useRef();
-  const {
-    data,
-    channel,
-    onRequestClose,
-    paymentSuccessful,
-    paymentCanceled,
-  } = props;
+  const {data, channel, onRequestClose, paymentSuccessful, paymentCanceled} =
+    props;
 
   useEffect(() => {
     paystackWebViewRef.current.startTransaction();
@@ -46,7 +41,8 @@ export default function PaystackPayment(props) {
           paymentSuccessful(res);
         }}
         ref={paystackWebViewRef}
-        refNumber={data?.paymentReference}
+        // refNumber={data?.paymentReference}
+        refNumber={data?.reference}
       />
     </View>
   );

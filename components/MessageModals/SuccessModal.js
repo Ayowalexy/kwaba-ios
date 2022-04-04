@@ -13,21 +13,25 @@ export default function SuccessModal(props) {
       visible={visible}
       onRequestClose={onRequestClose}>
       <View style={[designs.centeredView]}>
-        <View style={[designs.modalView, {backgroundColor: COLORS.success}]}>
+        <View style={[designs.modalView, {backgroundColor: COLORS.secondary}]}>
           <TouchableOpacity style={[designs.closeBtn]} onPress={onRequestClose}>
             <Icon name="close" style={[designs.closeIcon]} />
           </TouchableOpacity>
           <View>
             <View style={[designs.header]}>
               <Icon
-                style={[designs.headerIcon]}
+                style={[designs.headerIcon, {color: COLORS.white}]}
                 name="ios-checkmark-done-sharp"
               />
-              <Text style={[designs.headerTitle]}>Success</Text>
+              <Text style={[designs.headerTitle, {color: COLORS.white}]}>
+                Updated
+              </Text>
             </View>
 
             <View style={[designs.content]}>
-              <Text>Successfully</Text>
+              <Text style={{color: COLORS.dark}}>
+                Password successfully updated.
+              </Text>
             </View>
           </View>
         </View>

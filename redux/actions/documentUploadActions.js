@@ -1,4 +1,5 @@
 import axios from 'axios';
+import urls from '../../services/routes';
 
 export const uploadFileTypes = {
   SET_UPLOAD_FILE: 'SET_UPLOAD_FILE',
@@ -44,7 +45,8 @@ export const uploadFile = (token, item, data) => {
 
     try {
       const response = await axios.post(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents/upload',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents/upload',
+        urls.applications.UPLOAD_DOCUMENTS,
         data,
         config,
       );

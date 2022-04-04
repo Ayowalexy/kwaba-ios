@@ -6,6 +6,7 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -124,25 +125,26 @@ export default function ChangePinModal(props) {
       email: values.email,
       password: values.password,
     };
-    // console.log('The Reset Data: ', data);
+    console.log('The Reset Data: ', data);
 
     setSpinner(true);
+
+    const resp = await setPin(data);
+    // console.log('resp: ', resp?.response);
+
     try {
-      const resp = await setPin(data);
-      // if(resp.status )
-      if (resp.status == 200) {
-        console.log('The RESP: ', resp.data);
+      if (resp.status == 201) {
+        // console.log('The RESP: ', resp.data);
         // navigation.navigate('Home');
-        onRequestClose();
+        // onRequestClose();
         setSpinner(false);
-        await analytics.track('Reset-Pin', {
-          email: values.email,
-        });
+        Alert.alert('Pin Updated', 'your pin has been reset successfully');
       } else {
         setSpinner(false);
       }
     } catch (error) {
-      console.log('The Error: ', error);
+      Alert.alert('Error', error?.response?.data?.meta?.error);
+      // console.log('The Error: ', error);
       setSpinner(false);
     }
   };
@@ -239,34 +241,34 @@ export default function ChangePinModal(props) {
                             name="password"
                             placeholder="Password"
                           />
+
+                          <TouchableOpacity
+                            onPress={handleSubmit}
+                            disabled={value.toString().length <= 3}
+                            style={[
+                              designs.btn,
+                              {
+                                backgroundColor:
+                                  value.toString().length <= 3
+                                    ? '#00DC9980'
+                                    : '#00DC99',
+                                width: '100%',
+                                borderRadius: 10,
+                              },
+                            ]}>
+                            <Text
+                              style={{
+                                color: 'white',
+                                fontSize: 12,
+                                lineHeight: 30,
+                                fontWeight: 'bold',
+                              }}>
+                              UPDATE PIN
+                            </Text>
+                          </TouchableOpacity>
                         </View>
                       </View>
                     </View>
-
-                    <TouchableOpacity
-                      onPress={handleSubmit}
-                      disabled={value.toString().length <= 3}
-                      style={[
-                        designs.btn,
-                        {
-                          backgroundColor:
-                            value.toString().length <= 3
-                              ? '#00DC9980'
-                              : '#00DC99',
-                          width: '100%',
-                          borderRadius: 10,
-                        },
-                      ]}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontSize: 12,
-                          lineHeight: 30,
-                          fontWeight: 'bold',
-                        }}>
-                        UPDATE PIN
-                      </Text>
-                    </TouchableOpacity>
                   </View>
                 </View>
               </View>

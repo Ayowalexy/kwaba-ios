@@ -50,13 +50,17 @@ export default function AmountModal(props) {
   };
 
   const handleSubmit = async (values) => {
-    let data = {
-      amount: Number(unFormatNumber(values.amount)),
-    };
+    try {
+      let data = {
+        amount: Number(unFormatNumber(values.amount)),
+      };
 
-    setAmount(data?.amount);
-    onRequestClose(); // close amount modal
-    showCard();
+      setAmount(data?.amount);
+      onRequestClose(); // close amount modal
+      showCard();
+    } catch (error) {
+      console.log(error);
+    }
 
     // console.log('The DATATAATA: ', data);
     // console.log('From: ', from);

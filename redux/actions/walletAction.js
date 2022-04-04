@@ -62,3 +62,29 @@ export const getUserWalletTransactions = () => {
     }
   };
 };
+
+export const setPaymentHistory = (data) => {
+  return {
+    type: types.GET_PAYMENT_HISTORY,
+    payload: data,
+  };
+};
+
+export const getPaymentHistory = () => {
+  return async (dispatch) => {
+    const token = await getToken();
+    // const url = apiUrl + '/api/v1/get_wallet_transactions';
+    try {
+      const response = await axios.get(urls.payments.GET_PAYMENT_HISTORY, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
+      // dispatch(setUserWalletTransactions(response.data.data.reverse()));
+      dispatch(setPaymentHistory(response?.data?.data.reverse()));
+      // console.log('Wallet Transaction: ', response.data.data);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return error.message;
+    }
+  };
+};

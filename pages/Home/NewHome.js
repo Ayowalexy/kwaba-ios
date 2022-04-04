@@ -36,6 +36,7 @@ import {
 import {
   getUserWallet,
   getUserWalletTransactions,
+  getPaymentHistory,
 } from '../../redux/actions/walletAction';
 import {getCurrentUser} from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -71,8 +72,8 @@ export default function NewHome({navigation}) {
   const login = useSelector((state) => state.loginReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const getWallet = useSelector((state) => state.getUserWalletReducer);
-  const getWalletTransactions = useSelector(
-    (state) => state.getUserWalletTransactionsReducer,
+  const getPaymentHistoryReducer = useSelector(
+    (state) => state.getPaymentHistoryReducer,
   );
 
   const [isProfileComplete, setIsProfileComplete] = useState(false);
@@ -206,7 +207,8 @@ export default function NewHome({navigation}) {
     dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
     dispatch(getUserReferrals());
-    // dispatch(getBillsCategory('airtime'));
+    dispatch(getBillsCategory('airtime'));
+    dispatch(getPaymentHistory());
 
     // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
@@ -315,14 +317,14 @@ export default function NewHome({navigation}) {
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Borrow') //RentNowPayLaterOnboarding
+          ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
           : navigation.navigate('RentNowPayLaterDashboard'),
       cardClick: () => {
         TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Borrow') //RentNowPayLaterOnboarding
+          ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
           : navigation.navigate('RentNowPayLaterDashboard');
       },
     },
@@ -384,24 +386,42 @@ export default function NewHome({navigation}) {
   ];
 
   const bottomCards = [
-    {
-      title: 'Savings',
-      body:
-        'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
-      img: images.maskGroup30,
-    },
+    // {
+    //   title: 'Savings',
+    //   body:
+    //     'Save for your rent or towards a down payment to buy a house. Either way, let your money work for you.',
+    //   img: images.maskGroup30,
+    // },
     {
       title: 'Join a Savings Challenge',
       body:
         'Use creative ways to reach your home savings goals. Join a challenge now to explore exciting ways to save.',
       img: images.maskGroup29,
       route: () => navigation.navigate('JoinChallengeList'),
-      route: () => {
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
-      },
+      // route: () => {
+      //   Alert.alert(
+      //     'Feature currently unavailable',
+      //     'We are working hard to make this available as soon as we can.',
+      //   );
+      // },
+    },
+  ];
+
+  const newCard = [
+    {
+      img: images.maskGroup29,
+      title: 'Save for rent',
+      content: 'Save for rent with solo or buddy savings with friends',
+      route: () => navigation.navigate('SavingsHome'),
+    },
+    {
+      img: images.maskGroup30,
+      title: 'Pay for rent',
+      content:
+        // 'Apply for rental finanace and pay back in easy monthly installments',
+        'Split your bulk rent into easy monthly payments.',
+      // route: () => navigation.navigate('SaveToOwn'),
+      route: () => navigation.navigate('Rent'),
     },
   ];
 
@@ -419,7 +439,7 @@ export default function NewHome({navigation}) {
   const scrollX = React.useRef(new Animated.Value(0)).current;
 
   const TransactionHistory = () => {
-    const slicedTransaction = getWalletTransactions?.data?.slice(0, 4);
+    const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 7);
     return (
       <View style={{paddingHorizontal: 25, paddingBottom: 20, marginTop: 20}}>
         <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
@@ -483,7 +503,7 @@ export default function NewHome({navigation}) {
                       marginTop: 20,
                       lineHeight: 20,
                     }}>
-                    {item.narration}
+                    {item.reason}
                   </Text>
                 </View>
               </View>
@@ -911,6 +931,65 @@ export default function NewHome({navigation}) {
             <View
               style={{
                 paddingHorizontal: 20,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 20,
+              }}>
+              {newCard.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    onPress={item.route}
+                    key={index}
+                    style={{
+                      backgroundColor: COLORS.primary,
+                      padding: 20,
+                      width: '48%',
+                      borderRadius: 20,
+                      borderBottomLeftRadius: 0,
+                    }}>
+                    <View
+                      style={{
+                        backgroundColor: COLORS.white,
+                        width: 30,
+                        height: 30,
+                        borderRadius: 30,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'hidden',
+                      }}>
+                      <Image
+                        resizeMode="cover"
+                        source={item.img}
+                        style={{width: 25, height: 25, borderRadius: 25}}
+                      />
+                    </View>
+                    <View style={{marginTop: 20}}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          color: COLORS.white,
+                          fontWeight: 'bold',
+                        }}>
+                        {item.title}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: COLORS.white,
+                          marginTop: 10,
+                          lineHeight: 20,
+                        }}>
+                        {item.content}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <View
+              style={{
+                paddingHorizontal: 20,
                 overflow: 'hidden',
               }}>
               {bottomCards.map((item, index) => {
@@ -918,7 +997,8 @@ export default function NewHome({navigation}) {
                   <View
                     key={index}
                     style={{
-                      backgroundColor: index == 0 ? '#EDECFC' : '#5A4CB1',
+                      backgroundColor:
+                        item.title == 'Savings' ? '#EDECFC' : '#5A4CB1',
                       marginBottom: 10,
                       borderRadius: 10,
                       elevation: 0.5,
@@ -938,7 +1018,10 @@ export default function NewHome({navigation}) {
                       <View style={{padding: 20}}>
                         <Text
                           style={{
-                            color: index == 0 ? COLORS.dark : COLORS.white,
+                            color:
+                              item.title == 'Savings'
+                                ? COLORS.dark
+                                : COLORS.white,
                             fontFamily: 'CircularStd',
                             fontSize: 15,
                             lineHeight: 23,
@@ -950,7 +1033,10 @@ export default function NewHome({navigation}) {
                           style={{
                             width: '75%',
                             marginTop: 9,
-                            color: index == 0 ? COLORS.dark : COLORS.white,
+                            color:
+                              item.title == 'Savings'
+                                ? COLORS.dark
+                                : COLORS.white,
                             fontFamily: 'CircularStd',
                             fontSize: 12,
                             lineHeight: 20,
@@ -958,7 +1044,7 @@ export default function NewHome({navigation}) {
                           }}>
                           {item.body}
                         </Text>
-                        {index == 0 && (
+                        {item.title == 'Savings' && (
                           <View
                             style={{
                               flexDirection: 'row',

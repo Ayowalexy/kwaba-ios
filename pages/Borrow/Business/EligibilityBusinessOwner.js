@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../../util';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function EligibilitySalaryEarner({navigation}) {
   return (
@@ -88,7 +89,9 @@ export default function EligibilitySalaryEarner({navigation}) {
           style={[styles.btn, {backgroundColor: COLORS.secondary}]}
           onPress={() => {
             // navigation.navigate('RentalFormBusinessDoc');
-            navigation.navigate('BusinessForm1');
+            AsyncStorage.setItem('creditType', 'business').then(() => {
+              navigation.navigate('CreditOnboard');
+            });
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

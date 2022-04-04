@@ -30,6 +30,7 @@ import {
 } from '../../redux/actions/documentUploadActions';
 import {useDispatch, useSelector} from 'react-redux';
 import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -47,7 +48,8 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      urls.applications.GET_DOCUMENTS,
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -100,14 +102,16 @@ export default function AllDocuments({navigation}) {
 
   const appendID = async (item) => {
     const documentsUpload = await getDocuments();
+
+    console.log('Documents: ', documentsUpload);
+
     const index = await documentsUpload.findIndex(
-      (document) => Number(document.document_type) == item.id,
+      (document) => Number(document?.document_type) == item?.id,
     );
-    const id = Number(documentsUpload[index].document_type);
-    // console.log('Document: ', documentsUpload);
+    const id = Number(documentsUpload[index]?.document_type);
     console.log('ID: ', id);
     try {
-      dispatch(showUploadedFiles(id, documentsUpload[index].id));
+      dispatch(showUploadedFiles(id, documentsUpload[index]?.id));
     } catch (error) {
       console.log('error', error);
     }
@@ -132,12 +136,9 @@ export default function AllDocuments({navigation}) {
   const countDocuments = async () => {
     const token = await getToken();
     try {
-      const resp = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const resp = await axios.get(urls.applications.GET_DOCUMENTS, {
+        headers: {'Content-Type': 'application/json', Authorization: token},
+      });
 
       setCount(resp.data.data.length);
     } catch (error) {
@@ -171,12 +172,13 @@ export default function AllDocuments({navigation}) {
 
       const token = await getToken();
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        urls.applications.GET_CURRENT_APPLICATION,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-      // console.log(applicationIDCallRes.data.data.id);
+      console.log('The Application ID: ', applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
 
       const formdata = new FormData();
@@ -196,7 +198,7 @@ export default function AllDocuments({navigation}) {
         filename: item.title,
       };
 
-      // console.log(data);
+      console.log('Cloudinary: ', data);
 
       try {
         dispatch(uploadFile(token, item, data));
@@ -268,7 +270,7 @@ export default function AllDocuments({navigation}) {
             }}
             color={COLORS.primary}
           /> */}
-          <Text style={[styles.heading, {marginTop: 10}]}>All Documents</Text>
+          {/* <Text style={[styles.heading, {marginTop: 10}]}>All Documents</Text> */}
 
           {count == 0 ? (
             <View
@@ -389,16 +391,16 @@ export default function AllDocuments({navigation}) {
                     item.id && (
                       <TouchableOpacity
                         onPress={() => {
-                          if (item.title == 'Bank Statement') {
-                            // handleBankStatementUpload();
-                            setShowSelectDocumentsModal(false);
-                            navigation.navigate(
-                              'RentalLoanFormBankStatementUpload',
-                              {item},
-                            );
-                          } else {
-                            handleDocumentType(item);
-                          }
+                          // if (item.title == 'Bank Statement') {
+                          //   // handleBankStatementUpload();
+                          //   setShowSelectDocumentsModal(false);
+                          //   navigation.navigate(
+                          //     'RentalLoanFormBankStatementUpload',
+                          //     {item},
+                          //   );
+                          // } else {
+                          handleDocumentType(item);
+                          // }
                         }}
                         // onPress={() => {
                         //   handleDocumentType(item);

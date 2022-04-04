@@ -77,7 +77,7 @@ export default function CreditScoreDashboard({navigation, route}) {
           ...duesummary?.slice(-1)[0],
         };
 
-        console.log('csD: ', csDetails);
+        console.log('csD: ', csDetails, 'from here son');
 
         if (csDetails?.NO_OF_DELINQCREDITFACILITIES > 0) {
           if (Number(csDetails?.TOT_DUE) < 20000) {

@@ -73,7 +73,11 @@ export default function LoanTabs(props) {
       if (loans.status == 200) {
         setSpinner(false);
         // console.log('The Loan: ', loans);
-        setRepaymentList(loans?.data?.data);
+        const emergencyLoans = loans?.data?.data.filter(
+          (loans) => loans.loan_type == 'emergency_loan',
+        );
+
+        setRepaymentList(emergencyLoans);
         // dispatch(getMaxLoanCap());
       } else {
         setSpinner(false);
@@ -132,8 +136,9 @@ export default function LoanTabs(props) {
           amount: amount,
           emergencyLoanId: loanRepaymentData?.id,
           channel: 'wallet',
-          reference: res?.data?.data.paymentReference,
+          // reference: res?.data?.data.paymentReference,
           purpose: 'emergencyLoanRepayment',
+          reference: res?.data?.data.reference,
         };
 
         console.log('That payload: ', payload);
@@ -546,7 +551,8 @@ export default function LoanTabs(props) {
               amount: amount,
               emergencyLoanId: loanRepaymentData?.id,
               channel: 'paystack',
-              reference: resData.paymentReference,
+              // reference: resData.paymentReference,
+              reference: resData.reference,
               purpose: 'emergencyLoanRepayment',
             };
 

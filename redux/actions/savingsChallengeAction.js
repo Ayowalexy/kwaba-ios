@@ -2,6 +2,7 @@ import * as types from './types';
 import apiUrl from '../../services/api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import urls from '../../services/routes';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -25,12 +26,14 @@ export const setChallengeList = (data) => {
 export const getSavingsChallengeList = () => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + '/api/v1/list_savings_charledge';
+    // const url = apiUrl + '/api/v1/list_savings_charledge';
+    const url = urls.savings.GET_ALL_CHALLENGES;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      dispatch(setChallengeList(response.data.data.reverse()));
+      console.log('Store: ', response);
+      dispatch(setChallengeList(response.data.data));
       return response.data.data;
     } catch (error) {
       return error.message;

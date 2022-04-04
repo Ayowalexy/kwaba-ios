@@ -30,7 +30,7 @@ const AirtimeHome = ({navigation}) => {
   const handleClick = (value) => {
     navigation.navigate('PurchaseAirtime', {
       name: value.name,
-      data: getAirtime?.data?.content,
+      data: getAirtime?.data,
     });
   };
 
@@ -72,7 +72,7 @@ const AirtimeHome = ({navigation}) => {
           marginTop: 20,
           paddingHorizontal: 20,
         }}>
-        {getAirtime?.data?.content?.map((value, index) => {
+        {getAirtime?.data?.map((value, index) => {
           return (
             <TouchableOpacity
               style={{

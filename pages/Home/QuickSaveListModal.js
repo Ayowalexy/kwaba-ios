@@ -50,6 +50,7 @@ export default function QuickSaveListModal(props) {
   const [resData, setResData] = useState('');
 
   const [id, setID] = useState('');
+  const [buddyId, setBuddyId] = useState('');
 
   const [channel, setChannel] = useState('');
 
@@ -126,12 +127,21 @@ export default function QuickSaveListModal(props) {
   // };
 
   const showSuccess = async () => {
-    navigation.navigate('PaymentSuccessful', {
-      content: 'Payment Successful',
-      subText: 'You have successfully funded your savings',
-      name: 'SoloSavingDashBoard',
-      id: id,
-    });
+    if (type == 'Buddy Savings') {
+      navigation.navigate('PaymentSuccessful', {
+        content: 'Payment Successful',
+        subText: 'You have successfully funded your savings',
+        name: 'BuddySavingDashBoard',
+        id: buddyId,
+      });
+    } else {
+      navigation.navigate('PaymentSuccessful', {
+        content: 'Payment Successful',
+        subText: 'You have successfully funded your savings',
+        name: 'SoloSavingDashBoard',
+        id: id,
+      });
+    }
 
     onRequestClose();
   };
@@ -142,7 +152,7 @@ export default function QuickSaveListModal(props) {
     try {
       const res = await completeSavingsPayment(data);
 
-      if (res.status == 201) {
+      if (res.status == 200) {
         setSpinner(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
@@ -175,7 +185,7 @@ export default function QuickSaveListModal(props) {
           amount: verifyData.amount,
           savings_id: data.savings_id,
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'savings',
         };
 
@@ -354,6 +364,7 @@ export default function QuickSaveListModal(props) {
                               // navigation.navigate('SoloSavingDashBoard', {
                               //   id: item.id,
                               // });
+                              setBuddyId(item?.buddy_savings_id);
                               console.log('The ID: ', item.id);
                               setID(item.id);
                               setShowAmountModal(true);
@@ -486,17 +497,7 @@ export default function QuickSaveListModal(props) {
             // Do something
           }}
           paymentSuccessful={async (res) => {
-            const data = {
-              amount: verifyData.amount,
-              savings_id: verifyData.id,
-              channel: 'paystack',
-              reference: verifyData.paymentReference,
-              purpose: 'savings',
-            };
-
-            console.log('the dataatatta: ', data);
-
-            await savingsPayment(data);
+            await showSuccess();
           }}
         />
       )}

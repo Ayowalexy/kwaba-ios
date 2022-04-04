@@ -20,6 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {useDispatch, useSelector} from 'react-redux';
 import Spinner from 'react-native-loading-spinner-overlay';
+import urls from '../../services/routes';
 
 const ConnectWithMono = () => {
   const {init} = useMonoConnect();
@@ -117,7 +118,9 @@ export default function RentalLoanFormBankStatementUpload(props) {
 
         const token = await getToken();
         const applicationIDCallRes = await axios.get(
-          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+          // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+          urls.applications.GET_CURRENT_APPLICATION,
+
           {
             headers: {'Content-Type': 'application/json', Authorization: token},
           },

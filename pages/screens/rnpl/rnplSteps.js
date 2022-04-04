@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
 import {COLORS} from '../../../util';
 // import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function RnplSteps({navigation}) {
   const stepsArray = [
@@ -63,10 +64,28 @@ export default function RnplSteps({navigation}) {
     },
   ];
 
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUser();
+      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'rnplSteps');
+    })();
+  }, []);
+
   return (
     <View style={[styles.container]}>
       <View style={[styles.header]}>
-        <Icon name="arrow-back" color={COLORS.dark} size={24} />
+        <Icon
+          name="arrow-back"
+          color={COLORS.dark}
+          size={24}
+          onPress={() => navigation.navigate('Rent')}
+        />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[styles.bottomView]}>

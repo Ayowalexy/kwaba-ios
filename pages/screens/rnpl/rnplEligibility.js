@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../../util';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const salaryData = [
   'Earn a minimum monthly income of ₦80,000',
@@ -91,7 +92,9 @@ export default function RnplEligibility({navigation}) {
         <TouchableOpacity
           style={[styles.btn, {backgroundColor: COLORS.primary}]}
           onPress={() => {
-            navigation.navigate('CreditOnboard');
+            AsyncStorage.setItem('creditType', 'earner').then(() => {
+              navigation.navigate('CreditOnboard');
+            });
           }}>
           <Text style={[styles.btnText, {color: COLORS.white}]}>Proceed </Text>
         </TouchableOpacity>

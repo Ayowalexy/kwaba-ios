@@ -157,13 +157,13 @@ const BottomNavigator = ({navigation}) => {
         <Tab.Screen name="Wallet" component={Wallet} />
         {/* <Tab.Screen name="Rent" component={Borrow} /> */}
 
-        <Tab.Screen name="Rent" component={RentHome} />
+        {/* <Tab.Screen name="Rent" component={RentHome} /> */}
         {/* {true ? (
           <Tab.Screen name="Rent" component={RentHome} />
         ) : (
           <Tab.Screen name="Rent" component={RnplSteps} />
         )} */}
-        <Tab.Screen name="Mortgages" component={Mortgages} />
+        {/* <Tab.Screen name="Mortgages" component={Mortgages} /> */}
         <Tab.Screen name="More" component={AccountPage} />
       </Tab.Navigator>
 

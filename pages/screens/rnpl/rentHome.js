@@ -8,6 +8,7 @@ import axios from 'axios';
 import CompleteProfileModal from '../../Home/CompleteProfileModal';
 import {TrackEvent} from '../../../util/segmentEvents';
 import {useRoute} from '@react-navigation/native';
+import urls from '../../../services/routes';
 
 export default function RentHome({navigation}) {
   const [existingApplication, setExistingApplication] = useState('');
@@ -38,7 +39,8 @@ export default function RentHome({navigation}) {
 
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        urls.applications.GET_CURRENT_APPLICATION,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -72,17 +74,28 @@ export default function RentHome({navigation}) {
 
     console.log('DATATATATATTA: ', getCreditScoreDetails);
 
+    // await AsyncStorage.clear();
+
+    // navigation.navigate('RnplSteps');
+    // navigation.navigate('NewAllDocuments');
+    // navigation.navigate('CreditOnboard');
+
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
     } else {
       if (getCreditScoreDetails == null) {
         navigation.navigate('RnplOnboard');
-      } else if (getCreditScoreDetails == 'true') {
-        navigation.navigate('RnplSteps');
-      } else if (getCreditScoreDetails == 'false') {
-        navigation.navigate('CreditOnboard');
-      } else {
+      } else if (getCreditScoreDetails == 'creditOnboarding') {
         navigation.navigate('RnplOnboard');
+        // navigation.navigate('CreditOnboard');
+      } else if (getCreditScoreDetails == 'creditForm') {
+        navigation.navigate('RnplOnboard');
+      } else if (getCreditScoreDetails == 'creditAwaiting') {
+        navigation.navigate('creditAwaiting');
+      } else if (getCreditScoreDetails == 'creditDashboard') {
+        navigation.navigate('CreditDashboard');
+      } else {
+        navigation.navigate('RnplSteps');
       }
     }
   };

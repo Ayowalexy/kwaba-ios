@@ -187,6 +187,7 @@ import Wallet from './pages/Wallet/Wallet';
 // Challenge
 import JoinChallengeList from './pages/Challenge/JoinChallengeList';
 import JoinChallengeDashboard from './pages/Challenge/JoinChallengeDashboard';
+import JoinedSuccessful from './pages/Challenge/JoinedSuccessful';
 
 import {useSelector, useDispatch} from 'react-redux';
 import MonoDebitMandate from './pages/Payment/MonoDebitMandate';
@@ -229,8 +230,14 @@ import {
   FormBreakdown,
   RnplEmploymentStatus,
   RnplDirectdebit,
+  RentHome,
 } from './pages/screens/rnpl';
-import {CreditOnboard} from './pages/screens/rnpl/creditscore';
+import {
+  CreditAwaiting,
+  CreditDashboard,
+  CreditForm,
+  CreditOnboard,
+} from './pages/screens/rnpl/creditscore';
 import {checkAppRelease} from './services/network';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
@@ -355,11 +362,13 @@ const App = () => {
 
   const appRelease = async () => {
     const res = await checkAppRelease();
+    console.log('Res: ', res);
 
     try {
       if (res.status == 200) {
         if (res?.data[0].version > '1.0.0') {
           setAppUpdateAvailable(true);
+          console.log('Banger: ', res?.data);
         } else {
           setAppUpdateAvailable(false);
         }
@@ -801,6 +810,11 @@ const App = () => {
                 />
 
                 <Stack.Screen
+                  name="JoinedSuccessful"
+                  component={JoinedSuccessful}
+                />
+
+                <Stack.Screen
                   name="CreditScoreOnboarding"
                   component={CreditScoreOnboarding}
                 />
@@ -848,6 +862,15 @@ const App = () => {
                 />
 
                 <Stack.Screen name="CreditOnboard" component={CreditOnboard} />
+                <Stack.Screen name="CreditForm" component={CreditForm} />
+                <Stack.Screen
+                  name="CreditDashboard"
+                  component={CreditDashboard}
+                />
+                <Stack.Screen
+                  name="CreditAwaiting"
+                  component={CreditAwaiting}
+                />
 
                 {/* applications */}
                 <Stack.Screen name="Form1" component={Form1} />
@@ -858,6 +881,8 @@ const App = () => {
                   name="RnplDirectdebit"
                   component={RnplDirectdebit}
                 />
+
+                <Stack.Screen name="Rent" component={RentHome} />
               </>
             )}
           </Stack.Navigator>

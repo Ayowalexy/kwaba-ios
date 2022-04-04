@@ -86,6 +86,8 @@ export default function SoloSavingDashBoard(props) {
 
   const [resData, setResData] = useState('');
 
+  const [savingsCompleted, setSavingsCompleted] = useState(false);
+
   const toggleSwitch = async () => {
     setAutoSaving((previousState) => !previousState);
   };
@@ -112,6 +114,12 @@ export default function SoloSavingDashBoard(props) {
       ).toFixed(0),
     );
     setTotalSaving(amount_saved || 0);
+
+    if (amount_saved >= data?.target_amount) {
+      setSavingsCompleted(true);
+    } else {
+      setSavingsCompleted(false);
+    }
   };
 
   useEffect(() => {
@@ -146,7 +154,7 @@ export default function SoloSavingDashBoard(props) {
     try {
       const res = await completeSavingsPayment(data);
 
-      if (res.status == 201) {
+      if (String(res.status).startsWith('2')) {
         setSpinner2(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
@@ -180,7 +188,8 @@ export default function SoloSavingDashBoard(props) {
           amount: verifyData.amount,
           savings_id: data.savings_id,
           channel: 'wallet',
-          reference: verifyData.paymentReference,
+          // reference: verifyData.paymentReference,
+          reference: verifyData.reference,
           purpose: 'savings',
         };
 
@@ -328,28 +337,50 @@ export default function SoloSavingDashBoard(props) {
               }}
             />
             <View style={{padding: 20}}>
-              <TouchableOpacity
-                style={{
-                  position: 'absolute',
-                  right: 5,
-                  top: 10,
-                  zIndex: 5,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-                onPress={() => setShowAmountModal(true)}>
-                <Text style={{fontSize: 12, color: COLORS.white}}>
-                  Add Funds
-                </Text>
-                <Image
+              {savingsCompleted ? (
+                <TouchableOpacity
                   style={{
-                    width: 50,
-                    height: 50,
-                    marginTop: 5,
+                    position: 'absolute',
+                    right: 20,
+                    top: 20,
+                    zIndex: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
                   }}
-                  source={icons.addIcon}
-                />
-              </TouchableOpacity>
+                  onPress={() => setShowAmountModal(true)}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLORS.white,
+                      fontStyle: 'italic',
+                    }}>
+                    Savings Completed
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={{
+                    position: 'absolute',
+                    right: 5,
+                    top: 10,
+                    zIndex: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}
+                  onPress={() => setShowAmountModal(true)}>
+                  <Text style={{fontSize: 12, color: COLORS.white}}>
+                    Add Funds
+                  </Text>
+                  <Image
+                    style={{
+                      width: 50,
+                      height: 50,
+                      marginTop: 5,
+                    }}
+                    source={icons.addIcon}
+                  />
+                </TouchableOpacity>
+              )}
 
               <Text style={{color: COLORS.white}}>You have saved</Text>
               <View
@@ -578,7 +609,7 @@ export default function SoloSavingDashBoard(props) {
             }}>
             <TouchableOpacity
               // onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
-              onPress={() => navigation.navigate('Borrow')}
+              onPress={() => navigation.navigate('Rent')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -610,12 +641,12 @@ export default function SoloSavingDashBoard(props) {
 
             <TouchableOpacity
               onPress={() => {
-                // navigation.navigate('EmergencyFundOnboarding')
+                navigation.navigate('EmergencyLoanDashBoard');
 
-                Alert.alert(
-                  'Feature currently unavailable',
-                  'We are working hard to make this available as soon as we can.',
-                );
+                // Alert.alert(
+                //   'Feature currently unavailable',
+                //   'We are working hard to make this available as soon as we can.',
+                // );
               }}
               style={{
                 width: '45%',
@@ -711,18 +742,7 @@ export default function SoloSavingDashBoard(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            const data = {
-              amount: verifyData.amount,
-              savings_id: verifyData.id,
-              channel: 'paystack',
-              reference: verifyData.paymentReference,
-              purpose: 'savings',
-            };
-
-            console.log('the dataatatta: ', data);
-            console.log('This complete data: ', data);
-
-            await savingsPayment(data);
+            showSuccess();
           }}
         />
       )}
