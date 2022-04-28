@@ -46,7 +46,8 @@ export const setBillsCategory = (data) => {
 export const getBillsCategory = (serviceID) => {
   return async (dispatch) => {
     const token = await getToken();
-    const url = apiUrl + `/api/v1/get_bills_category/${serviceID}`;
+    const url = apiUrl + `/api/v1/bills/get-bills-category/${serviceID}`;
+    // const url = apiUrl + `/api/v1/get_bills_category/${serviceID}`;
     try {
       const response = await axios.get(url, {
         headers: {'Content-Type': 'applictaion/json', Authorization: token},

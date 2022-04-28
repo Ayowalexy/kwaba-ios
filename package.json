@@ -1,6 +1,6 @@
 {
   "name": "kwaba_mobile_app",
-  "version": "1.9.3",
+  "version": "1.9.4",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,7 +11,7 @@
     "CodePush:ios": "appcenter CodePush release-react -a Kwabauser/Kwaba-App -d Production",
     "CodePush:android": "appcenter codepush release-react -a Kwabauser/Kwaba-App -d Staging",
     "CodePush:android:staging": "appcenter codepush release-react -a Kwabauser/Kwaba-2.0 -d Staging",
-    "github":"git add . && git commit -m 'deploying' && git push"
+    "github": "git add . && git commit -m 'deploying' && git push"
   },
   "dependencies": {
     "@mono.co/connect-react-native": "^0.1.3",

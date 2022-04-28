@@ -5,12 +5,15 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {getMaxLoanCap} from '../../redux/actions/savingsActions';
 import {useSelector, useDispatch} from 'react-redux';
 import {formatNumber} from '../../util/numberFormatter';
+import InsufficientModal from './InsufficientWalletBalance';
 
 export default function PaymentTypeModal(props) {
   const dispatch = useDispatch();
-  const {visible, onRequestClose, setPaymentType, disable} = props;
+  const {visible, onRequestClose, setPaymentType, disable, amount, setShowModal} = props;
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [walletBalance, setWalletBalance] = useState(0);
+
+  console.log('9'.repeat(40))
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
@@ -96,6 +99,11 @@ export default function PaymentTypeModal(props) {
                     <TouchableOpacity
                       // disabled={item.icon == 'home'}
                       onPress={() => {
+
+                        if((item.tag == 'wallet') && (amount > walletBalance)){
+                          console.log(amount, walletBalance, '7'.repeat(30))
+                          return setShowModal(true)
+                        }
                         console.log('getting to this payment son!!');
                         console.log({item});
                         setPaymentType(item.tag);
@@ -167,6 +175,8 @@ export default function PaymentTypeModal(props) {
           </View>
         </View>
       </Modal>
+    
     </>
+    
   );
 }

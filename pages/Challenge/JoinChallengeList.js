@@ -147,6 +147,11 @@ export default function JoinChallengeList({navigation}) {
       setSpinner(false);
       setAllSavingschallenges(resp?.data?.data);
 
+
+      for (let d of resp.data.data){
+        console.log(d.id)
+      }
+
       const filter = allSavings?.data?.filter(
         (item) => item.savings_type == 'savings_challenge',
       );
@@ -170,7 +175,7 @@ export default function JoinChallengeList({navigation}) {
         <View style={{flexDirection: 'row', flex: 1}}>
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>{name}</Text>
-            <Text style={styles.cardBody}>{short_description}</Text>
+            {/* <Text style={styles.cardBody}>{short_description}</Text> */}
 
             {joinSavings?.map(
               (v, i) =>
@@ -238,7 +243,7 @@ export default function JoinChallengeList({navigation}) {
           style={{fontWeight: '900'}}
           color={COLORS.white}
         />
-        <Image
+        {/* <Image
           source={snowflake}
           style={{
             width: 100,
@@ -250,8 +255,8 @@ export default function JoinChallengeList({navigation}) {
             zIndex: 0,
           }}
           resizeMode="contain"
-        />
-        <Image
+        /> */}
+        {/* <Image
           source={snow}
           style={{
             width: 100,
@@ -263,8 +268,8 @@ export default function JoinChallengeList({navigation}) {
             zIndex: 0,
           }}
           resizeMode="contain"
-        />
-        <Image
+        /> */}
+        {/* <Image
           source={snow}
           style={{
             width: 50,
@@ -276,7 +281,7 @@ export default function JoinChallengeList({navigation}) {
             zIndex: 0,
           }}
           resizeMode="contain"
-        />
+        /> */}
         <View style={{marginTop: 10, marginBottom: 20, paddingLeft: 5}}>
           <Text style={styles.heading}>Join a Savings Challenge</Text>
         </View>
@@ -354,6 +359,8 @@ const styles = StyleSheet.create({
   cardContent: {
     flex: 1,
     marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   cardTitle: {
     fontSize: 15,

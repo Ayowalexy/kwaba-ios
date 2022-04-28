@@ -50,6 +50,7 @@ const AccountPage = ({navigation}) => {
   const [lastName, setLastName] = useState('');
   const login = useSelector((state) => state.loginReducer);
 
+console.log('Resss')
   const [loanPurpose] = useState([
     {label: 'Household', value: 'Household'},
     {label: 'Personal', value: 'Personal'},

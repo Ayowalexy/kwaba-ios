@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../../util';
@@ -36,9 +37,13 @@ export default function SavingsListModal(props) {
 
   const checkType = async () => {
     if (type == 'Solo Savings') {
-      setSavingLists(allSoloSaving);
+
+      const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
+      
+      // setSavingLists(allSoloSaving.data);
+      setSavingLists(filter);
     } else if (type == 'Buddy Savings') {
-      setSavingLists(allBuddySaving);
+      setSavingLists(allBuddySaving.data);
       console.log('All Buddy: ', allBuddySaving);
     }
   };
@@ -92,11 +97,12 @@ export default function SavingsListModal(props) {
                         fontWeight: 'bold',
                         color: COLORS.dark,
                       }}>
-                      You can only withdraw from one{'\n'}account at a time.
+                      You can only withdraw from one source
+                      {/* You can only withdraw from one{'\n'}account at a time. */}
                     </Text>
                   </View>
                   <>
-                    {savingLists?.data?.map((item, index) => {
+                    {savingLists?.map((item, index) => {
                       return (
                         <TouchableOpacity
                           key={index}
@@ -308,3 +314,29 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
 });
+
+
+// {"admin_target_amount": null, 
+// "amount_saved": 110, 
+// "auto_save": true, 
+// "buddy_relationship": null, 
+// "buddy_savings_id": 54, 
+// "buddy_savings_referral": null, 
+// "challenge_id": null, 
+// "created_at": "2022-04-19T22:19:20.487Z", 
+// "duration": 3, "end_date": "2022-07-20", 
+// "frequency": 1, "funds_withdrawn": false, 
+// "id": 42, "interest": null, 
+// "interest_paid": "0.01506849315068493", 
+// "interest_rate": 10, "is_admin_savings": null, 
+// "locked": true, "name": "Buddy", 
+// "next_due_date": "2022-04-23", 
+// "num_of_buddies": 1, "periodic_savings_amount": 55,
+//  "plan_rolled_over": false, 
+//  "reference": "KWABA_7232860511471951650410360297_buddy_savings", 
+//  "savings_type": "buddy_savings", 
+//  "start_date": "2022-04-20", 
+//  "status": true, 
+//  "target_amount": 10000, 
+//  "updated_at": "2022-04-22T06:19:50.000Z", 
+//  "user_id": 20}

@@ -3,7 +3,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>    
 
     <application
       android:name=".MainApplication"
@@ -34,6 +34,18 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+<!-- 
+    <service
+      android:name=".MainNotificationService">
+      <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+      </intent-filter>
+    </service>
+
+    <receiver
+      android:name="com.intercom.reactnative.RNIntercomPushBroadcastReceiver"
+      tools:replace="android:exported"
+      android:exported="true"/> -->
 
       <activity
         android:name=".MainActivity"

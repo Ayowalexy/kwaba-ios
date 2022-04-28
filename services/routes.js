@@ -8,7 +8,10 @@ const cobble = {
   live: 'https://api.getcobble.net/integration',
 };
 
-const baseUrl = kwaba.staging;
+// export const baseUrl = kwaba.live;
+export const baseUrl = kwaba.staging;
+
+
 
 const urls = {
   auth: {
@@ -46,6 +49,13 @@ const urls = {
     // GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/get-all-challenges`,
     GET_ALL_CHALLENGES: `${baseUrl}/savings/challenges/`,
 
+    //USER SAVINGS PLAN, MANUAL OR AUTOMATIC
+    UPDATE_USERS_SAVINGS_PLAN: `${baseUrl}/savings/update-user-savings`,
+
+    //Interest rate for savings(Both Savings Challenge and Buddy savings)
+
+    GET_INTEREST_RATE_SAVINGS_AND_BUDDY: `${baseUrl}/system/rates`,
+
     // Buddy savings
     // CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/create-buddy-savings`,
     CREATE_BUDDY_SAVINGS: `${baseUrl}/savings/buddy/`,
@@ -55,9 +65,10 @@ const urls = {
     UPDATE_BUDDY: `${baseUrl}/savings/buddy/update-buddy`,
     // INVITE_BUDDY: `${baseUrl}/savings/buddy/invite-buddy`,
     INVITE_BUDDY: `${baseUrl}/savings/buddy/invite`,
-    ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/accept-buddy-invite`,
+    ACCEPT_BUDDY_INVITE: `${baseUrl}/savings/buddy/join`,
     GET_USER_BUDDY_INVITES: `${baseUrl}/savings/buddy/get-user-buddy-invites`,
     DELETE_INVITE: `${baseUrl} /savings/buddy/deleteInvite/`,
+    GET_ALL_BUDDY_INVITES: `${baseUrl}/savings/buddy/invite`,
   },
 
   wallet: {

@@ -43,11 +43,13 @@ import TransactionsTab from '../SoloSaving/TransactionTabs';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../../components/amountModal';
+import InsufficientModal from '../../../components/PaymentType/InsufficientWalletBalance';
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
   const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
   const [successModal, setSuccessModal] = useState(false);
   const [totalSaving, setTotalSaving] = useState(0);
@@ -67,6 +69,8 @@ export default function SoloSavingDashBoard(props) {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [channel, setChannel] = useState('');
   const [verifyData, setVerifyData] = useState('');
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
     getOneBuddy(route?.params?.id)
@@ -85,6 +89,12 @@ export default function SoloSavingDashBoard(props) {
       })
       .catch(console.log);
   }, []);
+
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
   const showSuccess = async () => {
     navigation.navigate('PaymentSuccessful', {
       content: 'Payment Successful',
@@ -262,7 +272,7 @@ export default function SoloSavingDashBoard(props) {
                     fontWeight: 'bold',
                     color: COLORS.white,
                   }}>
-                  ₦{currencyFormat(Number(totalSaving))}
+                  ₦{currencyFormat(Number(totalSaving) || 0.00)}
                 </Text>
                 <Icon
                   name="lock-closed"
@@ -607,6 +617,8 @@ export default function SoloSavingDashBoard(props) {
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
+          amount={amount}
+          setShowModal={setShowModal}
           setPaymentType={(data) => {
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
@@ -621,6 +633,15 @@ export default function SoloSavingDashBoard(props) {
           showCard={() => setShowPaymentModal(true)}
         />
       )}
+
+      {
+        showModal && (
+          <InsufficientModal
+            showModal={showModal}
+            setShowModal={setShowModal}
+          />
+        )
+      }
       {/* {showAmountModal && (
         <AmountModal
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
@@ -633,7 +654,11 @@ export default function SoloSavingDashBoard(props) {
         />
       )} */}
 
-      <Spinner visible={spinner} size="large" />
+      {
+        !showModal && (
+          <Spinner visible={spinner} size="large" />
+        )
+      }
     </View>
   );
 }

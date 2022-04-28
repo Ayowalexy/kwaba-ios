@@ -21,6 +21,7 @@ import {
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../components/amountModal';
+import InsufficientModal from '../../components/PaymentType/InsufficientWalletBalance';
 
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
@@ -36,6 +37,7 @@ export default function QuickSaveListModal(props) {
   const allBuddySaving = useSelector((state) => state.getBuddySavingsReducer);
   const {onRequestClose, visible, type, navigation} = props;
   const [savingLists, setSavingLists] = useState([]);
+  const [showModal, setShowModal] = useState(false)
 
   const [spinner, setSpinner] = useState(false);
 
@@ -169,7 +171,8 @@ export default function QuickSaveListModal(props) {
   const verifyPaymentRequest = async (data, paymentChannel) => {
     console.log('The Data: ', data);
 
-    setSpinner(true);
+    setSpinner(true)
+    
     const res = await verifySavingsPayment(data);
 
     setSpinner(false);
@@ -216,6 +219,7 @@ export default function QuickSaveListModal(props) {
   const handlePaymentRoute = async (value) => {
     // console.log('Value: ', value);
 
+    console.log(showModal, '8888')
     if (value == 'wallet') {
       const verifyPayload = {
         amount: amount,
@@ -225,7 +229,7 @@ export default function QuickSaveListModal(props) {
       };
 
       setChannel(value); // wallet
-      await verifyPaymentRequest(verifyPayload, value);
+        await verifyPaymentRequest(verifyPayload, value);
     } else {
       const verifyPayload = {
         amount: amount,
@@ -478,6 +482,8 @@ export default function QuickSaveListModal(props) {
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
+          amount={amount}
+          setShowModal={setShowModal}
           setPaymentType={(data) => {
             console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
@@ -501,6 +507,12 @@ export default function QuickSaveListModal(props) {
           }}
         />
       )}
+
+      <InsufficientModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+      
+      />
 
       <Spinner visible={spinner} size="large" />
     </>

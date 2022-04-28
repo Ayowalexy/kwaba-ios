@@ -32,6 +32,7 @@ import {getBankAccounts} from '../../../redux/actions/bankActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DisbursementModal from '../../Borrow/EmergencyLoan/DisbursementModal';
 import {getUserWallet} from '../../../redux/actions/walletAction';
+import { getUserReferrals } from '../../../redux/actions/referralAction';
 
 const withdrawalFormSchema = yup.object().shape({
   savingsOption: yup.string().required('Select accomodation status'),
@@ -45,6 +46,7 @@ export default function WithdrawalForm(props) {
     (state) => state.getBankFromStorageReducer,
   );
   const userBankAccounts = useSelector((state) => state.getBankAccountsReducer);
+  const referrals = useSelector((state) => state.getUserReferralsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const getWallet = useSelector((state) => state.getUserWalletReducer);
   const [savings, setSavings] = useState(0);
@@ -86,6 +88,7 @@ export default function WithdrawalForm(props) {
   useEffect(() => {
     dispatch(getBankAccounts());
     dispatch(getUserWallet());
+    dispatch(getUserReferrals());
     // dispatch(getMaxLoanCap());
     // getBanks();
   }, []);
@@ -103,22 +106,40 @@ export default function WithdrawalForm(props) {
   };
 
   const handleSubmit = async (values) => {
-    const data = {
-      option:
-        values.savingsOption == 'Solo Savings'
-          ? 'savings'
-          : values.savingsOption.toLowerCase(),
-      amount:
-        selectedAmountIndex == 0
-          ? unFormatNumber(fullAmount)
-          : unFormatNumber(amountValue),
-      reason: values.reason,
-      savings_id: (item && item.id) || '',
-      account_number: userSelectedBankAccount?.bank_account_number,
-      account_name: userSelectedBankAccount?.user_bank_name,
-      bank_name: userSelectedBankAccount?.bank_name,
-      bank_code: userSelectedBankAccount?.bank_short_code,
-    };
+    let data;
+    if(optionValue === 'Referrals'){
+       data = {
+        source: "",
+        amount:
+          selectedAmountIndex == 0
+            ? unFormatNumber(fullAmount)
+            : unFormatNumber(amountValue),
+        reason: values.reason,
+        account_number: userSelectedBankAccount?.bank_account_number,
+        account_name: userSelectedBankAccount?.user_bank_name,
+        bank_name: userSelectedBankAccount?.bank_name,
+        bank_code: userSelectedBankAccount?.bank_short_code,
+      };
+    } else {
+      data = {
+        option:
+          values.savingsOption == 'Solo Savings'
+            ? 'savings'
+            : values.savingsOption.toLowerCase(),
+        amount:
+          selectedAmountIndex == 0
+            ? unFormatNumber(fullAmount)
+            : unFormatNumber(amountValue),
+        reason: values.reason,
+        savings_id: (item && item.id) || '',
+        account_number: userSelectedBankAccount?.bank_account_number,
+        account_name: userSelectedBankAccount?.user_bank_name,
+        bank_name: userSelectedBankAccount?.bank_name,
+        bank_code: userSelectedBankAccount?.bank_short_code,
+      };
+    }
+   
+    
     console.log('The Data Withdraw: ', data);
     setSpinner(true);
     try {
@@ -794,6 +815,10 @@ export default function WithdrawalForm(props) {
                         'Option Value Right Here.',
                         getWallet?.data?.available_balances,
                       );
+                    }
+                    if(value == 'Referrals'){
+                      // setFullAmount(2000)
+                      setFullAmount(referrals?.data?.total_unpaid_earnings)
                     }
                   }}
                 />

@@ -8,6 +8,7 @@ import {
   getOneBuddySavingsReducer,
   getOneSoloSavingsReducer,
   getOneSoloSavingsTransactionReducer,
+  updateStateReducer,
 } from './savingsReducer';
 import fileUploadReducer from './documentUploadReducers';
 import businessFileUploadReducer from './businessdocumentUploadReducers';
@@ -63,4 +64,5 @@ export const rootReducer = combineReducers({
   stepsReducer: stepsReducer,
   getUserReferralsReducer: getUserReferralsReducer,
   getPaymentHistoryReducer: getPaymentHistoryReducer,
+  updateStateReducer: updateStateReducer
 });

@@ -70,7 +70,7 @@ export default function CreditScoreAwaiting({navigation, route}) {
           {/* <Image source={images.speedometer} style={styles.image} /> */}
 
           <View style={styles.textWrapper}>
-            <Text style={styles.title}>Credit Report...</Text>
+            <Text style={styles.title}>Credit Report..</Text>
             <Text style={styles.subText}>
               We are currently processing your report, It takes up to 5 minutes.
               please click the button below to refresh.

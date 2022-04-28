@@ -24,6 +24,7 @@ import {
 } from '../../../util/numberFormatter';
 import InviteBuddyModal from '../../../components/InviteBuddyModal';
 import {
+  getInterestRateForSavingsAndBuddy,
   createBuddySavings,
   deleteBuddySavingsInvite,
   sendBuddySavingsInvites,
@@ -57,7 +58,16 @@ export default function Screen5(props) {
 
   const [showInviteSentModal, setShowInviteSentModal] = useState(false);
 
+  const [soloSavingsRate, setSoloSavingRate] = useState('');
+
   useEffect(() => {
+
+    (async () => {
+      const rates = await getInterestRateForSavingsAndBuddy();
+
+    setSoloSavingRate(rates.data[0].solo_savings);
+
+    })()
     const data = route.params;
     console.log('Data: ', data);
 
@@ -472,7 +482,8 @@ export default function Screen5(props) {
             </View>
             <View style={[styles.dataInfo, {alignItems: 'flex-end'}]}>
               <Text style={styles.key}>Interest Rate</Text>
-              <Text style={styles.value}>{locked ? '8%' : '7%'} P.A</Text>
+              {/* <Text style={styles.value}>{locked ? '8%' : '7%'} P.A</Text> */}
+              <Text style={styles.value}>{soloSavingsRate}% P.A</Text>
             </View>
           </View>
 

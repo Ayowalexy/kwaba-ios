@@ -65,6 +65,7 @@ import {setSteps} from '../../redux/actions/rnplActions';
 import {initalState} from '../../redux/reducers/rnplReducer';
 import {getUserReferrals} from '../../redux/actions/referralAction';
 
+
 export default function NewHome({navigation}) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
@@ -107,6 +108,28 @@ export default function NewHome({navigation}) {
   const [savingType, setSavingType] = useState('');
 
   const layout = useWindowDimensions();
+
+  const createChannel = () => {
+    PushNotification.createChannel(
+      {
+        channelId: 'test-channel',
+        channelName: 'Test Channel'
+      }
+    )
+  }
+
+  useEffect(() => {
+    createChannel()
+  }, [])
+
+  const handleNotification = (item) => {
+    console.log('loooooooooool')
+    PushNotification.localNotification({
+      channelId: 'test-channel',
+      title: 'Notification',
+      message: '',
+    });
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -409,13 +432,14 @@ export default function NewHome({navigation}) {
 
   const newCard = [
     {
-      img: images.maskGroup29,
+      img: images.maskGroup30,
       title: 'Save for rent',
-      content: 'Save for rent with solo or buddy savings with friends',
+      // content: 'Save for rent with solo or buddy savings with friends',
+      content: 'Save towards your next rent alone or with friends and family',
       route: () => navigation.navigate('SavingsHome'),
     },
     {
-      img: images.maskGroup30,
+      img: images.maskGroup29,
       title: 'Pay for rent',
       content:
         // 'Apply for rental finanace and pay back in easy monthly installments',
@@ -425,13 +449,7 @@ export default function NewHome({navigation}) {
     },
   ];
 
-  const handleNotification = (item) => {
-    PushNotification.localNotification({
-      channelId: 'test-channel',
-      title: 'Notification',
-      message: '',
-    });
-  };
+  
 
   const OFFSET = 30;
   const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;

@@ -7,14 +7,27 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../util';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUserReferrals } from '../redux/actions/referralAction';
 
 export default function SelectSavingsOptionModal(props) {
   const {onRequestClose, visible, onClick} = props;
+  const dispatch = useDispatch();
+  const allBuddySaving = useSelector((state) => state.getBuddySavingsReducer);
+  const allSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+
+  const referrals = useSelector((state) => state.getUserReferralsReducer);
+
   // const genders = ['Solo Savings', 'Buddy Savings', 'Wallets', 'Referral'];
-  const genders = ['Solo Savings', 'Buddy Savings'];
+  const genders = ['Solo Savings', 'Buddy Savings', 'Referrals'];
+console.log('referrals', referrals)
+  useEffect(() => {
+    dispatch(getUserReferrals());
+  }, [])
   return (
     // <View>
     <Modal
@@ -42,6 +55,42 @@ export default function SelectSavingsOptionModal(props) {
             {genders.map((item, index) => (
               <TouchableOpacity
                 onPress={() => {
+                    if((item === 'Referrals') && (referrals?.data?.total_earnings === 0)){
+                      return Alert.alert(
+                        'No Referral Earnings',
+                        "Sorry, you don't have any referral earnings yet"
+                      )
+                    } else if((item === 'Referrals') && (referrals?.data?.total_unpaid_earnings < 1000)){
+                      return Alert.alert(
+                        'Low Referral Earnings',
+                        "Sorry, your referral earnings is not up to the minimum amount"
+                      )
+                    }
+
+                    if(item === 'Solo Savings'){
+                      const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
+                      const matured = filter.filter(element => element.amount_saved >= element.target_amount)
+                      const usedFilter = filter.filter(element => element.status && element.funds_withdrawn)
+                      // if(matured.length === 0){
+                      if(usedFilter.length === 0){
+                        return Alert.alert(
+                          'No Matured Solo Savings',
+                          'Sorry, none of your savings has reached the target amount'
+                        )
+                      }
+                    }
+
+                    if(item === 'Buddy Savings'){
+                      const filter = allBuddySaving.data.filter(element=> !(Object.is(element, null)))
+                      const matured = filter.filter(element => element.amount_saved >= element.target_amount)
+                      const usedFilter = filter.filter(element => element.status && element.funds_withdrawn)
+                      if(usedFilter.length === 0){
+                        return Alert.alert(
+                          'No Matured Buddy Savings',
+                          'Sorry, none of your savings has reached the target amount'
+                        )
+                    }
+                    } 
                   onClick(item);
                   onRequestClose();
                 }}

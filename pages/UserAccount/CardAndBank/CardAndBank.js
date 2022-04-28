@@ -18,12 +18,46 @@ export default function CardAndBankDetails({navigation}) {
   const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [paymentCards, setPaymentCards] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
+  
+  console.log('banks', paymentCards)
 
   useEffect(() => {
     const getAllCards = async () => {
       try {
         const res = await getTokenizeCards();
-        setPaymentCards(res.data.cards);
+
+        const d =  [{
+            added_by_user: true, 
+            card_details: 
+              {authorization_code:"AUTH_b3p1y331l5",
+              bin:"408408",
+              last4:"4081",
+              exp_month:"12",
+              exp_year:"2030",
+              channel:"card",
+              card_type:"visa",
+              bank:"TEST BANK",
+              country_code:"NG",
+              brand:"visa",
+              reusable: true,
+              signature:"SIG_sLm590YofglVlj1KqpUM",
+              account_name: null,
+              receiver_bank_account_number:null,
+              receiver_bank:null
+            }, 
+            created_at: "2022-04-21T13:07:36.806Z", 
+            id: 110, 
+            last_4_digits: "4081", 
+            purpose: "cardTokenization", 
+            updated_at: "2022-04-21T13:07:36.806Z", 
+            user_id: 8
+          }]
+        
+        // setPaymentCards(d);
+        setPaymentCards(JSON.parse(res.data.data));
+        console.log('res data', res.data.data)
+
+        // setPaymentCards(res.data);
       } catch (error) {
         console.log(error);
       }
@@ -32,11 +66,13 @@ export default function CardAndBankDetails({navigation}) {
     getAllCards();
   }, []);
 
+
   useEffect(() => {
     const getAllBanks = async () => {
       try {
         setShowSpinner(true);
         const res = await getBankAccounts();
+        console.log('res bank', res)
         if (res.status == 200) {
           setUserBankAccounts(res.data.userBanks);
           setShowSpinner(false);
@@ -70,10 +106,13 @@ export default function CardAndBankDetails({navigation}) {
 
         <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
           <View style={[styles.content]}>
-            <PaymentCard
-              paymentCards={paymentCards}
-              allCards={(value) => setPaymentCards(value)}
-            />
+           
+                <PaymentCard
+                  navigation={navigation}
+                  paymentCards={paymentCards || []}
+                  allCards={(value) => setPaymentCards(value)}
+                />
+            
             <BankAccount
               userBankAccounts={userBankAccounts}
               allBanks={(value) => setUserBankAccounts(value)}
@@ -108,3 +147,4 @@ const styles = StyleSheet.create({
     // marginTop: 20,
   },
 });
+

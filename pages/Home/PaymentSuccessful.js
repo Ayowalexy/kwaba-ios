@@ -18,6 +18,7 @@ import {
   getOneSoloSavingsTransaction,
   getTotalBuddySavings,
   getOneBuddySavings,
+  updateState,
 } from '../../redux/actions/savingsActions';
 import {getAirtimeBillTrans} from '../../redux/actions/billsAction';
 import {useDispatch, useSelector} from 'react-redux';
@@ -54,6 +55,7 @@ export default function PaymentSuccessful(props) {
       'You have successfully funded your wallet'
     ) {
       // dispatch(getTotalSoloSavings());
+      dispatch(updateState())
       dispatch(getMaxLoanCap());
       console.log('Meow wallet');
       // dispatch(getAirtimeBillTrans());
@@ -81,6 +83,7 @@ export default function PaymentSuccessful(props) {
       'You have successfully funded your wallet'
     ) {
       // dispatch(getTotalSoloSavings());
+      dispatch(updateState())
       dispatch(getMaxLoanCap());
       console.log('Meow wallet');
       // dispatch(getAirtimeBillTrans());
@@ -88,6 +91,10 @@ export default function PaymentSuccessful(props) {
       dispatch(getUserWalletTransactions());
       // dispatch(getUserSavingsChallenge());
     } else {
+      console.log('@'.repeat(20))
+      console.log('Payment Succesful')
+      console.log('@'.repeat(20))
+      dispatch(updateState())
       dispatch(getTotalSoloSavings());
       dispatch(getMaxLoanCap());
       dispatch(getOneSoloSavings(props?.route?.params?.id));

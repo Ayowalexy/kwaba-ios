@@ -26,6 +26,7 @@ import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {
   completeSavingsPayment,
+  getInterestRateForSavingsAndBuddy,
   getInterestRate,
   userCreateSavings,
   verifySavingsPayment,
@@ -37,6 +38,9 @@ import ManualNoPaymentModal from '../../../components/ConfirmModalsForSaving/Man
 import AutoNoPaymentModal from '../../../components/ConfirmModalsForSaving/AutoNoPaymentModal';
 
 export default function Screen3({navigation, route}) {
+
+  const [soloSavingsRate, setSoloSavingRate] = useState('');
+
   const store = useSelector((state) => state.soloSavingReducer);
   const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
@@ -102,7 +106,14 @@ export default function Screen3({navigation, route}) {
   const [unlockedSavingsInterestValue, setUnlockedSavingsInterestValue] =
     useState(0);
 
-  useEffect(() => {
+  useEffect( () => {
+    
+    (async () => {
+      const rates = await getInterestRateForSavingsAndBuddy();
+
+    setSoloSavingRate(rates.data[0].solo_savings);
+
+    })()
     const data = route.params;
 
     console.log('The Data: ', data);
@@ -354,7 +365,10 @@ export default function Screen3({navigation, route}) {
                 {/* {locked
                   ? lockedSavingsInterestValue
                   : unlockedSavingsInterestValue} */}
-                11% P.A
+                {/* 11% P.A  
+                MODIFIED TO FETCH RATES TO THE BACKEND, SO IT CAN BE CHANGED DYNAMICALLY
+                */}
+                 {soloSavingsRate} % P.A
               </Text>
             </View>
           </View>

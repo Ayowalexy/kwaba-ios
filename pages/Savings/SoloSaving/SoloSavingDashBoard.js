@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,9 @@ import {
   getMaxLoanCap,
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
+  updateState,
 } from '../../../redux/actions/savingsActions';
+
 
 import QuickSaveModal from '../../../components/QuickSaveModal';
 import moment from 'moment';
@@ -36,6 +38,7 @@ import {
   changeSavingsMethod,
   completeSavingsPayment,
   getSavingsHistory,
+  updateUsersSavingsPlan,
 } from '../../../services/network';
 import PaymentTypeModalForSavings from '../../../components/paymentTypeModalForSavings';
 import CreditCardFormSavings from '../../../components/CreditCard/CreditCardFormSavings';
@@ -88,11 +91,28 @@ export default function SoloSavingDashBoard(props) {
 
   const [savingsCompleted, setSavingsCompleted] = useState(false);
 
+  const [isReady, setIsReady] = useState(false);
+
+  const initialRender = useRef(false)
+
+  useEffect(() => {
+    if(initialRender.current){
+      setIsReady(false)
+      setTimeout(() => {
+        setIsReady(true)
+      }, 5000)
+    } else {
+      initialRender.current = true
+      setIsReady(true)
+    }
+   
+  }, [])
   const toggleSwitch = async () => {
     setAutoSaving((previousState) => !previousState);
   };
 
   const setDashboardValue = () => {
+
     const data = getOne?.data?.data.data;
     console.log('Tahtah: ', data);
     console.log('Dat sound: ', getOneTransaction);
@@ -103,8 +123,11 @@ export default function SoloSavingDashBoard(props) {
       startDate: data?.start_date,
       endDate: data?.end_date,
     });
+
     setAutoSaving(data?.auto_save);
-    setTotalInterest(data?.interest);
+    //THIS CAN BE CHANGED LATER TO INTEREST FROM USER SAVINGS BUT CURRENTLY USING INTEREST_PAID
+    // setTotalInterest(data?.interest); 
+    setTotalInterest(data?.interest_paid);
     setSavingTitle(data?.name);
     setSavingsTarget(data?.target_amount);
     setPercentAchieved(
@@ -121,6 +144,14 @@ export default function SoloSavingDashBoard(props) {
       setSavingsCompleted(false);
     }
   };
+
+  useEffect(() => {
+      const data = {
+        savings_id: route?.params?.id,
+        auto_save: autoSaving
+      }
+      updateUsersSavingsPlan(data)
+  }, [autoSaving])
 
   useEffect(() => {
     setDashboardValue();
@@ -140,6 +171,7 @@ export default function SoloSavingDashBoard(props) {
   };
 
   const showSuccess = async () => {
+    
     navigation.navigate('PaymentSuccessful', {
       content: 'Payment Successful',
       subText: 'You have successfully funded your savings',
@@ -245,6 +277,24 @@ export default function SoloSavingDashBoard(props) {
     }
   };
 
+  const DashBoardMockData = () => (
+    <Image 
+      source={images.soloSavingsCard}
+      style={{
+        width: '100%',
+        height: '100%',
+        resizeMode: 'stretch',
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+      }}
+    />
+
+  )
+
+
   return (
     <View style={styles.container}>
       <Icon
@@ -322,7 +372,29 @@ export default function SoloSavingDashBoard(props) {
               </View>
             </View>
           </View>
-          <View style={[styles.soloSavingCard]}>
+
+          {
+            !isReady ? 
+            (
+              <View style={[styles.soloSavingCard]}>
+                <Image
+                  source={images.soloSavingsCard}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    resizeMode: 'stretch',
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                    left: 0,
+                  }}
+                />
+                <View style={{padding: 20}} />
+              </View>
+            ) :
+            (
+              <View style={[styles.soloSavingCard]}>
             <Image
               source={images.soloSavingsCard}
               style={{
@@ -465,7 +537,7 @@ export default function SoloSavingDashBoard(props) {
                 </View>
 
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {/* <View style={{flexDirection: 'column'}}>
+                  <View style={{flexDirection: 'column'}}>
                     <Text style={{color: COLORS.white, fontSize: 10}}>
                       Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
                     </Text>
@@ -476,7 +548,7 @@ export default function SoloSavingDashBoard(props) {
                       onValueChange={toggleSwitch}
                       value={autoSaving}
                     />
-                  </View> */}
+                  </View>
                 </View>
               </View>
             </View>
@@ -505,7 +577,7 @@ export default function SoloSavingDashBoard(props) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  ₦{currencyFormat(Number(totalInterest))}
+                  ₦{currencyFormat(Number(totalInterest) || 0.00)}
                 </Text>
               </View>
 
@@ -531,6 +603,13 @@ export default function SoloSavingDashBoard(props) {
               </View>
             </View>
           </View>
+
+            )
+
+          } 
+
+          
+
 
           <View
             style={{
@@ -742,6 +821,9 @@ export default function SoloSavingDashBoard(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
+            setDashboardValue();
+            updateState();
+
             showSuccess();
           }}
         />

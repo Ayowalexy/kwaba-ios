@@ -73,7 +73,8 @@ const DataBill = ({navigation, route}) => {
       console.log('Service ID: ', serviceID);
       try {
         const token = await getToken();
-        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
+        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bills/get-bills-items/${serviceID}`;
+        // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
@@ -320,7 +321,7 @@ const DataBill = ({navigation, route}) => {
         }}
         onPressCloseButton={closePanel}>
         <View style={{flex: 1}}>
-          {getBillsCategoryLists?.data?.content?.map((item, index) => {
+          {getBillsCategoryLists?.data?.map((item, index) => {
             return (
               <TouchableOpacity
                 onPress={() => {

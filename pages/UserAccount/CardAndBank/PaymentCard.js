@@ -31,6 +31,7 @@ export default function PaymentCard(props) {
   const [successMsg, setSuccessMsg] = useState(false);
   const [clickedID, setClickedID] = useState('');
   const [clickedItem, setClickedItem] = useState('');
+  const [successModal, setSuccessModal] = useState(false)
 
   const {allCards, paymentCards} = props;
 
@@ -41,65 +42,69 @@ export default function PaymentCard(props) {
     setClickedItem(item);
   };
 
-  const renderPaymentCards = ({item}) => (
-    <TouchableOpacity
-      activeOpacity={0.9}
-      style={[
-        styles.paymentCard,
-        {
-          borderWidth: item.id == clickedID ? 2 : 0,
-          borderColor: item.id == clickedID ? COLORS.secondary : 'none',
-        },
-      ]}
-      onPress={() => {
-        handlePress(item);
-      }}>
-      <View>
+  console.log("paymentCards", paymentCards)
+ 
+    const renderPaymentCards = ({item}) => {
+      // console.log('tem',JSON.parse(item.card_details).card_type)
+      return(
+      <TouchableOpacity
+        activeOpacity={0.9}
+        style={[
+          styles.paymentCard,
+          {
+            borderWidth: item.id == clickedID ? 2 : 0,
+            borderColor: item.id == clickedID ? COLORS.secondary : 'none',
+          },
+        ]}
+        onPress={() => {
+          handlePress(item);
+        }}>
         <View>
-          <Text
-            style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
-            ****{item.last_four_digits}
-          </Text>
-        </View>
-        <View style={{marginTop: 100}}>
-          <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
-            EXPIRES
-          </Text>
-          <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
-            {item.exp_month}-{item.exp_year}
-          </Text>
-        </View>
-        <Image
-          source={
-            item.type == 'mastercard'
-              ? images.mastercarddesign
-              : images.visacarddesign
-          }
-          resizeMode="contain"
-          style={{
-            height: 200,
-            width: 150,
-            resizeMode: 'contain',
-            position: 'absolute',
-            right: -22,
-          }}
-        />
-
-        {item.defaultcard == 1 && (
-          <Icon
-            name="checkbox"
-            size={20}
-            color={COLORS.secondary}
+          <View>
+            <Text
+              style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
+              ****{item.card_details.last4}
+            </Text>
+          </View>
+          <View style={{marginTop: 100}}>
+            <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
+              EXPIRES
+            </Text>
+            <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
+              {item.card_details.exp_month}-{item.card_details.exp_year}
+            </Text>
+          </View>
+          <Image
+            source={
+              item.card_details.card_type == 'mastercard'
+                ? images.mastercarddesign
+                : images.visacarddesign
+            }
+            resizeMode="contain"
             style={{
+              height: 200,
+              width: 150,
+              resizeMode: 'contain',
               position: 'absolute',
-              top: -10,
-              right: -10,
+              right: -22,
             }}
           />
-        )}
-      </View>
-    </TouchableOpacity>
-  );
+
+          {item.defaultcard == 1 && (
+            <Icon
+              name="checkbox"
+              size={20}
+              color={COLORS.secondary}
+              style={{
+                position: 'absolute',
+                top: -10,
+                right: -10,
+              }}
+            />
+          )}
+        </View>
+      </TouchableOpacity>
+    )};
 
   return (
     <>
@@ -161,9 +166,12 @@ export default function PaymentCard(props) {
         </View>
 
         <Modal
-          isVisible={successMsg}
-          onBackButtonPress={() => setSuccessMsg(false)}
-          onBackdropPress={() => setSuccessMsg(false)}>
+          // isVisible={successMsg}
+          // onBackButtonPress={() => setSuccessMsg(false)}
+          // onBackdropPress={() => setSuccessMsg(false)}>
+          isVisible={successModal}
+          onBackButtonPress={() => setSuccessModal(false)}
+          onBackdropPress={() => setSuccessModal(false)}>
           <View
             style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
             <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
@@ -174,6 +182,9 @@ export default function PaymentCard(props) {
       </ScrollView>
 
       <AddPaymentCardModal
+        setPaymentCardModal={setPaymentCardModal}
+        setSuccessModal={setSuccessModal}
+        navigation={props.navigation}
         onRequestClose={() => setPaymentCardModal(!paymentCardModal)}
         visible={paymentCardModal}
         setDisplayAllPaymentCards={(all) => allCards(all)}

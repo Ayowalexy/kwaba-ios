@@ -15,6 +15,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getAllBanks, getBankAccounts} from '../services/network';
+import { baseUrl } from '../services/routes';
 
 export default function AddBankAccountModal(props) {
   const {onRequestClose, visible, setDisplayAllBankAccounts} = props;
@@ -132,9 +133,9 @@ export default function AddBankAccountModal(props) {
   };
 
   const verifyBankAccount = async (account_number, bank_code) => {
-    // console.log({account_number, bank_code});
-    const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/bank_details';
+    console.log(account_number, bank_code);
+    const url = `${baseUrl}/user/bank_details`;
+    // https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/
     try {
       const token = await getToken();
       const response = await axios.post(
@@ -147,7 +148,7 @@ export default function AddBankAccountModal(props) {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
-
+  
       if (String(response.status).startsWith('2')) {
         setSpinner(false);
 
@@ -183,7 +184,7 @@ export default function AddBankAccountModal(props) {
 
     try {
       const url =
-        'https://kwaba-main-api-2-cq4v8.ondigitalocean.app/api/v1/createbankaccount';
+          `${baseUrl}/createbankaccount`;
       const token = await getToken();
       const response = await axios.post(url, JSON.stringify(d), {
         headers: {'Content-Type': 'application/json', Authorization: token},

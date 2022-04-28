@@ -20,9 +20,10 @@ import {
 import {InAppBrowser} from 'react-native-inappbrowser-reborn';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from './Paystack/PaystackPayment';
+getTokenizeCards
 
 export default function AddPaymentCardModal(props) {
-  const {onRequestClose, visible, onConfirm, setDisplayAllPaymentCards} = props;
+  const {onRequestClose, visible, onConfirm, setDisplayAllPaymentCards, setSuccessModal, setPaymentCardModal} = props;
 
   const [paymentCards, setPaymentCards] = useState([]);
   const [spinner, setSpinner] = useState(false);
@@ -32,16 +33,26 @@ export default function AddPaymentCardModal(props) {
 
   const addAccount = async () => {
     const data = {
-      amount: 50,
+      amount: 100,
+      channel: "paystack", //paystack
+      purpose: "cardTokenization"
     };
+
+    // const data = {
+    //   amount: 100,
+    //   channel: channel, //paystack
+    //   purpose: 'wallet',
+    // };
 
     setSpinner(true);
     try {
       const res = await tokenizePayment(data);
-      console.log('RES: ', res);
+      console.log('RES: ', res.data);
       setSpinner(false);
       if (res.status == 200) {
         setSpinner(false);
+
+        
         console.log('The Response: ', res.data.data);
         setShowPaystackPayment(true);
         setResData(res.data.data);
@@ -120,7 +131,7 @@ export default function AddPaymentCardModal(props) {
                   }}>
                   To verify your card you will be charged{' '}
                   <Text style={{color: '#00DC99', fontWeight: 'bold'}}>
-                    ₦50.
+                    ₦100.
                   </Text>{' '}
                   This money goes towards your wallet.
                 </Text>
@@ -161,17 +172,27 @@ export default function AddPaymentCardModal(props) {
 
             console.log('the dataatatta: ', data);
 
-            setSpinner(true);
-            const verify = await tokenizeCard(data);
+            
 
-            console.log('the verifyyyyy: ', verify);
 
-            if (verify.status == 200) {
-              navigation.navigate('PaymentSuccessful', {
+
+            setSpinner(false);
+             //UPDATING STATE FROM PARENT COMPONENT TO OPEN SUCCESS MODAL AND CLOSE ADD PAYMENT MODAL
+            // setSuccessModal(true)
+            setPaymentCardModal(false)
+            
+            //THIS ENDPOINT IS NO LONGER NEEDED TO CARD TOKENIZATION. ALL TOKENIZATION PAYMENT NOW MADE USING THE urls.savings.VERIFY_PAYMENT
+            // const verify = await tokenizeCard(data);
+            // console.log('verify',verify)
+
+
+            if (true) {
+              props.navigation.navigate('PaymentSuccessful', {
                 name: 'Home',
-                content: 'Card Tokenized',
+                content: 'Success',
                 subText:
-                  'Awesome! You have successfully tokenized your card for payments.',
+                  // 'Awesome! You have successfully tokenized your card for payments.',
+                  'Your card has been added successfully',
               });
               setSpinner(false);
             } else {

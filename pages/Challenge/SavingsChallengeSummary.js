@@ -26,6 +26,9 @@ import ModalMessage from '../../components/MessageModals/ModalMessage';
 import {ScrollView} from 'react-native-gesture-handler';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
+import { useDispatch } from 'react-redux';
+import { updateState } from '../../redux/actions/savingsActions';
+
 
 const {width, height} = Dimensions.get('screen');
 
@@ -55,6 +58,7 @@ export default function SavingsChallengeSummary(props) {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const dispatch = useDispatch();
 
   const [message, setMessage] = useState({
     title: 'Title',
@@ -66,7 +70,9 @@ export default function SavingsChallengeSummary(props) {
   const [savingsType, setSavingsType] = useState(true);
 
   const toggleSwitch = () => {
-    setSavingsType((previousState) => !previousState);
+    //SAVING CHALLENGE CHNAGED TO AUTOMATICE BY DEFAULT AND MAKING IT
+    //UNCHANGABLE BY COMMENTING OUT THE setSavingsType BELOW 
+    // setSavingsType((previousState) => !previousState);
   };
 
   useEffect(() => {
@@ -119,6 +125,7 @@ export default function SavingsChallengeSummary(props) {
 
     setSpinner(true);
     const response = await joinSavingsChallenge(payload);
+    console.log('response', response)
 
     try {
       setSpinner(false);
@@ -244,7 +251,7 @@ export default function SavingsChallengeSummary(props) {
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                     marginTop: 10,
                     paddingHorizontal: 20,
                     backgroundColor: '#5A4CB110',
@@ -258,15 +265,16 @@ export default function SavingsChallengeSummary(props) {
                       lineHeight: 15,
                       marginRight: 23,
                     }}>
-                    Switch to {savingsType ? 'Manual' : 'Automatic'} Savings
+                      Set to automatic by default
+                    {/* Switch to {savingsType ? 'Manual' : 'Automatic'} Savings */}
                   </Text>
-                  <Switch
+                  {/* <Switch
                     trackColor={{false: '#ddd', true: '#ddd'}}
                     thumbColor={savingsType ? COLORS.secondary : '#ADADAD'}
                     ios_backgroundColor="#3e3e3e"
                     onValueChange={toggleSwitch}
                     value={savingsType}
-                  />
+                  /> */}
                 </View>
 
                 <View

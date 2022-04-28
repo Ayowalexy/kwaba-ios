@@ -98,3 +98,14 @@ export const getOneSoloSavingsTransactionReducer = (state = [], action) => {
       return state;
   }
 };
+
+
+export const updateStateReducer = (state = [], action) => {
+  switch(action.type){
+    case types.UPDATE_STATE: 
+    return {
+      ...state
+    }
+    default: return state
+  }
+}

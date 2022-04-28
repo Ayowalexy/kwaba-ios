@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  Alert
 } from 'react-native';
 import IconFA from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -24,6 +25,7 @@ const buddySavingFormSchema = yup.object().shape({
   // savingEndDate: yup.string().required('Required'),
   // saving,
 });
+
 
 export default function Screen1(props) {
   const {navigation} = props;
@@ -172,6 +174,25 @@ export default function Screen1(props) {
   }, []);
 
   const handleSubmit = async (values) => {
+
+    console.log('values', props.route.params.target_amount, values.savingDuration)
+    if((Number(values.savingDuration[0]) === 3) && (props.route.params.target_amount < 50000)){
+      return Alert.alert(
+        'Invalid Target Amount',
+        'The minimum target amount for a 3 month long buddy savings is ₦50,000'
+      )
+    } else if ((Number(values.savingDuration[0]) === 6) && (props.route.params.target_amount < 100000)){
+      return Alert.alert(
+        'Invalid Target Amount',
+        'The minimum target amount for a 6 month long buddy savings is ₦100,000'
+      )
+    } else if((Number(values.savingDuration[0]) === 1) && (props.route.params.target_amount < 200000)){
+      return Alert.alert(
+        'Invalid Target Amount',
+        'The minimum target amount for a 12 month long buddy savings is ₦200,000'
+      )
+    }
+
     const data = {
       ...props.route.params,
       duration: values.savingDuration[0],

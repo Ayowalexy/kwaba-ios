@@ -117,15 +117,26 @@ export default function JoinChallengeDashboard(props) {
 
   useEffect(() => {
     console.log('All Savings', allSavings);
-
+    // item.savings_type == 'savings_challenge'
+    
     const filter = allSavings.data.filter(
-      (item) => item.savings_type == 'savings_challenge',
-    );
+      (item) => {
+        if( !(Object.is(item, null)) && (item.savings_type == 'savings_challenge')){
+          return item
+        }
+      });
+
+      console.log(filter.length)
+      for(let d of filter){
+        console.log(d.challenge_id, props.route.params.id)
+      }
 
     const data = filter.filter(
       (item) => item.challenge_id == props?.route?.params?.id,
     )[0];
     console.log('The ID: ', data);
+
+    
 
     let challenge_start = moment(data?.start_date, 'YYYY-MM-DD').format(
       'YYYY-MM-DD',

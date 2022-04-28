@@ -12,7 +12,7 @@ import {
 import {COLORS} from '../../util';
 import {formatNumber} from '../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {getMaxLoanCap} from '../../redux/actions/savingsActions';
+import {getMaxLoanCap, updateState} from '../../redux/actions/savingsActions';
 import {useDispatch, useSelector} from 'react-redux';
 import {SwipeablePanel} from 'rn-swipeable-panel';
 import AddFundToWalletModal from './AddFundToWalletModal';
@@ -34,6 +34,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import QuickSaveListModal from '../Home/QuickSaveListModal';
 import QuickSaveModal from '../../components/QuickSaveModal';
 import SavingsOptionModal from '../../components/savingsOptionModal';
+
 
 export default function Wallet(props) {
   const {navigation} = props;
@@ -531,7 +532,9 @@ export default function Wallet(props) {
         />
       )}
 
-      {showPaystackPayment && (
+
+
+       {showPaystackPayment && (
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
           data={resData}
@@ -543,6 +546,7 @@ export default function Wallet(props) {
           paymentSuccessful={async (paystackRes) => {
             try {
               console.log('wallet successfully funded');
+              dispatch(updateState())
               navigation.navigate('PaymentSuccessful', {
                 content: 'Payment Successful',
                 subText: 'You have successfully funded your wallet',
@@ -553,7 +557,7 @@ export default function Wallet(props) {
             }
           }}
         />
-      )}
+      )} 
 
       <Spinner visible={spinner} size="large" />
     </>

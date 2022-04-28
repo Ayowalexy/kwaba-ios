@@ -23,13 +23,17 @@ import {
   unFormatNumber,
   currencyFormat,
 } from '../../../util/numberFormatter';
+import { getInterestRateForSavingsAndBuddy} from '../../../services/network'
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
+
 const emergencyFundFormSchema = yup.object().shape({
   requestAmount: yup.string().required('Provide an amount'),
 });
+
+
 
 export default function EmergencyLoanHome({navigation}) {
   const dispatch = useDispatch();
@@ -39,6 +43,7 @@ export default function EmergencyLoanHome({navigation}) {
   const [maximumLoanAmount, setMaximumLoanAmount] = useState(0);
   const [repaymentAmount, setRepaymentAmount] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
+  const [emergencyLoanRate, setEmergencyLoanRate] = useState(0)
 
   useEffect(() => {
     dispatch(getTotalSoloSavings());
@@ -46,6 +51,12 @@ export default function EmergencyLoanHome({navigation}) {
   }, []);
 
   useEffect(() => {
+
+    (async () => {
+      const rates = await getInterestRateForSavingsAndBuddy();
+    setEmergencyLoanRate(rates.data[0].emergency_loans);
+
+    })()
     const data = getMaxLoanCap1?.data;
 
     console.log('The Data: ', data);
@@ -56,7 +67,9 @@ export default function EmergencyLoanHome({navigation}) {
   }, []);
 
   const calculateRepayment = (amount) => {
-    const interestRate = 0.02;
+    //OLD INTEREST RATE UPDATED TO VALUE FROM THE BACKEND FROM 2%
+    // const interestRate = 0.02;
+    const interestRate = emergencyLoanRate / 100;
     const repayment = Number(amount) + Number(amount) * interestRate;
     return repayment;
   };
@@ -179,6 +192,7 @@ export default function EmergencyLoanHome({navigation}) {
               alignItems: 'center',
               paddingHorizontal: 20,
             }}>
+              
             <Image
               source={images.maskGroup44}
               style={{width: 100, height: 100, marginBottom: 20}}

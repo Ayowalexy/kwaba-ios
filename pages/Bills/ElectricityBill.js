@@ -53,6 +53,8 @@ const ElectricityBill = ({navigation, route}) => {
     (state) => state.getBillCategoryReducer,
   );
 
+  console.log('bills/get-bills-category', getBillsCategoryLists.data)
+
   useEffect(() => {
     getBillsItems();
   }, [serviceID]);
@@ -83,8 +85,10 @@ const ElectricityBill = ({navigation, route}) => {
     if (serviceID != '') {
       // console.log('Service ID: ', serviceID);
       try {
+        console.log('service id', serviceID)
         const token = await getToken();
-        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
+        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bills/get-bills-items/${serviceID}`;
+        // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get-bills-items/${serviceID}`;
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
@@ -369,7 +373,7 @@ const ElectricityBill = ({navigation, route}) => {
         }}
         onPressCloseButton={closePanel}>
         <View style={{flex: 1}}>
-          {getBillsCategoryLists?.data?.content?.map((item, index) => {
+          {getBillsCategoryLists?.data?.map((item, index) => {
             return (
               <TouchableOpacity
                 onPress={() => {

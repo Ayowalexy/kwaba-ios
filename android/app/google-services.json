@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "232519611125",
+    "firebase_url": "https://kwaba-1526991970328.firebaseio.com",
+    "project_id": "kwaba-1526991970328",
+    "storage_bucket": "kwaba-1526991970328.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232519611125:android:afa9226833eb2fa4250bbc",
+        "android_client_info": {
+          "package_name": "com.kwaba_mobile_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "232519611125-kio6v352ic43i26uo7bj2tj6scg5sqq7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfiADXB9JhB6y7lGEZzxRaBwWAjwcEG-Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "232519611125-kio6v352ic43i26uo7bj2tj6scg5sqq7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

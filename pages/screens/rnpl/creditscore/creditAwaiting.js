@@ -11,7 +11,7 @@ import {
   Keyboard,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {fetch} from '../../../../services/creditScrore';
+import {fetch, purchase} from '../../../../services/creditScrore';
 import {COLORS} from '../../../../util';
 import designs from './styles';
 
@@ -49,6 +49,7 @@ export default function CreditAwaiting(props) {
     const payload = {
       email: route?.params?.email,
       company: route?.params?.company,
+      bvn: route?.params?.bvn
     };
 
     const user = await getUser();
@@ -58,29 +59,34 @@ export default function CreditAwaiting(props) {
     );
     const parseData = JSON.parse(storedPayload);
 
-    const res = await fetch(payload || parseData);
-    console.log('Dat res: ', res);
 
-    try {
-      if (res.status == 200) {
-        setSpinner(false);
-        if (res.data.history.length) {
+    const purchaseRes = await purchase(payload || parseData)
+
+    if(purchaseRes.status === 200){
+      const res = await fetch(payload || parseData);
+      console.log('Dat res: ', res);
+
+      try {
+        if (res.status == 200) {
           setSpinner(false);
-          navigation.navigate('CreditDashboard', {
-            history: JSON.stringify(res?.data?.histroy),
-          });
-          // console.log('History: ', res?.data?.history);
-        } else {
-          setSpinner(false);
-          Alert.alert(
-            'Credit history',
-            'We are still searching for your credit report, please check back later.',
-          );
+          if (res.data.history.length) {
+            setSpinner(false);
+            navigation.navigate('CreditDashboard', {
+              history: JSON.stringify(res?.data?.histroy),
+            });
+            // console.log('History: ', res?.data?.history);
+          } else {
+            setSpinner(false);
+            Alert.alert(
+              'Credit history',
+              'We are still searching for your credit report, please check back later.',
+            );
+          }
         }
+      } catch (error) {
+        setSpinner(false);
+        console.log('Errorrrrr: ', error.response);
       }
-    } catch (error) {
-      setSpinner(false);
-      console.log('Errorrrrr: ', error.response);
     }
   };
   return (

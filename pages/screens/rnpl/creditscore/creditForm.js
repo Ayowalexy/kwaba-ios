@@ -99,7 +99,10 @@ export default function CreditForm(props) {
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditForm');
+      //OVERWRITING THE PREVIOUS IMPLEMENTATION OF SETTING THE creditScoreDetail TO creditForm
+      //ON CREDIT FORM PAGE MOUNTING, IT SHOULD BE SET TO creditForm ONLY WHEN THE 2000 PAYMENT
+      //IS SUCCESFUL
+      //AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditForm');
     })();
   }, []);
 
@@ -114,6 +117,14 @@ export default function CreditForm(props) {
       bvn: values.bvn,
       company: 'Kwaba',
     };
+
+    const getUser = async () => {
+      const userData = await AsyncStorage.getItem('userData');
+      const user = JSON.parse(userData).user;
+      return user;
+    };
+    const user = await getUser();
+    // AsyncStorage.setItem(`userEmailAndBvn-${user.id}`, JSON.stringify(data));
 
     setFormValue(data);
     console.log('DF: ', formValue);
@@ -315,6 +326,14 @@ export default function CreditForm(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
+            const getUser = async () => {
+              const userData = await AsyncStorage.getItem('userData');
+              const user = JSON.parse(userData).user;
+              return user;
+            };
+            const user = await getUser();
+            AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditForm');
+            AsyncStorage.setItem(`userEmailAndBvn-${user.id}`, JSON.stringify(formValue));
             navigation.navigate('CreditAwaiting', formValue);
           }}
         />

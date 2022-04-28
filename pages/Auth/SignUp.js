@@ -328,7 +328,7 @@ export default function SignUp({navigation}) {
               color: '#465969',
             },
           ]}>
-          Welcome, let's set you up!
+          Welcome, let's set you up
         </Text>
 
         <Formik

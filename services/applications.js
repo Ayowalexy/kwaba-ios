@@ -18,6 +18,7 @@ export const newApplication = async (data) => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
     );
+    console.log("response", response)
     return response;
   } catch (error) {
     return error;

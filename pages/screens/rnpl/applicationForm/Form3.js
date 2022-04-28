@@ -115,7 +115,7 @@ const RentalLoanForm3 = ({navigation}) => {
       last_rent_payment_method: values.howDidYouPay,
     };
 
-    console.log(data);
+    console.log('rent data', data);
 
     const user = await getUser();
 

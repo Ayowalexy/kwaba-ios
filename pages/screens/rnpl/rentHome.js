@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, ScrollView} from 'react-native';
+import {View, Text, Image, TouchableOpacity,Alert, ScrollView} from 'react-native';
 import {COLORS, FONTS, images} from '../../../util/index';
 import designs from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -66,6 +66,13 @@ export default function RentHome({navigation}) {
   }, []);
 
   const handleRentalLoanClick = async () => {
+
+    // return Alert.alert(
+    //   'Oops',
+    //   'This feature is unavailable at the moment'
+    // )
+    //THE RENT NOW PAY LATER FEATURE IS CURRENTLY TURNED OFF
+    
     TrackEvent('RNPL From Bottom Navigation');
     const user = await getUser();
     const getCreditScoreDetails = await AsyncStorage.getItem(
@@ -79,6 +86,8 @@ export default function RentHome({navigation}) {
     // navigation.navigate('RnplSteps');
     // navigation.navigate('NewAllDocuments');
     // navigation.navigate('CreditOnboard');
+   
+    const userDetails = await AsyncStorage.getItem(`userEmailAndBvn-${user.id}`);
 
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
@@ -87,9 +96,11 @@ export default function RentHome({navigation}) {
         navigation.navigate('RnplOnboard');
       } else if (getCreditScoreDetails == 'creditOnboarding') {
         navigation.navigate('RnplOnboard');
-        // navigation.navigate('CreditOnboard');
+       // // // navigation.navigate('CreditOnboard');
       } else if (getCreditScoreDetails == 'creditForm') {
-        navigation.navigate('RnplOnboard');
+          navigation.navigate('CreditAwaiting', JSON.parse(userDetails));
+          //navigation.navigate('RnplOnboard');
+       
       } else if (getCreditScoreDetails == 'creditAwaiting') {
         navigation.navigate('creditAwaiting');
       } else if (getCreditScoreDetails == 'creditDashboard') {

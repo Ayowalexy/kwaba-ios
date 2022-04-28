@@ -27,7 +27,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getUserWallet} from '../../redux/actions/walletAction';
 
 RNPaystack.init({
-  publicKey: 'pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4bb',
+  publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
   // publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
 

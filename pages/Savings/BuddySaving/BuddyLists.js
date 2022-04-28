@@ -22,11 +22,17 @@ import {
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import {formatNumber} from '../../../util/numberFormatter';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
+import { GetAllBuddyInvites } from '../../../services/network';
+import DeleteModal from './BuddyInvitesModal'
 
 export default function BuddyLists({navigation}) {
   const dispatch = useDispatch();
   const allSavings = useSelector((state) => state.getBuddySavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedInvite, setSelectedInvite] = useState(null)
+  const [buddyList, setBuddyList] = useState([]);
+  
 
   useEffect(() => {
     console.log('From the store Max Loan Cap: ', allSavings);
@@ -36,11 +42,25 @@ export default function BuddyLists({navigation}) {
     dispatch(getMaxLoanCap());
   }, []);
 
+  
+
+  
   const Joined = () => {
+    const [buddyInvites, setBuddyInvites] = useState([])
+    const handleBuddyInvites = async () => {
+      const res = await GetAllBuddyInvites();
+      const filtered = res.data.buddyInvites.filter(d => d.accepted === false)
+      setBuddyInvites(filtered)
+      
+    }
+
+    useEffect(() => {
+      handleBuddyInvites();
+    }, [])
     return (
       <>
         <View style={[styles.cardContainer]}>
-          {true ? (
+          {!(buddyInvites.length) ? (
             <View
               style={{
                 flex: 1,
@@ -55,11 +75,82 @@ export default function BuddyLists({navigation}) {
             <ScrollView
               contentContainerStyle={{
                 paddingBottom: 80,
-                f,
+                
               }}
               scrollEnabled
-              showsVerticalScrollIndicator={false}></ScrollView>
+              showsVerticalScrollIndicator={false}>
+                <View
+                  style={{
+                    width: '100%'
+                  }}
+                >
+                   
+                  {
+                    buddyInvites.map((invites, idx) => (
+                      <TouchableOpacity 
+                      onPress={() => {
+                        setSelectedInvite(invites)
+                        console.log('selected invite', invites)
+                        setShowDeleteModal(true)
+                      }}
+                      key={idx} style={styles.BOX}>
+                        <View>
+                            <View style={styles.BOX_1}>
+                                <View style={styles.BOX_2}>
+                                    <View style={styles.BOX_3}>
+                                      <Text>{invites.fullname.charAt(0)}</Text>
+                                    </View>
+                                  <View style={{paddingLeft: 5}}>
+                                    <Text style={{fontWeight: 'bold', fontSize: 16}}>{invites.fullname}</Text>
+                                    <Text style={{color: COLORS.dark}}>{invites.email}</Text>
+                                  </View>
+                                </View>
+                                <View>
+                                  <TouchableOpacity>
+                                    <Icon 
+                                      name='close-circle'
+                                      size={20}
+                                      color='#000'
+                                    />
+                                  </TouchableOpacity>
+                                </View>
+                            </View>
+
+
+                            <View style={styles.BOX_4}>
+                              <View>
+                                <Text>Periodic Savings Amount</Text>
+                                <Text style={{fontWeight: 'bold', fontSize: 15, color: COLORS.primary}}>
+                                   ₦{formatNumber(Number(invites.periodic_savings_amount))}
+                                </Text>
+                              </View>
+
+                              <View>
+                                <Text>Target Amount</Text>
+                                <Text style={{fontWeight: 'bold', fontSize: 15, color: COLORS.primary}}>
+                                   ₦{formatNumber(Number(invites.target_amount))}
+                                </Text>
+                              </View>
+                            </View>
+                            
+                        </View>
+                      </TouchableOpacity>
+                    ))
+                  }
+
+                 {selectedInvite && (
+                   <DeleteModal
+                    showDeleteModal={showDeleteModal}
+                    setShowDeleteModal={setShowDeleteModal}
+                    selectedInvite={selectedInvite}
+                 />
+                 )}
+                </View>
+                
+              </ScrollView>
           )}
+
+           
         </View>
       </>
     );
@@ -172,8 +263,8 @@ export default function BuddyLists({navigation}) {
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
-    {key: 'one', title: 'Created'},
-    {key: 'two', title: 'Joined'},
+    {key: 'one', title: 'Active'},
+    {key: 'two', title: 'Invites'},
   ]);
 
   const renderScene = SceneMap({
@@ -376,4 +467,37 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#F7F8FD',
   },
+  BOX: {
+    width: '100%',
+    padding: 10,
+    height: 120,
+    backgroundColor: '#F7F8FD',
+    borderRadius: 10,
+    marginTop: 20
+  },
+  BOX_1: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%'
+  },
+  BOX_3: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff'
+  }, BOX_4: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginTop: 20
+  },
+  BOX_2: {
+    display: 'flex',
+    flexDirection: 'row',
+  }
 });

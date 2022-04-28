@@ -191,3 +191,8 @@ export const getOneSoloSavingsTransaction = (id) => {
     }
   };
 };
+
+
+export const updateState = () => ({
+  type: types.UPDATE_STATE
+})

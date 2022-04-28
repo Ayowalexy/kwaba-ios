@@ -159,7 +159,7 @@ export default function Login({navigation}) {
       } else {
         setSpinner(false);
         console.log('Invalid, please provide a valid email and password');
-        console.log('Res Error', res.response);
+        console.log('Res Error', res.status);
         setErrorMsg('Please provide a valid email or password');
       }
     } catch (error) {
@@ -240,7 +240,7 @@ export default function Login({navigation}) {
             marginTop: 10,
             textAlign: 'center',
           }}>
-          Login to your account
+          Login to your account!
         </Text>
 
         <Formik

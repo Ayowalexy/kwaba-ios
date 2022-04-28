@@ -1,7 +1,7 @@
 import 'react-native-gesture-handler';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {NavigationContainer} from '@react-navigation/native';
+import {NavigationContainer } from '@react-navigation/native';
 
 import SplashScreen from 'react-native-splash-screen';
 
@@ -214,6 +214,7 @@ import CreditScoreOnboarding from './pages/CreditScore/CreditScoreOnboarding';
 import CreditScoreForm from './pages/CreditScore/CreditScoreForm';
 import CreditScoreAwaiting from './pages/CreditScore/CreditScoreAwaiting';
 
+
 import {
   CreditScoreCheckFormForAccount,
   CreditScoreCheckFormForAwaiting,
@@ -239,6 +240,7 @@ import {
   CreditOnboard,
 } from './pages/screens/rnpl/creditscore';
 import {checkAppRelease} from './services/network';
+import useInterval from './components/Hooks/useCountdown';
 
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
@@ -267,6 +269,15 @@ let CodePushOptions = {
   installMode: CodePush.InstallMode.IMMEDIATE,
 };
 
+const Demo = () => {
+  useInterval(() => {
+    console.log('*'.repeat(50))
+    console.log('Change')
+    console.log('*'.repeat(50))
+  }, 2000)
+  return null
+}
+
 const App = () => {
   const dispatch = useDispatch();
   const [userToken, setUserToken] = useState(null);
@@ -278,6 +289,52 @@ const App = () => {
   const store2 = useSelector((state) => state.loginReducer);
 
   const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+  const login = useSelector((state) => state.loginReducer);
+  
+
+  const d_1 = useRef(0)
+  const d_2 = useRef(0)
+  const inittialRender = useRef(false)
+
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener("change", async nextAppState => {
+      if(inittialRender.current){
+          appState.current = nextAppState;
+        if(appState.current === 'active'){
+          d_1.current = Date.now()
+          if(d_1.current - d_2.current > 60000){
+            console.log('Inactive for more than one minutes')
+            await AsyncStorage.removeItem('userData');
+            dispatch(
+              setLoginState({
+                ...login,
+                isLoggedIn: false,
+                token: '',
+              }),
+            );
+            // navigation.navigate('WelcomeBack');
+            
+          } else {
+            console.log('Active under 1 minutes')
+          }
+        }
+
+        if(appState.current === 'background'){
+          console.log('new background')
+          d_2.current = Date.now()
+        }
+      } else {
+        inittialRender.current = true
+      }
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
+ 
 
   const createChannel = () => {
     PushNotification.createChannel({
@@ -366,7 +423,7 @@ const App = () => {
 
     try {
       if (res.status == 200) {
-        if (res?.data[0].version > '1.0.0') {
+        if (res?.data[0].version > '2.0.2') {
           setAppUpdateAvailable(true);
           console.log('Banger: ', res?.data);
         } else {
@@ -377,6 +434,7 @@ const App = () => {
       console.log('Error: ', error);
     }
   };
+  
 
   return (
     <>
