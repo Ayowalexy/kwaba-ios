@@ -60,7 +60,7 @@ const login = async (data) => {
     });
     return response;
   } catch (error) {
-    return error.message;
+    return error;
   }
 };
 
@@ -358,13 +358,14 @@ const resolveCardDetails = async (data) => {
 // /payment/complete
 // amount (#50)
 const tokenizePayment = async (data) => {
-  const url = apiUrl + '/api/v1/paycardtokenize';
+  // const url = apiUrl + '/api/v1/paycardtokenize';
+  const url = urls.savings.VERIFY_PAYMENT;
   const token = await getToken();
 
   try {
     // const response = await axios.post(url, JSON.stringify(data), {
       const response = await axios.post(
-        urls.savings.VERIFY_PAYMENT,
+        url,
         JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
@@ -715,7 +716,7 @@ const verifySavingsPayment = async (data) => {
   const url = apiUrl + '/api/v1/verify_savings_payment';
   const token = await getToken();
   console.log(urls.savings.VERIFY_PAYMENT);
-  console.log(token);
+  console.log(data);
   try {
     const response = await axios.post(
       urls.savings.VERIFY_PAYMENT,
@@ -839,7 +840,9 @@ const sendBuddySavingsInvites = async (data) => {
 
 // get one buddy savings
 const getOneUserBuddySavings = async (id) => {
-  const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
+
+  const url = urls.savings.DASHBOARD + `/${id}`
+  // const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
   const token = await getToken();
   try {
     const response = await axios.get(url, {

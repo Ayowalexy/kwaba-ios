@@ -60,20 +60,375 @@ export default function CreditDashboard(props) {
       console.log('The Param: ', payload);
 
       try {
-        const res = await fetch(payload);
+        // const res = await fetch(payload);
+        const res = {
+    "success": true,
+    "history": [
+        {
+            "_id": "6272855d7fc9d7ef9588193f",
+            "author": "62728557743a0c8435b321bb",
+            "productType": "credit",
+            "meta": {
+                "AddressHistory": null,
+                "Amount_OD_BucketCURR1": null,
+                "CONSUMER_RELATION": {},
+                "CREDIT_MICRO_SUMMARY": {
+                    "CURRENCY": null
+                },
+                "CREDIT_NANO_SUMMARY": null,
+                "CREDIT_SCORE_DETAILS": {
+                    "CREDIT_SCORE_SUMMARY": null
+                },
+                "ClassificationInsType": null,
+                "ClassificationProdType": null,
+                "ClosedAccounts": null,
+                "ConsCommDetails": null,
+                "ConsumerMergerDetails": null,
+                "ContactHistory": null,
+                "CreditDisputeDetails": null,
+                "CreditFacilityHistory24": null,
+                "CreditProfileOverview": null,
+                "CreditProfileSummaryCURR1": null,
+                "CreditProfileSummaryCURR2": null,
+                "CreditProfileSummaryCURR3": null,
+                "CreditProfileSummaryCURR4": null,
+                "CreditProfileSummaryCURR5": null,
+                "DMMDisputeSection": null,
+                "DODishonoredChequeDetails": null,
+                "DOJointHolderDetails": null,
+                "DOLitigationDetails": null,
+                "DisclaimerDetails": null,
+                "EmploymentHistory": null,
+                "GuaranteedLoanDetails": null,
+                "InquiryHistoryDetails": null,
+                "Inquiry_Product": null,
+                "LegendDetails": null,
+                "MFCREDIT_MICRO_SUMMARY": {
+                    "CURRENCY": {
+                        "BUREAU_CURRENCY": "NGN",
+                        "CURRENCY_CODE": "Currency : NGN",
+                        "DUESUMMARY": [
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "SubjectType",
+                                "MAX_NUM_DAYS_DUE": null,
+                                "MAX_NUM_DAYS_DUESpecified": false,
+                                "NO_OF_DELINQCREDITFACILITIES": null,
+                                "NO_OF_DELINQCREDITFACILITIESSpecified": false,
+                                "OWNERSHIP_TYPE": "As Borrower",
+                                "TOT_DUE": null,
+                                "TOT_DUESpecified": false
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Total",
+                                "MAX_NUM_DAYS_DUE": "0",
+                                "MAX_NUM_DAYS_DUESpecified": true,
+                                "NO_OF_DELINQCREDITFACILITIES": "0",
+                                "NO_OF_DELINQCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total(as borrower)",
+                                "TOT_DUE": "0",
+                                "TOT_DUESpecified": true
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Over All Total",
+                                "MAX_NUM_DAYS_DUE": "0",
+                                "MAX_NUM_DAYS_DUESpecified": true,
+                                "NO_OF_DELINQCREDITFACILITIES": "0",
+                                "NO_OF_DELINQCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total",
+                                "TOT_DUE": "0",
+                                "TOT_DUESpecified": true
+                            }
+                        ],
+                        "LAST_REPORTED_DATE": "31-MAR-2022",
+                        "REPORTDATE": {
+                            "BUREAU_CURRENCY": "NGN",
+                            "LAST_REPORTED_DATE": "31-MAR-2022"
+                        },
+                        "SUMMARY": [
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "SubjectType",
+                                "NO_OF_OPENEDCREDITFACILITIES": null,
+                                "NO_OF_OPENEDCREDITFACILITIESSpecified": false,
+                                "OWNERSHIP_TYPE": "As Borrower",
+                                "SANCTIONED_AMOUNT": null,
+                                "TOTAL_NO_OF_CREDITFACILITIES": null,
+                                "TOTAL_NO_OF_CREDITFACILITIESSpecified": false,
+                                "TOTAL_NO_OF_CREDITGRANTORS": null,
+                                "TOTAL_NO_OF_CREDITGRANTORSSpecified": false,
+                                "TOTAL_OUTSTANDING": null
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Total",
+                                "NO_OF_OPENEDCREDITFACILITIES": "2",
+                                "NO_OF_OPENEDCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total(as borrower)",
+                                "SANCTIONED_AMOUNT": "10,000",
+                                "TOTAL_NO_OF_CREDITFACILITIES": "2",
+                                "TOTAL_NO_OF_CREDITFACILITIESSpecified": true,
+                                "TOTAL_NO_OF_CREDITGRANTORS": "1",
+                                "TOTAL_NO_OF_CREDITGRANTORSSpecified": true,
+                                "TOTAL_OUTSTANDING": "0"
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Over All Total",
+                                "NO_OF_OPENEDCREDITFACILITIES": "2",
+                                "NO_OF_OPENEDCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total",
+                                "SANCTIONED_AMOUNT": "10,000",
+                                "TOTAL_NO_OF_CREDITFACILITIES": "2",
+                                "TOTAL_NO_OF_CREDITFACILITIESSpecified": true,
+                                "TOTAL_NO_OF_CREDITGRANTORS": "1",
+                                "TOTAL_NO_OF_CREDITGRANTORSSpecified": true,
+                                "TOTAL_OUTSTANDING": "0"
+                            }
+                        ]
+                    }
+                },
+                "MFCREDIT_NANO_SUMMARY": null,
+                "MGCREDIT_MICRO_SUMMARY": {
+                    "CURRENCY": null
+                },
+                "MGCREDIT_NANO_SUMMARY": null,
+                "MIC_CONSUMER_PROFILE": {
+                    "CONSUMER_DETAILS": {
+                        "CITIZENSHIP": "NG",
+                        "DATE_OF_BIRTH": "09-NOV-1998",
+                        "FIRST_NAME": "OLUWABIYI",
+                        "GENDER": "001",
+                        "IDENTIFICATION": [
+                            {
+                                "EXP_DATE": null,
+                                "EXP_DATESpecified": false,
+                                "ID_DISPLAY_NAME": "Business Verification Number",
+                                "ID_VALUE": "22415462141",
+                                "RUID": "1112022001193987",
+                                "SOURCE_ID": "BVN"
+                            }
+                        ],
+                        "IDENTIFICATION_DETAILS": null,
+                        "LAST_NAME": "OLASEINDE",
+                        "NAME": "OLUWABIYI OLASEINDE",
+                        "RUID": "1112022001193987"
+                    },
+                    "SUBJECT_DETAILS": {
+                        "DISPLAY": "N",
+                        "DOB": "09-NOV-1998",
+                        "NAME": "OLUWABIYI  OLASEINDE",
+                        "SUB_GENDER": "MALE"
+                    }
+                },
+                "NANO_CONSUMER_PROFILE": null,
+                "RelatedToDetails": null,
+                "ReportDetail": null,
+                "ReportDetailAcc": null,
+                "ReportDetailBVN": null,
+                "ReportDetailMob": null,
+                "ReportDetailsSIR": null,
+                "SecurityDetails": null,
+                "SummaryOfPerformance": null,
+                "bvn": "22415462141"
+            },
+            "amount": 2000,
+            "createdAt": "2022-05-04T13:53:33.979Z"
+        },
+        {
+            "_id": "627285647fc9d7ef95881945",
+            "author": "62728557743a0c8435b321bb",
+            "productType": "credit",
+            "meta": {
+                "AddressHistory": null,
+                "Amount_OD_BucketCURR1": null,
+                "CONSUMER_RELATION": {},
+                "CREDIT_MICRO_SUMMARY": {
+                    "CURRENCY": null
+                },
+                "CREDIT_NANO_SUMMARY": null,
+                "CREDIT_SCORE_DETAILS": {
+                    "CREDIT_SCORE_SUMMARY": null
+                },
+                "ClassificationInsType": null,
+                "ClassificationProdType": null,
+                "ClosedAccounts": null,
+                "ConsCommDetails": null,
+                "ConsumerMergerDetails": null,
+                "ContactHistory": null,
+                "CreditDisputeDetails": null,
+                "CreditFacilityHistory24": null,
+                "CreditProfileOverview": null,
+                "CreditProfileSummaryCURR1": null,
+                "CreditProfileSummaryCURR2": null,
+                "CreditProfileSummaryCURR3": null,
+                "CreditProfileSummaryCURR4": null,
+                "CreditProfileSummaryCURR5": null,
+                "DMMDisputeSection": null,
+                "DODishonoredChequeDetails": null,
+                "DOJointHolderDetails": null,
+                "DOLitigationDetails": null,
+                "DisclaimerDetails": null,
+                "EmploymentHistory": null,
+                "GuaranteedLoanDetails": null,
+                "InquiryHistoryDetails": null,
+                "Inquiry_Product": null,
+                "LegendDetails": null,
+                "MFCREDIT_MICRO_SUMMARY": {
+                    "CURRENCY": {
+                        "BUREAU_CURRENCY": "NGN",
+                        "CURRENCY_CODE": "Currency : NGN",
+                        "DUESUMMARY": [
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "SubjectType",
+                                "MAX_NUM_DAYS_DUE": null,
+                                "MAX_NUM_DAYS_DUESpecified": false,
+                                "NO_OF_DELINQCREDITFACILITIES": null,
+                                "NO_OF_DELINQCREDITFACILITIESSpecified": false,
+                                "OWNERSHIP_TYPE": "As Borrower",
+                                "TOT_DUE": null,
+                                "TOT_DUESpecified": false
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Total",
+                                "MAX_NUM_DAYS_DUE": "0",
+                                "MAX_NUM_DAYS_DUESpecified": true,
+                                "NO_OF_DELINQCREDITFACILITIES": "0",
+                                "NO_OF_DELINQCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total(as borrower)",
+                                "TOT_DUE": "0",
+                                "TOT_DUESpecified": true
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Over All Total",
+                                "MAX_NUM_DAYS_DUE": "0",
+                                "MAX_NUM_DAYS_DUESpecified": true,
+                                "NO_OF_DELINQCREDITFACILITIES": "0",
+                                "NO_OF_DELINQCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total",
+                                "TOT_DUE": "0",
+                                "TOT_DUESpecified": true
+                            }
+                        ],
+                        "LAST_REPORTED_DATE": "31-MAR-2022",
+                        "REPORTDATE": {
+                            "BUREAU_CURRENCY": "NGN",
+                            "LAST_REPORTED_DATE": "31-MAR-2022"
+                        },
+                        "SUMMARY": [
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "SubjectType",
+                                "NO_OF_OPENEDCREDITFACILITIES": null,
+                                "NO_OF_OPENEDCREDITFACILITIESSpecified": false,
+                                "OWNERSHIP_TYPE": "As Borrower",
+                                "SANCTIONED_AMOUNT": null,
+                                "TOTAL_NO_OF_CREDITFACILITIES": null,
+                                "TOTAL_NO_OF_CREDITFACILITIESSpecified": false,
+                                "TOTAL_NO_OF_CREDITGRANTORS": null,
+                                "TOTAL_NO_OF_CREDITGRANTORSSpecified": false,
+                                "TOTAL_OUTSTANDING": null
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Total",
+                                "NO_OF_OPENEDCREDITFACILITIES": "2",
+                                "NO_OF_OPENEDCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total(as borrower)",
+                                "SANCTIONED_AMOUNT": "10,000",
+                                "TOTAL_NO_OF_CREDITFACILITIES": "2",
+                                "TOTAL_NO_OF_CREDITFACILITIESSpecified": true,
+                                "TOTAL_NO_OF_CREDITGRANTORS": "1",
+                                "TOTAL_NO_OF_CREDITGRANTORSSpecified": true,
+                                "TOTAL_OUTSTANDING": "0"
+                            },
+                            {
+                                "BUREAU_CURRENCY": "NGN",
+                                "HEADINGTEXT": "Over All Total",
+                                "NO_OF_OPENEDCREDITFACILITIES": "2",
+                                "NO_OF_OPENEDCREDITFACILITIESSpecified": true,
+                                "OWNERSHIP_TYPE": "Total",
+                                "SANCTIONED_AMOUNT": "10,000",
+                                "TOTAL_NO_OF_CREDITFACILITIES": "2",
+                                "TOTAL_NO_OF_CREDITFACILITIESSpecified": true,
+                                "TOTAL_NO_OF_CREDITGRANTORS": "1",
+                                "TOTAL_NO_OF_CREDITGRANTORSSpecified": true,
+                                "TOTAL_OUTSTANDING": "0"
+                            }
+                        ]
+                    }
+                },
+                "MFCREDIT_NANO_SUMMARY": null,
+                "MGCREDIT_MICRO_SUMMARY": {
+                    "CURRENCY": null
+                },
+                "MGCREDIT_NANO_SUMMARY": null,
+                "MIC_CONSUMER_PROFILE": {
+                    "CONSUMER_DETAILS": {
+                        "CITIZENSHIP": "NG",
+                        "DATE_OF_BIRTH": "09-NOV-1998",
+                        "FIRST_NAME": "OLUWABIYI",
+                        "GENDER": "001",
+                        "IDENTIFICATION": [
+                            {
+                                "EXP_DATE": null,
+                                "EXP_DATESpecified": false,
+                                "ID_DISPLAY_NAME": "Business Verification Number",
+                                "ID_VALUE": "22415462141",
+                                "RUID": "1112022001193987",
+                                "SOURCE_ID": "BVN"
+                            }
+                        ],
+                        "IDENTIFICATION_DETAILS": null,
+                        "LAST_NAME": "OLASEINDE",
+                        "NAME": "OLUWABIYI OLASEINDE",
+                        "RUID": "1112022001193987"
+                    },
+                    "SUBJECT_DETAILS": {
+                        "DISPLAY": "N",
+                        "DOB": "09-NOV-1998",
+                        "NAME": "OLUWABIYI  OLASEINDE",
+                        "SUB_GENDER": "MALE"
+                    }
+                },
+                "NANO_CONSUMER_PROFILE": null,
+                "RelatedToDetails": null,
+                "ReportDetail": null,
+                "ReportDetailAcc": null,
+                "ReportDetailBVN": null,
+                "ReportDetailMob": null,
+                "ReportDetailsSIR": null,
+                "SecurityDetails": null,
+                "SummaryOfPerformance": null,
+                "bvn": "22415462141"
+            },
+            "amount": 2000,
+            "createdAt": "2022-05-04T13:53:40.728Z"
+        }
+    ]
+};
+        
 
-        let x = res?.data?.history?.filter(
+        // let x = res?.data?.history?.filter(
+        let x = res?.history?.filter(
           (item) => item?.meta?.CREDIT_MICRO_SUMMARY && item?.meta,
         );
 
+        
         let d = x[0]?.meta;
         if (x.length) {
           setSpinner(false);
           const cs = d?.CREDIT_SCORE_DETAILS?.CREDIT_SCORE_SUMMARY;
 
-          setCreditScore(cs?.CREDIT_SCORE);
-          setCreditRating(cs?.CREDIT_RATING);
-          setPercentage((Number(cs?.CREDIT_SCORE - 300) * 100) / (850 - 300));
+          //NA THE GUY WEY DEY BREAK THE APP BE THIS
+          // setCreditScore(cs?.CREDIT_SCORE);
+          // setCreditRating(cs?.CREDIT_RATING);
+          // setPercentage((Number(cs?.CREDIT_SCORE - 300) * 100) / (850 - 300));
 
           const total = Object.values(d)
             .filter((c) => c?.CURRENCY?.SUMMARY && c.CURRENCY?.DUESUMMARY)

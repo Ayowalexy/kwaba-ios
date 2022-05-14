@@ -23,7 +23,8 @@ import java.util.List;
 import androidx.multidex.MultiDexApplication;
 import com.rnfs.RNFSPackage;
 import com.instabug.reactlibrary.RNInstabugReactnativePackage;
-import com.microsoft.codepush.react.CodePush;
+import com.intercom.reactnative.IntercomModule;
+// import com.microsoft.codepush.react.CodePush;
 // import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 
 public class MainApplication extends MultiDexApplication implements ReactApplication {
@@ -51,10 +52,10 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
           return "index";
         }
 
-        @Override
-        protected String getJSBundleFile() {
-            return CodePush.getJSBundleFile();
-        }
+        // @Override
+        // protected String getJSBundleFile() {
+        //     return CodePush.getJSBundleFile();
+        // }
       };
 
   @Override
@@ -70,9 +71,11 @@ public class MainApplication extends MultiDexApplication implements ReactApplica
     .setPrimaryColor("#1D82DC")
     .setFloatingEdge("left")
     .setFloatingButtonOffsetFromTop(250)
-    .build();
+    .build();    
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    IntercomModule.initialize(this, "android_sdk-6615227b9bb678cd87e56fa46d4e9a52b38f6c67", "cbh3r4tt");
+    // IntercomModule.initialize(this, "android_sdk-6615227b9bb678cd87e56fa46d4e9a52b38f6c67", "cbh3r4tt");
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 

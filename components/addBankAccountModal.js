@@ -129,7 +129,7 @@ export default function AddBankAccountModal(props) {
 
     // console.log('The Bank Account: ', data);
 
-    await verifyBankAccount(data.bank_account_number, data.bank_short_code);
+    verifyBankAccount(data.bank_account_number, data.bank_short_code);
   };
 
   const verifyBankAccount = async (account_number, bank_code) => {

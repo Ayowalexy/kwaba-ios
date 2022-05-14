@@ -45,7 +45,8 @@ export default function PaymentCard(props) {
   console.log("paymentCards", paymentCards)
  
     const renderPaymentCards = ({item}) => {
-      // console.log('tem',JSON.parse(item.card_details).card_type)
+      console.log('current item', item.card_details)
+      console.log('tem',JSON.parse(item.card_details).last4)
       return(
       <TouchableOpacity
         activeOpacity={0.9}
@@ -63,7 +64,7 @@ export default function PaymentCard(props) {
           <View>
             <Text
               style={{fontSize: 14, color: COLORS.primary, fontWeight: 'bold'}}>
-              ****{item.card_details.last4}
+              ****{JSON.parse(item.card_details).last4}
             </Text>
           </View>
           <View style={{marginTop: 100}}>
@@ -71,12 +72,12 @@ export default function PaymentCard(props) {
               EXPIRES
             </Text>
             <Text style={{fontSize: 10, fontWeight: 'bold', color: COLORS.light}}>
-              {item.card_details.exp_month}-{item.card_details.exp_year}
+              {JSON.parse(item.card_details).exp_month}-{JSON.parse(item.card_details).exp_year}
             </Text>
           </View>
           <Image
             source={
-              item.card_details.card_type == 'mastercard'
+              JSON.parse(item.card_details).card_type == 'mastercard'
                 ? images.mastercarddesign
                 : images.visacarddesign
             }

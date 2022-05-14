@@ -240,7 +240,7 @@ export default function NewHome({navigation}) {
     if (getMaxLoanCap1?.data) {
       setSavings(getMaxLoanCap1?.data?.total_savings);
       setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
-
+     
       setInstantLoan(
         Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
       );

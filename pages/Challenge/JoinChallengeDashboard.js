@@ -35,6 +35,7 @@ import moment from 'moment';
 import MoveMoneyModal from './MoveMoneyModal';
 import MoveMoneyOptionModal from './MoveMoneyOptionModal';
 import MoveMoneyToExistingPlanModal from './MoveMoneyToExistingPlanModal';
+import { getTotalSoloSavings } from '../../redux/actions/savingsActions';
 
 const {width} = Dimensions.get('screen');
 
@@ -116,7 +117,10 @@ export default function JoinChallengeDashboard(props) {
   // }, []);
 
   useEffect(() => {
-    console.log('All Savings', allSavings);
+    dispatch(getTotalSoloSavings());
+  }, [])
+
+  useEffect(() => {
     // item.savings_type == 'savings_challenge'
     
     const filter = allSavings.data.filter(
@@ -126,7 +130,7 @@ export default function JoinChallengeDashboard(props) {
         }
       });
 
-      console.log(filter.length)
+      console.log("filter", props.route.params.id )
       for(let d of filter){
         console.log(d.challenge_id, props.route.params.id)
       }

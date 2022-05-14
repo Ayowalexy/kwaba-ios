@@ -20,6 +20,7 @@ import {setLoginState} from '../../redux/actions/userActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login} from '../../services/network';
+import Intercom from '@intercom/intercom-react-native'
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
@@ -121,6 +122,7 @@ export default function Login({navigation}) {
   };
 
   const handleSubmit = async (values) => {
+
     const data = {
       email: values.email,
       password: values.password,
@@ -128,13 +130,20 @@ export default function Login({navigation}) {
 
     try {
       setSpinner(true);
-      const res = await login(data);
+
+      const res = await login(data)
+      console.log("res login", res)
 
       if (res.status == 200) {
+       
         setSpinner(false);
-        setErrorMsg('');
+
+        // navigation.navigate('Home');
         if (res.data.data.haveSetPin) {
-          navigation.navigate('WelcomeBack', {data: res.data.data});
+          // const userres = await Intercom.registerIdentifiedUser({email: "seinde4@yahoo.com", userId:"seinde4-123"})
+          // console.log("user res", userres)
+          navigation.navigate('WelcomeBack', {
+              data: res.data.data});
           console.log('He get pin');
         } else {
           navigation.navigate('CreatePin', {
@@ -156,16 +165,19 @@ export default function Login({navigation}) {
         await analytics.track('User-Login', {
           email: res.data.data.email,
         });
-      } else {
+      } else if (res?.response?.data?.meta?.error.includes('Kindly wait')){
+        console.log(res.response.data.meta.error)
         setSpinner(false);
-        console.log('Invalid, please provide a valid email and password');
-        console.log('Res Error', res.status);
+        setErrorMsg(res?.response?.data?.meta?.error);
+      }  else {
+        setSpinner(false);
+        console.log('Invalid login', res);
         setErrorMsg('Please provide a valid email or password');
       }
     } catch (error) {
       setSpinner(false);
       console.log('Error, An error occured, please retry');
-      console.log('Error', error);
+      console.log('Error message', error);
       setErrorMsg('An error occured, please retry');
     }
   };

@@ -511,6 +511,7 @@ export default function QuickSaveListModal(props) {
       <InsufficientModal
         showModal={showModal}
         setShowModal={setShowModal}
+        setShowPaymentModal={setShowPaymentModal}
       
       />
 

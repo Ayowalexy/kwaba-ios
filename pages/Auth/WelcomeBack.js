@@ -173,15 +173,23 @@ export default function WelcomeBack({navigation, route}) {
       const res = await enterPinToLogin(data);
       console.log('The Res: ', res);
       if (res.status == 200) {
-        setSpinner(false);
-        saveLoginToStorage({
+        console.log('route data', res.data.data.token)
+        const useData = {
           ...res.data.data,
+          token: route?.params?.data?.token
+        }
+        // setSpinner(false);
+        saveLoginToStorage({
+          ...useData,
           username: res.data.data.user.firstname,
           isLoggedIn: true,
         });
+
+        console.log("...res.data.data from welcome", res.data.data)
+        
         dispatch(
           setLoginState({
-            ...res.data.data,
+            ...useData,
             username: res.data.data.user.firstname,
             isLoggedIn: true,
           }),

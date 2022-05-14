@@ -38,6 +38,7 @@ export default function AddPaymentCardModal(props) {
       purpose: "cardTokenization"
     };
 
+    console.log("Tokenization details", data)
     // const data = {
     //   amount: 100,
     //   channel: channel, //paystack
@@ -47,16 +48,20 @@ export default function AddPaymentCardModal(props) {
     setSpinner(true);
     try {
       const res = await tokenizePayment(data);
-      console.log('RES: ', res.data);
+      console.log('RES: ', res);
       setSpinner(false);
       if (res.status == 200) {
         setSpinner(false);
 
         
-        console.log('The Response: ', res.data.data);
+        console.log('The Tokeinized card: ', res.data.data);
         setShowPaystackPayment(true);
         setResData(res.data.data);
         setChannel('card');
+        const response = await getTokenizeCards();
+        console.log('The actual tokenized card', response.data)
+        setPaymentCards(response.data.cards);
+
 
         // const verify =
       } else {
@@ -76,6 +81,7 @@ export default function AddPaymentCardModal(props) {
     const getAllCards = async () => {
       try {
         const res = await getTokenizeCards();
+        console.log('The actual tokenized card', res.data)
         setPaymentCards(res.data.cards);
       } catch (error) {
         console.log(error);

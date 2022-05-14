@@ -8,7 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 export default function InsufficientModal(props) {
   const {
     showModal,
-    setShowModal
+    setShowModal,
+    setShowPaymentModal
   } = props;
 
   const navigation = useNavigation();
@@ -49,6 +50,7 @@ export default function InsufficientModal(props) {
             <TouchableOpacity
               onPress={() => {
                   setShowModal(false)
+                  setShowPaymentModal(false)
                   navigation.navigate('Wallet')
               }}
               style={[styles.button, {borderColor: COLORS.red}]}>
@@ -59,7 +61,7 @@ export default function InsufficientModal(props) {
                 color='#fff'
               />
               
-                  <Text style={[styles.buttonText]}>Cancel</Text> 
+                  <Text style={[styles.buttonText]}>Fund Savings</Text> 
                 
             </TouchableOpacity>
           </View>

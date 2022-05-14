@@ -54,8 +54,9 @@ export default function CardAndBankDetails({navigation}) {
           }]
         
         // setPaymentCards(d);
-        setPaymentCards(JSON.parse(res.data.data));
         console.log('res data', res.data.data)
+        setPaymentCards(res.data.data);
+        
 
         // setPaymentCards(res.data);
       } catch (error) {
@@ -72,7 +73,6 @@ export default function CardAndBankDetails({navigation}) {
       try {
         setShowSpinner(true);
         const res = await getBankAccounts();
-        console.log('res bank', res)
         if (res.status == 200) {
           setUserBankAccounts(res.data.userBanks);
           setShowSpinner(false);
@@ -110,7 +110,9 @@ export default function CardAndBankDetails({navigation}) {
                 <PaymentCard
                   navigation={navigation}
                   paymentCards={paymentCards || []}
-                  allCards={(value) => setPaymentCards(value)}
+                  allCards={(value) => {
+                    console.log('set value', value)
+                    setPaymentCards(value)}}
                 />
             
             <BankAccount

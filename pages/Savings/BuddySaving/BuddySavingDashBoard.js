@@ -73,8 +73,10 @@ export default function SoloSavingDashBoard(props) {
   const [showModal, setShowModal] = useState(false)
 
   useEffect(() => {
-    getOneBuddy(route?.params?.id)
+    // getOneBuddy(route?.params?.id)
+    getOneUserBuddySavings(route?.params?.id)
       .then((data) => {
+        console.log('buddy buddy', route?.params?.id)
         setSavingsTarget(data.data?.savings_plan?.target_amount);
         setSavingTitle(data.data?.savings_plan?.name);
         setTotalSaving(data.data?.savings_plan?.amount_saved);
@@ -106,11 +108,11 @@ export default function SoloSavingDashBoard(props) {
 
   const verifyPaymentRequest = async (data, paymentChannel) => {
     try {
-      console.log('The Data: ', data);
+      console.log('The Data to verify payment: ', route.params);
 
       setSpinner(true);
       const res = await verifySavingsPayment(data);
-      console.log(res);
+      console.log("response data", res);
       setSpinner(false);
       if (!res) {
         return [];
@@ -118,6 +120,7 @@ export default function SoloSavingDashBoard(props) {
 
       if (String(res.status).startsWith('2')) {
         const verifyData = res?.data?.data;
+        console.log("verifyData", verifyData)
         setVerifyData({...verifyData, id: data.buddyData.savings_id});
         if (paymentChannel == 'wallet') {
           const payload = {
@@ -172,6 +175,7 @@ export default function SoloSavingDashBoard(props) {
         d.email.trim().toLowerCase() === mainUserEmail.trim().toLowerCase(),
     );
 
+    console.log('current buddy', buddies)
     if (value == 'wallet') {
       const verifyPayload = {
         amount: amount,
@@ -194,7 +198,7 @@ export default function SoloSavingDashBoard(props) {
           buddyId: currentBuddy?.id,
         },
 
-        channel: 'wallet',
+        channel: 'paystack',
         purpose: 'buddySavings',
       };
 
@@ -637,6 +641,7 @@ export default function SoloSavingDashBoard(props) {
       {
         showModal && (
           <InsufficientModal
+            setShowPaymentModal={setShowPaymentModal}
             showModal={showModal}
             setShowModal={setShowModal}
           />

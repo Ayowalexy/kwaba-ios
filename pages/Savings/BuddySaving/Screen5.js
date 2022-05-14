@@ -600,7 +600,7 @@ export default function Screen5(props) {
       </ScrollView>
 
       <View style={{paddingVertical: 10}}>
-        {buddies.length != numberOfBuddies ? (
+        {(buddies.length != numberOfBuddies) ? (
           <TouchableOpacity
             onPress={savingsCreated ? displayInviteModal : handleAddBuddy}
             style={[
@@ -626,6 +626,7 @@ export default function Screen5(props) {
           <TouchableOpacity
             // onPress={handleSendInvite}
             onPress={() => {
+              console.log('resdata', resData)
               navigation.navigate('BuddyPaymentScreen', {
                 data: route?.params,
                 res: resData,

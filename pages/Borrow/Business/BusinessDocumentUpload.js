@@ -14,6 +14,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import {COLORS, FONTS, images, icons} from '../../../util/index';
+import { baseUrl } from '../../../services/routes';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -46,7 +47,8 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+
+      `${baseUrl}/application/documents`,
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -97,6 +99,8 @@ export default function BusinessDocumentUpload({navigation}) {
 
   const appendID = async (item) => {
     const documentsUpload = await getDocuments();
+    console.log('#'.repeat(30))
+    console.log("documentsUpload", documentsUpload)
     const index = await documentsUpload.findIndex(
       (document) => Number(document.document_type) == item.id,
     );
@@ -130,7 +134,7 @@ export default function BusinessDocumentUpload({navigation}) {
     const token = await getToken();
     try {
       const resp = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+        `${baseUrl}/application/documents`,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -164,17 +168,18 @@ export default function BusinessDocumentUpload({navigation}) {
       };
       setSpinner(true);
 
-      // console.log(blob);
+      console.log( blob);
 
       const token = await getToken();
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
-      // console.log(applicationIDCallRes.data.data.id);
-      const applicationId = applicationIDCallRes.data.data.id;
+      // const applicationIDCallRes = await axios.get(
+      //   `${baseUrl}/application/one`,
+      //   {
+      //     headers: {'Content-Type': 'application/json', Authorization: token},
+      //   },
+      // );
+      // console.log("applicationIDCallRes", applicationIDCallRes);
+      // const applicationId = applicationIDCallRes.data.data.id;
+      const applicationId = 17;
 
       const formdata = new FormData();
       formdata.append('file', blob);
@@ -186,6 +191,8 @@ export default function BusinessDocumentUpload({navigation}) {
         formdata,
       );
 
+      console.log("cloudinary", response)
+
       const data = {
         applicationId,
         file: response.data.url,
@@ -193,11 +200,15 @@ export default function BusinessDocumentUpload({navigation}) {
         filename: item.title,
       };
 
-      // console.log(data);
+      console.log("processed data", data);
 
       try {
         dispatch(uploadFile(token, item, data));
-        appendID(item);
+
+        console.log('item', item)
+        appendID(
+          {"documentID": "17", "id": 2, "isUploaded": false, "isUploading": false, "progress": 0, "title": "Utility Bill"}
+        );
         setSpinner(false);
 
         countDocuments();
@@ -254,7 +265,7 @@ export default function BusinessDocumentUpload({navigation}) {
                 opacity: 0.5,
                 marginTop: 10,
               }}>
-              UPLOAD YOUR DOCUMENTS
+              UPLOAD YOUR DOCUMENTS NOW
             </Text>
           </View>
         ) : (

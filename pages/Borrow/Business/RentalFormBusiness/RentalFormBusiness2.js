@@ -31,6 +31,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import { baseUrl } from '../../../../services/routes';
 
 const rentalLoanFormSchema = yup.object().shape({
   homeAddress: yup.string().required('Field required'),
@@ -112,7 +113,7 @@ const RentalFormBusiness2 = ({navigation}) => {
 
     const loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new';
+      `${baseUrl}/application/new`;
     const token = await getToken();
     console.log(dummyData);
     console.log(token);
@@ -184,6 +185,7 @@ const RentalFormBusiness2 = ({navigation}) => {
 
     const token = await getToken();
     let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
+    console.log("loanFormData", loanFormData)
     let parsedData = JSON.parse(loanFormData);
 
     // let data = {...dummyData, ...parsedData};
@@ -192,7 +194,8 @@ const RentalFormBusiness2 = ({navigation}) => {
 
     try {
       const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new';
+        // `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new`;
+        `${baseUrl}/application/new`;
       const response = await axios.post(url, parsedData, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
@@ -223,7 +226,7 @@ const RentalFormBusiness2 = ({navigation}) => {
     console.log('steps here' + steps);
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        `${baseUrl}/application/one`,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },

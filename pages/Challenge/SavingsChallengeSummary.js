@@ -25,6 +25,7 @@ import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import ModalMessage from '../../components/MessageModals/ModalMessage';
 import {ScrollView} from 'react-native-gesture-handler';
 import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
+import { getTotalSoloSavings } from '../../redux/actions/savingsActions';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { updateState } from '../../redux/actions/savingsActions';
@@ -117,11 +118,15 @@ export default function SavingsChallengeSummary(props) {
   };
 
   const handleJoinChallenge = async () => {
+
+    console.log('data id', data.id)
     const payload = {
       challenge_id: data?.id,
       auto_save: savingsType,
       locked: true, // this is locked by default
     };
+
+    console.log('payload', payload)
 
     setSpinner(true);
     const response = await joinSavingsChallenge(payload);
@@ -133,10 +138,11 @@ export default function SavingsChallengeSummary(props) {
         response.status == 201 ||
         response.response.data.meta.error == 'User has already joined challenge'
       ) {
+        dispatch(getTotalSoloSavings())
         onRequestClose();
         showSuccess();
       } else {
-        console.log('Error Response: ', response.response.data);
+        console.log('Error Response: ', response);
       }
     } catch (error) {
       setSpinner(false);

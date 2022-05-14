@@ -209,7 +209,7 @@ import CreditScoreDashboard from './pages/CreditScore/CreditScoreDashboard';
 
 import PushNotification from 'react-native-push-notification';
 
-import CodePush from 'react-native-code-push';
+// import CodePush from 'react-native-code-push';
 import CreditScoreOnboarding from './pages/CreditScore/CreditScoreOnboarding';
 import CreditScoreForm from './pages/CreditScore/CreditScoreForm';
 import CreditScoreAwaiting from './pages/CreditScore/CreditScoreAwaiting';
@@ -264,10 +264,10 @@ const linking = {
   },
 };
 
-let CodePushOptions = {
-  checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
-  installMode: CodePush.InstallMode.IMMEDIATE,
-};
+// let CodePushOptions = {
+//   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
+//   installMode: CodePush.InstallMode.IMMEDIATE,
+// };
 
 const Demo = () => {
   useInterval(() => {
@@ -423,7 +423,7 @@ const App = () => {
 
     try {
       if (res.status == 200) {
-        if (res?.data[0].version > '2.0.2') {
+        if (res?.data[0].version > '2.0.3') {
           setAppUpdateAvailable(true);
           console.log('Banger: ', res?.data);
         } else {
@@ -431,7 +431,7 @@ const App = () => {
         }
       }
     } catch (error) {
-      console.log('Error: ', error);
+      console.log('Error:', error);
     }
   };
   

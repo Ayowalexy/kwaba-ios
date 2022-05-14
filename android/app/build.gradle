@@ -133,14 +133,14 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
+    }  
 
     defaultConfig {
         applicationId "com.kwaba_mobile_app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 26
-        versionName "1.9.7"
+        versionCode 27
+        versionName "1.9.8"
         multiDexEnabled true
         missingDimensionStrategy 'react-native-webview', 'general'
     }
@@ -215,7 +215,10 @@ dependencies {
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "com.facebook.react:react-native:+"  // From node_modules    
+
+    // implementation("com.squareup.okhttp3:okhttp-urlconnection:4.9.1")
+    
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
@@ -225,6 +228,9 @@ dependencies {
 
     // implementation 'com.google.firebase:firebase-analytics'
       implementation 'com.google.firebase:firebase-analytics:17.3.0'
+
+    //   implementation project(':intercom-react-native')
+    implementation project(':intercom-react-native')
 
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
@@ -260,4 +266,4 @@ apply plugin: 'com.google.gms.google-services'
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
 // apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+// apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"

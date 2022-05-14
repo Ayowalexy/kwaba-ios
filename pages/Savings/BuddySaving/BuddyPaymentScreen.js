@@ -34,7 +34,7 @@ export default function BuddyPaymentScreen(props) {
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
-
+      console.log('Payement channel', paymentChannel)
       setVerifyData({...verifyData, id: data.buddyData.savings_id});
       if (paymentChannel == 'wallet') {
         const payload = {
@@ -71,13 +71,14 @@ export default function BuddyPaymentScreen(props) {
   const handlePaymentRoute = async (value) => {
     const data = route?.params?.data;
     const res = route?.params?.res;
-
     try {
       setSavingsId(res.buddy_savings_id);
       const buddyBody = await getOneBuddy(res.buddy_savings_id);
       const userData = await AsyncStorage.getItem('userData');
       const mainUserEmail = JSON.parse(userData).user.email;
 
+      console.log("res -d", res.buddy_savings_id)
+      console.log("buddyBody", buddyBody)
       if (buddyBody.status === 200) {
         const currentBuddy = buddyBody.data.buddies.find(
           (d) =>

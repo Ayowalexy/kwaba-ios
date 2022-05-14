@@ -134,7 +134,7 @@ export default function JoinChallengeList({navigation}) {
 
   const getAllSavingsChallenges = async () => {
     const token = await getToken();
-    // console.log('Token: ', token);
+    console.log('Token: ', token);
     try {
       setSpinner(true);
       const resp = await axios.get(urls.savings.GET_ALL_CHALLENGES, {
@@ -159,7 +159,7 @@ export default function JoinChallengeList({navigation}) {
       setJoinedSavings(filter);
     } catch (error) {
       setSpinner(false);
-      console.log('Error failed: ', error.response);
+      console.log('Error failed: ', error.response.data);
     }
   };
 
