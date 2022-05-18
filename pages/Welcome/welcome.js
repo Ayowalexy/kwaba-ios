@@ -156,6 +156,7 @@ const Welcome = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           )}
+          <Text style={{color: '#2A286A', opacity: 0.4, fontSize: 13, marginTop:10}}>Version 1.9.7</Text>
         </View>
       </View>
     </SafeAreaView>

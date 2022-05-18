@@ -20,7 +20,6 @@ import {setLoginState} from '../../redux/actions/userActions';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {login} from '../../services/network';
-import Intercom from '@intercom/intercom-react-native'
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
@@ -67,12 +66,12 @@ const CustomInput = (props) => {
             paddingVertical: 15,
             paddingHorizontal: 50,
           }}
-          value={value}
+          value={value.trim().toLowerCase()}
           onBlur={() => {
             setFieldTouched(name);
             onBlur(name);
           }}
-          onChangeText={(text) => onChange(name)(text)}
+          onChangeText={(text) => onChange(name)(text.trim().toLowerCase())}
           {...inputProps}
           secureTextEntry={name.toLowerCase() == 'password' && secureTextEntry}
           keyboardType={

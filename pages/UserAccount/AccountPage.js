@@ -26,6 +26,8 @@ import PasswordChangeModal from './PasswordChangeModal';
 import {setLoginState} from '../../redux/actions/userActions';
 import SuccessModal from '../../components/SuccessModal';
 import ErrorModal from '../../components/ErrorModal';
+import Intercom from '@intercom/intercom-react-native'
+
 
 const width = Dimensions.get('window').width;
 const AccountPage = ({navigation}) => {
@@ -134,6 +136,13 @@ console.log('Resss')
       tabTitle: 'About us',
       onClickFunction: function openCardAndBank() {
         navigation.navigate('Aboutus');
+      },
+    },
+    {
+      iconName: 'chatbubble-ellipses',
+      tabTitle: 'Support',
+      onClickFunction: async function openCardAndBank() {
+      const userres = await Intercom.displayMessenger()
       },
     },
     // {

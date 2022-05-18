@@ -89,7 +89,7 @@ const VerifyingDocuments = ({navigation, route}) => {
         console.log('Nah ');
         Alert.alert(
           'Document Verification',
-          'We are still verifiying your documents, please check back later.',
+          'We are still verifiying your documents, please check back later.', 
         );
       }
     } catch (error) {

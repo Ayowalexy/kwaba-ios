@@ -190,7 +190,7 @@ const RentalFormBusiness2 = ({navigation}) => {
 
     // let data = {...dummyData, ...parsedData};
 
-    console.log(parsedData);
+    console.log("parsedData", parsedData);
 
     try {
       const url =

@@ -180,16 +180,17 @@ export default function WelcomeBack({navigation, route}) {
         }
         // setSpinner(false);
         saveLoginToStorage({
-          ...useData,
+          // ...useData,
+          ...res.data.data,
           username: res.data.data.user.firstname,
           isLoggedIn: true,
         });
-
         console.log("...res.data.data from welcome", res.data.data)
         
         dispatch(
           setLoginState({
-            ...useData,
+            // ...useData,
+            ...res.data.data,
             username: res.data.data.user.firstname,
             isLoggedIn: true,
           }),
