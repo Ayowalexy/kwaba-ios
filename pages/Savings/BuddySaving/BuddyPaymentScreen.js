@@ -7,6 +7,7 @@ import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { getOneUserBuddySavings } from '../../../services/network';
 import {
   completeSavingsPayment,
   verifySavingsPayment,
@@ -73,13 +74,14 @@ export default function BuddyPaymentScreen(props) {
     const res = route?.params?.res;
     try {
       setSavingsId(res.buddy_savings_id);
-      const buddyBody = await getOneBuddy(res.buddy_savings_id);
+      const buddyBody = await getOneUserBuddySavings(res.buddy_savings_id);
+      // const buddyBody = await getOneBuddy(res.buddy_savings_id);
       const userData = await AsyncStorage.getItem('userData');
       const mainUserEmail = JSON.parse(userData).user.email;
 
       console.log("res -d", res.buddy_savings_id)
       console.log("buddyBody", buddyBody)
-      if (buddyBody.status === 200) {
+      if (buddyBody.status == 200) {
         const currentBuddy = buddyBody.data.buddies.find(
           (d) =>
             d.email.trim().toLowerCase() === mainUserEmail.trim().toLowerCase(),

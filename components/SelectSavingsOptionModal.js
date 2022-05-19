@@ -70,12 +70,12 @@ console.log('referrals', referrals)
                     if(item === 'Solo Savings'){
                       const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
                       const matured = filter.filter(element => element.amount_saved >= element.target_amount)
-                      const usedFilter = filter.filter(element => element.status && element.funds_withdrawn)
+                      const usedFilter = filter.filter(element => !element.status && !element.funds_withdrawn)
                       // if(matured.length === 0){
                       if(usedFilter.length === 0){
                         return Alert.alert(
                           'No Matured Solo Savings',
-                          'Sorry, none of your savings has reached the target amount'
+                          'Sorry, none of your savings has reached the target date'
                         )
                       }
                     }
@@ -87,7 +87,7 @@ console.log('referrals', referrals)
                       if(usedFilter.length === 0){
                         return Alert.alert(
                           'No Matured Buddy Savings',
-                          'Sorry, none of your savings has reached the target amount'
+                          'Sorry, none of your savings has reached the target date'
                         )
                     }
                     } 

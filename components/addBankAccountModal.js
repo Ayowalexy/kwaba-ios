@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useLayoutEffect} from 'react';
 import {
   Modal,
   StyleSheet,
@@ -16,6 +16,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {getAllBanks, getBankAccounts} from '../services/network';
 import { baseUrl } from '../services/routes';
+// import { paystackBanks } from '../services/network';
+
 
 export default function AddBankAccountModal(props) {
   const {onRequestClose, visible, setDisplayAllBankAccounts} = props;
@@ -45,10 +47,14 @@ export default function AddBankAccountModal(props) {
   // fetch banks via paystak
   const paystackBanks = async () => {
     try {
-      const banks = await axios.get('https://api.paystack.co/bank', {
-        headers: {'Content-Type': 'application/json'},
-      });
-      setBankData(banks?.data?.data);
+      // const banks = await axios.get('https://api.paystack.co/bank', {
+      //   headers: {'Content-Type': 'application/json'}, timeout: 80000
+      // });
+  
+      // // console.log("func")
+      // // const res = await axios.get('https://google.com')
+      // // console.log(res)     
+      // setBankData(banks?.data);
       // return banks;
     } catch (error) {
       console.log('The Big Bang Error: ', error);
@@ -56,8 +62,9 @@ export default function AddBankAccountModal(props) {
     }
   };
 
+
   useEffect(() => {
-    paystackBanks();
+  //  paystackBanks()
   }, []);
 
   // useEffect(() => {
@@ -74,7 +81,7 @@ export default function AddBankAccountModal(props) {
   // }, []);
 
   // useEffect(() => {
-  //   // console.log('The banks: ', );
+  //   // console.\log('The banks: ', );
   //   getBanks();
   // }, []);
 

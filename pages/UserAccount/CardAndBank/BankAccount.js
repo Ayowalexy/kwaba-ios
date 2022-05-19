@@ -180,11 +180,11 @@ export default function BankAccount(props, {navigation}) {
         </Modal>
       </ScrollView>
 
-      <AddBankAccountModal
+      { bankModalVisible && (<AddBankAccountModal
         onRequestClose={() => setBankModalVisible(!bankModalVisible)}
         visible={bankModalVisible}
         setDisplayAllBankAccounts={(all) => allBanks(all)}
-      />
+      />)}
 
       <ActionModal
         onRequestClose={() => {

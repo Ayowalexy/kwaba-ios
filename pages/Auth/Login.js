@@ -66,12 +66,12 @@ const CustomInput = (props) => {
             paddingVertical: 15,
             paddingHorizontal: 50,
           }}
-          value={value.trim().toLowerCase()}
+          value={value}
           onBlur={() => {
             setFieldTouched(name);
             onBlur(name);
           }}
-          onChangeText={(text) => onChange(name)(text.trim().toLowerCase())}
+          onChangeText={(text) => onChange(name)(text)}
           {...inputProps}
           secureTextEntry={name.toLowerCase() == 'password' && secureTextEntry}
           keyboardType={

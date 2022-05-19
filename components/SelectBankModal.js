@@ -12,9 +12,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images, icons} from '../util';
+import Banks from './banks.json'
 
 export default function SelectBankModal(props) {
   const {onRequestClose, visible, onClick, banks, selectedBank} = props;
+  console.log(banks)
 
   return (
     // <View>
@@ -46,7 +48,8 @@ export default function SelectBankModal(props) {
             // showsVerticalScrollIndicator={false}
           >
             <View>
-              {banks?.map(({name, code}, index) => (
+              {/* {banks?.map(({name, code}, index) => ( */}
+              {Banks?.data?.map(({name, code}, index) => (
                 <TouchableOpacity
                   onPress={() => {
                     onClick(name, code);
