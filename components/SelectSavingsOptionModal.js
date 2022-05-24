@@ -68,6 +68,7 @@ console.log('referrals', referrals)
                     }
 
                     if(item === 'Solo Savings'){
+                      console.log("allSoloSaving", allSoloSaving)
                       const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
                       const matured = filter.filter(element => element.amount_saved >= element.target_amount)
                       const usedFilter = filter.filter(element => !element.status && !element.funds_withdrawn)

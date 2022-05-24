@@ -39,9 +39,10 @@ export default function SavingsListModal(props) {
     if (type == 'Solo Savings') {
 
       const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
+      const usedFilter = filter.filter(element => !element.status && !element.funds_withdrawn)
       
       // setSavingLists(allSoloSaving.data);
-      setSavingLists(filter);
+      setSavingLists(usedFilter);
     } else if (type == 'Buddy Savings') {
       setSavingLists(allBuddySaving.data);
       console.log('All Buddy: ', allBuddySaving);

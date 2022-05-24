@@ -121,21 +121,21 @@ export default function WithdrawalForm(props) {
         bank_code: userSelectedBankAccount?.bank_short_code,
       };
     } else {
+      const option = values.savingsOption == 'Solo Savings'
+      ? 'solo_savings'
+      : values.savingsOption.toLowerCase()
       data = {
-        option:
-          values.savingsOption == 'Solo Savings'
-            ? 'savings'
-            : values.savingsOption.toLowerCase(),
         amount:
           selectedAmountIndex == 0
             ? unFormatNumber(fullAmount)
             : unFormatNumber(amountValue),
-        reason: values.reason,
+        // reason: values.reason,
         savings_id: (item && item.id) || '',
         account_number: userSelectedBankAccount?.bank_account_number,
         account_name: userSelectedBankAccount?.user_bank_name,
         bank_name: userSelectedBankAccount?.bank_name,
-        bank_code: userSelectedBankAccount?.bank_short_code,
+        // bank_code: userSelectedBankAccount?.bank_short_code,
+        source: option
       };
     }
    

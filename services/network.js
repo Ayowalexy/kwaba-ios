@@ -1006,15 +1006,17 @@ const requestWithdrawal = async (data) => {
     const token = await getToken();
     console.log(token);
 
+    console.log('data', data)
     const response = await axios.post(
       url,
-      JSON.stringify({...data, source: data.option}),
+      JSON.stringify(data),
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
     );
     return response;
   } catch (error) {
+    console.log('logged error',error.response.data)
     return error;
   }
 };
