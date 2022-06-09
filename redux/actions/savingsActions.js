@@ -2,7 +2,7 @@ import * as types from './types';
 import apiUrl from '../../services/api';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getOneUserSavings, getUserSavings} from '../../services/network';
+import { getOneUserSavings, getUserSavings } from '../../services/network';
 import urls from '../../services/routes';
 
 const getToken = async () => {
@@ -37,7 +37,7 @@ export const getTotalSoloSavings = () => {
     const url = apiUrl + '/api/v1/get_user_savings';
     try {
       const response = await axios.get(urls.savings.GET_ALL_USER_SAVINGS, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       dispatch(setTotalSoloSavings(response.data.data));
       return response.data.data?.reverse();
@@ -61,7 +61,7 @@ export const getMaxLoanCap = () => {
     const url = urls.savings.GET_TOTAL_USER_SAVINGS_AMOUNT;
     try {
       const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       console.log('Max Loan: ', response?.data?.data);
       dispatch(setMaxLoanCap(response?.data?.data));
@@ -86,10 +86,10 @@ export const getTotalBuddySavings = () => {
     const token = await getToken();
     // const url = apiUrl + '/api/v1/fetch_buddy_savings';
     const url = apiUrl + '/api/v1/savings/buddy';
-    console.log({url, token});
+    console.log({ url, token });
     try {
       const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       dispatch(setTotalBuddySavings(response.data.data.all_buddy_savings));
       return response.data.data.all_buddy_savings;
@@ -114,7 +114,7 @@ export const getOneBuddySavings = (id) => {
     const url = apiUrl + `/api/v1/savings/buddy/${id}`;
     try {
       const response = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       dispatch(setOneBuddySavings(response.data));
       return response.data;
@@ -139,7 +139,7 @@ export const getOneSoloSavings = (id) => {
     const url = urls.savings.GET_ALL_USER_SAVINGS;
     try {
       const response = await axios.get(`${url}/${id}`, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       // console.log('One savings: ', response);
       dispatch(setOneSoloSavings(response));
@@ -181,7 +181,7 @@ export const getOneSoloSavingsTransaction = (id) => {
     const url = urls.savings.GET_SAVINGS_PAYMENT_HISTORY;
     try {
       const response = await axios.get(`${url}/${id}`, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       console.log('Payment History Here: ', response.data);
       dispatch(setOneSoloSavingsTransaction(response.data.data));

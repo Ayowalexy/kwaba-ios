@@ -159,7 +159,7 @@ export default function NewHome({navigation}) {
       const res = await me();
       console.log('The me res: ', res.data);
       if (res?.data) {
-        const userData = await getUserData();
+        const userData = await getUserData();f
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
         // dispatch(getTotalBuddySavings());
@@ -392,12 +392,12 @@ export default function NewHome({navigation}) {
       name: 'Pay Bills',
       image: icons.ic2,
       route: () => {
-        navigation.navigate('BillsHome');
-        TrackEvent('Pay Bills Home Quick Action');
-        // Alert.alert(
-        //   'Feature currently unavailable',
-        //   'We are working hard to make this available as soon as we can.',
-        // );
+        // navigation.navigate('BillsHome');
+        // TrackEvent('Pay Bills Home Quick Action');
+        Alert.alert(
+          'Feature currently unavailable',
+          'We are working hard to make this available as soon as we can.',
+        );
       },
     },
     // {
