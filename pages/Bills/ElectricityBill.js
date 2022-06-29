@@ -22,6 +22,7 @@ import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBil
 import Spinner from 'react-native-loading-spinner-overlay';
 import {buyOtherBills} from '../../services/network';
 import NumberFormat from '../../components/NumberFormat';
+import { baseUrl } from '../../services/routes';
 
 const ElectricityBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -87,16 +88,19 @@ const ElectricityBill = ({navigation, route}) => {
       try {
         console.log('service id', serviceID)
         const token = await getToken();
-        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bills/get-bills-items/${serviceID}`;
+        const url = `${baseUrl}/bills/get-bills-items/${serviceID}`;
+        console.log(url)
+        // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bills/get-bills-items/${serviceID}`;
         // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get-bills-items/${serviceID}`;
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},
         });
         // test mode response?.data?.data?.content?.varations
         // live mode response?.data?.data?.content?.variations
-        setPackageData(response?.data?.data?.content?.variations);
+        setPackageData(response?.data?.data?.content?.varations);
+        console.log('test',response?.data?.data?.content?.varations)
       } catch (error) {
-        console.log('Error:', error);
+        console.log('Error:', error.response.data);
       }
     }
   };

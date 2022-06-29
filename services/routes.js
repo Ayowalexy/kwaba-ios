@@ -24,7 +24,7 @@ const urls = {
     COMPLETE_PROFILE: `${baseUrl}/users/update-profile`,
     SEND_EMAIL_VERIFICATION: `${baseUrl}/users/send-email-verification`,
     REFERRALS: `${baseUrl}/users/referrals`,
-    CHANGE_PASSWORD: `${baseUrl}/user/change_password`,
+    CHANGE_PASSWORD: `${baseUrl}/users/change-password`,
   },
 
   savings: {

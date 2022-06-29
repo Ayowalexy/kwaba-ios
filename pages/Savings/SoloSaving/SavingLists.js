@@ -254,7 +254,7 @@ export default function SavingLists({navigation}) {
       </View>
       <View style={[styles.cardContainer]}>
         <FlatList
-          data={allSavings?.data.filter(
+          data={Object.values(allSavings?.data).filter(
             (v) => v?.savings_type == 'solo_savings',
           )}
           renderItem={renderItem}

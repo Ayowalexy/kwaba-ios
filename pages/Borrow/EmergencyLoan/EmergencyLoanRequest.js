@@ -123,6 +123,12 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   ];
 
   const handleSubmit = async () => {
+
+    console.log('user select bank', userSelectedBankAccount)
+
+    if(Object.is(null, userSelectedBankAccount)){
+      return Alert.alert('No bank account selected','Please add an account')
+    }
     const data = {
       loan_amount: loanAmount,
       loan_purpose: loanPurpose,

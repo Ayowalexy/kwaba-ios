@@ -6,8 +6,14 @@ import {getSavingsHistory, getUserSavings} from '../../../../services/network';
 import {COLORS} from '../../../../util';
 import {formatNumber} from '../../../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import moment from 'moment';
 export default function AllTransactions(props) {
+  const getPaymentHistoryReducer = useSelector(
+    (state) => state.getPaymentHistoryReducer,
+  );
+  const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 7);
+
+
   return (
     // <ScrollView
     //   scrollEnabled={true}
@@ -30,7 +36,72 @@ export default function AllTransactions(props) {
         style={{
           zIndex: 900,
         }}>
-        {props?.savingsTransactions?.map((el, index) => {
+          <View
+          style={{
+            marginTop: 30,
+            paddingHorizontal: 20,
+          }}>
+          {slicedTransaction?.map((item, index) => {
+            return (
+              <View
+                key={index}
+                style={{
+                  borderLeftWidth: 2,
+                  borderLeftColor:
+                    index == slicedTransaction.length - 1
+                      ? 'transparent'
+                      : '#46596950',
+                  paddingBottom: 30,
+                }}>
+                <View
+                  style={{
+                    width: 15,
+                    height: 15,
+                    backgroundColor: COLORS.dark,
+                    borderRadius: 15,
+                    position: 'absolute',
+                    left: -9,
+                    top: 0,
+                  }}
+                />
+                <View style={{paddingLeft: 40, marginTop: -5}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      // alignItems: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: 'bold',
+                        color: COLORS.dark,
+                      }}>
+                      ₦{formatNumber(Number(item.amount).toFixed(2))}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: COLORS.dark,
+                      }}>
+                      {moment(item.updated_at).format('DD MMM YYYY')}
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      color: COLORS.dark,
+                      marginTop: 20,
+                      lineHeight: 20,
+                    }}>
+                    {item.reason}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+        {/* {props?.savingsTransactions?.map((el, index) => {
           return (
             <TouchableOpacity
               key={index}
@@ -96,7 +167,7 @@ export default function AllTransactions(props) {
               </View>
             </TouchableOpacity>
           );
-        })}
+        })} */}
       </ScrollView>
     </View>
     // </ScrollView>

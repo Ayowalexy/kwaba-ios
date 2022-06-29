@@ -565,7 +565,7 @@ export default function WithdrawalForm(props) {
                     </View>
                   </TouchableOpacity>
 
-                  <TouchableOpacity
+                  {/* <TouchableOpacity
                     onPress={() => {
                       setSelectedAmountIndex(1);
                       focusedInput.current.focus();
@@ -651,7 +651,7 @@ export default function WithdrawalForm(props) {
                         //   focusable={selectedAmountIndex == 1}
                       />
                     </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   {item && Number(amountValue) > Number(item.amount_save) && (
                     <Text
                       style={{color: COLORS.red, fontSize: 10, marginLeft: 5}}>

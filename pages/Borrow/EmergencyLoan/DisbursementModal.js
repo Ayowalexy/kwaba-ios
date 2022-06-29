@@ -155,7 +155,8 @@ export default function DisbursementModal(props) {
           <View style={[styles.contentView]}>
             {!userBankAccounts?.data?.length ? (
               <>
-                <View
+                <TouchableOpacity
+                  onPress={() => setBankModalVisible(true)}
                   style={{
                     width: '100%',
                     flexDirection: 'row',
@@ -163,11 +164,10 @@ export default function DisbursementModal(props) {
                     paddingVertical: 20,
                     paddingLeft: 10,
                   }}>
-                  <TouchableOpacity
-                    onPress={() => setBankModalVisible(true)}
+                  <View
                     style={[styles.addButtonEmpty]}>
                     <IconFA5 name="plus" size={15} color={COLORS.primary} />
-                  </TouchableOpacity>
+                  </View>
                   <Text
                     style={{
                       marginLeft: 20,
@@ -177,7 +177,7 @@ export default function DisbursementModal(props) {
                     }}>
                     Add Bank Account
                   </Text>
-                </View>
+                </TouchableOpacity>
               </>
             ) : (
               <>

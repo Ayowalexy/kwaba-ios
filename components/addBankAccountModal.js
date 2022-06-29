@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SelectBankModal from './SelectBankModal';
@@ -140,8 +141,9 @@ export default function AddBankAccountModal(props) {
   };
 
   const verifyBankAccount = async (account_number, bank_code) => {
-    console.log(account_number, bank_code);
-    const url = `${baseUrl}/user/bank_details`;
+    console.log('na only the live endpoint sabi return better result, so use am');
+    const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/bank_details`;
+   
     // https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/
     try {
       const token = await getToken();
@@ -178,6 +180,7 @@ export default function AddBankAccountModal(props) {
       console.log('The Error:', error.response.data);
       if (error.response.status == 500) {
         console.log('Error Bank Account not found...');
+        Alert.alert('Error', 'Something went wrong, please check the account number and try again.')
       }
     }
   };

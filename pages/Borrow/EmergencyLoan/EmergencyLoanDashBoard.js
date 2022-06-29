@@ -261,7 +261,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     fontWeight: 'bold',
                     marginLeft: 2,
                   }}>
-                  ₦{formatNumber(Number(repaymentAmount).toFixed(2)) || '0.00'}
+                  ₦{formatNumber(Number(Math.ceil(repaymentAmount))) || '0.00'}
                 </Text>
               </View>
             </View>

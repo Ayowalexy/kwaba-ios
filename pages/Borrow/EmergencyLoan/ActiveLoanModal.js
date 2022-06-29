@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import {COLORS} from '../../../util';
+import { COLORS } from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
   getOneLoan,
@@ -19,7 +19,7 @@ import {
   verifyWalletTransaction,
 } from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
+import { formatNumber, unFormatNumber } from '../../../util/numberFormatter';
 import moment from 'moment';
 import axios from 'axios';
 import AmountModalFunds from '../../../components/amountModalFunds';
@@ -27,7 +27,7 @@ import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 
 export default function ActiveLoanModal(props) {
-  const {visible, onRequestClose, loanID, navigation, loanData} = props;
+  const { visible, onRequestClose, loanID, navigation, loanData } = props;
   const [spinner, setSpinner] = useState(false);
   const [data, setData] = useState('');
 
@@ -64,11 +64,13 @@ export default function ActiveLoanModal(props) {
     setLoanRepaymentData(loanData);
   }, []);
 
+
   const getOne = async () => {
     try {
       setSpinner(true);
       // const resp = await getSingleLoan(data);
       const resp = await getOneLoan(loanID);
+
       if (resp.status == 200) {
         console.log('response get one loan: ', resp.data.data);
         setSpinner(false);
@@ -79,7 +81,7 @@ export default function ActiveLoanModal(props) {
           status: d.status,
           loan_purpose: d.loan_purpose,
           loan_amount: d.loan_amount,
-          loan_repayment_amount: d.repayment_amount,
+          loan_repayment_amount: Math.ceil(d.repayment_amount),
           loan_amount_paid: d.amount_paid,
           loan_amount_due: Number(d.repayment_amount) - Number(d.amount_paid),
           repayment_date: d.repayment_date,
@@ -100,15 +102,27 @@ export default function ActiveLoanModal(props) {
 
   const handlePaymentRoute = async (value) => {
     try {
+
+      console.log('loan amount', amount, dataValue.loan_repayment_amount)
+
+      if(Number(amount) > Number(dataValue.loan_repayment_amount)){
+        Alert.alert('Loan Overpayment', `Your loan repayment value is ₦${formatNumber(dataValue.loan_repayment_amount)} but you are to pay ₦${formatNumber(amount)}; ₦${formatNumber(Math.floor(Number(amount) - Number(dataValue.loan_repayment_amount)))} more the due amount, please check and try again`)
+
+        return
+      }
+
       const data = {
-        loan_id: loanRepaymentData?.id,
+        emergencyLoanId: loanRepaymentData?.id,
         amount: amount,
+        channel: 'paystack',
+        purpose: 'emergencyLoanRepayment'
       };
 
       console.log('The Data loan: ', data);
       console.log('The Value: ', value);
 
       setSpinner(true);
+      console.log('na me be this')
       const response = await loanRepayment(data);
       console.log('That Resp: ', response);
 
@@ -148,7 +162,7 @@ export default function ActiveLoanModal(props) {
       }
     } catch (error) {
       setSpinner(false);
-      console.log('Oops', error.response);
+      console.log('Oops uu', error.response);
     }
   };
 
@@ -229,39 +243,44 @@ export default function ActiveLoanModal(props) {
                       </Text>
                     </View>
 
-                    <TouchableOpacity
-                      onPress={() => {
-                        setShowAmountModal(true); // show amount modal
-                        // setShowPaymentModal(true); // show payment type
-                      }}
-                      disabled={
-                        dataValue.status.toLowerCase() == 'pending' ||
-                        dataValue.status.toLowerCase() == 'paid'
-                      }
-                      style={{
-                        backgroundColor: COLORS.primary,
-                        paddingVertical: 10,
-                        paddingHorizontal: 20,
-                        borderRadius: 5,
-                        opacity:
-                          dataValue.status.toLowerCase() == 'pending' ||
-                          dataValue.status.toLowerCase() == 'paid'
-                            ? 0.8
-                            : 1,
-                      }}>
-                      <Text
-                        style={{
-                          color: COLORS.white,
-                          fontWeight: 'bold',
-                          fontSize: 10,
-                          fontStyle: 'italic',
-                        }}>
-                        {/* {dataValue.status != 'Pending' ? 'PAY NOW' : 'PENDING'} */}
-                        {dataValue.status.toLowerCase() == 'paid'
-                          ? 'LOAN PAID'
-                          : 'PAY NOW'}
-                      </Text>
-                    </TouchableOpacity>
+                    {
+                      dataValue.status.toLocaleLowerCase() !== 'declined' ? (<>
+                        <TouchableOpacity
+                          onPress={() => {
+                            setShowAmountModal(true); // show amount modal
+                            // setShowPaymentModal(true); // show payment type
+                          }}
+                          disabled={
+                            dataValue.status.toLowerCase() == 'pending' ||
+                            dataValue.status.toLowerCase() == 'paid'
+                          }
+                          style={{
+                            backgroundColor: COLORS.primary,
+                            paddingVertical: 10,
+                            paddingHorizontal: 20,
+                            borderRadius: 5,
+                            opacity:
+                              dataValue.status.toLowerCase() == 'pending' ||
+                                dataValue.status.toLowerCase() == 'paid'
+                                ? 0.8
+                                : 1,
+                          }}>
+                          <Text
+                            style={{
+                              color: COLORS.white,
+                              fontWeight: 'bold',
+                              fontSize: 10,
+                              fontStyle: 'italic',
+                            }}>
+                            {/* {dataValue.status != 'Pending' ? 'PAY NOW' : 'PENDING'} */}
+                            {dataValue.status.toLowerCase() == 'paid'
+                              ? 'LOAN PAID'
+                              : 'PAY NOW'
+                            }
+                          </Text>
+                        </TouchableOpacity>
+                      </>) : null
+                    }
                   </View>
                 </View>
 
@@ -419,7 +438,7 @@ export default function ActiveLoanModal(props) {
         <AmountModalFunds
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
-          setAmount={(d) => setAmount(d)}
+          setAmount={(d) => setAmount(Math.ceil(d))}
           showCard={() => setShowPaymentModal(true)}
           data={loanRepaymentData}
         />

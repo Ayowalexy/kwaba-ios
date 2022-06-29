@@ -105,8 +105,8 @@ export default function ChangePasswordModal(props) {
 
   const handleSubmit = async (values) => {
     const data = {
-      oldPassword: values.oldPassword,
-      newPassword: values.newPassword,
+      old_password: values.oldPassword,
+      new_password: values.newPassword,
     };
 
     console.log('The Data For Password: ', data);

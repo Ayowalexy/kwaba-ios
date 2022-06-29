@@ -64,6 +64,7 @@ import moment from 'moment';
 import {setSteps} from '../../redux/actions/rnplActions';
 import {initalState} from '../../redux/reducers/rnplReducer';
 import {getUserReferrals} from '../../redux/actions/referralAction';
+import { GetAllBuddyInvites } from '../../services/network';
 
 
 export default function NewHome({navigation}) {
@@ -106,6 +107,8 @@ export default function NewHome({navigation}) {
   const [showQuickSaveListModal, setShowQuickSaveListModal] = useState(false);
 
   const [savingType, setSavingType] = useState('');
+
+  const [allBuddyInvites, setAllBuddyInvites] = useState([])
 
   const layout = useWindowDimensions();
 
@@ -153,6 +156,13 @@ export default function NewHome({navigation}) {
     return data;
   };
 
+
+  useEffect(() => {
+    (async() => {
+      const allBuddies = await GetAllBuddyInvites();
+      setAllBuddyInvites(allBuddies?.data?.buddyInvites)
+    })()
+  }, [])
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -392,12 +402,12 @@ export default function NewHome({navigation}) {
       name: 'Pay Bills',
       image: icons.ic2,
       route: () => {
-        // navigation.navigate('BillsHome');
-        // TrackEvent('Pay Bills Home Quick Action');
-        Alert.alert(
-          'Feature currently unavailable',
-          'We are working hard to make this available as soon as we can.',
-        );
+        navigation.navigate('BillsHome');
+        TrackEvent('Pay Bills Home Quick Action');
+        // Alert.alert(
+        //   'Feature currently unavailable',
+        //   'We are working hard to make this available as soon as we can.',
+        // );
       },
     },
     // {
@@ -597,6 +607,58 @@ export default function NewHome({navigation}) {
             </Text>
           </TouchableOpacity>
         </View>
+        {Boolean(allBuddyInvites?.length) && (
+          <View style={designs.secondBar}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Image
+                style={{width: 25, marginRight: 11}}
+                source={icons.messageIcon}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  fontFamily: 'CircularStd',
+                  fontSize: 10,
+                  lineHeight: 12,
+                  color: '#FB8B24',
+                  fontWeight: 'bold',
+                }}>
+               Accept pending buddy invite{' '}
+                <Text style={{color: COLORS.dark}}>
+                 from friends {'\n'} to meet your target
+                </Text>
+              </Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('BuddyLists')}>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontFamily: 'CircularStd',
+                    fontSize: 10,
+                    fontWeight: 'bold',
+                    lineHeight: 13,
+                    color: '#00DC99',
+                  }}>
+                  Accept Invite
+                </Text>
+                <Icon name="chevron-forward" color="#00DC99" size={15} />
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
         {!isProfileComplete && (
           <View style={designs.secondBar}>
             <View

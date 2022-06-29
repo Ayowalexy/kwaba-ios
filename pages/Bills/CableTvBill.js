@@ -22,6 +22,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import {buyOtherBills, BuyPurchaseAirtime} from '../../services/network';
 import {unFormatNumber} from '../../util/numberFormatter';
 import NumberFormat from '../../components/NumberFormat';
+import { baseUrl } from '../../services/routes';
 
 const CableTvBill = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -81,7 +82,7 @@ const CableTvBill = ({navigation, route}) => {
 
       try {
         const token = await getToken();
-        const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bills/get-bills-items/${serviceID}`;
+        const url = `${baseUrl}/bills/get-bills-items/${serviceID}`;
         // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
         const response = await axios.get(url, {
           headers: {'Content-Type': 'application/json', Authorization: token},

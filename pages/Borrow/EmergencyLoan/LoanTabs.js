@@ -345,7 +345,7 @@ export default function LoanTabs(props) {
                       {item.loan_purpose}
                       {'  '}
                       <Text style={{fontSize: 10}}>
-                        ₦{formatNumber(item.repayment_amount)}
+                        ₦{formatNumber(Math.ceil(item.repayment_amount))}
                       </Text>
                     </Text>
                     <Text
@@ -392,7 +392,7 @@ export default function LoanTabs(props) {
               </View>
 
               {/* Using amount */}
-              {item.status.toLowerCase() == 'active' && (
+              {(item.status.toLowerCase() == 'active') || (item.status.toLowerCase() == 'overdue') ? (
                 <>
                   <View style={{marginTop: -5}}>
                     <TouchableOpacity
@@ -418,7 +418,7 @@ export default function LoanTabs(props) {
                     </TouchableOpacity>
                   </View>
                 </>
-              )}
+              ) : null}
 
               {/* Using status */}
 
@@ -556,6 +556,7 @@ export default function LoanTabs(props) {
               purpose: 'emergencyLoanRepayment',
             };
 
+            await showSuccess()
             await completePayment(data);
           }}
         />

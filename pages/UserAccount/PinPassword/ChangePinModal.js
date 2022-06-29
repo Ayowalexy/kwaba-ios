@@ -138,7 +138,7 @@ export default function ChangePinModal(props) {
         // navigation.navigate('Home');
         // onRequestClose();
         setSpinner(false);
-        Alert.alert('Pin Updated', 'your pin has been reset successfully');
+        Alert.alert('Pin Updated', 'Your Pin has been reset Successfully');
       } else {
         setSpinner(false);
       }

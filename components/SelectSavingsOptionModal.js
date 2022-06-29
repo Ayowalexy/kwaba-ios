@@ -68,11 +68,14 @@ console.log('referrals', referrals)
                     }
 
                     if(item === 'Solo Savings'){
-                      console.log("allSoloSaving", allSoloSaving)
-                      const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
-                      const matured = filter.filter(element => element.amount_saved >= element.target_amount)
+                      console.log("allSoloSaving", Object.values(allSoloSaving?.data))
+                      const data = Object.values(allSoloSaving?.data)
+                      const filter = data.filter(element=> !(Object.is(element, null)))
+                      // const matured = filter.filter(element => element.amount_saved >= element.target_amount)
                       const usedFilter = filter.filter(element => !element.status && !element.funds_withdrawn)
                       // if(matured.length === 0){
+                        console.log('marured', usedFilter)
+                        
                       if(usedFilter.length === 0){
                         return Alert.alert(
                           'No Matured Solo Savings',

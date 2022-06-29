@@ -38,7 +38,8 @@ export default function SavingsListModal(props) {
   const checkType = async () => {
     if (type == 'Solo Savings') {
 
-      const filter = allSoloSaving.data.filter(element=> !(Object.is(element, null)))
+      console.log('all solo', allSoloSaving?.data)
+      const filter = Object.values(allSoloSaving?.data).filter(element=> !(Object.is(element, null)))
       const usedFilter = filter.filter(element => !element.status && !element.funds_withdrawn)
       
       // setSavingLists(allSoloSaving.data);

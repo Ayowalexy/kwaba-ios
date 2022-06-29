@@ -54,13 +54,14 @@ const signUp = async (data) => {
 };
 
 const login = async (data) => {
+  console.log(data, urls.auth.LOGIN)
   try {
     const response = await axios.post(urls.auth.LOGIN, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json'},
     });
     return response;
   } catch (error) {
-    return error;
+    return error.response.data;
   }
 };
 
@@ -79,6 +80,7 @@ const setPin = async (data) => {
 };
 
 const enterPinToLogin = async (data) => {
+  console.log(data, urls.auth.USER_LOGIN_VERIFY_PIN)
   try {
     const url = apiUrl + '/api/v1/user_login_verify_pin';
     const response = await axios.post(urls.auth.USER_LOGIN_VERIFY_PIN, data, {
@@ -221,7 +223,8 @@ const applyForEmergencyLoan = async (data) => {
 
 const loanRepayment = async (data) => {
   const token = await getToken();
-  const url = apiUrl + '/api/v1/emergency_loan/repay';
+  const url = urls.savings.VERIFY_PAYMENT
+  // const url = apiUrl + '/api/v1/emergency_loan/repay';
   try {
     const response = await axios.post(url, JSON.stringify(data), {
       headers: {
@@ -231,7 +234,7 @@ const loanRepayment = async (data) => {
     });
     return response;
   } catch (error) {
-    return error.message;
+    return error.response.data;
   }
 };
 
@@ -443,6 +446,7 @@ const deleteTokenizeCard = async (data) => {
 
 const verifyBankAccount = async (data) => {
   const url = apiUrl + '/api/v1/user/bank_details';
+  console.log(url, data)
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -844,13 +848,15 @@ const getOneUserBuddySavings = async (id) => {
   const url = urls.savings.DASHBOARD + `/${id}`
   // const url = apiUrl + `/api/v1/buddy_savings_dashboard/${id}`;
   const token = await getToken();
+
+  console.log(token, url, id)
   try {
     const response = await axios.get(url, {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
-    return error;
+    return error.response;
   }
 };
 const getOneBuddy = async (id) => {
@@ -989,12 +995,13 @@ const changePassword = async (data) => {
     // const url = apiUrl + '/api/v1/user/change_password';
     const url = urls.auth.CHANGE_PASSWORD;
     const token = await getToken();
+    console.log(url, token, data)
     const response = await axios.put(url, JSON.stringify(data), {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
-    return error;
+    return error.response?.data;
   }
 };
 

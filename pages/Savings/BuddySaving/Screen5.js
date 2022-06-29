@@ -100,7 +100,7 @@ export default function Screen5(props) {
   }, []);
 
   const toggleSwitch = () => {
-    setLocked((previousState) => !previousState);
+    // setLocked((previousState) => !previousState);
   };
 
   const handleNext = async () => {
@@ -512,7 +512,7 @@ export default function Screen5(props) {
                   thumbColor={locked ? '#00DC99' : '#ADADAD'}
                   ios_backgroundColor="#3e3e3e"
                   onValueChange={toggleSwitch}
-                  value={locked}
+                  value={true}
                 />
               </View>
               <View
