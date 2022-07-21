@@ -65,6 +65,8 @@ import {setSteps} from '../../redux/actions/rnplActions';
 import {initalState} from '../../redux/reducers/rnplReducer';
 import {getUserReferrals} from '../../redux/actions/referralAction';
 import { GetAllBuddyInvites } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
+import { getEmergencyLoans } from '../../services/network';
 
 
 export default function NewHome({navigation}) {
@@ -110,7 +112,12 @@ export default function NewHome({navigation}) {
 
   const [allBuddyInvites, setAllBuddyInvites] = useState([])
 
+  const [loanStatus, setLoanStatus] = useState(0)
+
   const layout = useWindowDimensions();
+
+  const [documentsApproved, setDocumentsApproved] = useState(false)
+
 
   const createChannel = () => {
     PushNotification.createChannel(
@@ -125,6 +132,16 @@ export default function NewHome({navigation}) {
     createChannel()
   }, [])
 
+  useEffect(() => {
+    (async () => {
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const docs = await getCurrentApplication({ id: loan_id })
+      console.log('docs approved', docs?.data?.data?.status)
+      setDocumentsApproved(docs?.data?.data?.status)
+    })()
+  }, [])
+
   const handleNotification = (item) => {
     console.log('loooooooooool')
     PushNotification.localNotification({
@@ -133,6 +150,20 @@ export default function NewHome({navigation}) {
       message: '',
     });
   };
+
+
+  useEffect(() => {
+    (async() => {
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const loan =  await getCurrentApplication({id: loan_id})
+      const status = loan?.data?.data?.status
+      console.log('Loan status', status)
+      if(status){
+        setLoanStatus(status)
+      }
+    })()
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -455,10 +486,71 @@ export default function NewHome({navigation}) {
         // 'Apply for rental finanace and pay back in easy monthly installments',
         'Split your bulk rent into easy monthly payments.',
       // route: () => navigation.navigate('SaveToOwn'),
-      route: () => navigation.navigate('Rent'),
+      route: () => navigation.navigate('Rent', { status: loanStatus}),
     },
   ];
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
 
+  const handleRentalLoanClick = async () => {
+
+    // return Alert.alert(
+    //   'Oops',
+    //   'This feature is unavailable at the moment'
+    // )
+    //THE RENT NOW PAY LATER FEATURE IS CURRENTLY TURNED OFF
+
+    if (!Boolean(documentsApproved)) {
+      // navigation.navigate('VerifyingDocuments')
+    }
+
+    TrackEvent('RNPL From Bottom Navigation');
+    const user = await getUser();
+    const getCreditScoreDetails = await AsyncStorage.getItem(
+      `creditScoreDetail-${user.id}`,
+    );
+
+    console.log('DATATATATATTA: ', getCreditScoreDetails);
+
+    // await AsyncStorage.clear();
+
+    // navigation.navigate('RnplSteps');
+    // navigation.navigate('NewAllDocuments');
+    // navigation.navigate('CreditOnboard');
+
+    const rnplStep = await AsyncStorage.getItem('rnplSteps')
+    const parsed = JSON.parse(rnplStep)
+
+    console.log('params', loanStatus)
+    const userDetails = await AsyncStorage.getItem(`userEmailAndBvn-${user.id}`);
+   
+    if (user.profile_complete == 0) {
+      setCompleteProfileModal(true);
+    } else {
+      if (getCreditScoreDetails == null) {
+        navigation.navigate('RnplOnboard');
+      } else if (getCreditScoreDetails == 'creditOnboarding') {
+        navigation.navigate('RnplOnboard');
+        // // // navigation.navigate('CreditOnboard');
+      } else if (getCreditScoreDetails == 'creditForm') {
+        navigation.navigate('CreditAwaiting', JSON.parse(userDetails));
+        //navigation.navigate('RnplOnboard');
+
+      } else if (getCreditScoreDetails == 'creditAwaiting') {
+        navigation.navigate('creditAwaiting');
+      } else if (getCreditScoreDetails == 'creditDashboard') {
+        navigation.navigate('CreditAwaiting');
+      } else if (loanStatus == 2) {
+        navigation.navigate('VerifyingDocuments')
+      } else {
+       
+        navigation.navigate('RnplSteps');
+      }
+    }
+  };
   
 
   const OFFSET = 30;
@@ -1018,7 +1110,13 @@ export default function NewHome({navigation}) {
               {newCard.map((item, index) => {
                 return (
                   <TouchableOpacity
-                    onPress={item.route}
+                    onPress={() => {
+                      if(item.title == 'Pay for rent'){
+                          handleRentalLoanClick()
+                      } else {
+                        item.route()
+                      }
+                    }}
                     key={index}
                     style={{
                       backgroundColor: COLORS.primary,
@@ -1235,6 +1333,8 @@ export default function NewHome({navigation}) {
           onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
           visible={completeProfileModal}
           navigation={navigation}
+          // screenName={route.name}
+
         />
 
         <SavingsOptionModal

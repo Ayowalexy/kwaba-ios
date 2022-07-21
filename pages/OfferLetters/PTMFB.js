@@ -14,6 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import {formatNumber} from '../../util/numberFormatter';
 import moment from 'moment';
+import { baseUrl } from '../../services/routes';
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
 export default function PTMFB(props) {
   const {navigation} = props;
@@ -64,17 +67,18 @@ export default function PTMFB(props) {
     const user = await getUserData();
 
     // console.log('The User: ', user);
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+   
+
 
     try {
-      const application = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const application =  await getCurrentApplication({id: loan_id})
       const data = application.data.data;
 
       const purpose_check = 'Want to pay for a new place';
+
+     
 
       setOfferLetterData({
         userName: user.firstname + ' ' + user.lastname,

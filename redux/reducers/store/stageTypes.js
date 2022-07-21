@@ -1,0 +1,4 @@
+export const STAGE_TYPES = {
+    GET_CURRENT_STAGE: 'stage/GET_CURRENT_STAGE',
+    SET_CURRENT_STAGE: 'stage/SET_CURRENT_STAGE'
+}

@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { DeleteBuddyInvites, AcceptBuddyInvite, getInterestRateForSavingsAndBuddy } from '../../../services/network';
 import moment from 'moment'
+import ActionModal from '../../../components/ActiomModal';
 
 
 
@@ -45,6 +46,10 @@ export default function DeleteModal(props) {
 
   const [soloSavingsRate, setSoloSavingRate] = useState('');
 
+  const [show, setVisible] = useState(false)
+  const [msg, setMsg] = useState('')
+  const [type, setType] = useState('')
+
 
   console.log('#'.repeat(30))
   console.log(selectedInvite)
@@ -74,7 +79,20 @@ export default function DeleteModal(props) {
         console.log('res', res.status)
         if(res.status == 201 || 200){
           setSpinner(false)
+          setVisible(true)
+          setType('success')
+          setMsg({
+            header: 'Success',
+            text: 'You have successfully joined a buddy saving plan, Clikc the button to continue',
+            action: 'Continue',
+            navigation: {
+              id: selectedInvite.buddy_savings_id,
+            }
+            
+          })
+          
           setShowDeleteModal(false);
+         
         }
 
     } catch (error) {
@@ -136,7 +154,7 @@ export default function DeleteModal(props) {
   };
 
   return (
-    <>
+    <View>
       <Modal
         isVisible={showDeleteModal}
         onBackButtonPress={() => setShowDeleteModal(false)}
@@ -386,14 +404,18 @@ export default function DeleteModal(props) {
       </View>
 
      
-      <Spinner visible={spinner} size="large" />
-
-      
+      <Spinner visible={spinner} size="large" /> 
     </View>
       </Modal>
 
       {/* <Spinner visible={spinner} size="large" /> */}
-    </>
+      <ActionModal
+          visible={show}
+          setVisible={setVisible}
+          type={type}
+          msg={msg}
+        />
+    </View>
   );
 }
 

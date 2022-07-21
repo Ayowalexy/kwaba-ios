@@ -62,6 +62,7 @@ const CustomInput = (props) => {
             color: COLORS.dark,
           }}
           keyboardType="default"
+          maxLength={name.toLowerCase() == 'bvn' ? 11 : null}
           value={value}
           onBlur={() => {
             setFieldTouched(name);
@@ -126,7 +127,7 @@ export default function CreditForm(props) {
     const user = await getUser();
     // AsyncStorage.setItem(`userEmailAndBvn-${user.id}`, JSON.stringify(data));
 
-    setFormValue(data);
+    setFormValue(formValue);
     console.log('DF: ', formValue);
 
     // setSpinner(true);
@@ -147,10 +148,11 @@ export default function CreditForm(props) {
 
   const savingsPayment = async (data) => {
     setSpinner(true);
+    console.log('The data', data)
 
     try {
       const res = await completeSavingsPayment(data);
-      console.log('Hello: ', res?.data);
+      console.log('Hello: ', res);
       if (res.status == 200) {
         const scoreResponse = await purchase(formValue);
         if (!scoreResponse?.data?.success) {

@@ -245,9 +245,9 @@ import useInterval from './components/Hooks/useCountdown';
 // import Smartlook from 'smartlook-react-native-wrapper';
 // Smartlook.setupAndStartRecording('9847f227c510f58084716be56872e47cdbef5f54');
 
-LogBox.ignoreLogs([
-  'Non-serializable values were found in the navigation state',
-]);
+// LogBox.ignoreLogs([
+//   'Non-serializable values were found in the navigation state',
+// ]);
 
 const Stack = createStackNavigator();
 
@@ -423,7 +423,7 @@ const App = () => {
 
     try {
       if (res.status == 200) {
-        if (res?.data[0].version > '2.0.3') {
+        if (res?.data[0].version > '3.0.0') {
           setAppUpdateAvailable(true);
           console.log('Banger: ', res?.data);
         } else {

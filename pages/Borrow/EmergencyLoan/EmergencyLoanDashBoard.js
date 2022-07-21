@@ -72,6 +72,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
 
   const [showBanner, setShowBanner] = useState(false);
   const [allLoans, setAllLoans] = useState('');
+  const [fundedAmount, setFundedAmount] = useState(0)
 
   useEffect(() => {
     (async () => {
@@ -113,6 +114,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
   useEffect(() => {
     dispatch(getMaxLoanCap());
   }, []);
+
+  useEffect(() => {
+    if(getMaxLoanCap1?.data?.emergency_loan_amount_paid){
+      setFundedAmount(getMaxLoanCap1?.data?.emergency_loan_amount_paid)
+    }
+  }, [])
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
@@ -242,7 +249,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     fontWeight: 'bold',
                     marginLeft: 0,
                   }}>
-                  ₦{formatNumber(Number(loanPaid).toFixed(2)) || '0.00'}
+                  ₦{formatNumber(Number(fundedAmount).toFixed(2)) || '0.00'}
                 </Text>
               </View>
               <View style={{alignItems: 'flex-end'}}>
@@ -304,7 +311,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
         </View>
       </View>
 
-      <LoanTabs navigation={navigation} />
+      <LoanTabs setFundedAmount={setFundedAmount} fundedAmount={fundedAmount} navigation={navigation} />
 
       {transactionModal && (
         <Transactions

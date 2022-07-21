@@ -10,6 +10,7 @@ import {
   Alert,
   Dimensions,
   StyleSheet,
+  ActivityIndicator
 } from 'react-native';
 import LoanOfferContent from '../Payment/LoanOfferContent';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -25,15 +26,21 @@ import axios from 'axios';
 import RNFS from 'react-native-fs';
 import {color} from 'react-native-reanimated';
 import PrintOfferLetter from '../Payment/PrintOfferLetter';
+import { baseUrl } from '../../services/routes'
+import { formatNumber } from '../../util/numberFormatter';
+import Preloader from '../../components/Preloader';
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
 const RentalLoanOfferTest = ({navigation}) => {
   const [modalVisible, setVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [eSignatureModal, setESignatureModal] = useState(false);
   const [acceptOfferResponse, setAcceptOfferResponse] = useState({});
-  const [approvedAmount, setApprovedAmount] = useState('');
-  const [monthlyPayment, setMonthlyPayment] = useState('');
+  const [approvedAmount, setApprovedAmount] = useState(0);
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
   const [duration, setDuration] = useState('');
+  const [acceptSpinner, setAcceptSpinner] = useState(false)
 
   const ref = useRef();
 
@@ -46,12 +53,10 @@ const RentalLoanOfferTest = ({navigation}) => {
 
     const setLoanOffer = async () => {
       const token = await getToken();
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
+
 
       setApprovedAmount(applicationIDCallRes.data.data.loanable_amount);
       setMonthlyPayment(applicationIDCallRes.data.data.monthly_repayment);
@@ -59,15 +64,18 @@ const RentalLoanOfferTest = ({navigation}) => {
     };
 
     setLoanOffer();
-  });
+  }, []);
 
   const handleSignature = async (signature) => {
     console.log('here is the image ' + signature);
+    setAcceptSpinner(true)
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
       const token = JSON.parse(userData).token;
       return token;
     };
+
+   
 
     // let widthtouse=Dimensions.get('window').width;
     // let heighttouse= Dimensions.get('window').height;
@@ -89,20 +97,19 @@ const RentalLoanOfferTest = ({navigation}) => {
     // })
 
     const token = await getToken();
-    const applicationIDCallRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-      {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      },
-    );
+    
+    const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
 
-    console.log(applicationIDCallRes.data.data.id);
-    console.log(applicationIDCallRes.data.data);
     const applicationId = applicationIDCallRes.data.data.id;
 
+    console.log('application id', applicationId)
+
+    setAcceptSpinner(false)
     try {
       const response = await axios.put(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/accept_offer',
+        `${baseUrl}/application/accept_offer`,
         {applicationId, signature},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
@@ -122,9 +129,18 @@ const RentalLoanOfferTest = ({navigation}) => {
 
       // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
       console.log(response);
+      setAcceptSpinner(false)
+      if(response.status.toString().startsWith(2)){
+        const rnplStep = {
+          nextStage: 'Property details',
+          completedStages: ['Credit score', 'Applications', 'Offer approval breakdown', 'Documents upload']
+        }
+        await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
+      }
       setAcceptOfferResponse(response);
     } catch (error) {
-      console.log(error.response.data);
+      console.log(error);
     }
     setESignatureModal(false);
     setSuccessModal(true);
@@ -245,13 +261,13 @@ const RentalLoanOfferTest = ({navigation}) => {
             <View style={[styles.flexContent]}>
               <Text style={styles.flexText}>Approved amount</Text>
               <Text style={[styles.flexText, {fontWeight: 'bold'}]}>
-                ₦{approvedAmount}
+                ₦{formatNumber(approvedAmount)}
               </Text>
             </View>
             <View style={[styles.flexContent]}>
               <Text style={styles.flexText}>Monthly payment:</Text>
               <Text style={[styles.flexText, {fontWeight: 'bold'}]}>
-                ₦{monthlyPayment}
+                ₦{formatNumber(monthlyPayment)}
               </Text>
             </View>
             <View style={[styles.flexContent]}>
@@ -373,7 +389,8 @@ const RentalLoanOfferTest = ({navigation}) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setVisible(true)}
+            // onPress={() => setVisible(true)}
+            onPress={() => navigation.navigate('PTMFB')}
             style={[
               designs.button,
               {backgroundColor: COLORS.secondary, elevation: 1, width: '43%'},
@@ -522,6 +539,7 @@ const RentalLoanOfferTest = ({navigation}) => {
           visible={eSignatureModal}
           animationType="slide"
           transparent={true}>
+           
           <SignatureScreen
             ref={ref}
             onOK={handleSignature}
@@ -533,6 +551,10 @@ const RentalLoanOfferTest = ({navigation}) => {
           />
           <Text></Text>
         </Modal>
+        <Preloader
+          visible={acceptSpinner}
+          setVisible={setAcceptSpinner}
+        />
       </View>
     </View>
   );

@@ -498,7 +498,8 @@ const PurchaseAirtime = ({navigation, route}) => {
               billsData: {
                 amount: unFormatNumber(amount),
                 recepient: phoneNumber, //08011111111 for test
-                serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+                serviceId: airtimeData?.find(ele => ele?.serviceID == name.split(' ')[0].toLowerCase())?.serviceID
+                // serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
               },
             };
 

@@ -21,7 +21,8 @@ import {
   unFormatNumber,
   numberWithCommas,
 } from '../../../../util/numberFormatter';
-
+import { useDispatch } from 'react-redux';
+import { setCurrentStage } from '../../../../redux/reducers/store/stageActions';
 import RnplStepProgress from '../RnplStepProgress';
 
 // function numberWithCommas(x) {
@@ -34,7 +35,7 @@ const FormBreakdown = ({navigation}) => {
   const [selectedMonth, setSelectedMonth] = useState('');
   const [monthlyPayment, setMonthlyPayment] = useState('');
   const [preApproveAmount, setPreApproveAmount] = useState('');
-
+  const dispatch = useDispatch();
   const [requestAmountEmpty, setRequestAmountEmpty] = useState(false);
   // const
 
@@ -75,6 +76,8 @@ const FormBreakdown = ({navigation}) => {
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
+
+    dispatch(setCurrentStage(stepsArray))
 
     // console.log('loanFormData:', loanFormData);
 
@@ -165,7 +168,7 @@ const FormBreakdown = ({navigation}) => {
   };
 
   return (
-    <RnplStepProgress>
+    <RnplStepProgress page={2}>
       <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
         <ScrollView>
           <View
@@ -369,3 +372,33 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
+
+
+const stepsArray = [
+  {
+    title: 'Credit score',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Applications',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Documents upload',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Offer approval breakdown',
+    subTitle: '',
+    status: 'locked',
+  },
+  {
+    title: 'Property details',
+    subTitle: '',
+    status: 'locked',
+  }
+];
+

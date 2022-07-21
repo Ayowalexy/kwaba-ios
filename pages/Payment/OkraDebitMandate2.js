@@ -6,7 +6,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {COLORS, FONTS, images} from '../../util/index';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { getCurrentApplication } from '../../services/network';
+import { getEmergencyLoans } from '../../services/network';
+
 const moment = require('moment');
+import { baseUrl } from '../../services/routes';
 
 export default function OkraDebitMandate2({navigation}) {
   const [successModal, setSuccessModal] = useState(false);
@@ -29,24 +33,24 @@ export default function OkraDebitMandate2({navigation}) {
 
   useEffect(() => {
     getApplicationData();
+
   }, [monthlyRepayment]);
 
   const getApplicationData = async () => {
     const token = await getToken();
 
     try {
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+  
+      console.log('one application', applicationIDCallRes?.data?.data)
       // console.log(applicationIDCallRes.data.data.id);
 
       const applicationId = applicationIDCallRes.data.data.id;
 
       setExistingApplication(applicationId);
-      console.log('here', applicationIDCallRes.data.data.approvedamount);
+      console.log('here', applicationIDCallRes.data);
       setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
       const approved_repayment_plan =
         applicationIDCallRes.data.data.approved_repayment_plan;
@@ -113,7 +117,7 @@ export default function OkraDebitMandate2({navigation}) {
   //   statusWebHook: '',
   // };
 
-  if (monthlyRepayment != null) {
+  if (monthlyRepayment == null) {
     return (
       <>
         <OkraView
@@ -121,10 +125,26 @@ export default function OkraDebitMandate2({navigation}) {
           onClose={(response) => {
             console.log('on close');
           }}
-          onSuccess={(response) => {
+          onSuccess={async (response) => {
             // console.log('Na here we dey oo');
             console.log('on success we go ' + JSON.stringify(response));
             // handleLinkingSucess(response);
+            const rnplStep = {
+              nextStage: 'Disbursement',
+              completedStages: ['Credit score', 'Applications', 
+              'Documents upload', 'Offer approval breakdown',
+               'Address verification', 'Property details', 
+              'Direct debit']
+            }
+    
+            const getAllAloans = await getEmergencyLoans();
+            const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+            const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+        
+            console.log('okra', applicationIDCallRes?.data?.data.status)
+           
+            await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+    
             navigation.navigate('AwaitingDisbursement');
           }}
           onError={(response) => {

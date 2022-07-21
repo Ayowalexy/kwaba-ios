@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -10,12 +10,13 @@ import {
   StyleSheet,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons, COLORS} from '../../util/index';
+import { icons, COLORS } from '../../util/index';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Formik, Field} from 'formik';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import moment from 'moment';
+import DatePicker from 'react-native-datepicker'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const completeProfileSchema = yup.object().shape({
@@ -23,12 +24,25 @@ const completeProfileSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[0-9]{11}$/, 'Must be exactly 11 digits'),
-  dob: yup.string().required('Field'),
+  dob: yup.date()
+    .transform(function (value, originalValue) {
+      if (this.isType(value)) {
+        return value;
+      }
+      const result = parse(originalValue, "dd.MM.yyyy", new Date());
+      return result;
+    })
+    .typeError("please enter a valid date")
+    .required()
+    .max("2006-01-01", "You must be at least 16 years old to continue")
 });
 
-const Screen2 = ({navigation}) => {
-  const [date, setDate] = useState(new Date());
-  const [showDate, setShowDate] = useState(false);
+
+const Screen2 = ({ navigation }) => {
+  // const [date, setDate] = useState(new Date());
+  // const [showDate, setShowDate] = useState(false);
+  const [date, setDate] = useState('2000-05-15')
+  const [open, setOpen] = useState(false)
 
   // getting the age of the user??
   useEffect(() => {
@@ -39,10 +53,88 @@ const Screen2 = ({navigation}) => {
     console.log('Days: ', days);
   }, []);
 
+  const Dob = (props) => {
+    const {
+      field: { name, value },
+      form: { errors, touched, setFieldValue },
+      ...inputProps
+    } = props;
+
+    const hasError = errors[name] && touched[name];
+
+    const handleDateSelect = (event, selectedDate) => {
+      const currentDate = selectedDate || date;
+      setShowDate(Platform.OS === 'ios');
+      setDate(currentDate);
+      setFieldValue('dob', currentDate);
+    };
+    return (
+      <>
+        <>
+          <Text style={styles.label}>Date of Birth</Text>
+
+          <DatePicker
+            style={{
+              width: '100%',
+              borderRadius: 5,
+              backgroundColor: '#FFFFFF',
+              borderColor: '#ADADAD50',
+              borderWidth: 1,
+              marginTop: 10,
+              padding: 10
+            }}
+            date={date}
+            mode="date"
+            placeholder="select date"
+            format="YYYY-MM-DD"
+            confirmBtnText="Confirm"
+            cancelBtnText="Cancel"
+            customStyles={{
+              dateIcon: {
+                position: 'absolute',
+                right: 0,
+                top: 4,
+                marginLeft: 0
+              },
+              dateInput: {
+                // marginLeft: 36
+                textAlign: 'right',
+                borderWidth: 0,
+                position: 'absolute',
+                left: 0,
+                paddingLeft: 10
+              }
+              // ... You can check the source to find the other keys.
+            }}
+            onDateChange={(date) => {
+              setFieldValue('dob', date)
+              setDate(date)
+            }}
+          />
+
+          {/* {showDate && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            onChange={handleDateSelect}
+            mode="date"
+            is24Hour={true}
+            display="spinner"
+          /> */}
+          {/* )} */}
+
+          {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+        </>
+
+      </>
+
+    )
+  }
+
   const CustomInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -54,7 +146,7 @@ const Screen2 = ({navigation}) => {
         <View
           style={[
             styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && styles.errorInput,
           ]}>
           <TextInput
@@ -79,77 +171,77 @@ const Screen2 = ({navigation}) => {
     );
   };
 
-  const DOB = (props) => {
-    const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
-      ...inputProps
-    } = props;
+  // const DOB = (props) => {
+  //   const {
+  //     field: { name, value },
+  //     form: { errors, touched, setFieldValue },
+  //     ...inputProps
+  //   } = props;
 
-    const hasError = errors[name] && touched[name];
+  //   const hasError = errors[name] && touched[name];
 
-    const handleDateSelect = (event, selectedDate) => {
-      const currentDate = selectedDate || date;
-      setShowDate(Platform.OS === 'ios');
-      setDate(currentDate);
-      setFieldValue('dob', currentDate);
-    };
+  //   const handleDateSelect = (event, selectedDate) => {
+  //     const currentDate = selectedDate || date;
+  //     setShowDate(Platform.OS === 'ios');
+  //     setDate(currentDate);
+  //     setFieldValue('dob', currentDate);
+  //   };
 
-    return (
-      <>
-        <Text style={styles.label}>Date of Birth</Text>
-        <TouchableOpacity
-          style={[styles.customInput, {padding: 20}]}
-          onPress={() => {
-            setShowDate(true);
-            setFieldValue('dob', date);
-          }}>
-          <Text
-            style={{
-              color: COLORS.primary,
-            }}>
-            {moment(date).format('DD-MM-YYYY')}
-          </Text>
+  //   return (
+  //     <>
+  //       <Text style={styles.label}>Date of Birth</Text>
+  //       <TouchableOpacity
+  //         style={[styles.customInput, { padding: 20 }]}
+  //         onPress={() => {
+  //           setShowDate(true);
+  //           setFieldValue('dob', date);
+  //         }}>
+  //         <Text
+  //           style={{
+  //             color: COLORS.primary,
+  //           }}>
+  //           {moment(date).format('DD-MM-YYYY')}
+  //         </Text>
 
-          <Image
-            style={{width: 20, height: 20}}
-            resizeMode="contain"
-            source={icons.dateTimePicker}
-          />
-        </TouchableOpacity>
+  //         <Image
+  //           style={{ width: 20, height: 20 }}
+  //           resizeMode="contain"
+  //           source={icons.dateTimePicker}
+  //         />
+  //       </TouchableOpacity>
 
-        {showDate && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            onChange={handleDateSelect}
-            mode="date"
-            is24Hour={true}
-            display="spinner"
-          />
-        )}
+  //       {showDate && (
+  //         <DateTimePicker
+  //           testID="dateTimePicker"
+  //           value={date}
+  //           onChange={handleDateSelect}
+  //           mode="date"
+  //           is24Hour={true}
+  //           display="spinner"
+  //         />
+  //       )}
 
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
-      </>
-    );
-  };
+  //       {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+  //     </>
+  //   );
+  // };
 
   const handleSubmit = async (values) => {
     const complete_profile = await AsyncStorage.getItem('complete_profile');
     await AsyncStorage.setItem(
       'complete_profile',
-      JSON.stringify({...JSON.parse(complete_profile), ...values}),
+      JSON.stringify({ ...JSON.parse(complete_profile), ...values }),
     );
     navigation.navigate('CompleteProfile3');
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900'}}
+        style={{ fontWeight: '900' }}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
@@ -183,6 +275,8 @@ const Screen2 = ({navigation}) => {
             Provide your personal details
           </Text>
 
+          {/* <DOB /> */}
+
           <Formik
             validationSchema={completeProfileSchema}
             initialValues={{
@@ -192,14 +286,14 @@ const Screen2 = ({navigation}) => {
             onSubmit={(values) => {
               handleSubmit(values);
             }}>
-            {({handleSubmit, isValid, values, setValues}) => (
+            {({ handleSubmit, isValid, values, setValues }) => (
               <>
                 <Field component={CustomInput} name="bvn" placeholder="BVN" />
-                <Field component={DOB} name="dob" />
+                <Field component={Dob} name="dob" placeholder={date} />
 
                 <TouchableOpacity
                   onPress={handleSubmit}
-                  style={[designs.btn, {backgroundColor: '#00DC99'}]}>
+                  style={[designs.btn, { backgroundColor: '#00DC99' }]}>
                   <Text
                     style={{
                       color: 'white',
@@ -230,7 +324,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     width: '100%',
     position: 'relative',
-
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

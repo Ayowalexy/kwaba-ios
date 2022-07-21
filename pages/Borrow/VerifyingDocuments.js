@@ -20,6 +20,8 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
 import urls from '../../services/routes';
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
 const VerifyingDocuments = ({navigation, route}) => {
   const response = route.params;
@@ -47,15 +49,13 @@ const VerifyingDocuments = ({navigation, route}) => {
     setSpinner(true);
 
     const user = await getUser();
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+
 
     try {
-      const applicationIDCallRes = await axios.get(
-        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        urls.applications.GET_CURRENT_APPLICATION,
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
+
       console.log('APp status: ', applicationIDCallRes.data.data.status);
       console.log('APp: ', applicationIDCallRes.data.data);
 
@@ -91,6 +91,9 @@ const VerifyingDocuments = ({navigation, route}) => {
           'Document Verification',
           'We are still verifiying your documents, please check back later.', 
         );
+        setTimeout(() => {
+          navigation.navigate('RnplSteps')
+        }, 3000);
       }
     } catch (error) {
       setSpinner(false);

@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useLayoutEffect} from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -11,17 +11,18 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import SelectBankModal from './SelectBankModal';
 import SelectBankAccountType from './SelectBankAccountType';
-import {COLORS} from '../util';
+import { COLORS } from '../util';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {getAllBanks, getBankAccounts} from '../services/network';
+import { getAllBanks, getBankAccounts } from '../services/network';
 import { baseUrl } from '../services/routes';
+import ActionModal from './ActiomModal';
 // import { paystackBanks } from '../services/network';
 
 
 export default function AddBankAccountModal(props) {
-  const {onRequestClose, visible, setDisplayAllBankAccounts} = props;
+  const { onRequestClose, visible, setDisplayAllBankAccounts, setReloadBanks } = props;
 
   const [selectedBank, setSelectedBank] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
@@ -29,6 +30,9 @@ export default function AddBankAccountModal(props) {
 
   const [bankData, setBankData] = useState([]);
   const [bankCode, setBankCode] = useState('');
+  const [show, setVisible] = useState(false)
+  const [msg, setMsg] = useState('')
+  const [type, setType] = useState('')
 
   // const [selectAccountType, setSelectAccountType] = useState('');
   const [showSelectBankModal, setShowSelectBankModal] = useState(false);
@@ -38,6 +42,9 @@ export default function AddBankAccountModal(props) {
   const [spinner, setSpinner] = useState(false);
 
   const [userBankAccounts, setUserBankAccounts] = useState([]);
+  const [verifiedname, setVerifiedname] = useState('')
+  const [confirmed, setConfirmed] = useState(false)
+  const [details, setDetails] = useState('')
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -51,7 +58,7 @@ export default function AddBankAccountModal(props) {
       // const banks = await axios.get('https://api.paystack.co/bank', {
       //   headers: {'Content-Type': 'application/json'}, timeout: 80000
       // });
-  
+
       // // console.log("func")
       // // const res = await axios.get('https://google.com')
       // // console.log(res)     
@@ -65,7 +72,7 @@ export default function AddBankAccountModal(props) {
 
 
   useEffect(() => {
-  //  paystackBanks()
+    //  paystackBanks()
   }, []);
 
   // useEffect(() => {
@@ -126,6 +133,30 @@ export default function AddBankAccountModal(props) {
   //   };
   // }, []);
 
+  const verifyBank = async (account_number, sort_code) => {
+    try {
+      const response = await axios.get(
+        'https://kwaba-landlord-api-staging-fjjxl.ondigitalocean.app/api/rent-bank/landlord/properties',
+
+        {
+          params: {
+            pageLimit: 10,
+            pageNumber: 1
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: '123'
+          },
+          
+        },
+      );
+
+      console.log('bankkk', response)
+    } catch (e) {
+      console.log('big bang error', e)
+    }
+  }
+
   const addAccount = async () => {
     setSpinner(true);
     const data = {
@@ -135,7 +166,13 @@ export default function AddBankAccountModal(props) {
         bankCode.toString().length == 2 ? '0' + bankCode : bankCode,
     };
 
-    // console.log('The Bank Account: ', data);
+    console.log('The Bank Account: ', data);
+
+    // verifyBank(data.bank_account_number, data.bank_short_code)
+
+    // console.log('bank verification', res?.data)
+
+
 
     verifyBankAccount(data.bank_account_number, data.bank_short_code);
   };
@@ -143,9 +180,10 @@ export default function AddBankAccountModal(props) {
   const verifyBankAccount = async (account_number, bank_code) => {
     console.log('na only the live endpoint sabi return better result, so use am');
     const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/bank_details`;
-   
+
     // https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/
     try {
+      console.log('here')
       const token = await getToken();
       const response = await axios.post(
         url,
@@ -154,14 +192,15 @@ export default function AddBankAccountModal(props) {
           bank_code: bank_code,
         }),
         {
-          headers: {'Content-Type': 'application/json', Authorization: token},
+          headers: { 'Content-Type': 'application/json', Authorization: token },
         },
       );
-  
+
       if (String(response.status).startsWith('2')) {
         setSpinner(false);
 
-        const {account_name, account_number} = response.data.data;
+
+        const { account_name, account_number } = response?.data?.data;
         const userAccountDetails = {
           user_bank_name: account_name,
           bank_account_number: account_number,
@@ -170,7 +209,9 @@ export default function AddBankAccountModal(props) {
           type: 'savings',
         };
         console.log('Bank Account Verified: ', userAccountDetails);
-        await createBankAccount(userAccountDetails);
+        setVerifiedname(account_name)
+        setDetails(userAccountDetails)
+        // await createBankAccount(userAccountDetails);
       } else {
         setSpinner(false);
         console.log('Account not verified');
@@ -194,19 +235,37 @@ export default function AddBankAccountModal(props) {
 
     try {
       const url =
-          `${baseUrl}/createbankaccount`;
+        `${baseUrl}/createbankaccount`;
       const token = await getToken();
       const response = await axios.post(url, JSON.stringify(d), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
+
       if (String(response.status).startsWith('2')) {
         console.log('account successfully created');
-        onRequestClose();
-        setUserBankAccounts([...userBankAccounts, response.data.userBanks]);
+
+        setVisible(true)
+        setType('success')
+        setMsg({
+          header: 'Success',
+          text: 'You have successfully added a bank account, keep transacting without limits.',
+          action: 'Continue'
+        })
+        setTimeout(() => {
+          onRequestClose();
+        }, 2000);
+        setUserBankAccounts([...userBankAccounts, response?.data?.userBanks]);
       }
     } catch (error) {
       console.log('Another Error:', error);
       if (error.response.status == 400) {
+        setVisible(true)
+        setType('success')
+        setMsg({
+          header: 'error',
+          text: 'Error Account Already Exist',
+          action: 'Continue'
+        })
         console.log('Error Account Already Exists...');
       }
     }
@@ -293,21 +352,40 @@ export default function AddBankAccountModal(props) {
                 <Icon
                   name="chevron-down-outline"
                   size={20}
-                  style={{fontWeight: 'bold'}}
+                  style={{ fontWeight: 'bold' }}
                   color="#BABABA"
                 />
               </TouchableOpacity>
               <TextInput
-                style={[styles.textInput, {marginTop: 10}]}
+                style={[styles.textInput, { marginTop: 10 }]}
                 placeholder="Account Number"
                 keyboardType="number-pad"
                 placeholderTextColor="#ADADAD"
                 value={bankAccountNumber}
                 onChangeText={setBankAccountNumber}
               />
+             {
+              Boolean(verifiedname) ? (
+                <Text style={{
+                  paddingTop: 10,
+                  textTransform: 'uppercase',
+                  color: COLORS.dark
+  
+                }}>
+                  {verifiedname}
+                </Text>
+                
+              ): null
+             }
               <TouchableOpacity
                 disabled={!bankAccountNumber || !selectedBank ? true : false}
-                onPress={addAccount}
+                onPress={async() => {
+                  if(Boolean(verifiedname)){
+                            await createBankAccount(details);
+                  } else {
+                    addAccount()
+                  }
+                }}
                 style={[
                   styles.btn,
                   {
@@ -318,13 +396,21 @@ export default function AddBankAccountModal(props) {
                   },
                 ]}>
                 <Text
-                  style={{color: 'white', fontWeight: 'bold', fontSize: 14}}>
-                  CONFIRM
+                  style={{ color: 'white', fontWeight: 'bold', fontSize: 14 }}>
+                  {
+                    Boolean(verifiedname) ? 'CONFIRM' : 'VERIFY'
+                  }
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </Modal>
+        <ActionModal
+          visible={show}
+          setVisible={setVisible}
+          type={type}
+          msg={msg}
+        />
       </View>
 
       <SelectBankModal
@@ -336,7 +422,7 @@ export default function AddBankAccountModal(props) {
         }}
         banks={bankData}
         selectedBank={selectedBank}
-        // setBankCode={(value) => setBankCode(value)}
+      // setBankCode={(value) => setBankCode(value)}
       />
 
       {/* <SelectBankAccountType
@@ -349,6 +435,7 @@ export default function AddBankAccountModal(props) {
       /> */}
 
       <Spinner visible={spinner} size="large" cancelable={true} />
+
     </>
   );
 }

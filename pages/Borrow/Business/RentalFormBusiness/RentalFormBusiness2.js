@@ -23,12 +23,12 @@ import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {logCurrentStorage} from '../../../../util/logCurrentStorage';
 import axios from 'axios';
+import { useToast } from 'react-native-toast-notifications';
 import SelectYearModal from '../../../../components/SelectYearModal';
 import SelectPayMethodModal from '../../../../components/SelectPayMethodModal';
 import {formatNumber, unFormatNumber} from '../../../../util/numberFormatter';
-
+import { newApplication } from '../../../../services/applications';
 import Spinner from 'react-native-loading-spinner-overlay';
-
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import { baseUrl } from '../../../../services/routes';
@@ -57,6 +57,8 @@ const RentalFormBusiness2 = ({navigation}) => {
   );
   const [selectedPayMethod, setSelectedPayMethod] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
+  const toast = useToast();
+
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -64,6 +66,13 @@ const RentalFormBusiness2 = ({navigation}) => {
     // console.log(userData);
     return token;
   };
+
+  const getUser = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const user = JSON.parse(userData).user;
+    return user;
+  };
+
 
   const dummyData = {
     accomodationstatus: '',
@@ -115,8 +124,7 @@ const RentalFormBusiness2 = ({navigation}) => {
     const url =
       `${baseUrl}/application/new`;
     const token = await getToken();
-    console.log(dummyData);
-    console.log(token);
+ 
     console.log({...dummyData, ...JSON.parse(loanFormData), ...data});
     try {
       const response = await axios.post(
@@ -136,6 +144,8 @@ const RentalFormBusiness2 = ({navigation}) => {
     }
   };
 
+  
+
   const handleSubmit = async (values) => {
     const data = {
       home_address: values.homeAddress,
@@ -144,6 +154,7 @@ const RentalFormBusiness2 = ({navigation}) => {
       last_rent_paid_to: values.whoDidYouPayTo,
       last_rent_payment_method: values.howDidYouPay,
     };
+
 
     console.log(data);
 
@@ -188,18 +199,34 @@ const RentalFormBusiness2 = ({navigation}) => {
     console.log("loanFormData", loanFormData)
     let parsedData = JSON.parse(loanFormData);
 
-    // let data = {...dummyData, ...parsedData};
+    let data = {...dummyData, ...parsedData, application_type: 'business_owners'};
 
-    console.log("parsedData", parsedData);
+    console.log("parsedData", data);
+    const user = await getUser();
+
 
     try {
       const url =
-        // `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/new`;
-        `${baseUrl}/application/new`;
-      const response = await axios.post(url, parsedData, {
+        `${baseUrl}/business/application/new`;
+      const response = await axios.post(url, data, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
-      // console.log('The response: ', response);
+      console.log('The response: ', response);
+      const rnplStep = {
+        nextStage: 'Documents upload',
+        completedStages: ['Credit score', 'Applications']
+      }
+      await AsyncStorage.setItem(
+        `creditScoreDetail-${user.id}`,'RnplSteps'
+      );
+      await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
+
+      const step = await AsyncStorage.getItem(
+         `creditScoreDetail-${user.id}`,
+       );
+
+       console.log('step', step)
       navigation.navigate('RentalFormBusinessCongratulation');
     } catch (error) {
       console.log(error.response.data);
@@ -207,7 +234,19 @@ const RentalFormBusiness2 = ({navigation}) => {
         error?.response?.data?.statusMsg ==
         'You already have a pending application!'
       ) {
-        navigation.navigate('RentalFormBusinessCongratulation');
+        toast.show(error?.response?.data?.statusMsg, {
+          type: "warning",
+          placement: "top",
+          duration: 4000,
+
+          animationType: "slide-in",
+        });
+
+        await AsyncStorage.setItem(
+          `creditScoreDetail-${user.id}`,'RnplSteps'
+        );
+        // navigation.navigate('RnplSteps')
+        // navigation.navigate('RentalFormBusinessCongratulation');
       }
     }
   };

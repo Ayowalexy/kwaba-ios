@@ -13,7 +13,7 @@ import {formatNumber} from '../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getMaxLoanCap} from '../../redux/actions/savingsActions';
 import {useDispatch, useSelector} from 'react-redux';
-import {SwipeablePanel} from 'rn-swipeable-panel';
+// import {SwipeablePanel} from 'rn-swipeable-panel';
 import AddFundToWalletModal from './AddFundToWalletModal';
 import {
   getUserWallet,

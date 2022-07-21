@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -10,42 +10,49 @@ import {
   StyleSheet,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons, COLORS} from '../../util/index';
+import { icons, COLORS } from '../../util/index';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Formik, Field} from 'formik';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
-import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
+import { formatNumber, unFormatNumber } from '../../util/numberFormatter';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {me} from '../../services/network';
+import { me } from '../../services/network';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import ConfirmModal from '../../components/modal';
 
-import {getCurrentUser} from '../../redux/actions/userActions';
-import {useDispatch, useSelector} from 'react-redux';
-import {setLoginState} from '../../redux/actions/userActions';
+import { getCurrentUser } from '../../redux/actions/userActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoginState } from '../../redux/actions/userActions';
 import urls from '../../services/routes';
+import DatePicker from 'react-native-datepicker'
+
 
 const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
-  when_is_your_next_rent_due: yup.string().required('Select a date'),
+  when_is_your_next_rent_due: yup.date()
+    .required('Select a date')
+    .min("2022-01-01", "Enter a valid rent expiration date")
+    ,
 });
 
 const Screen5 = (props) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.getUserReducer);
-  const {navigation, route} = props;
-  const [date, setDate] = useState(new Date());
+  const { navigation, route } = props;
+  // const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [date, setDate] = useState('2016-05-15')
+
 
   const saveLoginToStorage = async (data) => {
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -83,8 +90,8 @@ const Screen5 = (props) => {
 
   const NumberInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -96,7 +103,7 @@ const Screen5 = (props) => {
         <View
           style={[
             styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && styles.errorInput,
           ]}>
           <Text
@@ -133,8 +140,8 @@ const Screen5 = (props) => {
 
   const SelectDate = (props) => {
     const {
-      field: {name, value},
-      form: {errors, touched, setFieldValue},
+      field: { name, value },
+      form: { errors, touched, setFieldValue },
       ...inputProps
     } = props;
 
@@ -150,7 +157,7 @@ const Screen5 = (props) => {
     return (
       <>
         <Text style={styles.label}>When is your next rent due?</Text>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={[styles.customInput, {padding: 20}]}
           onPress={() => {
             setShowDate(true);
@@ -168,9 +175,9 @@ const Screen5 = (props) => {
             resizeMode="contain"
             source={icons.dateTimePicker}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
-        {showDate && (
+        {/* {showDate && (
           <DateTimePicker
             testID="dateTimePicker"
             value={date}
@@ -179,7 +186,46 @@ const Screen5 = (props) => {
             is24Hour={true}
             display="spinner"
           />
-        )}
+        )} */}
+
+        <DatePicker
+          style={{
+            width: '100%',
+            borderRadius: 5,
+            backgroundColor: '#FFFFFF',
+            borderColor: '#ADADAD50',
+            borderWidth: 1,
+            marginTop: 10,
+            padding: 10
+          }}
+          date={date}
+          mode="date"
+          placeholder="select date"
+          format="YYYY-MM-DD"
+          confirmBtnText="Confirm"
+          cancelBtnText="Cancel"
+          customStyles={{
+            dateIcon: {
+              position: 'absolute',
+              right: 0,
+              top: 4,
+              marginLeft: 0
+            },
+            dateInput: {
+              // marginLeft: 36
+              textAlign: 'right',
+              borderWidth: 0,
+              position: 'absolute',
+              left: 0,
+              paddingLeft: 10
+            }
+            // ... You can check the source to find the other keys.
+          }}
+          onDateChange={(date) => {
+            setFieldValue('when_is_your_next_rent_due', date)
+            setDate(date)
+          }}
+        />
 
         {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
       </>
@@ -214,7 +260,7 @@ const Screen5 = (props) => {
       //   'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
       const url = urls.auth.COMPLETE_PROFILE;
       const response = await axios.put(url, JSON.stringify(updateData), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       if (response.status == 201) {
         const res = await me();
@@ -271,12 +317,12 @@ const Screen5 = (props) => {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900'}}
+        style={{ fontWeight: '900' }}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={true}>
@@ -318,7 +364,7 @@ const Screen5 = (props) => {
             onSubmit={(values) => {
               handleSubmit(values);
             }}>
-            {({handleSubmit, isValid, values, setValues}) => (
+            {({ handleSubmit, isValid, values, setValues }) => (
               <>
                 <Field
                   component={NumberInput}
@@ -332,7 +378,7 @@ const Screen5 = (props) => {
 
                 <TouchableOpacity
                   onPress={handleSubmit}
-                  style={[designs.btn, {backgroundColor: '#00DC99'}]}>
+                  style={[designs.btn, { backgroundColor: '#00DC99' }]}>
                   <Text
                     style={{
                       color: 'white',

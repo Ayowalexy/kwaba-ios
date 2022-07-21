@@ -24,6 +24,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 import Docs from './Docs';
 import DocumentPicker from 'react-native-document-picker';
+import { getEmergencyLoans } from '../../../services/network';
+import { getCurrentApplication } from '../../../services/network';
 import {
   deleteUploadedFile,
   showUploadedFiles,
@@ -102,7 +104,7 @@ export default function BusinessDocumentUpload({navigation}) {
     console.log('#'.repeat(30))
     console.log("documentsUpload", documentsUpload)
     const index = await documentsUpload.findIndex(
-      (document) => Number(document.document_type) == item.id,
+      (document) => Number(document?.document_type) == item.id,
     );
     const id = Number(documentsUpload[index].document_type);
     // console.log('Document: ', documentsUpload);
@@ -155,6 +157,15 @@ export default function BusinessDocumentUpload({navigation}) {
 
   const handleBrowseFile = async () => {
     setShowChooseFileModal(false);
+    const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
+  
+      console.log('Application status', applicationIDCallRes.data.data.status)
+     
+      console.log('The Application ID: ', applicationIDCallRes.data.data.id);
+      const applicationId = applicationIDCallRes.data.data.id;
+
 
     try {
       const res = await DocumentPicker.pick({
@@ -179,7 +190,6 @@ export default function BusinessDocumentUpload({navigation}) {
       // );
       // console.log("applicationIDCallRes", applicationIDCallRes);
       // const applicationId = applicationIDCallRes.data.data.id;
-      const applicationId = 17;
 
       const formdata = new FormData();
       formdata.append('file', blob);
@@ -206,8 +216,8 @@ export default function BusinessDocumentUpload({navigation}) {
         dispatch(uploadFile(token, item, data));
 
         console.log('item', item)
-        appendID(
-          {"documentID": "17", "id": 2, "isUploaded": false, "isUploading": false, "progress": 0, "title": "Utility Bill"}
+        appendID(item
+          // {"documentID": "17", "id": 2, "isUploaded": false, "isUploading": false, "progress": 0, "title": "Utility Bill"}
         );
         setSpinner(false);
 
@@ -228,6 +238,14 @@ export default function BusinessDocumentUpload({navigation}) {
   };
 
   const handleProceed = async () => {
+
+  
+    const rnplStep = {
+      nextStage: 'Offer approval breakdown',
+      completedStages: ['Credit score', 'Applications', 'Documents upload']
+    }
+    await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
     navigation.navigate('VerifyingDocuments');
   };
 

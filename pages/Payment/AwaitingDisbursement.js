@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -6,18 +6,22 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons} from '../../util/index';
+import { icons } from '../../util/index';
 import designs from './style';
-import {COLORS, FONTS, images} from '../../util/index';
+import { COLORS, FONTS, images } from '../../util/index';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
+import { baseUrl } from '../../services/routes';
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
-const AwaitingDisbursement = ({navigation, route}) => {
+const AwaitingDisbursement = ({ navigation, route }) => {
   const response = route.params;
 
   const [accommodationStatus, setAccommodationStatus] = useState('');
@@ -42,15 +46,18 @@ const AwaitingDisbursement = ({navigation, route}) => {
     const token = await getToken();
     const user = await getUser();
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one';
+      `${baseUrl}/application/one`;
 
     try {
-      const applicationIDCallRes = await axios.get(url, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      });
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+
       // console.log(applicationIDCallRes.data.data.id);
 
       const applicationId = applicationIDCallRes.data.data.status;
+
+      console.log('application status', applicationId)
 
       setExistingApplication(applicationId);
       // console.log('here', applicationIDCallRes.data.data.approvedamount);
@@ -69,8 +76,7 @@ const AwaitingDisbursement = ({navigation, route}) => {
 
       // console.log('repayment_start_date', repayment_start_date);
       // console.log('repayment_end_date', repayment_end_date);
-
-      if (applicationId == 7) {
+      if (applicationId == 4) {
         setSpinner(false);
         // navigation.navigate('RentalLoanActiveDashBoard');
 
@@ -89,6 +95,16 @@ const AwaitingDisbursement = ({navigation, route}) => {
           awaiting_disbursement: 'done',
           dashboard: '',
         };
+        const rnplStep = {
+          nextStage: '',
+          completedStages: ['Credit score', 'Applications',
+            'Documents upload', 'Offer approval breakdown',
+            'Address verification', 'Property details',
+            'Direct debit', 'Disbursement']
+        }
+
+        await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
 
         await AsyncStorage.setItem(
           `rentalSteps-${user.id}`,
@@ -115,12 +131,12 @@ const AwaitingDisbursement = ({navigation, route}) => {
   }, []);
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
       <Icon
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('RnplSteps')}
         name="arrow-back-outline"
         size={25}
-        style={{marginTop: 28, marginLeft: 25, fontWeight: '900'}}
+        style={{ marginTop: 28, marginLeft: 25, fontWeight: '900' }}
         color={COLORS.primary}
       />
       <View
@@ -145,7 +161,7 @@ const AwaitingDisbursement = ({navigation, route}) => {
         {/* <Image source={images.group3693} style={designs.uploadDocumentImage}/> */}
         <Image
           source={images.group3693}
-          style={{height: 100, width: 100, alignSelf: 'center'}}
+          style={{ height: 100, width: 100, alignSelf: 'center' }}
         />
         <Text
           style={[

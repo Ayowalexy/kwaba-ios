@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -10,10 +10,10 @@ import {
   Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../util';
+import { COLORS, images } from '../util';
 import * as Animatable from 'react-native-animatable';
-import {formatNumber, unFormatNumber} from '../util/numberFormatter';
-import {Formik, Field} from 'formik';
+import { formatNumber, unFormatNumber } from '../util/numberFormatter';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import {
   addFundsToBuddySavings,
@@ -22,7 +22,7 @@ import {
   getUserSavings,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import RNPaystack from 'react-native-paystack';
 
@@ -45,6 +45,7 @@ export default function AmountModalChallenge(props) {
     setData,
     showCard,
     minimumAmount,
+    target
   } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
@@ -70,8 +71,8 @@ export default function AmountModalChallenge(props) {
 
   const NumberInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -83,7 +84,7 @@ export default function AmountModalChallenge(props) {
         <View
           style={[
             styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && styles.errorInput,
           ]}>
           <Text
@@ -157,7 +158,7 @@ export default function AmountModalChallenge(props) {
                   onSubmit={(values) => {
                     handleSubmit(values);
                   }}>
-                  {({handleSubmit, isValid, values, setValues}) => (
+                  {({ handleSubmit, isValid, values, setValues }) => (
                     <>
                       <Field
                         component={NumberInput}
@@ -167,7 +168,12 @@ export default function AmountModalChallenge(props) {
 
                       <TouchableOpacity
                         onPress={handleSubmit}
-                        disabled={values.amount < minimumAmount ? true : false}
+                        disabled={
+                          values.amount < minimumAmount
+                            ? true
+                            : values.amount > target
+                              ? true
+                              : false}
                         style={[
                           styles.button,
                           {
@@ -195,10 +201,26 @@ export default function AmountModalChallenge(props) {
                             marginTop: 5,
                             textAlign: 'center',
                           }}>
-                          The minimum amount you can save is ₦
-                          {formatNumber(minimumAmount)}
+                          {
+                            values?.amount > target
+                              ?
+                              (
+                                <>
+                                  The target amount is ₦
+                                  {formatNumber(target)}
+                                </>
+                              )
+
+                              : (
+                                <>
+                                  The minimum amount you can save is ₦
+                                  {formatNumber(minimumAmount)}
+                                </>
+                              )
+                          }
                         </Text>
                       </View>
+
                     </>
                   )}
                 </Formik>

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,16 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Linking
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
-import {images} from '../../../util/index';
+import { images } from '../../../util/index';
 import moment from 'moment';
-import {useDispatch, useSelector} from 'react-redux';
-import {soloSaving} from '../../../redux/actions/savingsActions';
-import {unFormatNumber, numberWithCommas} from '../../../util/numberFormatter';
+import { useDispatch, useSelector } from 'react-redux';
+import { soloSaving } from '../../../redux/actions/savingsActions';
+import { unFormatNumber, numberWithCommas } from '../../../util/numberFormatter';
 import CardAndBankModal from './CardAndBankModal';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import DepositModal from './DepositModal';
@@ -37,7 +38,7 @@ import ConfirmSave from '../../../components/ConfirmModalsForSaving/ConfirmSave'
 import ManualNoPaymentModal from '../../../components/ConfirmModalsForSaving/ManualNoPaymentModal';
 import AutoNoPaymentModal from '../../../components/ConfirmModalsForSaving/AutoNoPaymentModal';
 
-export default function Screen3({navigation, route}) {
+export default function Screen3({ navigation, route }) {
 
   const [soloSavingsRate, setSoloSavingRate] = useState('');
 
@@ -106,12 +107,14 @@ export default function Screen3({navigation, route}) {
   const [unlockedSavingsInterestValue, setUnlockedSavingsInterestValue] =
     useState(0);
 
-  useEffect( () => {
-    
+  useEffect(() => {
+
     (async () => {
       const rates = await getInterestRateForSavingsAndBuddy();
 
-    setSoloSavingRate(rates.data[0].solo_savings);
+      console.log('rates', rates)
+
+      setSoloSavingRate(rates?.data?.[0]?.solo_savings);
 
     })()
     const data = route.params;
@@ -122,8 +125,8 @@ export default function Screen3({navigation, route}) {
       data.savings_frequency == 1
         ? 'daily'
         : data?.savings_frequency == 7
-        ? 'weekly'
-        : 'monthly';
+          ? 'weekly'
+          : 'monthly';
 
     setSavingsTitle(data?.savings_name);
     setSavingsTarget(data?.target_amount);
@@ -136,7 +139,7 @@ export default function Screen3({navigation, route}) {
 
     setEndDate(end_date);
 
-    setStoreData({...data, locked: locked, bvn: ''});
+    setStoreData({ ...data, locked: locked, bvn: '' });
 
     let start = moment(data?.start_date);
     let end = moment(end_date);
@@ -147,13 +150,13 @@ export default function Screen3({navigation, route}) {
         ? 'days'
         : frequency.substring(0, frequency.length - 2).toLowerCase() + 's',
     );
-    // console.log('Calc: ', diff);
+    // console.log('Calc: ', end, start, diff);
     setSavingsAmount(data.target_amount / diff);
     setAmountToSaveNow(
       moment().format('YYYY-MM-DD') == data.start_date && data.amount,
     );
 
-    dispatch(soloSaving({locked: locked}));
+    dispatch(soloSaving({ locked: locked }));
   }, [locked]);
 
   const showSuccess = async () => {
@@ -162,8 +165,11 @@ export default function Screen3({navigation, route}) {
       subText: 'You have successfully funded your savings',
       name: 'SoloSavingDashBoard',
       id: verifyData.id,
+
     });
   };
+
+  console.log(route?.params)
 
   const createSavings = async (bol, paymentChannel) => {
     // ebuka resume here
@@ -188,7 +194,7 @@ export default function Screen3({navigation, route}) {
       const vData = response?.data?.data;
       const payloadData = {
         amount: route.params.amount,
-        savings_id: vData.id,
+        savings_id: vData?.id,
         channel: paymentChannel,
         purpose: 'savings',
       };
@@ -237,7 +243,7 @@ export default function Screen3({navigation, route}) {
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
-      setVerifyData({...verifyData, id: data.savings_id});
+      setVerifyData({ ...verifyData, id: data.savings_id });
       if (paymentChannel == 'wallet') {
         const payload = {
           amount: verifyData.amount,
@@ -284,16 +290,16 @@ export default function Screen3({navigation, route}) {
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900'}}
+        style={{ fontWeight: '900' }}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
-        <Text style={[designs.boldText, {marginTop: 15}]}>
+        <Text style={[designs.boldText, { marginTop: 15 }]}>
           Review your saving details
         </Text>
-        <View style={[designs.summaryBox, {paddingBottom: 16}]}>
+        <View style={[designs.summaryBox, { paddingBottom: 16 }]}>
           <View style={designs.whiteBox}>
-            <View style={{marginTop: 16}}>
+            <View style={{ marginTop: 16 }}>
               <Text
                 style={{
                   fontSize: 10,
@@ -316,7 +322,7 @@ export default function Screen3({navigation, route}) {
               </Text>
             </View>
             <Image
-              style={{width: 61, height: 66}}
+              style={{ width: 61, height: 66 }}
               source={images.maskGroup15}
             />
           </View>
@@ -339,7 +345,7 @@ export default function Screen3({navigation, route}) {
                 ₦{numberWithCommas(Number(savingsAmount).toFixed(0)) || ' 0.00'}
               </Text>
             </View>
-            <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
+            <View style={[designs.dataInfo, { alignItems: 'flex-end' }]}>
               <Text style={designs.key}>Target Amount</Text>
               <Text style={designs.value}>
                 ₦{numberWithCommas(Number(savingsTarget).toFixed(0)) || ' 0.00'}
@@ -351,7 +357,7 @@ export default function Screen3({navigation, route}) {
                 ₦{numberWithCommas(Number(amountToSaveNow).toFixed(2))}
               </Text>
             </View>
-            <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
+            <View style={[designs.dataInfo, { alignItems: 'flex-end' }]}>
               <Text style={designs.key}>Start Date</Text>
               <Text style={designs.value}>{startDate}</Text>
             </View>
@@ -359,7 +365,7 @@ export default function Screen3({navigation, route}) {
               <Text style={designs.key}>End Date</Text>
               <Text style={designs.value}>{endDate}</Text>
             </View>
-            <View style={[designs.dataInfo, {alignItems: 'flex-end'}]}>
+            <View style={[designs.dataInfo, { alignItems: 'flex-end' }]}>
               <Text style={designs.key}>Interest Rate</Text>
               <Text style={designs.value}>
                 {/* {locked
@@ -368,7 +374,7 @@ export default function Screen3({navigation, route}) {
                 {/* 11% P.A  
                 MODIFIED TO FETCH RATES TO THE BACKEND, SO IT CAN BE CHANGED DYNAMICALLY
                 */}
-                 {soloSavingsRate} % P.A
+                {soloSavingsRate} % P.A
               </Text>
             </View>
           </View>
@@ -448,16 +454,22 @@ export default function Screen3({navigation, route}) {
             value={toggleCheckBox}
             onValueChange={(newValue) => setToggleCheckBox(newValue)}
           />
-          <Text
-            style={{
-              color: '#465969',
-              fontSize: 12,
-              lineHeight: 15,
-              fontWeight: 'bold',
-            }}>
-            I agree to{' '}
-            <Text style={{color: '#00DC99'}}>Terms and Conditions</Text>
-          </Text>
+          <TouchableOpacity
+            onPress={() => 
+              Linking.openURL('https://www.kwaba.africa/privacy')
+            }
+          >
+            <Text
+              style={{
+                color: '#465969',
+                fontSize: 12,
+                lineHeight: 15,
+                fontWeight: 'bold',
+              }}>
+              I agree to{' '}
+              <Text style={{ color: '#00DC99' }}>Terms and Conditions</Text>
+            </Text>
+          </TouchableOpacity>
         </View>
         <TouchableOpacity
           disabled={!toggleCheckBox}

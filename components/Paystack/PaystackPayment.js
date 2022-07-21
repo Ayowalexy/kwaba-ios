@@ -26,7 +26,7 @@ export default function PaystackPayment(props) {
     <View style={{flex: 1}}>
       <Paystack
         paystackKey="pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef"
-        // paystackKey="pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4b"
+        // paystackKey="  pk_live_a985cb2ee00d4727671240dc7d3db5d8dab2d4b"
         billingEmail={user?.email}
         billingMobile={user?.phone}
         amount={data?.amount}

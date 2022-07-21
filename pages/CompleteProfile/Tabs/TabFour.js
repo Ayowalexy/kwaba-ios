@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,17 +9,18 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import {COLORS, FONTS, images, icons} from '../../../util/index';
+import { COLORS, FONTS, images, icons } from '../../../util/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 
-import {useDispatch} from 'react-redux';
-import {me} from '../../../services/network';
-import {setLoginState} from '../../../redux/actions/userActions';
-import {formatNumber} from '../../../util/numberFormatter';
+import { useDispatch } from 'react-redux';
+import { me } from '../../../services/network';
+import { setLoginState } from '../../../redux/actions/userActions';
+import { formatNumber } from '../../../util/numberFormatter';
 import moment from 'moment';
+import { baseUrl } from '../../../services/routes';
 
 export default function TabFour(props) {
   const dispatch = useDispatch();
@@ -29,7 +30,7 @@ export default function TabFour(props) {
   const [spinner, setSpinner] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const {} = props;
+  const { } = props;
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -46,7 +47,7 @@ export default function TabFour(props) {
   useEffect(() => {
     (async () => {
       const data = await getUserData();
-      const {how_much_is_your_rent, when_is_your_next_rent_due} = data.user;
+      const { how_much_is_your_rent, when_is_your_next_rent_due } = data.user;
 
       console.log(
         'From the local: ',
@@ -64,7 +65,7 @@ export default function TabFour(props) {
     // console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const updateProfile = async () => {
@@ -80,9 +81,9 @@ export default function TabFour(props) {
 
     try {
       const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
+        `${baseUrl}/user/update_profile`;
       const response = await axios.put(url, JSON.stringify(updateData), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       if (response.status == 200) {
         setSpinner(false);
@@ -113,9 +114,10 @@ export default function TabFour(props) {
     <>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{marginBottom: 80}}>
-        <View style={{marginTop: 20}} />
+        style={{ marginBottom: 80 }}>
+        <View style={{ marginTop: 20 }} />
         <View>
+          <Text style={{ color: '#555', paddingTop: 10 }}>Rent amount</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="How much is your rent"
@@ -124,6 +126,8 @@ export default function TabFour(props) {
             value={rentAmount}
             onChangeText={(text) => setRentAmount(text)}
           />
+          <Text style={{ color: '#555', paddingTop: 10 }}>Next rent due</Text>
+
           <TextInput
             style={[designs.textField]}
             placeholder="When is your next rent due"
@@ -177,8 +181,8 @@ export default function TabFour(props) {
         isVisible={modal}
         onBackButtonPress={() => setModal(false)}
         onBackdropPress={() => setModal(false)}>
-        <View style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
-          <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+          <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>
             Profile updated!
           </Text>
         </View>

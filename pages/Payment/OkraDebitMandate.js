@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -14,24 +14,28 @@ import {
   StyleSheet,
 } from 'react-native';
 import LoanOfferContent from './LoanOfferContent';
-import {icons} from '../../util/index';
+import { icons } from '../../util/index';
 import designs from './style';
-import {COLORS, FONTS, images} from '../../util/index';
+import { COLORS, FONTS, images } from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {fetchBanks} from '../../services/network';
+import { fetchBanks } from '../../services/network';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import OkraView from 'react-native-okra';
 import moment from 'moment';
+import Banks from '../../components/banks.json'
+import { baseUrl } from '../../services/routes'
+import { getCurrentApplication } from '../../services/network';
+import { getEmergencyLoans } from '../../services/network';
 
 let height = Dimensions.get('window').height;
 
 const widthtouse = Dimensions.get('window').width;
 
-export default function OkraDebitMandate({navigation}) {
+export default function OkraDebitMandate({ navigation }) {
   const [successModal, setSuccessModal] = useState(false);
   const [existingApplication, setExistingApplication] = useState('');
   const [monthlyRepayment, setmonthlyRepayment] = useState();
@@ -58,13 +62,12 @@ export default function OkraDebitMandate({navigation}) {
       const token = await getToken();
 
       try {
-        const applicationIDCallRes = await axios.get(
-          'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-          {
-            headers: {'Content-Type': 'application/json', Authorization: token},
-          },
-        );
+        const getAllAloans = await getEmergencyLoans();
+        const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+        const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+
         // console.log(applicationIDCallRes.data.data.id);
+        console.log('app', applicationIDCallRes.data.data.status)
 
         const applicationId = applicationIDCallRes.data.data.id;
 
@@ -104,12 +107,12 @@ export default function OkraDebitMandate({navigation}) {
   // fetch banks via paystak
   const paystackBanks = async () => {
     try {
-      const banks = await axios.get('https://api.paystack.co/bank', {
-        headers: {'Content-Type': 'application/json'},
-      });
-      // setBankData(banks?.data?.data);
-      console.log('Paystack banks: ', banks?.data?.data);
-      setBanks(banks?.data?.data);
+      // const banks = await axios.get('https://api.paystack.co/bank', {
+      //   headers: {'Content-Type': 'application/json'},
+      // });
+      // // setBankData(banks?.data?.data);
+      // console.log('Paystack banks: ', banks?.data?.data);
+      setBanks(Banks?.data?.data);
       // return banks;
     } catch (error) {
       console.log('The Big Bang Error: ', error);
@@ -165,7 +168,7 @@ export default function OkraDebitMandate({navigation}) {
 
     try {
       const response = await axios.put(linkUrl, linkdata, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       console.log('here is the linkurl resposonse ', response);
 
@@ -183,7 +186,7 @@ export default function OkraDebitMandate({navigation}) {
 
         try {
           const response = await axios.post(url, data, {
-            headers: {'Content-Type': 'application/json', Authorization: token},
+            headers: { 'Content-Type': 'application/json', Authorization: token },
           });
           console.log(response);
           setSuccessModal(true);
@@ -197,18 +200,18 @@ export default function OkraDebitMandate({navigation}) {
         }
       }
     } catch (error) {
-      Alert.alert('Message', error.response.data.statusMsg, [{text: 'Close'}]);
+      Alert.alert('Message', error.response.data.statusMsg, [{ text: 'Close' }]);
     }
   };
 
   return (
-    <View style={{flex: 1}}>
-      <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={{ flex: 1 }}>
+      <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
           size={25}
-          style={{marginTop: 28, marginLeft: 16, fontWeight: '900'}}
+          style={{ marginTop: 28, marginLeft: 16, fontWeight: '900' }}
           color="#2A286A"
         />
 
@@ -257,7 +260,7 @@ export default function OkraDebitMandate({navigation}) {
           <Text
             style={[
               FONTS.body2FontStyling,
-              {color: COLORS.dark, textAlign: 'center', fontSize: 14},
+              { color: COLORS.dark, textAlign: 'center', fontSize: 14 },
             ]}>
             {/* This will make repayment easy */}
             We need to connect to your account securely, {'\n'}for your monthly
@@ -295,9 +298,9 @@ export default function OkraDebitMandate({navigation}) {
 
       <Modal visible={successModal} animationType="fade" transparent={true}>
         <View style={designs.centeredModalWrapper}>
-          <View style={[designs.successModal, {borderRadius: 30}]}>
+          <View style={[designs.successModal, { borderRadius: 30 }]}>
             <Icon
-              style={{alignSelf: 'flex-end'}}
+              style={{ alignSelf: 'flex-end' }}
               onPress={() => setSuccessModal(false)}
               name="close-outline"
               size={30}
@@ -305,7 +308,7 @@ export default function OkraDebitMandate({navigation}) {
             />
             <Image
               source={icons.tick}
-              style={{width: 84, height: 84, marginTop: 25}}
+              style={{ width: 84, height: 84, marginTop: 25 }}
             />
             <Text style={designs.successModalBodyText}>
               Your Debit mandate is set up.

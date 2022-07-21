@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -11,12 +11,20 @@ import {
   Keyboard,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {fetch, purchase} from '../../../../services/creditScrore';
-import {COLORS} from '../../../../util';
+import { fetch, purchase } from '../../../../services/creditScrore';
+import { COLORS } from '../../../../util';
 import designs from './styles';
+import { baseUrl } from '../../../../services/routes';
+import axios from 'axios';
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
 
 export default function CreditAwaiting(props) {
-  const {route, navigation} = props;
+  const { route, navigation } = props;
   const [spinner, setSpinner] = useState(false);
   const [scoreData, setScoreData] = useState({});
 
@@ -52,6 +60,7 @@ export default function CreditAwaiting(props) {
       bvn: route?.params?.bvn
     };
 
+    console.log('payload', payload)
     const user = await getUser();
 
     const storedPayload = await AsyncStorage.getItem(
@@ -59,35 +68,57 @@ export default function CreditAwaiting(props) {
     );
     const parseData = JSON.parse(storedPayload);
 
+    const token = await getToken();
 
-    const purchaseRes = await purchase(payload || parseData)
 
-    if(purchaseRes.status === 200){
-      const res = await fetch(payload || parseData);
-      console.log('Dat res: ', res);
 
-      try {
-        if (res.status == 200) {
-          setSpinner(false);
-          if (res.data.history.length) {
-            setSpinner(false);
-            navigation.navigate('CreditDashboard', {
-              history: JSON.stringify(res?.data?.histroy),
-            });
-            // console.log('History: ', res?.data?.history);
-          } else {
-            setSpinner(false);
-            Alert.alert(
-              'Credit history',
-              'We are still searching for your credit report, please check back later.',
-            );
+
+
+    // console.log(creditScoreAvailable.status)
+
+    try {
+      const creditScoreAvailable = await axios.get(
+        `${baseUrl}/loans/credit-score`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: token,
           }
         }
-      } catch (error) {
+      )
+
+      console.log('credit scrore', creditScoreAvailable?.data?.data)
+      if (creditScoreAvailable?.status == 200) {
         setSpinner(false);
-        console.log('Errorrrrr: ', error.response);
-      }
+          setSpinner(false);
+          navigation.navigate('CreditDashboard', {
+            history: creditScoreAvailable?.data?.data,
+          });
+        } else {
+          setSpinner(false);
+          Alert.alert(
+            'Credit history',
+            'We are still searching for your credit report, please check back later.',
+          );
+        }
+      
+    } catch (error) {
+      setSpinner(false);
+      Alert.alert(
+        'Credit history',
+        'We are still searching for your credit report, please check back later.',
+      );
+      console.log('Errorrrrr: ', error.response);
     }
+
+
+
+    // const purchaseRes = await purchase(payload || parseData)
+
+    // if(purchaseRes.status === 200){
+    //   const res = await fetch(payload || parseData);
+    //   console.log('Dat res: ', res);
+    // }
   };
   return (
     <>
@@ -116,7 +147,7 @@ export default function CreditAwaiting(props) {
             <TouchableOpacity
               onPress={handleFetch}
               disabled={spinner}
-              style={{opacity: spinner ? 0.5 : 1}}>
+              style={{ opacity: spinner ? 0.5 : 1 }}>
               <View style={designs.button}>
                 <Text style={designs.buttonText}>
                   {spinner ? (

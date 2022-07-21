@@ -22,6 +22,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 import {useDispatch, useSelector} from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
+import { baseUrl } from '../../../services/routes';
 
 import {
   deleteUploadedFile,
@@ -40,7 +41,7 @@ const getDocuments = async () => {
   const token = await getToken();
   try {
     const uploadedDocumentsRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+      `${baseUrl}/application/documents`,
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -128,7 +129,7 @@ export default function Docs(props, {navigation}) {
     const token = await getToken();
     try {
       const response = await axios.delete(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/document/delete',
+        `${baseUrl}/application/document/delete`,
         {
           headers: {
             'Content-Type': 'application/json',

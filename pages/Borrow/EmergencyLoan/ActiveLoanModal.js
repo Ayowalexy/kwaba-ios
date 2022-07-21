@@ -17,6 +17,7 @@ import {
   loanRepayment,
   verifySavingsPayment,
   verifyWalletTransaction,
+  completeSavingsPayment
 } from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { formatNumber, unFormatNumber } from '../../../util/numberFormatter';
@@ -64,6 +65,14 @@ export default function ActiveLoanModal(props) {
     setLoanRepaymentData(loanData);
   }, []);
 
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      name: 'EmergencyLoanDashBoard',
+      content: 'Payment Successful',
+      subText: 'Awesome! Your payment was successful',
+    });
+  };
+
 
   const getOne = async () => {
     try {
@@ -99,6 +108,28 @@ export default function ActiveLoanModal(props) {
       console.log('Error: ', error);
     }
   };
+  const completePayment = async (data) => {
+    setSpinner(true);
+    const res = await completeSavingsPayment(data);
+    console.log('response', res)
+    try {
+      if (res.status == 200) {
+        setSpinner(false);
+
+        console.log('Complete Paymentttttttttt: ', res.data.data);
+        // setFundedAmount(Number(amount) + Number(fundedAmount))
+        onRequestClose()
+        await showSuccess();
+      } else {
+        setSpinner(false);
+        console.log('Complete Paymentttttttttt: ', res.response.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+
+      console.log('The Error: ', error);
+    }
+  };
 
   const handlePaymentRoute = async (value) => {
     try {
@@ -114,7 +145,7 @@ export default function ActiveLoanModal(props) {
       const data = {
         emergencyLoanId: loanRepaymentData?.id,
         amount: amount,
-        channel: 'paystack',
+        channel: 'wallet',
         purpose: 'emergencyLoanRepayment'
       };
 
@@ -123,7 +154,7 @@ export default function ActiveLoanModal(props) {
 
       setSpinner(true);
       console.log('na me be this')
-      const response = await loanRepayment(data);
+      const response = await verifySavingsPayment(data);
       console.log('That Resp: ', response);
 
       if (response.status == 200) {
@@ -134,22 +165,19 @@ export default function ActiveLoanModal(props) {
           };
           console.log('The Datata: ', data);
           setSpinner(true);
-          const verify = await verifyWalletTransaction(data);
 
-          console.log('Verify: ', verify.response);
-          if (verify.status == 200) {
-            onRequestClose();
-            setSpinner(false);
-            navigation.navigate('PaymentSuccessful', {
-              name: 'Home',
-              content: 'Payment Successful',
-              subText: 'Awesome! Your payment was successful',
-            });
-          } else {
-            setSpinner(false);
-            Alert.alert('Oops!', verify?.response?.data.response_message);
-            console.log('Oops!', verify.response);
-          }
+
+          const payload = {
+            amount: amount,
+            emergencyLoanId: loanRepaymentData?.id,
+            channel: 'wallet',
+            purpose: 'emergencyLoanRepayment',
+            reference: response?.data?.data.reference,
+          };
+          await completePayment(payload);
+
+          // const verify = await verifyWalletTransaction(data);
+       
         } else {
           setChannel(value);
           setResData(response?.data?.data);

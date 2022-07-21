@@ -19,7 +19,6 @@ import {formatNumber} from '../../../util/numberFormatter';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import {getBankAccounts} from '../../../redux/actions/bankActions';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import AddBankAccountModal from '../../../components/addBankAccountModal';
@@ -33,6 +32,7 @@ export default function DisbursementModal(props) {
   const [spinner, setSpinner] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
   const [userBankAccounts, setUserBankAccounts] = useState([]);
+  const [reloadBanks, setReloadBanks] = useState(false)
 
   //   useEffect(() => {
   //     console.log('The Bankzzz: ', userBankAccounts);
@@ -40,8 +40,14 @@ export default function DisbursementModal(props) {
 
   useEffect(() => {
     setUserBankAccounts(getAllBankAccount);
-    console.log(getAllBankAccount);
+    console.log("getAllBankAccount", getAllBankAccount);
   }, []);
+
+
+  useEffect(() => {
+      setUserBankAccounts(getAllBankAccount)
+      dispatch(getBankAccounts())
+  }, [!reloadBanks])
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -210,6 +216,7 @@ export default function DisbursementModal(props) {
         <AddBankAccountModal
           onRequestClose={() => setBankModalVisible(!bankModalVisible)}
           visible={bankModalVisible}
+          setReloadBanks={setReloadBanks}
           // setDisplayAllBankAccounts={(all) => allBanks(all)}
           // setDisplayAllBankAccounts={(all) => console.log('The all', all)}
           setDisplayAllBankAccounts={(all) => setUserBankAccounts({data: all})}

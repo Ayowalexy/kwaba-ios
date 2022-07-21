@@ -9,6 +9,7 @@ import {
   Alert,
   Image,
 } from 'react-native';
+import urls from '../../services/routes';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../util';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
@@ -18,6 +19,7 @@ import {
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
 } from '../../redux/actions/savingsActions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../components/amountModal';
@@ -58,15 +60,24 @@ export default function QuickSaveListModal(props) {
 
   const [verifyData, setVerifyData] = useState('');
 
+  const [allSavingsChallenges, setAllSavingschallenges] = useState([])
+
   useEffect(() => {
     console.log('The Type: ', type);
     checkType(); // Solo Saving or Buddy Saving
   }, [type]);
 
   const checkType = async () => {
+    console.log('all solo saving', allSoloSaving)
     if (type == 'Solo Savings') {
-      setSavingLists(allSoloSaving);
-    } else {
+      const filter = allSoloSaving.data.filter(element => element.savings_type === "solo_savings")
+      console.log(filter)
+      setSavingLists(filter);
+    } else if (type == 'Savings Challenge'){
+      const filter = allSoloSaving.data.filter(element => element.savings_type === "savings_challenge")
+      setSavingLists(filter)
+    }
+    else {
       setSavingLists(allBuddySaving);
       // console.log('All Buddy: ', allBuddySaving);
     }
@@ -127,20 +138,58 @@ export default function QuickSaveListModal(props) {
   //     console.log('Error error: ', error.response.data);
   //   }
   // };
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+  const getAllSavingsChallenges = async () => {
+    const token = await getToken();
+    console.log('Token: ', token);
+    try {
+      setSpinner(true);
+      const resp = await axios.get(urls.savings.GET_ALL_CHALLENGES, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      console.log('Challenges: ', resp?.data?.data);
+      setAllSavingschallenges(resp?.data?.data);
+
+
+      for (let d of resp?.data?.data) {
+        console.log(d?.id)
+      }
+
+      const filter = allSavings?.data?.filter(
+        (item) => item.id == id,
+      );
+
+      console.log('filtered', filter)
+     
+    } catch (error) {
+      console.log('Error failed: ', error?.response?.data);
+    }
+  };
+
+  useEffect(() => {
+    // getAllSavingsChallenges()
+  }, [])
 
   const showSuccess = async () => {
     if (type == 'Buddy Savings') {
       navigation.navigate('PaymentSuccessful', {
         content: 'Payment Successful',
         subText: 'You have successfully funded your savings',
-        name: 'BuddySavingDashBoard',
+        name: 'SavingsHome',
         id: buddyId,
       });
     } else {
       navigation.navigate('PaymentSuccessful', {
         content: 'Payment Successful',
         subText: 'You have successfully funded your savings',
-        name: 'SoloSavingDashBoard',
+        name: 'SavingsHome',
         id: id,
       });
     }
@@ -286,7 +335,7 @@ export default function QuickSaveListModal(props) {
 
               {/*  */}
 
-              {!savingLists?.data?.length ? (
+              {!savingLists?.length ? (
                 <View
                   style={{
                     flex: 1,
@@ -357,7 +406,7 @@ export default function QuickSaveListModal(props) {
                       </Text>
                     </View>
                     <>
-                      {savingLists?.data?.map((item, index) => {
+                      {savingLists?.map((item, index) => {
                         return (
                           <TouchableOpacity
                             key={index}
@@ -370,7 +419,12 @@ export default function QuickSaveListModal(props) {
                               // });
                               setBuddyId(item?.buddy_savings_id);
                               console.log('The ID: ', item.id);
-                              setID(item.id);
+                              console.log('challenge id', item)
+                              // if(type == 'Savings Challenge'){
+                              //   setID(item?.challenge_id)
+                              // } else {
+                                setID(item.id);
+                              // }
                               setShowAmountModal(true);
                               // onRequestClose();
                             }}>

@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
 import AirtimeHistory from '../../components/AirtimeHistory';
 import {COLORS, FONTS, images, icons} from '../../util/index';
+import { GLO, NINE_FLAG, AIRTEL, MTN } from '../../util/images';
 import {
   getAirtimeBillTrans,
   getBillsCategory,
@@ -72,7 +73,7 @@ const AirtimeHome = ({navigation}) => {
           marginTop: 20,
           paddingHorizontal: 20,
         }}>
-        {getAirtime?.data?.map((value, index) => {
+        {getAirtime?.data?.filter(ele => ele?.name !== 'Foreign Airtime')?.map((value, index) => {
           return (
             <TouchableOpacity
               style={{
@@ -99,7 +100,18 @@ const AirtimeHome = ({navigation}) => {
                     marginRight: 20,
                     borderRadius: 10,
                   }}
-                  source={{uri: value.image}}
+                  source={
+                    value?.name?.toLowerCase()?.includes('mtn')
+                    ? MTN
+                    : value?.name?.toLowerCase()?.includes('airtel')
+                    ? AIRTEL
+                    : value?.name?.toLowerCase()?.includes('glo')
+                    ? GLO
+                    : value?.name?.toLowerCase()?.includes('9mobile')
+                    ? NINE_FLAG
+                    : null
+                  }
+                  // source={{uri: value.image}}
                   resizeMode="contain"
                 />
                 <View

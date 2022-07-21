@@ -139,6 +139,7 @@ export default function WithdrawalForm(props) {
       };
     }
    
+    console.log("userSelectedBankAccount", userSelectedBankAccount)
     
     console.log('The Data Withdraw: ', data);
     setSpinner(true);
@@ -166,7 +167,13 @@ export default function WithdrawalForm(props) {
         // ]);
         console.log(response.response.data.meta);
         setMessage({
-          body: response.response.data.statusMsg,
+          body: !userSelectedBankAccount 
+                ? 
+                'Please, select a bank account'
+                : 
+                response?.response?.data?.meta?.error
+                ? response?.response?.data?.meta?.error
+                : 'Could not process your withdrawal request' ,
           visible: true,
           success: false,
         });

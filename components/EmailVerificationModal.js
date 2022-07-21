@@ -19,6 +19,7 @@ import * as yup from 'yup';
 import {login} from '../services/network';
 import {useDispatch, useSelector} from 'react-redux';
 import urls from '../services/routes';
+import { useToast } from 'react-native-toast-notifications';
 
 const formSchema = yup.object().shape({
   email: yup
@@ -33,6 +34,7 @@ export default function EmailVerificationModal(props) {
   const [spinner, setSpinner] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [changeEmail, setChangeEmail] = useState(false);
+  const toast = useToast();
 
   const loginState = useSelector((state) => state.loginReducer);
 
@@ -63,8 +65,10 @@ export default function EmailVerificationModal(props) {
         console.log('Verify Email Res:', response);
         // setModalVisible(true);
         // onRequestClose();
+       
         setSpinner(false);
         setEmailSent(true);
+       
       }
     } catch (error) {
       // let res = error.response.data;

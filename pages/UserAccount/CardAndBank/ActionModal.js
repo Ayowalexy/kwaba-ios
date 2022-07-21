@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import {View, Text, Modal, TouchableOpacity, Image} from 'react-native';
-import {images, icons, COLORS} from '../../../util/index';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Modal, TouchableOpacity, Image } from 'react-native';
+import { images, icons, COLORS } from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DeleteModal from './DeleteModal';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch, useSelector} from 'react-redux';
-import {setBankFromStorage} from '../../../redux/actions/bankActions';
-import {getBankAccounts} from '../../../services/network';
+import { useDispatch, useSelector } from 'react-redux';
+import { setBankFromStorage } from '../../../redux/actions/bankActions';
+import { getBankAccounts } from '../../../services/network';
+import { baseUrl } from '../../../services/routes';
 
 export default function ActionModal(props) {
   const dispatch = useDispatch();
@@ -33,10 +34,11 @@ export default function ActionModal(props) {
 
   const updateUserBankAccount = async (data) => {
     const token = await getToken();
+    console.log('data', data)
 
     try {
       const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/updateuserbankaccount';
+        `${baseUrl}/updateuserbankaccount`;
       const response = await axios.put(url, data, {
         headers: {
           'Content-Type': 'application/json',
@@ -45,21 +47,33 @@ export default function ActionModal(props) {
       });
       return response;
     } catch (error) {
-      return error;
+      return error.response.data;
     }
   };
 
   const handleDefaultBank = async () => {
     const accounts = await getBankAccounts();
+
+    console.log('accounts', accounts?.data)
     if (accounts.status == 200) {
       let userBanks = accounts?.data?.userBanks;
       userBanks.map(async (item) => {
+        // const data = {
+        //   id: item.id,
+        //   defaultbank: 0,
+        // };
+
         const data = {
-          id: item.id,
-          defaultbank: 0,
-        };
+          bank_name: item?.bank_name,
+          bank_account_number: item?.bank_account_number,
+          bank_short_code: item?.bank_short_code,
+          type: item?.type,
+          user_bank_name: item?.user_bank_name,
+          id: item?.id
+        }
 
         const res = await updateUserBankAccount(data);
+        console.log('default bank', res)
         if (res.status == 200) {
           // const data = {
           //   id: clickedItem.id,
@@ -74,7 +88,7 @@ export default function ActionModal(props) {
 
           const res = await updateUserBankAccount(data);
           if (res.status == 200) {
-            console.log('The res: ', {...clickedItem, ...data});
+            console.log('The res: ', { ...clickedItem, ...data });
           }
         }
       });
@@ -90,7 +104,10 @@ export default function ActionModal(props) {
   }, [clickedItem]);
 
   const setDefaultCard = async (item) => {
+    console.log("item", item)
     if (item == 'Default Payment Card') {
+
+
       setDefaultcard(!defaultcard);
 
       const data = {
@@ -133,7 +150,7 @@ export default function ActionModal(props) {
           name="close-outline"
           size={25}
           color="#465969"
-          style={{position: 'absolute', right: 0, padding: 10}}
+          style={{ position: 'absolute', right: 0, padding: 10 }}
         />
 
         {['Buddy Saving', 'Solo Saving', 'Default Payment Card'].map(
@@ -150,7 +167,7 @@ export default function ActionModal(props) {
               }}>
               <View>
                 <Text
-                  style={{fontWeight: 'bold', fontSize: 12, color: '#465969'}}>
+                  style={{ fontWeight: 'bold', fontSize: 12, color: '#465969' }}>
                   {item}
                 </Text>
               </View>
@@ -211,7 +228,7 @@ export default function ActionModal(props) {
         name="close-outline"
         size={25}
         color="#465969"
-        style={{position: 'absolute', right: 0, padding: 10}}
+        style={{ position: 'absolute', right: 0, padding: 10 }}
       />
       {/* {['Withdrawal', 'Pay Rent', 'Default Bank Account'].map((item, index) => ( */}
       {['Default Bank Account'].map((item, index) => (
@@ -228,7 +245,7 @@ export default function ActionModal(props) {
             paddingHorizontal: 10,
           }}>
           <View>
-            <Text style={{fontWeight: 'bold', fontSize: 12, color: '#465969'}}>
+            <Text style={{ fontWeight: 'bold', fontSize: 12, color: '#465969' }}>
               {item}
             </Text>
           </View>
@@ -278,7 +295,7 @@ export default function ActionModal(props) {
         transparent={true}
         visible={visible}
         onRequestClose={onRequestClose}
-        style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
+        style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
         <View
           style={{
             flex: 1,
@@ -309,7 +326,7 @@ export default function ActionModal(props) {
         type={type}
         clickedItem={clickedItem}
         // deleteResponse={(all) => setDeleteResponse(all)}
-        deleteResponse={(cards) => setDeleteResponse({cards, type})}
+        deleteResponse={(cards) => setDeleteResponse({ cards, type })}
         hideActionModal={(bol) => onRequestClose(bol)}
       />
     </>

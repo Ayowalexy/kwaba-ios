@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -11,12 +11,23 @@ import {
   Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images, icons} from '../util';
+import { COLORS, images, icons } from '../util';
 import Banks from './banks.json'
+import { useTheme } from '@react-navigation/native';
 
 export default function SelectBankModal(props) {
-  const {onRequestClose, visible, onClick, banks, selectedBank} = props;
-  console.log(banks)
+  const { onRequestClose, visible, onClick, banks, selectedBank } = props;
+  const [bankList, setBankList] = useState([])
+  const [value, setValue] = useState('')
+  const bankss = useRef(Banks)
+
+  useEffect(() => {
+    setBankList(Banks)
+  }, [])
+
+
+  const theme = useTheme();
+
 
   return (
     // <View>
@@ -25,9 +36,25 @@ export default function SelectBankModal(props) {
       transparent={true}
       visible={visible}
       onRequestClose={onRequestClose}
-      style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
+      style={{ borderTopLeftRadius: 30, borderTopRightRadius: 30 }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          <View style={{padding: 20}}>
+            <TextInput
+              value={value}
+              placeholder='Enter Bank Name'
+              onChangeText={setValue}
+              style={{
+                width: '100%',
+                height: 60,
+                paddingLeft: 20,
+                borderRadius: 10,
+                color: '#000',
+                backgroundColor: 'rgba(0,0,0,0.2)'
+              }}
+
+            />
+          </View>
           {/* <Text style={{fontWeight: 'bold', fontSize: 16}}>Select Month</Text> */}
           <Icon
             onPress={onRequestClose}
@@ -43,13 +70,13 @@ export default function SelectBankModal(props) {
             }}
           />
           <ScrollView
-            style={{marginTop: 40}}
+            style={{ marginTop: 10 }}
             scrollEnabled
-            // showsVerticalScrollIndicator={false}
+          // showsVerticalScrollIndicator={false}
           >
             <View>
               {/* {banks?.map(({name, code}, index) => ( */}
-              {Banks?.data?.map(({name, code}, index) => (
+              {bankList?.data?.filter(({name}) => name.toLowerCase().includes(value.toLocaleLowerCase()))?.map(({ name, code }, index) => (
                 <TouchableOpacity
                   onPress={() => {
                     onClick(name, code);
@@ -80,7 +107,7 @@ export default function SelectBankModal(props) {
                         color:
                           name == selectedBank ? COLORS.white : COLORS.primary,
                       }}>
-                      {index + 1 <= 9 ? '0' + (index + 1) : index + 1}
+                      {/* {index + 1 <= 9 ? '0' + (index + 1) : index + 1} */}
                     </Text>
                     <Text
                       style={{
@@ -113,7 +140,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '100%',
-    maxHeight: '60%',
+    maxHeight: '80%',
     backgroundColor: 'white',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

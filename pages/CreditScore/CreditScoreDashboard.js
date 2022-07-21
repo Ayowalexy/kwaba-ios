@@ -211,7 +211,7 @@ export default function CreditScoreDashboard({navigation, route}) {
             name="chevron-back"
             color={COLORS.dark}
             size={20}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.goBack()}
           />
           <Text
             style={{

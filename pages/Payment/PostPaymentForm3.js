@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ActivityIndicator
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -17,9 +18,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import SelectRelationshipModal from '../../components/SelectRelationshipModal';
-
+import { baseUrl } from '../../services/routes';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
 const postPaymentFormSchema = yup.object().shape({
   refereeFirstName: yup.string().required('Field required'),
@@ -35,6 +38,7 @@ const postPaymentFormSchema = yup.object().shape({
 
 const PostPaymentForm1 = ({navigation}) => {
   const [progress, setProgress] = useState(75);
+  const [spinner, setSpinner] = useState(false)
   const [
     showSelectRelationshipModal,
     setShowSelectRelationshipModal,
@@ -64,17 +68,21 @@ const PostPaymentForm1 = ({navigation}) => {
     //   refereeCountry: values.refereeCountry,
     //   relationship: values.relationship,
     // };
+    setSpinner(true)
 
     const postPaymentFormData = await AsyncStorage.getItem('postPaymentForm');
     const data = JSON.parse(postPaymentFormData);
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/update/landlord_and_property';
+      `${baseUrl}/application/update/landlord_and_property`;
     const refereeUrl =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/update/referee';
+      `${baseUrl}/application/update/referee`;
 
     const token = await getToken();
 
     const user = await getUser();
+
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
 
     const refereedata = {
       referee_address:
@@ -162,12 +170,9 @@ const PostPaymentForm1 = ({navigation}) => {
       );
       console.log('STEPS: ', steps);
 
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const applicationIDCallRes = await getCurrentApplication({id: loan_id})
+
+      setSpinner(false)
 
       console.log(applicationIDCallRes.data.data.assigned_to);
 
@@ -175,12 +180,14 @@ const PostPaymentForm1 = ({navigation}) => {
         // navigation.navigate('AcceptanceLetterKwaba');
         // navigation.navigate('AcceptanceletterAddosser');
         // navigation.navigate('AddosserLetter');
-        navigation.navigate('PTMFB');
+        // navigation.navigate('PTMFB');
+        navigation.navigate('AddressVerificationPayment')
       } else {
         // navigation.navigate('AcceptanceLetterKwaba');
         // navigation.navigate('AcceptanceletterAddosser');
         // navigation.navigate('AddosserLetter');
-        navigation.navigate('PTMFB');
+        // navigation.navigate('PTMFB');
+        navigation.navigate('AddressVerificationPayment')
       }
 
       // navigation.navigate('OfferLetter');
@@ -337,7 +344,7 @@ const PostPaymentForm1 = ({navigation}) => {
                           fontSize: 16,
                         },
                       ]}>
-                      Referee details
+                      Quarantor's details
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text
@@ -430,7 +437,10 @@ const PostPaymentForm1 = ({navigation}) => {
                         fontSize: 12,
                       },
                     ]}>
-                    NEXT
+                   {
+                    spinner ? <ActivityIndicator  size={20} color={COLORS.white} />
+                    : ' NEXT'
+                   }
                   </Text>
                 </TouchableOpacity>
 

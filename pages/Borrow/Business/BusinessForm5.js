@@ -25,6 +25,7 @@ import BussinessCompleteModal from './BussinessCompleteModal';
 
 import Spinner from 'react-native-loading-spinner-overlay';
 import axios from 'axios';
+import { baseUrl } from '../../../services/routes';
 
 const businessFormSchema = yup.object().shape({
   is_payment_made_to_bank_account: yup
@@ -147,8 +148,8 @@ export default function BusinessForm1({navigation}) {
   };
 
   const handleSubmit = async (values) => {
-    const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/business/application/new';
+    const url = 
+      `${baseUrl}/business/application/new`;
     const dummyData = {
       rent_purpose: 'Business space',
       business_name: 'Kwaba',
@@ -190,7 +191,7 @@ export default function BusinessForm1({navigation}) {
     // console.log('BUSINESS FORM DAT: ', businessFormData);
     // console.log('DUMMY DATA: ', dummyData);
     console.log('The Business Route: ', {
-      ...dummyData,
+      // ...dummyData,
       ...JSON.parse(businessFormData),
       ...data,
     });

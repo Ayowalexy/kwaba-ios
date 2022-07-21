@@ -5,12 +5,25 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {CreditForm, CreditAwaiting} from '.';
 import {COLORS, images} from '../../../../util';
 import CreditDashboard from './creditDashboard';
+import CreditAccept from './creditAccept';
+import PaystackPayment from '../../../../components/Paystack/PaystackPayment';
+import PaymentTypeModal from '../../../../components/PaymentType/PaymentTypeModal';
+import { verifySavingsPayment } from '../../../../services/network';
+import { completeSavingsPayment } from '../../../../services/network';
+import Preloader from '../../../../components/Preloader'
 
 export default function CreditOnboard({navigation}) {
   const [formData, setFormData] = useState({});
+  const [channel, setChannel] = useState('')
+  const [spinner, setSpinner] = useState(false)
+  const [showAcceptModal, setShowAcceptModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
   const [showCreditForm, setShowCreditForm] = useState(false);
   const [showCreditAwaiting, setShowCreditAwaiting] = useState(false);
   const [showCreditDashboard, setShowCreditDashboard] = useState(false);
+  const [verifyData, setVerifyData] = useState('')
+
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -24,6 +37,89 @@ export default function CreditOnboard({navigation}) {
       AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditOnboarding');
     })();
   }, []);
+
+  const savingsPayment = async (data) => {
+    setSpinner(true);
+    console.log('The data', data)
+
+    try {
+      const res = await completeSavingsPayment(data);
+      console.log('Hello: ', res);
+      if (res.status == 200) {
+      
+        setSpinner(false);
+
+        console.log('Complete Paymentttttttttt: ', res.data.data);
+        // await showSuccess();
+        // setShowAcceptModal(true);
+        navigation.navigate('CreditAwaiting');
+        // console.log('Form Value: ', formValue);
+      } else {
+        setSpinner(false);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error.response.data);
+    }
+  };
+
+  const verifyPaymentRequest = async (data, paymentChannel) => {
+    console.log('The Data: ', data, paymentChannel);
+
+    setSpinner(true);
+    const res = await verifySavingsPayment(data);
+
+    setSpinner(false);
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      const verifyData = res?.data?.data;
+      console.log('Verifying data....: ', verifyData);
+      setVerifyData(verifyData);
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: verifyData.amount,
+          channel: 'wallet',
+          // reference: verifyData.paymentReference,
+          reference: verifyData.reference,
+          purpose: 'creditScoring',
+        };
+
+        await savingsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      console.log('Errorrr: ', res.response.data.meta.error);
+      Alert.alert('Oops', res.response.data.meta.error);
+    }
+  };
+
+  const handlePaymentRoute = async (value) => {
+    console.log('Value: ', value);
+
+    if (value == 'wallet') {
+      const verifyPayload = {
+        amount: 2000,
+        channel: 'wallet',
+        purpose: 'creditScoring',
+      };
+
+      setChannel(value); // wallet
+      await verifyPaymentRequest(verifyPayload, value);
+    } else {
+      const verifyPayload = {
+        amount: 2000,
+        channel: 'paystack',
+        purpose: 'creditScoring',
+      };
+
+      setChannel(value); // card or bank_transfer
+      await verifyPaymentRequest(verifyPayload, value);
+    }
+  };
 
   // useEffect(() => {
   //   (async () => {
@@ -75,13 +171,64 @@ export default function CreditOnboard({navigation}) {
             </Text>
           </View>
 
-          <TouchableOpacity onPress={() => navigation.navigate('CreditForm')}>
+          <TouchableOpacity onPress={() => {
+            // navigation.navigate('CreditForm')
+            setShowAcceptModal(true)
+          }}>
             <View style={styles.button}>
               <Text style={styles.buttonText}>Check credit report</Text>
             </View>
           </TouchableOpacity>
         </View>
       </View>
+
+      {showAcceptModal && (
+        <CreditAccept
+          onRequestClose={() => setShowAcceptModal(!showAcceptModal)}
+          visible={showAcceptModal}
+          // onConfirm={() => setShowPaystackPayment(true)}
+          onConfirm={() => {
+            setShowPaymentModal(true);
+          }}
+        />
+      )}
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            Alert.alert('Payment cancelled');
+          }}
+          paymentSuccessful={async (res) => {
+            const getUser = async () => {
+              const userData = await AsyncStorage.getItem('userData');
+              const user = JSON.parse(userData).user;
+              return user;
+            };
+            const user = await getUser();
+            AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'creditForm');
+            // AsyncStorage.setItem(`userEmailAndBvn-${user.id}`, JSON.stringify(formValue));
+            navigation.navigate('CreditAwaiting');
+          }}
+        />
+      )}
+
+      {spinner && (
+        <Preloader />
+      )}
     </>
   );
 }

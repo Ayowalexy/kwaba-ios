@@ -7547,7 +7547,7 @@
   dependencies:
     "warning" "^4.0.1"
 
-"moment@^2.24.0", "moment@^2.29.1":
+"moment@^2.22.0", "moment@^2.24.0", "moment@^2.29.1":
   "integrity" "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ=="
   "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz"
   "version" "2.29.1"
@@ -8498,6 +8498,18 @@
     "prop-types" "15.7.2"
     "react-async-hook" "3.6.1"
 
+"react-native-date-picker@^4.2.2":
+  "integrity" "sha512-x0jxWbJXKDXivRDwsUx58tKOxe719XoVqqq6UzMSYSsTiPL2i13r7PyDxop3f3et/62qbcMgeswl+/CLdX6+Eg=="
+  "resolved" "https://registry.npmjs.org/react-native-date-picker/-/react-native-date-picker-4.2.2.tgz"
+  "version" "4.2.2"
+
+"react-native-datepicker@^1.7.2":
+  "integrity" "sha512-ses0N1y44fYBmlejYwR2i+dGnQQ8v5/gacX2CrbFJiWxbcQaRuxexsZPB9YQuQkAy+uKz5Gti3Lrp3dh9BfkzA=="
+  "resolved" "https://registry.npmjs.org/react-native-datepicker/-/react-native-datepicker-1.7.2.tgz"
+  "version" "1.7.2"
+  dependencies:
+    "moment" "^2.22.0"
+
 "react-native-device-info@^6.2.0", "react-native-device-info@^8.4.3":
   "integrity" "sha512-VMEP1c/X0KSOqBZDzs9/GHbacgdsoQqaBqI/fK98S5oMmKAfuIFjAjb4kvcNjC2mklD6JrlgXPnqKQQaX+kklg=="
   "resolved" "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.5.1.tgz"
@@ -8715,12 +8727,15 @@
   "resolved" "https://registry.npmjs.org/react-native-tab-view/-/react-native-tab-view-3.0.1.tgz"
   "version" "3.0.1"
 
-"react-native-toast-message@^1.4.9":
-  "integrity" "sha512-QhHzzsiymKpHEWz2nUKQjQMRuGN+/a8cOwDXJcz3TQFY03p20f6sJW9JKw3KkMfvWiUhGbApCPpNU6tHaAZ32w=="
-  "resolved" "https://registry.npmjs.org/react-native-toast-message/-/react-native-toast-message-1.4.9.tgz"
-  "version" "1.4.9"
-  dependencies:
-    "prop-types" "^15.7.2"
+"react-native-toast-message@^2.1.5":
+  "integrity" "sha512-mk3rELtBEhrhWBCN6CTaw0gypgL9ZNauX3xx1LUs4uee9vc0pVsghrKxO57vroUCcNL2hDeZSLJWdQNMCkGeaQ=="
+  "resolved" "https://registry.npmjs.org/react-native-toast-message/-/react-native-toast-message-2.1.5.tgz"
+  "version" "2.1.5"
+
+"react-native-toast-notifications@^3.3.0":
+  "integrity" "sha512-R94XMwHzovGc3CskniqM2EwS6GqVWgfynXi9ua/qvS+F7eD2dvlkhDhf+eUQNpTexQLoG5MYOJRQ+J8WQs3LbQ=="
+  "resolved" "https://registry.npmjs.org/react-native-toast-notifications/-/react-native-toast-notifications-3.3.0.tgz"
+  "version" "3.3.0"
 
 "react-native-toaster@^1.2.2":
   "integrity" "sha512-TJI2qV8IfxezhznDW/ngSDb4Zxy1RiBRFU5FUsUxfcMO8FwUX2Ly8ua2MjFvUG+ms66GaH3jeocGVriOiBfxYg=="
@@ -9140,6 +9155,11 @@
   "integrity" "sha512-NKN5kMDylKuldxYLSUfrbo5Tuzh4hd+2E8NPPX02mZtn1VuREQToYe/ZdlJy+J3uCpfaiGF05e7B8W0iXbQHmg=="
   "resolved" "https://registry.npmjs.org/require-main-filename/-/require-main-filename-2.0.0.tgz"
   "version" "2.0.0"
+
+"reselect@^4.1.6":
+  "integrity" "sha512-ZovIuXqto7elwnxyXbBtCPo9YFEr3uJqj2rRbcOOog1bmu2Ag85M4hixSwFWyaBMKXNgvPaJ9OSu9SkBPIeJHQ=="
+  "resolved" "https://registry.npmjs.org/reselect/-/reselect-4.1.6.tgz"
+  "version" "4.1.6"
 
 "resolve-cwd@^3.0.0":
   "integrity" "sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg=="

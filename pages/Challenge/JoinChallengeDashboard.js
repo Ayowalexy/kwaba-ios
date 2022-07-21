@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,17 +9,18 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
-import {COLORS} from '../../util';
+import { COLORS } from '../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ProgressBar from 'react-native-animated-progress';
-import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
-import {useDispatch, useSelector} from 'react-redux';
+import { formatNumber, unFormatNumber } from '../../util/numberFormatter';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getOneUserSavingsChallenge,
   getSavingsChallengeList,
   getSavingsUnderChallengeList,
   getUserSavingsChallenge,
 } from '../../redux/actions/savingsChallengeAction';
+import { getTransactionsHistory } from '../../services/network';
 import AmountModalChallenge from '../../components/amountModalChallenge';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import {
@@ -30,14 +31,14 @@ import {
 } from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
-import {getOneSoloSavingsTransaction} from '../../redux/actions/savingsActions';
+import { getOneSoloSavingsTransaction } from '../../redux/actions/savingsActions';
 import moment from 'moment';
 import MoveMoneyModal from './MoveMoneyModal';
 import MoveMoneyOptionModal from './MoveMoneyOptionModal';
 import MoveMoneyToExistingPlanModal from './MoveMoneyToExistingPlanModal';
 import { getTotalSoloSavings } from '../../redux/actions/savingsActions';
 
-const {width} = Dimensions.get('screen');
+const { width } = Dimensions.get('screen');
 
 const highFive = require('../../assets/images/high-five.png');
 const bills = require('../../assets/images/bills.png');
@@ -59,7 +60,9 @@ export default function JoinChallengeDashboard(props) {
   const getOneTransaction = useSelector(
     (state) => state.getOneSoloSavingsTransactionReducer,
   );
-  const {navigation, route} = props;
+
+  console.log('get One Transaction', getOneSavings)
+  const { navigation, route } = props;
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [amount, setAmount] = useState('');
@@ -67,6 +70,8 @@ export default function JoinChallengeDashboard(props) {
   const [channel, setChannel] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [minimumAmount, setMinimumAmount] = useState(0);
+  const [rand, setRand] = useState(0)
+  const [fundedAmount, setFundedAmount] = useState(0)
 
   const [targetAmount, setTargetAmount] = useState();
 
@@ -79,11 +84,14 @@ export default function JoinChallengeDashboard(props) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
+  const [actvities, setActivities] = useState([])
+
   const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] =
     useState(false);
 
   const [dashboardData, setDashboardData] = useState({});
   const [verifyData, setVerifyData] = useState('');
+  const [numberOfDays, setNumberOfDays] = useState(1)
 
   const [
     showMoveMoneyToExistingPlanModal,
@@ -121,38 +129,74 @@ export default function JoinChallengeDashboard(props) {
   }, [])
 
   useEffect(() => {
-    // item.savings_type == 'savings_challenge'
-    
+    (async () => {
+      // item.savings_type == 'savings_challenge'
+
+      const filter = allSavings.data.filter(
+        (item) => {
+          if (!(Object.is(item, null)) && (item.savings_type == 'savings_challenge')) {
+            return item
+          }
+        });
+
+      console.log('All Savings challeng', filter)
+
+      console.log("filter", props.route.params.id)
+      for (let d of filter) {
+        console.log(d.challenge_id, props.route.params.id)
+      }
+
+      const data = filter.filter(
+        (item) => item.challenge_id == props?.route?.params?.id,
+      )[0];
+      console.log('The ID: ', data);
+
+
+
+      let challenge_start = moment(data?.start_date, 'YYYY-MM-DD').format(
+        'YYYY-MM-DD',
+      );
+      let challenge_end = moment(data?.end_date, 'YYYY-MM-DD').format(
+        'YYYY-MM-DD',
+      );
+
+      setStartDate(challenge_start);
+      setEndDate(challenge_end);
+      setDashboardData(data);
+      setFundedAmount(data?.amount_saved)
+      console.log('days', challenge_start, challenge_end)
+
+      const numberOfDays = moment(challenge_end).diff(moment(challenge_start), 'days');
+      console.log('Number Of Days: ', numberOfDays)
+      setNumberOfDays(numberOfDays)
+
+      const history = await getTransactionsHistory();
+      const filtered = history?.data?.data?.filter(d => d?.savings_id == data?.id)
+      setActivities(filtered)
+
+    })()
+  }, []);
+
+  const handleActivities = async () => {
     const filter = allSavings.data.filter(
       (item) => {
-        if( !(Object.is(item, null)) && (item.savings_type == 'savings_challenge')){
+        if (!(Object.is(item, null)) && (item.savings_type == 'savings_challenge')) {
           return item
         }
       });
 
-      console.log("filter", props.route.params.id )
-      for(let d of filter){
-        console.log(d.challenge_id, props.route.params.id)
-      }
+      const data = filter.filter(
+        (item) => item.challenge_id == props?.route?.params?.id,
+      )[0];
 
-    const data = filter.filter(
-      (item) => item.challenge_id == props?.route?.params?.id,
-    )[0];
-    console.log('The ID: ', data);
+      const history = await getTransactionsHistory();
+      const filtered = history?.data?.data?.filter(d => d?.savings_id == data?.id)
+      console.log('handle activities', filtered)
+      setActivities(filtered)
+  }
 
-    
 
-    let challenge_start = moment(data?.start_date, 'YYYY-MM-DD').format(
-      'YYYY-MM-DD',
-    );
-    let challenge_end = moment(data?.end_date, 'YYYY-MM-DD').format(
-      'YYYY-MM-DD',
-    );
 
-    setStartDate(challenge_start);
-    setEndDate(challenge_end);
-    setDashboardData(data);
-  }, []);
 
   useEffect(() => {
     dispatch(getOneUserSavingsChallenge(route?.params?.data?.id));
@@ -176,15 +220,15 @@ export default function JoinChallengeDashboard(props) {
   const showSuccess = () => {
     navigation.navigate('PaymentSuccessful', {
       content: 'Payment Successful',
-      subText: 'You have successfully funded your savings',
-      name: 'SoloSavingDashBoard',
+      subText: 'You have successfully funded your savings challenge',
+      name: 'JoinChallengeDashboard',
       id: dashboardData.id,
     });
   };
   const createSavings = async (paymentChannel) => {
     setSpinner(true);
     try {
-      const {challenge_id, id} = dashboardData;
+      const { challenge_id, id } = dashboardData;
 
       const payloadData = {
         channel: paymentChannel,
@@ -207,10 +251,12 @@ export default function JoinChallengeDashboard(props) {
             reference: tempData.reference,
             channel: 'wallet',
           };
-          console.log({payload});
+          console.log({ payload });
           const completedResponse = await completeSavingsPayment(payload);
           console.log('completed payment response', completedResponse.data);
           if (completedResponse.status == 200) {
+            setFundedAmount(Number(fundedAmount) + Number(amount))
+
             console.log('Complete Paymentttttttttt: ', completedResponse?.data);
             showSuccess();
           }
@@ -248,10 +294,10 @@ export default function JoinChallengeDashboard(props) {
         }}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900', paddingBottom: 20}}
+        style={{ fontWeight: '900', paddingBottom: 20 }}
         color={COLORS.white}
       />
-      <Image
+      {/* <Image
         source={snowflake}
         style={{
           width: 100,
@@ -263,8 +309,8 @@ export default function JoinChallengeDashboard(props) {
           zIndex: 0,
         }}
         resizeMode="contain"
-      />
-      <Image
+      /> */}
+      {/* <Image
         source={snow}
         style={{
           width: 100,
@@ -276,8 +322,8 @@ export default function JoinChallengeDashboard(props) {
           zIndex: 0,
         }}
         resizeMode="contain"
-      />
-      <Image
+      /> */}
+      {/* <Image
         source={snow}
         style={{
           width: 50,
@@ -289,7 +335,7 @@ export default function JoinChallengeDashboard(props) {
           zIndex: 0,
         }}
         resizeMode="contain"
-      />
+      /> */}
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}>
@@ -307,7 +353,7 @@ export default function JoinChallengeDashboard(props) {
             justifyContent: 'space-between',
             flexDirection: 'row',
           }}>
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Text
               style={{
                 fontSize: 10,
@@ -330,7 +376,7 @@ export default function JoinChallengeDashboard(props) {
                 alignItems: 'center',
               }}>
               <Text
-                style={{fontSize: 14, fontWeight: 'bold', color: COLORS.light}}>
+                style={{ fontSize: 14, fontWeight: 'bold', color: COLORS.light }}>
                 {startDate ? moment(startDate).format('DD') : '--'}
               </Text>
               <Text
@@ -345,7 +391,7 @@ export default function JoinChallengeDashboard(props) {
             </View>
           </View>
 
-          <View style={{alignItems: 'center'}}>
+          <View style={{ alignItems: 'center' }}>
             <Text
               style={{
                 fontSize: 10,
@@ -389,8 +435,8 @@ export default function JoinChallengeDashboard(props) {
         </View>
 
         <View style={[styles.card]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <View style={{justifyContent: 'center', paddingRight: 20}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ justifyContent: 'center', paddingRight: 20 }}>
               <Image
                 source={highFive}
                 style={{
@@ -400,9 +446,9 @@ export default function JoinChallengeDashboard(props) {
                 resizeMode="contain"
               />
             </View>
-            <View style={{flex: 1}}>
+            <View style={{ flex: 1 }}>
               <Text
-                style={{fontSize: 15, fontWeight: 'bold', color: COLORS.black}}>
+                style={{ fontSize: 15, fontWeight: 'bold', color: COLORS.black }}>
                 {
                   // targetAmount == getOneSavings.data?.savings[0]?.target_amount
                   challengeEnd ? 'Awe-some!' : 'High-five!'
@@ -424,7 +470,7 @@ export default function JoinChallengeDashboard(props) {
                 }
               </Text>
             </View>
-            <View style={{justifyContent: 'center', paddingLeft: 20}}>
+            <View style={{ justifyContent: 'center', paddingLeft: 20 }}>
               <Image
                 source={
                   // targetAmount == getOneSavings.data?.savings[0]?.target_amount
@@ -463,8 +509,8 @@ export default function JoinChallengeDashboard(props) {
           )}
         </View>
 
-        <View style={{alignItems: 'center'}}>
-          <View style={{marginTop: 20, width: width / 1.3}}>
+        <View style={{ alignItems: 'center' }}>
+          <View style={{ marginTop: 20, width: width / 1.3 }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -472,10 +518,10 @@ export default function JoinChallengeDashboard(props) {
                 alignItems: 'center',
                 marginBottom: 10,
               }}>
-              <Text style={{fontSize: 12, color: COLORS.white}}>
+              <Text style={{ fontSize: 12, color: COLORS.white }}>
                 Amount Saved
               </Text>
-              <Text style={{fontSize: 12, color: COLORS.white}}>Target</Text>
+              <Text style={{ fontSize: 12, color: COLORS.white }}>Target</Text>
             </View>
             {/* Percentage Archieved Cal
                 (Amount saved / Target amount) * 100
@@ -498,12 +544,12 @@ export default function JoinChallengeDashboard(props) {
                 alignItems: 'center',
                 marginTop: 10,
               }}>
-              <Text style={{fontSize: 12, color: COLORS.white}}>
+              <Text style={{ fontSize: 12, color: COLORS.white }}>
                 ₦
-                {formatNumber(Number(dashboardData?.amount_saved).toFixed(2)) ||
+                {formatNumber(Number(fundedAmount).toFixed(2)) ||
                   '0.00'}
               </Text>
-              <Text style={{fontSize: 12, color: COLORS.white}}>
+              <Text style={{ fontSize: 12, color: COLORS.white }}>
                 ₦{formatNumber(Number(dashboardData?.target_amount).toFixed(2))}
               </Text>
             </View>
@@ -514,7 +560,7 @@ export default function JoinChallengeDashboard(props) {
                 if (
                   // targetAmount ==
                   // getOneSavings.data?.savings[0]?.target_amount
-                  challengeEnd
+                  numberOfDays == 0
                 ) {
                   handleMoveToSaving();
                 } else {
@@ -535,7 +581,7 @@ export default function JoinChallengeDashboard(props) {
                 resizeMode="contain"
               />
               <Text style={[styles.btnText]}>
-                {challengeEnd ? 'Move Money to savings' : 'Add Money'}
+                {numberOfDays == 0 ? 'Move Money to savings' : 'Add Money'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -548,8 +594,11 @@ export default function JoinChallengeDashboard(props) {
               marginTop: 20,
               paddingHorizontal: 20,
             }}>
-            {getOneTransaction?.data
+            {/* {getOneTransaction?.data
               ?.slice(0, getOneTransaction?.data?.length)
+              ?.map((item, index, arr) => { */}
+            {actvities
+              ?.reverse()
               ?.map((item, index, arr) => {
                 return (
                   <View
@@ -581,7 +630,7 @@ export default function JoinChallengeDashboard(props) {
                         color={COLORS.white}
                       />
                     </View>
-                    <View style={{paddingLeft: 40}}>
+                    <View style={{ paddingLeft: 40 }}>
                       <Text
                         style={{
                           fontSize: 14,
@@ -596,7 +645,7 @@ export default function JoinChallengeDashboard(props) {
                           color: COLORS.light,
                           marginTop: 10,
                         }}>
-                        {item.reference}
+                        {item.reason}
                       </Text>
                       <Text
                         style={{
@@ -629,6 +678,7 @@ export default function JoinChallengeDashboard(props) {
           setAmount={(d) => setAmount(d)}
           // setData={(d) => setResData(d)}
           showCard={() => setShowPaymentModal(true)}
+          target={Math.floor(dashboardData?.target_amount)}
           minimumAmount={dashboardData?.periodic_savings_amount}
         />
       )}
@@ -665,8 +715,8 @@ export default function JoinChallengeDashboard(props) {
             id == 0
               ? setShowMoveMoneyToExistingPlanModal(true)
               : id == 1
-              ? setShowMoveMoneyModal(true)
-              : null;
+                ? setShowMoveMoneyModal(true)
+                : null;
           }}
         />
       )}
@@ -693,6 +743,10 @@ export default function JoinChallengeDashboard(props) {
           paymentSuccessful={async (res) => {
             console.log('savings successful');
             setSpinner(false);
+            setFundedAmount(Number(fundedAmount) + Number(amount))
+            setTimeout(async() => {
+              await handleActivities()
+            }, 4000);
             showSuccess();
           }}
         />

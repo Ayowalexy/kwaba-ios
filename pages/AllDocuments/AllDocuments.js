@@ -31,6 +31,8 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
 import urls from '../../services/routes';
+import { getCurrentApplication } from '../../services/network';
+import { getEmergencyLoans } from '../../services/network';
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -70,6 +72,8 @@ export default function AllDocuments({navigation}) {
   const [item, setItem] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [count, setCount] = useState(0);
+  const [uploadedDocuments, setUploadedDocumets] = useState([])
+  const [documentsToUpload, setDocumentsToUpload] = useState([])
   const [isBankStatement, setIsBankStatement] = useState(false);
 
   const dispatch = useDispatch();
@@ -77,9 +81,23 @@ export default function AllDocuments({navigation}) {
     (state) => state.fileUploadReducer.fileProgress,
   );
 
+
+
   useEffect(() => {
     console.log('file: ', fileProgress);
   }, [fileProgress]);
+
+  useEffect(() => {
+    (async() => {
+      const docs = await getDocuments();
+      const arr = [];
+    
+      for(let i of docs){
+        arr.push(i?.filename)
+      }
+      setUploadedDocumets(arr)
+    })()
+  }, [])
 
   useEffect(() => {
     let a = [
@@ -140,11 +158,16 @@ export default function AllDocuments({navigation}) {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
 
+      
+
       setCount(resp.data.data.length);
+      console.log('number of uploaded documents', resp.data.data.length)
     } catch (error) {
       console.log(error);
     }
   };
+
+  console.log('document count', count)
 
   const handleDocumentType = async (item) => {
     setShowChooseFileModal(true);
@@ -168,16 +191,15 @@ export default function AllDocuments({navigation}) {
       };
       setSpinner(true);
 
-      // console.log(blob);
+      console.log("blob", blob);
 
       const token = await getToken();
-      const applicationIDCallRes = await axios.get(
-        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        urls.applications.GET_CURRENT_APPLICATION,
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
+  
+      console.log('Application status', applicationIDCallRes.data.data.status)
+     
       console.log('The Application ID: ', applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
 
@@ -247,6 +269,12 @@ export default function AllDocuments({navigation}) {
       `rentalSteps-${user.id}`,
       JSON.stringify(stepsData),
     );
+    const rnplStep = {
+      nextStage: 'Offer approval breakdown',
+      completedStages: ['Credit score', 'Applications', 'Documents upload']
+    }
+    await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
 
     navigation.navigate('VerifyingDocuments');
   };
@@ -255,6 +283,8 @@ export default function AllDocuments({navigation}) {
     setShowSelectDocumentsModal(false);
     navigation.navigate('RentalLoanFormBankStatementUpload');
   };
+
+  console.log('fileprogess', Object.values(fileProgress)[0])
 
   return (
     <>
@@ -295,7 +325,7 @@ export default function AllDocuments({navigation}) {
               </Text>
             </View>
           ) : (
-            <Docs />
+            <Docs setCount={setCount} count={count} />
           )}
 
           {count >= 6 ? (
@@ -380,14 +410,15 @@ export default function AllDocuments({navigation}) {
                 textAlign: 'center',
                 marginTop: 50,
               }}>
-              Select a document to upload
+              Kindly upload the following {"\n"} documents to continue.
             </Text>
             {/* </View> */}
             <View style={{marginTop: 10}}>
               <View>
-                {Object.values(fileProgress).map(
+              {Object.values(fileProgress).map(
                   (item, index) =>
-                    item.isUploaded == false &&
+                    // item.isUploaded !== false &&
+                    !uploadedDocuments?.includes(item?.title) &&
                     item.id && (
                       <TouchableOpacity
                         onPress={() => {

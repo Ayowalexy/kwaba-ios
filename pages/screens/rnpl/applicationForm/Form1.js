@@ -14,10 +14,10 @@ import {COLORS, FONTS, images} from '../../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { setCurrentStage } from '../../../../redux/reducers/store/stageActions';
 import {formatNumber, unFormatNumber} from '../../../../util/numberFormatter';
 import SelectMonthModal from '../../../../components/SelectMonthModal';
-
+import { useDispatch } from 'react-redux';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
@@ -35,6 +35,7 @@ const Form1 = ({navigation}) => {
   const [showSelectMonthModal, setShowSelectMonthModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState('');
   const [progress, setProgress] = useState(33);
+  const dispatch = useDispatch();
 
   const handleSubmit = async (values) => {
     const data = {
@@ -51,6 +52,9 @@ const Form1 = ({navigation}) => {
       'rentalLoanForm',
       JSON.stringify({...JSON.parse(loanFormData), ...data}),
     );
+
+    dispatch(setCurrentStage(stepsArray))
+
 
     navigation.navigate('FormBreakdown');
   };
@@ -365,3 +369,32 @@ const styles = StyleSheet.create({
     borderColor: '#f0000050',
   },
 });
+
+
+const stepsArray = [
+  {
+    title: 'Credit score',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Applications',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Documents upload',
+    subTitle: '',
+    status: 'locked',
+  },
+  {
+    title: 'Offer approval breakdown',
+    subTitle: '',
+    status: 'locked',
+  },
+  {
+    title: 'Property details',
+    subTitle: '',
+    status: 'locked',
+  }
+];

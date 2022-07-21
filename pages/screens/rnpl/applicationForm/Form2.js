@@ -16,7 +16,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useDispatch } from 'react-redux';
+import { setCurrentStage } from '../../../../redux/reducers/store/stageActions';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
@@ -40,6 +41,7 @@ const Form2 = ({navigation}) => {
   const [companyAddressState, setCompanyAddressState] = useState('');
   const [companyAddressCountry, setCompanyAddressCountry] = useState('');
   const [progress, setProgress] = useState(66);
+  const dispatch = useDispatch();
 
   const isError = () => {
     if (
@@ -69,6 +71,7 @@ const Form2 = ({navigation}) => {
     );
 
     console.log(loanFormData);
+    dispatch(setCurrentStage(stepsArray))
 
     navigation.navigate('Form3');
   };
@@ -260,4 +263,34 @@ const Form2 = ({navigation}) => {
   );
 };
 
+
+const stepsArray = [
+  {
+    title: 'Credit score',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Applications',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Documents upload',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Offer approval breakdown',
+    subTitle: '',
+    status: 'complete',
+  },
+  {
+    title: 'Property details',
+    subTitle: '',
+    status: 'locked',
+  }
+];
+
 export default Form2;
+

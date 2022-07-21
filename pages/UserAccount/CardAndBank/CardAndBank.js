@@ -9,7 +9,7 @@ import {
 import {COLORS} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getBankAccounts, getTokenizeCards} from '../../../services/network';
-
+import ActionModal from '../../../components/ActiomModal';
 // import AvailableCardAndBank from './AvailableCardAndBank';
 import PaymentCard from './PaymentCard';
 import BankAccount from './BankAccount';
@@ -18,8 +18,11 @@ export default function CardAndBankDetails({navigation}) {
   const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [paymentCards, setPaymentCards] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
+ 
   
   console.log('banks', paymentCards)
+
+ 
 
   useEffect(() => {
     const getAllCards = async () => {
@@ -126,6 +129,7 @@ export default function CardAndBankDetails({navigation}) {
             <ActivityIndicator size={'large'} color={COLORS.secondary} />
           </View>
         )}
+       
       </View>
     </>
   );

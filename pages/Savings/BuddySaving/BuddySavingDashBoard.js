@@ -39,11 +39,14 @@ import {
   completeSavingsPayment,
 } from '../../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
-import TransactionsTab from '../SoloSaving/TransactionTabs';
+import TransactionsTab from './TransactionTabs';
+// import TransactionsTab from '../SoloSaving/TransactionTabs';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../../components/amountModal';
 import InsufficientModal from '../../../components/PaymentType/InsufficientWalletBalance';
+import ActionModal from '../../../components/ActiomModal';
+
 
 export default function SoloSavingDashBoard(props) {
   const {navigation, route} = props;
@@ -71,6 +74,12 @@ export default function SoloSavingDashBoard(props) {
   const [verifyData, setVerifyData] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
   const [showModal, setShowModal] = useState(false)
+  const [fundedAmount, setFundedAmount] = useState(0)
+  const [visible, setVisible] = useState(false)
+  const [type, setType] = useState('')
+  const [msg, setMsg] = useState('')
+
+  console.log('params', route?.params)
 
   useEffect(() => {
     // getOneBuddy(route?.params?.id)
@@ -110,6 +119,11 @@ export default function SoloSavingDashBoard(props) {
     try {
       console.log('The Data to verify payment: ', route.params);
 
+      if(Number(amount) > Number(savingsTarget)){
+        handleOverPayment()
+        return
+      }
+      
       setSpinner(true);
       const res = await verifySavingsPayment(data);
       console.log("response data", res);
@@ -166,6 +180,18 @@ export default function SoloSavingDashBoard(props) {
       setSpinner(false);
     }
   };
+
+  const handleOverPayment  = () => {
+    setVisible(true)
+      setType('error')
+      setMsg({
+        header: 'Over payment',
+        text: "The maximum savings amount for this savings is exceeded",
+        action: 'Try Again'
+      })
+  }
+
+
 
   const handlePaymentRoute = async (value) => {
     const userData = await AsyncStorage.getItem('userData');
@@ -588,7 +614,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        <TransactionsTab title={savingTitle} transactions={transactions} />
+        <TransactionsTab id={route?.params?.buddyId} title={savingTitle}  transactions={transactions} />
       </ScrollView>
 
       {/* <QuickSaveModal
@@ -605,7 +631,8 @@ export default function SoloSavingDashBoard(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            showSuccess();
+            setTotalSaving(Number(totalSaving) + Number(amount))
+            await showSuccess();
           }}
         />
       )}
@@ -664,6 +691,12 @@ export default function SoloSavingDashBoard(props) {
           <Spinner visible={spinner} size="large" />
         )
       }
+       <ActionModal
+        visible={visible}
+        setVisible={setVisible}
+        type={type}
+        msg={msg}
+      />
     </View>
   );
 }

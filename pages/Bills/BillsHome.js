@@ -16,6 +16,8 @@ const BillsHome = ({navigation}) => {
   const dispatch = useDispatch();
   const getBills = useSelector((state) => state.getBillServicesReducer);
 
+  console.log("getBills", getBills)
+
   // DATA
   const billsHomeCarddata = [
     {

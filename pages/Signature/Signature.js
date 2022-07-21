@@ -24,11 +24,16 @@ import Modal from 'react-native-modal';
 import SignatureScreen from 'react-native-signature-canvas';
 import RNFS from 'react-native-fs';
 import DocumentPicker from 'react-native-document-picker';
+import { baseUrl } from '../../services/routes';
+import Preloader from '../../components/Preloader';
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
 export default function Signature({navigation}) {
   const [modalVisible, setVisible] = useState(false);
   const [signature, setSignature] = useState('');
   const [filename, setFilename] = useState('');
+  const [spinner, setSpinner] = useState(false)
 
   const [enableScroll, setEnableScroll] = useState(false);
 
@@ -56,6 +61,7 @@ export default function Signature({navigation}) {
   const handleConfirm = async () => {
     // console.log('The sign here: ', signature);
 
+    setSpinner(true)
     const getToken = async () => {
       const userData = await AsyncStorage.getItem('userData');
       const token = JSON.parse(userData).token;
@@ -73,12 +79,9 @@ export default function Signature({navigation}) {
     const token = await getToken();
     const user = await getUser();
 
-    const applicationIDCallRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-      {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      },
-    );
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+    const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
 
     console.log(applicationIDCallRes.data.data.id);
     console.log(applicationIDCallRes.data.data);
@@ -86,7 +89,7 @@ export default function Signature({navigation}) {
 
     try {
       const response = await axios.put(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/accept_offer',
+        `${baseUrl}/application/accept_offer`,
         {applicationId, signature},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
@@ -116,8 +119,18 @@ export default function Signature({navigation}) {
           JSON.stringify(stepsData),
         );
         console.log('STEPS: ', steps);
+        
+        const rnplStep = {
+          nextStage: 'Direct debit',
+          completedStages: ['Credit score', 'Applications', 'Documents upload', 'Offer approval breakdown', 'Address verification', 'Property details']
+        }
 
-        navigation.navigate('AddressVerificationPayment');
+        await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
+        setSpinner(false)
+        // navigation.navigate('AddressVerificationPayment');
+        navigation.navigate('PostPaymentForm1')
+        // navigation.navigate('RnplDirectdebit');
       }
     } catch (error) {
       console.log(error.response.data);
@@ -306,6 +319,10 @@ export default function Signature({navigation}) {
           </Text>
         </TouchableOpacity>
       </View>
+      <Spinner
+        visible={spinner}
+        setVisible={setSpinner}
+      />
     </View>
   );
 }

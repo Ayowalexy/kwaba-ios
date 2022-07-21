@@ -16,7 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
 import SelectBankModal from '../../components/SelectBankModal';
-
+import Banks from '../../components/banks.json'
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 
@@ -28,7 +28,7 @@ const postPaymentFormSchema = yup.object().shape({
   landLordBank: yup.string().required('Field required'),
 });
 
-const PostPaymentForm1 = ({navigation}) => {
+const PostPaymentForm2 = ({navigation}) => {
   const [progress, setProgress] = useState(50);
   const [selectedBank, setSelectedBank] = useState('');
   const [showSelectBankModal, setShowSelectBankModal] = useState(false);
@@ -65,11 +65,11 @@ const PostPaymentForm1 = ({navigation}) => {
   // fetch banks via paystak
   const paystackBanks = async () => {
     try {
-      const banks = await axios.get('https://api.paystack.co/bank', {
-        headers: {'Content-Type': 'application/json'},
-      });
-      setBankData(banks?.data?.data);
-      console.log('Paystack banks: ', banks);
+      // const banks = await axios.get('https://api.paystack.co/bank', {
+      //   headers: {'Content-Type': 'application/json'},
+      // });
+      setBankData(Banks?.data?.data);
+      // console.log('Paystack banks: ', banks);
       // return banks;
     } catch (error) {
       console.log('The Big Bang Error: ', error);
@@ -368,7 +368,7 @@ const PostPaymentForm1 = ({navigation}) => {
   );
 };
 
-export default PostPaymentForm1;
+export default PostPaymentForm2;
 
 const styles = StyleSheet.create({
   customInput: {

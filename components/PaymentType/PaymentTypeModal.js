@@ -13,6 +13,8 @@ export default function PaymentTypeModal(props) {
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [walletBalance, setWalletBalance] = useState(0);
 
+  console.log('Wallet balance', walletBalance)
+
   console.log('9'.repeat(40))
 
   useEffect(() => {
@@ -163,7 +165,11 @@ export default function PaymentTypeModal(props) {
                               paddingHorizontal: 7,
                               borderRadius: 3,
                             }}>
-                            ₦{formatNumber(Number(walletBalance))}
+                            ₦{
+                              Boolean(walletBalance)
+                              ? formatNumber(Number(walletBalance))
+                              : '0.00'
+                            }
                           </Text>
                         )}
                       </View>

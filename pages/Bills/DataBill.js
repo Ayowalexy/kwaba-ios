@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,23 +8,27 @@ import {
   Keyboard,
   Image,
   ScrollView,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, FONTS, images, icons} from '../../util/index';
-import {SwipeablePanel} from 'rn-swipeable-panel';
-import {useDispatch, useSelector} from 'react-redux';
-import {getBillsCategory} from '../../redux/actions/billsAction';
+import { COLORS, FONTS, images, icons } from '../../util/index';
+// import { SwipeablePanel } from 'rn-swipeable-panel';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBillsCategory } from '../../redux/actions/billsAction';
 import axios from 'axios';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
-import {buyOtherBills, BuyPurchaseAirtime} from '../../services/network';
+import { buyOtherBills, BuyPurchaseAirtime } from '../../services/network';
 import NumberFormat from '../../components/NumberFormat';
-import {unFormatNumber} from '../../util/numberFormatter';
+import { unFormatNumber } from '../../util/numberFormatter';
+import { verifySavingsPayment } from '../../services/network';
 import { baseUrl } from '../../services/routes';
+import { completeSavingsPayment } from '../../services/network';
 
-const DataBill = ({navigation, route}) => {
+const DataBill = ({ navigation, route }) => {
   const dispatch = useDispatch();
   let name = route.params.name;
   const [active, setActive] = useState(false);
@@ -43,6 +47,12 @@ const DataBill = ({navigation, route}) => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const [channel, setChannel] = useState('');
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false)
+  const [verifyData, setVerifyData] = useState('')
+  const [verifyBillsData, setVerifyBillsData] = useState('')
+
+  const [airtimeData, setAirtimeData] = useState('');
+
 
   const [billData, setBillData] = useState('');
   const getBillsCategoryLists = useSelector(
@@ -52,6 +62,13 @@ const DataBill = ({navigation, route}) => {
   useEffect(() => {
     getBillsItems();
   }, [serviceID]);
+
+  useEffect(() => {
+    console.log('Params: ', route.params);
+    const val = route?.params?.data?.filter((item) => item?.name == name);
+    console.log('The Value: ', route?.params);
+    setAirtimeData(val);
+  }, [name]);
 
   useEffect(() => {
     if (packageName != '') {
@@ -69,6 +86,14 @@ const DataBill = ({navigation, route}) => {
     return token;
   };
 
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      name: 'DataBill',
+      content: 'Recharge Successful',
+      subText: 'Sent! You have successfully recharged the number',
+    });
+  };
+
   const getBillsItems = async () => {
     if (serviceID != '') {
       console.log('Service ID: ', serviceID);
@@ -78,7 +103,7 @@ const DataBill = ({navigation, route}) => {
         console.log(url)
         // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get_bills_items/${serviceID}`;
         const response = await axios.get(url, {
-          headers: {'Content-Type': 'application/json', Authorization: token},
+          headers: { 'Content-Type': 'application/json', Authorization: token },
         });
         setPackageData(response?.data?.data?.content?.varations);
       } catch (error) {
@@ -112,36 +137,105 @@ const DataBill = ({navigation, route}) => {
   };
 
   const handlePaymentRoute = async (value) => {
-    setSpinner(true);
-    const data = {
-      serviceID: serviceID,
-      billersCode: customerID,
-      variation_code: variationCode,
-      amount: unFormatNumber(amount),
-      recepient: customerID,
-    };
+    if (value == 'wallet') {
+      const data = {
+        amount: unFormatNumber(amount),
+        channel: 'wallet',
+        purpose: 'bills',
+        billsMethod: 'billsWithoutBillersCode',
+      };
 
-    console.log('Bills Payload: ', data);
+      setChannel(value); //wallet
 
-    if (value == 'paystack') {
-      const response = await buyOtherBills(data);
-
-      console.log('The buy response: ', response);
-      if (response.status == 200) {
-        setSpinner(false);
-
-        setShowCardModal(true); // show card modal
-        setResData(response?.data?.data);
-        setChannel(value); //paystack
-      } else {
-        setSpinner(false);
-      }
-    } else if (value == 'bank') {
-      console.log(value);
+      await verifyBillsPayment(data, value);
     } else {
-      console.log(value); // wallet
+      const data = {
+        amount: unFormatNumber(amount),
+        channel: 'paystack',
+        purpose: 'bills',
+        billsMethod: 'billsWithoutBillersCode',
+      };
+
+      setChannel(value);
+
+      await verifyBillsPayment(data, value);
     }
   };
+
+
+  const billsPayment = async (data) => {
+    setSpinner(true);
+
+    console.log('Airtime payload: ', data);
+
+    try {
+      if (data.channel !== 'wallet') {
+        setSpinner(false);
+        return await showSuccess();
+      }
+      const res = await completeSavingsPayment(data);
+
+      if (res.status == 200) {
+        setSpinner(false);
+        console.log('The Res: ', res);
+
+        await showSuccess();
+      } else {
+        setSpinner(false);
+        console.log('Not Okay Res: ', res.response.data);
+        Alert.alert('Oops ', 'An error occured');
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('The Error: ', error.response);
+    }
+  };
+
+
+  const verifyBillsPayment = async (data, paymentChannel) => {
+    setSpinner(true);
+    const res = await verifySavingsPayment({
+      ...data,
+      billsData: {
+        amount: unFormatNumber(amount),
+        recepient: customerID, //08011111111 for test
+        serviceId: providerName, // e.g mtn, airtel, glo, 9mobile
+      },
+    });
+
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      setSpinner(false);
+      setVerifyBillsData(res?.data?.data);
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: unFormatNumber(amount),
+          channel: 'wallet',
+          // reference: res?.data?.data?.paymentReference, // from verifyBillsPayment
+          reference: res?.data?.data?.reference,
+          purpose: 'bills',
+          billsMethod: 'billsWithoutBillersCode',
+          billsData: {
+            amount: unFormatNumber(amount),
+            recepient: phoneNumber, //08011111111 for test
+            serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+          },
+        };
+
+        console.log('Billsssss: ', payload);
+        await billsPayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      setSpinner(false);
+      Alert.alert('Error', 'something went wrong.');
+    }
+  };
+
 
   // const buyOtherBills = async () => {
   //   const data = {
@@ -175,7 +269,7 @@ const DataBill = ({navigation, route}) => {
   // };
   return (
     <>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
@@ -188,7 +282,7 @@ const DataBill = ({navigation, route}) => {
           color={COLORS.primary}
         />
 
-        <View style={{paddingHorizontal: 20, flex: 1}}>
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <Text
             style={{
               fontSize: 18,
@@ -201,9 +295,9 @@ const DataBill = ({navigation, route}) => {
 
           <TouchableOpacity style={styles.customInput} onPress={openPanel}>
             {providerName == '' ? (
-              <Text style={{color: '#BFBFBF'}}>Choose a provider</Text>
+              <Text style={{ color: '#BFBFBF' }}>Choose a provider</Text>
             ) : (
-              <Text style={{color: COLORS.dark, fontWeight: 'normal'}}>
+              <Text style={{ color: COLORS.dark, fontWeight: 'normal' }}>
                 {providerName}
               </Text>
             )}
@@ -211,7 +305,7 @@ const DataBill = ({navigation, route}) => {
             <Icon
               name="chevron-down-outline"
               size={20}
-              style={{fontWeight: 'bold'}}
+              style={{ fontWeight: 'bold' }}
               color={COLORS.dark}
             />
           </TouchableOpacity>
@@ -221,22 +315,22 @@ const DataBill = ({navigation, route}) => {
               style={styles.customInput}
               onPress={() => setPackageModal(true)}>
               {packageName == '' ? (
-                <Text style={{color: '#BFBFBF'}}>Packages</Text>
+                <Text style={{ color: '#BFBFBF' }}>Packages</Text>
               ) : (
-                <Text style={{color: COLORS.dark, fontWeight: 'normal'}}>
+                <Text style={{ color: COLORS.dark, fontWeight: 'normal' }}>
                   {packageName}
                 </Text>
               )}
               <Icon
                 name="chevron-down-outline"
                 size={20}
-                style={{fontWeight: 'bold'}}
+                style={{ fontWeight: 'bold' }}
                 color={COLORS.dark}
               />
             </TouchableOpacity>
           )}
 
-          <View style={[styles.customInput, {padding: 0}]}>
+          <View style={[styles.customInput, { padding: 0 }]}>
             <TextInput
               style={{
                 width: '100%',
@@ -252,10 +346,10 @@ const DataBill = ({navigation, route}) => {
                 setCustomerID(text);
                 console.log(text);
               }}
-              // onTextInput={(text) => {
-              //   setCustomerID(text);
-              //   console.log(text);
-              // }}
+            // onTextInput={(text) => {
+            //   setCustomerID(text);
+            //   console.log(text);
+            // }}
             />
           </View>
 
@@ -310,7 +404,7 @@ const DataBill = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <SwipeablePanel
+      {/* <SwipeablePanel
         showCloseButton
         fullWidth
         isActive={active}
@@ -322,7 +416,7 @@ const DataBill = ({navigation, route}) => {
           backgroundColor: '#ffffff',
         }}
         onPressCloseButton={closePanel}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {getBillsCategoryLists?.data?.map((item, index) => {
             return (
               <TouchableOpacity
@@ -352,7 +446,7 @@ const DataBill = ({navigation, route}) => {
                     alignItems: 'center',
                   }}>
                   <Image
-                    source={{uri: item.image}}
+                    source={{ uri: item.image }}
                     style={{
                       width: 35,
                       height: 35,
@@ -414,7 +508,7 @@ const DataBill = ({navigation, route}) => {
             </TouchableOpacity>
           );
         })}
-      </SwipeablePanel>
+      </SwipeablePanel> */}
 
       <Spinner visible={spinner} size="large" />
 
@@ -429,6 +523,41 @@ const DataBill = ({navigation, route}) => {
         />
       )}
 
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyBillsData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            setSpinner(false);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            setSpinner(false);
+            const data = {
+              amount: unFormatNumber(amount),
+              channel: 'paystack',
+              // reference: verifyBillsData?.paymentReference, // from verifyBillsPayment
+              reference: verifyBillsData?.reference,
+              purpose: 'bills',
+              billsMethod: 'billsWithoutBillersCode',
+              billsData: {
+                amount: unFormatNumber(amount),
+                recepient: customerID, //08011111111 for test
+                serviceId: providerName
+                // serviceId: airtimeData[0]?.serviceID, // e.g mtn, airtel, glo, 9mobile
+              },
+            };
+
+            console.log('We here: ', data);
+
+            await billsPayment(data);
+          }}
+        />
+      )}
+
       {showPaymentModal && (
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
@@ -436,7 +565,7 @@ const DataBill = ({navigation, route}) => {
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
-          // disable="wallet"
+        // disable="wallet"
         />
       )}
     </>

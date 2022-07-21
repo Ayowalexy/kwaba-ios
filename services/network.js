@@ -733,7 +733,7 @@ const verifySavingsPayment = async (data) => {
     return response;
   } catch (error) {
     console.log(error.message);
-    return error;
+    return error.response.data;
   }
 };
 
@@ -751,7 +751,7 @@ const completeSavingsPayment = async (data) => {
     );
     return response;
   } catch (error) {
-    return error;
+    return error.response;
   }
 };
 
@@ -963,14 +963,15 @@ const getBillsCategory = async (serviceID) => {
 // Buy Other Bills
 const buyOtherBills = async (data) => {
   const token = await getToken();
-  const url = apiUrl + `/api/v1/buy_other_bills`;
+  // const url = apiUrl + `/api/v1/buy_other_bills`;
+  const url = urls.savings.VERIFY_PAYMENT;
   try {
     const response = await axios.post(url, data, {
       headers: {'Content-Type': 'application/json', Authorization: token},
     });
     return response;
   } catch (error) {
-    return error;
+    return error.response.data;
   }
 };
 
@@ -1207,6 +1208,24 @@ const creditScoreFetch = async (data) => {
   }
 };
 
+
+const getCurrentApplication = async (data) => {
+  const url = urls.applications.GET_CURRENT_APPLICATION
+  const token = await getToken();
+  try {
+    const response = await axios.post(url, JSON.stringify(data), {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+
 const checkAppRelease = async () => {
   const url = urls.app.CHECK_RELEASE;
   try {
@@ -1220,6 +1239,43 @@ const checkAppRelease = async () => {
     return error;
   }
 };
+
+
+const getTransactionsHistory = async () => {
+  const token = await getToken();
+  const url = urls.payments.GET_PAYMENT_HISTORY;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: token
+      },
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+
+const getUserWalletTransactionsAsync =  async () => {
+  
+    const token = await getToken();
+    try {
+      const response = await axios.get(
+        urls.wallet.GET_USER_WALLET_TRANSACTIONS,
+        {
+          headers: {'Content-Type': 'application/json', Authorization: token},
+        },
+      );
+    
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return error.message;
+    }
+};
+ 
 
 export const paystackBanks = async () => {
   const url = urls.app.CHECK_RELEASE;
@@ -2451,5 +2507,8 @@ export {
   completeSavingsPayment,
   checkAppRelease,
   getOneBuddy,
-  updateUsersSavingsPlan
+  updateUsersSavingsPlan,
+  getCurrentApplication,
+  getTransactionsHistory,
+  getUserWalletTransactionsAsync
 };

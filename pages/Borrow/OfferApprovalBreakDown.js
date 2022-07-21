@@ -25,11 +25,14 @@ import axios from 'axios';
 import RNFS from 'react-native-fs';
 import {color} from 'react-native-reanimated';
 import PrintOfferLetter from '../Payment/PrintOfferLetter';
+import { getEmergencyLoans } from '../../services/network';
 
 import Spinner from 'react-native-loading-spinner-overlay';
+import { getCurrentApplication } from '../../services/network';
 
 import {formatNumber} from '../../util/numberFormatter';
 import {acceptOffer, rejectOffer} from '../../services/network';
+import { baseUrl } from '../../services/routes';
 
 const RentalLoanOfferTest = ({navigation}) => {
   const [modalVisible, setVisible] = useState(false);
@@ -59,13 +62,9 @@ const RentalLoanOfferTest = ({navigation}) => {
     };
 
     const setLoanOffer = async () => {
-      const token = await getToken();
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes = await getCurrentApplication({id: loan_id})
 
       // setApprovedAmount(applicationIDCallRes.data.data.approvedAmount);
       setApprovedAmount(applicationIDCallRes.data.data.approvedamount);
@@ -81,18 +80,16 @@ const RentalLoanOfferTest = ({navigation}) => {
     setLoanOffer();
   });
 
+
+
+
   // useEffect(()=> {
   //   console.log()
   // },[]);
 
   const handleSignature = async (signature) => {
     console.log('here is the image ' + signature);
-    const getToken = async () => {
-      const userData = await AsyncStorage.getItem('userData');
-      const token = JSON.parse(userData).token;
-      return token;
-    };
-
+    
     // let widthtouse=Dimensions.get('window').width;
     // let heighttouse= Dimensions.get('window').height;
 
@@ -112,13 +109,11 @@ const RentalLoanOfferTest = ({navigation}) => {
     //   console.log("err", err);
     // })
 
-    const token = await getToken();
-    const applicationIDCallRes = await axios.get(
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-      {
-        headers: {'Content-Type': 'application/json', Authorization: token},
-      },
-    );
+    const getAllAloans = await getEmergencyLoans();
+    console.log('all loans', getAllAloans)
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
+    console.log('application', applicationIDCallRes)
 
     console.log(applicationIDCallRes.data.data.id);
     console.log(applicationIDCallRes.data.data);
@@ -126,7 +121,7 @@ const RentalLoanOfferTest = ({navigation}) => {
 
     try {
       const response = await axios.put(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/accept_offer',
+        `${baseUrl}/application/accept_offer`,
         {applicationId, signature},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
@@ -145,10 +140,10 @@ const RentalLoanOfferTest = ({navigation}) => {
       // };
 
       // await AsyncStorage.setItem('borrwsteps', JSON.stringify(stepsdata));
-      console.log(response);
+      console.log("response", response);
       setAcceptOfferResponse(response);
     } catch (error) {
-      console.log(error.response.data);
+      console.log('error', error.response.data);
     }
     setESignatureModal(false);
     setSuccessModal(true);
@@ -178,7 +173,7 @@ const RentalLoanOfferTest = ({navigation}) => {
     const user = await getUser();
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        `${baseUrl}/application/one`,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
@@ -234,7 +229,7 @@ const RentalLoanOfferTest = ({navigation}) => {
     const token = await getToken();
     try {
       const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
+        `${baseUrl}/application/one`,
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },

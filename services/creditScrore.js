@@ -19,6 +19,8 @@ export const purchase = async (data) => {
 };
 
 export const fetch = async (data) => {
+
+  console.log('cobble', data)
   try {
     const response = await axios.post(
       urls.creditScore.FETCH,

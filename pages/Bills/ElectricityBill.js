@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,23 +8,25 @@ import {
   Keyboard,
   Image,
   ScrollView,
+  Alert
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, FONTS, images, icons} from '../../util/index';
-import {formatNumber, unFormatNumber} from '../../util/numberFormatter';
-import {SwipeablePanel} from 'rn-swipeable-panel';
-import {useDispatch, useSelector} from 'react-redux';
-import {getBillsCategory} from '../../redux/actions/billsAction';
+import { COLORS, FONTS, images, icons } from '../../util/index';
+import { formatNumber, unFormatNumber } from '../../util/numberFormatter';
+// import { SwipeablePanel } from 'rn-swipeable-panel';
+import { useDispatch, useSelector } from 'react-redux';
+import { getBillsCategory } from '../../redux/actions/billsAction';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {buyOtherBills} from '../../services/network';
+import { buyOtherBills } from '../../services/network';
 import NumberFormat from '../../components/NumberFormat';
 import { baseUrl } from '../../services/routes';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
 
-const ElectricityBill = ({navigation, route}) => {
+const ElectricityBill = ({ navigation, route }) => {
   const dispatch = useDispatch();
   let name = route.params.name;
   const [active, setActive] = useState(false);
@@ -38,7 +40,9 @@ const ElectricityBill = ({navigation, route}) => {
   const [customerID, setCustomerID] = useState('');
   const [variationCode, setVariationCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [verifyData, setVerifyData] = useState('')
 
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false)
   const [showCardModal, setShowCardModal] = useState(false);
   const [resData, setResData] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -59,6 +63,15 @@ const ElectricityBill = ({navigation, route}) => {
   useEffect(() => {
     getBillsItems();
   }, [serviceID]);
+
+
+  const showSuccess = async () => {
+    navigation.navigate('PaymentSuccessful', {
+      content: 'Payment Successful',
+      subText: 'You have successfully paid for your Eletricity Bill',
+      name: 'Home',
+    });
+  };
 
   useEffect(() => {
     if (packageName != '') {
@@ -93,12 +106,12 @@ const ElectricityBill = ({navigation, route}) => {
         // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/bills/get-bills-items/${serviceID}`;
         // const url = `https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/get-bills-items/${serviceID}`;
         const response = await axios.get(url, {
-          headers: {'Content-Type': 'application/json', Authorization: token},
+          headers: { 'Content-Type': 'application/json', Authorization: token },
         });
         // test mode response?.data?.data?.content?.varations
         // live mode response?.data?.data?.content?.variations
         setPackageData(response?.data?.data?.content?.varations);
-        console.log('test',response?.data?.data?.content?.varations)
+        console.log('test', response?.data?.data?.content?.varations)
       } catch (error) {
         console.log('Error:', error.response.data);
       }
@@ -140,25 +153,46 @@ const ElectricityBill = ({navigation, route}) => {
   };
 
   const handlePaymentRoute = async (value) => {
-    const data = {
-      serviceID: serviceID,
-      billersCode: customerID,
-      variation_code: packageName.toString().toLowerCase(),
-      amount: unFormatNumber(amount),
-      recepient: phoneNumber,
-    };
+    // const data = {
+    //   serviceID: serviceID,
+    //   billersCode: customerID,
+    //   variation_code: packageName.toString().toLowerCase(),
+    //   amount: unFormatNumber(amount),
+    //   recepient: phoneNumber,
+    // };
 
+    const data = {
+      amount: unFormatNumber(amount),
+      channel: "paystack",
+      purpose: "bills",
+      billsMethod: "billsWithBillersCode",
+      billsData: {
+        billersCode: customerID,
+        recepient: phoneNumber,
+        serviceId: serviceID,
+        variation_code: variationCode,
+        amount: unFormatNumber(amount)
+
+      }
+    }
     // console.log('Electricity payload: ', data);
 
     setSpinner(true);
-    if (value == 'paystack') {
+    if (value == 'card') {
       const response = await buyOtherBills(data);
 
       console.log('The buy response: ', response);
       if (response.status == 200) {
         setSpinner(false);
+        const vdata = {
+          amount: unFormatNumber(amount),
+          reference: response?.data?.data?.reference,
+          phone: phoneNumber,
+        }
 
-        setShowCardModal(true); // show card modal
+        setVerifyData(vdata)
+        setShowPaystackPayment(true)
+        // setShowCardModal(true); // show card modal
         setResData(response?.data?.data);
         setChannel(value); //paystack
       } else {
@@ -173,7 +207,7 @@ const ElectricityBill = ({navigation, route}) => {
 
   return (
     <>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
@@ -186,7 +220,7 @@ const ElectricityBill = ({navigation, route}) => {
           color={COLORS.primary}
         />
 
-        <View style={{paddingHorizontal: 20, flex: 1}}>
+        <View style={{ paddingHorizontal: 20, flex: 1 }}>
           <Text
             style={{
               fontSize: 18,
@@ -199,7 +233,7 @@ const ElectricityBill = ({navigation, route}) => {
 
           <TouchableOpacity style={styles.customInput} onPress={openPanel}>
             {providerName == '' ? (
-              <Text style={{color: '#BFBFBF'}}>Choose a provider</Text>
+              <Text style={{ color: '#BFBFBF' }}>Choose a provider</Text>
             ) : (
               <Text
                 numberOfLines={1}
@@ -215,7 +249,7 @@ const ElectricityBill = ({navigation, route}) => {
             <Icon
               name="chevron-down-outline"
               size={20}
-              style={{fontWeight: 'bold'}}
+              style={{ fontWeight: 'bold' }}
               color={COLORS.dark}
             />
           </TouchableOpacity>
@@ -225,22 +259,22 @@ const ElectricityBill = ({navigation, route}) => {
               style={styles.customInput}
               onPress={() => setPackageModal(true)}>
               {packageName == '' ? (
-                <Text style={{color: '#BFBFBF'}}>Packages</Text>
+                <Text style={{ color: '#BFBFBF' }}>Packages</Text>
               ) : (
-                <Text style={{color: COLORS.dark, fontWeight: 'normal'}}>
+                <Text style={{ color: COLORS.dark, fontWeight: 'normal' }}>
                   {packageName}
                 </Text>
               )}
               <Icon
                 name="chevron-down-outline"
                 size={20}
-                style={{fontWeight: 'bold'}}
+                style={{ fontWeight: 'bold' }}
                 color={COLORS.dark}
               />
             </TouchableOpacity>
           )}
 
-          <View style={[styles.customInput, {padding: 0}]}>
+          <View style={[styles.customInput, { padding: 0 }]}>
             <TextInput
               style={{
                 width: '100%',
@@ -311,7 +345,7 @@ const ElectricityBill = ({navigation, route}) => {
             )}
           </View>
 
-          <View style={[styles.customInput, {padding: 0, display: 'none'}]}>
+          <View style={[styles.customInput, { padding: 0, display: 'none' }]}>
             <TextInput
               style={{
                 width: '100%',
@@ -342,8 +376,8 @@ const ElectricityBill = ({navigation, route}) => {
                 backgroundColor: '#00DC99',
                 backgroundColor:
                   customerID.length < 1 ||
-                  unFormatNumber(amount) < minMaxAmount.min ||
-                  unFormatNumber(amount) > minMaxAmount.max
+                    unFormatNumber(amount) < minMaxAmount.min ||
+                    unFormatNumber(amount) > minMaxAmount.max
                     ? '#00DC9950'
                     : '#00DC99',
                 width: '100%',
@@ -364,7 +398,7 @@ const ElectricityBill = ({navigation, route}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <SwipeablePanel
+      {/* <SwipeablePanel
         showCloseButton
         fullWidth
         isActive={active}
@@ -376,7 +410,7 @@ const ElectricityBill = ({navigation, route}) => {
           backgroundColor: '#ffffff',
         }}
         onPressCloseButton={closePanel}>
-        <View style={{flex: 1}}>
+        <View style={{ flex: 1 }}>
           {getBillsCategoryLists?.data?.map((item, index) => {
             return (
               <TouchableOpacity
@@ -410,7 +444,7 @@ const ElectricityBill = ({navigation, route}) => {
                     alignItems: 'center',
                   }}>
                   <Image
-                    source={{uri: item.image}}
+                    source={{ uri: item.image }}
                     style={{
                       width: 35,
                       height: 35,
@@ -451,6 +485,8 @@ const ElectricityBill = ({navigation, route}) => {
           return (
             <TouchableOpacity
               onPress={() => {
+                console.log("item", item)
+                setVariationCode(item.variation_code)
                 setPackageName(item.name);
                 setPackageModal(false);
               }}
@@ -475,7 +511,7 @@ const ElectricityBill = ({navigation, route}) => {
             </TouchableOpacity>
           );
         })}
-      </SwipeablePanel>
+      </SwipeablePanel> */}
 
       <Spinner visible={spinner} size="large" />
 
@@ -487,6 +523,23 @@ const ElectricityBill = ({navigation, route}) => {
           navigation={navigation}
           redirectTo="BillsHome"
           channel={channel}
+        />
+      )}
+
+
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={verifyData}
+          channel='card'
+          paymentCanceled={(e) => {
+            setSpinner(false);
+            Alert.alert('Payment cancelled');
+          }}
+          paymentSuccessful={async (res) => {
+
+            showSuccess()
+          }}
         />
       )}
 

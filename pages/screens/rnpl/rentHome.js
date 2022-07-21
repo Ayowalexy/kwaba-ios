@@ -1,23 +1,38 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity,Alert, ScrollView} from 'react-native';
-import {COLORS, FONTS, images} from '../../../util/index';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, Alert, ScrollView } from 'react-native';
+import { COLORS, FONTS, images } from '../../../util/index';
 import designs from './styles';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import CompleteProfileModal from '../../Home/CompleteProfileModal';
-import {TrackEvent} from '../../../util/segmentEvents';
-import {useRoute} from '@react-navigation/native';
+import { TrackEvent } from '../../../util/segmentEvents';
+import { useRoute } from '@react-navigation/native';
 import urls from '../../../services/routes';
+import { getEmergencyLoans } from '../../../services/network';
+import { getCurrentApplication } from '../../../services/network';
 
-export default function RentHome({navigation}) {
+export default function RentHome({ navigation }) {
   const [existingApplication, setExistingApplication] = useState('');
   const [completeProfileModal, setCompleteProfileModal] = useState(false);
+  const [documentsApproved, setDocumentsApproved] = useState(false)
   const route = useRoute();
 
   useEffect(() => {
     getApplicationData();
   }, []);
+
+
+
+  useEffect(() => {
+    (async () => {
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const docs = await getCurrentApplication({ id: loan_id })
+      console.log('docs approved', docs?.data?.data?.status)
+      setDocumentsApproved(docs?.data?.data?.status)
+    })()
+  }, [])
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -42,7 +57,7 @@ export default function RentHome({navigation}) {
         // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
         urls.applications.GET_CURRENT_APPLICATION,
         {
-          headers: {'Content-Type': 'application/json', Authorization: token},
+          headers: { 'Content-Type': 'application/json', Authorization: token },
         },
       );
       const applicationId = applicationIDCallRes.data.data.id;
@@ -65,6 +80,7 @@ export default function RentHome({navigation}) {
     })();
   }, []);
 
+
   const handleRentalLoanClick = async () => {
 
     // return Alert.alert(
@@ -72,7 +88,11 @@ export default function RentHome({navigation}) {
     //   'This feature is unavailable at the moment'
     // )
     //THE RENT NOW PAY LATER FEATURE IS CURRENTLY TURNED OFF
-    
+
+    if (!Boolean(documentsApproved)) {
+      // navigation.navigate('VerifyingDocuments')
+    }
+
     TrackEvent('RNPL From Bottom Navigation');
     const user = await getUser();
     const getCreditScoreDetails = await AsyncStorage.getItem(
@@ -86,9 +106,13 @@ export default function RentHome({navigation}) {
     // navigation.navigate('RnplSteps');
     // navigation.navigate('NewAllDocuments');
     // navigation.navigate('CreditOnboard');
-   
-    const userDetails = await AsyncStorage.getItem(`userEmailAndBvn-${user.id}`);
 
+    const rnplStep = await AsyncStorage.getItem('rnplSteps')
+    const parsed = JSON.parse(rnplStep)
+
+    console.log('params', route?.params)
+    const userDetails = await AsyncStorage.getItem(`userEmailAndBvn-${user.id}`);
+   
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
     } else {
@@ -96,22 +120,25 @@ export default function RentHome({navigation}) {
         navigation.navigate('RnplOnboard');
       } else if (getCreditScoreDetails == 'creditOnboarding') {
         navigation.navigate('RnplOnboard');
-       // // // navigation.navigate('CreditOnboard');
+        // // // navigation.navigate('CreditOnboard');
       } else if (getCreditScoreDetails == 'creditForm') {
-          navigation.navigate('CreditAwaiting', JSON.parse(userDetails));
-          //navigation.navigate('RnplOnboard');
-       
+        navigation.navigate('CreditAwaiting', JSON.parse(userDetails));
+        //navigation.navigate('RnplOnboard');
+
       } else if (getCreditScoreDetails == 'creditAwaiting') {
         navigation.navigate('creditAwaiting');
       } else if (getCreditScoreDetails == 'creditDashboard') {
-        navigation.navigate('CreditDashboard');
+        navigation.navigate('CreditAwaiting');
+      } else if (route?.params?.status == 2) {
+        navigation.navigate('VerifyingDocuments')
       } else {
+       
         navigation.navigate('RnplSteps');
       }
     }
   };
 
-  const handleSavingClick = async () => {
+  const handleSavingClick = async () => { 
     navigation.navigate('SavingsHome');
     TrackEvent('Rent Savings From Bottom Navigation');
   };
@@ -161,7 +188,7 @@ export default function RentHome({navigation}) {
                 name="arrow-forward-outline"
                 size={20}
                 color={COLORS.secondary}
-                style={{fontWeight: '900'}}
+                style={{ fontWeight: '900' }}
               />
             </View>
           </TouchableOpacity>
@@ -173,7 +200,7 @@ export default function RentHome({navigation}) {
                 name="arrow-forward-outline"
                 size={20}
                 color={COLORS.secondary}
-                style={{fontWeight: '900'}}
+                style={{ fontWeight: '900' }}
               />
             </View>
           </TouchableOpacity>

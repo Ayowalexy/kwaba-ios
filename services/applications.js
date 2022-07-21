@@ -21,7 +21,7 @@ export const newApplication = async (data) => {
     console.log("response", response)
     return response;
   } catch (error) {
-    return error;
+    return error.response.data;
   }
 };
 

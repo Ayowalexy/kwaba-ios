@@ -13,7 +13,11 @@ export default function AllTransactions(props) {
   );
   const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 7);
 
+  const solo_history = getPaymentHistoryReducer?.data?.filter(element => !Object.is(element?.savings_id, null))
 
+  console.log("slicedTransaction", solo_history)
+
+console.log('solo props', solo_history)
   return (
     // <ScrollView
     //   scrollEnabled={true}
@@ -41,14 +45,14 @@ export default function AllTransactions(props) {
             marginTop: 30,
             paddingHorizontal: 20,
           }}>
-          {slicedTransaction?.map((item, index) => {
+          {solo_history?.map((item, index) => {
             return (
               <View
                 key={index}
                 style={{
                   borderLeftWidth: 2,
                   borderLeftColor:
-                    index == slicedTransaction.length - 1
+                    index == solo_history.length - 1
                       ? 'transparent'
                       : '#46596950',
                   paddingBottom: 30,

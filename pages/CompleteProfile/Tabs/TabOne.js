@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import {COLORS, FONTS, images, icons} from '../../../util/index';
+import { COLORS, FONTS, images, icons } from '../../../util/index';
 import designs from './style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -17,9 +17,9 @@ import AddressModal from '../../../components/AddressModal';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
-import {useSelector, useDispatch} from 'react-redux';
-import {me} from '../../../services/network';
-import {setLoginState, currentUser} from '../../../redux/actions/userActions';
+import { useSelector, useDispatch } from 'react-redux';
+import { me } from '../../../services/network';
+import { setLoginState, currentUser } from '../../../redux/actions/userActions';
 
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
@@ -47,7 +47,7 @@ export default function TabOne(props) {
   const [spinner, setSpinner] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const {} = props;
+  const { } = props;
 
   const handleDateSelect = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -76,7 +76,7 @@ export default function TabOne(props) {
     (async () => {
       //   const userData = await AsyncStorage.getItem('userData');
       const data = await getUserData();
-      const {firstname, lastname, gender, homeaddress, dob} = data.user;
+      const { firstname, lastname, gender, homeaddress, dob } = data.user;
 
       //   console.log('Local Data: ', data);
       //   console.log(data.);
@@ -102,7 +102,7 @@ export default function TabOne(props) {
     // console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const updateProfile = async () => {
@@ -134,7 +134,7 @@ export default function TabOne(props) {
       const url =
         'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
       const response = await axios.put(url, JSON.stringify(updateData), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       if (response.status == 200) {
         const res = await me();
@@ -161,13 +161,13 @@ export default function TabOne(props) {
     }
   };
 
-  const uploadProfilePic = async () => {};
+  const uploadProfilePic = async () => { };
 
   return (
     <>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{marginBottom: 80}}>
+        style={{ marginBottom: 80 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -208,6 +208,7 @@ export default function TabOne(props) {
         </View>
 
         <View>
+          <Text style={{ color: '#555' }}>First name</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="First Name"
@@ -217,6 +218,7 @@ export default function TabOne(props) {
             onChangeText={(text) => setFirstName(text)}
           />
 
+          <Text style={{ color: '#555', paddingTop: 10 }}>Last name</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="Last Name"
@@ -226,8 +228,9 @@ export default function TabOne(props) {
             onChangeText={(text) => setLastName(text)}
           />
 
+          <Text style={{ color: '#555', paddingTop: 10 }}>Gender</Text>
           <TouchableOpacity
-            style={[designs.customInput, {padding: 20}]}
+            style={[designs.customInput, { padding: 20 }]}
             onPress={() => {
               setShowSelectGenderModal(!showSelectGenderModal);
             }}>
@@ -250,13 +253,14 @@ export default function TabOne(props) {
             <Icon
               name="chevron-down-outline"
               size={20}
-              style={{fontWeight: 'bold'}}
+              style={{ fontWeight: 'bold' }}
               color="#BABABA"
             />
           </TouchableOpacity>
 
+          <Text style={{ color: '#555', paddingTop: 10 }}>Date of Birth</Text>
           <TouchableOpacity
-            style={[designs.customInput, {padding: 20}]}
+            style={[designs.customInput, { padding: 20 }]}
             onPress={() => {
               setShowDate(true);
               // setShowSelectPayMethodModal(!showSelectPayMethodModal);
@@ -297,11 +301,11 @@ export default function TabOne(props) {
               mode="date"
               is24Hour={true}
               display="spinner"
-              //   minimumDate={moment().toDate()}
+            //   minimumDate={moment().toDate()}
             />
           )}
 
-          <View style={{paddingVertical: 20}}>
+          <View style={{ paddingVertical: 20 }}>
             <View
               style={{
                 display: 'flex',
@@ -405,8 +409,8 @@ export default function TabOne(props) {
         isVisible={modal}
         onBackButtonPress={() => setModal(false)}
         onBackdropPress={() => setModal(false)}>
-        <View style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
-          <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+          <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>
             Profile updated!
           </Text>
         </View>

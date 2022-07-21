@@ -223,7 +223,7 @@ export default function ChangePinModal(props) {
                                 ]}
                                 onLayout={getCellLayoutHandler(index)}>
                                 <Text style={designs.cellText}>
-                                  {symbol || (isFocused ? <Cursor /> : null)}
+                                  {symbol || (!isFocused ? '•' : null)}
                                 </Text>
                               </View>
                             )}

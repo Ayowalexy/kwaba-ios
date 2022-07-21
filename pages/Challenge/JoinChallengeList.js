@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,20 +10,21 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
-import {COLORS} from '../../util/index';
+import { COLORS } from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JoinChallengeModal from './JoinChallengeModal';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getSavingsChallengeList,
   getSavingsUnderChallengeList,
   getUserSavingsChallenge,
 } from '../../redux/actions/savingsChallengeAction';
 import Joined from './Joined';
-import {formatNumber} from '../../util/numberFormatter';
+import { formatNumber } from '../../util/numberFormatter';
 import SavingsChallengeSummary from './SavingsChallengeSummary';
 import axios from 'axios';
 import urls from '../../services/routes';
+import { empty, group3693 } from '../../util/images';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const getToken = async () => {
@@ -76,7 +77,7 @@ const target1 = require('../../assets/images/target3.png');
 const target2 = require('../../assets/images/target2.png');
 const target3 = require('../../assets/images/target.png');
 
-export default function JoinChallengeList({navigation}) {
+export default function JoinChallengeList({ navigation }) {
   const dispatch = useDispatch();
   const userChallenge = useSelector(
     (state) => state.getUserSavingsChallengeReducer,
@@ -121,11 +122,13 @@ export default function JoinChallengeList({navigation}) {
   }, []);
 
   const handleNavigate = (data) => {
+
+    console.log('challenge data', data)
     if (
       joinSavings.length &&
       joinSavings?.filter((i) => i.challenge_id == data?.id)[0]
     ) {
-      navigation.navigate('JoinChallengeDashboard', {id: data?.id});
+      navigation.navigate('JoinChallengeDashboard', { id: data?.id });
     } else {
       setShowModal(true);
       setResData(data);
@@ -143,13 +146,13 @@ export default function JoinChallengeList({navigation}) {
           Authorization: token,
         },
       });
-      // console.log('Challenges: ', resp?.data?.data);
+      console.log('Challenges: ', resp?.data?.data);
       setSpinner(false);
       setAllSavingschallenges(resp?.data?.data);
 
 
-      for (let d of resp.data.data){
-        console.log(d.id)
+      for (let d of resp?.data?.data) {
+        console.log(d?.id)
       }
 
       const filter = allSavings?.data?.filter(
@@ -159,12 +162,12 @@ export default function JoinChallengeList({navigation}) {
       setJoinedSavings(filter);
     } catch (error) {
       setSpinner(false);
-      console.log('Error failed: ', error.response.data);
+      console.log('Error failed: ', error?.response?.data);
     }
   };
 
-  const renderItem = ({item, index}) => {
-    const {name, short_description, id, target_amount} = item;
+  const renderItem = ({ item, index }) => {
+    const { name, short_description, id, target_amount } = item;
 
     return (
       <TouchableOpacity
@@ -172,7 +175,7 @@ export default function JoinChallengeList({navigation}) {
           handleNavigate(item, id);
         }}
         style={[styles.card]}>
-        <View style={{flexDirection: 'row', flex: 1}}>
+        <View style={{ flexDirection: 'row', flex: 1 }}>
           <View style={styles.cardContent}>
             <Text style={styles.cardTitle}>{name}</Text>
             {/* <Text style={styles.cardBody}>{short_description}</Text> */}
@@ -221,8 +224,8 @@ export default function JoinChallengeList({navigation}) {
                     index == 0
                       ? COLORS.black
                       : index == 1
-                      ? COLORS.red
-                      : '#5A4CB1',
+                        ? COLORS.red
+                        : '#5A4CB1',
                 },
               ]}>
               ₦{formatNumber(target_amount)}
@@ -240,7 +243,7 @@ export default function JoinChallengeList({navigation}) {
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
           size={25}
-          style={{fontWeight: '900'}}
+          style={{ fontWeight: '900' }}
           color={COLORS.white}
         />
         {/* <Image
@@ -282,7 +285,7 @@ export default function JoinChallengeList({navigation}) {
           }}
           resizeMode="contain"
         /> */}
-        <View style={{marginTop: 10, marginBottom: 20, paddingLeft: 5}}>
+        <View style={{ marginTop: 10, marginBottom: 20, paddingLeft: 5 }}>
           <Text style={styles.heading}>Join a Savings Challenge</Text>
         </View>
         {spinner ? (
@@ -293,7 +296,7 @@ export default function JoinChallengeList({navigation}) {
             <ActivityIndicator color={COLORS.white} />
           </View>
         ) : (
-          <View style={{flex: 1}}>
+          <View style={{ flex: 1 }}>
             <FlatList
               data={allSavingsChallenges}
               renderItem={renderItem}
@@ -303,6 +306,25 @@ export default function JoinChallengeList({navigation}) {
             />
           </View>
         )}
+
+        {
+          !Boolean(allSavingsChallenges.length) && (
+            <View style={{
+              flex: 1,
+              
+            }}>
+              <View style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+
+                <Image source={group3693} resizeMode='contain' style={100} height={100} />
+                <Text style={styles.heading}>No Savings Challenge</Text>
+              </View>
+            </View>
+          )
+        }
       </View>
 
       {/* {showModal && (
@@ -320,10 +342,10 @@ export default function JoinChallengeList({navigation}) {
           visible={showModal}
           navigation={navigation}
           data={resData}
-          // onSubmit={() => {
-          //   setShowPaymentModal(true);
-          // }}
-          // setJoinData={(value) => setDataValue(value)}
+        // onSubmit={() => {
+        //   setShowPaymentModal(true);
+        // }}
+        // setJoinData={(value) => setDataValue(value)}
         />
       )}
     </>

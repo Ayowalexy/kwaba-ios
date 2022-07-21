@@ -123,7 +123,18 @@ const appUpdate = require('../assets/images/Group43387.png');
 const speedometer = require('../assets/images/speedometer-1.png');
 const progress = require('../assets/images/high-performance.png');
 
+const empty = require('../assets/images/empty.png');
+
+const GLO = require('../assets/images/glo.jpeg')
+const AIRTEL = require('../assets/images/airtel.webp')
+const MTN = require('../assets/images/mtn.png')
+const NINE_FLAG = require('../assets/images/mobile.jpeg')
+
 export {
+  GLO,
+  AIRTEL,
+  MTN,NINE_FLAG,
+  empty,
   logo,
   applicationReview,
   applicationSuccess,

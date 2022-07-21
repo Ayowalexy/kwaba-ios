@@ -33,6 +33,8 @@ import {
   getOneUserSavingsChallengeReducer,
 } from './savingsChallengeReducer';
 
+import stageReducer from './store/stageReducer';
+
 import {stepsReducer} from './rnplReducer';
 import {getUserReferralsReducer} from './referralReducer';
 
@@ -64,5 +66,6 @@ export const rootReducer = combineReducers({
   stepsReducer: stepsReducer,
   getUserReferralsReducer: getUserReferralsReducer,
   getPaymentHistoryReducer: getPaymentHistoryReducer,
-  updateStateReducer: updateStateReducer
+  updateStateReducer: updateStateReducer,
+  stage: stageReducer
 });

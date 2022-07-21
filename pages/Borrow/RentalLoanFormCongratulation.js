@@ -114,7 +114,7 @@ export default function RentalLoanFormCongratulation({navigation}) {
                   flex: 1,
                 }}>
                 <Text style={[styles.text]}>
-                  Upload your documents to get your rent paid faster. If you
+                 Upload your documents to get your rent paid faster. If you
                   don't have all the documents now, no problem, just upload your
                   latest 6 months bank statement at least to proceed.
                 </Text>

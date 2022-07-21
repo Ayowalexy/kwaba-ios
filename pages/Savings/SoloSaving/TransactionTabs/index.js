@@ -37,6 +37,7 @@ const renderTabBar = (props) => (
 export default function TransactionsTab(props) {
   const layout = useWindowDimensions();
 
+  console.log('index props', props)
   useEffect(() => {
     // console.log('Hist: ', props);
   }, []);
@@ -51,6 +52,8 @@ export default function TransactionsTab(props) {
     second: () => (
       <SavingsTransactions
         title={props?.title}
+        id={props.id}
+        refetch={props.refetch}
         savingsTransactions={props.transactions}
       />
     ),

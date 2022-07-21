@@ -98,7 +98,7 @@ export default function BuddyLists({navigation}) {
                             <View style={styles.BOX_1}>
                                 <View style={styles.BOX_2}>
                                     <View style={styles.BOX_3}>
-                                      <Text>{invites.fullname.charAt(0)}</Text>
+                                      <Text style={{textTransform: 'uppercase'}}>{invites.fullname.charAt(0)}</Text>
                                     </View>
                                   <View style={{paddingLeft: 5}}>
                                     <Text style={{fontWeight: 'bold', fontSize: 16}}>{invites.fullname}</Text>
@@ -166,7 +166,7 @@ export default function BuddyLists({navigation}) {
             }}
             scrollEnabled
             showsVerticalScrollIndicator={false}>
-            {allSavings?.data?.length &&
+            {Boolean(allSavings?.data?.length) &&
               allSavings?.data?.map((item, index) => {
                 return (
                   <TouchableOpacity
@@ -176,6 +176,7 @@ export default function BuddyLists({navigation}) {
                       dispatch(getOneSoloSavings(item.id));
                       navigation.navigate('BuddySavingDashBoard', {
                         id: item.buddy_savings_id,
+                        buddyId: item.id
                       });
                     }}>
                     <View style={[styles.cardFlex]}>

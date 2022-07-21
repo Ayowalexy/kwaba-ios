@@ -27,6 +27,7 @@ import { getInterestRateForSavingsAndBuddy} from '../../../services/network'
 
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
+import Preloader from '../../../components/Preloader';
 
 
 const emergencyFundFormSchema = yup.object().shape({
@@ -310,7 +311,7 @@ export default function EmergencyLoanHome({navigation}) {
                             lineHeight: 29,
                             fontWeight: 'bold',
                           }}>
-                          ₦{formatNumber(Number(savings).toFixed(2))}
+                          ₦{formatNumber(Number(savings || 0).toFixed(2))}
                         </Text>
                       </View>
                       <View
@@ -384,7 +385,7 @@ export default function EmergencyLoanHome({navigation}) {
                           lineHeight: 29,
                           fontWeight: 'bold',
                         }}>
-                        ₦{formatNumber(Number(maximumLoanAmount).toFixed(2))}
+                        ₦{formatNumber(Number(maximumLoanAmount || 0).toFixed(2))}
                       </Text>
                     </View>
 
@@ -471,6 +472,7 @@ export default function EmergencyLoanHome({navigation}) {
                 </>
               )}
             </Formik>
+            {/* <Preloader /> */}
           </ScrollView>
         </>
       )}

@@ -1,11 +1,31 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, ScrollView} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import {COLORS} from '../../../../util';
-import {formatNumber} from '../../../../util/numberFormatter';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+import { COLORS } from '../../../../util';
+import { formatNumber } from '../../../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { getTransactionsHistory } from '../../../../services/network';
 
 export default function SavingsTransactions(props) {
+
+  const getPaymentHistoryReducer = useSelector(
+    (state) => state.getPaymentHistoryReducer,
+  );
+  const [transactions, setTransactions] = useState([])
+
+
+  useEffect(() => {
+    (async () => {
+      const history = await getTransactionsHistory();
+      const filter = history?.data?.data?.filter(data => data?.savings_id == props?.id)
+      console.log('history', filter)
+      setTransactions(filter)
+    })()
+  }, [])
+
+
+
+
   useEffect(() => {
     // console.log('Props: ', props.savingsTransactions);
   }, []);
@@ -32,7 +52,7 @@ export default function SavingsTransactions(props) {
         style={{
           zIndex: 900,
         }}>
-        {props?.savingsTransactions?.map((el, index) => {
+        {transactions?.map((el, index) => {
           return (
             <TouchableOpacity
               key={index}

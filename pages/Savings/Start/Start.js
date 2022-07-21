@@ -17,6 +17,18 @@ import {useSelector, useDispatch} from 'react-redux';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import ComingSoon from '../../../components/ComingSoon';
 import {TrackEvent} from '../../../util/segmentEvents';
+import axios from 'axios';
+import urls from '../../../services/routes';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+
+
+const getToken = async () => {
+  const userData = await AsyncStorage.getItem('userData');
+  const token = JSON.parse(userData).token;
+  return token;
+};
 
 export default function Start({navigation}) {
   const dispatch = useDispatch();
@@ -30,6 +42,9 @@ export default function Start({navigation}) {
   const [buddySaving, setBuddySaving] = useState(0);
   const [savingTenure, setSavingTenure] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  const allSavings = useSelector((state) => state.getSoloSavingsReducer);
+  const [allSavingsChallenges, setAllSavingschallenges] = useState([])
+  const [joinSavings, setJoinedSavings] = useState([])
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
@@ -43,6 +58,44 @@ export default function Start({navigation}) {
     setSoloSaving(data?.total_solo_savings);
     setBuddySaving(data?.total_buddy_savings);
   }, [store]);
+
+
+
+  const getAllSavingsChallenges = async () => {
+    const token = await getToken();
+    console.log('Token: ', token);
+    try {
+      const resp = await axios.get(urls.savings.GET_ALL_CHALLENGES, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: token,
+        },
+      });
+      // console.log('Challenges: ', resp?.data?.data);
+      setAllSavingschallenges(resp?.data?.data);
+
+
+      for (let d of resp.data.data) {
+        console.log(d.id)
+      }
+
+      const filter = allSavings?.data?.filter(
+        (item) => item.savings_type == 'savings_challenge',
+      );
+
+      setJoinedSavings(filter);
+
+      console.log('Joined saving', filter)
+    } catch (error) {
+      console.log('Error failed: ', error.response.data);
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+        await getAllSavingsChallenges()
+    })()  
+  }, [])
 
   return (
     <View style={[designs.container]}>
@@ -285,9 +338,9 @@ export default function Start({navigation}) {
           <View style={[designs.card]}>
             <View style={designs.cardFlex}>
               <View>
-                <Text style={designs.cardHeader}>Buddy{'\n'}Saving</Text>
+                <Text style={designs.cardHeader}>Buddy{'\n'}Savings</Text>
                 <Text style={designs.bodyText}>
-                  Save towards your rent with{'\n'}your flatmates or spouse
+                Save towards your rent with{'\n'}your flatmates or spouse
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
@@ -342,6 +395,87 @@ export default function Start({navigation}) {
                         },
                       ]}>
                       ₦{formatNumber(buddySaving)}
+                    </Text>
+                  )}
+                  <Icon name="arrow-forward" color="#9D98EC" size={15} />
+                </TouchableOpacity>
+              </View>
+              <Image
+                style={{
+                  width: 120,
+                  height: 120,
+                  resizeMode: 'contain',
+                  position: 'absolute',
+                  right: -30,
+                  bottom: -20,
+                }}
+                source={images.maskGroup14}
+              />
+            </View>
+          </View>
+          <View style={[designs.card]}>
+            <View style={designs.cardFlex}>
+              <View>
+                <Text style={designs.cardHeader}>Savings{'\n'}Challenge</Text>
+                <Text style={designs.bodyText}>
+                Save to meet your audacious goals{'\n'}with the big boys Challenge
+
+                </Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    // navigation.navigate('BuddySaving1');
+                    navigation.navigate(
+                      joinSavings?.length == 0 ? 'JoinChallengeList' : 'JoinChallengeDashboard',{
+                        id: joinSavings?.[0]?.challenge_id,
+                        amount: joinSavings?.[0]?.amount_saved
+                      }
+                    );
+
+                    // Alert.alert(
+                    //   'Feature currently unavailable',
+                    //   'We are working hard to make this available as soon as we can.',
+                    // );
+                  }}
+                  style={[
+                    designs.cardFlex,
+                    {
+                      marginTop: 16,
+                      alignItems: 'center',
+                      // justifyContent: 'center',
+                      // height: 27,
+                      // borderRadius: 10,
+                      backgroundColor: '#F7F8FD',
+                      width: 131,
+                      padding: 5,
+                    },
+                  ]}>
+                  {joinSavings?.length == 0  ? (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 14,
+                          color: '#9D98EC',
+                          fontWeight: 'bold',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      Join Challenge
+                    </Text>
+                  ) : (
+                    <Text
+                      style={[
+                        designs.bodyText,
+                        {
+                          marginTop: 0,
+                          fontSize: 14,
+                          color: '#9D98EC',
+                          fontWeight: 'bold',
+                          marginRight: 8,
+                        },
+                      ]}>
+                      ₦{formatNumber(joinSavings[0]?.amount_saved)}
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />

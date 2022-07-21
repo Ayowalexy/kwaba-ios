@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,15 +9,15 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import {COLORS, FONTS, images, icons} from '../../../util/index';
+import { COLORS, FONTS, images, icons } from '../../../util/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 
-import {useDispatch} from 'react-redux';
-import {me} from '../../../services/network';
-import {setLoginState} from '../../../redux/actions/userActions';
+import { useDispatch } from 'react-redux';
+import { me } from '../../../services/network';
+import { setLoginState } from '../../../redux/actions/userActions';
 
 import SelectEmploymentStatusModal from '../../../components/SelectEmploymentStatusModal';
 
@@ -32,7 +32,7 @@ export default function TabTwo(props) {
   const [spinner, setSpinner] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const {} = props;
+  const { } = props;
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -49,7 +49,7 @@ export default function TabTwo(props) {
   useEffect(() => {
     (async () => {
       const data = await getUserData();
-      const {employment_status, work_place} = data.user;
+      const { employment_status, work_place } = data.user;
 
       // auto fill input fields
       setEmplpoymentStatus(employment_status);
@@ -62,7 +62,7 @@ export default function TabTwo(props) {
     // console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const updateProfile = async () => {
@@ -81,7 +81,7 @@ export default function TabTwo(props) {
       const url =
         'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
       const response = await axios.put(url, JSON.stringify(updateData), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       if (response.status == 200) {
         setSpinner(false);
@@ -112,11 +112,12 @@ export default function TabTwo(props) {
     <>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{marginBottom: 80}}>
-        <View style={{marginTop: 20}} />
+        style={{ marginBottom: 80 }}>
+        <View style={{ marginTop: 20 }} />
         <View>
+          <Text style={{ color: '#555', paddingTop: 10 }}>Employment status</Text>
           <TouchableOpacity
-            style={[designs.customInput, {padding: 20}]}
+            style={[designs.customInput, { padding: 20 }]}
             onPress={() => {
               setEmploymentStatusModal(!employmentStatusModal);
             }}>
@@ -139,11 +140,11 @@ export default function TabTwo(props) {
             <Icon
               name="chevron-down-outline"
               size={20}
-              style={{fontWeight: 'bold'}}
+              style={{ fontWeight: 'bold' }}
               color="#BABABA"
             />
           </TouchableOpacity>
-
+          <Text style={{ color: '#555', paddingTop: 10 }}>Name of company</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="Name of Company"
@@ -152,6 +153,7 @@ export default function TabTwo(props) {
             value={companyName}
             onChangeText={(text) => setCompanyName(text)}
           />
+          <Text style={{ color: '#555', paddingTop: 10 }}>Company location</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="Location"
@@ -161,7 +163,7 @@ export default function TabTwo(props) {
             onChangeText={(text) => setLocation(text)}
           />
         </View>
-        <View style={{marginTop: 20}} />
+        <View style={{ marginTop: 20 }} />
       </ScrollView>
 
       <View
@@ -206,8 +208,8 @@ export default function TabTwo(props) {
         isVisible={modal}
         onBackButtonPress={() => setModal(false)}
         onBackdropPress={() => setModal(false)}>
-        <View style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
-          <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+          <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>
             Profile updated!
           </Text>
         </View>
@@ -217,7 +219,7 @@ export default function TabTwo(props) {
         onRequestClose={() => setEmploymentStatusModal(!employmentStatusModal)}
         visible={employmentStatusModal}
         onClick={(value) => setEmplpoymentStatus(value)}
-        // onClick={(value) => console.log(value)}
+      // onClick={(value) => console.log(value)}
       />
     </>
   );

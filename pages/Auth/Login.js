@@ -177,7 +177,7 @@ export default function Login({navigation}) {
       setSpinner(false);
       console.log('Error, An error occured, please retry');
       console.log('Error message', error);
-      setErrorMsg('An error occured, please retry');
+      setErrorMsg('unable to connect, check your network');
     }
   };
 

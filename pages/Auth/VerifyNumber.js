@@ -9,8 +9,6 @@ import {
   StyleSheet,
 } from 'react-native';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
-import Toast from 'react-native-toast-message';
-
 import {images, icons, COLORS} from '../../util/index';
 import designs from './style';
 import {verifyPhone} from '../../services/network';

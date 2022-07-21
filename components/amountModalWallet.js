@@ -33,7 +33,7 @@ import {useSelector, useDispatch} from 'react-redux';
 
 // import CreditCardModalFunds from './CreditCard/CreditCardModalFunds';
 export default function AmountModalWallet(props) {
-  const {onRequestClose, visible, channel, setData, showCard} = props;
+  const {onRequestClose, visible, channel, setData, showCard, setAmountToFund} = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -64,6 +64,8 @@ export default function AmountModalWallet(props) {
       channel: channel, //paystack
       purpose: 'wallet',
     };
+
+    setAmountToFund(values.amount)
 
     await verifyPaymentRequest(data);
   };

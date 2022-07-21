@@ -29,6 +29,8 @@ export const failureUploadFile = (id) => ({
 });
 
 export const uploadFile = (token, item, data) => {
+
+  console.log('upload data', data, token, item)
   return async (dispatch) => {
     const config = {
       onUploadProgress: (progressEvent) => {
@@ -43,20 +45,32 @@ export const uploadFile = (token, item, data) => {
       },
     };
 
+    // const url = data?.filename == 'Bank Statement' 
+    //   ? urls.applications.UPLOAD_BANK_STATEMENT 
+    //   : urls.applications.UPLOAD_DOCUMENTS
+     const url = urls.applications.UPLOAD_DOCUMENTS
+
+      console.log('url', url)
+      console.log('docs upload', 
+      {
+        ...data,
+        id: data?.applicationId
+      })
+
     try {
       const response = await axios.post(
         // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents/upload',
-        urls.applications.UPLOAD_DOCUMENTS,
-        data,
+        url,
+        {...data, id: data?.applicationId},
         config,
       );
-      console.log(response);
+      console.log("response upload", response);
       if (response.status == 200) {
         dispatch(successUploadFile(item.id));
       }
     } catch (error) {
-      console.log('here is the error', error);
-      console.log(error.response.data);
+      console.log('here is the error', error?.response?.data);
+      console.log(error);
       dispatch(failureUploadFile(item.id));
     }
   };

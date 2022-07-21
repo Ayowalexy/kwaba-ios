@@ -33,6 +33,10 @@ export default function SavingsOptionModal(props) {
       name: 'Buddy Savings',
       img: images.maskGroup14,
     },
+    {
+      name: 'Savings Challenge',
+      img: images.maskGroup14,
+    },
   ];
 
   const SavingsType = (props) => {

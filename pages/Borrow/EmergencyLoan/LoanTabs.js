@@ -30,11 +30,11 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModalFunds from '../../../components/amountModalFunds';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
-
+import Preloader from '../../../components/Preloader';
 export default function LoanTabs(props) {
   const dispatch = useDispatch();
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
-  const {navigation} = props;
+  const {navigation, setFundedAmount, fundedAmount} = props;
   const [spinner, setSpinner] = useState(false);
   const [repaymentList, setRepaymentList] = useState([]);
   const [index, setIndex] = useState(0);
@@ -53,6 +53,8 @@ export default function LoanTabs(props) {
   const [channel, setChannel] = useState('');
 
   const [resData, setResData] = useState('');
+
+  const [showPreloader, setShowPreloader] = useState(false)
 
   const sortStatus = {
     overdued: 1,
@@ -93,7 +95,7 @@ export default function LoanTabs(props) {
 
   const showSuccess = async () => {
     navigation.navigate('PaymentSuccessful', {
-      name: 'Home',
+      name: 'EmergencyLoanDashBoard',
       content: 'Payment Successful',
       subText: 'Awesome! Your payment was successful',
     });
@@ -101,13 +103,18 @@ export default function LoanTabs(props) {
 
   const completePayment = async (data) => {
     setSpinner(true);
+    setShowPreloader(true)
     const res = await completeSavingsPayment(data);
+    console.log('response', res)
+    setShowPreloader(false)
 
     try {
-      if (res.status == 201) {
+      if (res.status == 200) {
         setSpinner(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
+        setFundedAmount(Number(amount) + Number(fundedAmount))
+
         await showSuccess();
       } else {
         setSpinner(false);
@@ -115,15 +122,19 @@ export default function LoanTabs(props) {
       }
     } catch (error) {
       setSpinner(false);
-      console.log('The Error: ', error.response);
+      setShowPreloader(false)
+
+      console.log('The Error: ', error);
     }
   };
 
   const verifyPayment = async (data, paymentChannel) => {
     setSpinner(true);
+    setShowPreloader(true)
     const res = await verifySavingsPayment(data);
 
     setSpinner(false);
+    setShowPreloader(false)
     if (!res) {
       return [];
     }
@@ -315,9 +326,13 @@ export default function LoanTabs(props) {
               }}
               key={index}
               onPress={() => {
-                setActiveLoanModal(true);
-                setLoanID(item.id);
-                setLoanData({status: item.disbursement_status, id: item.id});
+                console.log('Loan status', status)
+                if(status.toLowerCase() !== 'pending'){
+                  setActiveLoanModal(true)
+                  setLoanID(item.id);
+                  setLoanData({status: item.disbursement_status, id: item.id});
+                }
+                
               }}>
               <View style={[styles.repaymentFlex]}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -556,14 +571,20 @@ export default function LoanTabs(props) {
               purpose: 'emergencyLoanRepayment',
             };
 
+            console.log('amount', amount)
+            setFundedAmount(Number(amount) + Number(fundedAmount))
+
             await showSuccess()
             await completePayment(data);
           }}
         />
       )}
 
+        
       {/* <Spinner visible={spinner} size="small" /> */}
-      {spinner && <ActivityIndicator size={'large'} color={COLORS.primary} />}
+      {/* {spinner && <ActivityIndicator size={'large'} color={COLORS.primary} />} */}
+      {showPreloader && <Preloader />}
+
     </>
   );
 }

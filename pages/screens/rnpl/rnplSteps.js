@@ -1,17 +1,98 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  RefreshControl,
+  Alert
 } from 'react-native';
-import {COLORS} from '../../../util';
+import { COLORS } from '../../../util';
 // import stepsArray from '../../../util/stepsArray';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useRoute } from '@react-navigation/native';
+import axios from 'axios';
+import { baseUrl } from '../../../services/routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getCurrentApplication } from '../../../services/network';
+import { getEmergencyLoans } from '../../../services/network';
+export default function RnplSteps({ navigation }) {
 
-export default function RnplSteps({navigation}) {
+
+  const [rnplStep, setRnplStep] = useState([])
+  const [documentApproved, setDocumentApproved] = useState(false)
+  const [canProceed, setCanProceed] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
+  const route = useRoute();
+  const getToken = async () => {
+    const userData = await AsyncStorage.getItem('userData');
+    const token = JSON.parse(userData).token;
+    return token;
+  };
+
+  const refresh_in = async () => {
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+    const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+
+    console.log('data', applicationIDCallRes?.data?.data)
+    const documents_approved = Number(applicationIDCallRes?.data?.data?.status)
+    setDocumentApproved(documents_approved)
+
+
+  }
+
+  const onRefresh = useCallback(() => {
+
+
+    setRefreshing(true);
+    refresh_in();
+
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 3000)
+  }, []);
+
+
+  // VerifyingDocuments
+  useEffect(() => {
+    (async () => {
+      const token = await getToken();
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+
+
+      console.log('loan status', applicationIDCallRes?.data?.data?.status)
+
+      const documents_approved = applicationIDCallRes?.data?.data?.status
+      setDocumentApproved(documents_approved)
+
+      // 1, "Pending Documents"
+      // 2, "Documents Uploaded"
+      // 3, "Documents Verified"
+      // 4, "Awaiting Disbursement"
+      // 5, "Active"
+      // 6, "Completed"
+      // 7, "Declined"
+      // 8, "Cancelled"
+      const rnplStep = await AsyncStorage.getItem('rnplSteps')
+      const parsed = JSON.parse(rnplStep)
+      console.log('application', applicationIDCallRes?.data)
+
+
+      if (documents_approved == 1 || documents_approved == 3 ) {
+        setCanProceed(true)
+      } else if (documents_approved == 2) {
+        setCanProceed(false)
+      }
+      // setDocumentApproved(documentApproved)
+    })()
+  }, [])
+
+  console.log('set canprocedd', canProceed)
+
   const stepsArray = [
     {
       title: 'Credit score',
@@ -24,43 +105,45 @@ export default function RnplSteps({navigation}) {
       subTitle: '',
       status: 'start',
       navigate: () => navigation.navigate('Form1'),
-      // navigate: () => navigation.navigate('VerifyingDocuments'),
+      // navigate: () => navigation.navigate('BusinessForm1'),
     },
-    {
+  {
       title: 'Documents upload',
       subTitle: '',
-      status: 'locked',
+      status: 'start',
       navigate: () => navigation.navigate('NewAllDocuments'),
     },
     {
       title: 'Offer approval breakdown',
       subTitle: '',
-      status: 'locked',
-      navigate: () => navigation.navigate('RnplDirectdebit'),
+      status: 'start',
+      navigate: () => navigation.navigate('RentalLoanOfferTest'),
     },
     {
       title: 'Property details',
       subTitle: '',
-      status: 'locked',
-      navigate: () => navigation.navigate('RnplDirectdebit'),
+      status: 'start',
+      navigate: () => navigation.navigate('PostPaymentForm1'),
     },
+
     {
       title: 'Address verification',
       subTitle: '',
-      status: 'locked',
-      navigate: () => navigation.navigate('RnplDirectdebit'),
+      status: 'start',
+      navigate: () => navigation.navigate('AddressVerificationPayment'),
     },
+
     {
       title: 'Direct debit',
       subTitle: '',
-      status: 'locked',
+      status: 'start',
       navigate: () => navigation.navigate('RnplDirectdebit'),
     },
     {
       title: 'Disbursement',
       subTitle: '',
-      status: 'locked',
-      navigate: () => navigation.navigate('RnplDirectdebit'),
+      status: 'start',
+      navigate: () => navigation.navigate('AwaitingDisbursement'),
     },
   ];
 
@@ -70,12 +153,40 @@ export default function RnplSteps({navigation}) {
     return user;
   };
 
+  const getRNPLStep = async () => {
+    const rnplStep = await AsyncStorage.getItem('rnplSteps')
+    return JSON.parse(rnplStep)
+  }
+
+
+
+  useEffect(() => {
+
+    const unsubscribe = navigation.addListener('focus', async () => {
+      if (route.name == 'RnplSteps') {
+        const res = await getRNPLStep()
+        setRnplStep(res)
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+  // Disbursement
+
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'rnplSteps');
+      // const rnplStep = {
+      //   nextStage: "Documents upload",
+      //   completedStages: ['Credit score', 'Applications']
+      // }
+      // await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
+
+      await AsyncStorage.setItem(`creditScoreDetail-${user.id}`, 'rnplSteps');
     })();
   }, []);
+
 
   return (
     <View style={[styles.container]}>
@@ -87,47 +198,85 @@ export default function RnplSteps({navigation}) {
           onPress={() => navigation.navigate('Rent')}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        showsVerticalScrollIndicator={false}>
         <View style={[styles.bottomView]}>
           {stepsArray.map((item, index) => {
             return (
               <TouchableOpacity
-                disabled={item.status != 'start'}
+                // disabled={
+                //   (!rnplStep?.nextStage?.includes(item.title))
+                //     ? true 
+                //     : false
+                // }
                 key={index}
                 style={[
                   styles.stepCard,
                   {
                     borderColor:
-                      item.status == 'complete'
+                      rnplStep?.completedStages?.includes(item.title)
                         ? '#61cd8f'
-                        : item.status == 'start'
-                        ? '#8fc1ed'
-                        : COLORS.white,
+                        : rnplStep?.nextStage?.includes(item?.title)
+                          ? '#8fc1ed'
+                          : '#ddd',
                     backgroundColor:
-                      item.status == 'complete' ? '#effbf7' : COLORS.white,
+                      rnplStep?.completedStages?.includes(item.title) ? '#effbf7' : COLORS.white,
                   },
                 ]}
-                onPress={item.navigate}>
+                onPress={() => {
+                  if (documentApproved == 1 
+                    || documentApproved == undefined
+                    || documentApproved == 3
+                    || documentApproved == 4
+                    || documentApproved == 5
+                    )
+                     {
+                    item.navigate()
+                  } else if (documentApproved == 2) {
+                    // item.navigate()
+
+                      // navigation.navigate('VerifyingDocuments')
+                  }
+                }}>
                 <View style={[styles.content]}>
                   <Text
                     style={[
                       styles.title,
-                      {color: item.status == 'locked' ? '#999' : COLORS.dark},
+                      { color: !rnplStep?.completedStages?.includes(item.title) ? '#999' : COLORS.dark },
                     ]}>
                     {item.title}
                   </Text>
                 </View>
                 <View style={[styles.statusContent]}>
-                  {item.status == 'start' && (
-                    <Text style={[styles.status, styles.statusStart]}>
-                      Start
-                    </Text>
-                  )}
+                  {
+                    rnplStep?.nextStage?.includes(item.title) && documentApproved? (
+                      <Text style={[styles.status, styles.statusStart]}>
+                        Start
+                      </Text>
+                    ) : null
+                  }
 
-                  {item.status == 'locked' && (
-                    <Icon name="lock-closed" style={[styles.statusIcon]} />
-                  )}
-                  {item.status == 'complete' && (
+                  {
+                    rnplStep?.nextStage?.includes(item.title) && !documentApproved ? (
+                      <Icon name="lock-closed" style={[styles.statusIcon]} />
+                    ) : null
+                  }
+
+                  {
+                    !rnplStep?.completedStages?.includes(item.title)
+                      && !rnplStep?.nextStage?.includes(item?.title)
+                      ? (
+                        <Icon name="lock-closed" style={[styles.statusIcon]} />
+                      )
+                      : null
+                  }
+                  {rnplStep?.completedStages?.includes(item.title) && (
                     <Text style={[styles.status, styles.statusComplete]}>
                       Complete
                     </Text>
@@ -139,25 +288,25 @@ export default function RnplSteps({navigation}) {
                     styles.index,
                     {
                       borderColor:
-                        item.status == 'complete'
+                        rnplStep?.completedStages?.includes(item.title)
                           ? '#61cd8f'
-                          : item.status == 'start'
-                          ? '#8fc1ed'
-                          : '#ddd',
+                          : rnplStep?.nextStage?.includes(item.title)
+                            ? '#8fc1ed'
+                            : '#ddd',
                     },
                   ]}>
-                  {item.status == 'complete' && (
+                  {rnplStep?.completedStages?.includes(item.title) && (
                     <Icon
                       name="ios-checkmark-circle-sharp"
-                      style={[styles.statusIcon, {color: '#61cd8f'}]}
+                      style={[styles.statusIcon, { color: '#61cd8f' }]}
                     />
                   )}
 
-                  {item.status != 'complete' && (
+                  {!rnplStep?.completedStages?.includes(item.title) && (
                     <Text
                       style={[
                         styles.indexText,
-                        {color: item.status == 'start' ? '#8fc1ed' : '#ddd'},
+                        { color: rnplStep?.nextStage?.includes(item?.title) ? '#8fc1ed' : '#ddd' },
                       ]}>
                       {index + 1}
                     </Text>

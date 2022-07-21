@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -12,7 +12,7 @@ import {
   Animated,
   StyleSheet,
 } from 'react-native';
-import {COLORS, FONTS, images, icons} from '../../util/index';
+import { COLORS, FONTS, images, icons } from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -20,7 +20,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProgressBar from 'react-native-progress/Bar';
 
 import {
@@ -44,7 +44,7 @@ const getDocuments = async () => {
       // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
       urls.applications.GET_DOCUMENTS,
       {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       },
     );
     // console.log(uploadedDocumentsRes)
@@ -54,9 +54,10 @@ const getDocuments = async () => {
   }
 };
 
-export default function Docs(props, {navigation}) {
-  const {documentUploads} = props;
+export default function Docs(props, { navigation }) {
+  const { documentUploads, count, setCount } = props;
   const [modal, setModal] = useState(false);
+  const [documentDeleted, setDocumentDeleted] = useState(false)
   const [showSelectDocumentsModal, setShowSelectDocumentsModal] = useState(
     false,
   );
@@ -65,6 +66,7 @@ export default function Docs(props, {navigation}) {
 
   const [name, setName] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const [uploadedDocuments, setUploadedDocumets] = useState([])
 
   const getUserData = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -76,6 +78,38 @@ export default function Docs(props, {navigation}) {
   useEffect(() => {
     getUserData();
   }, []);
+
+
+
+  const countDocuments = async () => {
+    const token = await getToken();
+    try {
+      const resp = await axios.get(urls.applications.GET_DOCUMENTS, {
+        headers: { 'Content-Type': 'application/json', Authorization: token },
+      });
+
+
+
+      setCount(resp.data.data.length);
+      console.log('number of uploaded documents', resp.data.data.length)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    (async() => {
+      await countDocuments()
+    })()
+  }, [documentDeleted])
+
+  useEffect(() => {
+    (async () => {
+      const docs = await getDocuments();
+      setUploadedDocumets(docs)
+      console.log('doc', docs)
+    })()
+  }, [count])
 
   const showUploadedDocuments = async () => {
     const documentsUploaded = await getDocuments();
@@ -138,7 +172,7 @@ export default function Docs(props, {navigation}) {
             Authorization: token,
           },
           data: {
-            id: item.documentID,
+            ...item,
           },
         },
       );
@@ -146,6 +180,12 @@ export default function Docs(props, {navigation}) {
       // console.log(item.id);
       // dispatch(deleteUploadedFile(item.id));
       // dispatch(showUploadedFiles(item.id));
+      console.log('deleted file', response.data)
+      if (response.status == 200) {
+        setSpinner(false)
+        await countDocuments()
+        // setDocumentDeleted(!documentDeleted)
+      }
       console.log('here', Object.values(fileProgress));
       // getUserData();
       // showUploadedDocuments();
@@ -170,91 +210,94 @@ export default function Docs(props, {navigation}) {
     <>
       <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
         <View style={[styles.content]}>
-          {Object.values(fileProgress).map(
+          {/* {Object.values(fileProgress).map(
             (item, index) =>
-              item.isUploaded && (
+              item.isUploaded && ( */}
+          {uploadedDocuments?.map(
+            (item, index) =>
+            (
+              <View
+                key={index}
+                style={[
+                  styles.flexRow,
+                  {
+                    backgroundColor: COLORS.white,
+                    borderRadius: 10,
+                    paddingHorizontal: 18,
+                    paddingVertical: 25,
+                    elevation: 0.5,
+                    marginBottom: 10,
+                    borderWidth: 1,
+                    borderColor: '#EEEEEE',
+                  },
+                ]}>
                 <View
-                  key={index}
-                  style={[
-                    styles.flexRow,
-                    {
-                      backgroundColor: COLORS.white,
-                      borderRadius: 10,
-                      paddingHorizontal: 18,
-                      paddingVertical: 25,
-                      elevation: 0.5,
-                      marginBottom: 10,
-                      borderWidth: 1,
-                      borderColor: '#EEEEEE',
-                    },
-                  ]}>
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
+                  <View style={{ marginRight: 10 }}>
+                    <Icon
+                      name="md-document-text-sharp"
+                      size={25}
+                      color={COLORS.grey}
+                    />
+                  </View>
                   <View
                     style={{
                       flex: 1,
                       flexDirection: 'row',
                       alignItems: 'center',
+                      justifyContent: 'space-between',
                     }}>
-                    <View style={{marginRight: 10}}>
-                      <Icon
-                        name="md-document-text-sharp"
-                        size={25}
-                        color={COLORS.grey}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        flex: 1,
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                      }}>
-                      <View>
+                    <View>
+                      <Text
+                        style={{ color: COLORS.primary, fontWeight: 'bold' }}>
+                        {item?.filename}
+                      </Text>
+
+                      {(
                         <Text
-                          style={{color: COLORS.primary, fontWeight: 'bold'}}>
-                          {item.title}
+                          style={{
+                            color: COLORS.secondary,
+                            marginTop: 0,
+                            fontSize: 12,
+                          }}>
+                          {name + '-'}
+                          {item?.filename}
                         </Text>
+                      )}
+                    </View>
 
-                        {item.isUploaded && (
-                          <Text
-                            style={{
-                              color: COLORS.secondary,
-                              marginTop: 0,
-                              fontSize: 12,
-                            }}>
-                            {name + '-'}
-                            {item.title}
-                          </Text>
-                        )}
-                      </View>
-
-                      <View
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        {!item.isUploading && (
+                    <View
+                      style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      {(
+                        <Icon
+                          name="ios-checkmark-done"
+                          size={20}
+                          color={COLORS.secondary}
+                        />
+                      )}
+                      {
+                        <TouchableOpacity
+                          style={{
+                            marginLeft: 20,
+                            alignSelf: 'center',
+                          }}
+                          onPress={() => deleteFile(item)}>
                           <Icon
-                            name="ios-checkmark-done"
+                            name="trash-outline"
                             size={20}
-                            color={COLORS.secondary}
+                            color={COLORS.grey}
                           />
-                        )}
-                        {item.isUploaded && (
-                          <TouchableOpacity
-                            style={{
-                              marginLeft: 20,
-                              alignSelf: 'center',
-                            }}
-                            onPress={() => deleteFile(item)}>
-                            <Icon
-                              name="trash-outline"
-                              size={20}
-                              color={COLORS.grey}
-                            />
-                          </TouchableOpacity>
-                        )}
-                      </View>
+                        </TouchableOpacity>
+                      }
                     </View>
                   </View>
                 </View>
-              ),
+              </View>
+            ),
           )}
         </View>
       </ScrollView>
@@ -330,7 +373,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
 
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
     shadowRadius: 1,
   },

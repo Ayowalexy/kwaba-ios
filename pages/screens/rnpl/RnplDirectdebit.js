@@ -72,7 +72,7 @@ export default function RnplDirectdebit({navigation}) {
         <TouchableOpacity
           style={{width: '100%'}}
           // onPress={() => navigation.navigate('RnplEligibility')}
-          onPress={() => navigation.navigate('RnplEmploymentStatus')}>
+          onPress={() => navigation.navigate('OkraDebitMandate')}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>CONTINUE</Text>
           </View>

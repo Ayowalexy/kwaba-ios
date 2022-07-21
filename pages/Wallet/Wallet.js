@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,13 +8,14 @@ import {
   FlatList,
   SafeAreaView,
   Alert,
+  Modal,
 } from 'react-native';
-import {COLORS} from '../../util';
-import {formatNumber} from '../../util/numberFormatter';
+import { COLORS } from '../../util';
+import { formatNumber } from '../../util/numberFormatter';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {getMaxLoanCap, updateState} from '../../redux/actions/savingsActions';
-import {useDispatch, useSelector} from 'react-redux';
-import {SwipeablePanel} from 'rn-swipeable-panel';
+import { getMaxLoanCap, updateState } from '../../redux/actions/savingsActions';
+import { useDispatch, useSelector } from 'react-redux';
+// import { SwipeablePanel } from 'rn-swipeable-panel';
 import AddFundToWalletModal from './AddFundToWalletModal';
 import {
   getUserWallet,
@@ -28,6 +29,7 @@ import BankTransferModal from './BankTransferModal';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import {
   completeSavingsPayment,
+  getUserWalletTransactionsAsync,
   verifyAddFundToWallet,
 } from '../../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
@@ -37,7 +39,7 @@ import SavingsOptionModal from '../../components/savingsOptionModal';
 
 
 export default function Wallet(props) {
-  const {navigation} = props;
+  const { navigation } = props;
   const dispatch = useDispatch();
   const [active, setActive] = useState(false);
   const [addFundsModal, setAddFundsModal] = useState(false);
@@ -68,17 +70,27 @@ export default function Wallet(props) {
 
   const [channel, setChannel] = useState('card');
 
+  const [amountToFund, setAmountToFund] = useState(0)
+
+  const [walletTransaction, setWalletTransactions] = useState([])
+
+  const [showTransactionsModal, setShowTransactionsModal] = useState(false)
+
+
+
+
   const getWallet = useSelector((state) => state.getUserWalletReducer);
   const getWalletTransactions = useSelector(
     (state) => state.getUserWalletTransactionsReducer,
   );
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
+
   useEffect(() => {
     // dispatch(getUserWallet());
     dispatch(getUserWalletTransactions());
     dispatch(getMaxLoanCap());
-  }, []);
+  }, [amountToFund]);
 
   useEffect(() => {
     // setAmount(getWallet?.data?.available_balances || 0);
@@ -88,15 +100,30 @@ export default function Wallet(props) {
   }, []);
 
   useEffect(() => {
+    handleUpdate()
+  }, [])
+
+  const handleUpdate  = async() => {
+    const res = await getUserWalletTransactionsAsync()
+    setWalletTransactions(res)
+    console.log('new transactions', res)
+  }
+
+  useEffect(() => {
     if (getMaxLoanCap1?.data) {
       setAmount(getMaxLoanCap1?.data?.wallet_available_balance);
     }
   }, [getMaxLoanCap1]);
 
-  const renderItem = ({item, index}) => {
+  useEffect(() => {
+    setWalletTransactions(getWalletTransactions?.data)
+  }, [getWalletTransactions])
+
+
+  const renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
-        onPress={() => console.log('The Log Here: ', item)}
+        onPress={() => console.log('The Log data: ', item)}
         style={[
           styles.lists,
           {
@@ -107,7 +134,7 @@ export default function Wallet(props) {
             borderLeftColor: COLORS.primary,
           },
         ]}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <View
             style={{
               width: 50,
@@ -148,7 +175,7 @@ export default function Wallet(props) {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <View style={{flex: 1, paddingRight: 20}}>
+            <View style={{ flex: 1, paddingRight: 20 }}>
               <Text
                 style={{
                   fontSize: 12,
@@ -200,7 +227,7 @@ export default function Wallet(props) {
             style={{
               position: 'absolute',
               right: -20,
-              transform: [{rotate: '10deg'}],
+              transform: [{ rotate: '10deg' }],
             }}
           />
           <Icon
@@ -211,7 +238,7 @@ export default function Wallet(props) {
               position: 'absolute',
               left: -10,
               top: 50,
-              transform: [{rotate: '-10deg'}],
+              transform: [{ rotate: '-10deg' }],
             }}
           />
           <Icon
@@ -222,7 +249,7 @@ export default function Wallet(props) {
               position: 'absolute',
               left: 100,
               top: 100,
-              transform: [{rotate: '-10deg'}],
+              transform: [{ rotate: '-10deg' }],
             }}
           />
         </View>
@@ -232,7 +259,7 @@ export default function Wallet(props) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <View style={{paddingHorizontal: 40}}>
+          <View style={{ paddingHorizontal: 40 }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -263,14 +290,14 @@ export default function Wallet(props) {
                       fontWeight: 'bold',
                       color: COLORS.white,
                     }}>
-                    <Text style={{fontSize: 30}}>₦</Text>
+                    <Text style={{ fontSize: 30 }}>₦</Text>
 
                     {toggleAmount
                       ? formatNumber(Number(amount).toFixed(2))
                       : formatNumber(Number(amount).toFixed(2)).replace(
-                          new RegExp('[0-9]', 'g'),
-                          'x',
-                        )}
+                        new RegExp('[0-9]', 'g'),
+                        'x',
+                      )}
                   </Text>
                 </View>
               </View>
@@ -313,7 +340,7 @@ export default function Wallet(props) {
               return (
                 <TouchableOpacity
                   key={index}
-                  style={{marginHorizontal: 5, alignItems: 'center'}}
+                  style={{ marginHorizontal: 5, alignItems: 'center' }}
                   onPress={() => {
                     if (item == 'Fund Savings') {
                       // navigation.navigate('SavingsHome');
@@ -352,8 +379,8 @@ export default function Wallet(props) {
                           item == 'Fund Savings'
                             ? 'duplicate'
                             : item == 'Pay Bills'
-                            ? 'apps'
-                            : 'enter-sharp'
+                              ? 'apps'
+                              : 'enter-sharp'
                         }
                         size={20}
                         color={COLORS.light}
@@ -382,7 +409,7 @@ export default function Wallet(props) {
               paddingHorizontal: 20,
               marginTop: 10,
             }}>
-            <Text style={{color: COLORS.grey, fontSize: 10, lineHeight: 17}}>
+            <Text style={{ color: COLORS.grey, fontSize: 10, lineHeight: 17 }}>
               You can fund your savings, buy airtime and pay bills from your
               wallet. Please note, you can’t withdraw from your wallet
             </Text>
@@ -414,12 +441,13 @@ export default function Wallet(props) {
           </View>
         ) : (
           <TouchableOpacity
+            onPress={() => setShowTransactionsModal(true)}
             style={{
               justifyContent: 'center',
               alignItems: 'center',
               paddingVertical: 10,
             }}>
-            <Text style={{color: COLORS.primary}}>View all Transactions</Text>
+            <Text style={{ color: COLORS.primary }}>View all Transactions</Text>
           </TouchableOpacity>
         )}
       </>
@@ -452,9 +480,9 @@ export default function Wallet(props) {
           </Text>
           <View />
         </View>
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={{ flex: 1 }}>
           <FlatList
-            data={getWalletTransactions?.data?.slice(0, 5)}
+            data={walletTransaction?.reverse()?.slice(0, 5)}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             showsHorizontalScrollIndicator={false}
@@ -516,6 +544,7 @@ export default function Wallet(props) {
         <AmountModalWallet
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
+          setAmountToFund={setAmountToFund}
           setData={(d) => setResData(d)}
           showCard={() => setShowPaystackPayment(true)}
           channel={'paystack'} //TODO
@@ -534,7 +563,7 @@ export default function Wallet(props) {
 
 
 
-       {showPaystackPayment && (
+      {showPaystackPayment && (
         <PaystackPayment
           onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
           data={resData}
@@ -546,20 +575,153 @@ export default function Wallet(props) {
           paymentSuccessful={async (paystackRes) => {
             try {
               console.log('wallet successfully funded');
-              dispatch(updateState())
-              navigation.navigate('PaymentSuccessful', {
-                content: 'Payment Successful',
-                subText: 'You have successfully funded your wallet',
-                name: 'Home',
-              });
+
+              setAmount(Number(amount) + Number(amountToFund))
+              dispatch(getUserWalletTransactions());
+             setTimeout(() => {
+                handleUpdate()
+             }, 4000);
+
+              // dispatch(updateState())
+              // navigation.navigate('PaymentSuccessful', {
+              //   content: 'Payment Successful',
+              //   subText: 'You have successfully funded your wallet',
+              //   name: 'Home',
+              // });
             } catch (error) {
               console.log(error);
             }
           }}
         />
-      )} 
+      )}
 
       <Spinner visible={spinner} size="large" />
+      <Modal
+        visible={showTransactionsModal}
+        onRequestClose={() => setShowTransactionsModal(!showTransactionsModal)}
+        animationType='slide'
+        transparent={false}
+      >
+        <View style={[styles.headline]}>
+          <Icon
+            style={{
+              color: COLORS.white,
+              marginTop: 2,
+            }}
+            onPress={() => setShowTransactionsModal(false)}
+            name="arrow-back"
+            size={20}
+            color={COLORS.white}
+          />
+          <Text
+            style={{
+              color: COLORS.white,
+              fontWeight: 'normal',
+              marginLeft: 20,
+            }}>
+            All Transactions
+          </Text>
+        </View>
+        <View>
+          <ScrollView>
+            <SafeAreaView style={{ flex: 1 , marginBottom: 90}}>
+
+              {
+                walletTransaction?.reverse()?.map((item, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    onPress={() => console.log('The Log data: ', item)}
+                    style={[
+                      styles.lists,
+                      {
+                        borderLeftColor:
+                          item.transaction_type == 'credit'
+                            ? COLORS.success
+                            : COLORS.warning,
+                        borderLeftColor: COLORS.primary,
+                        height: 70,
+                      },
+                    ]}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50,
+                          // padding: 10,
+                          backgroundColor:
+                            item.transaction_type == 'credit'
+                              ? COLORS.success
+                              : COLORS.warning,
+                          backgroundColor: '#f7f8fd',
+                          marginRight: 20,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontWeight: 'bold',
+                            color: COLORS.primary,
+                          }}>
+                          {moment(item.updated_at).format('DD')}
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            fontWeight: 'normal',
+                            lineHeight: 10,
+                            color: COLORS.primary,
+                            // opacity: 0.5,
+                          }}>
+                          {moment(item.updated_at).format('MMM')}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flex: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <View style={{ flex: 1, paddingRight: 20 }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: 'bold',
+                              color: COLORS.dark,
+                              textTransform: 'capitalize',
+                            }}
+                            numberOfLines={1}>
+                            {item.narration}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              color: COLORS.dark,
+                              marginTop: 5,
+                            }}>
+                            {moment(item.updated_at).format('DD MMM YYYY')}
+                          </Text>
+                        </View>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            color: COLORS.dark,
+                          }}>
+                          ₦{formatNumber(Number(item.amount).toFixed(2))}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))
+              }
+            </SafeAreaView>
+
+          </ScrollView>
+        </View>
+
+      </Modal>
     </>
   );
 }
@@ -568,6 +730,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8FD',
+  },
+  headline: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   content: {
     // paddingHorizontal: 20,

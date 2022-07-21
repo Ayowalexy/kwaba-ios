@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   ScrollView,
@@ -10,18 +10,24 @@ import {
   Linking,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {icons} from '../../util/index';
+import { icons } from '../../util/index';
 import designs from './style';
-import {COLORS, FONTS, images} from '../../util/index';
+import { COLORS, FONTS, images } from '../../util/index';
 import CountrySelect from '../../components/countrySelect';
 import Icon from 'react-native-vector-icons/Ionicons';
 import useColorScheme from 'react-native/Libraries/Utilities/useColorScheme';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {verifyPayment} from '../../services/network';
+import { verifyPayment } from '../../services/network';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModal from '../../components/CreditCard/CreditCardModal';
-import {formatNumber} from '../../util/numberFormatter';
+import { formatNumber } from '../../util/numberFormatter';
+import { baseUrl } from '../../services/routes';
+import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
+import PaystackPayment from '../../components/Paystack/PaystackPayment';
+import { loanRepayment } from '../../services/network';
+
+
 
 const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
@@ -35,11 +41,77 @@ const getUser = async () => {
   return user;
 };
 
-const AddressVerificationPayment = ({navigation}) => {
+const AddressVerificationPayment = ({ navigation }) => {
   const [spinner, setSpinner] = useState(false);
   const [verificationSpinner, setVerificationSpinner] = useState(false);
   const [modal, setModal] = useState(false);
   const [resDataObj, setResDataObj] = useState('');
+  const [showPaystackPayment, setShowPaystackPayment] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [resData, setResData] = useState('')
+  const [channel, setChannel] = useState('')
+
+
+
+  const handlePaymentRoute = async (value) => {
+    console.log('The Value: ', value);
+    // setChannel(value);
+    // setShowAmountModal(true);
+
+    // console.log('ID: ', loanRepaymentData?.id);
+
+    try {
+      const data = {
+        amount: 2500,
+        purpose: 'addressVerification',
+        channel: 'paystack'
+        
+      };
+
+      console.log('The Data loan: ', data);
+
+      setSpinner(true);
+      const response = await loanRepayment(data);
+      console.log('That Resp: ', response);
+
+      if (response.status == 200) {
+        if (value == 'wallet') {
+          const data = {
+            payment_channel: value,
+            reference: response?.data?.data?.reference,
+          };
+          console.log('The Datata: ', data);
+          setSpinner(true);
+          // const verify = await verifyWalletTransaction(data);
+
+          // console.log('Verify: ', verify.response);
+          // if (false) {
+          //   setSpinner(false);
+          //   navigation.navigate('PaymentSuccessful', {
+          //     name: 'Home',
+          //     content: 'Payment Successful',
+          //     subText: 'Awesome! Your payment was successful',
+          //   });
+          // } else {
+          //   setSpinner(false);
+          //   Alert.alert('Oops!', verify?.response?.data.response_message);
+          //   console.log('Oops!', verify.response);
+          // }
+        } else {
+          setChannel(value);
+          setResData(response?.data?.data);
+          setShowPaystackPayment(true); // show paystack
+        }
+      } else {
+        setSpinner(false);
+        // Alert.alert('Oops!', response.response.data)
+        console.log('Oops!', response.response.data);
+      }
+    } catch (error) {
+      setSpinner(false);
+      console.log('Oops', error.response);
+    }
+  };
 
   const handleNavigation = async () => {
     setSpinner(true);
@@ -48,17 +120,20 @@ const AddressVerificationPayment = ({navigation}) => {
 
     const token = await getToken();
     const amount = 2500;
-
+    // application/payment/pay
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/payment/pay';
+      `${baseUrl}/payments/verify`;
 
     const data = {
       amount,
+      channel: 'paystack',
+      purpose: 'addressVerification'
+
     };
 
     try {
       const response = await axios.post(url, data, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
 
       if (response.status === 200) {
@@ -97,12 +172,12 @@ const AddressVerificationPayment = ({navigation}) => {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
       <Icon
         onPress={() => navigation.navigate('Borrow')}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10}}
+        style={{ fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10 }}
         color={COLORS.primary}
       />
       <View
@@ -154,7 +229,8 @@ const AddressVerificationPayment = ({navigation}) => {
           rent payment.
         </Text>
         <TouchableOpacity
-          onPress={handleNavigation}
+          onPress={() => setShowPaymentModal(true)}
+          // onPress={handleNavigation}
           style={[
             designs.button,
             {
@@ -197,6 +273,48 @@ const AddressVerificationPayment = ({navigation}) => {
         navigation={navigation}
         redirectTo="OkraDebitMandate"
       />
+
+      {showPaymentModal && (
+        <PaymentTypeModal
+          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+          visible={showPaymentModal}
+          setPaymentType={(data) => {
+            handlePaymentRoute(data); // paystack, bank, wallet
+          }}
+        />
+      )}
+      {showPaystackPayment && (
+        <PaystackPayment
+          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+          data={resData}
+          channel={channel}
+          paymentCanceled={(e) => {
+            console.log('Pay cancel', e);
+            Alert.alert(e.status);
+            setSpinner(false);
+            // Do something
+          }}
+          paymentSuccessful={async (res) => {
+            console.log('Pay done', res);
+
+            setSpinner(false);
+
+            const rnplStep = {
+              nextStage: 'Property details',
+              completedStages: ['Credit score', 'Applications', 'Documents upload', 'Offer approval breakdown', 'Address verification']
+            }
+
+            await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
+
+            navigation.navigate('PaymentSuccessful', {
+              name: 'RnplDirectdebit',
+              content: 'Payment Successful',
+              subText: 'Awesome! You have successfully paid for your address verification',
+            });
+          }}
+        />
+      )}
     </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,15 +7,16 @@ import {
   ScrollView,
 } from 'react-native';
 import designs from './style';
-import {COLORS, FONTS, images, icons} from '../../../util/index';
+import { COLORS, FONTS, images, icons } from '../../../util/index';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Modal from 'react-native-modal';
 
-import {useDispatch} from 'react-redux';
-import {me} from '../../../services/network';
-import {setLoginState} from '../../../redux/actions/userActions';
+import { useDispatch } from 'react-redux';
+import { me } from '../../../services/network';
+import { baseUrl } from '../../../services/routes';
+import { setLoginState } from '../../../redux/actions/userActions';
 
 export default function TabThree(props) {
   const dispatch = useDispatch();
@@ -26,7 +27,7 @@ export default function TabThree(props) {
   const [spinner, setSpinner] = useState(false);
   const [modal, setModal] = useState(false);
 
-  const {} = props;
+  const { } = props;
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -43,7 +44,7 @@ export default function TabThree(props) {
   useEffect(() => {
     (async () => {
       const data = await getUserData();
-      const {email, telephone, bvn} = data.user;
+      const { email, telephone, bvn } = data.user;
 
       // auto fill input fields
       setEmail(email);
@@ -57,7 +58,7 @@ export default function TabThree(props) {
     // console.log(data);
     try {
       await AsyncStorage.setItem('userData', JSON.stringify(data));
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const updateProfile = async () => {
@@ -74,9 +75,9 @@ export default function TabThree(props) {
 
     try {
       const url =
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/user/update_profile';
+        `${baseUrl}/user/update_profile`;
       const response = await axios.put(url, JSON.stringify(updateData), {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       if (response.status == 200) {
         setSpinner(false);
@@ -107,9 +108,10 @@ export default function TabThree(props) {
     <>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        style={{marginBottom: 80}}>
-        <View style={{marginTop: 20}} />
+        style={{ marginBottom: 80 }}>
+        <View style={{ marginTop: 20 }} />
         <View>
+          <Text style={{ color: '#555', paddingTop: 10 }}>Email</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="Email"
@@ -118,6 +120,7 @@ export default function TabThree(props) {
             value={email}
             onChangeText={(text) => setEmail(text)}
           />
+          <Text style={{ color: '#555', paddingTop: 10 }}>Phone number</Text>
           <TextInput
             style={[designs.textField]}
             placeholder="Phone Number"
@@ -126,6 +129,8 @@ export default function TabThree(props) {
             value={phoneNumber}
             onChangeText={(text) => setPhoneNumber(text)}
           />
+          <Text style={{ color: '#555', paddingTop: 10 }}>BVN</Text>
+
           <TextInput
             style={[designs.textField]}
             placeholder="Bank Verification Number(BVN)"
@@ -135,7 +140,7 @@ export default function TabThree(props) {
             onChangeText={(text) => setBvn(text)}
           />
         </View>
-        <View style={{marginTop: 20}} />
+        <View style={{ marginTop: 20 }} />
       </ScrollView>
 
       <View
@@ -180,8 +185,8 @@ export default function TabThree(props) {
         isVisible={modal}
         onBackButtonPress={() => setModal(false)}
         onBackdropPress={() => setModal(false)}>
-        <View style={{backgroundColor: 'white', padding: 20, borderRadius: 10}}>
-          <Text style={{color: COLORS.secondary, fontWeight: 'bold'}}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+          <Text style={{ color: COLORS.secondary, fontWeight: 'bold' }}>
             Profile updated!
           </Text>
         </View>

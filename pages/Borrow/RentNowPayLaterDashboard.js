@@ -25,6 +25,11 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModalRNPL from '../../components/CreditCard/CreditCardModalRNPL';
+import { getCurrentApplication } from '../../services/network';
+import { getEmergencyLoans } from '../../services/network';
+import { baseUrl } from '../../services/routes';
+
+
 
 export default function RentNowPayLaterDashboard({navigation}) {
   const [percentAchieved, setPercentAchieved] = useState(75);
@@ -93,12 +98,10 @@ export default function RentNowPayLaterDashboard({navigation}) {
     const token = await getToken();
 
     try {
-      const applicationIDCallRes = await axios.get(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/one',
-        {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+
 
       console.log(applicationIDCallRes.data.data.non_refundable_deposit);
       const loanId = applicationIDCallRes.data.data.id;
@@ -117,7 +120,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
       setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
 
       const res = await axios.post(
-        'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/dashboard',
+        `${baseUrl}/application/dashboard`,
         {loanId},
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
@@ -146,7 +149,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
   const payment = async (data) => {
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/rentrepayment/pay';
+      `${baseUrl}/application/rentrepayment/pay`;
     const token = await getToken();
     try {
       const response = await axios.post(url, data, {
@@ -160,7 +163,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
   const verifyPayment = async (data) => {
     const url =
-      'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/rentrepayment/verify';
+      `${baseUrl}/application/rentrepayment/verify`;
     const token = await getToken();
     try {
       const response = await axios.post(url, data, {

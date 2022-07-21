@@ -21,7 +21,7 @@ import AirtimeHistoryDetail from './AirtimeHistoryDetail';
 import {formatNumber} from '../util/numberFormatter';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
-import {SwipeablePanel} from 'rn-swipeable-panel';
+// import {SwipeablePanel} from 'rn-swipeable-panel';
 
 export default function AirtimeHistory(props) {
   const {onRequestClose, visible} = props;
@@ -306,13 +306,13 @@ export default function AirtimeHistory(props) {
           </View>
         </View>
 
-        <SwipeablePanel
+        {/* <SwipeablePanel
           fullWidth
           isActive={active}
           onClose={closePanel}
           closeOnTouchOutside={true}
           onPressCloseButton={closePanel}
-          style={{backgroundColor: COLORS.white}}></SwipeablePanel>
+          style={{backgroundColor: COLORS.white}}></SwipeablePanel> */}
       </Modal>
 
       {showHistoryDetail && (
