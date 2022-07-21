@@ -2511,4 +2511,6 @@ export {
   getCurrentApplication,
   getTransactionsHistory,
   getUserWalletTransactionsAsync
+  
+
 };
