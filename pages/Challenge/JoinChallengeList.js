@@ -14,6 +14,7 @@ import { COLORS } from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JoinChallengeModal from './JoinChallengeModal';
 import { useDispatch, useSelector } from 'react-redux';
+import { selectAllUserSavingsChellange } from '../../redux/reducers/store/savings-challenge/savings-challenge.selectors';
 import {
   getSavingsChallengeList,
   getSavingsUnderChallengeList,
@@ -102,6 +103,8 @@ export default function JoinChallengeList({ navigation }) {
 
   const [joinSavings, setJoinedSavings] = useState([]);
 
+  const userChallenges = useSelector(selectAllUserSavingsChellange)
+
   // useEffect(() => {
   //   const filter = allSavings?.data?.filter(
   //     (item) => item.savings_type == 'savings_challenge',
@@ -112,6 +115,7 @@ export default function JoinChallengeList({ navigation }) {
   //   console.log('Filter: ', filter);
   // }, []);
 
+  console.log('user challenges', userChallenges)
   useEffect(() => {
     dispatch(getUserSavingsChallenge());
   }, []);
@@ -119,14 +123,14 @@ export default function JoinChallengeList({ navigation }) {
   useEffect(() => {
     // console.log('user challenge: ', userChallenge);
     getAllSavingsChallenges();
-  }, []);
+  }, [userChallenges.length]);
 
   const handleNavigate = (data) => {
 
     console.log('challenge data', data)
     if (
-      joinSavings.length &&
-      joinSavings?.filter((i) => i.challenge_id == data?.id)[0]
+      userChallenges.length &&
+      userChallenges?.filter((i) => i.challenge_id == data?.id)[0]
     ) {
       navigation.navigate('JoinChallengeDashboard', { id: data?.id });
     } else {
@@ -166,6 +170,7 @@ export default function JoinChallengeList({ navigation }) {
     }
   };
 
+
   const renderItem = ({ item, index }) => {
     const { name, short_description, id, target_amount } = item;
 
@@ -180,7 +185,7 @@ export default function JoinChallengeList({ navigation }) {
             <Text style={styles.cardTitle}>{name}</Text>
             {/* <Text style={styles.cardBody}>{short_description}</Text> */}
 
-            {joinSavings?.map(
+            {userChallenges?.map(
               (v, i) =>
                 v.challenge_id == id && (
                   <View

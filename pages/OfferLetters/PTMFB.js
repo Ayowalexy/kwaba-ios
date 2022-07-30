@@ -76,7 +76,11 @@ export default function PTMFB(props) {
       const application =  await getCurrentApplication({id: loan_id})
       const data = application.data.data;
 
+      console.log('Preserve ', data)
+
       const purpose_check = 'Want to pay for a new place';
+
+      console.log('Purpose check', offerLetterData)
 
      
 
@@ -88,8 +92,9 @@ export default function PTMFB(props) {
             : data.home_address,
         facility_type: 'RENTAL LOAN',
         facility_amount: data.approvedamount,
-        purpose: data.accomodationstatus,
+        repayment_plan: data.repayment_plan,
         tenor: data.approved_repayment_plan,
+        monthly_repayment: data.monthly_repayment,
         stamp_duty: data.approvedamount * 0.00125 + 200,
         effective_date: moment(data.approveddate).format('Do MMMM, YYYY'),
         // maturity_date: moment(data.approveddate)
@@ -110,7 +115,7 @@ export default function PTMFB(props) {
   const offers = [
     {
       title: 'Lender',
-      content: `Personal Trust Microfinance Bank Limited (“Personal Trust” or “The Bank”)`,
+      content: `GTI Microfinance Bank Limited (“GTI or “The Bank”)`,
     },
     {
       title: 'Primary Obligor',
@@ -125,15 +130,11 @@ export default function PTMFB(props) {
       content: `₦${formatNumber(offerLetterData.facility_amount)}`,
     },
     {
-      title: 'Purpose',
-      content: `${offerLetterData.purpose}`,
-    },
-    {
       title: 'Tenor',
       content: `${
-        offerLetterData.tenor <= 1
-          ? offerLetterData.tenor + ' Month'
-          : offerLetterData.tenor + ' Months'
+        offerLetterData.repayment_plan <= 1
+          ? offerLetterData.repayment_plan + ' Month'
+          : offerLetterData.repayment_plan + ' Months'
       } (Meanwhile repayable on demand)`,
       // content: `12 Months (Twelve months, meanwhile repayable on demand)`,
     },
@@ -168,13 +169,13 @@ export default function PTMFB(props) {
     {
       title: `Repayment Plan\nMonthly&Source`,
       content: `Repayment of ₦${formatNumber(
-        offerLetterData.repayment_plan_monthly_source,
-      )} from salary. `,
+        offerLetterData.monthly_repayment,
+      )} from monthly income. `,
     },
     {
       title: 'Securities',
       content: `Execution or activation of remita or other direct debit mandates on customer salary account with monthly repayment of ₦${formatNumber(
-        offerLetterData.repayment_plan_monthly_source,
+        offerLetterData.monthly_repayment,
       )}.`,
     },
   ];

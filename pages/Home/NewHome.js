@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,12 +16,12 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import {icons, images, COLORS} from '../../util/index';
+import { icons, images, COLORS } from '../../util/index';
 import designs from './style';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
+import { SwiperFlatList } from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
 import ScrollIndicator from '../../components/scrollIicators';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getMaxLoanCap,
   getTotalSoloSavings,
@@ -38,16 +38,16 @@ import {
   getUserWalletTransactions,
   getPaymentHistory,
 } from '../../redux/actions/walletAction';
-import {getCurrentUser} from '../../redux/actions/userActions';
+import { getCurrentUser } from '../../redux/actions/userActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {currencyFormat, formatNumber} from '../../util/numberFormatter';
+import { currencyFormat, formatNumber } from '../../util/numberFormatter';
 import ComingSoon from '../../components/ComingSoon';
 import QuickSaveModal from '../../components/QuickSaveModal';
 import axios from 'axios';
 import Carousel from 'react-native-snap-carousel';
 import CompleteProfileModal from './CompleteProfileModal';
-import {me} from '../../services/network';
-import {setLoginState} from '../../redux/actions/userActions';
+import { me } from '../../services/network';
+import { setLoginState } from '../../redux/actions/userActions';
 import AddFundsToSavingsModal from '../../components/AddFundsToSavingsModal';
 import EmailVerificationModal from '../../components/EmailVerificationModal';
 import SavingsOptionModal from '../../components/savingsOptionModal';
@@ -56,20 +56,23 @@ import AmountModal from '../../components/amountModal';
 import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
 import analytics from '@segment/analytics-react-native';
-
+import { setCurrentUserUserActionAsync } from '../../redux/reducers/store/user/user.types';
 import PushNotification from 'react-native-push-notification';
-
-import {TrackEvent} from '../../util/segmentEvents';
+import { useRoute } from '@react-navigation/native';
+import { TrackEvent } from '../../util/segmentEvents';
 import moment from 'moment';
-import {setSteps} from '../../redux/actions/rnplActions';
-import {initalState} from '../../redux/reducers/rnplReducer';
-import {getUserReferrals} from '../../redux/actions/referralAction';
+import { setSteps } from '../../redux/actions/rnplActions';
+import { initalState } from '../../redux/reducers/rnplReducer';
+import { getUserReferrals } from '../../redux/actions/referralAction';
 import { GetAllBuddyInvites } from '../../services/network';
 import { getCurrentApplication } from '../../services/network';
 import { getEmergencyLoans } from '../../services/network';
-
-
-export default function NewHome({navigation}) {
+import { seletAllSavingsStats } from '../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { selectSolo } from '../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { selectBuddies } from '../../redux/reducers/store/buddy-savings/buddy-savings.selectors';
+import { selectWalletBalance } from '../../redux/reducers/store/wallet/wallet.selector';
+import { selectAllUserSavingsChellange } from '../../redux/reducers/store/savings-challenge/savings-challenge.selectors';
+export default function NewHome({ navigation }) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
   const user = useSelector((state) => state.getUserReducer);
@@ -80,6 +83,7 @@ export default function NewHome({navigation}) {
     (state) => state.getPaymentHistoryReducer,
   );
 
+  const route = useRoute();
   const [isProfileComplete, setIsProfileComplete] = useState(false);
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [name, setName] = useState('');
@@ -116,8 +120,30 @@ export default function NewHome({navigation}) {
 
   const layout = useWindowDimensions();
 
+  const stats = useSelector(seletAllSavingsStats)
+
+  const walletBalance = useSelector(selectWalletBalance)
+
+  const userSavingsChallenges = useSelector(selectAllUserSavingsChellange)
+
   const [documentsApproved, setDocumentsApproved] = useState(false)
 
+
+  const [amountSaved, setAmountSaved] = useState(0)
+  const buddies = useSelector(selectBuddies)
+  const user_ = useSelector(selectSolo)
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (route.name == 'Home') {
+        const filtered = userSavingsChallenges.filter(a => a.savings_type == 'solo_savings')
+          .reduce((b, c) => b + Number(c.amount_saved), 0)
+        setAmountSaved(Math.random())
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   const createChannel = () => {
     PushNotification.createChannel(
@@ -153,17 +179,30 @@ export default function NewHome({navigation}) {
 
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const getAllAloans = await getEmergencyLoans();
       const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
-      const loan =  await getCurrentApplication({id: loan_id})
+      const loan = await getCurrentApplication({ id: loan_id })
       const status = loan?.data?.data?.status
       console.log('Loan status', status)
-      if(status){
+      if (status) {
         setLoanStatus(status)
       }
     })()
   }, [])
+
+  const getLoanStatus = async () => {
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+    const loan = await getCurrentApplication({ id: loan_id })
+    const status = loan?.data?.data?.status
+    console.log('Loan status', status)
+    if (status) {
+      setLoanStatus(status)
+    }
+
+    return status
+  }
 
   useEffect(() => {
     async function fetchData() {
@@ -189,7 +228,7 @@ export default function NewHome({navigation}) {
 
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const allBuddies = await GetAllBuddyInvites();
       setAllBuddyInvites(allBuddies?.data?.buddyInvites)
     })()
@@ -200,7 +239,7 @@ export default function NewHome({navigation}) {
       const res = await me();
       console.log('The me res: ', res.data);
       if (res?.data) {
-        const userData = await getUserData();f
+        const userData = await getUserData(); f
         dispatch(getTotalSoloSavings());
         dispatch(getMaxLoanCap());
         // dispatch(getTotalBuddySavings());
@@ -262,6 +301,10 @@ export default function NewHome({navigation}) {
   }, [login]);
 
   // dispatch events here
+
+  useEffect(() => {
+    dispatch(setCurrentUserUserActionAsync())
+  }, [])
   useEffect(() => {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
@@ -277,16 +320,27 @@ export default function NewHome({navigation}) {
     // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
 
+  // useEffect(() => {
+  //   if (getMaxLoanCap1?.data) {
+  //     setSavings(getMaxLoanCap1?.data?.total_savings);
+  //     setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
+
+  //     setInstantLoan(
+  //       Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
+  //     );
+  //   }
+  // }, [getMaxLoanCap1]);
   useEffect(() => {
-    if (getMaxLoanCap1?.data) {
-      setSavings(getMaxLoanCap1?.data?.total_savings);
-      setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
-     
-      setInstantLoan(
-        Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
-      );
-    }
-  }, [getMaxLoanCap1]);
+    // if (getMaxLoanCap1?.data) {
+    setSavings(stats?.total_savings);
+    setWallet(stats?.wallet_available_balance);
+
+    setInstantLoan(
+      Number(stats?.emergency_loan_amount_to_repay),
+    );
+    // }
+
+  }, [walletBalance]);
 
   // useEffect(() => {
   //   console.log('The Wallet: ', getWallet);
@@ -300,15 +354,22 @@ export default function NewHome({navigation}) {
         savings <= 0
           ? 'Save now to make your rent work for you'
           : 'Great job on your rent savings',
-      amount: savings ? formatNumber(Number(savings).toFixed(2)) : '0.00',
+      amount: 
+        formatNumber(
+          Number(user_?.filter(a => a?.savings_type == 'solo_savings')
+            .reduce((b, c) => b + Number(c.amount_saved), 0))
+          +
+          Number(buddies?.reduce((a, b) => a + b?.amount_saved, 0))
+          + Number(userSavingsChallenges?.reduce((a, b) => a + b.amount_saved, 0))
+            ).concat('.00') || '0.00',
       color: COLORS.primary,
       actionText: savings == 0 ? 'Save Now' : 'Fund savings',
       actionClick: () =>
         savings == 0
           ? navigation.navigate('SavingsHome')
           : isProfileComplete
-          ? setAddFundsToSavingsModal(true)
-          : setCompleteProfileModal(true),
+            ? setAddFundsToSavingsModal(true)
+            : setCompleteProfileModal(true),
       cardClick: () => {
         TrackEvent('Home-Card-Savings');
         navigation.navigate('SavingsHome');
@@ -321,7 +382,7 @@ export default function NewHome({navigation}) {
         wallet <= 0
           ? 'Fund your wallet to transact on Kwaba'
           : 'Save and pay bills from your wallet',
-      amount: wallet ? formatNumber(Number(wallet).toFixed(2)) : '0.00',
+      amount: walletBalance ? formatNumber(Number(walletBalance).toFixed(2)) : '0.00',
       color: COLORS.dark,
       actionText: wallet == 0 ? 'Add Funds' : 'Deposit',
       actionClick: () => {
@@ -381,15 +442,15 @@ export default function NewHome({navigation}) {
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
-          : navigation.navigate('RentNowPayLaterDashboard'),
+            ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
+            : navigation.navigate('RentNowPayLaterDashboard'),
       cardClick: () => {
         TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
           : rentalFinance == 0
-          ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
-          : navigation.navigate('RentNowPayLaterDashboard');
+            ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
+            : navigation.navigate('RentNowPayLaterDashboard');
       },
     },
   ];
@@ -486,7 +547,7 @@ export default function NewHome({navigation}) {
         // 'Apply for rental finanace and pay back in easy monthly installments',
         'Split your bulk rent into easy monthly payments.',
       // route: () => navigation.navigate('SaveToOwn'),
-      route: () => navigation.navigate('Rent', { status: loanStatus}),
+      route: () => navigation.navigate('Rent', { status: loanStatus }),
     },
   ];
   const getUser = async () => {
@@ -494,6 +555,9 @@ export default function NewHome({navigation}) {
     const user = JSON.parse(userData).user;
     return user;
   };
+
+  console.log('params', loanStatus)
+
 
   const handleRentalLoanClick = async () => {
 
@@ -522,11 +586,12 @@ export default function NewHome({navigation}) {
     // navigation.navigate('CreditOnboard');
 
     const rnplStep = await AsyncStorage.getItem('rnplSteps')
+    const loanStats = await getLoanStatus()
     const parsed = JSON.parse(rnplStep)
 
-    console.log('params', loanStatus)
+    console.log('params state', loanStats)
     const userDetails = await AsyncStorage.getItem(`userEmailAndBvn-${user.id}`);
-   
+
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
     } else {
@@ -543,15 +608,24 @@ export default function NewHome({navigation}) {
         navigation.navigate('creditAwaiting');
       } else if (getCreditScoreDetails == 'creditDashboard') {
         navigation.navigate('CreditAwaiting');
-      } else if (loanStatus == 2) {
+      } else if (loanStats == 2) {
         navigation.navigate('VerifyingDocuments')
-      } else {
-       
-        navigation.navigate('RnplSteps');
+      } else if(loanStats == 7){
+        navigation.navigate('RentNowPayLaterDashboard')
+      } else if(loanStats == 1){
+        navigation.navigate('RentalLoanFormCongratulation')
+      }else if(loanStats == 1){
+        navigation.navigate('RentalLoanFormCongratulation')
+      }
+      else {
+
+        // navigation.navigate('RnplSteps');
+        // RentalLoanFormCongratulation
+        navigation.navigate('VerifyingDocuments');
       }
     }
   };
-  
+
 
   const OFFSET = 30;
   const ITEM_WIDTH = Dimensions.get('window').width - OFFSET * 4;
@@ -561,8 +635,8 @@ export default function NewHome({navigation}) {
   const TransactionHistory = () => {
     const slicedTransaction = getPaymentHistoryReducer?.data?.slice(0, 7);
     return (
-      <View style={{paddingHorizontal: 25, paddingBottom: 20, marginTop: 20}}>
-        <Text style={{fontSize: 15, fontWeight: 'bold', color: COLORS.dark}}>
+      <View style={{ paddingHorizontal: 25, paddingBottom: 20, marginTop: 20 }}>
+        <Text style={{ fontSize: 15, fontWeight: 'bold', color: COLORS.dark }}>
           Recent Transactions
         </Text>
         <View
@@ -593,7 +667,7 @@ export default function NewHome({navigation}) {
                     top: 0,
                   }}
                 />
-                <View style={{paddingLeft: 40, marginTop: -5}}>
+                <View style={{ paddingLeft: 40, marginTop: -5 }}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -652,7 +726,7 @@ export default function NewHome({navigation}) {
                 marginRight: 10,
               }}>
               <Text
-                style={{fontWeight: 'bold', fontSize: 15, color: COLORS.white}}>
+                style={{ fontWeight: 'bold', fontSize: 15, color: COLORS.white }}>
                 {name.charAt(0)}
               </Text>
             </View>
@@ -709,7 +783,7 @@ export default function NewHome({navigation}) {
                 justifyContent: 'center',
               }}>
               <Image
-                style={{width: 25, marginRight: 11}}
+                style={{ width: 25, marginRight: 11 }}
                 source={icons.messageIcon}
                 resizeMode="contain"
               />
@@ -721,9 +795,9 @@ export default function NewHome({navigation}) {
                   color: '#FB8B24',
                   fontWeight: 'bold',
                 }}>
-               Accept pending buddy invite{' '}
-                <Text style={{color: COLORS.dark}}>
-                 from friends {'\n'} to meet your target
+                Accept pending buddy invite{' '}
+                <Text style={{ color: COLORS.dark }}>
+                  from friends {'\n'} to meet your target
                 </Text>
               </Text>
             </View>
@@ -761,7 +835,7 @@ export default function NewHome({navigation}) {
                 justifyContent: 'center',
               }}>
               <Image
-                style={{width: 25, marginRight: 11}}
+                style={{ width: 25, marginRight: 11 }}
                 source={icons.profile}
                 resizeMode="contain"
               />
@@ -774,7 +848,7 @@ export default function NewHome({navigation}) {
                   fontWeight: 'bold',
                 }}>
                 Complete your profile{' '}
-                <Text style={{color: COLORS.dark}}>
+                <Text style={{ color: COLORS.dark }}>
                   to unlock the full {'\n'}power of Kwaba.
                 </Text>
               </Text>
@@ -816,7 +890,7 @@ export default function NewHome({navigation}) {
                 name="md-mail-unread"
                 size={26}
                 color={COLORS.orange}
-                style={{marginRight: 11}}
+                style={{ marginRight: 11 }}
               />
               <Text
                 style={{
@@ -827,7 +901,7 @@ export default function NewHome({navigation}) {
                   fontWeight: 'bold',
                 }}>
                 Verify your E-mail{' '}
-                <Text style={{color: COLORS.dark}}>
+                <Text style={{ color: COLORS.dark }}>
                   to better secure{'\n'}your account.
                 </Text>
               </Text>
@@ -865,18 +939,18 @@ export default function NewHome({navigation}) {
               onRefresh={onRefresh}
             />
           }>
-          <View style={{width: '100%', marginVertical: 10}}>
+          <View style={{ width: '100%', marginVertical: 10 }}>
             <ScrollView
               horizontal={true}
               decelerationRate={'normal'}
               snapToInterval={ITEM_WIDTH}
-              style={{paddingHorizontal: 0}}
+              style={{ paddingHorizontal: 0 }}
               showsHorizontalScrollIndicator={false}
               bounces={false}
               disableIntervalMomentum
               onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {x: scrollX}}}],
-                {useNativeDriver: false},
+                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                { useNativeDriver: false },
               )}
               scrollEventThrottle={12}>
               {slides.map((item, idx) => {
@@ -903,7 +977,7 @@ export default function NewHome({navigation}) {
                       marginRight:
                         idx === slides.length - 1 ? OFFSET : undefined,
                       opacity: opacity,
-                      transform: [{scale: translate}],
+                      transform: [{ scale: translate }],
                     }}>
                     <TouchableOpacity
                       activeOpacity={0.9}
@@ -984,7 +1058,7 @@ export default function NewHome({navigation}) {
                         </TouchableOpacity> */}
                         </View>
 
-                        <View style={{marginTop: 10}}>
+                        <View style={{ marginTop: 10 }}>
                           <View
                             style={{
                               flexDirection: 'row',
@@ -1002,7 +1076,7 @@ export default function NewHome({navigation}) {
                           </View>
                         </View>
 
-                        <View style={{marginTop: 10}}>
+                        <View style={{ marginTop: 10 }}>
                           <Text
                             style={{
                               fontSize: 20,
@@ -1043,7 +1117,7 @@ export default function NewHome({navigation}) {
           </View> */}
           </View>
 
-          <View style={{width: '100%', flex: 1}}>
+          <View style={{ width: '100%', flex: 1 }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -1081,7 +1155,7 @@ export default function NewHome({navigation}) {
                         <Image
                           resizeMode="contain"
                           source={item.image}
-                          style={{width: 25, height: 25}}
+                          style={{ width: 25, height: 25 }}
                         />
                       )}
                     </TouchableOpacity>
@@ -1111,8 +1185,8 @@ export default function NewHome({navigation}) {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      if(item.title == 'Pay for rent'){
-                          handleRentalLoanClick()
+                      if (item.title == 'Pay for rent') {
+                        handleRentalLoanClick()
                       } else {
                         item.route()
                       }
@@ -1138,10 +1212,10 @@ export default function NewHome({navigation}) {
                       <Image
                         resizeMode="cover"
                         source={item.img}
-                        style={{width: 25, height: 25, borderRadius: 25}}
+                        style={{ width: 25, height: 25, borderRadius: 25 }}
                       />
                     </View>
-                    <View style={{marginTop: 20}}>
+                    <View style={{ marginTop: 20 }}>
                       <Text
                         style={{
                           fontSize: 16,
@@ -1192,8 +1266,8 @@ export default function NewHome({navigation}) {
                       //     setCompleteProfileModal(true);
                       //   }
                       // }}
-                      style={{overflow: 'hidden', borderRadius: 10}}>
-                      <View style={{padding: 20}}>
+                      style={{ overflow: 'hidden', borderRadius: 10 }}>
+                      <View style={{ padding: 20 }}>
                         <Text
                           style={{
                             color:
@@ -1333,7 +1407,7 @@ export default function NewHome({navigation}) {
           onRequestClose={() => setCompleteProfileModal(!completeProfileModal)}
           visible={completeProfileModal}
           navigation={navigation}
-          // screenName={route.name}
+        // screenName={route.name}
 
         />
 
@@ -1369,15 +1443,15 @@ export default function NewHome({navigation}) {
         <AmountModal
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
-          // setShowPaymentType={(bol) => setShowPaymentType(bol)}
+        // setShowPaymentType={(bol) => setShowPaymentType(bol)}
         />
 
         {showWalletModal && (
           <WalletPaymentModal
             onRequestClose={() => setShowWalletModal(!showWalletModal)}
             visible={showWalletModal}
-            // setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
-            // setShowAmountModal={(bol) => setShowAmountModal(bol)}
+          // setAddFundsToSavingsModal={(bol) => setAddFundsToSavingsModal(bol)}
+          // setShowAmountModal={(bol) => setShowAmountModal(bol)}
           />
         )}
       </View>

@@ -61,7 +61,7 @@ const VerifyingDocuments = ({navigation, route}) => {
 
       const applicationStatus = applicationIDCallRes.data.data.status;
 
-      if (applicationStatus == 3) {
+      if (applicationStatus == 4) {
         setSpinner(false);
         let stepsData = {
           application_form: 'done',
@@ -91,9 +91,7 @@ const VerifyingDocuments = ({navigation, route}) => {
           'Document Verification',
           'We are still verifiying your documents, please check back later.', 
         );
-        setTimeout(() => {
-          navigation.navigate('RnplSteps')
-        }, 3000);
+      
       }
     } catch (error) {
       setSpinner(false);

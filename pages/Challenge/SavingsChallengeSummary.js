@@ -15,6 +15,7 @@ import {COLORS, images} from '../../util';
 import * as Animatable from 'react-native-animatable';
 import Spinner from 'react-native-loading-spinner-overlay';
 import PreferenceModal from './PreferenceModal';
+import { updateSavingsChallange } from '../../redux/reducers/store/savings-challenge/savings-challenge.action';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import {
   joinSavingsChallenge,
@@ -29,6 +30,7 @@ import { getTotalSoloSavings } from '../../redux/actions/savingsActions';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import { updateState } from '../../redux/actions/savingsActions';
+import { setUserSavingsChallenge } from '../../redux/reducers/store/savings-challenge/savings-challenge.action';
 
 
 const {width, height} = Dimensions.get('screen');
@@ -69,6 +71,8 @@ export default function SavingsChallengeSummary(props) {
   });
 
   const [savingsType, setSavingsType] = useState(true);
+
+  console.log('Savings props', props.data)
 
   const toggleSwitch = () => {
     //SAVING CHALLENGE CHNAGED TO AUTOMATICE BY DEFAULT AND MAKING IT
@@ -139,6 +143,23 @@ export default function SavingsChallengeSummary(props) {
         response.response.data.meta.error == 'User has already joined challenge'
       ) {
         dispatch(getTotalSoloSavings())
+        dispatch(setUserSavingsChallenge({
+          ...props.data, 
+          challenge_id: props.data.id,
+          id: data.id,
+          savings_type: 'savings_challenge',
+          amount_saved: 0
+        }))
+
+        dispatch(
+          updateSavingsChallange({
+            ...props.data, 
+            challenge_id: props.data.id,
+            id: data.id,
+            savings_type: 'savings_challenge',
+            amount_saved: 0
+          })
+        )
         onRequestClose();
         showSuccess();
       } else {
@@ -307,9 +328,9 @@ export default function SavingsChallengeSummary(props) {
                       fontFamily: 'Circular Std',
                       textAlign: 'center',
                     }}>
-                    To help you reach your rent goal, upon completion of this
-                    challenge, you will have to move your money to a savings
-                    plan
+                    To help you reach your savings goal,
+                    you can only withdraw upon completion 
+                    of this challenge
                   </Text>
                 </View>
               </View>

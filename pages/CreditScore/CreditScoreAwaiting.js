@@ -25,7 +25,7 @@ export default function CreditScoreAwaiting({navigation, route}) {
 
     try {
       const res = await creditScoreFetch(route?.params);
-      // console.log('The Res: ', res.data);
+      console.log('The Res: ', route.params);
       if (res?.data?.history?.length) {
         setSpinner(false);
         navigation.navigate('CreditScoreDashboard', route?.params);

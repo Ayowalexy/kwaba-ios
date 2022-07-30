@@ -33,9 +33,7 @@ RNPaystack.init({
 
 // text.replace(/[- #+*;,.<>\{\}\[\]\\\/]/gi, '')
 
-const amountSchema = yup.object().shape({
-  amount: yup.string().required('Please provide amount'),
-});
+
 
 export default function AmountModalChallenge(props) {
   const {
@@ -54,6 +52,10 @@ export default function AmountModalChallenge(props) {
   const [resDataObj, setResDataObj] = useState('');
   const dispatch = useDispatch();
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
+
+  const amountSchema = yup.object().shape({
+    amount: yup.number().required('Please provide amount').max(minimumAmount, `The target amount is ${minimumAmount}`),
+  });
 
   const handleClose = () => {
     onRequestClose();
@@ -77,6 +79,8 @@ export default function AmountModalChallenge(props) {
     } = props;
 
     const hasError = errors[name] && touched[name];
+
+    console.log('hasError', hasError)
 
     return (
       <>
@@ -116,7 +120,7 @@ export default function AmountModalChallenge(props) {
           />
         </View>
 
-        {hasError && <Text style={styles.errorText}>{errors[name]}</Text>}
+        {Number(value) > Number(target) && <Text style={styles.errorText}>Target amount is ₦{formatNumber(minimumAmount)}</Text>}
       </>
     );
   };

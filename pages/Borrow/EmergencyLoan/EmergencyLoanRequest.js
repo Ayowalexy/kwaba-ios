@@ -33,6 +33,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getBankFromStorageReducer} from '../../../redux/reducers/bankReducer';
 import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
 import DisbursementModal from './DisbursementModal';
+import { setEmergencyLoans } from '../../../redux/reducers/store/emergency-loan/emergency-loans.action';
+
+
 
 const EmergencyLoanRequest = ({route, navigation}) => {
   const dispatch = useDispatch();
@@ -148,6 +151,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
         setSpinner(false);
         setSuccessModal(true);
         setVisible(false);
+        dispatch(setEmergencyLoans(loanAmount))
         console.log('Success');
       } else {
         setSpinner(false);

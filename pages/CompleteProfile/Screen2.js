@@ -34,14 +34,14 @@ const completeProfileSchema = yup.object().shape({
     })
     .typeError("please enter a valid date")
     .required()
-    .max("2006-01-01", "You must be at least 16 years old to continue")
+    .max("01-01-2006", "You must be at least 16 years old to continue")
 });
 
 
 const Screen2 = ({ navigation }) => {
   // const [date, setDate] = useState(new Date());
   // const [showDate, setShowDate] = useState(false);
-  const [date, setDate] = useState('2000-05-15')
+  const [date, setDate] = useState('01-01-2005')
   const [open, setOpen] = useState(false)
 
   // getting the age of the user??
@@ -86,7 +86,7 @@ const Screen2 = ({ navigation }) => {
             date={date}
             mode="date"
             placeholder="select date"
-            format="YYYY-MM-DD"
+            format="DD-MM-YYYY"
             confirmBtnText="Confirm"
             cancelBtnText="Cancel"
             customStyles={{

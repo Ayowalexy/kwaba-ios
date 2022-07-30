@@ -25,6 +25,9 @@ import SubsequentModal from './SubsequentModal';
 import DepositWalletModal from './DepositWalletModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { setWalletbalance } from '../../../redux/reducers/store/wallet/wallet.actions';
+import { setSoloSavings } from '../../../redux/reducers/store/solo-savings/solo-savings.actions';
+import { setCurrentUserUserActionAsync } from '../../../redux/reducers/store/user/user.types';
 import {
   completeSavingsPayment,
   getInterestRateForSavingsAndBuddy,
@@ -41,6 +44,8 @@ import AutoNoPaymentModal from '../../../components/ConfirmModalsForSaving/AutoN
 export default function Screen3({ navigation, route }) {
 
   const [soloSavingsRate, setSoloSavingRate] = useState('');
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const [walletBalance, setWalletBalance] = useState(0);
 
   const store = useSelector((state) => state.soloSavingReducer);
   const dispatch = useDispatch();
@@ -90,6 +95,8 @@ export default function Screen3({ navigation, route }) {
 
   const [paymentTypeValue, setPaymentTypeValue] = useState('');
 
+  const [soloData, setSoloData] = useState('')
+
   const [showManualNoPaymentModal, setShowManualNoPaymanetModal] =
     useState(false);
 
@@ -106,6 +113,14 @@ export default function Screen3({ navigation, route }) {
     useState(0);
   const [unlockedSavingsInterestValue, setUnlockedSavingsInterestValue] =
     useState(0);
+
+
+    
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
 
   useEffect(() => {
 
@@ -165,11 +180,12 @@ export default function Screen3({ navigation, route }) {
       subText: 'You have successfully funded your savings',
       name: 'SoloSavingDashBoard',
       id: verifyData.id,
+      amount_saved: Math.floor(verifyData.amount)
 
     });
   };
 
-  console.log(route?.params)
+  console.log("route?.params", route?.params)
 
   const createSavings = async (bol, paymentChannel) => {
     // ebuka resume here
@@ -188,6 +204,9 @@ export default function Screen3({ navigation, route }) {
     const response = await userCreateSavings(data);
     console.log('this has created savings successfully');
     setSpinner(false);
+
+
+   
     if (!response) return [];
 
     if (bol) {
@@ -198,6 +217,17 @@ export default function Screen3({ navigation, route }) {
         channel: paymentChannel,
         purpose: 'savings',
       };
+
+      const _soloData = {
+        name: data.savings_name,
+        amount_saved: route.params.amount,
+        target_amount: data.target_amount,
+        id: vData.id,
+        savings_type: 'solo_savings'
+      }
+
+      setSoloData(_soloData)
+
       await verifyPaymentRequest(payloadData, paymentChannel);
       console.log(
         'payment to create savings verified successfully',
@@ -209,6 +239,7 @@ export default function Screen3({ navigation, route }) {
         subText: 'Your savings plan has been created successfully',
         name: 'SoloSavingDashBoard',
         id: response?.data?.data.id,
+        amount_saved: Math.floor(verifyData.amount)
       });
     }
   };
@@ -224,11 +255,15 @@ export default function Screen3({ navigation, route }) {
       const res = await completeSavingsPayment(data);
 
       if (res.status == 200) {
+        // dispatch(setCurrentUserUserActionAsync())
+        dispatch(setSoloSavings(soloData))
+        dispatch(setWalletbalance(walletBalance - Number(amountToSaveNow).toFixed(0)))
+        console.log('Amount', walletBalance - Number(amountToSaveNow).toFixed(0))
         // console.log('Complete Paymentttttttttt: ', res?.data);
         await showSuccess();
       }
     } catch (error) {
-      console.log('The Error: ', error?.response?.data);
+      console.log('The Error: ', error);
     } finally {
       setSpinner(false);
     }
@@ -243,6 +278,7 @@ export default function Screen3({ navigation, route }) {
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
+      console.log("verifyData", verifyData)
       setVerifyData({ ...verifyData, id: data.savings_id });
       if (paymentChannel == 'wallet') {
         const payload = {
@@ -274,9 +310,14 @@ export default function Screen3({ navigation, route }) {
     }
   };
 
+
   const handlePaymentRoute = async (value) => {
     setSpinner(true);
     if (value == 'wallet') {
+        if(Number(amountToSaveNow) > walletBalance){
+          setSpinner(false)
+          return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
+        }
       createSavings(true, value);
     } else {
       setChannel(value);
@@ -580,6 +621,9 @@ export default function Screen3({ navigation, route }) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
+            // dispatch(setCurrentUserUserActionAsync())
+            dispatch(setSoloSavings(soloData))
+
             const data = {
               amount: verifyData.amount,
               savings_id: verifyData.id,

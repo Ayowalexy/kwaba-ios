@@ -57,8 +57,9 @@ const RentalLoanOfferTest = ({navigation}) => {
       const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
       const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
 
+      console.log('Approved application', applicationIDCallRes.data.data)
 
-      setApprovedAmount(applicationIDCallRes.data.data.loanable_amount);
+      setApprovedAmount(applicationIDCallRes.data.data.approvedamount);
       setMonthlyPayment(applicationIDCallRes.data.data.monthly_repayment);
       setDuration(applicationIDCallRes.data.data.repayment_plan);
     };
@@ -321,7 +322,7 @@ const RentalLoanOfferTest = ({navigation}) => {
                   style={[
                     {fontWeight: 'bold', color: '#465969', fontSize: 12},
                   ]}>
-                  ₦2,500
+                  ₦{formatNumber(`${Number(approvedAmount) * 0.05}`)}
                 </Text>
               </View>
             </View>

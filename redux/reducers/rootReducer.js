@@ -1,5 +1,6 @@
 import {combineReducers} from 'redux';
 import {loginReducer, getUserReducer} from './userReducers';
+import emergencyReducer from './store/emergency/emergency.reducer';
 import {
   soloSavingReducer,
   getSoloSavingsReducer,
@@ -10,6 +11,10 @@ import {
   getOneSoloSavingsTransactionReducer,
   updateStateReducer,
 } from './savingsReducer';
+
+import walletReducer from './store/wallet/wallet.reducer';
+import soloSavinsReducer_ from './store/solo-savings/soloSavingsReducer';
+import buddySavingsReducer from './store/buddySavings/buddySavings.reducer';
 import fileUploadReducer from './documentUploadReducers';
 import businessFileUploadReducer from './businessdocumentUploadReducers';
 import {applyForEmergencyLoanReducer} from './emergencyLoanReducer';
@@ -33,8 +38,13 @@ import {
   getOneUserSavingsChallengeReducer,
 } from './savingsChallengeReducer';
 
-import stageReducer from './store/stageReducer';
+import savingChellengeReducer from './store/savings-challenge/savings-challenge.reducer';
 
+import stageReducer from './store/stageReducer';
+import emergencyLoansReducer from './store/emergency-loan/emergency-loan.reducer'; 
+
+import newSoloSavingsReducer from './store/solo-savings/solo-savings-reducer';
+import buddySavinsReducer_ from './store/buddy-savings/buddy.savings.reducer';
 import {stepsReducer} from './rnplReducer';
 import {getUserReferralsReducer} from './referralReducer';
 
@@ -67,5 +77,18 @@ export const rootReducer = combineReducers({
   getUserReferralsReducer: getUserReferralsReducer,
   getPaymentHistoryReducer: getPaymentHistoryReducer,
   updateStateReducer: updateStateReducer,
-  stage: stageReducer
+  stage: stageReducer,
+  emergency: emergencyReducer,
+
+
+
+
+  //NEW BUDDY STATE
+  buddySavings: buddySavingsReducer,
+  solo_savings: newSoloSavingsReducer,
+  soloSavings: soloSavinsReducer_,
+  buddy_savings: buddySavinsReducer_,
+  savings_challenge: savingChellengeReducer,
+  wallet_balance: walletReducer,
+  emergency_loans: emergencyLoansReducer
 });

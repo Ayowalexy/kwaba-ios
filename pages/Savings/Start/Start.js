@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -10,18 +10,22 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../../../util/index';
-import {currencyFormat, formatNumber} from '../../../util/numberFormatter';
+import { COLORS, images } from '../../../util/index';
+import { currencyFormat, formatNumber } from '../../../util/numberFormatter';
 import designs from './style';
-import {useSelector, useDispatch} from 'react-redux';
-import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
+import { useSelector, useDispatch } from 'react-redux';
+import { getMaxLoanCap } from '../../../redux/actions/savingsActions';
 import ComingSoon from '../../../components/ComingSoon';
-import {TrackEvent} from '../../../util/segmentEvents';
+import { TrackEvent } from '../../../util/segmentEvents';
 import axios from 'axios';
 import urls from '../../../services/routes';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import { seletAllSavingsStats } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { selectAllSavingsChallenge } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { selectAllUserSavingsChellange } from '../../../redux/reducers/store/savings-challenge/savings-challenge.selectors';
+import { selectBuddies } from '../../../redux/reducers/store/buddy-savings/buddy-savings.selectors';
+import { selectSolo } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { useRoute } from '@react-navigation/native';
 
 
 const getToken = async () => {
@@ -30,7 +34,7 @@ const getToken = async () => {
   return token;
 };
 
-export default function Start({navigation}) {
+export default function Start({ navigation }) {
   const dispatch = useDispatch();
   const store = useSelector((state) => state.getSoloSavingsReducer);
   const store2 = useSelector((state) => state.getBuddySavingsReducer);
@@ -45,19 +49,55 @@ export default function Start({navigation}) {
   const allSavings = useSelector((state) => state.getSoloSavingsReducer);
   const [allSavingsChallenges, setAllSavingschallenges] = useState([])
   const [joinSavings, setJoinedSavings] = useState([])
+  const userSavingStats = useSelector(seletAllSavingsStats)
+  const usersJoinedSavingsChallenge = useSelector(selectAllSavingsChallenge)
+  const buddies = useSelector(selectBuddies)
+  const user = useSelector(selectSolo)
+  const [amountSaved, setAmountSaved] = useState('')
+  const userSavingsChallenges = useSelector(selectAllUserSavingsChellange)
+
+  const route = useRoute();
+  console.log('Bu', userSavingsChallenges)
+
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
-  }, []);
+  }, [user]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (route.name == 'SavingsHome') {
+        const filtered = user.filter(a => a.savings_type == 'solo_savings')
+          .reduce((b, c) => b + Number(c.amount_saved), 0)
+        setAmountSaved(filtered)
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
+  console.log('stats', userSavingStats)
 
   useEffect(() => {
     const data = getMaxLoanCap1?.data;
 
-    setTotalBalance(data?.total_savings);
-    setTotalSaving(data?.total_savings);
-    setSoloSaving(data?.total_solo_savings);
-    setBuddySaving(data?.total_buddy_savings);
+    // setTotalBalance(data?.total_savings);
+    // setTotalSaving(data?.total_savings);
+    // setSoloSaving(data?.total_solo_savings);
+    // setBuddySaving(data?.total_buddy_savings);
+
+
   }, [store]);
+
+  useEffect(() => {
+    setTotalBalance(userSavingStats?.total_savings);
+    setTotalSaving(userSavingStats?.total_savings);
+    setSoloSaving(userSavingStats?.total_solo_savings);
+    setBuddySaving(userSavingStats?.total_buddy_savings);
+
+
+  }, [userSavingStats]);
+
 
 
 
@@ -93,8 +133,8 @@ export default function Start({navigation}) {
 
   useEffect(() => {
     (async () => {
-        await getAllSavingsChallenges()
-    })()  
+      await getAllSavingsChallenges()
+    })()
   }, [])
 
   return (
@@ -130,7 +170,7 @@ export default function Start({navigation}) {
         }}>
         {/* <ImageBackground style={designs.backgroundImg} source={images.group4585}> */}
 
-        <View style={{paddingVertical: 10}}>
+        <View style={{ paddingVertical: 10 }}>
           <Text
             style={{
               fontFamily: 'CircularStd',
@@ -168,29 +208,7 @@ export default function Start({navigation}) {
             scrollEnabled
             horizontal
             showsHorizontalScrollIndicator={false}>
-            <View style={designs.smallBox}>
-              <Text
-                style={{
-                  fontFamily: 'CircularStd',
-                  fontSize: 9,
-                  fontWeight: '600',
-                  lineHeight: 11,
-                  color: 'white',
-                }}>
-                Total Balance
-              </Text>
-              <Text
-                style={{
-                  fontFamily: 'CircularStd',
-                  fontSize: 17,
-                  fontWeight: 'bold',
-                  lineHeight: 22,
-                  color: 'white',
-                  marginTop: 4,
-                }}>
-                ₦{formatNumber(totalBalance) || '0.00'}
-              </Text>
-            </View>
+            
 
             <View style={designs.smallBox}>
               {/* <BlurView
@@ -219,7 +237,16 @@ export default function Start({navigation}) {
                   color: 'white',
                   marginTop: 4,
                 }}>
-                ₦{formatNumber(totalSaving) || '0.00'}
+                {/* ₦{formatNumber(totalSaving) || '0.00'} */}
+                ₦{
+                  formatNumber(
+                    Number(
+                      user.filter(a => a?.savings_type == 'solo_savings')
+                        .reduce((b, c) => b + Number(c.amount_saved), 0))
+                    +
+                    Number(buddies.reduce((a, b) => a + b.amount_saved, 0))
+                    + Number(userSavingsChallenges.reduce((a, b) => a + b.amount_saved, 0))
+                  ) || '0.00'}
               </Text>
               {/* </BlurView> */}
             </View>
@@ -289,7 +316,10 @@ export default function Start({navigation}) {
                       paddingHorizontal: 10,
                     },
                   ]}>
-                  {soloSaving == 0 || !soloSaving ? (
+                  {Number(user.filter(a => a?.savings_type == 'solo_savings')
+                    .reduce((b, c) => b + Number(c.amount_saved), 0)) == 0
+                    || !Number(user.filter(a => a.savings_type == 'solo_savings')
+                      .reduce((b, c) => b + Number(c.amount_saved), 0)) ? (
                     <Text
                       style={[
                         designs.bodyText,
@@ -315,7 +345,9 @@ export default function Start({navigation}) {
                           marginRight: 8,
                         },
                       ]}>
-                      ₦{formatNumber(soloSaving)}
+                      ₦{formatNumber(
+                        user.filter(a => a?.savings_type == 'solo_savings')
+                          .reduce((b, c) => b + Number(c.amount_saved), 0))}
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />
@@ -340,14 +372,14 @@ export default function Start({navigation}) {
               <View>
                 <Text style={designs.cardHeader}>Buddy{'\n'}Savings</Text>
                 <Text style={designs.bodyText}>
-                Save towards your rent with{'\n'}your flatmates or spouse
+                  Save towards your rent with{'\n'}your flatmates or spouse
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
                     TrackEvent('Buddy Saving');
                     // navigation.navigate('BuddySaving1');
                     navigation.navigate(
-                      buddySaving == 0 ? 'BuddySaving1' : 'BuddyLists',
+                      buddies.length == 0 ? 'BuddySaving1' : 'BuddyLists',
                     );
 
                     // Alert.alert(
@@ -368,7 +400,7 @@ export default function Start({navigation}) {
                       padding: 5,
                     },
                   ]}>
-                  {buddySaving == 0 || !buddySaving ? (
+                  {Number(buddies.reduce((a, b) => a + b.amount_saved, 0)) == 0 || !Number(buddies.reduce((a, b) => a + b.amount_saved, 0)) ? (
                     <Text
                       style={[
                         designs.bodyText,
@@ -394,7 +426,7 @@ export default function Start({navigation}) {
                           marginRight: 8,
                         },
                       ]}>
-                      ₦{formatNumber(buddySaving)}
+                      ₦{formatNumber(buddies.reduce((a, b) => a + b.amount_saved, 0))}
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />
@@ -418,17 +450,17 @@ export default function Start({navigation}) {
               <View>
                 <Text style={designs.cardHeader}>Savings{'\n'}Challenge</Text>
                 <Text style={designs.bodyText}>
-                Save to meet your audacious goals{'\n'}with the big boys Challenge
+                  Save to meet your audacious goals{'\n'}with the big boys Challenge
 
                 </Text>
                 <TouchableOpacity
                   onPress={() => {
                     // navigation.navigate('BuddySaving1');
                     navigation.navigate(
-                      joinSavings?.length == 0 ? 'JoinChallengeList' : 'JoinChallengeDashboard',{
-                        id: joinSavings?.[0]?.challenge_id,
-                        amount: joinSavings?.[0]?.amount_saved
-                      }
+                      userSavingsChallenges?.length == 0 ? 'JoinChallengeList' : 'JoinChallengeDashboard', {
+                      id: userSavingsChallenges?.[0]?.challenge_id,
+                      amount: userSavingsChallenges?.[0]?.amount_saved
+                    }
                     );
 
                     // Alert.alert(
@@ -449,7 +481,7 @@ export default function Start({navigation}) {
                       padding: 5,
                     },
                   ]}>
-                  {joinSavings?.length == 0  ? (
+                  {userSavingsChallenges?.length == 0 ? (
                     <Text
                       style={[
                         designs.bodyText,
@@ -475,7 +507,7 @@ export default function Start({navigation}) {
                           marginRight: 8,
                         },
                       ]}>
-                      ₦{formatNumber(joinSavings[0]?.amount_saved)}
+                      ₦{formatNumber(userSavingsChallenges[0]?.amount_saved)}
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />

@@ -51,7 +51,7 @@ export default function OkraDebitMandate2({navigation}) {
 
       setExistingApplication(applicationId);
       console.log('here', applicationIDCallRes.data);
-      setmonthlyRepayment(applicationIDCallRes.data.data.approvedrepayment);
+      setmonthlyRepayment(applicationIDCallRes.data.data.approvedamount);
       const approved_repayment_plan =
         applicationIDCallRes.data.data.approved_repayment_plan;
       const repayment_start_date =
@@ -117,7 +117,9 @@ export default function OkraDebitMandate2({navigation}) {
   //   statusWebHook: '',
   // };
 
-  if (monthlyRepayment == null) {
+  // monthlyRepayment == null
+
+  if (monthlyRepayment) {
     return (
       <>
         <OkraView

@@ -51,7 +51,7 @@ const getDocuments = async () => {
   try {
     const uploadedDocumentsRes = await axios.get(
       // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
-      urls.applications.GET_DOCUMENTS,
+      urls.applications.GET_DOCUMENTS + `/${appId}`,
       {
         headers: {'Content-Type': 'application/json', Authorization: token},
       },
@@ -76,6 +76,7 @@ export default function AllDocuments({navigation}) {
   const [documentsToUpload, setDocumentsToUpload] = useState([])
   const [isBankStatement, setIsBankStatement] = useState(false);
 
+  const [appId, setAppId] = useState(0)
   const dispatch = useDispatch();
   const fileProgress = useSelector(
     (state) => state.fileUploadReducer.fileProgress,
@@ -154,13 +155,15 @@ export default function AllDocuments({navigation}) {
   const countDocuments = async () => {
     const token = await getToken();
     try {
-      const resp = await axios.get(urls.applications.GET_DOCUMENTS, {
+      const resp = await axios.get(urls.applications.GET_DOCUMENTS + `/${appId}`, {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
 
       
 
       setCount(resp.data.data.length);
+
+      console.log(token)
       console.log('number of uploaded documents', resp.data.data.length)
     } catch (error) {
       console.log(error);
@@ -202,6 +205,8 @@ export default function AllDocuments({navigation}) {
      
       console.log('The Application ID: ', applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
+
+      setAppId(applicationId)
 
       const formdata = new FormData();
       formdata.append('file', blob);
@@ -325,7 +330,7 @@ export default function AllDocuments({navigation}) {
               </Text>
             </View>
           ) : (
-            <Docs setCount={setCount} count={count} />
+            <Docs setCount={setCount} appId={appId} count={count} />
           )}
 
           {count >= 6 ? (

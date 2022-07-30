@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS, images} from '../../../util';
 import LinearGradient from 'react-native-linear-gradient';
+import { selectBuddies } from '../../../redux/reducers/store/buddy-savings/buddy-savings.selectors';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   getMaxLoanCap,
@@ -24,6 +25,7 @@ import {formatNumber} from '../../../util/numberFormatter';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
 import { GetAllBuddyInvites } from '../../../services/network';
 import DeleteModal from './BuddyInvitesModal'
+import { selectAllBuddySavings } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
 
 export default function BuddyLists({navigation}) {
   const dispatch = useDispatch();
@@ -32,6 +34,11 @@ export default function BuddyLists({navigation}) {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedInvite, setSelectedInvite] = useState(null)
   const [buddyList, setBuddyList] = useState([]);
+  const allBuddySavings = useSelector(selectAllBuddySavings)
+  const buddies = useSelector(selectBuddies)
+
+
+  console.log('buddies', buddies)
   
 
   useEffect(() => {
@@ -166,8 +173,8 @@ export default function BuddyLists({navigation}) {
             }}
             scrollEnabled
             showsVerticalScrollIndicator={false}>
-            {Boolean(allSavings?.data?.length) &&
-              allSavings?.data?.map((item, index) => {
+            {Boolean(buddies?.length) &&
+              buddies?.map((item, index) => {
                 return (
                   <TouchableOpacity
                     key={index}
@@ -367,8 +374,13 @@ export default function BuddyLists({navigation}) {
             }}>
             <Text style={{fontSize: 14, color: COLORS.light}}>₦{'  '}</Text>
             <Text>
-              {formatNumber(
+              {/* {formatNumber(
                 Number(getMaxLoanCap1.data.total_buddy_savings).toFixed(2),
+              )} */}
+               {formatNumber(
+                Number(
+                  buddies.reduce((a, b) => a + b.amount_saved, 0)
+                ).toFixed(2),
               )}
             </Text>
           </Text>

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,25 +10,27 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
-import {COLORS, images} from '../../../util';
+import { COLORS, images } from '../../../util';
 import LinearGradient from 'react-native-linear-gradient';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getMaxLoanCap,
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
 } from '../../../redux/actions/savingsActions';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {formatNumber} from '../../../util/numberFormatter';
+import { selectSolo } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { selectAllSoloSavings } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { formatNumber } from '../../../util/numberFormatter';
 
-const Item = ({item, navigation}) => {
+const Item = ({ item, navigation }) => {
   return (
     <TouchableOpacity
       style={[styles.card]}
       onPress={() => {
         dispatch(getOneSoloSavings(item?.id));
         dispatch(getOneSoloSavingsTransaction(item?.id));
-        navigation.navigate('SoloSavingDashBoard', {id: item?.id});
+        navigation.navigate('SoloSavingDashBoard', { id: item?.id });
         console.log('The ID: ', item?.id);
       }}>
       <View style={[styles.cardFlex]}>
@@ -37,7 +39,7 @@ const Item = ({item, navigation}) => {
             size={60}
             width={5}
             rotation={0}
-            style={{zIndex: 9, position: 'relative'}}
+            style={{ zIndex: 9, position: 'relative' }}
             fill={
               (Number(item?.amount_save) / Number(item?.target_amount)) * 100
             }
@@ -69,7 +71,7 @@ const Item = ({item, navigation}) => {
           </AnimatedCircularProgress>
         </View>
         <View style={[styles.cardText]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Text style={[styles.cardTitle]}>{item?.name}</Text>
           </View>
 
@@ -94,24 +96,45 @@ const Item = ({item, navigation}) => {
   );
 };
 
-export default function SavingLists({navigation}) {
+export default function SavingLists({ navigation, route }) {
   const dispatch = useDispatch();
+  const allUserSoloSavings = useSelector(selectAllSoloSavings)
+  const user = useSelector(selectSolo)
+  const [amount_saved_, setAmountSaved] = useState(0)
   const allSavings = useSelector((state) => state.getSoloSavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
+console.log('userss', user)
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (route.name == 'SavingLists') {
+        const filtered = user.filter(a => a.savings_type == 'solo_savings')
+          .reduce((b, c) => b + Number(c.amount_saved), 0)
+        setAmountSaved(filtered)
+
+        console.log('Fil', filtered)
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   useEffect(() => {
     dispatch(getMaxLoanCap());
+    console.log('All user solo savings', allUserSoloSavings)
+
     console.log('Length: ', allSavings?.data?.length);
   }, []);
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <TouchableOpacity
         style={[styles.card]}
         onPress={() => {
           dispatch(getOneSoloSavings(item?.id));
           dispatch(getOneSoloSavingsTransaction(item?.id));
-          navigation.navigate('SoloSavingDashBoard', {id: item?.id});
+          navigation.navigate('SoloSavingDashBoard', { id: item?.id });
         }}>
         <View style={[styles.cardFlex]}>
           <View style={[styles.progressContainer]}>
@@ -119,7 +142,7 @@ export default function SavingLists({navigation}) {
               size={60}
               width={5}
               rotation={0}
-              style={{zIndex: 9, position: 'relative'}}
+              style={{ zIndex: 9, position: 'relative' }}
               fill={
                 (Number(item?.amount_saved) / Number(item?.target_amount)) * 100
               }
@@ -151,13 +174,13 @@ export default function SavingLists({navigation}) {
             </AnimatedCircularProgress>
           </View>
           <View style={[styles.cardText]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Text style={[styles.cardTitle]}>{item?.name}</Text>
             </View>
 
             <View style={[styles.cardAmount]}>
               <View>
-                <Text style={[styles.amountText, {opacity: 0.5}]}>
+                <Text style={[styles.amountText, { opacity: 0.5 }]}>
                   Amount Saved
                 </Text>
                 <Text style={[styles.amountText]}>
@@ -166,7 +189,7 @@ export default function SavingLists({navigation}) {
               </View>
 
               <View>
-                <Text style={[styles.amountText, {opacity: 0.5}]}>
+                <Text style={[styles.amountText, { opacity: 0.5 }]}>
                   Target Amount
                 </Text>
                 <Text style={[styles.amountText]}>
@@ -190,7 +213,7 @@ export default function SavingLists({navigation}) {
           paddingVertical: 10,
           backgroundColor: COLORS.primary,
         }}>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <TouchableOpacity
             onPress={() => navigation.navigate('SavingsHome')}
             style={{
@@ -221,7 +244,7 @@ export default function SavingLists({navigation}) {
             paddingTop: 10,
             paddingBottom: 30,
           }}>
-          <Text style={{fontSize: 14, color: COLORS.white}}>
+          <Text style={{ fontSize: 14, color: COLORS.white }}>
             You've already saved
           </Text>
           <Text
@@ -231,10 +254,16 @@ export default function SavingLists({navigation}) {
               color: COLORS.white,
               fontStyle: 'italic',
             }}>
-            <Text style={{fontSize: 14, color: COLORS.light}}>₦{'  '}</Text>
+            <Text style={{ fontSize: 14, color: COLORS.light }}>₦{'  '}</Text>
             <Text>
-              {formatNumber(
+              {/* {formatNumber(
                 Number(getMaxLoanCap1?.data?.total_solo_savings).toFixed(2),
+              )} */}
+              {formatNumber(
+                Number(
+                  user.filter(a => a.savings_type == 'solo_savings')
+                    .reduce((b, c) => b + Number(c.amount_saved), 0)
+                ).toFixed(2)
               )}
             </Text>
           </Text>
@@ -254,7 +283,7 @@ export default function SavingLists({navigation}) {
       </View>
       <View style={[styles.cardContainer]}>
         <FlatList
-          data={Object.values(allSavings?.data).filter(
+          data={user?.filter(
             (v) => v?.savings_type == 'solo_savings',
           )}
           renderItem={renderItem}

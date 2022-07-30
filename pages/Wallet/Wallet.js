@@ -36,7 +36,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import QuickSaveListModal from '../Home/QuickSaveListModal';
 import QuickSaveModal from '../../components/QuickSaveModal';
 import SavingsOptionModal from '../../components/savingsOptionModal';
-
+import { selectWalletBalance } from '../../redux/reducers/store/wallet/wallet.selector';
+import { setWalletbalance } from '../../redux/reducers/store/wallet/wallet.actions';
+import { setCurrentUserUserActionAsync } from '../../redux/reducers/store/user/user.types';
 
 export default function Wallet(props) {
   const { navigation } = props;
@@ -76,7 +78,9 @@ export default function Wallet(props) {
 
   const [showTransactionsModal, setShowTransactionsModal] = useState(false)
 
+  const [_walletBalance, setWalletBalance] = useState(0)
 
+  const walletBalance = useSelector(selectWalletBalance)
 
 
   const getWallet = useSelector((state) => state.getUserWalletReducer);
@@ -84,6 +88,11 @@ export default function Wallet(props) {
     (state) => state.getUserWalletTransactionsReducer,
   );
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+
+  useEffect(() => {
+      dispatch(setCurrentUserUserActionAsync())
+  }, []);
+
 
 
   useEffect(() => {
@@ -103,7 +112,7 @@ export default function Wallet(props) {
     handleUpdate()
   }, [])
 
-  const handleUpdate  = async() => {
+  const handleUpdate = async () => {
     const res = await getUserWalletTransactionsAsync()
     setWalletTransactions(res)
     console.log('new transactions', res)
@@ -292,9 +301,15 @@ export default function Wallet(props) {
                     }}>
                     <Text style={{ fontSize: 30 }}>₦</Text>
 
-                    {toggleAmount
+                    {/* {toggleAmount
                       ? formatNumber(Number(amount).toFixed(2))
                       : formatNumber(Number(amount).toFixed(2)).replace(
+                        new RegExp('[0-9]', 'g'),
+                        'x',
+                      )} */}
+                    {toggleAmount
+                      ? formatNumber(Number(walletBalance).toFixed(2))
+                      : formatNumber(Number(walletBalance).toFixed(2)).replace(
                         new RegExp('[0-9]', 'g'),
                         'x',
                       )}
@@ -577,10 +592,11 @@ export default function Wallet(props) {
               console.log('wallet successfully funded');
 
               setAmount(Number(amount) + Number(amountToFund))
+              dispatch(setWalletbalance(Number(amount) + Number(amountToFund)))
               dispatch(getUserWalletTransactions());
-             setTimeout(() => {
+              setTimeout(() => {
                 handleUpdate()
-             }, 4000);
+              }, 4000);
 
               // dispatch(updateState())
               // navigation.navigate('PaymentSuccessful', {
@@ -624,7 +640,7 @@ export default function Wallet(props) {
         </View>
         <View>
           <ScrollView>
-            <SafeAreaView style={{ flex: 1 , marginBottom: 90}}>
+            <SafeAreaView style={{ flex: 1, marginBottom: 90 }}>
 
               {
                 walletTransaction?.reverse()?.map((item, idx) => (

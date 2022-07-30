@@ -540,6 +540,7 @@ const me = async () => {
 const createBuddySavings = async (data) => {
   // const url = apiUrl + '/api/v1/create_buddy_savings';
   const url = urls.savings.CREATE_BUDDY_SAVINGS;
+  console.log('Buddy data', data)
   const token = await getToken();
   try {
     const response = await axios.post(url, JSON.stringify(data), {
@@ -547,7 +548,7 @@ const createBuddySavings = async (data) => {
     });
     return response;
   } catch (error) {
-    console.log('here lies an error', error.response);
+    console.log('here lies an error', error);
     return error;
   }
 };
@@ -2430,6 +2431,8 @@ export const paystackBanks = async () => {
 };
 
 
+
+
 export {
   AcceptBuddyInvites,
   DeleteBuddyInvites,
@@ -2510,7 +2513,8 @@ export {
   updateUsersSavingsPlan,
   getCurrentApplication,
   getTransactionsHistory,
-  getUserWalletTransactionsAsync
+  getUserWalletTransactionsAsync,
+
   
 
 };

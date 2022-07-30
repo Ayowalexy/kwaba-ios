@@ -27,6 +27,7 @@ import {enterPinToLogin} from '../../services/network';
 import {useSelector, useDispatch} from 'react-redux';
 import {setLoginState} from '../../redux/actions/userActions';
 import analytics from '@segment/analytics-react-native';
+import { setCurrentUserUserActionAsync } from '../../redux/reducers/store/user/user.types';
 
 const {Value, Text: AnimatedText} = Animated;
 
@@ -196,6 +197,7 @@ export default function WelcomeBack({navigation, route}) {
           }),
         );
         console.log('Give am');
+        dispatch(setCurrentUserUserActionAsync())
         navigation.navigate('Home');
         setInvalidPin(false);
 
@@ -208,7 +210,8 @@ export default function WelcomeBack({navigation, route}) {
         // console.log('Something went wrong...');
         console.log('Error', res.response.data.statusMsg);
         // setMessage(res.response.data.statusMsg);
-        setMessage('Invalid credentials');
+        // setMessage('Invalid credentials');
+        setMessage('Unable to connect, check your network')
       }
     } catch (error) {
       setSpinner(false);

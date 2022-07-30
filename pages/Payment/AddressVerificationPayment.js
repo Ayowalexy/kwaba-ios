@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -26,7 +26,8 @@ import { baseUrl } from '../../services/routes';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import { loanRepayment } from '../../services/network';
-
+import { getEmergencyLoans } from '../../services/network';
+import { getCurrentApplication } from '../../services/network';
 
 
 const getToken = async () => {
@@ -52,7 +53,15 @@ const AddressVerificationPayment = ({ navigation }) => {
   const [channel, setChannel] = useState('')
 
 
+  useEffect(() => {
+    (async () => {
+      const getAllAloans = await getEmergencyLoans();
+      const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+      const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
 
+      console.log('applicationIDCallRes.data.data.id', applicationIDCallRes.data.data.status);
+    })()
+  }, [])
   const handlePaymentRoute = async (value) => {
     console.log('The Value: ', value);
     // setChannel(value);
@@ -65,7 +74,7 @@ const AddressVerificationPayment = ({ navigation }) => {
         amount: 2500,
         purpose: 'addressVerification',
         channel: 'paystack'
-        
+
       };
 
       console.log('The Data loan: ', data);

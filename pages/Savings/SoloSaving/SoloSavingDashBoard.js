@@ -12,8 +12,11 @@ import {
   RefreshControl
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useToast } from 'react-native-toast-notifications';
+import { setWalletbalance } from '../../../redux/reducers/store/wallet/wallet.actions';
+import { setCurrentUserUserActionAsync } from '../../../redux/reducers/store/user/user.types';
 import { icons, images, COLORS } from '../../../util/index';
-import { currencyFormat } from '../../../util/numberFormatter';
+import { currencyFormat, formatNumber } from '../../../util/numberFormatter';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -47,6 +50,9 @@ import AmountModal from '../../../components/amountModal';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import axios from 'axios';
+import { selectSolo } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
+import { updateSavings } from '../../../redux/reducers/store/solo-savings/solo-savings.actions';
+
 
 export default function SoloSavingDashBoard(props) {
   const { navigation, route } = props;
@@ -70,6 +76,8 @@ export default function SoloSavingDashBoard(props) {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [channel, setChannel] = useState('');
   const [fundedAmount, setFundedAmount] = useState(0)
+  const toast = useToast();
+
 
   const [spinner, setSpinner] = useState(false);
   const [spinner2, setSpinner2] = useState(false);
@@ -101,6 +109,21 @@ export default function SoloSavingDashBoard(props) {
 
   const [randomRefect, setRandomRefetch] = useState(0)
 
+  const [currSaving, setCurrSavings] = useState('')
+
+  const allSolo = useSelector(selectSolo);
+
+  const [percent, setPercent] = useState(0)
+
+  const [walletBalance, setWalletBalance] = useState(0)
+
+  const [current_id, set_current_id] = useState(0)
+
+  useEffect(() => {
+    const currentSolo = allSolo.find(ele => ele?.id == route?.params?.id)
+    setCurrSavings(currentSolo)
+  }, [])
+
   useEffect(() => {
     if (initialRender.current) {
       setIsReady(false)
@@ -113,6 +136,16 @@ export default function SoloSavingDashBoard(props) {
     }
 
   }, [])
+
+  useEffect(() => {
+    set_current_id(route?.params?.id)
+  }, [])
+
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
 
   useEffect(() => {
 
@@ -128,6 +161,10 @@ export default function SoloSavingDashBoard(props) {
     setDashboardValue()
 
   }
+
+  useEffect(() => {
+    setPercentAchieved(57)
+  }, [])
   const onRefresh = useCallback(() => {
 
 
@@ -167,11 +204,13 @@ export default function SoloSavingDashBoard(props) {
     setSavingsTarget(data?.target_amount);
     setPercentAchieved(
       (
-        (Number(data?.amount_saved) / Number(data?.target_amount)) *
+        (Number(data?.amount_saved || route.params.amount) / Number(data?.target_amount)) *
         100
       ).toFixed(0),
     );
-    setTotalSaving(amount_saved || 0);
+
+    setTotalSaving(currSaving.amount_saved || 0)
+    // setTotalSaving(amount_saved || 0);
     setFundedAmount(amount_saved || 0)
 
     if (amount_saved >= data?.target_amount) {
@@ -197,14 +236,14 @@ export default function SoloSavingDashBoard(props) {
   useEffect(() => {
     console.log('Realoading....');
     setDashboardValue();
-  }, [getMaxLoanCap1]);
+  }, [getMaxLoanCap1, currSaving?.amount_saved]);
 
   const goback = () => {
-      navigation.navigate('SavingLists');
-      setSavingTitle('');
-      setSavingsTarget(0);
-      setPercentAchieved(0);
-      setTotalSaving(0);
+    navigation.navigate('SavingLists');
+    setSavingTitle('');
+    setSavingsTarget(0);
+    setPercentAchieved(0);
+    setTotalSaving(0);
 
   };
 
@@ -221,14 +260,24 @@ export default function SoloSavingDashBoard(props) {
   const savingsPayment = async (data) => {
     setSpinner2(true);
 
+    console.log('Complete savings', data)
+
     try {
       const res = await completeSavingsPayment(data);
+
+
 
       if (String(res.status).startsWith('2')) {
         setSpinner2(false);
 
-        console.log('Complete Paymentttttttttt: ', res.data.data);
+        console.log('Complete Paymentttttttttt: ', res?.data?.data);
         setDashboardValue();
+        dispatch(updateSavings({ id: currSaving?.id, amount_saved: Number(currSaving?.amount_saved) + Number(amount) }))
+        let percentage = Math.floor((Number(totalSaving) / Number(savingsTarget)) * 100)
+        setPercent(percentage)
+        console.log('Wallet Balance', walletBalance - amount)
+        dispatch(setWalletbalance(walletBalance - amount))
+
         setFundedAmount(Number(fundedAmount) + Number(amount))
         await showSuccess();
       } else {
@@ -236,7 +285,7 @@ export default function SoloSavingDashBoard(props) {
       }
     } catch (error) {
       setSpinner2(false);
-      console.log('The Error: ', error.response.data);
+      console.log('The Error: ', error);
     }
   };
 
@@ -254,11 +303,11 @@ export default function SoloSavingDashBoard(props) {
     if (res.status == 200) {
       const verifyData = res?.data?.data;
       console.log('Verifying data....: ', verifyData);
-      setVerifyData({ ...verifyData, id: data.savings_id });
+      setVerifyData({ ...verifyData, id: data.savings_id || current_id });
       if (paymentChannel == 'wallet') {
         const payload = {
           amount: verifyData.amount,
-          savings_id: data.savings_id,
+          savings_id: data.savings_id || current_id,
           channel: 'wallet',
           // reference: verifyData.paymentReference,
           reference: verifyData.reference,
@@ -296,9 +345,13 @@ export default function SoloSavingDashBoard(props) {
     console.log('Value: ', value);
 
     if (value == 'wallet') {
+
+      if(amount > walletBalance){
+        return Alert.alert('Error', 'Your wallet balance is insufficient to complete this transaction')
+      }
       const verifyPayload = {
         amount: amount,
-        savings_id: route?.params?.id,
+        savings_id: route?.params?.id || current_id,
         channel: 'wallet',
         purpose: 'savings',
       };
@@ -524,7 +577,12 @@ export default function SoloSavingDashBoard(props) {
                             fontWeight: 'bold',
                             color: COLORS.white,
                           }}>
-                          ₦{currencyFormat(Number(fundedAmount)) || currencyFormat(Number(route?.params?.amount))}
+                          ₦{
+                            totalSaving.toString().includes('.')
+                              ? formatNumber(totalSaving)
+                              : formatNumber(totalSaving).concat('.00')
+                          }
+                          {/* ₦{currencyFormat(Number(fundedAmount)) || currencyFormat(Number(route?.params?.amount))} */}
                         </Text>
                         <Icon
                           name={locked ? 'lock-closed' : 'lock-open'}
@@ -672,7 +730,7 @@ export default function SoloSavingDashBoard(props) {
               width={10}
               rotation={0}
               style={styles.circularProgress}
-              fill={Number(percentAchieved) || 0}
+              fill={percent || Number(percentAchieved) || 0}
               tintColor={COLORS.secondary}
               backgroundColor="#2A286A90">
               {(fill) => (
@@ -873,6 +931,11 @@ export default function SoloSavingDashBoard(props) {
           paymentSuccessful={async (res) => {
 
             console.log('Payment data', res)
+            dispatch(updateSavings({ id: currSaving?.id, amount_saved: Number(currSaving?.amount_saved) + Number(amount) }))
+            let percentage = Math.floor((Number(totalSaving) / Number(savingsTarget)) * 100)
+            setPercent(percentage)
+
+            console.log('Payment', percentage)
             setFundedAmount(Number(fundedAmount) + Number(amount))
             setTimeout(() => {
               setRandomRefetch(Math.random() * 1000)

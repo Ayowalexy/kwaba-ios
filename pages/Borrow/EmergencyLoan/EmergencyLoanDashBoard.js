@@ -37,8 +37,9 @@ import ActiveLoanModal from './ActiveLoanModal';
 import AmountModalFunds from '../../../components/amountModalFunds';
 import CreditCardFormFunds from '../../../components/CreditCard/CreditCardFormFunds';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
-
+import { selectEmergency } from '../../../redux/reducers/store/emergency/emergency.selectors';
 import LoanTabs from './LoanTabs';
+import {setEmergencyAmount} from '../../../redux/reducers/store/emergency/emergency.action'
 
 moment.suppressDeprecationWarnings = true;
 
@@ -73,6 +74,11 @@ export default function EmergencyLoanDashBoard({navigation}) {
   const [showBanner, setShowBanner] = useState(false);
   const [allLoans, setAllLoans] = useState('');
   const [fundedAmount, setFundedAmount] = useState(0)
+
+
+  const emergencyAmount = useSelector(selectEmergency)
+
+  console.log('emergency amount', emergencyAmount)
 
   useEffect(() => {
     (async () => {
@@ -118,6 +124,12 @@ export default function EmergencyLoanDashBoard({navigation}) {
   useEffect(() => {
     if(getMaxLoanCap1?.data?.emergency_loan_amount_paid){
       setFundedAmount(getMaxLoanCap1?.data?.emergency_loan_amount_paid)
+    }
+  }, [])
+
+  useEffect(() => {
+    if(getMaxLoanCap1?.data?.emergency_loan_amount_paid){
+      dispatch(setEmergencyAmount(getMaxLoanCap1?.data?.emergency_loan_amount_paid))
     }
   }, [])
 
@@ -249,7 +261,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     fontWeight: 'bold',
                     marginLeft: 0,
                   }}>
-                  ₦{formatNumber(Number(fundedAmount).toFixed(2)) || '0.00'}
+                  ₦{formatNumber(Number(loanPaid).toFixed(2)) || '0.00'}
                 </Text>
               </View>
               <View style={{alignItems: 'flex-end'}}>

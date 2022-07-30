@@ -37,25 +37,9 @@ const getToken = async () => {
   return token;
 };
 
-const getDocuments = async () => {
-  const token = await getToken();
-  try {
-    const uploadedDocumentsRes = await axios.get(
-      // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
-      urls.applications.GET_DOCUMENTS,
-      {
-        headers: { 'Content-Type': 'application/json', Authorization: token },
-      },
-    );
-    // console.log(uploadedDocumentsRes)
-    return uploadedDocumentsRes.data.data;
-  } catch (error) {
-    console.log(error);
-  }
-};
 
 export default function Docs(props, { navigation }) {
-  const { documentUploads, count, setCount } = props;
+  const { documentUploads, count, setCount, appId } = props;
   const [modal, setModal] = useState(false);
   const [documentDeleted, setDocumentDeleted] = useState(false)
   const [showSelectDocumentsModal, setShowSelectDocumentsModal] = useState(
@@ -79,12 +63,30 @@ export default function Docs(props, { navigation }) {
     getUserData();
   }, []);
 
+  const getDocuments = async () => {
+    const token = await getToken();
+    try {
+      const uploadedDocumentsRes = await axios.get(
+        // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
+        urls.applications.GET_DOCUMENTS + `/${appId}`,
+        {
+          headers: { 'Content-Type': 'application/json', Authorization: token },
+        },
+      );
+      // console.log(uploadedDocumentsRes)
+      return uploadedDocumentsRes.data.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+
 
 
   const countDocuments = async () => {
     const token = await getToken();
     try {
-      const resp = await axios.get(urls.applications.GET_DOCUMENTS, {
+      const resp = await axios.get(urls.applications.GET_DOCUMENTS + `/${appId}`, {
         headers: { 'Content-Type': 'application/json', Authorization: token },
       });
 
@@ -113,6 +115,8 @@ export default function Docs(props, { navigation }) {
 
   const showUploadedDocuments = async () => {
     const documentsUploaded = await getDocuments();
+
+    console.timeLog('Docs', documentsUploaded)
     documentsUploaded.forEach((document) => {
       const id = Number(document.document_type);
       console.log(document.filename);

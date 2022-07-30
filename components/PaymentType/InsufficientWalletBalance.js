@@ -40,7 +40,7 @@ export default function InsufficientModal(props) {
                 Insufficient Wallet Balance
               </Text>
               <Text style={{fontSize: 13, color: COLORS.dark}}>
-                You might need to use other means of payment
+                You might need to use other means {"\n"} of payment
               </Text>
             </View>
           </View>

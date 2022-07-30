@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -11,10 +11,10 @@ import {
 } from 'react-native';
 import urls from '../../services/routes';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../../util';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {formatNumber} from '../../util/numberFormatter';
-import {useDispatch, useSelector} from 'react-redux';
+import { COLORS, images } from '../../util';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { formatNumber } from '../../util/numberFormatter';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getOneSoloSavings,
   getOneSoloSavingsTransaction,
@@ -37,7 +37,7 @@ export default function QuickSaveListModal(props) {
   const dispatch = useDispatch();
   const allSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
   const allBuddySaving = useSelector((state) => state.getBuddySavingsReducer);
-  const {onRequestClose, visible, type, navigation} = props;
+  const { onRequestClose, visible, type, navigation } = props;
   const [savingLists, setSavingLists] = useState([]);
   const [showModal, setShowModal] = useState(false)
 
@@ -73,7 +73,7 @@ export default function QuickSaveListModal(props) {
       const filter = allSoloSaving.data.filter(element => element.savings_type === "solo_savings")
       console.log(filter)
       setSavingLists(filter);
-    } else if (type == 'Savings Challenge'){
+    } else if (type == 'Savings Challenge') {
       const filter = allSoloSaving.data.filter(element => element.savings_type === "savings_challenge")
       setSavingLists(filter)
     }
@@ -167,7 +167,7 @@ export default function QuickSaveListModal(props) {
       );
 
       console.log('filtered', filter)
-     
+
     } catch (error) {
       console.log('Error failed: ', error?.response?.data);
     }
@@ -221,7 +221,7 @@ export default function QuickSaveListModal(props) {
     console.log('The Data: ', data);
 
     setSpinner(true)
-    
+
     const res = await verifySavingsPayment(data);
 
     setSpinner(false);
@@ -231,7 +231,7 @@ export default function QuickSaveListModal(props) {
 
     if (res.status == 200) {
       const verifyData = res?.data?.data;
-      setVerifyData({...verifyData, id: data.savings_id});
+      setVerifyData({ ...verifyData, id: data.savings_id });
       if (paymentChannel == 'wallet') {
         const payload = {
           amount: verifyData.amount,
@@ -278,7 +278,7 @@ export default function QuickSaveListModal(props) {
       };
 
       setChannel(value); // wallet
-        await verifyPaymentRequest(verifyPayload, value);
+      await verifyPaymentRequest(verifyPayload, value);
     } else {
       const verifyPayload = {
         amount: amount,
@@ -367,7 +367,14 @@ export default function QuickSaveListModal(props) {
                     onPress={() => {
                       onRequestClose();
                       navigation.navigate(
-                        type == 'Solo Savings' ? 'SoloSaving1' : 'BuddySaving1',
+                        type == 'Solo Savings'
+                          ?
+                          'SoloSaving1'
+                          : type == 'Buddy Savings'
+                            ? 'BuddySaving1'
+                            : type == 'Savings Challenge'
+                              ? 'JoinChallengeList'
+                              : null
                       );
                     }}
                     style={{
@@ -395,7 +402,7 @@ export default function QuickSaveListModal(props) {
                     }}
                     scrollEnabled
                     showsVerticalScrollIndicator={false}>
-                    <View style={{paddingVertical: 10, marginTop: 10}}>
+                    <View style={{ paddingVertical: 10, marginTop: 10 }}>
                       <Text
                         style={{
                           fontSize: 16,
@@ -423,7 +430,7 @@ export default function QuickSaveListModal(props) {
                               // if(type == 'Savings Challenge'){
                               //   setID(item?.challenge_id)
                               // } else {
-                                setID(item.id);
+                              setID(item.id);
                               // }
                               setShowAmountModal(true);
                               // onRequestClose();
@@ -434,7 +441,7 @@ export default function QuickSaveListModal(props) {
                                   size={60}
                                   width={5}
                                   rotation={0}
-                                  style={{zIndex: 9, position: 'relative'}}
+                                  style={{ zIndex: 9, position: 'relative' }}
                                   fill={
                                     (Number(item.amount_saved) /
                                       Number(item.target_amount)) *
@@ -484,7 +491,7 @@ export default function QuickSaveListModal(props) {
                                     <Text
                                       style={[
                                         styles.amountText,
-                                        {opacity: 0.5},
+                                        { opacity: 0.5 },
                                       ]}>
                                       Amount Saved
                                     </Text>
@@ -499,7 +506,7 @@ export default function QuickSaveListModal(props) {
                                     <Text
                                       style={[
                                         styles.amountText,
-                                        {opacity: 0.5},
+                                        { opacity: 0.5 },
                                       ]}>
                                       Target Amount
                                     </Text>
@@ -566,7 +573,7 @@ export default function QuickSaveListModal(props) {
         showModal={showModal}
         setShowModal={setShowModal}
         setShowPaymentModal={setShowPaymentModal}
-      
+
       />
 
       <Spinner visible={spinner} size="large" />

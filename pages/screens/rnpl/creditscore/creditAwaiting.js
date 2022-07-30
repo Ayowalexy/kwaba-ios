@@ -72,7 +72,7 @@ export default function CreditAwaiting(props) {
 
 
 
-
+    navigation.navigate('Form1');
 
     // console.log(creditScoreAvailable.status)
 
@@ -88,6 +88,7 @@ export default function CreditAwaiting(props) {
       )
 
       console.log('credit scrore', creditScoreAvailable?.data?.data)
+     
       if (creditScoreAvailable?.status == 200) {
         setSpinner(false);
           setSpinner(false);

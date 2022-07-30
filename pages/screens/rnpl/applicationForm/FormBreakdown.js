@@ -203,11 +203,14 @@ const FormBreakdown = ({navigation}) => {
               </Text>
               <NumberFormat
                 value={requestAmount}
+                maxLength={9}
                 onChangeText={(text) => {
                   setRequestAmount(text);
+                  console.log(selectedMonth)
+
                   monthly_payment(
                     unFormatNumber(text),
-                    Number(selectedMonth[0]),
+                    Number(selectedMonth),
                   );
                 }}
               />

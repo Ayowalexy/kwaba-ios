@@ -36,7 +36,7 @@ export default function RnplSteps({ navigation }) {
     const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
     const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
 
-    console.log('data', applicationIDCallRes?.data?.data)
+    console.log('data i', applicationIDCallRes?.data?.data)
     const documents_approved = Number(applicationIDCallRes?.data?.data?.status)
     setDocumentApproved(documents_approved)
 
@@ -165,6 +165,7 @@ export default function RnplSteps({ navigation }) {
     const unsubscribe = navigation.addListener('focus', async () => {
       if (route.name == 'RnplSteps') {
         const res = await getRNPLStep()
+        refresh_in()
         setRnplStep(res)
       }
     });
@@ -230,15 +231,15 @@ export default function RnplSteps({ navigation }) {
                   },
                 ]}
                 onPress={() => {
+                  // item.navigate()
                   if (documentApproved == 1 
                     || documentApproved == undefined
-                    || documentApproved == 3
                     || documentApproved == 4
                     || documentApproved == 5
                     )
                      {
                     item.navigate()
-                  } else if (documentApproved == 2) {
+                  } else if (documentApproved == 2 || documentApproved == 3) {
                     // item.navigate()
 
                       // navigation.navigate('VerifyingDocuments')

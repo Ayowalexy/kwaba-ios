@@ -13,6 +13,7 @@ import {
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {icons, images, COLORS} from '../../util/index';
+import RepaymentCard from './RepaymentCard';
 import {
   currencyFormat,
   formatNumber,
@@ -106,7 +107,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
       console.log(applicationIDCallRes.data.data.non_refundable_deposit);
       const loanId = applicationIDCallRes.data.data.id;
       setmonthlyRepayment(
-        Number(applicationIDCallRes.data.data.approvedrepayment),
+        Number(applicationIDCallRes.data.data.approvedamount),
       );
 
       // const response = await axios.post('https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/payment/pay', {amount}, {
@@ -117,7 +118,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
       console.log('Loan: ', loanId);
 
       //approved_repayment_plan
-      setrepaymentPlan(applicationIDCallRes.data.data.approved_repayment_plan);
+      setrepaymentPlan(applicationIDCallRes.data.data.repayment_plan);
 
       const res = await axios.post(
         `${baseUrl}/application/dashboard`,
@@ -133,7 +134,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
       setnextPaymentDueDate(res.data.nextPaymentDueDate);
       setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
       setrepaymentBalance(res.data.repaymentBalance);
-      setrepaymentPlanCount(res.data.loanpaidcount);
+      setrepaymentPlanCount(res.data.repayment_plan);
     } catch (error) {
       console.log(error.response.data);
     }
@@ -482,6 +483,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
               borderTopLeftRadius: 20,
               borderTopRightRadius: 20,
               elevation: 50,
+              
             }}>
             <View
               style={{
@@ -498,6 +500,19 @@ export default function RentNowPayLaterDashboard({navigation}) {
                 }}>
                 Repayments
               </Text>
+            </View>
+
+            <View
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+            >
+            <RepaymentCard
+              amount={85000}
+              type='paid'
+            />
             </View>
           </View>
         </ScrollView>

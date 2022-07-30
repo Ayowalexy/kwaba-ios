@@ -4,7 +4,7 @@ import {icons, images, COLORS} from '../util/index';
 import {formatNumber} from '../util/numberFormatter';
 
 export default function NumberFormat(props, {navigation}) {
-  const {value, onChangeText, editable} = props;
+  const {value, onChangeText, editable, ...otherProps} = props;
   // console.log(props);
 
   return (
@@ -33,6 +33,7 @@ export default function NumberFormat(props, {navigation}) {
         value={formatNumber(value)}
         onChangeText={(text) => onChangeText(text.replace(/\D/g, ''))}
         editable={editable}
+        {...otherProps}
         // {...props}
       />
     </View>

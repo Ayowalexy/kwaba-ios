@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,15 +12,17 @@ import {
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {icons, images, COLORS} from '../../../util/index';
+import { icons, images, COLORS } from '../../../util/index';
 import {
   currencyFormat,
   formatNumber,
   numberWithCommas,
 } from '../../../util/numberFormatter';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
-import {useSelector, useDispatch} from 'react-redux';
-import {getCurrentUser} from '../../../redux/actions/userActions';
+import { setWalletbalance } from '../../../redux/reducers/store/wallet/wallet.actions';
+import { updateBuddy } from '../../../redux/reducers/store/buddy-savings/buddy-savings.actions';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { useSelector, useDispatch } from 'react-redux';
+import { getCurrentUser } from '../../../redux/actions/userActions';
 import {
   getTotalSoloSavings,
   getOneBuddySavings,
@@ -38,6 +40,7 @@ import {
   verifySavingsPayment,
   completeSavingsPayment,
 } from '../../../services/network';
+import { selectBuddies } from '../../../redux/reducers/store/buddy-savings/buddy-savings.selectors';
 import Spinner from 'react-native-loading-spinner-overlay';
 import TransactionsTab from './TransactionTabs';
 // import TransactionsTab from '../SoloSaving/TransactionTabs';
@@ -46,10 +49,10 @@ import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModal from '../../../components/amountModal';
 import InsufficientModal from '../../../components/PaymentType/InsufficientWalletBalance';
 import ActionModal from '../../../components/ActiomModal';
-
+import { selectBuddySavings } from '../../../redux/reducers/store/buddySavings/buddySavingsSlectors';
 
 export default function SoloSavingDashBoard(props) {
-  const {navigation, route} = props;
+  const { navigation, route } = props;
   const dispatch = useDispatch();
   const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
@@ -78,24 +81,64 @@ export default function SoloSavingDashBoard(props) {
   const [visible, setVisible] = useState(false)
   const [type, setType] = useState('')
   const [msg, setMsg] = useState('')
+  const allBuddies = useSelector(selectBuddySavings)
+  const [currBuddy, setCurrBuddy] = useState('')
+
+  const _allBuddies = useSelector(selectBuddies)
+
+  useEffect(() => {
+    const _curr = _allBuddies?.find(el => el?.buddy_savings_id == route?.params?.id)
+    setCurrBuddy(_curr)
+    console.log('_curr', _curr)
+  }, [currBuddy.amount_saved])
+
+  console.log(route.name)
+
+
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      if (route.name == 'BuddySavingDashBoard') {
+        const data = _allBuddies?.find(d => d.buddy_savings_id == route.params.id)
+        console.log('data uui', data)
+        setSavingsTarget(data?.target_amount);
+        setSavingTitle(data?.name);
+        setTotalSaving(data?.amount_saved);
+        setYourSavings(data?.amount);
+        setSavingsPlan(data?.savings_plan);
+        setPercentAchieved(
+          (data?.amount_saved /
+            data?.target_amount) *
+          100,
+        );
+        // setBuddies(data?.buddies);
+      }
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   console.log('params', route?.params)
+
+
 
   useEffect(() => {
     // getOneBuddy(route?.params?.id)
     getOneUserBuddySavings(route?.params?.id)
       .then((data) => {
-        console.log('buddy buddy', route?.params?.id)
-        setSavingsTarget(data.data?.savings_plan?.target_amount);
-        setSavingTitle(data.data?.savings_plan?.name);
-        setTotalSaving(data.data?.savings_plan?.amount_saved);
+        console.log('buddy buddy', data)
+
+        let val = data.data?.savings_plan?.amount_saved || route?.params?.amount;
+        // setSavingsTarget(data.data?.savings_plan?.target_amount);
+        // setSavingTitle(data.data?.savings_plan?.name);
+        // setTotalSaving(val);
         setYourSavings(data.data?.savings_plan?.amount);
         setSavingsPlan(data.data?.savings_plan);
-        setPercentAchieved(
-          (data.data?.savings_plan?.amount_saved /
-            data.data?.savings_plan?.target_amount) *
-            100,
-        );
+        // setPercentAchieved(
+        //   (val /
+        //     data.data?.savings_plan?.target_amount) *
+        //   100,
+        // );
         setBuddies(data.data.buddies);
       })
       .catch(console.log);
@@ -119,11 +162,11 @@ export default function SoloSavingDashBoard(props) {
     try {
       console.log('The Data to verify payment: ', route.params);
 
-      if(Number(amount) > Number(savingsTarget)){
+      if (Number(amount) > Number(savingsTarget)) {
         handleOverPayment()
         return
       }
-      
+
       setSpinner(true);
       const res = await verifySavingsPayment(data);
       console.log("response data", res);
@@ -135,7 +178,7 @@ export default function SoloSavingDashBoard(props) {
       if (String(res.status).startsWith('2')) {
         const verifyData = res?.data?.data;
         console.log("verifyData", verifyData)
-        setVerifyData({...verifyData, id: data.buddyData.savings_id});
+        setVerifyData({ ...verifyData, id: data.buddyData.savings_id });
         if (paymentChannel == 'wallet') {
           const payload = {
             amount: verifyData.amount,
@@ -148,9 +191,17 @@ export default function SoloSavingDashBoard(props) {
             purpose: 'buddySavings',
           };
           const completeResponse = await completeSavingsPayment(payload);
+
+          console.log('complete response', completeResponse)
           if (String(completeResponse.status).startsWith('2')) {
             setSpinner(false);
-
+            dispatch(updateBuddy({ id: currBuddy?.id, amount_saved: Number(currBuddy?.amount_saved) + Number(amount) }))
+            setPercentAchieved(
+              (totalSaving /
+                savingsTarget) *
+              100,
+            );
+            dispatch(setWalletbalance(walletBalance - amount))
             showSuccess();
           }
         } else {
@@ -181,14 +232,14 @@ export default function SoloSavingDashBoard(props) {
     }
   };
 
-  const handleOverPayment  = () => {
+  const handleOverPayment = () => {
     setVisible(true)
-      setType('error')
-      setMsg({
-        header: 'Over payment',
-        text: "The maximum savings amount for this savings is exceeded",
-        action: 'Try Again'
-      })
+    setType('error')
+    setMsg({
+      header: 'Over payment',
+      text: "The maximum savings amount for this savings is exceeded",
+      action: 'Try Again'
+    })
   }
 
 
@@ -196,17 +247,27 @@ export default function SoloSavingDashBoard(props) {
   const handlePaymentRoute = async (value) => {
     const userData = await AsyncStorage.getItem('userData');
     const mainUserEmail = JSON.parse(userData).user.email;
-    const currentBuddy = buddies.find(
+    const currentBuddy = buddies?.find(
       (d) =>
         d.email.trim().toLowerCase() === mainUserEmail.trim().toLowerCase(),
     );
 
+    //GET SAVINGS ID
+
+    const getbuddySavingsId = await getOneUserBuddySavings(route?.params?.id)
+
+    // setSavingsPlan(data.data?.savings_plan);
+
     console.log('current buddy', buddies)
     if (value == 'wallet') {
+
+      if (amount > walletBalance) {
+        return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
+      }
       const verifyPayload = {
         amount: amount,
         buddyData: {
-          savings_id: savingsPlan?.id,
+          savings_id: getbuddySavingsId.data.savings_plan.id,
           buddyId: currentBuddy?.id,
         },
 
@@ -220,7 +281,7 @@ export default function SoloSavingDashBoard(props) {
       const verifyPayload = {
         amount: amount,
         buddyData: {
-          savings_id: savingsPlan?.id,
+          savings_id: getbuddySavingsId.data.savings_plan.id,
           buddyId: currentBuddy?.id,
         },
 
@@ -238,20 +299,20 @@ export default function SoloSavingDashBoard(props) {
         onPress={() => navigation.navigate('BuddyLists')}
         name="arrow-back-outline"
         size={25}
-        style={{padding: 18, paddingHorizontal: 10}}
+        style={{ padding: 18, paddingHorizontal: 10 }}
         color="#2A286A"
       />
       <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
         <View style={[styles.content]}>
-          <View style={{marginBottom: 20}}>
+          <View style={{ marginBottom: 20 }}>
             <Text
-              style={{fontSize: 20, fontWeight: 'bold', color: COLORS.primary}}>
+              style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.primary }}>
               Buddy Saving{' '}
-              <Text style={{fontSize: 10, color: '#ADADAD'}}>
+              <Text style={{ fontSize: 10, color: '#ADADAD' }}>
                 {savingTitle}
               </Text>
             </Text>
-            <Text style={{fontSize: 12, fontWeight: '700', color: '#ADADAD'}}>
+            <Text style={{ fontSize: 12, fontWeight: '700', color: '#ADADAD' }}>
               {moment().format('ddd, D MMM')}
             </Text>
           </View>
@@ -269,7 +330,7 @@ export default function SoloSavingDashBoard(props) {
                 left: 0,
               }}
             />
-            <View style={{padding: 20}}>
+            <View style={{ padding: 20 }}>
               <TouchableOpacity
                 style={{
                   position: 'absolute',
@@ -287,7 +348,7 @@ export default function SoloSavingDashBoard(props) {
                 />
               </TouchableOpacity>
 
-              <Text style={{color: COLORS.white}}>Total Buddy Savings</Text>
+              <Text style={{ color: COLORS.white }}>Total Buddy Savings</Text>
               <View
                 style={{
                   flexDirection: 'row',
@@ -307,7 +368,7 @@ export default function SoloSavingDashBoard(props) {
                 <Icon
                   name="lock-closed"
                   size={15}
-                  style={{marginLeft: 10}}
+                  style={{ marginLeft: 10 }}
                   color={COLORS.primary}
                 />
               </View>
@@ -345,14 +406,14 @@ export default function SoloSavingDashBoard(props) {
                   </Text>
                 </View>
 
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <Text style={{fontSize: 10, color: COLORS.white}}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Text style={{ fontSize: 10, color: COLORS.white }}>
                     View savings history
                   </Text>
                   <Icon
                     name="chevron-forward-outline"
                     size={15}
-                    style={{color: COLORS.white, marginLeft: 10}}
+                    style={{ color: COLORS.white, marginLeft: 10 }}
                   />
                 </View>
               </View>
@@ -366,7 +427,7 @@ export default function SoloSavingDashBoard(props) {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <View style={{alignItems: 'flex-start'}}>
+              {/* <View style={{ alignItems: 'flex-start' }}>
                 <Text
                   style={{
                     fontSize: 10,
@@ -381,14 +442,13 @@ export default function SoloSavingDashBoard(props) {
                     color: COLORS.white,
                     fontWeight: 'bold',
                   }}>
-                  {/* ₦{currencyFormat(totalInterest)} */}₦
-                  {formatNumber(Number(0)) || '0.00'}
+                  ₦{formatNumber(totalInterest) || '0.00'}
                 </Text>
-              </View>
+              </View> */}
 
               <View />
 
-              <View style={{alignItems: 'flex-end'}}>
+              <View style={{ alignItems: 'flex-end' }}>
                 <Text
                   style={{
                     fontSize: 10,
@@ -494,16 +554,27 @@ export default function SoloSavingDashBoard(props) {
               justifyContent: 'space-between',
               alignItems: 'center',
             }}>
-            <View>
+            {/* <View>
               <Text
-                style={{fontSize: 10, fontWeight: 'bold', color: COLORS.dark}}>
+                style={{ fontSize: 10, fontWeight: 'bold', color: COLORS.dark }}>
                 You have saved
               </Text>
               <Text
-                style={{fontSize: 12, fontWeight: 'bold', color: COLORS.dark}}>
+                style={{ fontSize: 12, fontWeight: 'bold', color: COLORS.dark }}>
                 ₦{formatNumber(Number(yourSavings)) || '0.00'}
               </Text>
+            </View> */}
+            <View style={{ alignItems: 'flex-start' }}>
+              <Text style={{ fontSize: 10, fontWeight: 'bold', color: COLORS.dark }}>
+                Interest Earned
+              </Text>
+              <Text
+                style={{ fontSize: 12, fontWeight: 'bold', color: COLORS.dark }}                               >
+                {/* ₦{currencyFormat(totalInterest)} */}₦
+                {formatNumber(Number(0)) || '0.00'}
+              </Text>
             </View>
+
 
             <View
               style={{
@@ -533,7 +604,7 @@ export default function SoloSavingDashBoard(props) {
                         justifyContent: 'center',
                         alignItems: 'center',
                       }}>
-                      <Text style={{fontWeight: 'bold', color: COLORS.dark}}>
+                      <Text style={{ fontWeight: 'bold', color: COLORS.dark }}>
                         {item.fullname.toString().charAt(0).toUpperCase()}
                       </Text>
                     </View>
@@ -563,10 +634,10 @@ export default function SoloSavingDashBoard(props) {
               }}>
               <View>
                 <Image
-                  style={{width: 80, height: 80, marginLeft: -20}}
+                  style={{ width: 80, height: 80, marginLeft: -20 }}
                   source={icons.invite}
                 />
-                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
                   Invite
                 </Text>
                 <Text
@@ -594,10 +665,10 @@ export default function SoloSavingDashBoard(props) {
               }}>
               <View>
                 <Image
-                  style={{width: 80, height: 80, marginLeft: -20}}
+                  style={{ width: 80, height: 80, marginLeft: -20 }}
                   source={icons.topUp}
                 />
-                <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+                <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
                   Rent Now Pay {'\n'}Later
                 </Text>
                 <Text
@@ -614,7 +685,7 @@ export default function SoloSavingDashBoard(props) {
           </View>
         </View>
 
-        <TransactionsTab id={route?.params?.buddyId} title={savingTitle}  transactions={transactions} />
+        <TransactionsTab id={route?.params?.buddyId} title={savingTitle} transactions={transactions} />
       </ScrollView>
 
       {/* <QuickSaveModal
@@ -631,7 +702,13 @@ export default function SoloSavingDashBoard(props) {
             Alert.alert('Payment cancelled');
           }}
           paymentSuccessful={async (res) => {
-            setTotalSaving(Number(totalSaving) + Number(amount))
+            dispatch(updateBuddy({ id: currBuddy?.id, amount_saved: Number(currBuddy?.amount_saved) + Number(amount) }))
+            setPercentAchieved(
+              (totalSaving /
+                savingsTarget) *
+              100,
+            );
+            // setTotalSaving(Number(currBuddy.amount_saved) + Number(amount))
             await showSuccess();
           }}
         />
@@ -691,7 +768,7 @@ export default function SoloSavingDashBoard(props) {
           <Spinner visible={spinner} size="large" />
         )
       }
-       <ActionModal
+      <ActionModal
         visible={visible}
         setVisible={setVisible}
         type={type}

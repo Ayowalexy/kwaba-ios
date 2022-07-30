@@ -344,7 +344,7 @@ const PostPaymentForm1 = ({navigation}) => {
                           fontSize: 16,
                         },
                       ]}>
-                      Quarantor's details
+                      Guarantor's details
                     </Text>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Text

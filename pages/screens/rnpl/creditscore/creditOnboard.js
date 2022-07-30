@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Alert} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {CreditForm, CreditAwaiting} from '.';
 import {COLORS, images} from '../../../../util';
@@ -11,6 +11,9 @@ import PaymentTypeModal from '../../../../components/PaymentType/PaymentTypeModa
 import { verifySavingsPayment } from '../../../../services/network';
 import { completeSavingsPayment } from '../../../../services/network';
 import Preloader from '../../../../components/Preloader'
+import { setWalletbalance } from '../../../../redux/reducers/store/wallet/wallet.actions';
+import { useSelector,  useDispatch} from 'react-redux';
+
 
 export default function CreditOnboard({navigation}) {
   const [formData, setFormData] = useState({});
@@ -22,7 +25,11 @@ export default function CreditOnboard({navigation}) {
   const [showCreditForm, setShowCreditForm] = useState(false);
   const [showCreditAwaiting, setShowCreditAwaiting] = useState(false);
   const [showCreditDashboard, setShowCreditDashboard] = useState(false);
-  const [verifyData, setVerifyData] = useState('')
+  const [verifyData, setVerifyData] = useState('');
+  const [walletBalance, setWalletBalance] = useState(0);
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const dispatch = useDispatch();
+
 
 
   const getUser = async () => {
@@ -38,6 +45,12 @@ export default function CreditOnboard({navigation}) {
     })();
   }, []);
 
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
+
   const savingsPayment = async (data) => {
     setSpinner(true);
     console.log('The data', data)
@@ -52,6 +65,9 @@ export default function CreditOnboard({navigation}) {
         console.log('Complete Paymentttttttttt: ', res.data.data);
         // await showSuccess();
         // setShowAcceptModal(true);
+        dispatch(setWalletbalance(walletBalance - 2000))
+
+
         navigation.navigate('CreditAwaiting');
         // console.log('Form Value: ', formValue);
       } else {
@@ -59,7 +75,7 @@ export default function CreditOnboard({navigation}) {
       }
     } catch (error) {
       setSpinner(false);
-      console.log('The Error: ', error.response.data);
+      console.log('The Error: ', error);
     }
   };
 
@@ -101,6 +117,9 @@ export default function CreditOnboard({navigation}) {
     console.log('Value: ', value);
 
     if (value == 'wallet') {
+      if(2000 > walletBalance){
+        return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
+      }
       const verifyPayload = {
         amount: 2000,
         channel: 'wallet',

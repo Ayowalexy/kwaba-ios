@@ -111,6 +111,7 @@ export default function PaymentSuccessful(props) {
     if (props?.route?.params?.name) {
       props.navigation.navigate(props?.route?.params?.name, {
         id: props?.route?.params?.id,
+        amount: props?.route?.params?.amount_saved
       });
     } else {
       //   props.navigation.goBack();

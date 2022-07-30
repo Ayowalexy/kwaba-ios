@@ -34,7 +34,7 @@ const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
   when_is_your_next_rent_due: yup.date()
     .required('Select a date')
-    .min("2022-01-01", "Enter a valid rent expiration date")
+    .min("01-01-2022", "Enter a valid rent expiration date")
     ,
 });
 
@@ -46,7 +46,7 @@ const Screen5 = (props) => {
   const [showDate, setShowDate] = useState(false);
   const [spinner, setSpinner] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [date, setDate] = useState('2016-05-15')
+  const [date, setDate] = useState('01-01-2022')
 
 
   const saveLoginToStorage = async (data) => {
@@ -201,7 +201,7 @@ const Screen5 = (props) => {
           date={date}
           mode="date"
           placeholder="select date"
-          format="YYYY-MM-DD"
+          format="DD-MM-YYYY"
           confirmBtnText="Confirm"
           cancelBtnText="Cancel"
           customStyles={{

@@ -20,6 +20,9 @@ import {
   getSavingsUnderChallengeList,
   getUserSavingsChallenge,
 } from '../../redux/actions/savingsChallengeAction';
+import { setCurrentUserUserActionAsync } from '../../redux/reducers/store/user/user.types';
+import { setUserSavingsChallenge } from '../../redux/reducers/store/savings-challenge/savings-challenge.action';
+import { selectAllUserSavingsChellange } from '../../redux/reducers/store/savings-challenge/savings-challenge.selectors';
 import { getTransactionsHistory } from '../../services/network';
 import AmountModalChallenge from '../../components/amountModalChallenge';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
@@ -37,6 +40,8 @@ import MoveMoneyModal from './MoveMoneyModal';
 import MoveMoneyOptionModal from './MoveMoneyOptionModal';
 import MoveMoneyToExistingPlanModal from './MoveMoneyToExistingPlanModal';
 import { getTotalSoloSavings } from '../../redux/actions/savingsActions';
+import { updateSavingsChallange } from '../../redux/reducers/store/savings-challenge/savings-challenge.action';
+import { setWalletbalance } from '../../redux/reducers/store/wallet/wallet.actions';
 
 const { width } = Dimensions.get('screen');
 
@@ -72,8 +77,15 @@ export default function JoinChallengeDashboard(props) {
   const [minimumAmount, setMinimumAmount] = useState(0);
   const [rand, setRand] = useState(0)
   const [fundedAmount, setFundedAmount] = useState(0)
+  const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+
 
   const [targetAmount, setTargetAmount] = useState();
+
+  const [walletBalance, setWalletBalance] = useState(0);
+
+
+  const dash = useSelector(selectAllUserSavingsChellange)
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
@@ -85,6 +97,8 @@ export default function JoinChallengeDashboard(props) {
   const [endDate, setEndDate] = useState('');
 
   const [actvities, setActivities] = useState([])
+
+  const [current_id, set_current_id] = useState(0)
 
   const [showMoveMoneyOptionModal, setShowMoveMoneyOptionModal] =
     useState(false);
@@ -124,8 +138,21 @@ export default function JoinChallengeDashboard(props) {
   //   }
   // }, []);
 
+  console.log('Dash', dash)
+
   useEffect(() => {
     dispatch(getTotalSoloSavings());
+    dispatch(setCurrentUserUserActionAsync())
+  }, [])
+
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
+    }
+  }, [getMaxLoanCap1]);
+
+  useEffect(() => {
+    set_current_id(props?.route?.params?.id)
   }, [])
 
   useEffect(() => {
@@ -146,8 +173,8 @@ export default function JoinChallengeDashboard(props) {
         console.log(d.challenge_id, props.route.params.id)
       }
 
-      const data = filter.filter(
-        (item) => item.challenge_id == props?.route?.params?.id,
+      const data = dash.filter(
+        (item) => item?.challenge_id == props?.route?.params?.id || item?.challenge_id == current_id,
       )[0];
       console.log('The ID: ', data);
 
@@ -175,7 +202,9 @@ export default function JoinChallengeDashboard(props) {
       setActivities(filtered)
 
     })()
-  }, []);
+  }, [dash, amount]);
+
+ 
 
   const handleActivities = async () => {
     const filter = allSavings.data.filter(
@@ -186,7 +215,7 @@ export default function JoinChallengeDashboard(props) {
       });
 
       const data = filter.filter(
-        (item) => item.challenge_id == props?.route?.params?.id,
+        (item) => item.challenge_id == props?.route?.params?.id || item.challenge_id == current_id,
       )[0];
 
       const history = await getTransactionsHistory();
@@ -216,6 +245,7 @@ export default function JoinChallengeDashboard(props) {
     }
   }, []);
 
+  console.log('challenge id', current_id)
   // ebuka, here!!!!!
   const showSuccess = () => {
     navigation.navigate('PaymentSuccessful', {
@@ -256,6 +286,11 @@ export default function JoinChallengeDashboard(props) {
           console.log('completed payment response', completedResponse.data);
           if (completedResponse.status == 200) {
             setFundedAmount(Number(fundedAmount) + Number(amount))
+            dispatch(updateSavingsChallange({
+              ...dashboardData,
+              amount_saved: Number(dashboardData.amount_saved) + Number(amount)
+            }))
+            dispatch(setWalletbalance(walletBalance - amount))
 
             console.log('Complete Paymentttttttttt: ', completedResponse?.data);
             showSuccess();
@@ -271,9 +306,15 @@ export default function JoinChallengeDashboard(props) {
       setSpinner(false);
     }
   };
+
+
   const handlePaymentRoute = async (value) => {
     setSpinner(true);
     if (value == 'wallet') {
+      if(amount > walletBalance){
+        setSpinner(false)
+        return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
+      }
       createSavings(value);
     } else {
       setChannel(value);
@@ -546,7 +587,7 @@ export default function JoinChallengeDashboard(props) {
               }}>
               <Text style={{ fontSize: 12, color: COLORS.white }}>
                 ₦
-                {formatNumber(Number(fundedAmount).toFixed(2)) ||
+                {formatNumber(Number(dashboardData?.amount_saved).toFixed(2)) ||
                   '0.00'}
               </Text>
               <Text style={{ fontSize: 12, color: COLORS.white }}>
@@ -743,6 +784,17 @@ export default function JoinChallengeDashboard(props) {
           paymentSuccessful={async (res) => {
             console.log('savings successful');
             setSpinner(false);
+
+           dispatch(updateSavingsChallange({
+            ...dashboardData,
+            amount_saved: Number(dashboardData.amount_saved) + Number(amount)
+          }))
+
+            console.log('data now'.repeat(100), {
+              ...dashboardData,
+              amount_saved: Number(dashboardData?.amount_saved) + Number(amount)
+            })
+
             setFundedAmount(Number(fundedAmount) + Number(amount))
             setTimeout(async() => {
               await handleActivities()

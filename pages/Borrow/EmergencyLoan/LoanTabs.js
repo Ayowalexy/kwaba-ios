@@ -31,6 +31,7 @@ import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import AmountModalFunds from '../../../components/amountModalFunds';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import Preloader from '../../../components/Preloader';
+import { setEmergencyAmount } from '../../../redux/reducers/store/emergency/emergency.action';
 export default function LoanTabs(props) {
   const dispatch = useDispatch();
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
@@ -113,6 +114,8 @@ export default function LoanTabs(props) {
         setSpinner(false);
 
         console.log('Complete Paymentttttttttt: ', res.data.data);
+        console.log('details', amount, fundedAmount)
+        // dispatch(setEmergencyAmount(Number(amount) + Number(fundedAmount)))
         setFundedAmount(Number(amount) + Number(fundedAmount))
 
         await showSuccess();
@@ -572,7 +575,8 @@ export default function LoanTabs(props) {
             };
 
             console.log('amount', amount)
-            setFundedAmount(Number(amount) + Number(fundedAmount))
+            dispatch(setEmergencyAmount(Number(amount) + Number(fundedAmount)))
+            // setFundedAmount(Number(amount) + Number(fundedAmount))
 
             await showSuccess()
             await completePayment(data);
