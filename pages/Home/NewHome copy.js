@@ -409,7 +409,7 @@ export default function NewHome({navigation}) {
             />
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 10,
                 lineHeight: 12,
                 color: '#FB8B24',
@@ -432,7 +432,7 @@ export default function NewHome({navigation}) {
               }}>
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 10,
                   fontWeight: 'bold',
                   lineHeight: 13,
@@ -462,7 +462,7 @@ export default function NewHome({navigation}) {
             />
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 10,
                 lineHeight: 12,
                 color: '#FB8B24',
@@ -484,7 +484,7 @@ export default function NewHome({navigation}) {
               }}>
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 10,
                   fontWeight: 'bold',
                   lineHeight: 13,
@@ -765,7 +765,7 @@ export default function NewHome({navigation}) {
                       <Text
                         style={{
                           color: index == 2 ? 'white' : COLORS.dark,
-                          fontFamily: 'CircularStd',
+                          fontFamily: 'Poppins-Medium',
                           fontSize: 14,
                           lineHeight: 23,
                           fontWeight: 'bold',
@@ -777,7 +777,7 @@ export default function NewHome({navigation}) {
                           width: '75%',
                           marginTop: 9,
                           color: index == 2 ? 'white' : COLORS.dark,
-                          fontFamily: 'CircularStd',
+                          fontFamily: 'Poppins-Medium',
                           fontSize: 12,
                           lineHeight: 20,
                           fontWeight: '600',
@@ -942,7 +942,7 @@ export default function NewHome({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'white',
   },
 });

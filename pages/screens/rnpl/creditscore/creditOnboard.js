@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useEffect, useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Image, Alert} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image, Alert, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {CreditForm, CreditAwaiting} from '.';
 import {COLORS, images} from '../../../../util';
@@ -13,6 +13,7 @@ import { completeSavingsPayment } from '../../../../services/network';
 import Preloader from '../../../../components/Preloader'
 import { setWalletbalance } from '../../../../redux/reducers/store/wallet/wallet.actions';
 import { useSelector,  useDispatch} from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 export default function CreditOnboard({navigation}) {
@@ -29,6 +30,7 @@ export default function CreditOnboard({navigation}) {
   const [walletBalance, setWalletBalance] = useState(0);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const dispatch = useDispatch();
+  const top = useSafeAreaInsets().top;
 
 
 
@@ -160,7 +162,7 @@ export default function CreditOnboard({navigation}) {
 
   return (
     <>
-      <View style={[styles.container]}>
+      <View style={[styles.container, { marginTop: Platform.OS === 'ios' ? top : 0}]}>
         <View
           style={{
             flexDirection: 'row',

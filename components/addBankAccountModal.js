@@ -6,7 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SelectBankModal from './SelectBankModal';
@@ -22,7 +23,7 @@ import ActionModal from './ActiomModal';
 
 
 export default function AddBankAccountModal(props) {
-  const { onRequestClose, visible, setDisplayAllBankAccounts, setReloadBanks } = props;
+  const { onRequestClose, visible, setDisplayAllBankAccounts, setReloadBanks, setBankModalVisible } = props;
 
   const [selectedBank, setSelectedBank] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
@@ -44,7 +45,8 @@ export default function AddBankAccountModal(props) {
   const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [verifiedname, setVerifiedname] = useState('')
   const [confirmed, setConfirmed] = useState(false)
-  const [details, setDetails] = useState('')
+  const [details, setDetails] = useState('');
+  const [showBanks, setShowBanks] = useState(false)
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -147,7 +149,7 @@ export default function AddBankAccountModal(props) {
             'Content-Type': 'application/json',
             Authorization: '123'
           },
-          
+
         },
       );
 
@@ -289,6 +291,8 @@ export default function AddBankAccountModal(props) {
     getAllBanks();
   }, []);
 
+
+
   return (
     <>
       <View>
@@ -309,7 +313,7 @@ export default function AddBankAccountModal(props) {
                 <Text
                   style={{
                     color: COLORS.dark,
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontWeight: 'bold',
                     fontSize: 18,
                     lineHeight: 19,
@@ -327,8 +331,13 @@ export default function AddBankAccountModal(props) {
               <TouchableOpacity
                 style={styles.customInput}
                 onPress={() => {
-                  setShowSelectBankModal(!showSelectBankModal);
-                  // console.log(bankData);
+                  // onRequestClose();
+                  onRequestClose()
+                  setTimeout(() => {
+                   setShowSelectBankModal(true);
+                  }, 200);
+
+                  console.log(bankData);
                 }}>
                 {selectedBank != '' ? (
                   <Text
@@ -364,24 +373,24 @@ export default function AddBankAccountModal(props) {
                 value={bankAccountNumber}
                 onChangeText={setBankAccountNumber}
               />
-             {
-              Boolean(verifiedname) ? (
-                <Text style={{
-                  paddingTop: 10,
-                  textTransform: 'uppercase',
-                  color: COLORS.dark
-  
-                }}>
-                  {verifiedname}
-                </Text>
-                
-              ): null
-             }
+              {
+                Boolean(verifiedname) ? (
+                  <Text style={{
+                    paddingTop: 10,
+                    textTransform: 'uppercase',
+                    color: COLORS.dark
+
+                  }}>
+                    {verifiedname}
+                  </Text>
+
+                ) : null
+              }
               <TouchableOpacity
                 disabled={!bankAccountNumber || !selectedBank ? true : false}
-                onPress={async() => {
-                  if(Boolean(verifiedname)){
-                            await createBankAccount(details);
+                onPress={async () => {
+                  if (Boolean(verifiedname)) {
+                    await createBankAccount(details);
                   } else {
                     addAccount()
                   }
@@ -419,7 +428,11 @@ export default function AddBankAccountModal(props) {
         onClick={(bank, bankCode) => {
           setSelectedBank(bank);
           setBankCode(bankCode);
+          setTimeout(() => {
+            setBankModalVisible(!visible);
+          }, 200)
         }}
+        close={onRequestClose}
         banks={bankData}
         selectedBank={selectedBank}
       // setBankCode={(value) => setBankCode(value)}
@@ -445,7 +458,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -462,7 +475,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -474,7 +487,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     fontSize: 13,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#EFEFEF',
     borderWidth: 1,

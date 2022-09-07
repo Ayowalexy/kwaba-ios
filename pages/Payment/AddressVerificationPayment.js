@@ -68,12 +68,16 @@ const AddressVerificationPayment = ({ navigation }) => {
     // setShowAmountModal(true);
 
     // console.log('ID: ', loanRepaymentData?.id);
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+    
 
     try {
       const data = {
         amount: 2500,
         purpose: 'addressVerification',
-        channel: 'paystack'
+        channel: 'paystack',
+        loan_id
 
       };
 
@@ -88,6 +92,7 @@ const AddressVerificationPayment = ({ navigation }) => {
           const data = {
             payment_channel: value,
             reference: response?.data?.data?.reference,
+            loan_id
           };
           console.log('The Datata: ', data);
           setSpinner(true);
@@ -317,7 +322,7 @@ const AddressVerificationPayment = ({ navigation }) => {
 
 
             navigation.navigate('PaymentSuccessful', {
-              name: 'RnplDirectdebit',
+              name: 'OkraDebitMandate',
               content: 'Payment Successful',
               subText: 'Awesome! You have successfully paid for your address verification',
             });

@@ -1,4 +1,4 @@
-import {StyleSheet, Dimensions} from 'react-native';
+import {StyleSheet, Dimensions, Platform} from 'react-native';
 const {width} = Dimensions.get('window');
 
 const designs = StyleSheet.create({
@@ -7,7 +7,7 @@ const designs = StyleSheet.create({
     backgroundColor: '#F7F8FD',
     padding: 15,
     paddingHorizontal: 20,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
   },
   header: {
     marginTop: 22,
@@ -15,9 +15,9 @@ const designs = StyleSheet.create({
     // width: 379,
     width: '100%',
     height: 60,
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 100,
-    borderBottomRightRadius: 100,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: Platform.OS == 'ios' ? 20 : 100,
+    borderBottomRightRadius: Platform.OS == 'ios' ? 20 : 100,
     paddingTop: 12,
     paddingLeft: 20,
   },
@@ -25,7 +25,7 @@ const designs = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
   textInput: {

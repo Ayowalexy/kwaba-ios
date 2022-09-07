@@ -301,7 +301,7 @@ export default function ActionModal(props) {
             flex: 1,
             justifyContent: 'flex-end',
             alignItems: 'center',
-            fontFamily: 'CircularStd',
+            fontFamily: 'Poppins-Medium',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}>
           <View

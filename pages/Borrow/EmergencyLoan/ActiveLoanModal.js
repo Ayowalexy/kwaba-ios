@@ -131,6 +131,41 @@ export default function ActiveLoanModal(props) {
     }
   };
 
+  const verifyPayment = async (data, paymentChannel) => {
+    setSpinner(true);
+    // setShowPreloader(true)
+    const res = await verifySavingsPayment(data);
+
+    setSpinner(false);
+    // setShowPreloader(false)
+    if (!res) {
+      return [];
+    }
+
+    if (res.status == 200) {
+      console.log('Verify Data: ', res?.data?.data);
+      setResData(res?.data?.data);
+      if (paymentChannel == 'wallet') {
+        const payload = {
+          amount: amount,
+          emergencyLoanId: loanRepaymentData?.id,
+          channel: 'wallet',
+          // reference: res?.data?.data.paymentReference,
+          purpose: 'emergencyLoanRepayment',
+          reference: res?.data?.data.reference,
+        };
+
+        console.log('That payload: ', payload);
+        await completePayment(payload);
+      } else {
+        setShowPaystackPayment(true);
+      }
+    } else {
+      setSpinner(false);
+      console.log('Error: ', res.response.data);
+    }
+  };
+
   const handlePaymentRoute = async (value) => {
     try {
 
@@ -179,9 +214,16 @@ export default function ActiveLoanModal(props) {
           // const verify = await verifyWalletTransaction(data);
        
         } else {
+          const verifyPayload = {
+            amount: amount,
+            emergencyLoanId: loanRepaymentData?.id,
+            channel: 'paystack',
+            purpose: 'emergencyLoanRepayment',
+          };
           setChannel(value);
           setResData(response?.data?.data);
-          setShowPaystackPayment(true); // show paystack
+          await verifyPayment(verifyPayload, 'paystack');
+
         }
       } else {
         setSpinner(false);

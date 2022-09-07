@@ -12,8 +12,11 @@ import {
   useWindowDimensions,
   RefreshControl,
   Animated,
+  SafeAreaView,
   Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import { icons, images, COLORS } from '../../util/index';
@@ -57,7 +60,7 @@ import WalletPaymentModal from '../Wallet/WalletPaymentModal';
 import QuickSaveListModal from './QuickSaveListModal';
 import analytics from '@segment/analytics-react-native';
 import { setCurrentUserUserActionAsync } from '../../redux/reducers/store/user/user.types';
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 import { useRoute } from '@react-navigation/native';
 import { TrackEvent } from '../../util/segmentEvents';
 import moment from 'moment';
@@ -131,7 +134,10 @@ export default function NewHome({ navigation }) {
 
   const [amountSaved, setAmountSaved] = useState(0)
   const buddies = useSelector(selectBuddies)
-  const user_ = useSelector(selectSolo)
+  const user_ = useSelector(selectSolo);
+
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -146,12 +152,7 @@ export default function NewHome({ navigation }) {
   }, [navigation]);
 
   const createChannel = () => {
-    PushNotification.createChannel(
-      {
-        channelId: 'test-channel',
-        channelName: 'Test Channel'
-      }
-    )
+   
   }
 
   useEffect(() => {
@@ -170,11 +171,7 @@ export default function NewHome({ navigation }) {
 
   const handleNotification = (item) => {
     console.log('loooooooooool')
-    PushNotification.localNotification({
-      channelId: 'test-channel',
-      title: 'Notification',
-      message: '',
-    });
+   
   };
 
 
@@ -320,16 +317,16 @@ export default function NewHome({ navigation }) {
     // dispatch(getOneSoloSavingsTransaction(489));
   }, []);
 
-  // useEffect(() => {
-  //   if (getMaxLoanCap1?.data) {
-  //     setSavings(getMaxLoanCap1?.data?.total_savings);
-  //     setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
+  useEffect(() => {
+    if (getMaxLoanCap1?.data) {
+      // setSavings(getMaxLoanCap1?.data?.total_savings);
+      // setWallet(getMaxLoanCap1?.data?.wallet_available_balance);
 
-  //     setInstantLoan(
-  //       Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
-  //     );
-  //   }
-  // }, [getMaxLoanCap1]);
+      setInstantLoan(
+        Number(getMaxLoanCap1?.data?.emergency_loan_amount_to_repay),
+      );
+    }
+  }, [getMaxLoanCap1]);
   useEffect(() => {
     // if (getMaxLoanCap1?.data) {
     setSavings(stats?.total_savings);
@@ -354,14 +351,15 @@ export default function NewHome({ navigation }) {
         savings <= 0
           ? 'Save now to make your rent work for you'
           : 'Great job on your rent savings',
-      amount: 
+      amount: user_.length || buddies.length || userSavingsChallenges.length
+      ?
         formatNumber(
           Number(user_?.filter(a => a?.savings_type == 'solo_savings')
             .reduce((b, c) => b + Number(c.amount_saved), 0))
           +
           Number(buddies?.reduce((a, b) => a + b?.amount_saved, 0))
           + Number(userSavingsChallenges?.reduce((a, b) => a + b.amount_saved, 0))
-            ).concat('.00') || '0.00',
+            ).concat('.00') : '0.00',
       color: COLORS.primary,
       actionText: savings == 0 ? 'Save Now' : 'Fund savings',
       actionClick: () =>
@@ -441,16 +439,12 @@ export default function NewHome({ navigation }) {
       actionClick: () =>
         !isProfileComplete
           ? setCompleteProfileModal(true)
-          : rentalFinance == 0
-            ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
-            : navigation.navigate('RentNowPayLaterDashboard'),
+          : handleRentalLoanClick(),
       cardClick: () => {
         TrackEvent('Home-Card-RNPL');
         !isProfileComplete
           ? setCompleteProfileModal(true)
-          : rentalFinance == 0
-            ? navigation.navigate('Rent') //RentNowPayLaterOnboarding
-            : navigation.navigate('RentNowPayLaterDashboard');
+          : handleRentalLoanClick()
       },
     },
   ];
@@ -570,6 +564,7 @@ export default function NewHome({ navigation }) {
     if (!Boolean(documentsApproved)) {
       // navigation.navigate('VerifyingDocuments')
     }
+    
 
     TrackEvent('RNPL From Bottom Navigation');
     const user = await getUser();
@@ -595,33 +590,43 @@ export default function NewHome({ navigation }) {
     if (user.profile_complete == 0) {
       setCompleteProfileModal(true);
     } else {
-      if (getCreditScoreDetails == null) {
+      if (getCreditScoreDetails == null && loanStats == undefined) {
         navigation.navigate('RnplOnboard');
-      } else if (getCreditScoreDetails == 'creditOnboarding') {
+      } else if (getCreditScoreDetails == 'creditOnboarding' && loanStats == undefined) {
         navigation.navigate('RnplOnboard');
         // // // navigation.navigate('CreditOnboard');
-      } else if (getCreditScoreDetails == 'creditForm') {
+      } else if (getCreditScoreDetails == 'creditForm'  && loanStats == undefined) {
         navigation.navigate('CreditAwaiting', JSON.parse(userDetails));
         //navigation.navigate('RnplOnboard');
 
-      } else if (getCreditScoreDetails == 'creditAwaiting') {
+      } else if (getCreditScoreDetails == 'creditAwaiting'  && loanStats == undefined) {
         navigation.navigate('creditAwaiting');
-      } else if (getCreditScoreDetails == 'creditDashboard') {
+      } else if (getCreditScoreDetails == 'creditDashboard' && loanStats == undefined) {
         navigation.navigate('CreditAwaiting');
       } else if (loanStats == 2) {
         navigation.navigate('VerifyingDocuments')
-      } else if(loanStats == 7){
-        navigation.navigate('RentNowPayLaterDashboard')
       } else if(loanStats == 1){
         navigation.navigate('RentalLoanFormCongratulation')
-      }else if(loanStats == 1){
-        navigation.navigate('RentalLoanFormCongratulation')
+      }else if(loanStats == 5){
+        navigation.navigate('AddressVerificationPayment')
+      }else if(loanStats == 4){
+        navigation.navigate('OfferApprovalBreakDown')
+      }else if(loanStats == 7){
+        navigation.navigate('OkraDebitMandate')
+      }else if(loanStats == 10){
+        navigation.navigate('AwaitingDisbursement')
+      }else if(loanStats == 11){
+        navigation.navigate('RentNowPayLaterDashboard')
       }
-      else {
 
+      // else if(loanStats == 7){
+      //   navigation.navigate('RentNowPayLaterDashboard')
+      // } 
+      else {
+        
         // navigation.navigate('RnplSteps');
         // RentalLoanFormCongratulation
-        navigation.navigate('VerifyingDocuments');
+        // navigation.navigate('VerifyingDocuments');
       }
     }
   };
@@ -712,7 +717,10 @@ export default function NewHome({ navigation }) {
     <>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
 
-      <View style={styles.container}>
+      <View style={[styles.container, {marginTop: Platform.OS == 'ios' 
+      ? statusBarHeight
+      : 0
+    }]}>
         <View style={designs.topBar}>
           <View style={designs.user}>
             <View
@@ -789,7 +797,7 @@ export default function NewHome({ navigation }) {
               />
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 10,
                   lineHeight: 12,
                   color: '#FB8B24',
@@ -812,7 +820,7 @@ export default function NewHome({ navigation }) {
                 }}>
                 <Text
                   style={{
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontSize: 10,
                     fontWeight: 'bold',
                     lineHeight: 13,
@@ -841,7 +849,7 @@ export default function NewHome({ navigation }) {
               />
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 10,
                   lineHeight: 12,
                   color: '#FB8B24',
@@ -864,7 +872,7 @@ export default function NewHome({ navigation }) {
                 }}>
                 <Text
                   style={{
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontSize: 10,
                     fontWeight: 'bold',
                     lineHeight: 13,
@@ -894,7 +902,7 @@ export default function NewHome({ navigation }) {
               />
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 10,
                   lineHeight: 12,
                   color: '#FB8B24',
@@ -916,7 +924,7 @@ export default function NewHome({ navigation }) {
                 }}>
                 <Text
                   style={{
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontSize: 10,
                     fontWeight: 'bold',
                     lineHeight: 13,
@@ -1274,7 +1282,7 @@ export default function NewHome({ navigation }) {
                               item.title == 'Savings'
                                 ? COLORS.dark
                                 : COLORS.white,
-                            fontFamily: 'CircularStd',
+                            fontFamily: 'Poppins-Medium',
                             fontSize: 15,
                             lineHeight: 23,
                             fontWeight: 'bold',
@@ -1289,7 +1297,7 @@ export default function NewHome({ navigation }) {
                               item.title == 'Savings'
                                 ? COLORS.dark
                                 : COLORS.white,
-                            fontFamily: 'CircularStd',
+                            fontFamily: 'Poppins-Medium',
                             fontSize: 12,
                             lineHeight: 20,
                             fontWeight: '600',
@@ -1462,7 +1470,8 @@ export default function NewHome({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'white',
+    marginTop: StatusBar.currentHeight
   },
 });

@@ -8,7 +8,9 @@ import {
   ScrollView,
   Alert,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Tooltip from 'rn-tooltip';
 import {useDispatch, useSelector} from 'react-redux';
@@ -46,6 +48,7 @@ export default function EmergencyLoanHome({navigation}) {
   const [errorMsg, setErrorMsg] = useState('');
   const [emergencyLoanRate, setEmergencyLoanRate] = useState(0)
 
+  const top = useSafeAreaInsets().top;
   useEffect(() => {
     dispatch(getTotalSoloSavings());
     dispatch(getMaxLoanCap());
@@ -170,6 +173,7 @@ export default function EmergencyLoanHome({navigation}) {
         designs.container,
         {
           backgroundColor: '#F7F8FD',
+          marginTop: Platform.OS == 'ios' ? top : 0
         },
       ]}>
       {getMaxLoanCap1?.data?.you_have_save > 0 ? (
@@ -311,7 +315,7 @@ export default function EmergencyLoanHome({navigation}) {
                             lineHeight: 29,
                             fontWeight: 'bold',
                           }}>
-                          ₦{formatNumber(Number(savings || 0).toFixed(2))}
+                          ₦{savings ? formatNumber(Number(savings).toFixed(2)) : '0.00'}
                         </Text>
                       </View>
                       <View
@@ -385,7 +389,7 @@ export default function EmergencyLoanHome({navigation}) {
                           lineHeight: 29,
                           fontWeight: 'bold',
                         }}>
-                        ₦{formatNumber(Number(maximumLoanAmount || 0).toFixed(2))}
+                        ₦{maximumLoanAmount ? formatNumber(Number(maximumLoanAmount).toFixed(2)) : '0.00'}
                       </Text>
                     </View>
 

@@ -30,7 +30,6 @@ useEffect(() => {
   (async () => {
     const history = await getTransactionsHistory();
     const filter = history?.data?.data?.filter(data => data?.savings_id == props?.id)
-    console.log('history',  filter)
     setTransactions(filter)
   })()
 }, [])

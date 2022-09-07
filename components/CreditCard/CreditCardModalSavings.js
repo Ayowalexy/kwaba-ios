@@ -40,7 +40,7 @@ export default function CreditCardModalSavings(props) {
               <Text
                 style={{
                   color: '#2A286A',
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontWeight: 'bold',
                   fontSize: 18,
                   lineHeight: 19,
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {

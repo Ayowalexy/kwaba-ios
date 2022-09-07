@@ -7,13 +7,16 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, FONTS, images, icons} from '../../util/index';
 import {useDispatch, useSelector} from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const BillsHome = ({navigation}) => {
   const dispatch = useDispatch();
+  const statusBarHeight = useSafeAreaInsets().top;
   const getBills = useSelector((state) => state.getBillServicesReducer);
 
   console.log("getBills", getBills)
@@ -48,7 +51,7 @@ const BillsHome = ({navigation}) => {
   ];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <View style={styles.header}>
         <Icon
           onPress={() => navigation.goBack()}
@@ -221,7 +224,7 @@ const styles = StyleSheet.create({
   headerMainText: {
     // marginLeft: 16,
     color: COLORS.yellow,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontSize: 25,
     fontWeight: 'bold',
     marginTop: 10,
@@ -229,7 +232,7 @@ const styles = StyleSheet.create({
   headertext: {
     width: '70%',
     color: COLORS.white,
-    fontFamily: 'CircularStd-bold,Book',
+    fontFamily: 'Poppins-Medium',
     // textAlign: '',
     lineHeight: 20,
     // marginLeft: 16,

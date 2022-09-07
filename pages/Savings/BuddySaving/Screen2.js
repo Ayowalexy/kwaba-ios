@@ -7,8 +7,10 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconFA from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from '../style';
@@ -31,6 +33,7 @@ export default function Screen1(props) {
   const {navigation} = props;
   const [showStartDate, setShowStartDate] = useState(false);
 
+  const top = useSafeAreaInsets().top;
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -219,7 +222,7 @@ export default function Screen1(props) {
       }}>
       {({handleSubmit, isValid, values, setValues}) => (
         <>
-          <View style={designs.container}>
+          <View style={[designs.container, { marginTop: Platform.OS == 'ios' ? top : 0}]}>
             <Icon
               onPress={() => navigation.goBack()}
               name="arrow-back-outline"

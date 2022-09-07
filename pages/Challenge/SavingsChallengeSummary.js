@@ -9,7 +9,9 @@ import {
   Dimensions,
   Switch,
   Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../util';
 import * as Animatable from 'react-native-animatable';
@@ -42,6 +44,8 @@ const naira = require('../../assets/images/piggy-bank.png');
 export default function SavingsChallengeSummary(props) {
   const {onRequestClose, visible, navigation, data} = props;
   const [spinner, setSpinner] = useState(false);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   // const [joinData, setJoinData] = useState('');
 
@@ -183,7 +187,7 @@ export default function SavingsChallengeSummary(props) {
         transparent={true}
         visible={visible}
         onRequestClose={onRequestClose}>
-        <View style={styles.centeredView}>
+        <View style={[styles.centeredView, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
           <Icon
             onPress={onRequestClose}
             name="arrow-back-outline"

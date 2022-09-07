@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View, Image, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, Image, ScrollView, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 
@@ -11,9 +11,13 @@ import {
   icons,
   designs,
 } from '../../../util/index';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const Aboutus = ({navigation}) => {
   const [appVersion, setAppVersion] = useState('');
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
+
 
   useEffect(() => {
     var pkg = require('../../../package.json');
@@ -21,7 +25,7 @@ const Aboutus = ({navigation}) => {
     // console.log('pkg: ', pkg.version);
   }, []);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight: 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
   },
   contactusText: {
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontSize: 20,
     // lineHeight: 32,
     color: '#2A286A',

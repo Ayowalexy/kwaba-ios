@@ -5,7 +5,7 @@ const {width} = Dimensions.get('window');
 const designs = StyleSheet.create({
   container: {
     flex: 1,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: '#2A286A',
     // borderWidth: 1,
     // borderColor: 'red',

@@ -9,7 +9,9 @@ import {
   StyleSheet,
   Alert,
   Modal,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
@@ -37,7 +39,7 @@ export default function Screen5(props) {
   const {navigation, route} = props;
 
   const [buddies, setBuddies] = useState([]);
-
+  const top = useSafeAreaInsets().top;
   const [showInviteBuddyModal, setShowInviteBuddyModal] = useState(false);
   const [targetAmount, setTargetAmount] = useState(0);
   const [numberOfBuddies, setNumberOfBuddies] = useState(0);
@@ -133,7 +135,7 @@ export default function Screen5(props) {
         buddy_relationship: buddyData.buddy_relationship,
         date_starting: moment(buddyData.date_starting).format('YYYY-MM-DD'),
         date_ending: moment(buddyData.date_ending).format('YYYY-MM-DD'),
-        savings_tenure: Number(buddyData.duration),
+        savings_tenure: Number(buddyData.duration) == 1 ? 12 : Number(buddyData.duration),
         num_of_buddies: Number(buddyData.number_of_buddies),
         target_amount: Number(buddyData.target_amount),
         savings_amount: Number(buddyData.savings_amount),
@@ -145,6 +147,8 @@ export default function Screen5(props) {
             : 30,
         locked: locked,
       };
+
+      console.log('Add buddy', data)
 
       setSpinner(true);
       const calc = (data.target_amount / (data.num_of_buddies + 1)).toFixed(0);
@@ -356,7 +360,7 @@ export default function Screen5(props) {
     });
 
   return (
-    <View style={designs.container}>
+    <View style={[designs.container, { marginTop: Platform.OS === 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

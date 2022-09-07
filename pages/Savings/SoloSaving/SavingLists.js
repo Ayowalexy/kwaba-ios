@@ -7,12 +7,14 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import { COLORS, images } from '../../../util';
 import LinearGradient from 'react-native-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   getMaxLoanCap,
   getOneSoloSavings,
@@ -58,7 +60,7 @@ const Item = ({ item, navigation }) => {
                 }}>
                 <Text
                   style={{
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontSize: 14,
                     fontWeight: 'bold',
                     color: COLORS.dark,
@@ -105,6 +107,8 @@ export default function SavingLists({ navigation, route }) {
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
 console.log('userss', user)
+const insets = useSafeAreaInsets();
+const statusBarHeight = insets.top;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -161,7 +165,7 @@ console.log('userss', user)
                   }}>
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 14,
                       fontWeight: 'bold',
                       color: COLORS.dark,
@@ -204,7 +208,11 @@ console.log('userss', user)
   };
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios'
+    ? statusBarHeight
+    : 0
+  
+  }]}>
       <View
         style={{
           width: '100%',
@@ -259,12 +267,20 @@ console.log('userss', user)
               {/* {formatNumber(
                 Number(getMaxLoanCap1?.data?.total_solo_savings).toFixed(2),
               )} */}
-              {formatNumber(
+              {
+                user?.filter(a => a?.savings_type == 'solo_savings')?.length
+                ?
+              
+              formatNumber(
                 Number(
                   user.filter(a => a.savings_type == 'solo_savings')
                     .reduce((b, c) => b + Number(c.amount_saved), 0)
                 ).toFixed(2)
-              )}
+              )
+              :
+              '0.00'
+            
+            }
             </Text>
           </Text>
         </View>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,10 +9,13 @@ import {
   Modal,
   StyleSheet,
   Alert,
+  RefreshControl,
+  Platform
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { icons, images, COLORS } from '../../../util/index';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   currencyFormat,
   formatNumber,
@@ -56,6 +59,7 @@ export default function SoloSavingDashBoard(props) {
   const dispatch = useDispatch();
   const getOneSavings = useSelector((state) => state.getOneSoloSavingsReducer);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const [refreshing, setRefreshing] = useState(false);
 
   const [successModal, setSuccessModal] = useState(false);
   const [totalSaving, setTotalSaving] = useState(0);
@@ -85,6 +89,8 @@ export default function SoloSavingDashBoard(props) {
   const [currBuddy, setCurrBuddy] = useState('')
 
   const _allBuddies = useSelector(selectBuddies)
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   useEffect(() => {
     const _curr = _allBuddies?.find(el => el?.buddy_savings_id == route?.params?.id)
@@ -119,6 +125,19 @@ export default function SoloSavingDashBoard(props) {
   }, [navigation]);
 
   console.log('params', route?.params)
+
+  const refresh_in = () => { }
+
+  const onRefresh = useCallback(() => {
+
+    setRefreshing(true);
+    refresh_in();
+
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 3000)
+  }, []);
+
 
 
 
@@ -294,7 +313,7 @@ export default function SoloSavingDashBoard(props) {
     }
   };
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <Icon
         onPress={() => navigation.navigate('BuddyLists')}
         name="arrow-back-outline"
@@ -302,7 +321,14 @@ export default function SoloSavingDashBoard(props) {
         style={{ padding: 18, paddingHorizontal: 10 }}
         color="#2A286A"
       />
-      <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+        showsVerticalScrollIndicator={false} scrollEnabled>
         <View style={[styles.content]}>
           <View style={{ marginBottom: 20 }}>
             <Text
@@ -338,7 +364,10 @@ export default function SoloSavingDashBoard(props) {
                   top: 0,
                   zIndex: 5,
                 }}
-                onPress={() => setShowAmountModal(true)}>
+                onPress={() => {
+                  setShowAmountModal(true)
+
+                }}>
                 <Image
                   style={{
                     width: 50,
@@ -406,7 +435,7 @@ export default function SoloSavingDashBoard(props) {
                   </Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <Text style={{ fontSize: 10, color: COLORS.white }}>
                     View savings history
                   </Text>
@@ -415,7 +444,7 @@ export default function SoloSavingDashBoard(props) {
                     size={15}
                     style={{ color: COLORS.white, marginLeft: 10 }}
                   />
-                </View>
+                </View> */}
               </View>
             </View>
             <View
@@ -510,7 +539,7 @@ export default function SoloSavingDashBoard(props) {
                   />
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 16,
                       fontWeight: 'bold',
                       color: 'white',
@@ -521,7 +550,7 @@ export default function SoloSavingDashBoard(props) {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 10,
                       fontWeight: '600',
                       color: 'white',
@@ -622,7 +651,7 @@ export default function SoloSavingDashBoard(props) {
               justifyContent: 'space-evenly',
             }}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('EmergencyFundOnboarding')}
+              // onPress={() => navigation.navigate('EmergencyFundOnboarding')}
               style={{
                 width: '45%',
                 minHeight: 100,
@@ -738,7 +767,22 @@ export default function SoloSavingDashBoard(props) {
           visible={showAmountModal}
           setAmount={(d) => setAmount(d)}
           // setData={(d) => setResData(d)}
-          showCard={() => setShowPaymentModal(true)}
+         
+          showCard={() =>{
+            if ((Number(totalSaving) + Number(amount)) > Number(savingsTarget)) {
+              setVisible(true)
+              setType('error')
+              setMsg({
+                header: 'Over payment',
+                text: "'You are trying to fund more than the savings target of this buddy savings",
+                action: 'Try Again'
+              })
+            } else {
+              setTimeout(() => {
+                setShowPaymentModal(true)
+              }, Platform.OS == 'ios' ? 200 : 0)
+            }
+          }}
         />
       )}
 

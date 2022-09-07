@@ -58,7 +58,7 @@ export default function GetCode({navigation}) {
       style={{
         flex: 1,
         backgroundColor: '#F7F8FD',
-        fontFamily: 'CircularStd',
+        fontFamily: 'Poppins-Medium',
         padding: 15,
         justifyContent: 'center',
       }}>

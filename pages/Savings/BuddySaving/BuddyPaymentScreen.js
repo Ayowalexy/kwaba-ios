@@ -1,8 +1,7 @@
-import React, {useEffect, useState, useRef} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity, Alert} from 'react-native';
-import {COLORS} from '../../../util';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {formatNumber} from '../../../util/numberFormatter';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert, Dimensions, Platform } from 'react-native';
+import { COLORS } from '../../../util';
+import { formatNumber } from '../../../util/numberFormatter';
 import PaymentTypeModal from '../../../components/PaymentType/PaymentTypeModal';
 import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,12 +13,14 @@ import {
   verifySavingsPayment,
   getOneBuddy,
 } from '../../../services/network';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 import { selectBuddySavings } from '../../../redux/reducers/store/buddySavings/buddySavingsSlectors';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBuddySavings } from '../../../redux/reducers/store/buddy-savings/buddy-savings.actions';
 import { createABuddySavingsActions } from '../../../redux/reducers/store/buddySavings/buddySavings.action';
 export default function BuddyPaymentScreen(props) {
-  const {navigation, route} = props;
+  const { navigation, route } = props;
   const [spinner, setSpinner] = useState(false);
   const [showCardModal, setShowCardModal] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -28,10 +29,17 @@ export default function BuddyPaymentScreen(props) {
   const [channel, setChannel] = useState('');
   const [savingsId, setSavingsId] = useState('');
   const dispatch = useDispatch();
-  const [_buddydata, setBuddydata] = useState('')
+  const [_buddydata, setBuddydata] = useState('');
+  const [random, setRandom] = useState(0);
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
-
+  const [text, setText] = useState('PAY NOW');
   const [walletBalance, setWalletBalance] = useState(0);
+
+  useEffect(() => {
+    setText('PAYING');
+    // setSpinner(false)
+    // setShowPaystackPayment(true);
+  }, [random])
 
 
   useEffect(() => {
@@ -40,7 +48,7 @@ export default function BuddyPaymentScreen(props) {
     }
   }, [getMaxLoanCap1]);
 
-  console.log('params data', {...route.params.data, ...route.params.res})
+  console.log('params data', { ...route.params.data, ...route.params.res })
 
   const verifyPaymentRequest = async (data, paymentChannel, buddySavingsId) => {
     setSpinner(true);
@@ -55,7 +63,7 @@ export default function BuddyPaymentScreen(props) {
     if (res.status == 200) {
       const verifyData = res?.data?.data;
       console.log('Payement channel', paymentChannel)
-      setVerifyData({...verifyData, id: data.buddyData.savings_id});
+      setVerifyData({ ...verifyData, id: data.buddyData.savings_id });
 
       const buddyData = {
         name: route.params.data.title,
@@ -98,6 +106,10 @@ export default function BuddyPaymentScreen(props) {
         }
       } else {
         setShowPaystackPayment(true);
+        console.log('Paystack should have loaded')
+        // setTimeout(() => {
+        //   setRandom(Math.random())
+        // }, 400);
       }
     } else {
       setSpinner(false);
@@ -125,7 +137,7 @@ export default function BuddyPaymentScreen(props) {
 
         if (value == 'wallet') {
 
-          if(Number(data.savings_amount) > walletBalance){
+          if (Number(data.savings_amount) > walletBalance) {
             setSpinner(false)
             return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
           }
@@ -177,9 +189,20 @@ export default function BuddyPaymentScreen(props) {
   return (
     <>
       <View style={[styles.container]}>
-        <View style={{flex: 1}}></View>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{ marginTop: Platform.OS == 'ios' ? 60 : 0, marginLeft: Platform.OS == 'ios' ? 15 : 0 }}>
+          <Icon
+            onPress={() => navigation.goBack()}
+            name="arrow-back-outline"
+            size={25}
+            style={{ fontWeight: '900' }}
+            color="#2A286A"
+          />
+        </TouchableOpacity>
+        <View style={{ flex: 1 }}></View>
 
-        <View style={{paddingHorizontal: 20, paddingVertical: 20}}>
+        <View style={{ paddingHorizontal: 20, paddingVertical: 20 }}>
           <TouchableOpacity
             onPress={() => setShowPaymentModal(true)}
             style={[
@@ -201,7 +224,7 @@ export default function BuddyPaymentScreen(props) {
                 fontSize: 14,
                 lineHeight: 30,
               }}>
-              PAY NOW{'  '}
+                PAY NOW {'  '}
               {route?.params?.data?.savings_amount &&
                 '₦' + formatNumber(route?.params?.data?.savings_amount)}
             </Text>
@@ -249,7 +272,8 @@ export default function BuddyPaymentScreen(props) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
+    height: Dimensions.get('screen').height,
     backgroundColor: COLORS.white,
   },
   headline: {

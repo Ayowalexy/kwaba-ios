@@ -8,7 +8,7 @@ const designs = StyleSheet.create({
     paddingTop: 10,
     paddingLeft: 16,
     paddingRight: 16,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
   },
   header: {
     marginTop: 10,
@@ -25,7 +25,7 @@ const designs = StyleSheet.create({
     fontSize: 18,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
   textInput: {

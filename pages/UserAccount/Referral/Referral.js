@@ -11,7 +11,9 @@ import {
   Share,
   ScrollView,
   ToastAndroid,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -26,6 +28,8 @@ const dplink = `https://kwaba.ng/referral`;
 const Referral = ({navigation}) => {
   const referral_msg = `I use Kwaba to save and pay for my rent. Join with my link to get N1,000 towards your rent savings`;
   const [referralCode, setReferralCode] = useState('');
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   const fetchReferralCode = async () => {
     const text = await Clipboard.getString();
@@ -71,7 +75,11 @@ const Referral = ({navigation}) => {
     <ScrollView
       style={[
         styles.container,
-        {flex: 1, backgroundColor: '#F7F8FD', backgroundColor: '#9D98EC'},
+        {flex: 1, backgroundColor: '#F7F8FD', backgroundColor: '#9D98EC',
+        marginTop: Platform.OS == 'ios'
+        ? statusBarHeight
+        : 0
+      },
       ]}>
       <Icon
         onPress={() => navigation.navigate('Home')}
@@ -232,7 +240,7 @@ const Referral = ({navigation}) => {
               marginTop: 20,
               marginBottom: 20,
               fontSize: 14,
-              fontFamily: 'CircularStd-Medium',
+              fontFamily: 'Poppins-Medium',
               fontWeight: '600',
               display: 'flex',
               justifyContent: 'center',

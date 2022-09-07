@@ -6,7 +6,9 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, images} from '../../../util';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -28,8 +30,9 @@ const businessData = [
 ];
 
 export default function RnplEligibility({navigation}) {
+  const top = useSafeAreaInsets().top;
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

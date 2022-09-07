@@ -9,7 +9,9 @@ import {
   Pressable,
   Alert,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {icons} from '../../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../../util/index';
@@ -63,6 +65,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
 
   const [disbursementModal, setDisbursementModal] = useState(false);
 
+  const top = useSafeAreaInsets().top;
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const user = JSON.parse(userData).user;
@@ -165,7 +168,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => {
           navigation.goBack();

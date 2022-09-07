@@ -211,7 +211,8 @@ export default function WelcomeBack({navigation, route}) {
         console.log('Error', res.response.data.statusMsg);
         // setMessage(res.response.data.statusMsg);
         // setMessage('Invalid credentials');
-        setMessage('Unable to connect, check your network')
+        let errMsg = res.response.data.statusMsg.includes('Could not verify pin') ? 'Invalid credentials' : 'Unable to connect, check your network';
+        setMessage(errMsg)
       }
     } catch (error) {
       setSpinner(false);

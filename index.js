@@ -5,15 +5,15 @@ import { Provider } from 'react-redux';
 import App from './App';
 import { name as appName } from './app.json';
 import { ToastProvider } from 'react-native-toast-notifications'
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 import { COLORS } from './util';
 
-PushNotification.configure({
-  onNotification: function (notification) {
-    console.log('NOTIFICATION:', notification);
-  },
-  requestPermissions: Platform.OS === 'ios',
-});
+// PushNotification.configure({
+//   onNotification: function (notification) {
+//     console.log('NOTIFICATION:', notification);
+//   },
+//   requestPermissions: Platform.OS === 'ios',
+// });
 
 const Root = () => (
   <Provider store={store}>
@@ -36,7 +36,7 @@ const Root = () => (
             <Text 
               style={{
                 color: COLORS.white,
-                fontFamily: 'CircularStd'
+                fontFamily: 'Poppins-Medium'
               }}
             >
               {options?.message}

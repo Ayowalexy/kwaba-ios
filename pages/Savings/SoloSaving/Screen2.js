@@ -6,6 +6,7 @@ import {
   TextInput,
   ScrollView,
   StyleSheet,
+  Platform
 } from 'react-native';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../../util/index';
@@ -19,7 +20,7 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import * as Animatable from 'react-native-animatable';
 import {formatNumber, unFormatNumber} from '../../../util/numberFormatter';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function Screen2(props) {
   const dispatch = useDispatch();
   // const savings = useSelector((state) => state.soloSavingReducer);
@@ -30,6 +31,8 @@ export default function Screen2(props) {
   const [instantSaving, setInstantSaving] = useState(null);
 
   const [howLong, setHowLong] = useState('');
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   const instantSavingMinimumAmount = 100;
 
@@ -274,7 +277,7 @@ export default function Screen2(props) {
   // };
 
   return (
-    <View style={designs.container}>
+    <View style={[designs.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <Icon
         onPress={() => props.navigation.goBack()}
         name="arrow-back-outline"

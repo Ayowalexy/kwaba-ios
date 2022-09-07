@@ -8,11 +8,12 @@ import {
   Keyboard,
   Image,
   ScrollView,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS, FONTS, images, icons } from '../../util/index';
-// import { SwipeablePanel } from 'rn-swipeable-panel';
+import { SwipeablePanel } from 'rn-swipeable-panel';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBillsCategory } from '../../redux/actions/billsAction';
 import axios from 'axios';
@@ -27,9 +28,14 @@ import { unFormatNumber } from '../../util/numberFormatter';
 import { verifySavingsPayment } from '../../services/network';
 import { baseUrl } from '../../services/routes';
 import { completeSavingsPayment } from '../../services/network';
+import { selectWalletBalance } from '../../redux/reducers/store/wallet/wallet.selector';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+
 
 const DataBill = ({ navigation, route }) => {
   const dispatch = useDispatch();
+  const statusBarHeight = useSafeAreaInsets().top;
   let name = route.params.name;
   const [active, setActive] = useState(false);
   const [serviceID, setServiceID] = useState('');
@@ -39,6 +45,8 @@ const DataBill = ({ navigation, route }) => {
   const [packageName, setPackageName] = useState('');
   const [spinner, setSpinner] = useState(false);
   const [amount, setAmount] = useState('');
+  const walletBalance = useSelector(selectWalletBalance)
+
   const [customerID, setCustomerID] = useState('');
   const [variationCode, setVariationCode] = useState('');
 
@@ -50,6 +58,7 @@ const DataBill = ({ navigation, route }) => {
   const [showPaystackPayment, setShowPaystackPayment] = useState(false)
   const [verifyData, setVerifyData] = useState('')
   const [verifyBillsData, setVerifyBillsData] = useState('')
+  const [onlyWallet, setOnlyWallet] = useState(false)
 
   const [airtimeData, setAirtimeData] = useState('');
 
@@ -133,11 +142,17 @@ const DataBill = ({ navigation, route }) => {
     //   amount: 49.99,
     //   recepient: '08011111111',
     // };
+
+   
+    setOnlyWallet(true)
     setShowPaymentModal(true);
   };
 
   const handlePaymentRoute = async (value) => {
     if (value == 'wallet') {
+      if (Number(amount) > Number(walletBalance)) {
+        return Alert.alert('Error', 'You have an insufficient wallet balance, please top up and try again')
+      }
       const data = {
         amount: unFormatNumber(amount),
         channel: 'wallet',
@@ -269,7 +284,7 @@ const DataBill = ({ navigation, route }) => {
   // };
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 , marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
@@ -404,7 +419,7 @@ const DataBill = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* <SwipeablePanel
+      <SwipeablePanel
         showCloseButton
         fullWidth
         isActive={active}
@@ -508,7 +523,7 @@ const DataBill = ({ navigation, route }) => {
             </TouchableOpacity>
           );
         })}
-      </SwipeablePanel> */}
+      </SwipeablePanel>
 
       <Spinner visible={spinner} size="large" />
 
@@ -562,6 +577,7 @@ const DataBill = ({ navigation, route }) => {
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
+          onlyWallet={true}
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
@@ -594,7 +610,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

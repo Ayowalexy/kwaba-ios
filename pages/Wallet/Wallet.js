@@ -307,12 +307,9 @@ export default function Wallet(props) {
                         new RegExp('[0-9]', 'g'),
                         'x',
                       )} */}
-                    {toggleAmount
+                    {walletBalance
                       ? formatNumber(Number(walletBalance).toFixed(2))
-                      : formatNumber(Number(walletBalance).toFixed(2)).replace(
-                        new RegExp('[0-9]', 'g'),
-                        'x',
-                      )}
+                      : '0.00'}
                   </Text>
                 </View>
               </View>

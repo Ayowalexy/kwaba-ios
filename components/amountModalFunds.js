@@ -32,6 +32,8 @@ import CreditCardModalFunds from './CreditCard/CreditCardModalFunds';
 RNPaystack.init({
   publicKey: 'pk_test_803016ab92dcf40caa934ef5fd891e0808b258ef',
 });
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 
 export default function AmountModalFunds(props) {
   const {onRequestClose, visible, data, setAmount, showCard} = props;
@@ -189,7 +191,7 @@ export default function AmountModalFunds(props) {
   };
 
   return (
-    <>
+    <KeyboardAwareScrollView>
       <View style={styles.centeredView}>
         <Modal
           animationType="slide"
@@ -287,7 +289,7 @@ export default function AmountModalFunds(props) {
       )}
 
       <Spinner visible={spinner} size="large" /> */}
-    </>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -307,6 +309,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingVertical: 40,
     paddingHorizontal: 20,
+    height: 450
   },
   btn: {
     width: '100%',
@@ -314,7 +317,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -334,7 +337,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 18,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#ADADAD',
     borderWidth: 1,
@@ -358,7 +361,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
 

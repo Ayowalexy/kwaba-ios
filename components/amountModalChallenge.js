@@ -25,6 +25,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { useSelector, useDispatch } from 'react-redux';
 
 import RNPaystack from 'react-native-paystack';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import CreditCardModalSavings from './CreditCard/CreditCardModalSavings';
 RNPaystack.init({
@@ -54,7 +55,7 @@ export default function AmountModalChallenge(props) {
   const getSoloSaving = useSelector((state) => state.getSoloSavingsReducer);
 
   const amountSchema = yup.object().shape({
-    amount: yup.number().required('Please provide amount').max(minimumAmount, `The target amount is ${minimumAmount}`),
+    amount: yup.string().required('Please provide amount'),
   });
 
   const handleClose = () => {
@@ -68,7 +69,7 @@ export default function AmountModalChallenge(props) {
 
     setAmount(data?.amount);
     onRequestClose(); // close amount modal
-    showCard();
+    showCard(data?.amount);
   };
 
   const NumberInput = (props) => {
@@ -120,13 +121,13 @@ export default function AmountModalChallenge(props) {
           />
         </View>
 
-        {Number(value) > Number(target) && <Text style={styles.errorText}>Target amount is ₦{formatNumber(minimumAmount)}</Text>}
+        {Number(value) > Number(target) && <Text style={styles.errorText}>Target amount is ₦{formatNumber(target)}</Text>}
       </>
     );
   };
 
   return (
-    <>
+    <KeyboardAwareScrollView>
       <View style={styles.centeredView}>
         <Modal
           animationType="slide"
@@ -248,7 +249,7 @@ export default function AmountModalChallenge(props) {
         ID={ID}
       /> */}
       {/* )} */}
-    </>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -257,7 +258,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingVertical: 40,
     paddingHorizontal: 20,
+    height: 450
   },
   btn: {
     width: '100%',
@@ -276,7 +278,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 18,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#ADADAD',
     borderWidth: 1,
@@ -320,7 +322,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
 

@@ -112,7 +112,7 @@ const designs = StyleSheet.create({
       },
       modalTitleText: {
         fontSize: 18,
-        fontFamily: 'CircularStd-bold',
+        fontFamily: 'Poppins-Medium',
         lineHeight: 23,
         color: COLORS.primary,
         fontWeight: 'bold',
@@ -121,7 +121,7 @@ const designs = StyleSheet.create({
   },
   modalBodyText: {
     fontSize: 15,
-    fontFamily: 'CircularStd-bold',
+    fontFamily: 'Poppins-Medium',
     lineHeight: 19,
     color: COLORS.primary,
     marginBottom: 30

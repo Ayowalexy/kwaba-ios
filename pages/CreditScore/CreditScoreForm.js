@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
   errorText: {

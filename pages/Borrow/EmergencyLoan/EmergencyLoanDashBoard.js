@@ -11,7 +11,9 @@ import {
   Alert,
   StyleSheet,
   ActivityIndicator,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -59,6 +61,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
   const [showAmountModal, setShowAmountModal] = useState(false);
   const [loanRepaymentData, setLoanRepaymentData] = useState([]);
 
+  const top = useSafeAreaInsets().top;
   const [loanPaid, setLoanPiad] = useState(0);
 
   const [repaymentLists, setRepaymentLists] = useState([]);
@@ -176,7 +179,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <View
         style={{
           flexDirection: 'row',
@@ -261,7 +264,7 @@ export default function EmergencyLoanDashBoard({navigation}) {
                     fontWeight: 'bold',
                     marginLeft: 0,
                   }}>
-                  ₦{formatNumber(Number(loanPaid).toFixed(2)) || '0.00'}
+                  ₦{ loanPaid ? formatNumber(Number(loanPaid).toFixed(2)) : '0.00'}
                 </Text>
               </View>
               <View style={{alignItems: 'flex-end'}}>

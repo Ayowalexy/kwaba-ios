@@ -86,7 +86,7 @@ export default function Start({navigation}) {
       <View style={{padding: 10}}>
         <Text
           style={{
-            fontFamily: 'CircularStd',
+            fontFamily: 'Poppins-Medium',
             fontSize: 25,
             fontWeight: 'bold',
             color: '#00DC99',
@@ -98,7 +98,7 @@ export default function Start({navigation}) {
         <Text
           style={{
             width: '60%',
-            fontFamily: 'CircularStd',
+            fontFamily: 'Poppins-Medium',
             fontSize: 12,
             fontWeight: '600',
             color: 'white',
@@ -117,7 +117,7 @@ export default function Start({navigation}) {
           <View style={designs.smallBox}>
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 9,
                 fontWeight: '600',
                 lineHeight: 11,
@@ -127,7 +127,7 @@ export default function Start({navigation}) {
             </Text>
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 17,
                 fontWeight: 'bold',
                 lineHeight: 22,
@@ -148,7 +148,7 @@ export default function Start({navigation}) {
 
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 9,
                 fontWeight: '600',
                 lineHeight: 11,
@@ -158,7 +158,7 @@ export default function Start({navigation}) {
             </Text>
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 17,
                 fontWeight: 'bold',
                 lineHeight: 22,
@@ -173,7 +173,7 @@ export default function Start({navigation}) {
           <View style={designs.smallBox}>
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 9,
                 fontWeight: '600',
                 lineHeight: 11,
@@ -183,7 +183,7 @@ export default function Start({navigation}) {
             </Text>
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 17,
                 fontWeight: 'bold',
                 lineHeight: 22,

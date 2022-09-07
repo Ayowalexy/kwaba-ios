@@ -25,7 +25,7 @@ import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import analytics from '@segment/analytics-react-native';
 
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 import {COLORS} from '../../util';
 
 const CustomInput = (props) => {
@@ -139,7 +139,6 @@ export default function Login({navigation}) {
 
         // navigation.navigate('Home');
         if (res.data.data.haveSetPin) {
-          // const userres = await Intercom.registerIdentifiedUser({email: "seinde4@yahoo.com", userId:"seinde4-123"})
           // console.log("user res", userres)
           navigation.navigate('WelcomeBack', {
               data: res.data.data});
@@ -186,10 +185,7 @@ export default function Login({navigation}) {
   }, []);
 
   const createChannel = () => {
-    PushNotification.createChannel({
-      channelId: 'test-channel',
-      channelName: 'Test Channel',
-    });
+   
   };
 
   return (

@@ -7,7 +7,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../../util';
@@ -42,7 +44,7 @@ const CustomInput = (props) => {
 
   const hasError = errors[name] && touched[name];
   const [secureTextEntry, setSecureTextEntry] = useState(true);
-
+ 
   return (
     <>
       <View
@@ -118,6 +120,9 @@ export default function ChangePinModal(props) {
     value,
     setValue,
   });
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
+
 
   const handleSubmit = async (values) => {
     const data = {
@@ -165,7 +170,7 @@ export default function ChangePinModal(props) {
               visible={visible}
               onRequestClose={onRequestClose}
               style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
-              <View style={designs.centeredView}>
+              <View style={[designs.centeredView, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
                 <View style={designs.modalView}>
                   <Icon
                     onPress={onRequestClose}

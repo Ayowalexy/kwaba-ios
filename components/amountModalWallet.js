@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -8,16 +8,19 @@ import {
   View,
   TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../util';
+import { COLORS, images } from '../util';
 import * as Animatable from 'react-native-animatable';
 import {
   currencyFormat,
   formatNumber,
   unFormatNumber,
 } from '../util/numberFormatter';
-import {Formik, Field} from 'formik';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import {
   addFundsToSavings,
@@ -29,11 +32,12 @@ import {
   verifySavingsPayment,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 // import CreditCardModalFunds from './CreditCard/CreditCardModalFunds';
 export default function AmountModalWallet(props) {
-  const {onRequestClose, visible, channel, setData, showCard, setAmountToFund} = props;
+  const { onRequestClose, visible, channel, setData, showCard, setAmountToFund } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -119,8 +123,8 @@ export default function AmountModalWallet(props) {
 
   const NumberInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -129,11 +133,11 @@ export default function AmountModalWallet(props) {
     return (
       <>
         {/* {hasError && <Text style={styles.errorText}>{errors[name]}</Text>} */}
-        <Text style={[styles.boldText, {marginTop: 10}]}>How much?</Text>
+        <Text style={[styles.boldText, { marginTop: 10 }]}>How much?</Text>
         <View
           style={[
             styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && styles.errorInput,
           ]}>
           <Text
@@ -170,79 +174,90 @@ export default function AmountModalWallet(props) {
 
   return (
     <>
-      {/* <View style={styles.centeredView}> */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={visible}
-        onRequestClose={onRequestClose}>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Icon
-              onPress={handleClose}
-              name="close-outline"
-              size={25}
-              style={{
-                right: 5,
-                top: 5,
-                position: 'absolute',
-                zIndex: 2,
-                color: COLORS.grey,
-                padding: 10,
-                //   borderWidth: 1,
-              }}
-            />
-            <Animatable.View
-              duration={300}
-              delay={100}
-              easing="ease-in-out"
-              animation="slideInLeft">
-              <Formik
-                validationSchema={amountSchema}
-                initialValues={{
-                  amount: '',
+      <KeyboardAwareScrollView>
+
+
+        {/* <View style={styles.centeredView}> */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={visible}
+          onRequestClose={onRequestClose}>
+          {/* <KeyboardAvoidingView
+          behavior="height"
+        > */}
+          {/* <ScrollView> */}
+
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Icon
+                onPress={handleClose}
+                name="close-outline"
+                size={25}
+                style={{
+                  right: 5,
+                  top: 5,
+                  position: 'absolute',
+                  zIndex: 2,
+                  color: COLORS.grey,
+                  padding: 10,
+                  //   borderWidth: 1,
                 }}
-                onSubmit={(values) => {
-                  handleSubmit(values);
-                }}>
-                {({handleSubmit, isValid, values, setValues}) => (
-                  <>
-                    <Field
-                      component={NumberInput}
-                      name="amount"
-                      placeholder="Amount"
-                    />
+              />
+              <Animatable.View
+                duration={300}
+                delay={100}
+                easing="ease-in-out"
+                animation="slideInLeft">
+                <Formik
+                  validationSchema={amountSchema}
+                  initialValues={{
+                    amount: '',
+                  }}
+                  onSubmit={(values) => {
+                    handleSubmit(values);
+                  }}>
+                  {({ handleSubmit, isValid, values, setValues }) => (
+                    <>
+                      <Field
+                        component={NumberInput}
+                        name="amount"
+                        placeholder="Amount"
+                      />
 
-                    <TouchableOpacity
-                      onPress={handleSubmit}
-                      disabled={values.amount < 100 ? true : false}
-                      style={[
-                        styles.button,
-                        {
-                          backgroundColor:
-                            values.amount < 100 ? '#2A286A50' : COLORS.primary,
-                        },
-                      ]}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: 12,
-                          lineHeight: 30,
-                        }}>
-                        PROCEED
-                      </Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-              </Formik>
-            </Animatable.View>
+                      <TouchableOpacity
+                        onPress={handleSubmit}
+                        disabled={values.amount < 100 ? true : false}
+                        style={[
+                          styles.button,
+                          {
+                            backgroundColor:
+                              values.amount < 100 ? '#2A286A50' : COLORS.primary,
+                          },
+                        ]}>
+                        <Text
+                          style={{
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: 12,
+                            lineHeight: 30,
+                          }}>
+                          PROCEED
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
+                </Formik>
+              </Animatable.View>
+            </View>
           </View>
-        </View>
-      </Modal>
-      {/* </View> */}
+          {/* </ScrollView> */}
 
-      {/* {modal && (
+          {/* </KeyboardAvoidingView> */}
+        </Modal>
+        {/* </View> */}
+
+        {/* {modal && (
         <CreditCardModalFunds
           onRequestClose={() => setModal(!modal)}
           visible={modal}
@@ -253,7 +268,10 @@ export default function AmountModalWallet(props) {
         />
       )} */}
 
-      <Spinner visible={spinner} size="large" />
+        <Spinner visible={spinner} size="large" />
+
+      </KeyboardAwareScrollView>
+
     </>
   );
 }
@@ -263,7 +281,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -274,6 +292,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingVertical: 40,
     paddingHorizontal: 20,
+    height: 450
   },
   btn: {
     width: '100%',
@@ -281,7 +300,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -301,7 +320,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 18,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#ADADAD',
     borderWidth: 1,
@@ -325,7 +344,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
 

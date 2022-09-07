@@ -7,7 +7,9 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from './style';
@@ -26,6 +28,8 @@ const soloSavingFormSchema = yup.object().shape({
 
 export default function Screen1({navigation}) {
   const dispatch = useDispatch();
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   const handleSubmit = (values) => {
     try {
@@ -270,7 +274,7 @@ export default function Screen1({navigation}) {
   };
 
   return (
-    <View style={designs.container}>
+    <View style={[designs.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
@@ -284,7 +288,7 @@ export default function Screen1({navigation}) {
             style={{
               color: '#00DC99',
               fontSize: 16,
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontWeight: 'bold',
               lineHeight: 20,
             }}>
@@ -294,7 +298,7 @@ export default function Screen1({navigation}) {
             style={{
               color: '#FFFFFF',
               fontSize: 10,
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontWeight: '600',
               lineHeight: 13,
               marginTop: 1,

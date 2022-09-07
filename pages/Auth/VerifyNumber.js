@@ -100,12 +100,12 @@ export default function VerifyNumber({navigation, route}) {
               {
                 alignText: 'center',
                 color: '#2A286A',
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
               },
             ]}>
             Didn't receive OTP or it expired
           </Text>
-          <Text style={[{color: COLORS.light, fontFamily: 'CircularStd'}]}>
+          <Text style={[{color: COLORS.light, fontFamily: 'Poppins-Medium'}]}>
             {' '}
             Resend
           </Text>
@@ -159,7 +159,7 @@ export default function VerifyNumber({navigation, route}) {
       style={{
         flex: 1,
         backgroundColor: '#F7F8FD',
-        fontFamily: 'CircularStd',
+        fontFamily: 'Poppins-Medium',
         padding: 15,
         // justifyContent: 'center',
       }}>

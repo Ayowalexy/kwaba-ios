@@ -7,7 +7,9 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from '../style';
 import {Formik, Field} from 'formik';
@@ -26,6 +28,7 @@ const buddySavingFormSchema = yup.object().shape({
 export default function Screen1({navigation}) {
   const [showSelectBuddiesModal, setShowSelectBuddiesModal] = useState(false);
 
+  const top = useSafeAreaInsets().top;
   const CustomInput = (props) => {
     const {
       field: {name, onBlur, onChange, value},
@@ -224,7 +227,7 @@ export default function Screen1({navigation}) {
   };
 
   return (
-    <View style={designs.container}>
+    <View style={[designs.container, { marginTop: Platform.OS == 'ios' ? top: 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
@@ -238,7 +241,7 @@ export default function Screen1({navigation}) {
             style={{
               color: '#00DC99',
               fontSize: 16,
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontWeight: 'bold',
               lineHeight: 20,
             }}>
@@ -248,7 +251,7 @@ export default function Screen1({navigation}) {
             style={{
               color: '#FFFFFF',
               fontSize: 10,
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontWeight: '600',
               lineHeight: 13,
               marginTop: 1,

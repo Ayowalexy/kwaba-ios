@@ -105,7 +105,7 @@ const designs = StyleSheet.create({
     fontSize: 18,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
 });

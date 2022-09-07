@@ -46,6 +46,7 @@ export default function LoanTabs(props) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [loanRepaymentData, setLoanRepaymentData] = useState([]);
   const [showAmountModal, setShowAmountModal] = useState(false);
+  
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
@@ -587,7 +588,7 @@ export default function LoanTabs(props) {
         
       {/* <Spinner visible={spinner} size="small" /> */}
       {/* {spinner && <ActivityIndicator size={'large'} color={COLORS.primary} />} */}
-      {showPreloader && <Preloader />}
+      {showPreloader && <Preloader visible={showPreloader} setVisible={setShowPreloader} />}
 
     </>
   );

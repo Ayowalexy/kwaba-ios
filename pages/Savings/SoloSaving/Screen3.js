@@ -8,8 +8,10 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
-  Linking
+  Linking,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CheckBox from '@react-native-community/checkbox';
@@ -51,6 +53,8 @@ export default function Screen3({ navigation, route }) {
   const dispatch = useDispatch();
   const [toggleCheckBox, setToggleCheckBox] = useState(false);
   const [locked, setLocked] = useState(true);
+  const insets = useSafeAreaInsets();
+  const statusbarHeight = insets.top;
 
   const savings_target = store.savings_amount * Number(store.savings_tenure[0]);
   const savings_start_date = moment(store.savings_start_date).format(
@@ -115,7 +119,7 @@ export default function Screen3({ navigation, route }) {
     useState(0);
 
 
-    
+
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
       setWalletBalance(getMaxLoanCap1?.data?.wallet_available_balance);
@@ -202,15 +206,16 @@ export default function Screen3({ navigation, route }) {
     };
     console.log('payload for savings creation', data);
     const response = await userCreateSavings(data);
-    console.log('this has created savings successfully');
+    console.log('this has created savings successfully', response);
     setSpinner(false);
 
 
-   
+
     if (!response) return [];
 
     if (bol) {
       const vData = response?.data?.data;
+      console.log('vData', vData)
       const payloadData = {
         amount: route.params.amount,
         savings_id: vData?.id,
@@ -234,6 +239,15 @@ export default function Screen3({ navigation, route }) {
         payloadData,
       );
     } else {
+      const _soloData = {
+        name: data.savings_name,
+        amount_saved: 0,
+        target_amount: data.target_amount,
+        id: response?.data?.data.id,
+        savings_type: 'solo_savings'
+      }
+      dispatch(setSoloSavings(_soloData))
+      console.log('Users not funding now', _soloData)
       navigation.navigate('PaymentSuccessful', {
         content: 'Savings Created',
         subText: 'Your savings plan has been created successfully',
@@ -254,13 +268,13 @@ export default function Screen3({ navigation, route }) {
       }
       const res = await completeSavingsPayment(data);
 
+      console.log('complete savings', res)
+
       if (res.status == 200) {
         // dispatch(setCurrentUserUserActionAsync())
-        dispatch(setSoloSavings(soloData))
         dispatch(setWalletbalance(walletBalance - Number(amountToSaveNow).toFixed(0)))
-        console.log('Amount', walletBalance - Number(amountToSaveNow).toFixed(0))
         // console.log('Complete Paymentttttttttt: ', res?.data);
-        await showSuccess();
+
       }
     } catch (error) {
       console.log('The Error: ', error);
@@ -272,6 +286,8 @@ export default function Screen3({ navigation, route }) {
   const verifyPaymentRequest = async (data, paymentChannel) => {
     setSpinner(true);
     const res = await verifySavingsPayment(data);
+
+    console.log('Verify response', res)
 
     setSpinner(false);
     if (!res) return [];
@@ -289,6 +305,26 @@ export default function Screen3({ navigation, route }) {
           reference: verifyData.reference,
           purpose: 'savings',
         };
+        const _soloData = {
+          name: savingsTitle,
+          amount_saved: verifyData.amount,
+          target_amount: savingsTarget,
+          id: data.savings_id,
+          savings_type: 'solo_savings'
+        }
+
+        console.log('Solo Data', _soloData)
+        dispatch(setSoloSavings(_soloData))
+
+
+        navigation.navigate('PaymentSuccessful', {
+          content: 'Payment Successful',
+          subText: 'You have successfully funded your savings',
+          name: 'SoloSavingDashBoard',
+          id: _soloData.id,
+          amount_saved: Math.floor(_soloData.amount_saved)
+
+        })
         await savingsPayment(payload);
       } else {
         setShowPaystackPayment(true);
@@ -303,6 +339,7 @@ export default function Screen3({ navigation, route }) {
     const data = route?.params;
 
     if (data?.amount == 0) {
+
       createSavings(false); // no payemnt here, just create the savings thank you.
     } else {
       console.log('Showing payment modal');
@@ -314,10 +351,10 @@ export default function Screen3({ navigation, route }) {
   const handlePaymentRoute = async (value) => {
     setSpinner(true);
     if (value == 'wallet') {
-        if(Number(amountToSaveNow) > walletBalance){
-          setSpinner(false)
-          return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
-        }
+      if (Number(amountToSaveNow) > walletBalance) {
+        setSpinner(false)
+        return Alert.alert('Error', "Your balance is insufficent to complete this transaction")
+      }
       createSavings(true, value);
     } else {
       setChannel(value);
@@ -326,7 +363,7 @@ export default function Screen3({ navigation, route }) {
   };
 
   return (
-    <View style={designs.container}>
+    <View style={[designs.container, { marginTop: Platform.OS == 'ios' ? statusbarHeight : 0 }]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
@@ -491,12 +528,13 @@ export default function Screen3({ navigation, route }) {
             marginTop: 100,
           }}>
           <CheckBox
+            boxType='square'
             disabled={false}
             value={toggleCheckBox}
             onValueChange={(newValue) => setToggleCheckBox(newValue)}
           />
           <TouchableOpacity
-            onPress={() => 
+            onPress={() =>
               Linking.openURL('https://www.kwaba.africa/privacy')
             }
           >
@@ -506,6 +544,7 @@ export default function Screen3({ navigation, route }) {
                 fontSize: 12,
                 lineHeight: 15,
                 fontWeight: 'bold',
+                paddingLeft: 5
               }}>
               I agree to{' '}
               <Text style={{ color: '#00DC99' }}>Terms and Conditions</Text>

@@ -8,7 +8,9 @@ import {
   Image,
   Dimensions,
   Animated,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 import {COLORS, images} from '../../../util';
@@ -35,7 +37,9 @@ export default function BuddyLists({navigation}) {
   const [selectedInvite, setSelectedInvite] = useState(null)
   const [buddyList, setBuddyList] = useState([]);
   const allBuddySavings = useSelector(selectAllBuddySavings)
-  const buddies = useSelector(selectBuddies)
+  const buddies = useSelector(selectBuddies);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
 
   console.log('buddies', buddies)
@@ -66,7 +70,8 @@ export default function BuddyLists({navigation}) {
     }, [])
     return (
       <>
-        <View style={[styles.cardContainer]}>
+        <View style={[styles.cardContainer
+    ]}>
           {!(buddyInvites.length) ? (
             <View
               style={{
@@ -214,7 +219,7 @@ export default function BuddyLists({navigation}) {
                               }}>
                               <Text
                                 style={{
-                                  fontFamily: 'CircularStd',
+                                  fontFamily: 'Poppins-Medium',
                                   fontSize: 14,
                                   fontWeight: 'bold',
                                   color: COLORS.dark,
@@ -322,7 +327,10 @@ export default function BuddyLists({navigation}) {
   };
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container,  {marginTop: Platform.OS == 'ios'
+    ? statusBarHeight
+    : 0}
+  ]}>
       <View
         style={{
           width: '100%',
@@ -377,11 +385,16 @@ export default function BuddyLists({navigation}) {
               {/* {formatNumber(
                 Number(getMaxLoanCap1.data.total_buddy_savings).toFixed(2),
               )} */}
-               {formatNumber(
+               {
+                buddies.length?
+               formatNumber(
                 Number(
                   buddies.reduce((a, b) => a + b.amount_saved, 0)
                 ).toFixed(2),
-              )}
+              )
+              :
+              '0.00'
+            }
             </Text>
           </Text>
         </View>

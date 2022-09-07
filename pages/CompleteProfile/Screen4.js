@@ -1,11 +1,13 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
+import {View, Text, TextInput, TouchableOpacity, Platform} from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Screen4({navigation}) {
+  const top = useSafeAreaInsets().top;
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

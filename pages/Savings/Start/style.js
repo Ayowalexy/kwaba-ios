@@ -54,7 +54,7 @@ const designs = StyleSheet.create({
   cardHeader: {
     color: '#2A286A',
     fontSize: 30,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
     lineHeight: 35,
   },

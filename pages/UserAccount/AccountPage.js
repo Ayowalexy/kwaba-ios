@@ -13,6 +13,7 @@ import {
   Alert,
   Share,
   StatusBar,
+  Platform
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,8 +27,7 @@ import PasswordChangeModal from './PasswordChangeModal';
 import {setLoginState} from '../../redux/actions/userActions';
 import SuccessModal from '../../components/SuccessModal';
 import ErrorModal from '../../components/ErrorModal';
-import Intercom from '@intercom/intercom-react-native'
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const width = Dimensions.get('window').width;
 const AccountPage = ({navigation}) => {
@@ -51,6 +51,8 @@ const AccountPage = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const login = useSelector((state) => state.loginReducer);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
 console.log('Resss')
   const [loanPurpose] = useState([
@@ -142,8 +144,7 @@ console.log('Resss')
       iconName: 'chatbubble-ellipses',
       tabTitle: 'Support',
       onClickFunction: async function openCardAndBank() {
-      const userres = await Intercom.displayMessenger()
-      },
+     },
     },
     // {
     //   iconName: 'finger-print',
@@ -236,7 +237,7 @@ console.log('Resss')
   return (
     <ScrollView>
       {/* <StatusBar backgroundColor="#F7F8FD" /> */}
-      <View style={{backgroundColor: '#F7F8FD', flex: 1}}>
+      <View style={{backgroundColor: '#F7F8FD', flex: 1, marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}}>
         <View style={{paddingHorizontal: 20}}>
           <View style={{backgroundColor: '#F7F8FD', marginBottom: 22}}>
             <Text

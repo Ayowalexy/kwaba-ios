@@ -187,7 +187,7 @@ const RentalLoanOfferTest = ({navigation}) => {
       }
       .m-signature-pad--footer
       .button.clear {
-        font-family:CircularStd-Book;
+        font-family:Poppins-Medium;
         left: 0;
         background-color: #BFBFBF;
         width: 100px;
@@ -197,7 +197,7 @@ const RentalLoanOfferTest = ({navigation}) => {
     
     .m-signature-pad--footer
       .button.save {
-        font-family:CircularStd-Book;
+        font-family:Poppins-Medium;
         right: 0;
         background-color: #00DC99;
         width: 100px;

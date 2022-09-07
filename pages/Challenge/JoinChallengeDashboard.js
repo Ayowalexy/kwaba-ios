@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ProgressBar from 'react-native-animated-progress';
@@ -77,6 +79,8 @@ export default function JoinChallengeDashboard(props) {
   const [minimumAmount, setMinimumAmount] = useState(0);
   const [rand, setRand] = useState(0)
   const [fundedAmount, setFundedAmount] = useState(0)
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
 
 
@@ -106,6 +110,7 @@ export default function JoinChallengeDashboard(props) {
   const [dashboardData, setDashboardData] = useState({});
   const [verifyData, setVerifyData] = useState('');
   const [numberOfDays, setNumberOfDays] = useState(1)
+
 
   const [
     showMoveMoneyToExistingPlanModal,
@@ -327,7 +332,7 @@ export default function JoinChallengeDashboard(props) {
   };
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <Icon
         onPress={() => {
           navigation.navigate('JoinChallengeList');
@@ -587,7 +592,11 @@ export default function JoinChallengeDashboard(props) {
               }}>
               <Text style={{ fontSize: 12, color: COLORS.white }}>
                 ₦
-                {formatNumber(Number(dashboardData?.amount_saved).toFixed(2)) ||
+                {
+                dashboardData?.amount_saved
+                ?
+                formatNumber(Number(dashboardData?.amount_saved).toFixed(2)) 
+                :
                   '0.00'}
               </Text>
               <Text style={{ fontSize: 12, color: COLORS.white }}>
@@ -601,11 +610,16 @@ export default function JoinChallengeDashboard(props) {
                 if (
                   // targetAmount ==
                   // getOneSavings.data?.savings[0]?.target_amount
-                  numberOfDays == 0
+                  // numberOfDays == 0
+                  !dashboardData.status
                 ) {
                   handleMoveToSaving();
                 } else {
-                  setShowAmountModal(true);
+                  if(dashboardData?.amount_saved >= dashboardData?.target_amount){
+                    Alert.alert('Savings Complete', 'Your savings target has be achieved. You can not fund this savings challenge until it is rolled over on the maturity date.')
+                  } else {
+                    setShowAmountModal(true);
+                  }
                 }
               }}>
               <Image
@@ -622,7 +636,8 @@ export default function JoinChallengeDashboard(props) {
                 resizeMode="contain"
               />
               <Text style={[styles.btnText]}>
-                {numberOfDays == 0 ? 'Move Money to savings' : 'Add Money'}
+                {/* {numberOfDays == 0 ? 'Move Money to savings' : 'Add Money'} */}
+                {!dashboardData?.status ? 'Move Money to savings' : 'Add Money'}
               </Text>
             </TouchableOpacity>
           </View>
@@ -716,9 +731,21 @@ export default function JoinChallengeDashboard(props) {
         <AmountModalChallenge
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
-          setAmount={(d) => setAmount(d)}
+          setAmount={(d) => {
+             
+              setAmount(d)
+
+          }}
           // setData={(d) => setResData(d)}
-          showCard={() => setShowPaymentModal(true)}
+          showCard={(d) => {
+            if((Number(dashboardData?.amount_saved) + Number(d)) > Number(dashboardData?.target_amount)){
+              return Alert.alert('Overfunding', `The target amount is ${formatNumber(dashboardData?.target_amount)}, please check the amount and try again`)
+             } else {
+              setTimeout(() => {
+                setShowPaymentModal(true)
+              }, Platform.OS === 'ios' ? statusBarHeight : 0);
+            }
+          }}
           target={Math.floor(dashboardData?.target_amount)}
           minimumAmount={dashboardData?.periodic_savings_amount}
         />

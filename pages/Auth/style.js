@@ -7,7 +7,7 @@ const designs = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F7F8FD',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     paddingHorizontal: 20,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -18,7 +18,7 @@ const designs = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -51,7 +51,7 @@ const designs = StyleSheet.create({
   },
   heading: {
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontSize: 16,
     fontWeight: 'bold',
     lineHeight: 30,
@@ -59,7 +59,7 @@ const designs = StyleSheet.create({
   },
   body: {
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontSize: 14,
     fontWeight: '500',
     lineHeight: 20,

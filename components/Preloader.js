@@ -60,7 +60,7 @@ const Preloader = ({visible, setVisible}) => {
                         color: '#fff',
                         fontSize: 17,
                         paddingTop: 10,
-                        fontFamily: 'CircularStd-Medium',
+                        fontFamily: 'Poppins-Medium',
                     }}>Loading, Please wait...</Text>
                 </Animated.View>
 

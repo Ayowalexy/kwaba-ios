@@ -9,6 +9,7 @@ import {
   Modal,
   Alert,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {icons} from '../../../../util/index';
@@ -50,6 +51,7 @@ const RentalFormBusiness2 = ({navigation}) => {
   const [modalVisible, setVisible] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [progress, setProgress] = useState(100);
+  const [isLoading, setIsLoading] = useState(false)
 
   const [showSelectYearModal, setShowSelectYearModal] = useState(false);
   const [showSelectPayMethodModal, setShowSelectPayMethodModal] = useState(
@@ -192,8 +194,9 @@ const RentalFormBusiness2 = ({navigation}) => {
   };
 
   const handlePostSubmit = async () => {
-    setVisible(false);
+    // setVisible(false);
 
+    setIsLoading(true)
     const token = await getToken();
     let loanFormData = await AsyncStorage.getItem('rentalLoanForm');
     console.log("loanFormData", loanFormData)
@@ -212,6 +215,7 @@ const RentalFormBusiness2 = ({navigation}) => {
         headers: {'Content-Type': 'application/json', Authorization: token},
       });
       console.log('The response: ', response);
+      setIsLoading(false)
       const rnplStep = {
         nextStage: 'Documents upload',
         completedStages: ['Credit score', 'Applications']
@@ -234,6 +238,8 @@ const RentalFormBusiness2 = ({navigation}) => {
         error?.response?.data?.statusMsg ==
         'You already have a pending application!'
       ) {
+        setIsLoading(false)
+
         toast.show(error?.response?.data?.statusMsg, {
           type: "warning",
           placement: "top",
@@ -766,7 +772,9 @@ const RentalFormBusiness2 = ({navigation}) => {
                         fontSize: 12,
                       },
                     ]}>
-                    SUBMIT
+                    {
+                      isLoading ? <ActivityIndicator size='small' color='#fff' /> : 'SUBMIT'
+                    }
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity

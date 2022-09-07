@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     // marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

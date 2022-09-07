@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useSelector, useDispatch} from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
+import { checkAppRelease } from '../../services/network';
 
 const STYLES = ['default', 'dark-content', 'light-content'];
 const TRANSITIONS = ['fade', 'slide', 'none'];
@@ -25,6 +26,7 @@ const Welcome = ({navigation}) => {
   const [statusBarTransition, setstatusBarTransition] = useState(
     TRANSITIONS[0],
   );
+  const [version, setVersion] = useState('')
 
   const [email, setEmail] = useState('');
 
@@ -37,6 +39,15 @@ const Welcome = ({navigation}) => {
       setEmail(JSON.parse(e));
     })();
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      const res = await checkAppRelease();
+      if(res.status){
+        setVersion(res?.data[0].version)
+      }
+    })()
+  }, [])
 
   const changeStatusBarStyle = () => {
     const styled = STYLES.indexOf(statusBarStyle) + 1;
@@ -156,7 +167,7 @@ const Welcome = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           )}
-          <Text style={{color: '#2A286A', opacity: 0.4, fontSize: 13, marginTop:10}}>Version 2.0.4</Text>
+          <Text style={{color: '#2A286A', opacity: 0.4, fontSize: 13, marginTop:10}}>Version {version}</Text>
         </View>
       </View>
     </SafeAreaView>

@@ -330,10 +330,10 @@ const ScreenNavigation = () => {
           backgroundColor: COLORS.primary,
           paddingLeft: 7,
         }}>
-        <Text style={{color: COLORS.white, fontFamily: 'CircularStd'}}>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-Medium'}}>
           {text1}
         </Text>
-        <Text style={{color: COLORS.white, fontFamily: 'CircularStd'}}>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-Medium'}}>
           {text2}
         </Text>
       </View>

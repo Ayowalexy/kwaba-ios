@@ -8,6 +8,7 @@ import axios from 'axios';
 import Spinner from 'react-native-loading-spinner-overlay';
 import { getCurrentApplication } from '../../services/network';
 import { getEmergencyLoans } from '../../services/network';
+import { getToken } from '../../services/network';
 
 const moment = require('moment');
 import { baseUrl } from '../../services/routes';
@@ -144,8 +145,21 @@ export default function OkraDebitMandate2({navigation}) {
             const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
         
             console.log('okra', applicationIDCallRes?.data?.data.status)
-           
+           const token = await getToken();
             await AsyncStorage.setItem('rnplSteps', JSON.stringify(rnplStep))
+
+            const res = await axios.put(
+              `${baseUrl}/application/payment-setup-complete`, 
+                JSON.stringify({id: loan_id}),
+                {
+                  headers:  {
+                    Authorization: token,
+                    "Content-Type": "application/json"
+                  }
+                }
+            )
+
+            console.log('Debit mandate response setup response', res?.data)
     
             navigation.navigate('AwaitingDisbursement');
           }}

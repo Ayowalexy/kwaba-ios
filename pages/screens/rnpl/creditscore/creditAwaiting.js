@@ -9,7 +9,9 @@ import {
   ActivityIndicator,
   TextInput,
   Keyboard,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { fetch, purchase } from '../../../../services/creditScrore';
 import { COLORS } from '../../../../util';
@@ -27,6 +29,7 @@ export default function CreditAwaiting(props) {
   const { route, navigation } = props;
   const [spinner, setSpinner] = useState(false);
   const [scoreData, setScoreData] = useState({});
+  const top = useSafeAreaInsets().top;
 
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -72,7 +75,12 @@ export default function CreditAwaiting(props) {
 
 
 
-    navigation.navigate('Form1');
+    // navigation.navigate('Form1');
+    const creditType = await AsyncStorage.getItem('creditType');
+
+    // creditType === 'business'
+    //   ? navigation.navigate('BusinessForm1')
+    //   : navigation.navigate('Form1');
 
     // console.log(creditScoreAvailable.status)
 
@@ -123,7 +131,7 @@ export default function CreditAwaiting(props) {
   };
   return (
     <>
-      <View style={[designs.centeredView]}>
+      <View style={[designs.centeredView, { marginTop: Platform.OS == 'ios' ? top : 0}]}>
         <View style={[designs.topNav]}>
           <TouchableOpacity onPress={() => navigation.navigate('Home')}>
             <Icon name="chevron-back" size={25} color={COLORS.primary} />

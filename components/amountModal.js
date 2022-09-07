@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -8,13 +8,15 @@ import {
   View,
   TextInput,
   Alert,
+  KeyboardAvoidingView
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, images} from '../util';
+import { COLORS, images } from '../util';
 import * as Animatable from 'react-native-animatable';
-import {formatNumber, unFormatNumber} from '../util/numberFormatter';
-import {Formik, Field} from 'formik';
+import { formatNumber, unFormatNumber } from '../util/numberFormatter';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import {
   addFundsToBuddySavings,
   addFundsToSavings,
@@ -22,7 +24,8 @@ import {
   getUserSavings,
 } from '../services/network';
 import Spinner from 'react-native-loading-spinner-overlay';
-import {useSelector, useDispatch} from 'react-redux';
+
+import { useSelector, useDispatch } from 'react-redux';
 
 import RNPaystack from 'react-native-paystack';
 
@@ -36,7 +39,7 @@ const amountSchema = yup.object().shape({
 });
 
 export default function AmountModal(props) {
-  const {onRequestClose, visible, setAmount, setData, showCard} = props;
+  const { onRequestClose, visible, setAmount, setData, showCard } = props;
   const [showPaymentType, setShowPaymentType] = useState(false);
   const [showAmountField, setShowAmountField] = useState(false);
   const [spinner, setSpinner] = useState(false);
@@ -87,8 +90,8 @@ export default function AmountModal(props) {
 
   const NumberInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -96,11 +99,11 @@ export default function AmountModal(props) {
 
     return (
       <>
-        <Text style={[styles.boldText, {marginTop: 10}]}>How much?</Text>
+        <Text style={[styles.boldText, { marginTop: 10 }]}>How much?</Text>
         <View
           style={[
             styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && styles.errorInput,
           ]}>
           <Text
@@ -136,13 +139,14 @@ export default function AmountModal(props) {
   };
 
   return (
-    <>
+    <KeyboardAwareScrollView>
       <View style={styles.centeredView}>
         <Modal
           animationType="slide"
           transparent={true}
           visible={visible}
           onRequestClose={onRequestClose}>
+
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Icon
@@ -172,7 +176,7 @@ export default function AmountModal(props) {
                   onSubmit={(values) => {
                     handleSubmit(values);
                   }}>
-                  {({handleSubmit, isValid, values, setValues}) => (
+                  {({ handleSubmit, isValid, values, setValues }) => (
                     <>
                       <Field
                         component={NumberInput}
@@ -225,7 +229,7 @@ export default function AmountModal(props) {
         ID={ID}
       /> */}
       {/* )} */}
-    </>
+    </KeyboardAwareScrollView>
   );
 }
 
@@ -234,7 +238,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -245,6 +249,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     paddingVertical: 40,
     paddingHorizontal: 20,
+    height: 450
   },
   btn: {
     width: '100%',
@@ -252,7 +257,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -272,7 +277,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 18,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#ADADAD',
     borderWidth: 1,
@@ -296,7 +301,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
 
@@ -335,8 +340,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     marginTop: 20,
     // marginBottom: 20,
-
     width: '100%',
     paddingVertical: 15,
+    bottom: 0
   },
 });

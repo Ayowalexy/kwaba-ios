@@ -347,7 +347,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                   color: COLORS.white,
                   fontSize: 15,
                   lineHeight: 23,
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   marginBottom: 1,
                 }}>
                 {bankAccountName != '' ? bankAccountName : '-'}
@@ -357,7 +357,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                   color: COLORS.light,
                   fontSize: 10,
                   lineHeight: 13,
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   marginBottom: 23,
                 }}>
                 {bankName != '' ? bankName : '-'}
@@ -367,7 +367,7 @@ const EmergencyLoanRequest = ({route, navigation}) => {
                   color: COLORS.white,
                   fontSize: 10,
                   lineHeight: 13,
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                 }}>
                 {bankAccountNumber != '' ? bankAccountNumber : '-'}
               </Text>

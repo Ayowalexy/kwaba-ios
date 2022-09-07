@@ -343,7 +343,7 @@ export default function SoloSavingDashBoard({navigation}) {
                   />
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 16,
                       fontWeight: 'bold',
                       color: 'white',
@@ -354,7 +354,7 @@ export default function SoloSavingDashBoard({navigation}) {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 10,
                       fontWeight: '600',
                       color: 'white',

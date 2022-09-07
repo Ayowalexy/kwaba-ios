@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,9 +7,11 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {COLORS, FONTS, images, icons} from '../../util/index';
+import { COLORS, FONTS, images, icons } from '../../util/index';
 import {
   formatNumber,
   unFormatNumber,
@@ -29,7 +31,7 @@ import {
 import Spinner from 'react-native-loading-spinner-overlay';
 import PaymentTypeModalForBills from '../../components/paymentTypeModalForBills';
 
-import {Formik, Field} from 'formik';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import CreditCardModalBills from '../../components/CreditCard/CreditCardModalBills';
 import PaymentTypeModal from '../../components/PaymentType/PaymentTypeModal';
@@ -37,9 +39,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import ModalMessage from '../../components/MessageModals/ModalMessage';
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
+import { selectWalletBalance } from '../../redux/reducers/store/wallet/wallet.selector';
+import { useSelector } from 'react-redux';
 
-const PurchaseAirtime = ({navigation, route}) => {
+const PurchaseAirtime = ({ navigation, route }) => {
   const [visible, setVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
   const [amount, setAmount] = useState('');
@@ -50,13 +54,17 @@ const PurchaseAirtime = ({navigation, route}) => {
   const [showCardModal, setShowCardModal] = useState(false);
   const [resData, setResData] = useState('');
   const [airtimeData, setAirtimeData] = useState('');
+  const walletBalance = useSelector(selectWalletBalance)
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [channel, setChannel] = useState('');
+  const [onlyWallet, setOnlyWallet] = useState(false)
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
   const [verifyBillsData, setVerifyBillsData] = useState({});
+
+  const statusBarHeight = useSafeAreaInsets().top;
 
   const [message, setMessage] = useState({
     title: 'Title',
@@ -82,6 +90,7 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   const buyAirtimeHandler = async () => {
     setConfirmModalVisible(false);
+    setOnlyWallet(true)
     setShowPaymentModal(true);
   };
 
@@ -112,12 +121,12 @@ const PurchaseAirtime = ({navigation, route}) => {
         await showSuccess();
       } else {
         setSpinner(false);
-        console.log('Not Okay Res: ', res.response.data);
-        Alert.alert('Oops ', 'An error occured');
+        console.log('Not Okay Res: ', res);
+        Alert.alert('Error ', 'We are currently experiencing service downtime, please try again later');
       }
     } catch (error) {
       setSpinner(false);
-      console.log('The Error: ', error.response);
+      console.log('The Error ere: ', error);
     }
   };
 
@@ -167,6 +176,9 @@ const PurchaseAirtime = ({navigation, route}) => {
 
   const handlePaymentRoute = async (value) => {
     if (value == 'wallet') {
+      if (Number(amount) > Number(walletBalance)) {
+        return Alert.alert('Error', 'You have an insufficient wallet balance, please top up and try again')
+      }
       const data = {
         amount: unFormatNumber(amount),
         channel: 'wallet',
@@ -223,11 +235,11 @@ const PurchaseAirtime = ({navigation, route}) => {
               content: 'Recharge Successful',
               subText: 'Sent! You have successfully recharged the number',
               onNotify: () => {
-                PushNotification.localNotification({
-                  channelId: 'test-channel',
-                  title: 'Airtime Recharge',
-                  message: 'You just recharged',
-                });
+                // PushNotification.localNotification({
+                //   channelId: 'test-channel',
+                //   title: 'Airtime Recharge',
+                //   message: 'You just recharged',
+                // });
               },
             });
           } else {
@@ -268,16 +280,16 @@ const PurchaseAirtime = ({navigation, route}) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: '#EFEFEF'}}>
+    <View style={{ flex: 1, backgroundColor: '#EFEFEF' , marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
-        style={{fontWeight: '900', paddingHorizontal: 20, paddingVertical: 20}}
+        style={{ fontWeight: '900', paddingHorizontal: 20, paddingVertical: 20 }}
         color={COLORS.primary}
       />
 
-      <ScrollView style={{paddingHorizontal: 20}}>
+      <ScrollView style={{ paddingHorizontal: 20 }}>
         <Text
           style={{
             fontWeight: 'bold',
@@ -293,18 +305,18 @@ const PurchaseAirtime = ({navigation, route}) => {
           onPress={() => {
             setVisible(!visible);
           }}>
-          <Text style={{fontWeight: 'bold', color: COLORS.primary}}>
+          <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
             {name}
           </Text>
           <Icon
             name="chevron-down-outline"
             size={20}
-            style={{fontWeight: 'bold'}}
+            style={{ fontWeight: 'bold' }}
             color={COLORS.primary}
           />
         </TouchableOpacity>
 
-        <View style={[styles.customInput, {padding: 0}]}>
+        <View style={[styles.customInput, { padding: 0 }]}>
           <TextInput
             style={{
               width: '100%',
@@ -321,12 +333,12 @@ const PurchaseAirtime = ({navigation, route}) => {
             onPress={() => navigation.goBack()}
             name="card-sharp"
             size={20}
-            style={{fontWeight: 'bold', position: 'absolute', right: 20}}
+            style={{ fontWeight: 'bold', position: 'absolute', right: 20 }}
             color={COLORS.primary}
           />
         </View>
 
-        <View style={{marginTop: 20}}>
+        <View style={{ marginTop: 20 }}>
           <Text
             style={{
               fontSize: 14,
@@ -446,11 +458,12 @@ const PurchaseAirtime = ({navigation, route}) => {
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
+          onlyWallet={onlyWallet}
           setPaymentType={(data) => {
             console.log('Hello', data);
             handlePaymentRoute(data); // paystack, bank, wallet
           }}
-          // disable="wallet"
+        // disable="wallet"
         />
       )}
 
@@ -570,7 +583,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     // marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

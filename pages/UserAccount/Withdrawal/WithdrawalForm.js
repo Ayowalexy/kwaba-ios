@@ -446,7 +446,7 @@ export default function WithdrawalForm(props) {
                                 }}>
                                 <Text
                                   style={{
-                                    fontFamily: 'CircularStd',
+                                    fontFamily: 'Poppins-Medium',
                                     fontSize: 14,
                                     fontWeight: 'bold',
                                     color: COLORS.dark,

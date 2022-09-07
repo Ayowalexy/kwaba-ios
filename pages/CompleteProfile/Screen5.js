@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  Platform
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { icons, COLORS } from '../../util/index';
@@ -28,14 +29,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoginState } from '../../redux/actions/userActions';
 import urls from '../../services/routes';
 import DatePicker from 'react-native-datepicker'
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 
 const completeProfileSchema = yup.object().shape({
   how_much_is_your_rent: yup.string().required('Please enter an amount'),
-  when_is_your_next_rent_due: yup.date()
-    .required('Select a date')
-    .min("01-01-2022", "Enter a valid rent expiration date")
-    ,
+  when_is_your_next_rent_due: yup.string()
+    .required('Select a date') 
 });
 
 const Screen5 = (props) => {
@@ -47,6 +47,8 @@ const Screen5 = (props) => {
   const [spinner, setSpinner] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [date, setDate] = useState('01-01-2022')
+
+  const top = useSafeAreaInsets().top;
 
 
   const saveLoginToStorage = async (data) => {
@@ -150,7 +152,7 @@ const Screen5 = (props) => {
     const handleDateSelect = (event, selectedDate) => {
       const currentDate = selectedDate || date;
       setShowDate(Platform.OS === 'ios');
-      setDate(currentDate);
+      // setDate(currentDate);
       setFieldValue('when_is_your_next_rent_due', currentDate);
     };
 
@@ -317,7 +319,7 @@ const Screen5 = (props) => {
   };
 
   return (
-    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD', marginTop: Platform.OS === 'ios' ? top : 0 }]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

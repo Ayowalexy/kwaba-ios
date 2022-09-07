@@ -5,7 +5,9 @@ import {
   StyleSheet,
   ScrollView,
   ActivityIndicator,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getBankAccounts, getTokenizeCards} from '../../../services/network';
@@ -18,6 +20,8 @@ export default function CardAndBankDetails({navigation}) {
   const [userBankAccounts, setUserBankAccounts] = useState([]);
   const [paymentCards, setPaymentCards] = useState([]);
   const [showSpinner, setShowSpinner] = useState(false);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
  
   
   console.log('banks', paymentCards)
@@ -93,7 +97,7 @@ export default function CardAndBankDetails({navigation}) {
 
   return (
     <>
-      <View style={[styles.container]}>
+      <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"

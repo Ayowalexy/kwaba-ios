@@ -7,8 +7,9 @@ import {
   ScrollView,
   StyleSheet,
   Alert,
+  Platform
 } from 'react-native';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS, images } from '../../../util/index';
 import { currencyFormat, formatNumber } from '../../../util/numberFormatter';
@@ -57,7 +58,9 @@ export default function Start({ navigation }) {
   const userSavingsChallenges = useSelector(selectAllUserSavingsChellange)
 
   const route = useRoute();
-  console.log('Bu', userSavingsChallenges)
+  console.log('Bu', userSavingsChallenges);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
 
   useEffect(() => {
@@ -138,7 +141,11 @@ export default function Start({ navigation }) {
   }, [])
 
   return (
-    <View style={[designs.container]}>
+    <View style={[designs.container, { marginTop: Platform.OS == 'ios'
+    ? statusBarHeight
+    : 0
+  
+  }]}>
       <Icon
         onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"
@@ -173,7 +180,7 @@ export default function Start({ navigation }) {
         <View style={{ paddingVertical: 10 }}>
           <Text
             style={{
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontSize: 25,
               fontWeight: 'bold',
               color: '#00DC99',
@@ -186,7 +193,7 @@ export default function Start({ navigation }) {
           <Text
             style={{
               width: '80%',
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontSize: 12,
               fontWeight: '600',
               color: 'white',
@@ -220,7 +227,7 @@ export default function Start({ navigation }) {
 
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 9,
                   fontWeight: '600',
                   lineHeight: 11,
@@ -230,7 +237,7 @@ export default function Start({ navigation }) {
               </Text>
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 17,
                   fontWeight: 'bold',
                   lineHeight: 22,
@@ -254,7 +261,7 @@ export default function Start({ navigation }) {
             <View style={designs.smallBox}>
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 9,
                   fontWeight: '600',
                   lineHeight: 11,
@@ -264,7 +271,7 @@ export default function Start({ navigation }) {
               </Text>
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 17,
                   fontWeight: 'bold',
                   lineHeight: 22,
@@ -456,12 +463,14 @@ export default function Start({ navigation }) {
                 <TouchableOpacity
                   onPress={() => {
                     // navigation.navigate('BuddySaving1');
-                    navigation.navigate(
-                      userSavingsChallenges?.length == 0 ? 'JoinChallengeList' : 'JoinChallengeDashboard', {
-                      id: userSavingsChallenges?.[0]?.challenge_id,
-                      amount: userSavingsChallenges?.[0]?.amount_saved
-                    }
-                    );
+                    // navigation.navigate(
+                    //   userSavingsChallenges?.length == 0 ? 'JoinChallengeList' : 'JoinChallengeDashboard', {
+                    //   id: userSavingsChallenges?.[0]?.challenge_id,
+                    //   amount: userSavingsChallenges?.[0]?.amount_saved
+                    // }
+                    // );
+
+                    navigation.navigate('JoinChallengeList');
 
                     // Alert.alert(
                     //   'Feature currently unavailable',
@@ -507,7 +516,9 @@ export default function Start({ navigation }) {
                           marginRight: 8,
                         },
                       ]}>
-                      ₦{formatNumber(userSavingsChallenges[0]?.amount_saved)}
+                      {/* ₦{formatNumber(userSavingsChallenges[0]?.amount_saved)} */}
+                      ₦{formatNumber(userSavingsChallenges.reduce((a, b) => a + b.amount_saved, 0))}
+
                     </Text>
                   )}
                   <Icon name="arrow-forward" color="#9D98EC" size={15} />

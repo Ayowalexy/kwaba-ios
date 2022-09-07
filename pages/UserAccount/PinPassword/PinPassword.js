@@ -1,20 +1,23 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import {COLORS} from '../../../util';
 import ChangePasswordModal from './ChangePasswordModal';
 import SetPinModal from './SetPinModal';
 import ChangePinModal from './ChangePinModal';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PinPassword(props) {
   const {navigation} = props;
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [showSetPinModal, setShowSetPinModal] = useState(false);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
   const [showChangePinModal, setShowChangePinModal] = useState(false);
   return (
     <>
-      <View style={[styles.container]}>
+      <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"

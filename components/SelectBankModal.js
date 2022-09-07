@@ -16,12 +16,16 @@ import Banks from './banks.json'
 import { useTheme } from '@react-navigation/native';
 
 export default function SelectBankModal(props) {
-  const { onRequestClose, visible, onClick, banks, selectedBank } = props;
+  const { onRequestClose, visible, onClick, banks, selectedBank,close  } = props;
   const [bankList, setBankList] = useState([])
   const [value, setValue] = useState('')
   const bankss = useRef(Banks)
 
+  console.log('visible', visible);
+
+
   useEffect(() => {
+   
     setBankList(Banks)
   }, [])
 
@@ -133,7 +137,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     // borderColor: '#f00',
     // borderWidth: 1,
@@ -154,7 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -166,7 +170,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     fontSize: 13,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#EFEFEF',
     borderWidth: 1,

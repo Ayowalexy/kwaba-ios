@@ -223,7 +223,7 @@ export default function AddCardModal(props) {
               <Text
                 style={{
                   color: '#2A286A',
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontWeight: 'bold',
                   fontSize: 18,
                   lineHeight: 19,
@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     fontSize: 13,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#EFEFEF',
     borderWidth: 1,

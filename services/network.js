@@ -21,7 +21,7 @@ const getInterestRateForSavingsAndBuddy = async () => {
 
 /* ========END========*/
 
-const getToken = async () => {
+export const getToken = async () => {
   const userData = await AsyncStorage.getItem('userData');
   const token = JSON.parse(userData).token;
   return token;
@@ -642,7 +642,7 @@ const userCreateSavings = async (data) => {
     return response;
   } catch (error) {
     console.log(error);
-    return error;
+    return error.response;
   }
 };
 
@@ -2514,7 +2514,4 @@ export {
   getCurrentApplication,
   getTransactionsHistory,
   getUserWalletTransactionsAsync,
-
-  
-
 };

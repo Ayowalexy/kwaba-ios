@@ -8,12 +8,14 @@ import {
   Keyboard,
   Image,
   ScrollView,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS, FONTS, images, icons } from '../../util/index';
 import { formatNumber, unFormatNumber } from '../../util/numberFormatter';
-// import { SwipeablePanel } from 'rn-swipeable-panel';
+import { SwipeablePanel } from 'rn-swipeable-panel';
 import { useDispatch, useSelector } from 'react-redux';
 import { getBillsCategory } from '../../redux/actions/billsAction';
 import axios from 'axios';
@@ -41,7 +43,9 @@ const ElectricityBill = ({ navigation, route }) => {
   const [variationCode, setVariationCode] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [verifyData, setVerifyData] = useState('')
+  const [onlyWallet, setOnlyWallet] = useState(true)
 
+  const statusBarHeight = useSafeAreaInsets().top;
   const [showPaystackPayment, setShowPaystackPayment] = useState(false)
   const [showCardModal, setShowCardModal] = useState(false);
   const [resData, setResData] = useState('');
@@ -207,7 +211,7 @@ const ElectricityBill = ({ navigation, route }) => {
 
   return (
     <>
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, marginTop: Platform.OS == 'ios' ? statusBarHeight : 0 }}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
@@ -398,7 +402,7 @@ const ElectricityBill = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </View>
-      {/* <SwipeablePanel
+      <SwipeablePanel
         showCloseButton
         fullWidth
         isActive={active}
@@ -511,7 +515,7 @@ const ElectricityBill = ({ navigation, route }) => {
             </TouchableOpacity>
           );
         })}
-      </SwipeablePanel> */}
+      </SwipeablePanel>
 
       <Spinner visible={spinner} size="large" />
 
@@ -547,10 +551,11 @@ const ElectricityBill = ({ navigation, route }) => {
         <PaymentTypeModal
           onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
           visible={showPaymentModal}
+          onlyWallet={onlyWallet}
           setPaymentType={(value) => {
             handlePaymentRoute(value); // paystack, bank, wallet
           }}
-          disable="wallet"
+          // disable="wallet"
         />
       )}
     </>
@@ -579,7 +584,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

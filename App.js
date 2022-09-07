@@ -2,9 +2,10 @@ import 'react-native-gesture-handler';
 import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {NavigationContainer } from '@react-navigation/native';
+import { ActivityIndicator } from 'react-native';
 
 import SplashScreen from 'react-native-splash-screen';
-
+import { Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Welcome from './pages/Welcome/welcome';
@@ -110,6 +111,7 @@ import LegalandFaq from './pages/UserAccount/Aboutus/LegalandFaq';
 import OkraDebitMandate2 from './pages/Payment/OkraDebitMandate2';
 import {setLoginState} from './redux/actions/userActions';
 import Toast from 'react-native-toast-message';
+import linking from './util/linking';
 //import UploadBankStatementForProfile from './pages/UserAccount/UploadBankStatementForProfile';
 
 import ApplicationProgress from './pages/Borrow/ApplicationProgress';
@@ -207,7 +209,7 @@ import AppUpdate from './pages/AppUpdate/AppUpdate';
 
 import CreditScoreDashboard from './pages/CreditScore/CreditScoreDashboard';
 
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 
 // import CodePush from 'react-native-code-push';
 import CreditScoreOnboarding from './pages/CreditScore/CreditScoreOnboarding';
@@ -251,18 +253,18 @@ import useInterval from './components/Hooks/useCountdown';
 
 const Stack = createStackNavigator();
 
-const linking = {
-  prefixes: ['https://kwaba.ng', 'kwaba://'],
-  config: {
-    screens: {
-      BuddyInviteLists: 'BuddyInviteLists',
-      AcceptInvite: 'AcceptInvite',
-      BuddyLists: 'BuddyLists',
-      SavingLists: 'SavingLists',
-      AirtimeHome: 'AirtimeHome',
-    },
-  },
-};
+// const linking = {
+//   prefixes: ['https://kwaba.ng', 'kwaba://'],
+//   config: {
+//     screens: {
+//       BuddyInviteLists: 'BuddyInviteLists',
+//       AcceptInvite: 'AcceptInvite',
+//       BuddyLists: 'BuddyLists',
+//       SavingLists: 'SavingLists',
+//       AirtimeHome: 'AirtimeHome',
+//     },
+//   },
+// };
 
 // let CodePushOptions = {
 //   checkFrequency: CodePush.CheckFrequency.ON_APP_RESUME,
@@ -295,8 +297,7 @@ const App = () => {
 
   const d_1 = useRef(0)
   const d_2 = useRef(0)
-  const inittialRender = useRef(false)
-
+  const inittialRender = useRef(false);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", async nextAppState => {
@@ -337,10 +338,10 @@ const App = () => {
  
 
   const createChannel = () => {
-    PushNotification.createChannel({
-      channelId: 'test-channel',
-      channelName: 'Test Channel',
-    });
+    // PushNotification.createChannel({
+    //   channelId: 'test-channel',
+    //   channelName: 'Test Channel',
+    // });
   };
 
   useEffect(() => {
@@ -400,10 +401,10 @@ const App = () => {
           backgroundColor: COLORS.primary,
           paddingLeft: 7,
         }}>
-        <Text style={{color: COLORS.white, fontFamily: 'CircularStd'}}>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-Medium'}}>
           {text1}
         </Text>
-        <Text style={{color: COLORS.white, fontFamily: 'CircularStd'}}>
+        <Text style={{color: COLORS.white, fontFamily: 'Poppins-Medium'}}>
           {text2}
         </Text>
       </View>
@@ -423,7 +424,7 @@ const App = () => {
 
     try {
       if (res.status == 200) {
-        if (res?.data[0].version > '3.0.0') {
+        if (res?.data[0].version > '3.0.2') {
           setAppUpdateAvailable(true);
           console.log('Banger: ', res?.data);
         } else {
@@ -434,6 +435,8 @@ const App = () => {
       console.log('Error:', error);
     }
   };
+
+ 
   
 
   return (
@@ -445,7 +448,10 @@ const App = () => {
           }}
         />
       ) : (
-        <NavigationContainer linking={linking}>
+        <NavigationContainer 
+        linking={linking}
+        // fallback={<ActivityIndicator color="blue" size="large" />}
+        >
           <StatusBar
             backgroundColor={COLORS.primary}
             barStyle={'light-content'}
@@ -453,6 +459,7 @@ const App = () => {
           <Stack.Navigator
             screenOptions={{
               headerShown: false,
+
             }}
             // initialRouteName={'CreditScoreAwaiting'}
             initialRouteName={'Welcome'}>
@@ -679,6 +686,7 @@ const App = () => {
                   component={PrintOfferLetter}></Stack.Screen>
                 <Stack.Screen
                   name="UploadDocumentsList"
+                  screenOptions={{headerShown: Platform.OS == 'ios' ? true : false}}
                   component={UploadDocumentsList}></Stack.Screen>
                 <Stack.Screen
                   name="BottomNavigation"

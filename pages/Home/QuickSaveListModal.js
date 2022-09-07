@@ -463,7 +463,7 @@ export default function QuickSaveListModal(props) {
                                       }}>
                                       <Text
                                         style={{
-                                          fontFamily: 'CircularStd',
+                                          fontFamily: 'Poppins-Medium',
                                           fontSize: 14,
                                           fontWeight: 'bold',
                                           color: COLORS.dark,
@@ -586,7 +586,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {

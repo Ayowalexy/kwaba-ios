@@ -323,7 +323,7 @@ export default function SignUp({navigation}) {
             {
               fontSize: 16,
               fontWeight: 'bold',
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               textAlign: 'center',
               color: '#465969',
             },
@@ -454,7 +454,7 @@ export default function SignUp({navigation}) {
                       padding: 16,
                       borderRadius: 5,
                       fontSize: 14,
-                      fontFamily: 'CircularStd-Medium',
+                      fontFamily: 'Poppins-Medium',
                       fontWeight: '600',
                       display: 'flex',
                       justifyContent: 'center',

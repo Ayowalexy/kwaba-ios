@@ -7,7 +7,9 @@ import {
   ScrollView,
   Dimensions,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import designs from '../style';
@@ -31,6 +33,7 @@ const soloSavingFormSchema = yup.object().shape({
 export default function Screen1(props) {
   const {navigation, route} = props;
   const dispatch = useDispatch();
+  const top = useSafeAreaInsets().top;
   const [showDate, setShowDate] = useState(false);
   const [date, setDate] = useState(new Date(Date.now()));
   const [instantSaving, setInstantSaving] = useState(null);
@@ -306,7 +309,7 @@ export default function Screen1(props) {
       }}>
       {({handleSubmit, isValid, values, setValues}) => (
         <>
-          <View style={designs.container}>
+          <View style={[designs.container, { marginTop: Platform.OS === 'ios' ? top : 0}]}>
             <Icon
               onPress={() => navigation.goBack()}
               name="arrow-back-outline"

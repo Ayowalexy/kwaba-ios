@@ -8,7 +8,9 @@ import {
   ScrollView,
   Modal,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS, icons} from '../../../util';
@@ -28,6 +30,8 @@ export default function Screen4(props) {
     showSelectBuddyRelationshipModal,
     setShowSelectBuddyRelationshipModal,
   ] = useState(false);
+
+  const top = useSafeAreaInsets().top;
 
   const handleSubmit = (values) => {
     const data = {
@@ -98,7 +102,7 @@ export default function Screen4(props) {
       }}>
       {({handleSubmit, isValid, values, setValues}) => (
         <>
-          <View style={designs.container}>
+          <View style={[designs.container, { marginTop: Platform.OS == 'ios' ? top :0}]}>
             <Icon
               onPress={() => navigation.goBack()}
               name="arrow-back-outline"

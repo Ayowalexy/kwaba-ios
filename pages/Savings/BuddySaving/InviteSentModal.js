@@ -50,7 +50,7 @@ export default function InviteSentModal(props) {
             <Text
               style={{
                 color: '#2A286A',
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontWeight: 'bold',
                 fontSize: 16,
                 lineHeight: 19,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     paddingHorizontal: 40,
   },

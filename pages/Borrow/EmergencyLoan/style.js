@@ -138,7 +138,7 @@ const designs = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
     lineHeight: 30,
   },
@@ -146,7 +146,7 @@ const designs = StyleSheet.create({
     color: '#707070',
     fontSize: 16,
     lineHeight: 20,
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '500',
     marginTop: 10,
     marginBottom: 18,
@@ -317,7 +317,7 @@ const designs = StyleSheet.create({
   },
   modalTitleText: {
     fontSize: 18,
-    fontFamily: 'CircularStd-bold',
+    fontFamily: 'Poppins-Medium',
     lineHeight: 23,
     color: COLORS.primary,
     fontWeight: 'bold',
@@ -326,7 +326,7 @@ const designs = StyleSheet.create({
   },
   modalBodyText: {
     fontSize: 15,
-    fontFamily: 'CircularStd-bold',
+    fontFamily: 'Poppins-Medium',
     lineHeight: 19,
     color: COLORS.primary,
     marginBottom: 30,

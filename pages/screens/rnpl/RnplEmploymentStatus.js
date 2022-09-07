@@ -7,7 +7,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   StatusBar,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -31,8 +33,9 @@ const status = [
 
 const RnplEmploymentStatus = ({navigation}) => {
   const [showModal, setShowModal] = useState(false);
+  const inset = useSafeAreaInsets().top;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? inset : 0}]}>
       {/* <StatusBar backgroundColor="#f2f2f2" /> */}
       <Icon
         onPress={() => navigation.goBack()}

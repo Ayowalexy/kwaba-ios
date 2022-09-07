@@ -9,11 +9,13 @@ import {
   StatusBar,
   FlatList,
   ActivityIndicator,
+  Platform
 } from 'react-native';
 import { COLORS } from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import JoinChallengeModal from './JoinChallengeModal';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { selectAllUserSavingsChellange } from '../../redux/reducers/store/savings-challenge/savings-challenge.selectors';
 import {
   getSavingsChallengeList,
@@ -104,6 +106,8 @@ export default function JoinChallengeList({ navigation }) {
   const [joinSavings, setJoinedSavings] = useState([]);
 
   const userChallenges = useSelector(selectAllUserSavingsChellange)
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   // useEffect(() => {
   //   const filter = allSavings?.data?.filter(
@@ -242,7 +246,7 @@ export default function JoinChallengeList({ navigation }) {
   };
   return (
     <>
-      <View style={[styles.container]}>
+      <View style={[styles.container, { marginTop: Platform.OS === 'ios' ? statusBarHeight : 0}]}>
         <StatusBar backgroundColor={'#5A4CB1'} />
         <Icon
           onPress={() => navigation.goBack()}

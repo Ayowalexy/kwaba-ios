@@ -1,14 +1,15 @@
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList, Platform } from 'react-native';
 import { COLORS } from '../../../util';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import stepsArray from '../../../util/stepsArray';
-import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
 import { useRoute } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import Icon from 'react-native-vector-icons/Ionicons'
 import { selectCurrentStage } from '../../../redux/reducers/store/stage.selectors';
-
+import { useNavigation } from '@react-navigation/native';
 const Item = ({ item, index }) => {
 
 
@@ -69,10 +70,23 @@ const Item = ({ item, index }) => {
 export default function RnplStepProgress({ children }) {
   const [page, setpage] = useState('')
   const stage = useSelector(selectCurrentStage)
-  console.log('current stage', stage)
+  console.log('current stage', stage);
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
+  const statusBarHeight = insets.top;
   const renderItem = ({ item, index }) => <Item page={page} item={item} index={index} />;
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0 }]}>
+      {
+        Platform.OS == 'ios' && (
+          <Icon
+            onPress={() => navigation.goBack()}
+            name="arrow-back-outline"
+            size={25}
+            style={{ color: COLORS.primary, marginBottom: 20 }}
+          />
+        )
+      }
       <FlatList
         data={stage}
         renderItem={renderItem}
@@ -96,6 +110,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#effbf7',
+    padding: 10
   },
 
   content: {

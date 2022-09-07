@@ -9,8 +9,10 @@ import {
   Switch,
   Alert,
   ActivityIndicator,
-  RefreshControl
+  RefreshControl,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useToast } from 'react-native-toast-notifications';
 import { setWalletbalance } from '../../../redux/reducers/store/wallet/wallet.actions';
@@ -52,7 +54,8 @@ import PaystackPayment from '../../../components/Paystack/PaystackPayment';
 import axios from 'axios';
 import { selectSolo } from '../../../redux/reducers/store/solo-savings/solo-savings-selectors';
 import { updateSavings } from '../../../redux/reducers/store/solo-savings/solo-savings.actions';
-
+import ActionModal from '../../../components/ActiomModal';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function SoloSavingDashBoard(props) {
   const { navigation, route } = props;
@@ -77,6 +80,11 @@ export default function SoloSavingDashBoard(props) {
   const [channel, setChannel] = useState('');
   const [fundedAmount, setFundedAmount] = useState(0)
   const toast = useToast();
+  const [visible, setVisible] = useState(false);
+  const [msg, setMsg] = useState('');
+  const [type, setType] = useState('');
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
 
   const [spinner, setSpinner] = useState(false);
@@ -119,6 +127,8 @@ export default function SoloSavingDashBoard(props) {
 
   const [current_id, set_current_id] = useState(0)
 
+  const [_refresh, set_refresh] = useState(false)
+
   useEffect(() => {
     const currentSolo = allSolo.find(ele => ele?.id == route?.params?.id)
     setCurrSavings(currentSolo)
@@ -137,9 +147,12 @@ export default function SoloSavingDashBoard(props) {
 
   }, [])
 
+  console.log('current', currSaving)
+
   useEffect(() => {
     set_current_id(route?.params?.id)
   }, [])
+
 
   useEffect(() => {
     if (getMaxLoanCap1?.data) {
@@ -158,8 +171,6 @@ export default function SoloSavingDashBoard(props) {
   console.log('funded amount', fundedAmount)
 
   const refresh_in = () => {
-    setDashboardValue()
-
   }
 
   useEffect(() => {
@@ -175,6 +186,17 @@ export default function SoloSavingDashBoard(props) {
       setRefreshing(false)
     }, 3000)
   }, []);
+
+  const handleOverPayment = () => {
+    setVisible(true)
+    setType('error')
+    setMsg({
+      header: 'Over payment',
+      text: "The maximum savings amount for this savings is exceeded",
+      action: 'Try Again'
+    })
+  }
+
 
   console.log('Amount saved', route?.params)
 
@@ -204,12 +226,12 @@ export default function SoloSavingDashBoard(props) {
     setSavingsTarget(data?.target_amount);
     setPercentAchieved(
       (
-        (Number(data?.amount_saved || route.params.amount) / Number(data?.target_amount)) *
+        (Number(data?.amount_saved || route?.params?.amount) / Number(data?.target_amount)) *
         100
       ).toFixed(0),
     );
 
-    setTotalSaving(currSaving.amount_saved || 0)
+    setTotalSaving(currSaving?.amount_saved || 0)
     // setTotalSaving(amount_saved || 0);
     setFundedAmount(amount_saved || 0)
 
@@ -231,12 +253,12 @@ export default function SoloSavingDashBoard(props) {
 
   useEffect(() => {
     setDashboardValue();
-  }, [getOne]);
+  }, [getOne, getMaxLoanCap1]);
 
   useEffect(() => {
     console.log('Realoading....');
     setDashboardValue();
-  }, [getMaxLoanCap1, currSaving?.amount_saved]);
+  }, [currSaving.amount_saved, _refresh]);
 
   const goback = () => {
     navigation.navigate('SavingLists');
@@ -246,6 +268,8 @@ export default function SoloSavingDashBoard(props) {
     setTotalSaving(0);
 
   };
+
+
 
   const showSuccess = async () => {
 
@@ -279,6 +303,7 @@ export default function SoloSavingDashBoard(props) {
         dispatch(setWalletbalance(walletBalance - amount))
 
         setFundedAmount(Number(fundedAmount) + Number(amount))
+        set_refresh(!_refresh)
         await showSuccess();
       } else {
         setSpinner2(false);
@@ -291,6 +316,11 @@ export default function SoloSavingDashBoard(props) {
 
   const verifyPaymentRequest = async (data, paymentChannel) => {
     console.log('The Data: ', data);
+
+    if (Number(amount) > Number(savingsTarget)) {
+      handleOverPayment()
+      return
+    }
 
     setSpinner2(true);
     const res = await verifySavingsPayment(data);
@@ -346,7 +376,7 @@ export default function SoloSavingDashBoard(props) {
 
     if (value == 'wallet') {
 
-      if(amount > walletBalance){
+      if (amount > walletBalance) {
         return Alert.alert('Error', 'Your wallet balance is insufficient to complete this transaction')
       }
       const verifyPayload = {
@@ -390,211 +420,220 @@ export default function SoloSavingDashBoard(props) {
 
 
   return (
-    <View style={styles.container}>
-      <Icon
-        onPress={goback}
-        name="arrow-back-outline"
-        size={25}
-        style={{
-          paddingVertical: 10,
-          paddingHorizontal: 10,
-        }}
-        color="#2A286A"
-      />
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-          />
-        }
-        showsVerticalScrollIndicator={false} scrollEnabled>
-        <View style={[styles.content]}>
-          <View style={{ marginBottom: 20, paddingLeft: 10 }}>
-            <Text
-              style={{ fontSize: 25, fontWeight: 'bold', color: COLORS.primary }}>
-              Solo Saving{' '}
-              <Text style={{ fontSize: 10, color: COLORS.dark }}>
-                {savingTitle}
+      <View style={[styles.container, {
+        marginTop: Platform.OS == 'ios'
+          ? statusBarHeight
+          : 0
+      }]}>
+        <Icon
+          onPress={goback}
+          name="arrow-back-outline"
+          size={25}
+          style={{
+            paddingVertical: 10,
+            paddingHorizontal: 10,
+          }}
+          color="#2A286A"
+        />
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+            />
+          }
+          showsVerticalScrollIndicator={false} scrollEnabled>
+          <View style={[styles.content]}>
+            <View style={{ marginBottom: 20, paddingLeft: 10 }}>
+              <Text
+                style={{ fontSize: 25, fontWeight: 'bold', color: COLORS.primary }}>
+                Solo Saving{' '}
+                <Text style={{ fontSize: 10, color: COLORS.dark }}>
+                  {savingTitle}
+                </Text>
               </Text>
-            </Text>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginTop: 10,
-                paddingLeft: 0,
-                paddingRight: 10,
-              }}>
               <View
                 style={{
                   flexDirection: 'row',
-                  backgroundColor: '#9D98EC20',
-                  padding: 5,
-                  paddingHorizontal: 10,
-                  borderRadius: 5,
+                  justifyContent: 'space-between',
+                  marginTop: 10,
+                  paddingLeft: 0,
+                  paddingRight: 10,
                 }}>
-                <Text
+                <View
                   style={{
-                    fontSize: 12,
-                    fontWeight: 'normal',
-                    color: COLORS.dark,
-                    marginRight: 5,
+                    flexDirection: 'row',
+                    backgroundColor: '#9D98EC20',
+                    padding: 5,
+                    paddingHorizontal: 10,
+                    borderRadius: 5,
                   }}>
-                  Start
-                </Text>
-                <Text
-                  style={{ fontSize: 12, fontWeight: '700', color: COLORS.dark }}>
-                  {moment(date.startDate).format('ddd, D MMM YYYY')}
-                </Text>
-              </View>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'normal',
+                      color: COLORS.dark,
+                      marginRight: 5,
+                    }}>
+                    Start
+                  </Text>
+                  <Text
+                    style={{ fontSize: 12, fontWeight: '700', color: COLORS.dark }}>
+                    {moment(date.startDate).format('ddd, D MMM YYYY')}
+                  </Text>
+                </View>
 
-              <View
-                style={{
-                  flexDirection: 'row',
-                  backgroundColor: '#9D98EC20',
-                  padding: 5,
-                  paddingHorizontal: 10,
-                  borderRadius: 5,
-                }}>
-                <Text
+                <View
                   style={{
-                    fontSize: 12,
-                    fontWeight: 'normal',
-                    color: COLORS.dark,
-                    marginRight: 5,
+                    flexDirection: 'row',
+                    backgroundColor: '#9D98EC20',
+                    padding: 5,
+                    paddingHorizontal: 10,
+                    borderRadius: 5,
                   }}>
-                  End
-                </Text>
-                <Text
-                  style={{ fontSize: 12, fontWeight: '700', color: COLORS.dark }}>
-                  {moment(date.endDate).format('ddd, D MMM YYYY')}
-                </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontWeight: 'normal',
+                      color: COLORS.dark,
+                      marginRight: 5,
+                    }}>
+                    End
+                  </Text>
+                  <Text
+                    style={{ fontSize: 12, fontWeight: '700', color: COLORS.dark }}>
+                    {moment(date.endDate).format('ddd, D MMM YYYY')}
+                  </Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          {
-            !isReady ?
-              (
-                <View style={[styles.soloSavingCard]}>
-                  <Image
-                    source={images.soloSavingsCard}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      resizeMode: 'stretch',
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                      left: 0,
-                    }}
-                  />
-                  <View style={{ padding: 20 }} />
-                </View>
-              ) :
-              (
-                <View style={[styles.soloSavingCard]}>
-                  <Image
-                    source={images.soloSavingsCard}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      resizeMode: 'stretch',
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                      left: 0,
-                    }}
-                  />
-                  <View style={{ padding: 20 }}>
-                    {savingsCompleted ? (
-                      <TouchableOpacity
-                        style={{
-                          position: 'absolute',
-                          right: 20,
-                          top: 20,
-                          zIndex: 5,
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}
-                        onPress={() => setShowAmountModal(true)}>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: COLORS.white,
-                            fontStyle: 'italic',
-                          }}>
-                          Savings Completed
-                        </Text>
-                      </TouchableOpacity>
-                    ) : (
-                      <TouchableOpacity
-                        style={{
-                          position: 'absolute',
-                          right: 5,
-                          top: 10,
-                          zIndex: 5,
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                        }}
-                        onPress={() => setShowAmountModal(true)}>
-                        <Text style={{ fontSize: 12, color: COLORS.white }}>
-                          Add Funds
-                        </Text>
-                        <Image
-                          style={{
-                            width: 50,
-                            height: 50,
-                            marginTop: 5,
-                          }}
-                          source={icons.addIcon}
-                        />
-                      </TouchableOpacity>
-                    )}
-
-                    <Text style={{ color: COLORS.white }}>You have saved</Text>
-                    <View
+            {
+              !isReady ?
+                (
+                  <View style={[styles.soloSavingCard]}>
+                    <Image
+                      source={images.soloSavingsCard}
                       style={{
-                        // borderWidth: 1,
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginTop: 5,
-                      }}>
+                        width: '100%',
+                        height: '100%',
+                        resizeMode: 'stretch',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                      }}
+                    />
+                    <View style={{ padding: 20 }} />
+                  </View>
+                ) :
+                (
+                  <View style={[styles.soloSavingCard]}>
+                    <Image
+                      source={images.soloSavingsCard}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        resizeMode: 'stretch',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                      }}
+                    />
+                    <View style={{ padding: 20 }}>
+                      {savingsCompleted ? (
+                        <TouchableOpacity
+                          style={{
+                            position: 'absolute',
+                            right: 20,
+                            top: 20,
+                            zIndex: 5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}
+                          onPress={() => setShowAmountModal(true)}>
+                          <Text
+                            style={{
+                              fontSize: 14,
+                              color: COLORS.white,
+                              fontStyle: 'italic',
+                            }}>
+                            Savings Completed
+                          </Text>
+                        </TouchableOpacity>
+                      ) : (
+                        <TouchableOpacity
+                          style={{
+                            position: 'absolute',
+                            right: 5,
+                            top: 10,
+                            zIndex: 5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                          }}
+                          onPress={() => {
+
+                            setShowAmountModal(true)
+
+                          }
+                          }>
+                          <Text style={{ fontSize: 12, color: COLORS.white }}>
+                            Add Funds
+                          </Text>
+                          <Image
+                            style={{
+                              width: 50,
+                              height: 50,
+                              marginTop: 5,
+                            }}
+                            source={icons.addIcon}
+                          />
+                        </TouchableOpacity>
+                      )}
+
+                      <Text style={{ color: COLORS.white }}>You have saved</Text>
                       <View
                         style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          marginTop: 5,
-                          marginLeft: 5,
                           // borderWidth: 1,
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          marginTop: 5,
                         }}>
-                        <Text
+                        <View
                           style={{
-                            fontSize: 22,
-                            fontWeight: 'bold',
-                            color: COLORS.white,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            marginTop: 5,
+                            marginLeft: 5,
+                            // borderWidth: 1,
                           }}>
-                          ₦{
-                            totalSaving.toString().includes('.')
-                              ? formatNumber(totalSaving)
-                              : formatNumber(totalSaving).concat('.00')
-                          }
-                          {/* ₦{currencyFormat(Number(fundedAmount)) || currencyFormat(Number(route?.params?.amount))} */}
-                        </Text>
-                        <Icon
-                          name={locked ? 'lock-closed' : 'lock-open'}
-                          size={15}
-                          style={{ marginLeft: 10, marginRight: 10 }}
-                          color={COLORS.primary}
-                        />
-                        {spinner && (
-                          <ActivityIndicator size="small" color={COLORS.white} />
-                        )}
-                      </View>
-                      {/* <View style={{display: 'flex', marginTop: 5}}>
+                          <Text
+                            style={{
+                              fontSize: 22,
+                              fontWeight: 'bold',
+                              color: COLORS.white,
+                            }}>
+                            ₦{
+                              totalSaving.toString().includes('.')
+                                ? formatNumber(totalSaving)
+                                : formatNumber(totalSaving).concat('.00')
+                            }
+                            {/* ₦{currencyFormat(Number(fundedAmount)) || currencyFormat(Number(route?.params?.amount))} */}
+                          </Text>
+                          <Icon
+                            name={locked ? 'lock-closed' : 'lock-open'}
+                            size={15}
+                            style={{ marginLeft: 10, marginRight: 10 }}
+                            color={COLORS.primary}
+                          />
+                          {spinner && (
+                            <ActivityIndicator size="small" color={COLORS.white} />
+                          )}
+                        </View>
+                        {/* <View style={{display: 'flex', marginTop: 5}}>
                   <Text style={{color: COLORS.white, fontSize: 10}}>
                     Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
                   </Text>
@@ -606,273 +645,273 @@ export default function SoloSavingDashBoard(props) {
                     value={autoSaving}
                   />
                 </View> */}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        marginTop: 10,
-                        alignItems: 'center',
-                      }}>
+                      </View>
                       <View
                         style={{
                           flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          marginTop: 10,
                           alignItems: 'center',
-                          backgroundColor: '#FFFFFF50',
-                          paddingHorizontal: 10,
-                          paddingVertical: 4,
-                          borderRadius: 10,
                         }}>
                         <View
                           style={{
-                            width: 10,
-                            height: 10,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor: '#FFFFFF50',
+                            paddingHorizontal: 10,
+                            paddingVertical: 4,
                             borderRadius: 10,
-                            marginRight: 10,
-                            backgroundColor: COLORS.secondary,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 10,
-                            marginTop: -2,
-                            color: COLORS.primary,
                           }}>
-                          You are doing great
-                        </Text>
-                      </View>
-
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ flexDirection: 'column' }}>
-                          <Text style={{ color: COLORS.white, fontSize: 10 }}>
-                            Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
-                          </Text>
-                          <Switch
-                            trackColor={{ false: 'white', true: 'white' }}
-                            thumbColor={autoSaving ? COLORS.secondary : '#ddd'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={toggleSwitch}
-                            value={autoSaving}
+                          <View
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 10,
+                              marginRight: 10,
+                              backgroundColor: COLORS.secondary,
+                            }}
                           />
+                          <Text
+                            style={{
+                              fontSize: 10,
+                              marginTop: -2,
+                              color: COLORS.primary,
+                            }}>
+                            You are doing great
+                          </Text>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <View style={{ flexDirection: 'column' }}>
+                            <Text style={{ color: COLORS.white, fontSize: 10 }}>
+                              Switch To {autoSaving ? 'Manual' : 'Auto'} Saving
+                            </Text>
+                            <Switch
+                              trackColor={{ false: 'white', true: 'white' }}
+                              thumbColor={autoSaving ? COLORS.secondary : '#ddd'}
+                              ios_backgroundColor="#3e3e3e"
+                              onValueChange={toggleSwitch}
+                              value={autoSaving}
+                            />
+                          </View>
                         </View>
                       </View>
                     </View>
+                    <View
+                      style={{
+                        backgroundColor: '#ffffff20',
+                        flex: 1,
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View style={{ alignItems: 'flex-start' }}>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: COLORS.white,
+                            fontWeight: '200',
+                          }}>
+                          Interest Earned
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: COLORS.white,
+                            fontWeight: 'bold',
+                          }}>
+                          ₦{currencyFormat(Number(totalInterest) || 0.00)}
+                        </Text>
+                      </View>
+
+                      <View />
+
+                      <View style={{ alignItems: 'flex-end' }}>
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: COLORS.white,
+                            fontWeight: '200',
+                          }}>
+                          Saving Target
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: COLORS.white,
+                            fontWeight: 'bold',
+                          }}>
+                          ₦{currencyFormat(Number(savingsTarget)) || '0.00'}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
+
+                )
+
+            }
+
+
+
+
+            <View
+              style={{
+                // borderWidth: 1,
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginTop: -70,
+                elevation: 10,
+              }}>
+              <AnimatedCircularProgress
+                size={90}
+                width={10}
+                rotation={0}
+                style={styles.circularProgress}
+                fill={percent || Number(percentAchieved) || 0}
+                tintColor={COLORS.secondary}
+                backgroundColor="#2A286A90">
+                {(fill) => (
                   <View
                     style={{
-                      backgroundColor: '#ffffff20',
-                      flex: 1,
-                      paddingHorizontal: 20,
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
+                      backgroundColor: '#2A286A',
+                      height: 100,
+                      width: 100,
+                      display: 'flex',
                       alignItems: 'center',
+                      justifyContent: 'center',
                     }}>
-                    <View style={{ alignItems: 'flex-start' }}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: COLORS.white,
-                          fontWeight: '200',
-                        }}>
-                        Interest Earned
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: COLORS.white,
-                          fontWeight: 'bold',
-                        }}>
-                        ₦{currencyFormat(Number(totalInterest) || 0.00)}
-                      </Text>
-                    </View>
-
-                    <View />
-
-                    <View style={{ alignItems: 'flex-end' }}>
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: COLORS.white,
-                          fontWeight: '200',
-                        }}>
-                        Saving Target
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          color: COLORS.white,
-                          fontWeight: 'bold',
-                        }}>
-                        ₦{currencyFormat(Number(savingsTarget)) || '0.00'}
-                      </Text>
-                    </View>
+                    <Image
+                      source={images.darkPurpleCircle}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        resizeMode: 'stretch',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontFamily: 'Poppins-Medium',
+                        fontSize: 16,
+                        fontWeight: 'bold',
+                        color: 'white',
+                        // lineHeight: 27,
+                        textAlign: 'center',
+                      }}>
+                      {Math.round(fill) || 0}%
+                    </Text>
+                    <Text
+                      style={{
+                        fontFamily: 'Poppins-Medium',
+                        fontSize: 10,
+                        fontWeight: '600',
+                        color: 'white',
+                        // lineHeight: 14,
+                        textAlign: 'center',
+                        marginTop: -5,
+                      }}>
+                      achieved
+                    </Text>
                   </View>
-                </View>
+                )}
+              </AnimatedCircularProgress>
+            </View>
 
-              )
+            {/*  */}
 
-          }
-
-
-
-
-          <View
-            style={{
-              // borderWidth: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              marginTop: -70,
-              elevation: 10,
-            }}>
-            <AnimatedCircularProgress
-              size={90}
-              width={10}
-              rotation={0}
-              style={styles.circularProgress}
-              fill={percent || Number(percentAchieved) || 0}
-              tintColor={COLORS.secondary}
-              backgroundColor="#2A286A90">
-              {(fill) => (
-                <View
-                  style={{
-                    backgroundColor: '#2A286A',
-                    height: 100,
-                    width: 100,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
+            <View
+              style={{
+                marginTop: 10,
+                flexDirection: 'row',
+                justifyContent: 'space-evenly',
+              }}>
+              <TouchableOpacity
+                // onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
+                onPress={() => navigation.navigate('Rent')}
+                style={{
+                  width: '45%',
+                  minHeight: 100,
+                  backgroundColor: '#fff',
+                  padding: 15,
+                  borderRadius: 10,
+                  paddingBottom: 20,
+                  elevation: 1,
+                }}>
+                <View>
                   <Image
-                    source={images.darkPurpleCircle}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      resizeMode: 'stretch',
-                      position: 'absolute',
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                      left: 0,
-                    }}
+                    style={{ width: 80, height: 80, marginLeft: -20 }}
+                    source={icons.topUp}
                   />
-                  <Text
-                    style={{
-                      fontFamily: 'CircularStd',
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: 'white',
-                      // lineHeight: 27,
-                      textAlign: 'center',
-                    }}>
-                    {Math.round(fill) || 0}%
+                  <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
+                    Rent Now Pay {'\n'}Later
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
-                      fontSize: 10,
-                      fontWeight: '600',
-                      color: 'white',
-                      // lineHeight: 14,
-                      textAlign: 'center',
-                      marginTop: -5,
+                      fontSize: 12,
+                      marginTop: 10,
+                      color: '#ADADAD',
+                      lineHeight: 20,
                     }}>
-                    achieved
+                    Can't meet up with your rent target? Let Kwaba pay for you.
                   </Text>
                 </View>
-              )}
-            </AnimatedCircularProgress>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('EmergencyLoanDashBoard');
+
+                  // Alert.alert(
+                  //   'Feature currently unavailable',
+                  //   'We are working hard to make this available as soon as we can.',
+                  // );
+                }}
+                style={{
+                  width: '45%',
+                  minHeight: 100,
+                  backgroundColor: '#fff',
+                  padding: 15,
+                  borderRadius: 10,
+                  paddingBottom: 20,
+                  elevation: 1,
+                }}>
+                <View>
+                  <Image
+                    style={{ width: 80, height: 80, marginLeft: -20 }}
+                    source={icons.instantLoan}
+                  />
+                  <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
+                    Emergency {'\n'}Funds
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      marginTop: 10,
+                      color: '#ADADAD',
+                      lineHeight: 20,
+                    }}>
+                    Access instant loans to help sort out life’s emergencies.
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          {/*  */}
+          <TransactionsTab
+            transactions={getOneTransaction?.data?.reverse()}
+            title={savingTitle}
+            id={route?.params?.id}
+            refetch={randomRefect}
+          />
+        </ScrollView>
 
-          <View
-            style={{
-              marginTop: 10,
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-            }}>
-            <TouchableOpacity
-              // onPress={() => navigation.navigate('RentNowPayLaterOnboarding')}
-              onPress={() => navigation.navigate('Rent')}
-              style={{
-                width: '45%',
-                minHeight: 100,
-                backgroundColor: '#fff',
-                padding: 15,
-                borderRadius: 10,
-                paddingBottom: 20,
-                elevation: 1,
-              }}>
-              <View>
-                <Image
-                  style={{ width: 80, height: 80, marginLeft: -20 }}
-                  source={icons.topUp}
-                />
-                <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
-                  Rent Now Pay {'\n'}Later
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginTop: 10,
-                    color: '#ADADAD',
-                    lineHeight: 20,
-                  }}>
-                  Can't meet up with your rent target? Let Kwaba pay for you.
-                </Text>
-              </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('EmergencyLoanDashBoard');
-
-                // Alert.alert(
-                //   'Feature currently unavailable',
-                //   'We are working hard to make this available as soon as we can.',
-                // );
-              }}
-              style={{
-                width: '45%',
-                minHeight: 100,
-                backgroundColor: '#fff',
-                padding: 15,
-                borderRadius: 10,
-                paddingBottom: 20,
-                elevation: 1,
-              }}>
-              <View>
-                <Image
-                  style={{ width: 80, height: 80, marginLeft: -20 }}
-                  source={icons.instantLoan}
-                />
-                <Text style={{ fontWeight: 'bold', color: COLORS.primary }}>
-                  Emergency {'\n'}Funds
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    marginTop: 10,
-                    color: '#ADADAD',
-                    lineHeight: 20,
-                  }}>
-                  Access instant loans to help sort out life’s emergencies.
-                </Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        <TransactionsTab
-          transactions={getOneTransaction?.data?.reverse()}
-          title={savingTitle}
-          id={route?.params?.id}
-          refetch={randomRefect}
-        />
-      </ScrollView>
-
-      {/* <QuickSaveModal
+        {/* <QuickSaveModal
         onRequestClose={() => setQuickSaveModal(!quickSaveModal)}
         visible={quickSaveModal}
         navigation={navigation}
@@ -880,7 +919,7 @@ export default function SoloSavingDashBoard(props) {
         ID={route.params.id}
       /> */}
 
-      {/* {showPaymentType && (
+        {/* {showPaymentType && (
         <PaymentTypeModalForSavings
           onRequestClose={() => setShowPaymentType(!showPaymentType)}
           visible={showPaymentType}
@@ -889,7 +928,7 @@ export default function SoloSavingDashBoard(props) {
         />
       )} */}
 
-      {/* {showCardModal && (
+        {/* {showCardModal && (
         <CreditCardFormSavings
           onRequestClose={() => setShowCardModal(!showCardModal)}
           visible={showCardModal}
@@ -899,58 +938,80 @@ export default function SoloSavingDashBoard(props) {
         />
       )} */}
 
-      {showAmountModal && (
-        <AmountModal
-          onRequestClose={() => setShowAmountModal(!showAmountModal)}
-          visible={showAmountModal}
-          setAmount={(d) => setAmount(d)}
-          // setData={(d) => setResData(d)}
-          showCard={() => setShowPaymentModal(true)}
+        {showAmountModal && (
+          <AmountModal
+            onRequestClose={() => setShowAmountModal(!showAmountModal)}
+            visible={showAmountModal}
+            setAmount={(d) => setAmount(d)}
+            // setData={(d) => setResData(d)}
+
+            showCard={() => {
+              if ((Number(totalSaving) + Number(amount)) > Number(savingsTarget)) {
+                setVisible(true)
+                setType('error')
+                setMsg({
+                  header: 'Over payment',
+                  text: "'You are trying to fund more than the savings target of this solo savings",
+                  action: 'Try Again'
+                })
+              } else {
+                setTimeout(() => {
+                  setShowPaymentModal(true)
+                }, Platform.OS === 'ios' ? 200 : 0)
+              }
+            }}
+          />
+        )}
+
+        {showPaymentModal && (
+          <PaymentTypeModal
+            onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
+            visible={true}
+            setPaymentType={(data) => {
+              handlePaymentRoute(data); // paystack, bank, wallet
+            }}
+          />
+        )}
+
+        {showPaystackPayment && (
+          <PaystackPayment
+            onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
+            data={verifyData}
+            channel={channel}
+            paymentCanceled={(e) => {
+              setSpinner(false);
+              Alert.alert('Payment cancelled');
+            }}
+            paymentSuccessful={async (res) => {
+
+              console.log('Payment data', res)
+              dispatch(updateSavings({ id: currSaving?.id, amount_saved: Number(currSaving?.amount_saved) + Number(amount) }))
+              let percentage = Math.floor((Number(totalSaving) / Number(savingsTarget)) * 100)
+              setPercent(percentage)
+
+              console.log('Payment', percentage)
+              setFundedAmount(Number(fundedAmount) + Number(amount))
+              setTimeout(() => {
+                setRandomRefetch(Math.random() * 1000)
+              }, 4000);
+              set_refresh(!_refresh)
+              // setDashboardValue();
+              // updateState();
+
+              // showSuccess();
+            }}
+          />
+        )}
+
+        {/* {spinner && <ActivityIndicator size="small" color={COLORS.secondary} />} */}
+        <Spinner visible={spinner2} size="large" />
+        <ActionModal
+          visible={visible}
+          setVisible={setVisible}
+          type={type}
+          msg={msg}
         />
-      )}
-
-      {showPaymentModal && (
-        <PaymentTypeModal
-          onRequestClose={() => setShowPaymentModal(!showPaymentModal)}
-          visible={showPaymentModal}
-          setPaymentType={(data) => {
-            handlePaymentRoute(data); // paystack, bank, wallet
-          }}
-        />
-      )}
-
-      {showPaystackPayment && (
-        <PaystackPayment
-          onRequestClose={() => setShowPaystackPayment(!showPaystackPayment)}
-          data={verifyData}
-          channel={channel}
-          paymentCanceled={(e) => {
-            setSpinner(false);
-            Alert.alert('Payment cancelled');
-          }}
-          paymentSuccessful={async (res) => {
-
-            console.log('Payment data', res)
-            dispatch(updateSavings({ id: currSaving?.id, amount_saved: Number(currSaving?.amount_saved) + Number(amount) }))
-            let percentage = Math.floor((Number(totalSaving) / Number(savingsTarget)) * 100)
-            setPercent(percentage)
-
-            console.log('Payment', percentage)
-            setFundedAmount(Number(fundedAmount) + Number(amount))
-            setTimeout(() => {
-              setRandomRefetch(Math.random() * 1000)
-            }, 4000);
-            // setDashboardValue();
-            // updateState();
-
-            // showSuccess();
-          }}
-        />
-      )}
-
-      {/* {spinner && <ActivityIndicator size="small" color={COLORS.secondary} />} */}
-      <Spinner visible={spinner2} size="large" />
-    </View>
+      </View>
   );
 }
 

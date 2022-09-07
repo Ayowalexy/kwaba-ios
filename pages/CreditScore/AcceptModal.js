@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0,0,0,0.5)',
     backgroundColor: 'rgba(16,19,27,0.8)',
   },

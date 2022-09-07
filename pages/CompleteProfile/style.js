@@ -31,7 +31,7 @@ const designs = StyleSheet.create({
   },
   heading: {
     fontSize: 24,
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
     lineHeight: 30,
   },
@@ -40,7 +40,7 @@ const designs = StyleSheet.create({
     fontSize: 14,
     lineHeight: 22,
 
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '500',
     marginTop: 10,
   },

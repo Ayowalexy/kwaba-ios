@@ -6,12 +6,14 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Platform
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useDispatch, useSelector} from 'react-redux';
 import AirtimeHistory from '../../components/AirtimeHistory';
 import {COLORS, FONTS, images, icons} from '../../util/index';
 import { GLO, NINE_FLAG, AIRTEL, MTN } from '../../util/images';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   getAirtimeBillTrans,
   getBillsCategory,
@@ -19,6 +21,7 @@ import {
 
 const AirtimeHome = ({navigation}) => {
   const dispatch = useDispatch();
+  const statusBarHeight = useSafeAreaInsets().top;
   const getBillsCategoryLists = useSelector(
     (state) => state.getBillCategoryReducer,
   );
@@ -40,7 +43,7 @@ const AirtimeHome = ({navigation}) => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <View style={styles.header}>
         <Icon
           onPress={() => navigation.goBack()}
@@ -199,7 +202,7 @@ const styles = StyleSheet.create({
   headerMainText: {
     // marginLeft: 16,
     color: COLORS.yellow,
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontSize: 25,
     fontWeight: 'bold',
     marginTop: 10,
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
   headertext: {
     width: '70%',
     color: COLORS.white,
-    fontFamily: 'CircularStd-bold,Book',
+    fontFamily: 'Poppins-Medium',
     // textAlign: 'justify',
     lineHeight: 20,
     // marginLeft: 16,

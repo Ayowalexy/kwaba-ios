@@ -169,13 +169,13 @@ export default function PTMFB(props) {
     {
       title: `Repayment Plan\nMonthly&Source`,
       content: `Repayment of ₦${formatNumber(
-        offerLetterData.monthly_repayment,
+        Math.floor(offerLetterData.monthly_repayment),
       )} from monthly income. `,
     },
     {
       title: 'Securities',
       content: `Execution or activation of remita or other direct debit mandates on customer salary account with monthly repayment of ₦${formatNumber(
-        offerLetterData.monthly_repayment,
+       Math.floor(offerLetterData.monthly_repayment),
       )}.`,
     },
   ];

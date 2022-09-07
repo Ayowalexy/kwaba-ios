@@ -7,7 +7,9 @@ import {
   ScrollView,
   useWindowDimensions,
   Dimensions,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import {TabView, TabBar, SceneMap} from 'react-native-tab-view';
@@ -25,6 +27,7 @@ import * as Animatable from 'react-native-animatable';
 
 const General = () => {
   const [activeSections, setActiveSections] = useState([]);
+ 
   const SECTIONS = [
     {
       title: 'What is Kwaba?',
@@ -507,6 +510,8 @@ const renderTabBar = (props) => (
 const LegalandFaq = ({navigation}) => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
   const [routes] = useState([
     {key: 'one', title: 'General'},
     {key: 'two', title: 'Rent Saving'},
@@ -523,7 +528,7 @@ const LegalandFaq = ({navigation}) => {
   });
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <View style={styles.header}>
         <Icon
           onPress={() => navigation.goBack()}

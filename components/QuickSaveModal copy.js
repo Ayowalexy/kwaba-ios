@@ -51,7 +51,7 @@ export default function QuickSaveModal(props) {
                 <Text
                   style={{
                     color: '#2A286A',
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontWeight: 'bold',
                   }}>
                   Quick Save
@@ -68,7 +68,7 @@ export default function QuickSaveModal(props) {
             {!start && (
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   color: '#465969',
                   fontWeight: '600',
                   marginTop: 10,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 18,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#ADADAD',
     borderWidth: 1,

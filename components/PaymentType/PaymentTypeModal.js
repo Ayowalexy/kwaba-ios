@@ -9,9 +9,10 @@ import InsufficientModal from './InsufficientWalletBalance';
 
 export default function PaymentTypeModal(props) {
   const dispatch = useDispatch();
-  const {visible, onRequestClose, setPaymentType, disable, amount, setShowModal} = props;
+  const {visible, onRequestClose, setPaymentType, disable, amount, setShowModal, onlyWallet} = props;
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [walletBalance, setWalletBalance] = useState(0);
+  const [methods, setMethods] = useState([])
 
   console.log('Wallet balance', walletBalance)
 
@@ -27,20 +28,33 @@ export default function PaymentTypeModal(props) {
     }
   }, [getMaxLoanCap1]);
 
+ const checkType = () => {
+  if(onlyWallet){
+   return  [
+      {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
+    ]
+  } else {
+    return [
+      {name: 'Debit Card', icon: 'card', tag: 'card'},
+      {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
+      {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
+    ]
+  }
+ }
+
   return (
     <>
       <Modal
         animationType="slide"
         transparent={true}
         visible={visible}
-        onRequestClose={onRequestClose}
         style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
         <View
           style={{
             flex: 1,
             justifyContent: 'flex-end',
             alignItems: 'center',
-            fontFamily: 'CircularStd',
+            fontFamily: 'Poppins-Medium',
             backgroundColor: 'rgba(0, 0, 0, 0.5)',
           }}>
           <View
@@ -92,11 +106,10 @@ export default function PaymentTypeModal(props) {
                   }}>
                   Select a Payment Method
                 </Text>
-                {[
-                  {name: 'Debit Card', icon: 'card', tag: 'card'},
-                  {name: 'Bank Transfer', icon: 'home', tag: 'bank_transfer'},
-                  {name: 'Your Wallet', icon: 'wallet', tag: 'wallet'},
-                ].map((item, index) => {
+                
+                {
+                  checkType()
+                .map((item, index) => {
                   return (
                     <TouchableOpacity
                       // disabled={item.icon == 'home'}

@@ -35,7 +35,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import PaystackPayment from '../../components/Paystack/PaystackPayment';
 import ModalMessage from '../../components/MessageModals/ModalMessage';
-import PushNotification from 'react-native-push-notification';
+// import PushNotification from 'react-native-push-notification';
 
 const PurchaseAirtime = ({navigation, route}) => {
   const [visible, setVisible] = useState(false);
@@ -148,11 +148,11 @@ const PurchaseAirtime = ({navigation, route}) => {
               content: 'Recharge Successful',
               subText: 'Sent! You have successfully recharged the number',
               onNotify: () => {
-                PushNotification.localNotification({
-                  channelId: 'test-channel',
-                  title: 'Airtime Recharge',
-                  message: 'You just recharged',
-                });
+                // PushNotification.localNotification({
+                //   channelId: 'test-channel',
+                //   title: 'Airtime Recharge',
+                //   message: 'You just recharged',
+                // });
               },
             });
           } else {
@@ -434,11 +434,11 @@ const PurchaseAirtime = ({navigation, route}) => {
                 content: 'Recharge Successful',
                 subText: 'Sent! You have successfully recharged the number',
                 onNotify: () => {
-                  PushNotification.localNotification({
-                    channelId: 'test-channel',
-                    title: 'Airtime Recharge',
-                    message: 'You just recharged',
-                  });
+                  // PushNotification.localNotification({
+                  //   channelId: 'test-channel',
+                  //   title: 'Airtime Recharge',
+                  //   message: 'You just recharged',
+                  // });
                 },
               });
               setSpinner(false);
@@ -509,7 +509,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     // marginTop: 20,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

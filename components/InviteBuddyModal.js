@@ -13,6 +13,7 @@ import {
   Share,
   ToastAndroid,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {COLORS} from '../util';
@@ -31,6 +32,7 @@ export default function InviteBuddyModal(props) {
   const [referralCode, setReferralCode] = useState('');
   const [userName, setUserName] = useState('');
   const [spinner, setSpinner] = useState(false);
+  const top = useSafeAreaInsets().top;
   const {onRequestClose, visible, data, resData, setBuddyInvite} = props;
   const getReferralCode = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -170,11 +172,12 @@ export default function InviteBuddyModal(props) {
       visible={visible}
       onRequestClose={onRequestClose}
       style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
-      <View style={styles.centeredView}>
+      <View style={[styles.centeredView, { marginTop: Platform.OS == 'ios' ? top :0}]}>
         <View style={styles.modalView}>
           <ScrollView showsVerticalScrollIndicator={false} scrollEnabled>
             <View
               style={{
+                
                 display: 'flex',
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -183,7 +186,7 @@ export default function InviteBuddyModal(props) {
               <Text
                 style={{
                   color: '#2A286A',
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontWeight: 'bold',
                   fontSize: 16,
                   lineHeight: 19,
@@ -313,7 +316,7 @@ export default function InviteBuddyModal(props) {
               </Text>
             </View>
 
-            <View style={{flexDirection: 'row', marginTop: 10}}>
+            {/* <View style={{flexDirection: 'row', marginTop: 10}}>
               <TouchableOpacity
                 style={[styles.inviteActionBtn]}
                 onPress={copyToClipboard}>
@@ -335,7 +338,7 @@ export default function InviteBuddyModal(props) {
                   style={{color: COLORS.white}}
                 />
               </TouchableOpacity>
-            </View>
+            </View> */}
           </ScrollView>
         </View>
       </View>
@@ -351,7 +354,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -369,7 +372,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',
@@ -381,7 +384,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     paddingHorizontal: 20,
     fontSize: 13,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#EFEFEF',
     borderWidth: 1,

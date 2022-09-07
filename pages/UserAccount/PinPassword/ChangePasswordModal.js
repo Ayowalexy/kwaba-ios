@@ -6,11 +6,12 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Platform
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {COLORS} from '../../../util';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {Formik, Field} from 'formik';
 import * as yup from 'yup';
 import {changePassword} from '../../../services/network';
@@ -102,6 +103,8 @@ export default function ChangePasswordModal(props) {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [showWarningModal, setShowWarningModal] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   const handleSubmit = async (values) => {
     const data = {
@@ -139,7 +142,7 @@ export default function ChangePasswordModal(props) {
         visible={visible}
         onRequestClose={onRequestClose}
         style={{borderTopLeftRadius: 30, borderTopRightRadius: 30}}>
-        <View style={designs.centeredView}>
+        <View style={[designs.centeredView, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
           <View style={designs.modalView}>
             <Icon
               onPress={onRequestClose}

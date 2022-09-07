@@ -37,7 +37,7 @@ export default function ConfirmModal(props) {
           <Text
             style={{
               color: '#2A286A',
-              fontFamily: 'CircularStd',
+              fontFamily: 'Poppins-Medium',
               fontWeight: 'bold',
               fontSize: 16,
             }}>
@@ -66,7 +66,7 @@ export default function ConfirmModal(props) {
             }}>
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 color: COLORS.grey,
                 fontSize: 13,
                 // fontWeight: 'bold',
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     // borderColor: '#f00',
     // borderWidth: 1,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

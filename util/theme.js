@@ -33,44 +33,44 @@ export const SIZES = {
 
 export const FONTS = {
   largeTitleFontStyling: {
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.largeTitle,
     lineHeight: 40,
     fontWeight: 'bold',
   },
   h1FontStyling: {
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.h1,
     lineHeight: 32,
   },
   h2FontStyling: {
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.h2,
   },
   h3FontStyling: {
-    fontFamily: 'CircularStd-Bold',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.h3,
   },
   body1FontStyling: {
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.body1,
     lineHeight: 25,
   },
   body2FontStyling: {
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.body2,
     lineHeight: 20,
   },
   body3FontStyling: {
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.body3,
   },
   body4FontStyling: {
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontSize: SIZES.body4,
   },
   body5FontStyling: {
-    fontFamily: 'CircularStd-Book',
+    fontFamily: 'Poppins-Medium',
     fontSize: 20,
     lineHeight: 25,
   },

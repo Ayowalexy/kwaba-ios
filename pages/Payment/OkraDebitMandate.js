@@ -67,7 +67,7 @@ export default function OkraDebitMandate({ navigation }) {
         const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
 
         // console.log(applicationIDCallRes.data.data.id);
-        console.log('app', applicationIDCallRes.data.data.status)
+        console.log('app STAT', applicationIDCallRes.data.data.status)
 
         const applicationId = applicationIDCallRes.data.data.id;
 

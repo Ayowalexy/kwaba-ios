@@ -179,7 +179,7 @@ export default function TabTwo(props) {
               padding: 15,
               borderRadius: 10,
               fontSize: 14,
-              fontFamily: 'CircularStd-Medium',
+              fontFamily: 'Poppins-Medium',
               fontWeight: '600',
               display: 'flex',
               justifyContent: 'center',

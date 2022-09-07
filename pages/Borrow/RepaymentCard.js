@@ -4,6 +4,7 @@ import { formatNumber } from '../../util/numberFormatter';
 
 const RepaymentCard = (props) => {
     const { amount, details, type } = props
+    console.log(type)
     return (
         <View style={styles.container}>
             <View
@@ -26,7 +27,7 @@ const RepaymentCard = (props) => {
                             style={{
                                 fontSize: 15,
                                 color: '#000000',
-                                fontFamily: 'CircularStd',
+                                fontFamily: 'Poppins-Medium',
                                 fontWeight: 'bold',
                                 paddingRight: 20
 
@@ -49,9 +50,9 @@ const RepaymentCard = (props) => {
                                             ? '#F9AFAF'
                                                 ? type == 'due'
                                                 : '#FAE4A4'
-                                                    ? type == 'upcoming'
+                                                    ? type == 'pending'
                                                     : "#D8D6F7B2"
-                                            : null
+                                            : '#D8D6F7B2'
 
                             }}
                         >
@@ -65,9 +66,9 @@ const RepaymentCard = (props) => {
                                             ? '#C02C2D'
                                                 ? type == 'due'
                                                 : '#C29616'
-                                                    ? type == 'upcoming'
+                                                    ? type == 'pending'
                                                     : "#7E7ABD"
-                                            : null
+                                            : '#7E7ABD'
                                 }}
                             >
                                 {type}
@@ -78,12 +79,12 @@ const RepaymentCard = (props) => {
                         style={{
                             color: '#74797D',
                             fontSize: 12,
-                            fontFamily: 'CircularStd',
+                            fontFamily: 'Poppins-Medium',
                             paddingTop: 10,
                             width: 300
                         }}
                     >
-                        4st Repayment, Due Date 02/08/2022
+                        {details}
                     </Text>
                 </View>
                 <TouchableOpacity
@@ -112,7 +113,7 @@ const RepaymentCard = (props) => {
                 style={{
                     fontSize: 12,
                     color: '#2A286A',
-                    fontFamily: 'CircularStd',
+                    fontFamily: 'Poppins-Medium',
                     fontWeight: 'bold',
                     paddingTop: 30
                 }}
@@ -126,7 +127,7 @@ const RepaymentCard = (props) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: '95%',
+        width: '100%',
         height: 140,
         backgroundColor: '#fff',
         elevation: 10,

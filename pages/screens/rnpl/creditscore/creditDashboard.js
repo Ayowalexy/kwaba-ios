@@ -11,7 +11,9 @@ import {
   StatusBar,
   ActivityIndicator,
   Modal,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import { COLORS } from '../../../../util';
@@ -31,6 +33,7 @@ export default function CreditDashboard(props) {
   const [creditScoreMessage, setCreditScoreMessage] = useState('');
   const [canApply, setCanApply] = useState(false);
 
+  const top = useSafeAreaInsets().top;
   const [scoreData, setScoreData] = useState({});
 
   const getUser = async () => {
@@ -627,7 +630,7 @@ export default function CreditDashboard(props) {
 
         creditType === 'business'
           ? navigation.navigate('BusinessForm1')
-          : navigation.navigate('RnplSteps');
+          : navigation.navigate('Form1');
       } else {
         const creditType = await AsyncStorage.getItem('creditType');
 
@@ -797,7 +800,7 @@ setPercentage((Number(route?.params?.history?.credit_score - 300) * 100) / (850 
   };
 
   return (
-    <View style={[designs.centeredView]}>
+    <View style={[designs.centeredView, { marginTop: Platform.OS === 'ios' ? top : 0}]}>
       <View style={[designs.topNav]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back-outline" size={25} color={COLORS.primary} />

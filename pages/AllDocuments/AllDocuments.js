@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   ScrollView,
@@ -12,8 +12,10 @@ import {
   Animated,
   StyleSheet,
   PermissionsAndroid,
+  Platform
 } from 'react-native';
-import {COLORS, FONTS, images, icons} from '../../util/index';
+import { COLORS, FONTS, images, icons } from '../../util/index';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA from 'react-native-vector-icons/FontAwesome';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
@@ -28,7 +30,7 @@ import {
   showUploadedFiles,
   uploadFile,
 } from '../../redux/actions/documentUploadActions';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import RnplStepProgress from '../screens/rnpl/RnplStepProgress';
 import urls from '../../services/routes';
 import { getCurrentApplication } from '../../services/network';
@@ -53,7 +55,7 @@ const getDocuments = async () => {
       // 'https://kwaba-main-api-3-cp4jm.ondigitalocean.app/api/v1/application/documents',
       urls.applications.GET_DOCUMENTS + `/${appId}`,
       {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       },
     );
     return uploadedDocumentsRes.data.data;
@@ -62,7 +64,7 @@ const getDocuments = async () => {
   }
 };
 
-export default function AllDocuments({navigation}) {
+export default function AllDocuments({ navigation }) {
   const [modalVisible, setVisible] = useState(false);
   const [showSelectDocumentsModal, setShowSelectDocumentsModal] = useState(
     false,
@@ -76,6 +78,8 @@ export default function AllDocuments({navigation}) {
   const [documentsToUpload, setDocumentsToUpload] = useState([])
   const [isBankStatement, setIsBankStatement] = useState(false);
 
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
   const [appId, setAppId] = useState(0)
   const dispatch = useDispatch();
   const fileProgress = useSelector(
@@ -89,11 +93,11 @@ export default function AllDocuments({navigation}) {
   }, [fileProgress]);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const docs = await getDocuments();
       const arr = [];
-    
-      for(let i of docs){
+
+      for (let i of docs) {
         arr.push(i?.filename)
       }
       setUploadedDocumets(arr)
@@ -102,12 +106,12 @@ export default function AllDocuments({navigation}) {
 
   useEffect(() => {
     let a = [
-      {id: 1, isloading: false},
-      {id: 2, isloading: false},
-      {id: 3, isloading: false},
-      {id: 4, isloading: false},
-      {id: 5, isloading: false},
-      {id: 6, isloading: false},
+      { id: 1, isloading: false },
+      { id: 2, isloading: false },
+      { id: 3, isloading: false },
+      { id: 4, isloading: false },
+      { id: 5, isloading: false },
+      { id: 6, isloading: false },
     ];
 
     a.some((x) => {
@@ -156,11 +160,9 @@ export default function AllDocuments({navigation}) {
     const token = await getToken();
     try {
       const resp = await axios.get(urls.applications.GET_DOCUMENTS + `/${appId}`, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
-
       
-
       setCount(resp.data.data.length);
 
       console.log(token)
@@ -173,8 +175,11 @@ export default function AllDocuments({navigation}) {
   console.log('document count', count)
 
   const handleDocumentType = async (item) => {
-    setShowChooseFileModal(true);
+
     setShowSelectDocumentsModal(false);
+    setTimeout(() => {
+      setShowChooseFileModal(true);
+    }, 400);
     setItem(item);
     // console.log(item);
   };
@@ -199,10 +204,10 @@ export default function AllDocuments({navigation}) {
       const token = await getToken();
       const getAllAloans = await getEmergencyLoans();
       const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
-      const applicationIDCallRes =  await getCurrentApplication({id: loan_id})
-  
+      const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
+
       console.log('Application status', applicationIDCallRes.data.data.status)
-     
+
       console.log('The Application ID: ', applicationIDCallRes.data.data.id);
       const applicationId = applicationIDCallRes.data.data.id;
 
@@ -309,7 +314,7 @@ export default function AllDocuments({navigation}) {
 
           {count == 0 ? (
             <View
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
               <Image
                 source={images.uploadDocument}
                 style={{
@@ -334,7 +339,7 @@ export default function AllDocuments({navigation}) {
           )}
 
           {count >= 6 ? (
-            <View style={{paddingHorizontal: 20}}>
+            <View style={{ paddingHorizontal: 20 }}>
               <TouchableOpacity
                 onPress={handleProceed}
                 style={[styles.btn, {}]}>
@@ -353,7 +358,7 @@ export default function AllDocuments({navigation}) {
               </TouchableOpacity>
             </View>
           ) : (
-            <View style={{paddingHorizontal: 20}}>
+            <View style={{ paddingHorizontal: 20 }}>
               <TouchableOpacity
                 onPress={() => {
                   setShowSelectDocumentsModal(true);
@@ -380,7 +385,7 @@ export default function AllDocuments({navigation}) {
           isVisible={showSelectDocumentsModal}
           onBackButtonPress={() => setShowSelectDocumentsModal(false)}
           onBackdropPress={() => setShowSelectDocumentsModal(false)}
-          style={{paddingHorizontal: 20}}>
+          style={{ paddingHorizontal: 20 }}>
           <View
             style={{
               backgroundColor: 'white',
@@ -418,9 +423,9 @@ export default function AllDocuments({navigation}) {
               Kindly upload the following {"\n"} documents to continue.
             </Text>
             {/* </View> */}
-            <View style={{marginTop: 10}}>
+            <View style={{ marginTop: 10 }}>
               <View>
-              {Object.values(fileProgress).map(
+                {Object.values(fileProgress).map(
                   (item, index) =>
                     // item.isUploaded !== false &&
                     !uploadedDocuments?.includes(item?.title) &&
@@ -461,7 +466,7 @@ export default function AllDocuments({navigation}) {
           isVisible={showChooseFileModal}
           onBackButtonPress={() => setShowChooseFileModal(false)}
           onBackdropPress={() => setShowChooseFileModal(false)}
-          style={{paddingHorizontal: 20}}>
+          style={{ paddingHorizontal: 20 }}>
           <View
             style={{
               backgroundColor: 'white',
@@ -480,8 +485,8 @@ export default function AllDocuments({navigation}) {
               }}
               color={COLORS.primary}
             />
-            <View style={{marginTop: 40}}>
-              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+            <View style={{ marginTop: 40 }}>
+              <Text style={{ color: COLORS.primary, fontWeight: 'bold' }}>
                 Choose a file to upload
               </Text>
               <TouchableOpacity style={[styles.btn]} onPress={handleBrowseFile}>
@@ -531,7 +536,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 18,
     fontSize: 14,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     display: 'flex',
     justifyContent: 'center',

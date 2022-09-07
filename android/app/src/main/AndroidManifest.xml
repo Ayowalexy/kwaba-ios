@@ -1,74 +1,38 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.kwaba_mobile_app">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>    
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-
-    <application
-      android:name=".MainApplication"
-      android:label="@string/app_name"
-      android:icon="@mipmap/ic_launcher"
-      android:roundIcon="@mipmap/ic_launcher_round"
-      android:allowBackup="false"
-      android:theme="@style/AppTheme">
-      <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
-                  android:value="false"/>
-      <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
-                  android:resource="@color/white"/>
-
-      <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
-      <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
-      <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
-          <intent-filter>
-              <action android:name="android.intent.action.BOOT_COMPLETED" />
-              <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-              <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-          </intent-filter>
-      </receiver>
-
-      <service
-            android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-<!-- 
-    <service
-      android:name=".MainNotificationService">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.kwaba_mobile_app">
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.VIBRATE"/>
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme">
+    <meta-data android:name="com.dieam.reactnativepushnotification.notification_foreground" android:value="false"/>
+    <meta-data android:name="com.dieam.reactnativepushnotification.notification_color" android:resource="@color/white"/>
+    <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions"/>
+    <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher"/>
+    <receiver android:exported="true" android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+      </intent-filter>
+    </receiver>
+    <service android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService" android:exported="false">
       <intent-filter>
         <action android:name="com.google.firebase.MESSAGING_EVENT"/>
       </intent-filter>
     </service>
-
-    <receiver
-      android:name="com.intercom.reactnative.RNIntercomPushBroadcastReceiver"
-      tools:replace="android:exported"
-      android:exported="true"/> -->
-
-      <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-        android:launchMode="singleTask"
-        android:screenOrientation="portrait"
-        android:exported="true"
-        android:windowSoftInputMode="adjustResize">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-            <!-- <data android:scheme="kwaba" /> -->
-            <data android:scheme="https" android:host="kwaba.ng" android:pathPrefix="/" />
-        </intent-filter>
-      </activity>
-      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-    </application>
-
+    <activity android:name=".MainActivity" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:launchMode="singleTask" android:screenOrientation="portrait" android:exported="true" android:windowSoftInputMode="adjustResize">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <!-- <data android:scheme="https" android:host="kwaba.ng" android:pathPrefix="/"/> -->
+        <data android:scheme="kwaba" android:host="app"/>
+      </intent-filter>
+    </activity>
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+  </application>
 </manifest>

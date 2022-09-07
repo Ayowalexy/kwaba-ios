@@ -76,7 +76,7 @@ const AwaitingDisbursement = ({ navigation, route }) => {
 
       // console.log('repayment_start_date', repayment_start_date);
       // console.log('repayment_end_date', repayment_end_date);
-      if (applicationId == 7) {
+      if (applicationId == 11) {
         setSpinner(false);
         // navigation.navigate('RentalLoanActiveDashBoard');
 

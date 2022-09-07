@@ -128,7 +128,7 @@ const RentalLoanActiveDashBoard = ({navigation}) => {
                   }} source={images.ellipse100}>
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 18,
                       fontWeight: 'bold',
                       color: 'white',
@@ -139,7 +139,7 @@ const RentalLoanActiveDashBoard = ({navigation}) => {
                   </Text>
                   <Text
                     style={{
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 10,
                       fontWeight: '600',
                       color: 'white',

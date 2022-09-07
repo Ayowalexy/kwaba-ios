@@ -5,15 +5,18 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import {Picker} from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function Screen3({navigation}) {
+  const top = useSafeAreaInsets().top;
   const [selectedValue, setSelectedValue] = useState('employed');
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

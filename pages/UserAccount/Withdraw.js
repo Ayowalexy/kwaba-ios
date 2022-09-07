@@ -5,7 +5,9 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -18,6 +20,8 @@ import WithdrawalStart from './Withdrawal/WithdrawalStart';
 export default function Withdraw({navigation}) {
   const dispatch = useDispatch();
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   useEffect(() => {
     dispatch(getMaxLoanCap());
@@ -25,7 +29,7 @@ export default function Withdraw({navigation}) {
 
   return (
     <>
-      <View style={[styles.container]}>
+      <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
         <Icon
           onPress={() => {
             navigation.goBack();

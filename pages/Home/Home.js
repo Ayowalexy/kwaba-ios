@@ -225,7 +225,7 @@ export default function Home({navigation}) {
             />
             <Text
               style={{
-                fontFamily: 'CircularStd',
+                fontFamily: 'Poppins-Medium',
                 fontSize: 10,
                 lineHeight: 12,
                 color: '#FB8B24',
@@ -248,7 +248,7 @@ export default function Home({navigation}) {
               }}>
               <Text
                 style={{
-                  fontFamily: 'CircularStd',
+                  fontFamily: 'Poppins-Medium',
                   fontSize: 10,
                   fontWeight: 'bold',
                   lineHeight: 13,
@@ -302,7 +302,7 @@ export default function Home({navigation}) {
                       ) : (
                         <Text
                           style={{
-                            fontFamily: 'CircularStd',
+                            fontFamily: 'Poppins-Medium',
                             fontSize: 16,
                             fontWeight: 'bold',
                             lineHeight: 32,
@@ -354,7 +354,7 @@ export default function Home({navigation}) {
                     <View>
                       <Text
                         style={{
-                          fontFamily: 'CircularStd',
+                          fontFamily: 'Poppins-Medium',
                           fontSize: 14,
                           fontWeight: '500',
                           marginTop: 10,
@@ -364,7 +364,7 @@ export default function Home({navigation}) {
                       </Text>
                       <Text
                         style={{
-                          fontFamily: 'CircularStd',
+                          fontFamily: 'Poppins-Medium',
                           fontSize: 20,
                           lineHeight: 30,
                           fontWeight: 'bold',
@@ -502,7 +502,7 @@ export default function Home({navigation}) {
                   <Text
                     style={{
                       color: '#2A286A',
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 14,
                       lineHeight: 23,
                       fontWeight: 'bold',
@@ -514,7 +514,7 @@ export default function Home({navigation}) {
                       width: '75%',
                       marginTop: 9,
                       color: '#ADADAD',
-                      fontFamily: 'CircularStd',
+                      fontFamily: 'Poppins-Medium',
                       fontSize: 12,
                       lineHeight: 20,
                       fontWeight: '600',

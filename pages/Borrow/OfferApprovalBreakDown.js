@@ -67,8 +67,9 @@ const RentalLoanOfferTest = ({navigation}) => {
       const applicationIDCallRes = await getCurrentApplication({id: loan_id})
 
       // setApprovedAmount(applicationIDCallRes.data.data.approvedAmount);
+      console.log('Approved repayment@@', applicationIDCallRes.data)
       setApprovedAmount(applicationIDCallRes.data.data.approvedamount);
-      setMonthlyPayment(applicationIDCallRes.data.data.approvedrepayment);
+      setMonthlyPayment(Math.ceil(applicationIDCallRes.data.data.monthly_repayment));
       setDuration(applicationIDCallRes.data.data.approved_repayment_plan);
 
       console.log('HHH:', applicationIDCallRes.data.data.loanable_amount);
@@ -171,13 +172,21 @@ const RentalLoanOfferTest = ({navigation}) => {
     setSpinner(true);
     const token = await getToken();
     const user = await getUser();
+    console.log(token)
+
+    const getAllAloans = await getEmergencyLoans();
+    const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
+
     try {
-      const applicationIDCallRes = await axios.get(
+      const applicationIDCallRes = await axios.post(
         `${baseUrl}/application/one`,
+        JSON.stringify({id: loan_id}),
         {
           headers: {'Content-Type': 'application/json', Authorization: token},
         },
       );
+
+      console.log('applicationIDCallRes', applicationIDCallRes?.data)
 
       if (applicationIDCallRes.status == 200) {
         const data = {
@@ -214,12 +223,13 @@ const RentalLoanOfferTest = ({navigation}) => {
           );
           console.log('STEPS: ', steps);
 
-          navigation.navigate('PostPaymentForm1');
+          // navigation.navigate('PostPaymentForm1');
+          navigation.navigate('PTMFB')
         }
       }
     } catch (error) {
       setSpinner(false);
-      console.log('Error', 'error not found');
+      console.log('Error', error.response);
     }
   };
 
@@ -282,7 +292,7 @@ const RentalLoanOfferTest = ({navigation}) => {
       }
       .m-signature-pad--footer
       .button.clear {
-        font-family:CircularStd-Book;
+        font-family:Poppins-Medium;
         left: 0;
         background-color: #BFBFBF;
         width: 100px;
@@ -292,7 +302,7 @@ const RentalLoanOfferTest = ({navigation}) => {
     
     .m-signature-pad--footer
       .button.save {
-        font-family:CircularStd-Book;
+        font-family:Poppins-Medium;
         right: 0;
         background-color: #00DC99;
         width: 100px;

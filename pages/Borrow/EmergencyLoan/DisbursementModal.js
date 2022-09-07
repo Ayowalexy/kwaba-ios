@@ -217,6 +217,7 @@ export default function DisbursementModal(props) {
           onRequestClose={() => setBankModalVisible(!bankModalVisible)}
           visible={bankModalVisible}
           setReloadBanks={setReloadBanks}
+          setBankModalVisible={setBankModalVisible}
           // setDisplayAllBankAccounts={(all) => allBanks(all)}
           // setDisplayAllBankAccounts={(all) => console.log('The all', all)}
           setDisplayAllBankAccounts={(all) => setUserBankAccounts({data: all})}

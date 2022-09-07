@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   ScrollView,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS, FONTS, images} from '../../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +22,8 @@ export default function RnplOnboard({navigation}) {
   const dispatch = useDispatch();
   const getMaxLoanCap1 = useSelector((state) => state.getMaxLoanCapReducer);
   const [savings, setSavings] = useState(0);
+  const insets = useSafeAreaInsets();
+  const statusBarHeight = insets.top;
 
   useEffect(() => {
     dispatch(getTotalSoloSavings());
@@ -32,7 +36,7 @@ export default function RnplOnboard({navigation}) {
   const handleRentalLoanNavigate = async () => {};
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? statusBarHeight : 0}]}>
       <TouchableOpacity
         style={{
           position: 'absolute',

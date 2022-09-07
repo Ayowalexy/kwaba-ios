@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,20 +9,21 @@ import {
   Modal,
   StyleSheet,
   TextInput,
+  FlatList
 } from 'react-native';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {icons, images, COLORS} from '../../util/index';
+import { icons, images, COLORS } from '../../util/index';
 import RepaymentCard from './RepaymentCard';
 import {
   currencyFormat,
   formatNumber,
   unFormatNumber,
 } from '../../util/numberFormatter';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {Formik, Field} from 'formik';
+import { Formik, Field } from 'formik';
 import * as yup from 'yup';
 import Spinner from 'react-native-loading-spinner-overlay';
 import CreditCardModalRNPL from '../../components/CreditCard/CreditCardModalRNPL';
@@ -32,14 +33,16 @@ import { baseUrl } from '../../services/routes';
 
 
 
-export default function RentNowPayLaterDashboard({navigation}) {
-  const [percentAchieved, setPercentAchieved] = useState(75);
-  const [nextPaymentDueDate, setnextPaymentDueDate] = useState(45);
-  const [noOfDaysToNextPayment, setnoOfDaysToNextPayment] = useState(45);
-  const [repaymentBalance, setrepaymentBalance] = useState(45);
+export default function RentNowPayLaterDashboard({ navigation }) {
+  const [percentAchieved, setPercentAchieved] = useState(0);
+  const [nextPaymentDueDate, setnextPaymentDueDate] = useState(0);
+  const [nextPaymentAmount, setNextPaymentAmount] = useState(0);
+  const [repaymentBalance, setrepaymentBalance] = useState(0);
   const [monthlyRepayment, setmonthlyRepayment] = useState();
   const [repaymentPlan, setrepaymentPlan] = useState();
   const [repaymentPlanCount, setrepaymentPlanCount] = useState();
+  const [repayments_, setRepayments] = useState([])
+
 
   const [loanID, setLoanID] = useState('');
 
@@ -104,8 +107,11 @@ export default function RentNowPayLaterDashboard({navigation}) {
       const applicationIDCallRes = await getCurrentApplication({ id: loan_id })
 
 
+      console.log('Loan id', loan_id)
       console.log(applicationIDCallRes.data.data.non_refundable_deposit);
       const loanId = applicationIDCallRes.data.data.id;
+
+      console.log('current application', applicationIDCallRes.data)
       setmonthlyRepayment(
         Number(applicationIDCallRes.data.data.approvedamount),
       );
@@ -120,21 +126,33 @@ export default function RentNowPayLaterDashboard({navigation}) {
       //approved_repayment_plan
       setrepaymentPlan(applicationIDCallRes.data.data.repayment_plan);
 
-      const res = await axios.post(
-        `${baseUrl}/application/dashboard`,
-        {loanId},
+      const res = await axios.get(
+        `${baseUrl}/loans/rent-now-pay-later/dashboard/${loan_id}`,
         {
-          headers: {'Content-Type': 'application/json', Authorization: token},
-        },
-      );
+          headers: {
+            Authorization: token
+          }
+        }
+      )
 
       console.log('Dashboard', res.data);
+      if (res?.data?.data?.amount_paid) {
+        const percent = Math.floor((Number(res?.data?.data?.amount_paid) / Number(res?.data?.data?.loan_amount)) * 100)
+        setPercentAchieved(percent);
+      } else {
+        setPercentAchieved(0)
+      }
 
-      setPercentAchieved(res.data.percentagePaid);
-      setnextPaymentDueDate(res.data.nextPaymentDueDate);
-      setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
-      setrepaymentBalance(res.data.repaymentBalance);
-      setrepaymentPlanCount(res.data.repayment_plan);
+
+      const nextPaymenetDate = res?.data?.data?.monthly_repayment_schedule.shift();
+      setrepaymentBalance(res?.data?.data?.repaymentBalance);
+      setRepayments(res?.data?.data?.monthly_repayment_schedule);
+      setrepaymentPlanCount(res?.data?.data?.monthly_repayment_schedule?.length + 1);
+
+
+      setnextPaymentDueDate(nextPaymenetDate?.due_date);
+      setNextPaymentAmount(nextPaymenetDate.amount)
+      // setnoOfDaysToNextPayment(res.data.noOfDaysToNextPayment);
     } catch (error) {
       console.log(error.response.data);
     }
@@ -154,7 +172,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
     const token = await getToken();
     try {
       const response = await axios.post(url, data, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       return response;
     } catch (error) {
@@ -168,7 +186,7 @@ export default function RentNowPayLaterDashboard({navigation}) {
     const token = await getToken();
     try {
       const response = await axios.post(url, data, {
-        headers: {'Content-Type': 'application/json', Authorization: token},
+        headers: { 'Content-Type': 'application/json', Authorization: token },
       });
       return response;
     } catch (error) {
@@ -206,8 +224,8 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
   const NumberInput = (props) => {
     const {
-      field: {name, onBlur, onChange, value},
-      form: {errors, touched, setFieldTouched},
+      field: { name, onBlur, onChange, value },
+      form: { errors, touched, setFieldTouched },
       ...inputProps
     } = props;
 
@@ -215,11 +233,11 @@ export default function RentNowPayLaterDashboard({navigation}) {
 
     return (
       <>
-        <Text style={[styles.boldText, {marginTop: 18}]}>How much?</Text>
+        <Text style={[styles.boldText, { marginTop: 18 }]}>How much?</Text>
         <View
           style={[
             styles.customInput,
-            props.multiline && {height: props.numberOfLines * 40},
+            props.multiline && { height: props.numberOfLines * 40 },
             hasError && styles.errorInput,
           ]}>
           <Text
@@ -254,354 +272,364 @@ export default function RentNowPayLaterDashboard({navigation}) {
     );
   };
 
-  if (nextPaymentDueDate != null) {
-    return (
-      <View style={styles.container}>
-        <Icon
-          onPress={() => navigation.navigate('Home')}
-          name="arrow-back-outline"
-          size={25}
-          style={{padding: 18, paddingHorizontal: 10}}
-          color="#2A286A"
-        />
-        <ScrollView
-          contentContainerStyle={{flex: 1}}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled>
-          <View style={[styles.content, {flex: 1}]}>
-            <View style={{marginBottom: 20}}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  color: COLORS.primary,
-                }}>
-                Rent Now Pay Later
-              </Text>
-            </View>
+  // if (nextPaymentDueDate != null) {
+  return (
+    <View style={styles.container}>
+      <Icon
+        onPress={() => navigation.navigate('Home')}
+        name="arrow-back-outline"
+        size={25}
+        style={{ padding: 18, paddingHorizontal: 10 }}
+        color="#2A286A"
+      />
+      <ScrollView
+        contentContainerStyle={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled>
+        <View style={[styles.content, { flex: 1 }]}>
+          <View style={{ marginBottom: 20 }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              Rent Now Pay Later
+            </Text>
+          </View>
 
-            <View style={[styles.soloSavingCard]}>
+          <View style={[styles.soloSavingCard]}>
+            <View
+              style={{
+                paddingTop: 20,
+                paddingBottom: 0,
+                paddingHorizontal: 10,
+              }}>
+              <Text
+                style={{ color: COLORS.white, fontSize: 12, marginLeft: 5 }}>
+                Next payment amount
+              </Text>
               <View
                 style={{
-                  paddingTop: 20,
-                  paddingBottom: 0,
-                  paddingHorizontal: 10,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginTop: 5,
+                  marginLeft: 5,
                 }}>
                 <Text
-                  style={{color: COLORS.white, fontSize: 12, marginLeft: 5}}>
-                  Next payment amount
-                </Text>
-                <View
                   style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginTop: 5,
-                    marginLeft: 5,
+                    fontSize: 22,
+                    fontWeight: 'bold',
+                    color: COLORS.white,
                   }}>
-                  <Text
-                    style={{
-                      fontSize: 22,
-                      fontWeight: 'bold',
-                      color: COLORS.white,
-                    }}>
-                    ₦{currencyFormat(Number(monthlyRepayment))}
+                  ₦{formatNumber(Number(monthlyRepayment))}
+                </Text>
+
+                <Image
+                  style={{
+                    width: 60,
+                    height: 60,
+                    resizeMode: 'contain',
+                    right: -11,
+                    bottom: 0,
+                    position: 'absolute',
+                  }}
+                  source={images.maskGroup29}
+                />
+              </View>
+
+              <View style={[styles.paymentDetail]}>
+                <View style={[styles.paymentDetailContent]}>
+                  <Text style={[styles.text]}>Next loan payment</Text>
+                  <Text style={[styles.value]}>
+                    ₦{formatNumber(nextPaymentAmount)}
                   </Text>
-
-                  <Image
-                    style={{
-                      width: 60,
-                      height: 60,
-                      resizeMode: 'contain',
-                      right: -11,
-                      bottom: 0,
-                      position: 'absolute',
-                    }}
-                    source={images.maskGroup29}
-                  />
                 </View>
-
-                <View style={[styles.paymentDetail]}>
-                  <View style={[styles.paymentDetailContent]}>
-                    <Text style={[styles.text]}>Next loan payment</Text>
-                    <Text style={[styles.value]}>
-                      {noOfDaysToNextPayment} days
-                    </Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.paymentDetailContent,
-                      {
-                        borderLeftWidth: 1,
-                        borderRightWidth: 1,
-                        borderColor: '#FFFFFF50',
-                        paddingHorizontal: 10,
-                      },
-                    ]}>
-                    <Text style={[styles.text]}>Next payment due date</Text>
-                    <Text style={[styles.value]}>{nextPaymentDueDate}</Text>
-                  </View>
-                  <View style={[styles.paymentDetailContent]}>
-                    <Text style={[styles.text]}>Repayment balance</Text>
-                    <Text style={[styles.value]}>
-                      ₦{currencyFormat(repaymentBalance)}
-                    </Text>
-                  </View>
+                <View
+                  style={[
+                    styles.paymentDetailContent,
+                    {
+                      borderLeftWidth: 1,
+                      borderRightWidth: 1,
+                      borderColor: '#FFFFFF50',
+                      paddingHorizontal: 10,
+                    },
+                  ]}>
+                  <Text style={[styles.text]}>Next payment due date</Text>
+                  <Text style={[styles.value]}>{nextPaymentDueDate}</Text>
                 </View>
+                <View style={[styles.paymentDetailContent]}>
+                  <Text style={[styles.text]}>Repayment balance</Text>
+                  <Text style={[styles.value]}>
+                    ₦{formatNumber(repaymentBalance)}
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <View
+              style={{
+                flex: 1,
+                paddingHorizontal: 20,
+                paddingVertical: 20,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <View style={{ alignItems: 'flex-start' }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: COLORS.white,
+                    fontWeight: '200',
+                  }}>
+                  {repaymentPlanCount} of {repaymentPlan} months
+                </Text>
               </View>
 
               <View
                 style={{
-                  flex: 1,
-                  paddingHorizontal: 20,
-                  paddingVertical: 20,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
+                  // borderWidth: 1,
                   alignItems: 'center',
+                  justifyContent: 'center',
+                  marginTop: 100,
+                  elevation: 10,
                 }}>
-                <View style={{alignItems: 'flex-start'}}>
+                <AnimatedCircularProgress
+                  size={90}
+                  width={10}
+                  rotation={0}
+                  style={{
+                    width: 97,
+                    height: 97,
+                    zIndex: 9,
+                    position: 'relative',
+                  }}
+                  fill={percentAchieved}
+                  tintColor={COLORS.secondary}
+                  backgroundColor="#9D98EC20">
+                  {(fill) => (
+                    <View
+                      style={{
+                        backgroundColor: '#2A286A',
+                        height: 100,
+                        width: 100,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderWidth: 1,
+                      }}>
+                      <Image
+                        source={images.darkPurpleCircle}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          resizeMode: 'stretch',
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          left: 0,
+                        }}
+                      />
+                      <Text
+                        style={{
+                          fontFamily: 'Poppins-Medium',
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                          color: 'white',
+                          // lineHeight: 27,
+                          textAlign: 'center',
+                        }}>
+                        {percentAchieved}%
+                      </Text>
+                      <Text
+                        style={{
+                          fontFamily: 'Poppins-Medium',
+                          fontSize: 10,
+                          fontWeight: '600',
+                          color: 'white',
+                          // lineHeight: 14,
+                          textAlign: 'center',
+                          marginTop: -5,
+                        }}>
+                        achieved
+                      </Text>
+                    </View>
+                  )}
+                </AnimatedCircularProgress>
+              </View>
+
+              <View style={{ alignItems: 'flex-end' }}>
+                <TouchableOpacity
+                  // onPress={handleRepayment}
+                  style={{
+                    backgroundColor: COLORS.light,
+                    paddingVertical: 5,
+                    paddingHorizontal: 10,
+                    borderRadius: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                  }}>
                   <Text
                     style={{
                       fontSize: 10,
+                      fontWeight: 'bold',
                       color: COLORS.white,
                       fontWeight: '200',
                     }}>
-                    {repaymentPlanCount} of {repaymentPlan} months
+                    Pay now
                   </Text>
-                </View>
-
-                <View
-                  style={{
-                    // borderWidth: 1,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginTop: 100,
-                    elevation: 10,
-                  }}>
-                  <AnimatedCircularProgress
-                    size={90}
-                    width={10}
-                    rotation={0}
-                    style={{
-                      width: 97,
-                      height: 97,
-                      zIndex: 9,
-                      position: 'relative',
-                    }}
-                    fill={0}
-                    tintColor={COLORS.secondary}
-                    backgroundColor="#9D98EC20">
-                    {(fill) => (
-                      <View
-                        style={{
-                          backgroundColor: '#2A286A',
-                          height: 100,
-                          width: 100,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          borderWidth: 1,
-                        }}>
-                        <Image
-                          source={images.darkPurpleCircle}
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            resizeMode: 'stretch',
-                            position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            bottom: 0,
-                            left: 0,
-                          }}
-                        />
-                        <Text
-                          style={{
-                            fontFamily: 'CircularStd',
-                            fontSize: 16,
-                            fontWeight: 'bold',
-                            color: 'white',
-                            // lineHeight: 27,
-                            textAlign: 'center',
-                          }}>
-                          {percentAchieved}%
-                        </Text>
-                        <Text
-                          style={{
-                            fontFamily: 'CircularStd',
-                            fontSize: 10,
-                            fontWeight: '600',
-                            color: 'white',
-                            // lineHeight: 14,
-                            textAlign: 'center',
-                            marginTop: -5,
-                          }}>
-                          achieved
-                        </Text>
-                      </View>
-                    )}
-                  </AnimatedCircularProgress>
-                </View>
-
-                <View style={{alignItems: 'flex-end'}}>
-                  <TouchableOpacity
-                    onPress={handleRepayment}
-                    style={{
-                      backgroundColor: COLORS.light,
-                      paddingVertical: 5,
-                      paddingHorizontal: 10,
-                      borderRadius: 10,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
-                    <Text
-                      style={{
-                        fontSize: 10,
-                        fontWeight: 'bold',
-                        color: COLORS.white,
-                        fontWeight: '200',
-                      }}>
-                      Pay now
-                    </Text>
-                    <Icon
-                      name="chevron-forward-outline"
-                      size={10}
-                      style={{color: COLORS.white, marginLeft: 5, marginTop: 2}}
-                    />
-                  </TouchableOpacity>
-                </View>
+                  <Icon
+                    name="chevron-forward-outline"
+                    size={10}
+                    style={{ color: COLORS.white, marginLeft: 5, marginTop: 2 }}
+                  />
+                </TouchableOpacity>
               </View>
             </View>
+          </View>
+        </View>
+
+        <View
+          style={{
+            backgroundColor: COLORS.white,
+            width: '100%',
+            // minHeight: 300,
+            flex: 1,
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            elevation: 50,
+
+          }}>
+          <View
+            style={{
+              paddingVertical: 15,
+              paddingHorizontal: 20,
+              borderBottomColor: '#BFBFBF50',
+              borderBottomWidth: 1,
+            }}>
+            <Text
+              style={{
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: COLORS.primary,
+              }}>
+              Repayments
+            </Text>
           </View>
 
           <View
             style={{
-              backgroundColor: COLORS.white,
-              width: '100%',
-              // minHeight: 300,
-              flex: 1,
-              borderTopLeftRadius: 20,
-              borderTopRightRadius: 20,
-              elevation: 50,
-              
-            }}>
-            <View
-              style={{
-                paddingVertical: 15,
-                paddingHorizontal: 20,
-                borderBottomColor: '#BFBFBF50',
-                borderBottomWidth: 1,
-              }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: 'bold',
-                  color: COLORS.primary,
-                }}>
-                Repayments
-              </Text>
-            </View>
-
-            <View
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-            >
-            <RepaymentCard
-              amount={85000}
-              type='paid'
-            />
-            </View>
-          </View>
-        </ScrollView>
-
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={visible}
-          onRequestClose={() => setVisible(false)}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Formik
-                validationSchema={amountSchema}
-                initialValues={{
-                  amount: '',
-                }}
-                onSubmit={(values) => {
-                  handleSubmit(values);
-                }}>
-                {({handleSubmit, isValid, values, setValues}) => (
-                  <>
-                    <Icon
-                      onPress={() => {
-                        // setShowAmountField(false);
-                        // setShowPaymentType(true);
-                        setVisible(false);
-                      }}
-                      name="close"
-                      size={25}
-                      style={{
-                        right: 25,
-                        top: 15,
-                        position: 'absolute',
-                        zIndex: 2,
-                        color: COLORS.grey,
-                        padding: 10,
-                      }}
-                    />
-                    <Field
-                      component={NumberInput}
-                      name="amount"
-                      placeholder="Amount"
-                    />
-
-                    <TouchableOpacity
-                      onPress={handleSubmit}
-                      disabled={isValid ? false : true}
-                      style={[styles.button]}>
-                      <Text
-                        style={{
-                          color: 'white',
-                          fontWeight: 'bold',
-                          fontSize: 12,
-                          lineHeight: 30,
-                        }}>
-                        PROCEED
-                      </Text>
-                    </TouchableOpacity>
-                  </>
-                )}
-              </Formik>
-            </View>
-          </View>
-        </Modal>
-
-        {modal && (
-          <CreditCardModalRNPL
-            onRequestClose={() => {
-              setModal(!modal);
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginBottom: 80
             }}
-            visible={modal}
-            info={resDataObj}
-            navigation={navigation}
-            redirectTo="RentNowPayLaterDashboard"
-          />
-        )}
-
-        <Spinner visible={spinner} size="large" />
-      </View>
-    );
-  } else {
-    return (
-      <>
-        <View>
-          <Text>loading...</Text>
+          >
+            <FlatList
+              data={repayments_}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item, index}) => {
+                return(
+                <RepaymentCard
+                  amount={item.amount}
+                  type={item?.status}
+                  details={`${index + 1 == 1 ? '1st' : index + 1 == 2 ? '2nd' : index + 1 == 3 ? '3rd' : index + 1 + 'th'} Repayment, due in ${item?.due_date}`}
+                />
+              )}}
+              keyExtractor={(item, idx) => idx}
+            />
+          </View>
         </View>
-      </>
-    );
-  }
+      </ScrollView>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={visible}
+        onRequestClose={() => setVisible(false)}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Formik
+              validationSchema={amountSchema}
+              initialValues={{
+                amount: '',
+              }}
+              onSubmit={(values) => {
+                handleSubmit(values);
+              }}>
+              {({ handleSubmit, isValid, values, setValues }) => (
+                <>
+                  <Icon
+                    onPress={() => {
+                      // setShowAmountField(false);
+                      // setShowPaymentType(true);
+                      setVisible(false);
+                    }}
+                    name="close"
+                    size={25}
+                    style={{
+                      right: 25,
+                      top: 15,
+                      position: 'absolute',
+                      zIndex: 2,
+                      color: COLORS.grey,
+                      padding: 10,
+                    }}
+                  />
+                  <Field
+                    component={NumberInput}
+                    name="amount"
+                    placeholder="Amount"
+                  />
+
+                  <TouchableOpacity
+                    onPress={handleSubmit}
+                    disabled={isValid ? false : true}
+                    style={[styles.button]}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontWeight: 'bold',
+                        fontSize: 12,
+                        lineHeight: 30,
+                      }}>
+                      PROCEED
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </Formik>
+          </View>
+        </View>
+      </Modal>
+
+      {modal && (
+        <CreditCardModalRNPL
+          onRequestClose={() => {
+            setModal(!modal);
+          }}
+          visible={modal}
+          info={resDataObj}
+          navigation={navigation}
+          redirectTo="RentNowPayLaterDashboard"
+        />
+      )}
+
+      <Spinner visible={spinner} size="large" />
+    </View>
+  );
+  // } else {
+  //   return (
+  //     <>
+  //       <View>
+  //         <Text>loading...</Text>
+  //       </View>
+  //     </>
+  //   );
+  // }
 }
 
 const styles = StyleSheet.create({
@@ -664,7 +692,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalView: {
@@ -682,7 +710,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 16,
     fontSize: 18,
-    fontFamily: 'CircularStd-Medium',
+    fontFamily: 'Poppins-Medium',
     fontWeight: '600',
     borderColor: '#ADADAD',
     borderWidth: 1,
@@ -692,7 +720,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     lineHeight: 23,
     color: '#2A286A',
-    fontFamily: 'CircularStd',
+    fontFamily: 'Poppins-Medium',
     fontWeight: 'bold',
   },
 

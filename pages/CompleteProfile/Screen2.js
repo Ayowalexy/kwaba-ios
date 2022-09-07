@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { icons, COLORS } from '../../util/index';
 import designs from './style';
@@ -24,17 +26,17 @@ const completeProfileSchema = yup.object().shape({
     .string()
     .required()
     .matches(/^[0-9]{11}$/, 'Must be exactly 11 digits'),
-  dob: yup.date()
-    .transform(function (value, originalValue) {
-      if (this.isType(value)) {
-        return value;
-      }
-      const result = parse(originalValue, "dd.MM.yyyy", new Date());
-      return result;
-    })
-    .typeError("please enter a valid date")
-    .required()
-    .max("01-01-2006", "You must be at least 16 years old to continue")
+  dob: yup.string()
+    // .transform(function (value, originalValue) {
+    //   if (this.isType(value)) {
+    //     return value;
+    //   }
+    //   const result = parse(originalValue, "dd.MM.yyyy", new Date());
+    //   return result;
+    // })
+    // .typeError("please enter a valid date")
+    // .required()
+    // .max("01-01-2006", "You must be at least 16 years old to continue")
 });
 
 
@@ -42,7 +44,8 @@ const Screen2 = ({ navigation }) => {
   // const [date, setDate] = useState(new Date());
   // const [showDate, setShowDate] = useState(false);
   const [date, setDate] = useState('01-01-2005')
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
+  const top = useSafeAreaInsets().top;
 
   // getting the age of the user??
   useEffect(() => {
@@ -236,7 +239,7 @@ const Screen2 = ({ navigation }) => {
   };
 
   return (
-    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0 }]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"
