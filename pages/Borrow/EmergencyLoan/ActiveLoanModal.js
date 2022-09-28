@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
@@ -38,6 +40,7 @@ export default function ActiveLoanModal(props) {
 
   const [showPaystackPayment, setShowPaystackPayment] = useState(false);
 
+  const top = useSafeAreaInsets().top;
   const [amount, setAmount] = useState('');
 
   const [channel, setChannel] = useState('');
@@ -57,6 +60,7 @@ export default function ActiveLoanModal(props) {
     account_name: '',
     account_number: '',
     account_bank: '',
+    overdue_amount: ''
   });
 
   useEffect(() => {
@@ -90,7 +94,7 @@ export default function ActiveLoanModal(props) {
           status: d.status,
           loan_purpose: d.loan_purpose,
           loan_amount: d.loan_amount,
-          loan_repayment_amount: Math.ceil(d.repayment_amount),
+          loan_repayment_amount: d.overdue_amount ? Math.ceil(d.overdue_amount) : Math.ceil(d.repayment_amount),
           loan_amount_paid: d.amount_paid,
           loan_amount_due: Number(d.repayment_amount) - Number(d.amount_paid),
           repayment_date: d.repayment_date,
@@ -98,6 +102,7 @@ export default function ActiveLoanModal(props) {
           account_name: d.disbursement_account_name,
           account_number: d.disbursement_account_number,
           account_bank: d.disbursement_account_bank,
+          overdue_amount: Math.ceil(d.overdue_amount)
         });
         console.log('D: ', d);
       } else {
@@ -169,23 +174,28 @@ export default function ActiveLoanModal(props) {
   const handlePaymentRoute = async (value) => {
     try {
 
-      console.log('loan amount', amount, dataValue.loan_repayment_amount)
 
-      if(Number(amount) > Number(dataValue.loan_repayment_amount)){
-        Alert.alert('Loan Overpayment', `Your loan repayment value is ₦${formatNumber(dataValue.loan_repayment_amount)} but you are to pay ₦${formatNumber(amount)}; ₦${formatNumber(Math.floor(Number(amount) - Number(dataValue.loan_repayment_amount)))} more the due amount, please check and try again`)
+      const amount_due = Math.ceil((Number(dataValue.loan_amount_due) + Number(dataValue.overdue_amount)) - Number(dataValue.amount_paid || 0));
+      console.log('loan amount', amount, amount_due, dataValue)
+
+      if (Number(amount) > Number(amount_due)) {
+        console.log('Overdue')
+        Alert.alert('Loan Overpayment', `Your loan repayment value is ₦${formatNumber(amount_due)} but you are to pay ₦${formatNumber(amount)}; ₦${formatNumber(Math.floor(Number(amount) - Number(amount_due)))} more the due amount, please check and try again`)
 
         return
       }
+      console.log('channel', value)
 
       const data = {
         emergencyLoanId: loanRepaymentData?.id,
         amount: amount,
-        channel: 'wallet',
+        channel: value == 'wallet' ? 'wallet' : 'paystack',
         purpose: 'emergencyLoanRepayment'
       };
 
       console.log('The Data loan: ', data);
       console.log('The Value: ', value);
+
 
       setSpinner(true);
       console.log('na me be this')
@@ -212,7 +222,7 @@ export default function ActiveLoanModal(props) {
           await completePayment(payload);
 
           // const verify = await verifyWalletTransaction(data);
-       
+
         } else {
           const verifyPayload = {
             amount: amount,
@@ -220,6 +230,8 @@ export default function ActiveLoanModal(props) {
             channel: 'paystack',
             purpose: 'emergencyLoanRepayment',
           };
+
+          console.log('Here')
           setChannel(value);
           setResData(response?.data?.data);
           await verifyPayment(verifyPayload, 'paystack');
@@ -232,246 +244,308 @@ export default function ActiveLoanModal(props) {
       }
     } catch (error) {
       setSpinner(false);
-      console.log('Oops uu', error.response);
+      console.log('Oops uu', error);
     }
   };
 
+
   return (
-    <>
-      <Modal
-        visible={visible}
+    <View
+      style={{
+        position: 'absolute',
+        top: 0,
+        zIndex: 100,
+        width: '100%'
+      }}
+    >
+      <>
+        {/* visible={visible}
         onRequestClose={onRequestClose}
         animationType="slide"
-        transparent={true}>
-        <ScrollView>
-          <View style={styles.centeredModalWrapper}>
-            <View style={[styles.bg]}>
-              <View
-                style={{
-                  backgroundColor: COLORS.primary,
-                  width: '100%',
-                  height: 100,
-                }}>
-                <Icon
-                  onPress={onRequestClose}
-                  name="close"
-                  size={25}
-                  style={{
-                    padding: 15,
-                    fontWeight: '900',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    zIndex: 2,
-                  }}
-                  color={COLORS.white}
-                />
-              </View>
-              {/* <ScrollView
+        transparent={true}> */}
+        {
+          visible && (
+            <>
+              <ScrollView>
+                <View style={[styles.centeredModalWrapper]}>
+                  <View style={[styles.bg]}>
+                    <View
+                      style={{
+                        backgroundColor: COLORS.primary,
+                        width: '100%',
+                        height: 100,
+                      }}>
+                      <Icon
+                        onPress={onRequestClose}
+                        name="close"
+                        size={25}
+                        style={{
+                          padding: 15,
+                          fontWeight: '900',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          zIndex: 2,
+                        }}
+                        color={COLORS.white}
+                      />
+                    </View>
+                    {/* <ScrollView
               scrollEnabled
               showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}> */}
-              <View
-                style={{
-                  paddingHorizontal: 20,
-                  marginTop: -40,
-                }}>
-                <View
-                  style={{
-                    backgroundColor: COLORS.white,
-                    width: '100%',
-                    minHeight: 50,
-                    elevation: 10,
-                    paddingHorizontal: 30,
-                    paddingVertical: 20,
-                    borderRadius: 5,
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}>
-                    <View>
-                      <Text
+                    <View
+                      style={{
+                        paddingHorizontal: 20,
+                        marginTop: -40,
+                      }}>
+                      <View
                         style={{
-                          fontSize: 12,
-                          fontWeight: 'bold',
-                          color: COLORS.dark,
+                          backgroundColor: COLORS.white,
+                          width: '100%',
+                          minHeight: 50,
+                          elevation: 10,
+                          paddingHorizontal: 30,
+                          paddingVertical: 20,
+                          borderRadius: 5,
                         }}>
-                        Repayment Amount:
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: 'bold',
-                          marginTop: 2,
-                          marginLeft: 1,
-                          color: COLORS.dark,
-                        }}>
-                        ₦{formatNumber(dataValue.loan_repayment_amount)}
-                      </Text>
-                    </View>
-
-                    {
-                      dataValue.status.toLocaleLowerCase() !== 'declined' ? (<>
-                        <TouchableOpacity
-                          onPress={() => {
-                            setShowAmountModal(true); // show amount modal
-                            // setShowPaymentModal(true); // show payment type
-                          }}
-                          disabled={
-                            dataValue.status.toLowerCase() == 'pending' ||
-                            dataValue.status.toLowerCase() == 'paid'
-                          }
+                        <View
                           style={{
-                            backgroundColor: COLORS.primary,
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            borderRadius: 5,
-                            opacity:
-                              dataValue.status.toLowerCase() == 'pending' ||
-                                dataValue.status.toLowerCase() == 'paid'
-                                ? 0.8
-                                : 1,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
                           }}>
-                          <Text
-                            style={{
-                              color: COLORS.white,
-                              fontWeight: 'bold',
-                              fontSize: 10,
-                              fontStyle: 'italic',
-                            }}>
-                            {/* {dataValue.status != 'Pending' ? 'PAY NOW' : 'PENDING'} */}
-                            {dataValue.status.toLowerCase() == 'paid'
-                              ? 'LOAN PAID'
-                              : 'PAY NOW'
+                          <View>
+                            <Text
+                              style={{
+                                fontSize: 12,
+                                fontWeight: 'bold',
+                                color: COLORS.dark,
+                              }}>
+                              Repayment Amount:
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                marginTop: 2,
+                                marginLeft: 1,
+                                color: COLORS.dark,
+                              }}>
+                              ₦{
+                                dataValue?.overdue_amount
+                                  ?
+                                  (
+                                    <>
+                                      {dataValue.loan_repayment_amount == ''
+                                        ? '0.00'
+                                        : formatNumber(Math.ceil(Number(dataValue.loan_amount_due) + Number(data.overdue_amount)))}
+                                    </>
+                                  )
+                                  :
+                                  (
+                                    <>
+                                      {dataValue.loan_repayment_amount == ''
+                                        ? '0.00'
+                                        : formatNumber(dataValue.loan_repayment_amount)}
+                                    </>
+                                  )
+                              }
+                            </Text>
+                          </View>
+
+                          {
+                            dataValue.status.toLocaleLowerCase() !== 'declined' ? (<>
+                              <TouchableOpacity
+                                onPress={() => {
+
+                                  setShowAmountModal(true);
+                                  // show amount modal
+                                  // setShowPaymentModal(true); // show payment type
+                                }}
+                                disabled={
+                                  dataValue.status.toLowerCase() == 'pending' ||
+                                  dataValue.status.toLowerCase() == 'paid'
+                                }
+                                style={{
+                                  backgroundColor: COLORS.primary,
+                                  paddingVertical: 10,
+                                  paddingHorizontal: 20,
+                                  borderRadius: 5,
+                                  opacity:
+                                    dataValue.status.toLowerCase() == 'pending' ||
+                                      dataValue.status.toLowerCase() == 'paid'
+                                      ? 0.8
+                                      : 1,
+                                }}>
+                                <Text
+                                  style={{
+                                    color: COLORS.white,
+                                    fontWeight: 'bold',
+                                    fontSize: 10,
+                                    fontStyle: 'italic',
+                                  }}>
+                                  {/* {dataValue.status != 'Pending' ? 'PAY NOW' : 'PENDING'} */}
+                                  {dataValue.status.toLowerCase() == 'paid'
+                                    ? 'LOAN PAID'
+                                    : 'PAY NOW'
+                                  }
+                                </Text>
+                              </TouchableOpacity>
+                            </>) : null
+                          }
+                        </View>
+                      </View>
+
+                      <View
+                        style={{
+                          width: '100%',
+                          backgroundColor: COLORS.white,
+                          marginTop: 10,
+                          borderRadius: 5,
+                          elevation: 10,
+                        }}>
+                        <Text style={[styles.tableHeader]}>Loan Details</Text>
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Purpose:</Text>
+                          <Text style={[styles.tableValue]}>
+                            {dataValue.loan_purpose}
+                          </Text>
+                        </View>
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Amount:</Text>
+                          <Text style={[styles.tableValue]}>
+                            ₦
+                            {dataValue.loan_amount == ''
+                              ? '0.00'
+                              : formatNumber(dataValue.loan_amount)}
+                          </Text>
+                        </View>
+
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Repayment Amount:</Text>
+                          <Text style={[styles.tableValue]}>
+                            ₦
+                            {
+                              dataValue?.overdue_amount
+                                ?
+                                (
+                                  <>
+                                    {dataValue.loan_repayment_amount == ''
+                                      ? '0.00'
+                                      : formatNumber(Math.ceil(Number(data.repayment_amount) + Number(data.overdue_amount)))}
+                                  </>
+                                )
+                                :
+                                (
+                                  <>
+                                    {dataValue.loan_repayment_amount == ''
+                                      ? '0.00'
+                                      : formatNumber(dataValue.loan_repayment_amount)}
+                                  </>
+                                )
                             }
                           </Text>
-                        </TouchableOpacity>
-                      </>) : null
-                    }
-                  </View>
-                </View>
+                        </View>
 
-                <View
-                  style={{
-                    width: '100%',
-                    backgroundColor: COLORS.white,
-                    marginTop: 10,
-                    borderRadius: 5,
-                    elevation: 10,
-                  }}>
-                  <Text style={[styles.tableHeader]}>Loan Details</Text>
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Purpose:</Text>
-                    <Text style={[styles.tableValue]}>
-                      {dataValue.loan_purpose}
-                    </Text>
-                  </View>
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Amount:</Text>
-                    <Text style={[styles.tableValue]}>
-                      ₦
-                      {dataValue.loan_amount == ''
-                        ? '0.00'
-                        : formatNumber(dataValue.loan_amount)}
-                    </Text>
-                  </View>
-
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Repayment Amount:</Text>
-                    <Text style={[styles.tableValue]}>
-                      ₦
-                      {dataValue.loan_repayment_amount == ''
-                        ? '0.00'
-                        : formatNumber(dataValue.loan_repayment_amount)}
-                    </Text>
-                  </View>
-
-                  {Number(dataValue.loan_amount_paid) > 0 && (
-                    <View style={[styles.table]}>
-                      <Text style={[styles.tableLabel]}>Amount Paid:</Text>
-                      <Text
-                        style={[
-                          styles.tableValue,
-                          {
-                            color:
-                              dataValue.loan_amount_paid > 0
-                                ? COLORS.secondary
-                                : COLORS.dark,
-                          },
-                        ]}>
-                        ₦
-                        {dataValue.loan_amount_paid == ''
-                          ? '0.00'
-                          : formatNumber(dataValue.loan_amount_paid)}
-                      </Text>
-                    </View>
-                  )}
-                  {Number(dataValue.loan_amount_due) > 0 && (
-                    <View style={[styles.table]}>
-                      <Text style={[styles.tableLabel]}>Amount Due:</Text>
-                      <Text
-                        style={[
-                          styles.tableValue,
-                          {
-                            color:
-                              dataValue.loan_amount_due > 0
-                                ? COLORS.orange
-                                : COLORS.dark,
-                          },
-                        ]}>
-                        ₦
-                        {dataValue.loan_amount_due == ''
-                          ? '0.00'
-                          : formatNumber(dataValue.loan_amount_due)}
-                      </Text>
-                    </View>
-                  )}
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Disbursement Date:</Text>
-                    <Text style={[styles.tableValue]}>
-                      {dataValue?.disbursement_date != '' &&
-                        moment(dataValue?.disbursement_date).format(
-                          'MMM DD YYYY',
+                        {Number(dataValue.loan_amount_paid) > 0 && (
+                          <View style={[styles.table]}>
+                            <Text style={[styles.tableLabel]}>Amount Paid:</Text>
+                            <Text
+                              style={[
+                                styles.tableValue,
+                                {
+                                  color:
+                                    dataValue.loan_amount_paid > 0
+                                      ? COLORS.secondary
+                                      : COLORS.dark,
+                                },
+                              ]}>
+                              ₦
+                              {dataValue.loan_amount_paid == ''
+                                ? '0.00'
+                                : formatNumber(dataValue.loan_amount_paid)}
+                            </Text>
+                          </View>
                         )}
-                    </Text>
-                  </View>
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Repayment Date:</Text>
-                    <Text style={[styles.tableValue]}>
-                      {dataValue?.repayment_date != '' &&
-                        moment(dataValue?.repayment_date).format('MMM DD YYYY')}
-                    </Text>
-                  </View>
+                        {Number(dataValue.loan_amount_due) > 0 && (
+                          <View style={[styles.table]}>
+                            <Text style={[styles.tableLabel]}>Amount Due:</Text>
+                            <Text
+                              style={[
+                                styles.tableValue,
+                                {
+                                  color:
+                                    dataValue.loan_amount_due > 0
+                                      ? COLORS.orange
+                                      : COLORS.dark,
+                                },
+                              ]}>
+                              ₦
+                              {dataValue.loan_amount_due == ''
+                                ? '0.00'
+                                : formatNumber(Math.ceil((Number(dataValue.loan_amount_due) + Number(data.overdue_amount)) - Number(dataValue.amount_paid || 0)))
+                              }
+                            </Text>
+                          </View>
+                        )}
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Disbursement Date:</Text>
+                          <Text style={[styles.tableValue]}>
+                            {dataValue?.disbursement_date != '' &&
+                              moment(dataValue?.disbursement_date).format(
+                                'MMM DD YYYY',
+                              )}
+                          </Text>
+                        </View>
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Repayment Date:</Text>
+                          <Text style={[styles.tableValue]}>
+                            {dataValue?.repayment_date != '' &&
+                              moment(dataValue?.repayment_date).format('MMM DD YYYY')}
+                          </Text>
+                        </View>
 
-                  <Text style={[styles.tableHeader]}>Disbursement Account</Text>
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Account Name:</Text>
-                    <Text style={[styles.tableValue]}>
-                      {dataValue.account_name}
-                    </Text>
-                  </View>
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Account Number:</Text>
-                    <Text style={[styles.tableValue]}>
-                      {dataValue.account_number}
-                    </Text>
-                  </View>
-                  <View style={[styles.table]}>
-                    <Text style={[styles.tableLabel]}>Bank Name:</Text>
-                    <Text style={[styles.tableValue]}>
-                      {dataValue.account_bank}
-                    </Text>
+                        {
+                          dataValue.overdue_amount ? (
+                            <View style={[styles.table]}>
+                              <Text style={[styles.tableLabel]}>Overdue Amount</Text>
+                              <Text style={[styles.tableValue]}>
+                                ₦{formatNumber(dataValue.overdue_amount)}
+                              </Text>
+                            </View>
+                          ) : null
+                        }
+
+                        <Text style={[styles.tableHeader]}>Disbursement Account</Text>
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Account Name:</Text>
+                          <Text style={[styles.tableValue]}>
+                            {dataValue.account_name}
+                          </Text>
+                        </View>
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Account Number:</Text>
+                          <Text style={[styles.tableValue]}>
+                            {dataValue.account_number}
+                          </Text>
+                        </View>
+                        <View style={[styles.table]}>
+                          <Text style={[styles.tableLabel]}>Bank Name:</Text>
+                          <Text style={[styles.tableValue]}>
+                            {dataValue.account_bank}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    {/* </ScrollView> */}
                   </View>
                 </View>
-              </View>
-              {/* </ScrollView> */}
-            </View>
-          </View>
-        </ScrollView>
-      </Modal>
+              </ScrollView>
+            </>
+          )
+        }
+      </>
 
       {/* {showPaymentModal && (
         <PaymentTypeModal
@@ -509,7 +583,12 @@ export default function ActiveLoanModal(props) {
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
           setAmount={(d) => setAmount(Math.ceil(d))}
-          showCard={() => setShowPaymentModal(true)}
+          showCard={() => {
+            setShowAmountModal(false);
+            setTimeout(() => {
+              setShowPaymentModal(true)
+            }, Platform.OS == 'ios' ? 200 : 0)
+          }}
           data={loanRepaymentData}
         />
       )}
@@ -560,7 +639,7 @@ export default function ActiveLoanModal(props) {
       )}
 
       <Spinner visible={spinner} size="small" />
-    </>
+    </View>
   );
 }
 

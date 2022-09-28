@@ -23,7 +23,7 @@ import ActionModal from './ActiomModal';
 
 
 export default function AddBankAccountModal(props) {
-  const { onRequestClose, visible, setDisplayAllBankAccounts, setReloadBanks, setBankModalVisible } = props;
+  const { onRequestClose, visible, setDisplayAllBankAccounts, setReloadBanks, setBankModalVisible, onRequestClose_ = () => null } = props;
 
   const [selectedBank, setSelectedBank] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
@@ -331,8 +331,9 @@ export default function AddBankAccountModal(props) {
               <TouchableOpacity
                 style={styles.customInput}
                 onPress={() => {
-                  // onRequestClose();
-                  onRequestClose()
+                  onRequestClose();
+                  // onRequestClose_();
+
                   setTimeout(() => {
                    setShowSelectBankModal(true);
                   }, 200);

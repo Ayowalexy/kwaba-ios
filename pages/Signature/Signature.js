@@ -12,6 +12,7 @@ import {
   Animated,
   StyleSheet,
   PermissionsAndroid,
+  Platform
 } from 'react-native';
 import {COLORS, FONTS, images, icons} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -28,13 +29,14 @@ import { baseUrl } from '../../services/routes';
 import Preloader from '../../components/Preloader';
 import { getEmergencyLoans } from '../../services/network';
 import { getCurrentApplication } from '../../services/network';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function Signature({navigation}) {
   const [modalVisible, setVisible] = useState(false);
   const [signature, setSignature] = useState('');
   const [filename, setFilename] = useState('');
   const [spinner, setSpinner] = useState(false)
-
+const top = useSafeAreaInsets().top;
   const [enableScroll, setEnableScroll] = useState(false);
 
   const ref = useRef();
@@ -187,7 +189,7 @@ export default function Signature({navigation}) {
   };
 
   return (
-    <View style={[styles.container]}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.navigate('Borrow')}
         name="arrow-back-outline"

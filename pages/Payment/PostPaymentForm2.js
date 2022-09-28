@@ -6,7 +6,9 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
@@ -34,6 +36,7 @@ const PostPaymentForm2 = ({navigation}) => {
   const [showSelectBankModal, setShowSelectBankModal] = useState(false);
   const [bankData, setBankData] = useState([]);
 
+  const top = useSafeAreaInsets().top;
   const getUser = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const user = JSON.parse(userData).user;
@@ -224,7 +227,7 @@ const PostPaymentForm2 = ({navigation}) => {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

@@ -9,8 +9,10 @@ import {
   Modal,
   StyleSheet,
   TextInput,
-  FlatList
+  FlatList,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { icons, images, COLORS } from '../../util/index';
@@ -44,6 +46,7 @@ export default function RentNowPayLaterDashboard({ navigation }) {
   const [repayments_, setRepayments] = useState([])
 
 
+  const top = useSafeAreaInsets().top;
   const [loanID, setLoanID] = useState('');
 
   // modal
@@ -274,7 +277,7 @@ export default function RentNowPayLaterDashboard({ navigation }) {
 
   // if (nextPaymentDueDate != null) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.navigate('Home')}
         name="arrow-back-outline"

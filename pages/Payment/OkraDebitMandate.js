@@ -12,7 +12,9 @@ import {
   Alert,
   Dimensions,
   StyleSheet,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import LoanOfferContent from './LoanOfferContent';
 import { icons } from '../../util/index';
 import designs from './style';
@@ -40,6 +42,7 @@ export default function OkraDebitMandate({ navigation }) {
   const [existingApplication, setExistingApplication] = useState('');
   const [monthlyRepayment, setmonthlyRepayment] = useState();
 
+  const top = useSafeAreaInsets().top;
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
 
@@ -206,7 +209,7 @@ export default function OkraDebitMandate({ navigation }) {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
+      <View style={[designs.container, { backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0 }]}>
         <Icon
           onPress={() => navigation.goBack()}
           name="arrow-back-outline"
@@ -255,7 +258,7 @@ export default function OkraDebitMandate({ navigation }) {
                 marginBottom: 10,
               },
             ]}>
-            Setup repayment method
+            Setup repayment method!!
           </Text>
           <Text
             style={[

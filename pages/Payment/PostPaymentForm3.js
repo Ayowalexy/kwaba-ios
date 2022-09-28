@@ -7,8 +7,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
-  ActivityIndicator
+  ActivityIndicator,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {icons} from '../../util/index';
 import designs from './style';
 import {COLORS, FONTS, images} from '../../util/index';
@@ -44,6 +46,7 @@ const PostPaymentForm1 = ({navigation}) => {
     setShowSelectRelationshipModal,
   ] = useState(false);
 
+  const top = useSafeAreaInsets().top;
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
     const token = JSON.parse(userData).token;
@@ -289,7 +292,7 @@ const PostPaymentForm1 = ({navigation}) => {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.goBack()}
         name="arrow-back-outline"

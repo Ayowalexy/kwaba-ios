@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  Platform
 } from 'react-native';
 import {icons} from '../../util/index';
 import designs from './style';
@@ -13,7 +14,7 @@ import {COLORS, FONTS, images} from '../../util/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import SelectPropertyModal from '../../components/SelectPropertyModal';
 import SelectRoomsModal from '../../components/SelectRoomsModal';
 
@@ -43,6 +44,8 @@ const PostPaymentForm1 = ({navigation}) => {
     const user = JSON.parse(userData).user;
     return user;
   };
+
+  const top = useSafeAreaInsets().top;
 
   const handleSubmit = async (values) => {
     const data = {
@@ -236,7 +239,7 @@ const PostPaymentForm1 = ({navigation}) => {
   };
 
   return (
-    <View style={[designs.container, {backgroundColor: '#F7F8FD'}]}>
+    <View style={[designs.container, {backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0}]}>
       <Icon
         onPress={() => navigation.navigate('Borrow')}
         name="arrow-back-outline"

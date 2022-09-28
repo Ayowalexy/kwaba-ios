@@ -1,25 +1,28 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  SafeAreaView,
+  Platform
 } from 'react-native';
-import {COLORS} from '../../util';
+import { COLORS } from '../../util';
 import designs from './style';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Unorderedlist from 'react-native-unordered-list';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {formatNumber} from '../../util/numberFormatter';
+import { formatNumber } from '../../util/numberFormatter';
 import moment from 'moment';
 import { baseUrl } from '../../services/routes';
 import { getEmergencyLoans } from '../../services/network';
 import { getCurrentApplication } from '../../services/network';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PTMFB(props) {
-  const {navigation} = props;
+  const { navigation } = props;
 
   // Stamp Duty calc = approved_amount * 0.125
 
@@ -40,6 +43,8 @@ export default function PTMFB(props) {
     insurance: '',
     repayment_plan_monthly_source: '',
   });
+
+  const top = useSafeAreaInsets().top;
 
   const getToken = async () => {
     const userData = await AsyncStorage.getItem('userData');
@@ -69,11 +74,11 @@ export default function PTMFB(props) {
     // console.log('The User: ', user);
     const getAllAloans = await getEmergencyLoans();
     const loan_id = getAllAloans?.data?.data?.find(element => element?.loan_type == 'rent_now_pay_later')?.id
-   
+
 
 
     try {
-      const application =  await getCurrentApplication({id: loan_id})
+      const application = await getCurrentApplication({ id: loan_id })
       const data = application.data.data;
 
       console.log('Preserve ', data)
@@ -82,7 +87,7 @@ export default function PTMFB(props) {
 
       console.log('Purpose check', offerLetterData)
 
-     
+
 
       setOfferLetterData({
         userName: user.firstname + ' ' + user.lastname,
@@ -131,11 +136,10 @@ export default function PTMFB(props) {
     },
     {
       title: 'Tenor',
-      content: `${
-        offerLetterData.repayment_plan <= 1
+      content: `${offerLetterData.repayment_plan <= 1
           ? offerLetterData.repayment_plan + ' Month'
           : offerLetterData.repayment_plan + ' Months'
-      } (Meanwhile repayable on demand)`,
+        } (Meanwhile repayable on demand)`,
       // content: `12 Months (Twelve months, meanwhile repayable on demand)`,
     },
     {
@@ -175,7 +179,7 @@ export default function PTMFB(props) {
     {
       title: 'Securities',
       content: `Execution or activation of remita or other direct debit mandates on customer salary account with monthly repayment of ₦${formatNumber(
-       Math.floor(offerLetterData.monthly_repayment),
+        Math.floor(offerLetterData.monthly_repayment),
       )}.`,
     },
   ];
@@ -299,366 +303,366 @@ export default function PTMFB(props) {
     },
   ];
   return (
-    <View style={[styles.container]}>
-      <View
-        style={{
-          backgroundColor: COLORS.primary,
-          paddingVertical: 15,
-          paddingHorizontal: 20,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}>
-        <Icon
-          onPress={() => navigation.navigate('Borrow')}
-          name="arrow-back-outline"
-          size={20}
+      <View style={[styles.container, { marginTop: Platform.OS === 'ios' ? top : 0}]}>
+        <View
           style={{
-            marginRight: 20,
-          }}
-          color={COLORS.white}
-        />
-        <Text style={{color: COLORS.white, fontWeight: 'bold'}}>
-          Offer Letter / Rent Agreement
-        </Text>
-      </View>
-      <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
-        <View style={[styles.content]}>
-          <View>
-            <Text style={[styles.date]}>
-              {offerLetterData.effective_date}.{'\n'}
-            </Text>
-            <Text style={[styles.address, {width: 100, marginBottom: 10}]}>
-              {offerLetterData.address}
-            </Text>
-          </View>
-          <Text style={[styles.attention]}>
-            {/* ATTENTION: OGUNLEYE STEPHEN SANMMY */}
-            ATTENTION: {offerLetterData?.userName.toString().toUpperCase()}
+            backgroundColor: COLORS.primary,
+            paddingVertical: 15,
+            paddingHorizontal: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <Icon
+            onPress={() => navigation.navigate('Borrow')}
+            name="arrow-back-outline"
+            size={20}
+            style={{
+              marginRight: 20,
+            }}
+            color={COLORS.white}
+          />
+          <Text style={{ color: COLORS.white, fontWeight: 'bold' }}>
+            Offer Letter / Rent Agreement
           </Text>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>OFFER OF CREDIT FACILITY</Text>
-            <Text style={[styles.bodyText]}>
-              We are pleased to advise you that the Management of Personal Trust
-              Microfinance Bank Limited has approved your request for a ₦
-              {formatNumber(offerLetterData.facility_amount)} facility under the
-              following terms and conditions:
+        </View>
+        <ScrollView scrollEnabled showsVerticalScrollIndicator={false}>
+          <View style={[styles.content]}>
+            <View>
+              <Text style={[styles.date]}>
+                {offerLetterData.effective_date}.{'\n'}
+              </Text>
+              <Text style={[styles.address, { width: 100, marginBottom: 10 }]}>
+                {offerLetterData.address}
+              </Text>
+            </View>
+            <Text style={[styles.attention]}>
+              {/* ATTENTION: OGUNLEYE STEPHEN SANMMY */}
+              ATTENTION: {offerLetterData?.userName.toString().toUpperCase()}
             </Text>
-          </View>
 
-          <View style={[styles.section]}>
-            {offers?.map((item, index) => {
-              return (
-                <View
-                  key={index}
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'flex-start',
-                    marginVertical: 10,
-                  }}>
-                  <Text
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>OFFER OF CREDIT FACILITY</Text>
+              <Text style={[styles.bodyText]}>
+                We are pleased to advise you that the Management of Personal Trust
+                Microfinance Bank Limited has approved your request for a ₦
+                {formatNumber(offerLetterData.facility_amount)} facility under the
+                following terms and conditions:
+              </Text>
+            </View>
+
+            <View style={[styles.section]}>
+              {offers?.map((item, index) => {
+                return (
+                  <View
+                    key={index}
                     style={{
-                      marginRight: 10,
-                      fontWeight: 'bold',
-                      color: COLORS.primary,
-                      marginTop: -2,
-                      // width: 300,
-                      // maxWidth: '100%',
+                      flexDirection: 'row',
+                      alignItems: 'flex-start',
+                      marginVertical: 10,
                     }}>
-                    {item.title}:
+                    <Text
+                      style={{
+                        marginRight: 10,
+                        fontWeight: 'bold',
+                        color: COLORS.primary,
+                        marginTop: -2,
+                        // width: 300,
+                        // maxWidth: '100%',
+                      }}>
+                      {item.title}:
+                    </Text>
+                    <Text style={{ flex: 1, fontSize: 12, color: COLORS.primary }}>
+                      {item.content}
+                    </Text>
+                  </View>
+                );
+              })}
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>
+                CONDITIONS PRECEDENT TO DRAWDOWN
+              </Text>
+              <View style={[styles.listContainer]}>
+                <Unorderedlist>
+                  <Text style={[styles.listText]}>
+                    Acceptance of Offer letter by the Customer.
                   </Text>
-                  <Text style={{flex: 1, fontSize: 12, color: COLORS.primary}}>
-                    {item.content}
+                </Unorderedlist>
+                <Unorderedlist>
+                  <Text style={[styles.listText]}>
+                    Payment of all upfront fees.
                   </Text>
+                </Unorderedlist>
+              </View>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>OTHER CONDITIONS</Text>
+
+              <View style={{ marginTop: 10 }}>
+                {conditions?.map((item, index) => {
+                  return (
+                    <View key={index}>
+                      <Unorderedlist
+                        bulletUnicode={0x29bf}
+                        style={{ marginRight: 10, marginTop: 5 }}
+                        color={COLORS.primary}>
+                        <Text style={[styles.listText]}>{item.content}</Text>
+                      </Unorderedlist>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>RIGTH OF SET-OFF </Text>
+              <Text style={[styles.bodyText]}>
+                You hereby covenant that in addition to any general lien or
+                similar right, to which the Bank as a banker may be entitled by
+                law, the Bank may anytime and without notice to you combine or
+                consolidate all or any other accounts with any liabilities to the
+                Bank and set off or transfer any sum or sums standing to the
+                credit of anyone or more of such accounts in or towards
+                satisfaction of your liabilities to the Bank or any other respect
+                whether such liabilities be actual or contingent primary or
+                collateral and several or joint. {'\n\n'}All expenses and costs
+                incurred in the perfection of securities including legal fees and
+                charges as well as the recovery of the facility shall be from your
+                account for which the Bank shall debit accordingly.
+              </Text>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>UTILIZATION</Text>
+              <Text style={[styles.bodyText]}>
+                This facility must be utilized within 7 days from the date of
+                acceptance of offer failing which it shall attract a commitment
+                fee of 1%.
+              </Text>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>REPAYMENT</Text>
+              <Text style={[styles.bodyText]}>
+                The Customer or any of the obligors may repay the full facility or
+                any portion thereof before the expiration of the facility provided
+                that notice of such prepayment is formally given to the Bank.
+              </Text>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>
+                REPRESENTATIONS AND WARRANTIES{' '}
+              </Text>
+              <Text style={[styles.bodyText]}>
+                The obligor represents and warrants that:
+              </Text>
+
+              <View style={{ marginTop: 10 }}>
+                {warrant?.map((item, index) => {
+                  return (
+                    <View key={index} style={{ marginTop: 5 }}>
+                      <Unorderedlist
+                        bulletUnicode={0x2022}
+                        style={{ marginRight: 10, marginTop: 5 }}
+                        color={COLORS.primary}>
+                        <Text style={[styles.listText]}>{item.content}</Text>
+                      </Unorderedlist>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>EVENTS OF DEFAULT</Text>
+              <Text style={[styles.bodyText]}>
+                The occurrence of any of the following events shall cause all
+                outstanding repayments to become immediately payable by the
+                obligor;
+              </Text>
+
+              <View style={{ marginTop: 10 }}>
+                {EventsData?.map((item, index) => {
+                  return (
+                    <View key={index} style={{ marginTop: 5 }}>
+                      <Unorderedlist
+                        bulletUnicode={0x2022}
+                        style={{ marginRight: 10, marginTop: 5 }}
+                        color={COLORS.primary}>
+                        <Text style={[styles.listText]}>{item.content}</Text>
+                      </Unorderedlist>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>DEFAULT</Text>
+
+              <View style={{ marginTop: 10 }}>
+                {defaultsData?.map((item, index) => {
+                  return (
+                    <View key={index} style={{ marginTop: 5 }}>
+                      <Unorderedlist
+                        bulletUnicode={0x2022}
+                        style={{ marginRight: 10, marginTop: 5 }}
+                        color={COLORS.primary}>
+                        <Text style={[styles.listText]}>{item.content}</Text>
+                      </Unorderedlist>
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+
+            {otherData?.map((item, index) => {
+              return (
+                <View style={[styles.section]} key={index}>
+                  <View style={{ marginTop: 10 }}>
+                    <Text style={[styles.heading]}>{item.title}</Text>
+                    <Text style={[styles.bodyText]}>{item.content}</Text>
+                  </View>
                 </View>
               );
             })}
-          </View>
 
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>
-              CONDITIONS PRECEDENT TO DRAWDOWN
-            </Text>
-            <View style={[styles.listContainer]}>
-              <Unorderedlist>
-                <Text style={[styles.listText]}>
-                  Acceptance of Offer letter by the Customer.
-                </Text>
-              </Unorderedlist>
-              <Unorderedlist>
-                <Text style={[styles.listText]}>
-                  Payment of all upfront fees.
-                </Text>
-              </Unorderedlist>
+            <View style={[styles.section]}>
+              <Text style={[styles.bodyText]}>Yours faithfully</Text>
+              <Text style={[styles.heading]}>
+                For: Personal Trust Microfinance Bank Limited
+              </Text>
+              <Text style={[styles.bodyText, { marginTop: 20 }]}>
+                Please signify your acceptance of the above terms and conditions
+                by signing the acceptance column
+              </Text>
+              <Text style={[styles.bodyText, { marginTop: 20 }]}>
+                We thank you for your continued patronage and look forward to a
+                more fruitful banking relationship with you.
+              </Text>
+              <Text style={[styles.bodyText, { marginTop: 20 }]}>
+                Yours faithfully,
+              </Text>
             </View>
-          </View>
 
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>OTHER CONDITIONS</Text>
+            <View style={[styles.section]}>
+              <View
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View>
+                  <Text style={[styles.heading]}>Head Credit/Risk</Text>
+                  <Text style={[styles.bodyText, { marginTop: 0 }]}>
+                    Adekunle Ojo
+                  </Text>
+                </View>
 
-            <View style={{marginTop: 10}}>
-              {conditions?.map((item, index) => {
-                return (
-                  <View key={index}>
-                    <Unorderedlist
-                      bulletUnicode={0x29bf}
-                      style={{marginRight: 10, marginTop: 5}}
-                      color={COLORS.primary}>
-                      <Text style={[styles.listText]}>{item.content}</Text>
-                    </Unorderedlist>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>RIGTH OF SET-OFF </Text>
-            <Text style={[styles.bodyText]}>
-              You hereby covenant that in addition to any general lien or
-              similar right, to which the Bank as a banker may be entitled by
-              law, the Bank may anytime and without notice to you combine or
-              consolidate all or any other accounts with any liabilities to the
-              Bank and set off or transfer any sum or sums standing to the
-              credit of anyone or more of such accounts in or towards
-              satisfaction of your liabilities to the Bank or any other respect
-              whether such liabilities be actual or contingent primary or
-              collateral and several or joint. {'\n\n'}All expenses and costs
-              incurred in the perfection of securities including legal fees and
-              charges as well as the recovery of the facility shall be from your
-              account for which the Bank shall debit accordingly.
-            </Text>
-          </View>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>UTILIZATION</Text>
-            <Text style={[styles.bodyText]}>
-              This facility must be utilized within 7 days from the date of
-              acceptance of offer failing which it shall attract a commitment
-              fee of 1%.
-            </Text>
-          </View>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>REPAYMENT</Text>
-            <Text style={[styles.bodyText]}>
-              The Customer or any of the obligors may repay the full facility or
-              any portion thereof before the expiration of the facility provided
-              that notice of such prepayment is formally given to the Bank.
-            </Text>
-          </View>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>
-              REPRESENTATIONS AND WARRANTIES{' '}
-            </Text>
-            <Text style={[styles.bodyText]}>
-              The obligor represents and warrants that:
-            </Text>
-
-            <View style={{marginTop: 10}}>
-              {warrant?.map((item, index) => {
-                return (
-                  <View key={index} style={{marginTop: 5}}>
-                    <Unorderedlist
-                      bulletUnicode={0x2022}
-                      style={{marginRight: 10, marginTop: 5}}
-                      color={COLORS.primary}>
-                      <Text style={[styles.listText]}>{item.content}</Text>
-                    </Unorderedlist>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>EVENTS OF DEFAULT</Text>
-            <Text style={[styles.bodyText]}>
-              The occurrence of any of the following events shall cause all
-              outstanding repayments to become immediately payable by the
-              obligor;
-            </Text>
-
-            <View style={{marginTop: 10}}>
-              {EventsData?.map((item, index) => {
-                return (
-                  <View key={index} style={{marginTop: 5}}>
-                    <Unorderedlist
-                      bulletUnicode={0x2022}
-                      style={{marginRight: 10, marginTop: 5}}
-                      color={COLORS.primary}>
-                      <Text style={[styles.listText]}>{item.content}</Text>
-                    </Unorderedlist>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>DEFAULT</Text>
-
-            <View style={{marginTop: 10}}>
-              {defaultsData?.map((item, index) => {
-                return (
-                  <View key={index} style={{marginTop: 5}}>
-                    <Unorderedlist
-                      bulletUnicode={0x2022}
-                      style={{marginRight: 10, marginTop: 5}}
-                      color={COLORS.primary}>
-                      <Text style={[styles.listText]}>{item.content}</Text>
-                    </Unorderedlist>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-
-          {otherData?.map((item, index) => {
-            return (
-              <View style={[styles.section]} key={index}>
-                <View style={{marginTop: 10}}>
-                  <Text style={[styles.heading]}>{item.title}</Text>
-                  <Text style={[styles.bodyText]}>{item.content}</Text>
+                <View>
+                  <Text style={[styles.heading]}>Managing Director </Text>
+                  <Text style={[styles.bodyText, { marginTop: 0 }]}>
+                    Bakare Edeki{' '}
+                  </Text>
                 </View>
               </View>
-            );
-          })}
+            </View>
 
-          <View style={[styles.section]}>
-            <Text style={[styles.bodyText]}>Yours faithfully</Text>
-            <Text style={[styles.heading]}>
-              For: Personal Trust Microfinance Bank Limited
-            </Text>
-            <Text style={[styles.bodyText, {marginTop: 20}]}>
-              Please signify your acceptance of the above terms and conditions
-              by signing the acceptance column
-            </Text>
-            <Text style={[styles.bodyText, {marginTop: 20}]}>
-              We thank you for your continued patronage and look forward to a
-              more fruitful banking relationship with you.
-            </Text>
-            <Text style={[styles.bodyText, {marginTop: 20}]}>
-              Yours faithfully,
-            </Text>
-          </View>
+            <View style={[styles.section]}>
+              <Text style={[styles.heading]}>ACCEPTANCE</Text>
+              <Text style={[styles.bodyText]}>
+                All the terms and conditions of this offer letter are accepted by
+                me/us{' '}
+              </Text>
+            </View>
 
-          <View style={[styles.section]}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <View>
-                <Text style={[styles.heading]}>Head Credit/Risk</Text>
-                <Text style={[styles.bodyText, {marginTop: 0}]}>
-                  Adekunle Ojo
-                </Text>
-              </View>
+            <View style={[styles.section]}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'baseline',
+                }}>
+                <View>
+                  <Text style={[styles.heading]}>{offerLetterData.userName}</Text>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: COLORS.primary,
+                      marginBottom: 2,
+                    }}
+                  />
+                  <Text style={[styles.heading]}>Customer Name </Text>
+                </View>
 
-              <View>
-                <Text style={[styles.heading]}>Managing Director </Text>
-                <Text style={[styles.bodyText, {marginTop: 0}]}>
-                  Bakare Edeki{' '}
-                </Text>
+                <View>
+                  <View
+                    style={{
+                      height: 1,
+                      backgroundColor: COLORS.primary,
+                      marginBottom: 2,
+                    }}
+                  />
+                  <Text style={[styles.heading]}>Signature and Date </Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={[styles.section]}>
-            <Text style={[styles.heading]}>ACCEPTANCE</Text>
-            <Text style={[styles.bodyText]}>
-              All the terms and conditions of this offer letter are accepted by
-              me/us{' '}
+            {/* end */}
+          </View>
+        </ScrollView>
+
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            alignItems: 'flex-end',
+            paddingVertical: 10,
+            backgroundColor: COLORS.white,
+            position: 'absolute',
+            width: '100%',
+            bottom: 0,
+            borderTopWidth: 1,
+            borderTopColor: '#BFBFBF50',
+          }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Reject')}
+            style={[
+              designs.button,
+              { backgroundColor: COLORS.white, elevation: 1, width: '43%' },
+            ]}>
+            <Text
+              style={[
+                {
+                  fontSize: 12,
+                  color: COLORS.dark,
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                },
+              ]}>
+              REJECT OFFER
             </Text>
-          </View>
-
-          <View style={[styles.section]}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'baseline',
-              }}>
-              <View>
-                <Text style={[styles.heading]}>{offerLetterData.userName}</Text>
-                <View
-                  style={{
-                    height: 1,
-                    backgroundColor: COLORS.primary,
-                    marginBottom: 2,
-                  }}
-                />
-                <Text style={[styles.heading]}>Customer Name </Text>
-              </View>
-
-              <View>
-                <View
-                  style={{
-                    height: 1,
-                    backgroundColor: COLORS.primary,
-                    marginBottom: 2,
-                  }}
-                />
-                <Text style={[styles.heading]}>Signature and Date </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* end */}
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Signature')}
+            style={[
+              designs.button,
+              { backgroundColor: COLORS.secondary, elevation: 1, width: '43%' },
+            ]}>
+            <Text
+              style={[
+                {
+                  fontSize: 12,
+                  color: COLORS.white,
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                },
+              ]}>
+              ACCEPT &amp; SIGN
+            </Text>
+          </TouchableOpacity>
         </View>
-      </ScrollView>
-
-      <View
-        style={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          alignItems: 'flex-end',
-          paddingVertical: 10,
-          backgroundColor: COLORS.white,
-          position: 'absolute',
-          width: '100%',
-          bottom: 0,
-          borderTopWidth: 1,
-          borderTopColor: '#BFBFBF50',
-        }}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Reject')}
-          style={[
-            designs.button,
-            {backgroundColor: COLORS.white, elevation: 1, width: '43%'},
-          ]}>
-          <Text
-            style={[
-              {
-                fontSize: 12,
-                color: COLORS.dark,
-                textAlign: 'center',
-                fontWeight: 'bold',
-              },
-            ]}>
-            REJECT OFFER
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Signature')}
-          style={[
-            designs.button,
-            {backgroundColor: COLORS.secondary, elevation: 1, width: '43%'},
-          ]}>
-          <Text
-            style={[
-              {
-                fontSize: 12,
-                color: COLORS.white,
-                textAlign: 'center',
-                fontWeight: 'bold',
-              },
-            ]}>
-            ACCEPT &amp; SIGN
-          </Text>
-        </TouchableOpacity>
       </View>
-    </View>
   );
 }
 

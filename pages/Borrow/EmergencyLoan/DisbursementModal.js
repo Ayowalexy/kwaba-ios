@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -10,17 +10,17 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import {COLORS, FONTS, images} from '../../../util';
+import { COLORS, FONTS, images } from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import IconFA5 from 'react-native-vector-icons/FontAwesome5';
 
 import Spinner from 'react-native-loading-spinner-overlay';
-import {formatNumber} from '../../../util/numberFormatter';
+import { formatNumber } from '../../../util/numberFormatter';
 import moment from 'moment';
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {getBankAccounts} from '../../../redux/actions/bankActions';
-import {getMaxLoanCap} from '../../../redux/actions/savingsActions';
+import { getBankAccounts } from '../../../redux/actions/bankActions';
+import { getMaxLoanCap } from '../../../redux/actions/savingsActions';
 import AddBankAccountModal from '../../../components/addBankAccountModal';
 
 export default function DisbursementModal(props) {
@@ -28,7 +28,7 @@ export default function DisbursementModal(props) {
   const getAllBankAccount = useSelector(
     (state) => state.getBankAccountsReducer,
   );
-  const {visible, onRequestClose} = props;
+  const { visible, onRequestClose } = props;
   const [spinner, setSpinner] = useState(false);
   const [bankModalVisible, setBankModalVisible] = useState(false);
   const [userBankAccounts, setUserBankAccounts] = useState([]);
@@ -45,8 +45,8 @@ export default function DisbursementModal(props) {
 
 
   useEffect(() => {
-      setUserBankAccounts(getAllBankAccount)
-      dispatch(getBankAccounts())
+    setUserBankAccounts(getAllBankAccount)
+    dispatch(getBankAccounts())
   }, [!reloadBanks])
 
   const getUser = async () => {
@@ -69,7 +69,7 @@ export default function DisbursementModal(props) {
     storeBankAccountLocally(item);
   };
 
-  const renderBankAccounts = ({item}) => (
+  const renderBankAccounts = ({ item }) => (
     <TouchableOpacity
       activeOpacity={0.9}
       style={[
@@ -138,99 +138,122 @@ export default function DisbursementModal(props) {
   );
 
   return (
-    <Modal
-      visible={visible}
-      onRequestClose={onRequestClose}
-      animationType="slide"
-      transparent={true}>
-      <View style={styles.centeredModalWrapper}>
-        <View style={[styles.content]}>
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Icon
-              onPress={onRequestClose}
-              name="arrow-back"
-              size={25}
-              style={{color: COLORS.primary, marginRight: 20, marginTop: 2}}
-            />
-            <Text
-              style={{fontSize: 16, fontWeight: 'bold', color: COLORS.primary}}>
-              Disbursement Account
-            </Text>
-          </View>
-
-          <View style={[styles.contentView]}>
-            {!userBankAccounts?.data?.length ? (
-              <>
-                <TouchableOpacity
-                  onPress={() => setBankModalVisible(true)}
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingVertical: 20,
-                    paddingLeft: 10,
-                  }}>
-                  <View
-                    style={[styles.addButtonEmpty]}>
-                    <IconFA5 name="plus" size={15} color={COLORS.primary} />
-                  </View>
+    <View
+    // visible={visible}
+    // onRequestClose={onRequestClose}
+    // animationType="slide"
+    // transparent={true}
+    style={{
+      position: 'absolute', 
+      bottom: 0,
+      width: '100%'
+    }}
+    >
+      {
+        visible && (
+          <>
+            <View style={styles.centeredModalWrapper}>
+              <View style={[styles.content]}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                  <Icon
+                    onPress={onRequestClose}
+                    name="arrow-back"
+                    size={25}
+                    style={{ color: COLORS.primary, marginRight: 20, marginTop: 2 }}
+                  />
                   <Text
-                    style={{
-                      marginLeft: 20,
-                      color: COLORS.dark,
-                      fontWeight: 'bold',
-                      fontSize: 12,
-                    }}>
-                    Add Bank Account
+                    style={{ fontSize: 16, fontWeight: 'bold', color: COLORS.primary }}>
+                    Disbursement Account
                   </Text>
-                </TouchableOpacity>
-              </>
-            ) : (
-              <>
-                <TouchableOpacity
-                  onPress={() => setBankModalVisible(true)}
-                  style={[styles.addButton]}>
-                  <IconFA5 name="plus" size={15} color={COLORS.white} />
-                </TouchableOpacity>
-                <FlatList
-                  data={userBankAccounts?.data}
-                  renderItem={renderBankAccounts}
-                  keyExtractor={(item) => item?.id?.toString()}
-                  horizontal
-                  showsHorizontalScrollIndicator={true}
-                  showsVerticalScrollIndicator={false}
-                  style={{
-                    marginLeft: 10,
-                  }}
-                  contentContainerStyle={{
-                    paddingVertical: 5,
-                  }}
-                />
-              </>
+                </View>
+
+                <View style={[styles.contentView]}>
+                  {!userBankAccounts?.data?.length ? (
+                    <>
+                      <TouchableOpacity
+                        onPress={() => {
+                          // onRequestClose()
+                          // setTimeout(() => {
+                          setBankModalVisible(true)
+                          // }, 200);
+                        }}
+                        style={{
+                          width: '100%',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingVertical: 20,
+                          paddingLeft: 10,
+                        }}>
+                        <View
+                          style={[styles.addButtonEmpty]}>
+                          <IconFA5 name="plus" size={15} color={COLORS.primary} />
+                        </View>
+                        <Text
+                          style={{
+                            marginLeft: 20,
+                            color: COLORS.dark,
+                            fontWeight: 'bold',
+                            fontSize: 12,
+                          }}>
+                          Add Bank Account
+                        </Text>
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity
+                        onPress={() => {
+                          // onRequestClose()
+                          setTimeout(() => {
+                            setBankModalVisible(true)
+                          }, 200);
+                        }}
+                        style={[styles.addButton]}>
+                        <IconFA5 name="plus" size={15} color={COLORS.white} />
+                      </TouchableOpacity>
+                      <FlatList
+                        data={userBankAccounts?.data}
+                        renderItem={renderBankAccounts}
+                        keyExtractor={(item) => item?.id?.toString()}
+                        horizontal
+                        showsHorizontalScrollIndicator={true}
+                        showsVerticalScrollIndicator={false}
+                        style={{
+                          marginLeft: 10,
+                        }}
+                        contentContainerStyle={{
+                          paddingVertical: 5,
+                        }}
+                      />
+                    </>
+                  )}
+                </View>
+              </View>
+            </View>
+
+            {bankModalVisible && (
+              <AddBankAccountModal
+                onRequestClose={() => setBankModalVisible(!bankModalVisible)}
+                visible={bankModalVisible}
+                onRequestClose_={onRequestClose}
+                setReloadBanks={setReloadBanks}
+                setBankModalVisible={setBankModalVisible}
+                // setDisplayAllBankAccounts={(all) => allBanks(all)}
+                // setDisplayAllBankAccounts={(all) => console.log('The all', all)}
+                setDisplayAllBankAccounts={(all) => setUserBankAccounts({ data: all })}
+              />
             )}
-          </View>
-        </View>
-      </View>
 
-      {bankModalVisible && (
-        <AddBankAccountModal
-          onRequestClose={() => setBankModalVisible(!bankModalVisible)}
-          visible={bankModalVisible}
-          setReloadBanks={setReloadBanks}
-          setBankModalVisible={setBankModalVisible}
-          // setDisplayAllBankAccounts={(all) => allBanks(all)}
-          // setDisplayAllBankAccounts={(all) => console.log('The all', all)}
-          setDisplayAllBankAccounts={(all) => setUserBankAccounts({data: all})}
-        />
-      )}
-
-      <Spinner visible={spinner} size="large" />
-      {/* <ActivityIndicator
+            <Spinner visible={spinner} size="large" />
+            {/* <ActivityIndicator
         size={'small'}
         color={COLORS.orange}
         animating={false}
       /> */}
-    </Modal>
+          </>
+        )
+      }
+    </View>
   );
 }
 

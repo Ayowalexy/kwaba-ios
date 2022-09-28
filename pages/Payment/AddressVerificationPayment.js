@@ -8,7 +8,9 @@ import {
   TouchableOpacity,
   Alert,
   Linking,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { icons } from '../../util/index';
 import designs from './style';
@@ -52,6 +54,7 @@ const AddressVerificationPayment = ({ navigation }) => {
   const [resData, setResData] = useState('')
   const [channel, setChannel] = useState('')
 
+  const top = useSafeAreaInsets().top;
 
   useEffect(() => {
     (async () => {
@@ -85,8 +88,9 @@ const AddressVerificationPayment = ({ navigation }) => {
 
       setSpinner(true);
       const response = await loanRepayment(data);
-      console.log('That Resp: ', response);
+      console.log('That Resp: ', response.data);
 
+      setSpinner(false);
       if (response.status == 200) {
         if (value == 'wallet') {
           const data = {
@@ -186,9 +190,9 @@ const AddressVerificationPayment = ({ navigation }) => {
   };
 
   return (
-    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0 }]}>
       <Icon
-        onPress={() => navigation.navigate('Borrow')}
+        onPress={() => navigation.goBack()}
         name="arrow-back-outline"
         size={25}
         style={{ fontWeight: '900', paddingVertical: 20, paddingHorizontal: 10 }}

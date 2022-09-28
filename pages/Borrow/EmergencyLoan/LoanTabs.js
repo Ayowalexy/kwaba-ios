@@ -10,6 +10,7 @@ import {
   ScrollView,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -549,7 +550,11 @@ export default function LoanTabs(props) {
           onRequestClose={() => setShowAmountModal(!showAmountModal)}
           visible={showAmountModal}
           setAmount={(d) => setAmount(d)}
-          showCard={() => setShowPaymentModal(true)}
+          showCard={() => {
+            setTimeout(() => {
+              setShowPaymentModal(true)
+            }, Platform.OS == 'ios' ? 200 : 0);
+          }}
           data={loanRepaymentData}
         />
       )}

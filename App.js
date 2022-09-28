@@ -441,7 +441,7 @@ const App = () => {
 
   return (
     <>
-      {appUpdateAvailable ? (
+      {!appUpdateAvailable ? (
         <AppUpdate
           openStore={() => {
             Linking.openURL('market://details?id=com.kwaba_mobile_app');

@@ -6,8 +6,10 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  Alert
+  Alert,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { icons } from '../../util/index';
 import designs from './style';
@@ -24,6 +26,7 @@ import { getCurrentApplication } from '../../services/network';
 const AwaitingDisbursement = ({ navigation, route }) => {
   const response = route.params;
 
+  const top = useSafeAreaInsets().top;
   const [accommodationStatus, setAccommodationStatus] = useState('');
   const [salaryAmount, setSalaryAmount] = useState('');
   const [existingApplication, setExistingApplication] = useState('');
@@ -131,7 +134,7 @@ const AwaitingDisbursement = ({ navigation, route }) => {
   }, []);
 
   return (
-    <View style={[designs.container, { backgroundColor: '#F7F8FD' }]}>
+    <View style={[designs.container, { backgroundColor: '#F7F8FD', marginTop: Platform.OS == 'ios' ? top : 0 }]}>
       <Icon
         onPress={() => navigation.navigate('RnplSteps')}
         name="arrow-back-outline"

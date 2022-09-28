@@ -185,7 +185,7 @@ export default function AllDocuments({ navigation }) {
   };
 
   const handleBrowseFile = async () => {
-    setShowChooseFileModal(false);
+    // setShowChooseFileModal(false);
 
     try {
       const res = await DocumentPicker.pick({
@@ -198,6 +198,8 @@ export default function AllDocuments({ navigation }) {
         name: res.name,
       };
       setSpinner(true);
+          setShowChooseFileModal(false);
+
 
       console.log("blob", blob);
 

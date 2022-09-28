@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  Platform
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {COLORS} from '../../../util';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getAllEmergencyLoansRepayment} from '../../../services/network';
@@ -20,6 +22,7 @@ export default function Transactions(props) {
   const [spinner, setSpinner] = useState(false);
   const [repayments, setRepayments] = useState([]);
 
+  const top = useSafeAreaInsets().top;
   const getAllLoans = async () => {
     setSpinner(true);
     const response = await getAllEmergencyLoansRepayment();
@@ -47,7 +50,7 @@ export default function Transactions(props) {
       onRequestClose={onRequestClose}
       animationType="slide"
       transparent={true}>
-      <View style={styles.centeredModalWrapper}>
+      <View style={[styles.centeredModalWrapper, { marginTop: Platform.OS == 'ios' ? top : 0}]}>
         <View style={[styles.bg]}>
           <View style={[styles.headline]}>
             <Icon
